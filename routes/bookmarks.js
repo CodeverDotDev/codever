@@ -26,11 +26,12 @@ router.post('/', function(req, res, next){
   console.log(req.body);
   var bookmark = new Bookmark(req.body); //expect the model structure in the body directly
 
-  bookmark.save(function (err) {
+  bookmark.save(function (err, updatedBookmark) {
     if (err){
       console.log(err);
       res.status(500).send(err);
     } else {
+      //res.set('Location', 'http://localhost:3000/bookmarks/' + updatedBookmark.id);
       res.status(201).send('Bookmark created');
     }
     // saved!
