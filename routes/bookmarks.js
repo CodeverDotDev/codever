@@ -39,11 +39,6 @@ router.post('/', function(req, res, next){
   console.log(req.body);
   var bookmark = new Bookmark(req.body); //expect the model structure in the body directly
 
-  bookmark.schema.pre('save', function (next) {
-    if (!this.creation_date) this.creation_date = new Date;
-    next();
-  });
-
   bookmark.save(function (err, updatedBookmark) {
     if (err){
       console.log(err);

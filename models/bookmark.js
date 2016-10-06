@@ -8,6 +8,9 @@ var bookmarkSchema = new Schema({
     description: String,
     category: {type:String, required: true},
     tags: [String]
+},
+{
+  timestamps: true
 });
 
 bookmarkSchema.plugin(mongooseUniqueValidator);
