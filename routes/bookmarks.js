@@ -2,7 +2,20 @@ var express = require('express');
 var router = express.Router();
 var Bookmark = require('../models/bookmark');
 
-/* GET users listing. */
+
+/* GET bookmark by id. */
+router.get('/:id', function(req, res, next) {
+  Bookmark.findById(req.params.id, function(err, bookmark){
+    if(err){
+      return res.send('Error');
+    }
+    res.send(bookmark);
+  });
+
+});
+
+
+/* GET bookmarks listing. */
 router.get('/', function(req, res, next) {
   if(req.query.category){
     Bookmark.find({category:req.query.category}, function(err, bookmarks){
@@ -26,12 +39,17 @@ router.post('/', function(req, res, next){
   console.log(req.body);
   var bookmark = new Bookmark(req.body); //expect the model structure in the body directly
 
+  bookmark.schema.pre('save', function (next) {
+    if (!this.creation_date) this.creation_date = new Date;
+    next();
+  });
+
   bookmark.save(function (err, updatedBookmark) {
     if (err){
       console.log(err);
       res.status(500).send(err);
     } else {
-      //res.set('Location', 'http://localhost:3000/bookmarks/' + updatedBookmark.id);
+      res.set('Location', 'http://localhost:3000/bookmarks/' + updatedBookmark.id);
       res.status(201).send('Bookmark created');
     }
     // saved!
