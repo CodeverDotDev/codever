@@ -10,6 +10,9 @@ import { ApiService } from './shared';
 import { routing } from './app.routing';
 
 import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
+import {BookmarkDetailComponent} from "./bookmark/bookmark-detail.component";
+import {BookmarksComponent} from "./bookmark/bookmarks.component";
+import {BookmarkService} from "./bookmark/bookmark.service";
 
 @NgModule({
   imports: [
@@ -21,10 +24,13 @@ import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
   declarations: [
     AppComponent,
     HomeComponent,
-    AboutComponent
+    AboutComponent,
+    BookmarkDetailComponent,
+    BookmarksComponent
   ],
   providers: [
-    ApiService
+    ApiService,
+    BookmarkService
   ],
   bootstrap: [AppComponent]
 })

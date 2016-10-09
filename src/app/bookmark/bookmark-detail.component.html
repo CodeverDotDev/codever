@@ -1,0 +1,12 @@
+
+<div *ngIf="bookmark">
+  <h2>{{bookmark.name}} details!</h2>
+  <div>
+    <label>name: </label>
+    <input [(ngModel)]="bookmark.name" placeholder="name"/>
+  </div>
+  <div>
+    <label>Location: </label>
+    <input [(ngModel)]="bookmark.url" placeholder="location"/>
+  </div>
+</div>
