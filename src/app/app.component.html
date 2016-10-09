@@ -1,0 +1,18 @@
+<header>
+  <nav>
+    <a [routerLink]="['']">Home</a>
+    <a [routerLink]="['about']">About</a>
+    <a [routerLink]="['bookmarks']">Bookmarks</a>
+  </nav>
+</header>
+<main>
+  <h1>Hello from {{api.title}}!</h1>
+
+  <!-- Images (and assets) are parsed and loaded from within the public directory -->
+  <img src="/img/angular.png">
+
+  <router-outlet></router-outlet>
+</main>
+<footer>
+  <a [href]="url">Codingpedia Bookmarks</a>
+</footer>
