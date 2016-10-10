@@ -3,8 +3,7 @@
 <ul class="bookmarks">
   <li *ngFor="let bookmark of bookmarks"
       [class.selected]="bookmark === selectedBookamrk"
-      (click)="onSelect(bookmark)">
+      (click)="gotoDetail(bookmark)">
     {{bookmark.name}}
   </li>
 </ul>
-<my-bookmark-detail [bookmark]="selectedBookmark"></my-bookmark-detail>
