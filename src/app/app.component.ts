@@ -10,7 +10,7 @@ import '../style/app.scss';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  url = 'https://github.com/preboot/angular2-webpack';
+  url = 'https://github.com/Codingpedia/bookmarks';
 
   constructor(private api: ApiService) {
     // Do something with api
