@@ -32,4 +32,10 @@ export class BookmarkDetailComponent {
   goBack(): void {
     this.location.back();
   }
+
+  save(): void {
+    this.bookmarkService.update(this.bookmark)
+      .then(() => this.goBack());
+  }
+
 }

@@ -2,12 +2,17 @@
 <div *ngIf="bookmark">
   <h2>{{bookmark.name}} details!</h2>
   <div>
-    <label>name: </label>
+    <label>Name: </label>
     <input [(ngModel)]="bookmark.name" placeholder="name"/>
   </div>
   <div>
     <label>Location: </label>
     <input [(ngModel)]="bookmark.location" placeholder="location"/>
   </div>
+  <div>
+    <label>Category: </label>
+    <input [(ngModel)]="bookmark.category" placeholder="category"/>
+  </div>
   <button (click)="goBack()">Back</button>
+  <button (click)="save()">Save</button>
 </div>
