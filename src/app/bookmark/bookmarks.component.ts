@@ -35,7 +35,7 @@ export class BookmarksComponent implements  OnInit{
   }
   */
   gotoDetail(bookmark: Bookmark): void {
-    let link = ['/bookmarks', bookmark.id];
+    let link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }
 }
