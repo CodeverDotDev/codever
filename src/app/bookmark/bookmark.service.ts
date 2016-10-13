@@ -14,32 +14,17 @@ export class BookmarkService {
 
   constructor(private http: Http) { }
 
-  /*
-   getBookmarks(): Promise<Bookmark[]> {
-   return this.http.get(this.bookmarksUrl)
-   .map(response => {
-   const data = response.json.
-   })
-   .toPromise()
-   .then(response => response.json().data as Bookmark[])
-   .catch(this.handleError);
-   }
-   */
 
+  /**
+   * TODO use .map for DTO
+   * @returns {Observable<R>|Promise<R>|Q.Promise<*>|Promise<*|T>|Promise<*>|any}
+   */
   getBookmarks(): Promise<Bookmark[]> {
     return this.http.get(this.bookmarksUrl)
       .toPromise()
       .then(response => response.json() as Bookmark[])
       .catch(this.handleError);
   }
-
-
-
-  /*
-   getBookmarks(): Promise<Bookmark[]> {
-   return Promise.resolve(BOOKMARKS);
-   }
-   */
 
   getBookmark(id: string): Promise<Bookmark> {
     return this.getBookmarks()
@@ -54,6 +39,16 @@ export class BookmarkService {
     .then(() => bookmark)
     .catch(this.handleError);
   }
+
+
+  delete(id: string): Promise<void> {
+    const url = `${this.bookmarksUrl}/${id}`;
+    return this.http.delete(url, {headers: this.headers})
+        .toPromise()
+        .then(() => null)
+        .catch(this.handleError);
+  }
+
 
 
   private handleError(error: any): Promise<any> {

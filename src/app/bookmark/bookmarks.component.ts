@@ -38,4 +38,14 @@ export class BookmarksComponent implements  OnInit{
     let link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }
+
+  delete(bookmark: Bookmark): void {
+    this.bookmarkService
+        .delete(bookmark._id)
+        .then(() => {
+          this.bookmarks = this.bookmarks.filter(h => h !== bookmark);
+          if (this.selectedBookmark === bookmark) { this.selectedBookmark = null; }
+        });
+  }
+
 }
