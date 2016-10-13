@@ -13,6 +13,9 @@ import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
 import {BookmarkDetailComponent} from "./bookmark/bookmark-detail.component";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkService} from "./bookmark/bookmark.service";
+import {BookmarkSearchComponent} from "./bookmark/bookmark-search.component";
+
+import './rxjs-extensions';
 
 @NgModule({
   imports: [
@@ -26,7 +29,8 @@ import {BookmarkService} from "./bookmark/bookmark.service";
     HomeComponent,
     AboutComponent,
     BookmarkDetailComponent,
-    BookmarksComponent
+    BookmarksComponent,
+    BookmarkSearchComponent
   ],
   providers: [
     ApiService,

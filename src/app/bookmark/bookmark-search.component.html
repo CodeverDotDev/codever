@@ -1,0 +1,10 @@
+<div id="search-component">
+    <h4>Bookmark Search</h4>
+    <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
+    <div>
+        <div *ngFor="let bookmark of bookmarks | async"
+             (click)="gotoDetail(bookmark)" class="search-result" >
+            {{bookmark.name}}
+        </div>
+    </div>
+</div>
