@@ -5,5 +5,7 @@
       [class.selected]="bookmark === selectedBookamrk"
       (click)="gotoDetail(bookmark)">
     {{bookmark.name}}
+    <button class="delete"
+            (click)="delete(bookmark); $event.stopPropagation()">x</button>
   </li>
 </ul>
