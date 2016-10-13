@@ -26,7 +26,14 @@ router.get('/', function(req, res, next) {
       }
       res.send(bookmarks);
     });
-  } else {
+  } else if(req.query.name){
+    Bookmark.find({name : new RegExp(req.query.name, 'i') }, function(err, bookmarks){
+      if(err){
+        return res.status(500).send(err);
+      }
+      res.send(bookmarks);
+    });
+  } else {//no filter - all bookmarks
     Bookmark.find({}, function(err, bookmarks){
       if(err){
         return res.status(500).send(err);
