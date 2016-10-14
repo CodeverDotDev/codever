@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {Bookmark} from './bookmark';
+import {Bookmark} from '../bookmark';
 
-import { BOOKMARKS } from './mock-bookmarks';
+import { BOOKMARKS } from '../mock-bookmarks';
 import {Headers, Http, Response} from "@angular/http";
 
 import { Observable } from 'rxjs';
@@ -14,7 +14,6 @@ export class BookmarkSearchService {
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http) { }
-
 
   search(term: string): Observable<Bookmark[]> {
     return this.http
