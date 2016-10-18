@@ -8,7 +8,7 @@ import { Bookmark } from '../bookmark';
 @Component({
     selector: 'bookmark-search',
     templateUrl: 'bookmark-search.component.html',
-    styleUrls: [ 'bookmark-search.component.css' ],
+    styleUrls: [ 'bookmark-search.component.scss' ],
     providers: [BookmarkSearchService]
 })
 export class BookmarkSearchComponent implements OnInit {
