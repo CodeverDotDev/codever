@@ -5,7 +5,6 @@ import { BOOKMARKS } from '../mock-bookmarks';
 import {Headers, Http, Response} from "@angular/http";
 
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class BookmarkSearchService {
@@ -16,9 +15,11 @@ export class BookmarkSearchService {
   constructor(private http: Http) { }
 
   search(term: string): Observable<Bookmark[]> {
-    return this.http
+    var response = this.http
         .get(`${this.bookmarksUrl}/?name=${term}`)
         .map((r: Response) => r.json().data as Bookmark[]);
+
+    return response;
   }
 
 }
