@@ -1,0 +1,33 @@
+<div class="container">
+  <h1>Bookmark Form</h1>
+  <form>
+    {{diagnostic}}
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name"
+             required
+             [(ngModel)]="model.name" name="name"
+      #spy>
+      <br>TODO: remove this: {{spy.className}}
+    </div>
+    <div class="form-group">
+      <label for="name">Location</label>
+      <input type="text" class="form-control" id="location"
+             required
+             [(ngModel)]="model.location" name="location">
+    </div>
+    <div class="form-group">
+      <label for="name">Category</label>
+      <input type="text" class="form-control" id="category"
+             required
+             [(ngModel)]="model.category" name="category">
+    </div>
+    <div class="form-group">
+      <label for="tags">Tags</label>
+      <input type="text" class="form-control" id="tags"
+             required
+             [(ngModel)]="model.tags" name="tags">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+</div>
