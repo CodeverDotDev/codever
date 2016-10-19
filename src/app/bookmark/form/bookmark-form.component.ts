@@ -3,7 +3,8 @@ import {Bookmark} from "../bookmark";
 
 @Component({
   selector: 'bookmark-form',
-  templateUrl: 'bookmark-form.component.html'
+  templateUrl: 'bookmark-form.component.html',
+  styleUrls: ['./bookmark-form.component.scss']
 })
 export class BookmarkFormComponent {
 
