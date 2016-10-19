@@ -16,6 +16,7 @@ import {BookmarkService} from "./bookmark/bookmark.service";
 import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
 
 import './rxjs-extensions';
+import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import './rxjs-extensions';
     AboutComponent,
     BookmarkDetailComponent,
     BookmarksComponent,
-    BookmarkSearchComponent
+    BookmarkSearchComponent,
+    BookmarkFormComponent
   ],
   providers: [
     ApiService,
