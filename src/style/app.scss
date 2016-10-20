@@ -1,8 +1,16 @@
 // styles in src/style directory are applied to the whole page
 body {
     background: #0147A7;
-    color: #fff;
 }
 a {
     color: #03A9F4;
+}
+
+//forms - TODO maybe move to own forms.scss file... that is also valid application wide
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442; /* red */
 }
