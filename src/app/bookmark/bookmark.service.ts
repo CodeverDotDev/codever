@@ -15,6 +15,14 @@ export class BookmarkService {
   constructor(private http: Http) { }
 
 
+  create(bookmark:Bookmark): Promise<Bookmark> {
+    return this.http
+      .post(this.bookmarksUrl, JSON.stringify(bookmark), {headers: this.headers})
+      .toPromise()
+      .then(res => res.json().data)
+      .catch(this.handleError);
+  }
+
   /**
    * TODO use .map for DTO
    * @returns {Observable<R>|Promise<R>|Q.Promise<*>|Promise<*|T>|Promise<*>|any}
