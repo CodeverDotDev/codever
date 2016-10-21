@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from "./bookmark";
-import {BOOKMARKS} from "./mock-bookmarks";
 import {BookmarkService} from "./bookmark.service";
 import {Router} from "@angular/router";
 

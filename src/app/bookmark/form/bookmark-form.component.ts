@@ -29,7 +29,7 @@ export class BookmarkFormComponent implements OnInit {
       name: ['', Validators.required],
       location: ['', Validators.required],
       category: ['', Validators.required],
-      tags:['', Validators.pattern("[^,]+")],
+      tagsLine:['', Validators.required],
       description:''
     });
   }
@@ -55,6 +55,13 @@ export class BookmarkFormComponent implements OnInit {
 
   save(model: Bookmark, isValid: boolean) {
     this.submitted = true;
+    model.tags = model.tagsLine.split(",");
+
+    var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description);
+
+
     console.log(model, isValid);
+    this.bookmarkService.create(newBookmark)
+      .then(() => this.goBack());
   }
 }
