@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Bookmark} from '../bookmark';
 
-import { BOOKMARKS } from '../mock-bookmarks';
 import {Headers, Http, Response} from "@angular/http";
 
 import { Observable } from 'rxjs';

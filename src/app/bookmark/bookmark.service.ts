@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Bookmark} from './bookmark';
 
-import { BOOKMARKS } from './mock-bookmarks';
 import {Headers, Http} from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';

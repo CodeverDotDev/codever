@@ -32,9 +32,9 @@
       <label for="tags">Tags</label>
       <input type="text" class="form-control" id="tags"
              required
-             formControlName="tags"
-             name="tags">
-      <div [hidden]="newBookmarkForm.controls.tags.valid"
+             formControlName="tagsLine"
+             pattern="^[-\w\s]+(?:,[-\w\s]*)*$">
+      <div [hidden]="newBookmarkForm.controls.tagsLine.valid || (newBookmarkForm.controls.tagsLine.pristine && !submitted)"
            class="alert alert-danger">
         Please provide the tags separated with comma
       </div>
@@ -42,7 +42,7 @@
     <div class="form-group">
       <textarea class="form-control" id="description"
               formControlName="description"
-              name="tags" placeholder="Write a short description to remember by">
+              placeholder="Write a short description to search in later">
       </textarea>
     </div>
     <button type="submit" class="btn btn-default" [disabled]="!newBookmarkForm.valid">Submit</button>
