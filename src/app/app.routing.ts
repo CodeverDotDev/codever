@@ -7,9 +7,9 @@ import {BookmarkDetailComponent} from "./bookmark/bookmark-detail.component";
 import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: BookmarksComponent },
   { path: 'about', component: AboutComponent},
-  { path: 'bookmarks', component: BookmarksComponent},
+  //{ path: 'bookmarks', component: BookmarksComponent},
   { path: 'new', component: BookmarkFormComponent},
   {
     path: 'bookmarks/:id',

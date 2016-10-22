@@ -10,7 +10,7 @@ import {Router} from "@angular/router";
 })
 export class BookmarksComponent implements  OnInit{
 
-  title = 'Bookmark management';
+  title = 'My bookmarks';
   bookmarks: Bookmark[];
   selectedBookmark: Bookmark;
 

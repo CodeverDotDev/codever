@@ -1,18 +1,14 @@
 <header>
   <nav>
-    <a [routerLink]="['']" routerLinkActive="active">Home</a>
+    <a [routerLink]="['']" routerLinkActive="active">Bookmarks</a>
+    <a [routerLink]="['new']" routerLinkActive="active">Add bookmark</a>
     <a [routerLink]="['about']" routerLinkActive="active">About</a>
-    <a [routerLink]="['bookmarks']" routerLinkActive="active">Bookmarks</a>
-    <a [routerLink]="['new']" routerLinkActive="active">New bookmark</a>
   </nav>
 </header>
 <main>
-  <h1>Hello from {{api.title}}!</h1>
-
   <!-- Images (and assets) are parsed and loaded from within the public directory
   <img src="/img/angular.png">
   -->
-
   <router-outlet></router-outlet>
 </main>
 <footer>
