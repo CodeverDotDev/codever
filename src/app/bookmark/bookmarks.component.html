@@ -1,4 +1,6 @@
 <h1>{{title}}</h1>
+<bookmark-search></bookmark-search>
+<br>
 <ul class="bookmarks">
   <li *ngFor="let bookmark of bookmarks"
       [class.selected]="bookmark === selectedBookmark"
@@ -9,4 +11,4 @@
   </li>
 </ul>
 
-<bookmark-search></bookmark-search>
+

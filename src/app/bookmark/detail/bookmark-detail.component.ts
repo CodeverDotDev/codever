@@ -1,7 +1,7 @@
 
 import { Component, Input } from '@angular/core';
-import { Bookmark } from './bookmark';
-import {BookmarkService} from "./bookmark.service";
+import { Bookmark } from '../bookmark';
+import {BookmarkService} from "../bookmark.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {Location} from "@angular/common";
 

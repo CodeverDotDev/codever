@@ -10,7 +10,7 @@ import { ApiService } from './shared';
 import { routing } from './app.routing';
 
 import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
-import {BookmarkDetailComponent} from "./bookmark/bookmark-detail.component";
+import {BookmarkDetailComponent} from "./bookmark/detail/bookmark-detail.component";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkService} from "./bookmark/bookmark.service";
 import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";

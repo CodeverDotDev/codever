@@ -28,11 +28,10 @@ export class BookmarksComponent implements  OnInit{
     this.selectedBookmark = bookmark;
   }
 
-  /*
-  gotoDetail(): void {
-    this.router.navigate(['/bookmarks', this.selectedBookmark.id]);
-  }
-  */
+  /**
+   *
+   * @param bookmark
+   */
   gotoDetail(bookmark: Bookmark): void {
     let link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
