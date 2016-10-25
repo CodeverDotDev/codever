@@ -1,6 +1,6 @@
 import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
+import {HttpModule, JsonpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { AppComponent } from './app.component';
@@ -17,6 +17,8 @@ import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.compone
 
 import './rxjs-extensions';
 import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
+import {WikipediaSearchComponent} from "./wikipedia/wikipedia-search.component";
+import {BookmarkSearchFormControlComponent} from "./bookmark/search-formControl/bookmark-search-formControl.component";
 
 @NgModule({
   imports: [
@@ -24,6 +26,7 @@ import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
     HttpModule,
     FormsModule,
     ReactiveFormsModule,
+    JsonpModule,
     routing
   ],
   declarations: [
@@ -33,7 +36,9 @@ import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
     BookmarkDetailComponent,
     BookmarksComponent,
     BookmarkSearchComponent,
-    BookmarkFormComponent
+    BookmarkSearchFormControlComponent,
+    BookmarkFormComponent,
+    WikipediaSearchComponent
   ],
   providers: [
     ApiService,

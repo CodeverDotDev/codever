@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Bookmark} from './bookmark';
 
-import {Headers, Http} from "@angular/http";
+import {Headers, Http, Response} from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
+import {Observable} from "rxjs";
 
 @Injectable()
 export class BookmarkService {
@@ -26,15 +27,24 @@ export class BookmarkService {
    * TODO use .map for DTO
    * @returns {Observable<R>|Promise<R>|Q.Promise<*>|Promise<*|T>|Promise<*>|any}
    */
-  getBookmarks(): Promise<Bookmark[]> {
+  getBookmarks(): Observable<Bookmark[]> {
     return this.http.get(this.bookmarksUrl)
-      .toPromise()
-      .then(response => response.json() as Bookmark[])
-      .catch(this.handleError);
+    // ...and calling .json() on the response to return data
+      .map((res:Response) => res.json())
+      //...errors if any
+      .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  getBookmarksObservable(): Observable<Bookmark[]> {
+    return this.http.get(this.bookmarksUrl)
+    // ...and calling .json() on the response to return data
+      .map((res:Response) => res.json())
+      //...errors if any
+      .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
 
   getBookmark(id: string): Promise<Bookmark> {
-    return this.getBookmarks()
+    return this.getBookmarks().toPromise()
       .then(bookmarks => bookmarks.find(bookmark => bookmark._id === id));
   }
 
@@ -48,12 +58,11 @@ export class BookmarkService {
   }
 
 
-  delete(id: string): Promise<void> {
+  delete(id: string): Observable<Bookmark[]> {
     const url = `${this.bookmarksUrl}/${id}`;
     return this.http.delete(url, {headers: this.headers})
-        .toPromise()
-        .then(() => null)
-        .catch(this.handleError);
+        .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
+        .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
   }
 
 
