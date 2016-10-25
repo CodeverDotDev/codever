@@ -16,7 +16,7 @@ export class BookmarkSearchFormControlService {
   search(term: string): Observable<Bookmark[]> {
     var response = this.http
         .get(`${this.bookmarksUrl}/?name=${term}`)
-        .map((r: Response) => r.json().data as Bookmark[]);
+        .map((r: Response) => r.json() as Bookmark[]);
 
     return response;
   }
