@@ -6,7 +6,7 @@ import {Headers, Http, Response} from "@angular/http";
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class BookmarkSearchService {
+export class BookmarkSearchFormControlService {
 
   private bookmarksUrl = 'http://localhost:3000/bookmarks';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
@@ -16,9 +16,7 @@ export class BookmarkSearchService {
   search(term: string): Observable<Bookmark[]> {
     var response = this.http
         .get(`${this.bookmarksUrl}/?name=${term}`)
-        .map((res:Response) => res.json())
-        //...errors if any
-        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+        .map((r: Response) => r.json().data as Bookmark[]);
 
     return response;
   }

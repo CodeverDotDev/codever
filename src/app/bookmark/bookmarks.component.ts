@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Bookmark} from "./bookmark";
 import {BookmarkService} from "./bookmark.service";
 import {Router} from "@angular/router";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'my-bookmarks',
@@ -11,17 +12,23 @@ import {Router} from "@angular/router";
 export class BookmarksComponent implements  OnInit{
 
   title = 'My bookmarks';
-  bookmarks: Bookmark[];
+  bookmarks: Observable<Bookmark[]>;
+  bookmarksObservable: Observable<Bookmark[]>;
   selectedBookmark: Bookmark;
 
   constructor( private router: Router, private bookmarkService: BookmarkService) { }
 
   getBookmarks(): void {
-    this.bookmarkService.getBookmarks().then(bookmarks => this.bookmarks = bookmarks);
+    this.bookmarks = this.bookmarkService.getBookmarks();
+  }
+
+  getBookmarksObservable(): void {
+    this.bookmarksObservable = this.bookmarkService.getBookmarksObservable();
   }
 
   ngOnInit(): void {
     this.getBookmarks();
+    this.getBookmarksObservable();
   }
 
   onSelect(bookmark: Bookmark): void {
@@ -37,13 +44,30 @@ export class BookmarksComponent implements  OnInit{
     this.router.navigate(link);
   }
 
+
   delete(bookmark: Bookmark): void {
     this.bookmarkService
         .delete(bookmark._id)
+
+        .subscribe(
+          data => {
+            // refresh the list
+            //this.bookmarks.map(h => h.filter(x => x !== bookmark));
+            this.getBookmarks();
+            return true;
+          },
+          error => {
+            console.error("Error deleting bookmark!");
+            return Observable.throw(error);
+          });
+    /*
+
+        .map(this.bookmarks.map(h => h !== bookmark);
         .then(() => {
-          this.bookmarks = this.bookmarks.filter(h => h !== bookmark);
+          this.bookmarks = this.bookmarks.map(h => h !== bookmark);
           if (this.selectedBookmark === bookmark) { this.selectedBookmark = null; }
         });
+        */
   }
 
 }

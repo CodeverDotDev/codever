@@ -2,7 +2,7 @@
 <bookmark-search></bookmark-search>
 <br>
 <ul class="bookmarks">
-  <li *ngFor="let bookmark of bookmarks"
+  <li *ngFor="let bookmark of bookmarksObservable | async"
       [class.selected]="bookmark === selectedBookmark"
       (click)="gotoDetail(bookmark)">
     {{bookmark.name}}
