@@ -10,7 +10,9 @@ import {Bookmark} from "../../bookmark";
     template: `
       <div>
         <h2>Bookmark Search</h2>
-        <input type="text" [formControl]="term">
+        <div class="form-group">
+          <input  class="form-control" type="text" [formControl]="term">
+        </div>
         <ul>
           <li *ngFor="let item of items | async">{{item.name}}</li>
         </ul>

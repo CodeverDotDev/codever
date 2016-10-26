@@ -1,13 +1,17 @@
 <h1>{{title}}</h1>
 <bookmark-search></bookmark-search>
 <br>
-<ul class="bookmarks">
+<ul class="list-group">
   <li *ngFor="let bookmark of bookmarksObservable | async"
+      class="list-group-item"
       [class.selected]="bookmark === selectedBookmark"
       (click)="gotoDetail(bookmark)">
+    <span class="badge" (click)="delete(bookmark); $event.stopPropagation()">x</span>
     {{bookmark.name}}
-    <button class="delete"
-            (click)="delete(bookmark); $event.stopPropagation()">x</button>
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" class="btn btn-default">Update</button>
+      <button type="button" class="btn btn-danger">Delete</button>
+    </div>
   </li>
 </ul>
 
