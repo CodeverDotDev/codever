@@ -48,12 +48,11 @@ export class BookmarksComponent implements  OnInit{
   delete(bookmark: Bookmark): void {
     this.bookmarkService
         .delete(bookmark._id)
-
         .subscribe(
           data => {
             // refresh the list
-            //this.bookmarks.map(h => h.filter(x => x !== bookmark));
-            this.getBookmarks();
+            this.bookmarks.map(h => h.filter(x => x !== bookmark));
+            //this.getBookmarks();
             return true;
           },
           error => {
