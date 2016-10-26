@@ -1,6 +1,7 @@
 <div class="container">
-  <h1>Bookmark Form</h1>
-  <form [formGroup]="newBookmarkForm" novalidate (ngSubmit)="save(newBookmarkForm.value, newBookmarkForm.valid)">
+  <h1>New Bookmark</h1>
+  <div class="col-md-8 col-md-offset-2">
+    <form [formGroup]="newBookmarkForm" novalidate (ngSubmit)="save(newBookmarkForm.value, newBookmarkForm.valid)">
     <div class="form-group">
       <label for="name">Name</label>
       <input type="text" class="form-control" id="name"
@@ -47,4 +48,5 @@
     </div>
     <button type="submit" class="btn btn-default" [disabled]="!newBookmarkForm.valid">Submit</button>
   </form>
+  </div>
 </div>
