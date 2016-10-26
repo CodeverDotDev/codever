@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router }            from '@angular/router';
 import { Observable }        from 'rxjs';
-import { BookmarkSearchFormControlService } from './bookmark-search-formControl.service';
-import { Bookmark } from '../bookmark';
 import {FormControl} from "@angular/forms";
+import {BookmarkSearchService} from "../bookmark-search.service";
+import {Bookmark} from "../../bookmark";
 
 @Component({
     selector: 'bookmark-search-formControl',
@@ -12,12 +12,11 @@ import {FormControl} from "@angular/forms";
         <h2>Bookmark Search</h2>
         <input type="text" [formControl]="term">
         <ul>
-          <li>Mock Bookmark name</li>
           <li *ngFor="let item of items | async">{{item.name}}</li>
         </ul>
       </div>  
     `,
-    providers: [BookmarkSearchFormControlService]
+    providers: [BookmarkSearchService]
 })
 export class BookmarkSearchFormControlComponent implements OnInit {
 
@@ -25,7 +24,7 @@ export class BookmarkSearchFormControlComponent implements OnInit {
     term = new FormControl();
 
     constructor(
-        private bookmarkSearchService: BookmarkSearchFormControlService,
+        private bookmarkSearchService: BookmarkSearchService,
         private router: Router) {}
 
     ngOnInit() {
@@ -34,8 +33,6 @@ export class BookmarkSearchFormControlComponent implements OnInit {
         .distinctUntilChanged()
         .switchMap(term => this.bookmarkSearchService.search(term));
     }
-
-  //switchMap((search): Observable<Array<MyModel>> => {
 
     gotoDetail(bookmark: Bookmark): void {
         let link = ['/bookmarks', bookmark._id];
