@@ -1,10 +1,17 @@
 <div id="search-component">
-    <h4>Bookmark Search</h4>
+    <h2>Bookmark Search</h2>
     <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
-    <div>
-        <div *ngFor="let bookmark of bookmarks | async"
-             (click)="gotoDetail(bookmark)" class="search-result" >
-            {{bookmark.name}}
-        </div>
-    </div>
+
+    <h3><span class="label label-default">Found</span></h3>
+    <ul class="list-group">
+        <li *ngFor="let bookmark of bookmarks | async"
+            class="list-group-item"
+            [class.selected]="bookmark === selectedBookmark">
+            <a href="{{bookmark.location}}" target="_blank"> {{bookmark.name}}</a>
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" (click)="gotoDetail(bookmark)">Update</button>
+                <button type="button" class="btn btn-danger" (click)="delete(bookmark); $event.stopPropagation()">Delete</button>
+            </div>
+        </li>
+    </ul>
 </div>
