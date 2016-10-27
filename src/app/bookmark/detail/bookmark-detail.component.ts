@@ -12,7 +12,7 @@ import {Location} from "@angular/common";
 })
 export class BookmarkDetailComponent {
 
-  @Input()
+  //@Input()
   bookmark: Bookmark;
 
   constructor(
@@ -34,6 +34,11 @@ export class BookmarkDetailComponent {
   }
 
   save(): void {
+    this.bookmarkService.update(this.bookmark)
+      .then(() => this.goBack());
+  }
+
+  onSubmit():void {
     this.bookmarkService.update(this.bookmark)
       .then(() => this.goBack());
   }
