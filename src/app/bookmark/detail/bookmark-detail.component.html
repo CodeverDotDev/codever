@@ -1,18 +1,38 @@
 
-<div *ngIf="bookmark">
-  <h2>{{bookmark.name}} details!</h2>
-  <div>
-    <label>Name: </label>
-    <input class="form-control form-control-lg" type="text" [(ngModel)]="bookmark.name" placeholder="name"/>
+<div class="container">
+  <div *ngIf="bookmark">
+    <h2>{{bookmark.name}} details!</h2>
+    <form #form="ngForm" (ngSubmit)="onSubmit(form.value)">
+      <div>
+        <label>Name: </label>
+        <input class="form-control form-control-lg" type="text"
+               name="name"
+               [(ngModel)]="bookmark.name"
+               placeholder="name"/>
+      </div>
+      <div>
+        <label>Location: </label>
+        <input class="form-control" type="text"
+               name="location"
+               [(ngModel)]="bookmark.location"
+               placeholder="location"/>
+      </div>
+      <div>
+        <label>Category: </label>
+        <input class="form-control"
+               name="category"
+               [(ngModel)]="bookmark.category"
+               placeholder="category"/>
+      </div>
+      <!--
+      <div>
+        <label>Tags: </label>
+        <input class="form-control" [(ngModel)]="bookmark.tags" placeholder="Tags"/>
+      </div>
+      -->
+      <button (click)="goBack()">Back</button>
+      <button (click)="save()">Save</button>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
   </div>
-  <div>
-    <label>Location: </label>
-    <input class="form-control" type="text" [(ngModel)]="bookmark.location" placeholder="location"/>
-  </div>
-  <div>
-    <label>Category: </label>
-    <input [(ngModel)]="bookmark.category" placeholder="category"/>
-  </div>
-  <button (click)="goBack()">Back</button>
-  <button (click)="save()">Save</button>
 </div>
