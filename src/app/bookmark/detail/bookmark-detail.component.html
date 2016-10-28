@@ -1,8 +1,7 @@
-
 <div class="container">
   <div *ngIf="bookmark">
     <h2>{{bookmark.name}} details!</h2>
-    <form #form="ngForm" (ngSubmit)="onSubmit(form.value)">
+    <form #form="ngForm" (ngSubmit)="save(form.value)">
       <div>
         <label>Name: </label>
         <input class="form-control form-control-lg" type="text"
@@ -24,14 +23,6 @@
                [(ngModel)]="bookmark.category"
                placeholder="category"/>
       </div>
-      <!--
-      <div>
-        <label>Tags: </label>
-        <input class="form-control" [(ngModel)]="bookmark.tags" placeholder="Tags"/>
-      </div>
-      -->
-      <button (click)="goBack()">Back</button>
-      <button (click)="save()">Save</button>
       <button type="submit" class="btn btn-default">Submit</button>
     </form>
   </div>
