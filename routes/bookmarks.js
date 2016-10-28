@@ -19,15 +19,10 @@ router.get('/:id', function(req, res, next) {
 
 /* GET bookmarks listing. */
 router.get('/', function(req, res, next) {
-  if(req.query.category){
-    Bookmark.find({category:req.query.category}, function(err, bookmarks){
-      if(err){
-        return res.status(500).send(err);
-      }
-      res.send(bookmarks);
-    });
-  } else if(req.query.name){
-    Bookmark.find({name : new RegExp(req.query.name, 'i') }, function(err, bookmarks){
+  if(req.query.term){
+    var regExpTerm = new RegExp(req.query.term, 'i');
+    var regExpSearch=[{name:{$regex:regExpTerm}}, {description:{$regex: regExpTerm }}, {category:{$regex:regExpTerm }}, {tags:{$regex:regExpTerm}}];
+    Bookmark.find({'$or':regExpSearch}, function(err, bookmarks){
       if(err){
         return res.status(500).send(err);
       }
@@ -80,6 +75,7 @@ router.put('/:id', function(req, res, next) {
 
 });
 
+
 /**
  * DELETE
  */
@@ -93,6 +89,40 @@ router.delete('/:id', function(req, res, next) {
     }
     res.status(204).send('Bookmark successfully deleted');
   });
+
+});
+
+/* TODO - maybe implement later advancedSearch */
+router.get('/advanced-search', function(req, res, next) {
+  var regexSearch=[];
+  if(req.query.name){
+    var regExpName = new RegExp(req.query.category, 'i');
+    regexSearch.push({ 'name': { $regex: regExpName }});
+    regexSearch.push({ 'description': { $regex: regExpName }});
+  }
+  if(req.query.category){
+    var regExpCategory = new RegExp(req.query.category, 'i');
+    regexSearch.push({ 'category': { $regex: regExpCategory }});
+  }
+  if(req.query.tag){
+    var regExpTag = new RegExp(req.query.tag, 'i');
+    regexSearch.push({ 'tags': { $regex: regExpTag }});
+  }
+  if(regexSearch.length > 0){
+    Bookmark.find().or(regexSearch, function(err, bookmarks){
+      if(err){
+        return res.status(500).send(err);
+      }
+      res.send(bookmarks);
+    });
+  } else {//no filter - all bookmarks
+    Bookmark.find({}, function(err, bookmarks){
+      if(err){
+        return res.status(500).send(err);
+      }
+      res.send(bookmarks);
+    });
+  }
 
 });
 
