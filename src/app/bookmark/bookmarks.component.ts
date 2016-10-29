@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output} from '@angular/core';
 import {Bookmark} from "./bookmark";
 import {BookmarkService} from "./bookmark.service";
 import {Router} from "@angular/router";
@@ -11,9 +11,10 @@ import {Observable} from "rxjs";
 })
 export class BookmarksComponent implements  OnInit{
 
-  title = 'My bookmarks';
+  @Output
+  isLandingPage=true;
+
   bookmarks: Observable<Bookmark[]>;
-  bookmarksObservable: Observable<Bookmark[]>;
   selectedBookmark: Bookmark;
 
   constructor( private router: Router, private bookmarkService: BookmarkService) { }
@@ -22,13 +23,8 @@ export class BookmarksComponent implements  OnInit{
     this.bookmarks = this.bookmarkService.getBookmarks();
   }
 
-  getBookmarksObservable(): void {
-    this.bookmarksObservable = this.bookmarkService.getBookmarksObservable();
-  }
-
   ngOnInit(): void {
     this.getBookmarks();
-    this.getBookmarksObservable();
   }
 
   onSelect(bookmark: Bookmark): void {
