@@ -9,12 +9,29 @@ import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.compone
 import {BookmarkSearchFormControlComponent} from "./bookmark/search/formControl/bookmark-search-formControl.component";
 
 const routes: Routes = [
-  { path: '', component: BookmarksComponent },
-  { path: 'about', component: AboutComponent},
-  //{ path: 'bookmarks', component: BookmarksComponent},
-  { path: 'new', component: BookmarkFormComponent},
-  { path: 'search', component: BookmarkSearchComponent},
-  { path: 'searchControl', component: BookmarkSearchFormControlComponent},
+  {
+    path: '',
+    component: BookmarksComponent,
+    data: {
+      isLandingPage: true
+    }
+  },
+  {
+    path: 'about',
+    component: AboutComponent
+  },
+  {
+    path: 'new',
+    component: BookmarkFormComponent
+  },
+  {
+    path: 'search',
+    component: BookmarkSearchComponent
+  },
+  {
+    path: 'searchControl',
+    component: BookmarkSearchFormControlComponent
+  },
   {
     path: 'bookmarks/:id',
     component: BookmarkDetailComponent
