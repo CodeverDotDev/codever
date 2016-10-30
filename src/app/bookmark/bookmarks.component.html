@@ -3,7 +3,7 @@
 
   <h3><span class="label label-default">All Bookmarks</span></h3>
   <ul class="list-group">
-    <li *ngFor="let bookmark of bookmarksObservable | async"
+    <li *ngFor="let bookmark of bookmarks | async"
         class="list-group-item"
         [class.selected]="bookmark === selectedBookmark">
       <a href="{{bookmark.location}}" target="_blank"> {{bookmark.name}}</a>
