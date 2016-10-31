@@ -11,10 +11,7 @@ import {BookmarkSearchFormControlComponent} from "./bookmark/search/formControl/
 const routes: Routes = [
   {
     path: '',
-    component: BookmarksComponent,
-    data: {
-      isLandingPage: true
-    }
+    component: BookmarksComponent
   },
   {
     path: 'about',
