@@ -11,9 +11,6 @@ import {Observable} from "rxjs";
 })
 export class BookmarksComponent implements  OnInit{
 
-  @Output
-  isLandingPage=true;
-
   bookmarks: Observable<Bookmark[]>;
   selectedBookmark: Bookmark;
 
