@@ -12,7 +12,6 @@ import {Location} from "@angular/common";
 })
 export class BookmarkDetailComponent {
 
-  //@Input()
   bookmark: Bookmark;
 
   constructor(
