@@ -30,7 +30,7 @@ export class BookmarkService {
   getBookmarks(): Observable<Bookmark[]> {
     return this.http.get(this.bookmarksUrl)
     // ...and calling .json() on the response to return data
-      .map((res:Response) => res.json())
+      .map((res:Response) => res.json())gi
       //...errors if any
       .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
