@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {Bookmark} from "../bookmark";
 import {BookmarkService} from "../bookmark.service";
+import {BookmarkStore} from "../state/BookmarkStore";
 
 @Component({
   selector: 'my-async-bookmark-list',
@@ -15,7 +16,7 @@ export class AsyncBookmarksListComponent{
 
   selectedBookmark: Bookmark;
 
-  constructor( private router: Router, private bookmarkService: BookmarkService) { }
+  constructor( private router: Router, private bookmarkService: BookmarkService, private bookmarkStore: BookmarkStore) { }
 
   onSelect(bookmark: Bookmark): void {
     this.selectedBookmark = bookmark;
