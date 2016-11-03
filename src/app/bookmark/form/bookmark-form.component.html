@@ -1,6 +1,6 @@
 <div class="container">
   <div class="col-md-8 col-md-offset-2">
-    <form [formGroup]="newBookmarkForm" novalidate (ngSubmit)="save(newBookmarkForm.value, newBookmarkForm.valid)">
+    <form [formGroup]="newBookmarkForm" novalidate (ngSubmit)="saveBookmark(newBookmarkForm.value, newBookmarkForm.valid)">
     <div class="form-group">
       <label for="name">Name</label>
       <input type="text" class="form-control" id="name"

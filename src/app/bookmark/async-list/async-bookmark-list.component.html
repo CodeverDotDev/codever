@@ -3,7 +3,7 @@
     <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank">{{ bookmark.name }}</a></h4>
     <p class="card-text">{{ bookmark.description }}</p>
     <button type="button" class="btn btn-primary" (click)="gotoDetail(bookmark)">Edit</button>
-    <button type="button" class="btn btn-danger" (click)="delete(bookmark); $event.stopPropagation()">Delete</button>
+    <button type="button" class="btn btn-danger" (click)="deleteBookmark(bookmark); $event.stopPropagation()">Delete</button>
   </div>
   <div class="card-block">
     <b>Tags:</b> <span *ngFor="let tag of bookmark.tags">{{tag}},</span>

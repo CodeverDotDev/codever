@@ -3,6 +3,7 @@ import {Bookmark} from "../bookmark";
 import {BookmarkService} from "../bookmark.service";
 import {Location} from "@angular/common";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
+import {BookmarkStore} from "../state/BookmarkStore";
 
 @Component({
   selector: 'bookmark-form',
@@ -20,6 +21,7 @@ export class BookmarkFormComponent implements OnInit {
 
   constructor(
     private bookmarkService: BookmarkService,
+    private bookmarkStore: BookmarkStore,
     private location: Location,
     private formBuilder: FormBuilder
   ) {}
@@ -63,5 +65,18 @@ export class BookmarkFormComponent implements OnInit {
     console.log(model, isValid);
     this.bookmarkService.create(newBookmark)
       .then(() => this.goBack());
+  }
+
+  saveBookmark(model: Bookmark, isValid: boolean) {
+    model.tags = model.tagsLine.split(",");
+    var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description);
+
+
+    let obs = this.bookmarkStore.addBookmark(newBookmark);
+
+    obs.subscribe(
+      res => {
+        this.goBack();
+      });
   }
 }

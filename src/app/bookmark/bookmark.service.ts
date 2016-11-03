@@ -3,6 +3,8 @@ import {Bookmark} from './bookmark';
 
 import {Headers, Http, Response} from "@angular/http";
 
+import {List} from 'immutable';
+
 import 'rxjs/add/operator/toPromise';
 import {Observable} from "rxjs";
 
@@ -30,7 +32,7 @@ export class BookmarkService {
   getBookmarks(): Observable<Bookmark[]> {
     return this.http.get(this.bookmarksUrl)
     // ...and calling .json() on the response to return data
-      .map((res:Response) => res.json())gi
+      .map((res:Response) => res.json())
       //...errors if any
       .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
@@ -58,7 +60,14 @@ export class BookmarkService {
   }
 
 
-  delete(id: string): Observable<Bookmark[]> {
+  delete(id: string): Observable<any> {
+    const url = `${this.bookmarksUrl}/${id}`;
+    return this.http.delete(url, {headers: this.headers}).share();
+        //.map((res:Response) => res.json()) // ...and calling .json() on the response to return data
+        //.catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
+  }
+
+  deleteBookmark(id: string): Observable<Bookmark[]> {
     const url = `${this.bookmarksUrl}/${id}`;
     return this.http.delete(url, {headers: this.headers})
         .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
@@ -72,4 +81,17 @@ export class BookmarkService {
     return Promise.reject(error.message || error);
   }
 
+  saveBookmark(bookmark: Bookmark): Observable<List<Bookmark>> {
+    return this.http
+      .post(this.bookmarksUrl, JSON.stringify(bookmark), {headers: this.headers})
+      .share()
+      .map((res:Response) => res.json());
+  }
+  /*
+  saveTodo(newTodo: Todo) : Observable<List<Todo>> {
+    var headers = new Headers();
+    headers.append('Content-Type', 'application/json; charset=utf-8');
+
+    return this.http.post('/todo', JSON.stringify(newTodo.toJS()),{headers}).share();
+  }  */
 }
