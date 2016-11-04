@@ -81,17 +81,10 @@ export class BookmarkService {
     return Promise.reject(error.message || error);
   }
 
-  saveBookmark(bookmark: Bookmark): Observable<List<Bookmark>> {
+  saveBookmark(bookmark: Bookmark): Observable<any> {
     return this.http
       .post(this.bookmarksUrl, JSON.stringify(bookmark), {headers: this.headers})
-      .share()
-      .map((res:Response) => res.json());
+      .share();
   }
-  /*
-  saveTodo(newTodo: Todo) : Observable<List<Todo>> {
-    var headers = new Headers();
-    headers.append('Content-Type', 'application/json; charset=utf-8');
 
-    return this.http.post('/todo', JSON.stringify(newTodo.toJS()),{headers}).share();
-  }  */
 }
