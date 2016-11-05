@@ -53,5 +53,20 @@ export class BookmarkStore {
 
     return obs;
   }
+
+  updateBookmark(updated:Bookmark): Observable<any> {
+    let obs: Observable<any> = this.bookmarkService.updateBookmark(updated);
+
+    obs.subscribe(
+      res => {
+        let bookmarks = this._bookmarks.getValue();
+        let index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
+        //let bookmark:Bookmark = bookmarks.get(index);
+        this._bookmarks.next(bookmarks.set(index, updated));
+      }
+    );
+
+    return obs;
+  }
 }
 

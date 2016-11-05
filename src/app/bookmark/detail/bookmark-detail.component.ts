@@ -4,6 +4,7 @@ import { Bookmark } from '../bookmark';
 import {BookmarkService} from "../bookmark.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {Location} from "@angular/common";
+import {BookmarkStore} from "../state/BookmarkStore";
 
 @Component({
   selector: 'my-bookmark-detail',
@@ -16,6 +17,7 @@ export class BookmarkDetailComponent {
 
   constructor(
     private bookmarkService: BookmarkService,
+    private bookmarkStore: BookmarkStore,
     private route: ActivatedRoute,
     private location: Location
   ) {}
@@ -35,6 +37,15 @@ export class BookmarkDetailComponent {
   save():void {
     this.bookmarkService.update(this.bookmark)
       .then(() => this.goBack());
+  }
+
+  updateBookmark():void {
+    let obs = this.bookmarkStore.updateBookmark(this.bookmark)
+
+    obs.subscribe(
+      res => {
+        this.goBack();
+      });
   }
 
 }

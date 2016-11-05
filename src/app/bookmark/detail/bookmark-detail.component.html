@@ -1,7 +1,7 @@
 <div class="container">
   <div *ngIf="bookmark">
     <h2>{{bookmark.name}} details!</h2>
-    <form #form="ngForm" (ngSubmit)="save(form.value)">
+    <form #form="ngForm" (ngSubmit)="updateBookmark(form.value)">
       <div>
         <label>Name: </label>
         <input class="form-control form-control-lg" type="text"
