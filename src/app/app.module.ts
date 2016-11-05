@@ -20,6 +20,7 @@ import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 import {BookmarkSearchFormControlComponent} from "./bookmark/search/formControl/bookmark-search-formControl.component";
 import {AsyncBookmarksListComponent} from "./bookmark/async-list/async-bookmark-list.component";
 import {BookmarkStore} from "./bookmark/state/BookmarkStore";
+import {NavigationComponent} from "./navigation/navigation.component";
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import {BookmarkStore} from "./bookmark/state/BookmarkStore";
   ],
   declarations: [
     AppComponent,
+    NavigationComponent,
     HomeComponent,
     AboutComponent,
     BookmarkDetailComponent,
