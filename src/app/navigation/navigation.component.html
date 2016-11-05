@@ -1,0 +1,25 @@
+<!-- Image and text -->
+<nav class="navbar navbar-light bg-faded">
+  <a class="navbar-brand" [routerLink]="['']" routerLinkActive="active">
+    <img src="/img/logo.png" width="35" height="35" class="d-inline-block align-top" alt="">
+    Bookmarks
+  </a>
+  <ul class="nav navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['new']" routerLinkActive="active">Add Bookmark</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['about']" routerLinkActive="active">About</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['search']" routerLinkActive="active">Search</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['searchControl']" routerLinkActive="active">Search Form Control</a>
+    </li>
+    <form class="form-inline float-xs-left">
+      <input class="form-control" type="text" placeholder="Search">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+  </ul>
+</nav>
