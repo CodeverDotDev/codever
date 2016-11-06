@@ -21,6 +21,10 @@ import {BookmarkSearchFormControlComponent} from "./bookmark/search/formControl/
 import {AsyncBookmarksListComponent} from "./bookmark/async-list/async-bookmark-list.component";
 import {BookmarkStore} from "./bookmark/state/BookmarkStore";
 import {NavigationComponent} from "./navigation/navigation.component";
+import {NavigationSearchComponent} from "./navigation/navigation-search.component";
+import {NavbarSearchService} from "./navigation/NavbarSearchService";
+import {SearchResultsComponent} from "./navigation/search-results.component";
+import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 
 @NgModule({
   imports: [
@@ -34,6 +38,7 @@ import {NavigationComponent} from "./navigation/navigation.component";
   declarations: [
     AppComponent,
     NavigationComponent,
+    NavigationSearchComponent,
     HomeComponent,
     AboutComponent,
     BookmarkDetailComponent,
@@ -41,12 +46,15 @@ import {NavigationComponent} from "./navigation/navigation.component";
     BookmarkSearchComponent,
     BookmarkSearchFormControlComponent,
     BookmarkFormComponent,
-    AsyncBookmarksListComponent
+    AsyncBookmarksListComponent,
+    SearchResultsComponent
   ],
   providers: [
     ApiService,
     BookmarkService,
-    BookmarkStore
+    BookmarkSearchService,
+    BookmarkStore,
+    NavbarSearchService
   ],
   bootstrap: [AppComponent]
 })
