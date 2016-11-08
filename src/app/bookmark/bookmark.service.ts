@@ -27,11 +27,17 @@ export class BookmarkService {
    * @returns {Observable<R>|Promise<R>|Q.Promise<*>|Promise<*|T>|Promise<*>|any}
    */
   getBookmarks(): Observable<Bookmark[]> {
+    console.log('******** BookmarkService.getBookmarks was called *************')
     return this.http.get(this.bookmarksUrl)
     // ...and calling .json() on the response to return data
       .map((res:Response) => res.json())
       //...errors if any
       .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  getAllBookmarks(): Observable<Response> {
+    console.log('******** BookmarkService.getAllBookmarks was called *************')
+    return this.http.get(this.bookmarksUrl);
   }
 
   getBookmarksObservable(): Observable<Bookmark[]> {

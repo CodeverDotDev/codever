@@ -25,6 +25,7 @@ import {NavigationSearchComponent} from "./navigation/navigation-search.componen
 import {NavbarSearchService} from "./navigation/NavbarSearchService";
 import {SearchResultsComponent} from "./navigation/search-results.component";
 import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
+import {Logger} from "./logger.service";
 
 @NgModule({
   imports: [
@@ -54,7 +55,8 @@ import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
     BookmarkService,
     BookmarkSearchService,
     BookmarkStore,
-    NavbarSearchService
+    NavbarSearchService,
+    Logger
   ],
   bootstrap: [AppComponent]
 })

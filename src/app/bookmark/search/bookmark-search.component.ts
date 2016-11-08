@@ -4,6 +4,7 @@ import { Observable }        from 'rxjs/Observable';
 import { Subject }           from 'rxjs/Subject';
 import { BookmarkSearchService } from './bookmark-search.service';
 import { Bookmark } from '../bookmark';
+import {BookmarkStore} from "../state/BookmarkStore";
 
 @Component({
     selector: 'bookmark-search',
@@ -18,6 +19,7 @@ export class BookmarkSearchComponent implements OnInit {
 
     constructor(
         private bookmarkSearchService: BookmarkSearchService,
+        private bookmarkStore: BookmarkStore,
         private router: Router) {}
 
     // Push a search term into the observable stream.
@@ -31,7 +33,7 @@ export class BookmarkSearchComponent implements OnInit {
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time
                 // return the http search observable
-                ? this.bookmarkSearchService.search(term)
+                ? this.bookmarkStore.filterBookmarksBySearchTerm('the')
                 // or the observable of empty heroes if no search term
                 : Observable.of<Bookmark[]>([]))
             .catch(error => {
