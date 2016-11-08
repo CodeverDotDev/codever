@@ -4,6 +4,8 @@ import {BookmarkService} from "./bookmark.service";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {BookmarkStore} from "./state/BookmarkStore";
+import {List} from 'immutable';
+import {Logger} from "../logger.service";
 
 @Component({
   selector: 'my-bookmarks',
@@ -12,13 +14,20 @@ import {BookmarkStore} from "./state/BookmarkStore";
 })
 export class BookmarksComponent implements  OnInit{
 
-  allBookmarks: Observable<Bookmark[]>;
+  allBookmarks: Observable<List<Bookmark>>;
   selectedBookmark: Bookmark;
 
-  constructor( private router: Router, private bookmarkService: BookmarkService, private bookmarkStore: BookmarkStore) { }
+  constructor( private router: Router,
+               private bookmarkService: BookmarkService,
+               private bookmarkStore: BookmarkStore,
+               private logger:Logger
+  ) { }
 
   getBookmarks(): void {
-    this.allBookmarks = this.bookmarkService.getBookmarks();
+    //this.allBookmarks = this.bookmarkService.getBookmarks();
+    this.allBookmarks = this.bookmarkStore.getBookmarks();
+    console.log('BookmarksComponent.getBookmarks - allBookmarks');
+    console.log(this.allBookmarks);
   }
 
   ngOnInit(): void {
