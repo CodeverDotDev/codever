@@ -3,7 +3,7 @@ import { Router }            from '@angular/router';
 import { Observable }        from 'rxjs/Observable';
 import { Subject }           from 'rxjs/Subject';
 import { BookmarkSearchService } from './bookmark-search.service';
-import { Bookmark } from '../bookmark';
+import { Bookmark } from '../../model/bookmark';
 import {BookmarkStore} from "../state/BookmarkStore";
 
 @Component({

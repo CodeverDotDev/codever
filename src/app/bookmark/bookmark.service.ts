@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Bookmark} from './bookmark';
+import {Bookmark} from '../model/bookmark';
 
 import {Headers, Http, Response} from "@angular/http";
 

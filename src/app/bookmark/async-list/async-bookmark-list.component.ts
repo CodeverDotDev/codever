@@ -1,7 +1,7 @@
 import {Component, OnInit, Output, Input} from '@angular/core';
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";
-import {Bookmark} from "../bookmark";
+import {Bookmark} from "../../model/bookmark";
 import {BookmarkService} from "../bookmark.service";
 import {BookmarkStore} from "../state/BookmarkStore";
 

@@ -3,7 +3,7 @@ import { Router }            from '@angular/router';
 import { Observable }        from 'rxjs';
 import {FormControl} from "@angular/forms";
 import {BookmarkSearchService} from "../bookmark-search.service";
-import {Bookmark} from "../../bookmark";
+import {Bookmark} from "../../../model/bookmark";
 
 @Component({
     selector: 'bookmark-search-formControl',

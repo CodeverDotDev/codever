@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Bookmark} from "../bookmark";
+import {Bookmark} from "../../model/bookmark";
 import {BookmarkService} from "../bookmark.service";
 import {Location} from "@angular/common";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
