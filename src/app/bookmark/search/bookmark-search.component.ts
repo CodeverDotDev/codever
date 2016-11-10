@@ -29,11 +29,11 @@ export class BookmarkSearchComponent implements OnInit {
 
     ngOnInit(): void {
         this.bookmarks = this.searchTerms
-            .debounceTime(300)        // wait for 300ms pause in events
+            .debounceTime(400)        // wait for 300ms pause in events
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time
                 // return the http search observable
-                ? this.bookmarkStore.filterBookmarksBySearchTerm('the')
+                ? this.bookmarkStore.filterBookmarksBySearchTerm(term)
                 // or the observable of empty heroes if no search term
                 : Observable.of<Bookmark[]>([]))
             .catch(error => {

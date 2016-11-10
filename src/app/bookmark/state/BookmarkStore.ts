@@ -34,8 +34,6 @@ export class BookmarkStore {
                       )
                     );
 
-                  console.log('BOOKmarks');
-                  console.log(bookmarks);
                   this._bookmarks.next(List(bookmarks));
                 },
                 err => console.log("Error retrieving bookmarks")
@@ -91,28 +89,42 @@ export class BookmarkStore {
     return obs;
   }
 
+  filterBookmarksBySearchTerm(term:string): Observable<Bookmark[]> {
+  let bookmarks: List<Bookmark> = this._bookmarks.getValue();
+  let filteredBookmarks: Array<Bookmark> = new Array();
+  bookmarks.forEach(bookmark => {
+    let hit:boolean =false;
+    if(bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || bookmark.category.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || bookmark.tags.indexOf(term.toLowerCase()) !== -1
+    ){
+      filteredBookmarks.push(bookmark);
+      hit = true;
+    }
 
-   filterBookmarksBySearchTerm(term:string): Observable<Bookmark[]> {
-    let bookmarks: List<Bookmark> = this._bookmarks.getValue();
-    let filteredBookmarks: Array<Bookmark> = new Array();
-    bookmarks.forEach(bookmark => {
-      if(bookmark.name.indexOf(term) !== -1){
-        filteredBookmarks.push(bookmark);
-      }
-    });
+    //if not hit look throught the tags also
+    let hitInTags: boolean = false;
+    if(!hit){
+      bookmark.tags.forEach(tag => {
+        if(tag.indexOf(term.toLowerCase()) !== -1){
+          hitInTags = true;
+        }
+      });
+    }
 
-     let  filteredBookmarksArray: Array<Array<Bookmark>> = new Array();
-     filteredBookmarksArray.push(filteredBookmarks);
+    if(!hit && hitInTags){
+      filteredBookmarks.push(bookmark);
+    }
+  });
 
-     console.log('I have been here, size ' + filteredBookmarks.length);
-      //return Observable.from(filteredBookmarksArray);
-      return Observable.of(filteredBookmarks);
-   }
+   let  filteredBookmarksArray: Array<Array<Bookmark>> = new Array();
+   filteredBookmarksArray.push(filteredBookmarks);
 
-    /*
-    return this._bookmarks.asObservable()
-      .map(bookmarkList => bookmarkList.name.indexOf(term) !== -1);
-      */
+   console.log('I have been here, size ' + filteredBookmarks.length);
+    //return Observable.from(filteredBookmarksArray);
+    return Observable.of(filteredBookmarks);
+  }
 
 }
 
