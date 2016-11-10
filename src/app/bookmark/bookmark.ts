@@ -7,17 +7,21 @@ export class Bookmark {
     tags: string[];
     tagsLine: string;
 
-    constructor (name: string,
+    constructor (
+                 name: string,
                  location: string,
                  category: string,
                  tags: string[],
                  description?: string,
-                 tagsLine?: string){
+                 _id?: string,
+                 tagsLine?: string
+                 ){
         this.name = name;
         this.location = location;
         this.category = category;
         this.tags = tags;
         this.description = description;
+        this._id = _id;
         this.tagsLine = tagsLine;
     }
 }
