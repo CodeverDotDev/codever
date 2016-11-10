@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs/Subject';
-import {Bookmark} from "../bookmark/bookmark";
+import {Bookmark} from "../model/bookmark";
 import {Observable} from "rxjs";
 
 @Injectable()
