@@ -20,9 +20,9 @@ import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 import {AsyncBookmarksListComponent} from "./bookmark/async-list/async-bookmark-list.component";
 import {BookmarkStore} from "./bookmark/state/BookmarkStore";
 import {NavigationComponent} from "./navigation/navigation.component";
-import {NavigationSearchComponent} from "./navigation/navigation-search.component";
-import {NavbarSearchService} from "./navigation/NavbarSearchService";
-import {SearchResultsComponent} from "./navigation/search-results.component";
+import {NavigationSearchComponent} from "./navigation/search/navigation-search.component";
+import {NavbarSearchService} from "./navigation/search/NavbarSearchService";
+import {SearchResultsComponent} from "./navigation/search/search-results.component";
 import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 import {Logger} from "./logger.service";
 
