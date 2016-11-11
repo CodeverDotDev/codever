@@ -3,7 +3,7 @@ import {Bookmark} from "../../model/bookmark";
 import {BookmarkService} from "../bookmark.service";
 import {Location} from "@angular/common";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {BookmarkStore} from "../state/BookmarkStore";
+import {BookmarkStore} from "../store/BookmarkStore";
 
 @Component({
   selector: 'bookmark-form',

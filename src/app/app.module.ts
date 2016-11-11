@@ -18,7 +18,7 @@ import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.compone
 import './rxjs-extensions';
 import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 import {AsyncBookmarksListComponent} from "./bookmark/async-list/async-bookmark-list.component";
-import {BookmarkStore} from "./bookmark/state/BookmarkStore";
+import {BookmarkStore} from "./bookmark/store/BookmarkStore";
 import {NavigationComponent} from "./navigation/navigation.component";
 import {NavigationSearchComponent} from "./navigation/search/navigation-search.component";
 import {NavbarSearchService} from "./navigation/search/NavbarSearchService";
