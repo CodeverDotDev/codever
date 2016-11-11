@@ -6,7 +6,6 @@ import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkDetailComponent} from "./bookmark/detail/bookmark-detail.component";
 import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
-import {BookmarkSearchFormControlComponent} from "./bookmark/search/formControl/bookmark-search-formControl.component";
 import {SearchResultsComponent} from "./navigation/search-results.component";
 
 const routes: Routes = [
@@ -21,14 +20,6 @@ const routes: Routes = [
   {
     path: 'new',
     component: BookmarkFormComponent
-  },
-  {
-    path: 'search',
-    component: BookmarkSearchComponent
-  },
-  {
-    path: 'searchControl',
-    component: BookmarkSearchFormControlComponent
   },
   {
     path: 'search-results',
