@@ -5,6 +5,7 @@ import { Subject }           from 'rxjs/Subject';
 import { BookmarkSearchService } from './bookmark-search.service';
 import { Bookmark } from '../../model/bookmark';
 import {BookmarkStore} from "../state/BookmarkStore";
+import {FormControl} from "@angular/forms";
 
 @Component({
     selector: 'bookmark-search',
@@ -15,20 +16,16 @@ import {BookmarkStore} from "../state/BookmarkStore";
 export class BookmarkSearchComponent implements OnInit {
 
     bookmarks: Observable<Bookmark[]>;
-    private searchTerms = new Subject<string>();
+    //private searchTerms = new Subject<string>();
+    term = new FormControl();
 
     constructor(
         private bookmarkSearchService: BookmarkSearchService,
         private bookmarkStore: BookmarkStore,
         private router: Router) {}
 
-    // Push a search term into the observable stream.
-    search(term: string): void {
-        this.searchTerms.next(term);
-    }
-
     ngOnInit(): void {
-        this.bookmarks = this.searchTerms
+        this.bookmarks = this.term.valueChanges
             .debounceTime(400)        // wait for 300ms pause in events
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time

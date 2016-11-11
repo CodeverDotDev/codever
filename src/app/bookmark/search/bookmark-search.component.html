@@ -1,6 +1,6 @@
 <div id="search-component">
     <h2>Bookmark Search</h2>
-    <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
+    <input type="text" class="form-control" [formControl]="term" placeholder="Search in title, description, category, tags...">
 </div>
 
 <br>
