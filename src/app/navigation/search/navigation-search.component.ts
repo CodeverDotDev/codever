@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from "rxjs";
-import {Bookmark} from "../model/bookmark";
+import {Bookmark} from "../../model/bookmark";
 import {FormControl} from "@angular/forms";
-import {BookmarkSearchService} from "../bookmark/search/bookmark-search.service";
+import {BookmarkSearchService} from "../../bookmark/search/bookmark-search.service";
 import {Router} from "@angular/router";
 import {NavbarSearchService} from "./NavbarSearchService";
 

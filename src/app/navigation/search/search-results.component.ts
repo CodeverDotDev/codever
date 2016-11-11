@@ -2,7 +2,7 @@ import {Component, OnDestroy} from "@angular/core";
 import {Router} from "@angular/router";
 import {Observable, Subscription} from "rxjs";
 import {NavbarSearchService} from "./NavbarSearchService";
-import {Bookmark} from "../model/bookmark";
+import {Bookmark} from "../../model/bookmark";
 
 @Component({
   selector: 'my-search-results',
