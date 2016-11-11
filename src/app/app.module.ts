@@ -17,7 +17,6 @@ import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.compone
 
 import './rxjs-extensions';
 import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
-import {BookmarkSearchFormControlComponent} from "./bookmark/search/formControl/bookmark-search-formControl.component";
 import {AsyncBookmarksListComponent} from "./bookmark/async-list/async-bookmark-list.component";
 import {BookmarkStore} from "./bookmark/state/BookmarkStore";
 import {NavigationComponent} from "./navigation/navigation.component";
@@ -45,7 +44,6 @@ import {Logger} from "./logger.service";
     BookmarkDetailComponent,
     BookmarksComponent,
     BookmarkSearchComponent,
-    BookmarkSearchFormControlComponent,
     BookmarkFormComponent,
     AsyncBookmarksListComponent,
     SearchResultsComponent
