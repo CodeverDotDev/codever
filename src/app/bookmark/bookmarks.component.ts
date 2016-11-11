@@ -3,7 +3,7 @@ import {Bookmark} from "../model/bookmark";
 import {BookmarkService} from "./bookmark.service";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";
-import {BookmarkStore} from "./state/BookmarkStore";
+import {BookmarkStore} from "./store/BookmarkStore";
 import {List} from 'immutable';
 import {Logger} from "../logger.service";
 

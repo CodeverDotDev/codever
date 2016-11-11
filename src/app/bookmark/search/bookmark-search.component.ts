@@ -4,7 +4,7 @@ import { Observable }        from 'rxjs/Observable';
 import { Subject }           from 'rxjs/Subject';
 import { BookmarkSearchService } from './bookmark-search.service';
 import { Bookmark } from '../../model/bookmark';
-import {BookmarkStore} from "../state/BookmarkStore";
+import {BookmarkStore} from "../store/BookmarkStore";
 import {FormControl} from "@angular/forms";
 
 @Component({

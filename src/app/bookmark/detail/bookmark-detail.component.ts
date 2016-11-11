@@ -4,7 +4,7 @@ import { Bookmark } from '../../model/bookmark';
 import {BookmarkService} from "../bookmark.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {Location} from "@angular/common";
-import {BookmarkStore} from "../state/BookmarkStore";
+import {BookmarkStore} from "../store/BookmarkStore";
 
 @Component({
   selector: 'my-bookmark-detail',
