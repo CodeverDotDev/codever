@@ -12,10 +12,6 @@ import {BookmarkStore} from "../store/BookmarkStore";
 export class BookmarkFormComponent implements OnInit {
 
   model = new Bookmark('', '', '', [], '');
-
-  submitted = false;
-  active=true;
-
   bookmarkForm: FormGroup;
 
   constructor(
