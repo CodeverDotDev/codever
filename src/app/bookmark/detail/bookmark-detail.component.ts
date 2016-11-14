@@ -24,6 +24,10 @@ export class BookmarkDetailComponent {
     this.route.params.forEach((params: Params) => {
       let id = params['id'];
       this.bookmark = this.bookmarkStore.getBookmark(id);
+      this.bookmark.tags.forEach(tag => {
+        this.bookmark.tagsLine += tag + ",";
+      });
+      this.bookmark.tagsLine = this.bookmark.tagsLine.replace(/,\s*$/, ""); //remove last comma and trailing spaces
     });
   }
 
@@ -32,6 +36,7 @@ export class BookmarkDetailComponent {
   }
 
   updateBookmark():void {
+    this.bookmark.tags = this.bookmark.tagsLine.split(",");
     let obs = this.bookmarkStore.updateBookmark(this.bookmark)
 
     obs.subscribe(
