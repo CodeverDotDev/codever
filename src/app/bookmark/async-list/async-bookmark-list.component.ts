@@ -7,7 +7,8 @@ import {BookmarkStore} from "../store/BookmarkStore";
 
 @Component({
   selector: 'my-async-bookmark-list',
-  templateUrl: './async-bookmark-list.component.html'
+  templateUrl: './async-bookmark-list.component.html',
+  styleUrls: ['./async-bookmark-list.component.scss']
 })
 export class AsyncBookmarksListComponent{
 
