@@ -1,6 +1,7 @@
 <div class="container">
   <div class="col-md-8 col-md-offset-2">
     <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value, bookmarkForm.valid)">
+
     <div class="form-group">
       <label for="name">Name</label>
       <input type="text" class="form-control" id="name"
@@ -19,6 +20,10 @@
              name="location"
              formControlName="location"
              placeholder="Usually an URL">
+      <div [hidden]="bookmarkForm.controls.location.valid || (bookmarkForm.controls.location.pristine && !submitted)"
+           class="alert alert-danger">
+        Location is required
+      </div>
     </div>
     <div class="form-group">
       <label for="name">Category</label>
@@ -27,6 +32,10 @@
              name="category"
              formControlName="category"
              placeholder="e.g. java or javascript">
+      <div [hidden]="bookmarkForm.controls.category.valid || (bookmarkForm.controls.category.pristine && !submitted)"
+           class="alert alert-danger">
+        Category is required
+      </div>
     </div>
     <div class="form-group">
       <label for="tags">Tags</label>
