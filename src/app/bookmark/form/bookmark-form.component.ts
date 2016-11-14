@@ -17,7 +17,7 @@ export class BookmarkFormComponent implements OnInit {
   submitted = false;
   active=true;
 
-  newBookmarkForm: FormGroup;
+  bookmarkForm: FormGroup;
 
   constructor(
     private bookmarkService: BookmarkService,
@@ -27,7 +27,7 @@ export class BookmarkFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.newBookmarkForm = this.formBuilder.group({
+    this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
       category: ['', Validators.required],
