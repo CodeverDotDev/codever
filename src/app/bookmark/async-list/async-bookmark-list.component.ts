@@ -36,20 +36,4 @@ export class AsyncBookmarksListComponent{
     this.bookmarkStore.deleteBookmark(bookmark);
   }
 
-  delete(bookmark: Bookmark): void {
-    this.bookmarkService
-      .delete(bookmark._id)
-      .subscribe(
-        data => {
-          // refresh the list
-          this.bookmarks.map(h => h.filter(x => x !== bookmark));
-          //this.getBookmarks();
-          return true;
-        },
-        error => {
-          console.error("Error deleting bookmark!");
-          return Observable.throw(error);
-        });
-  }
-
 }

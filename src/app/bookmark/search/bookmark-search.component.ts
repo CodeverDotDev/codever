@@ -1,9 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router }            from '@angular/router';
-import { Observable }        from 'rxjs/Observable';
-import { Subject }           from 'rxjs/Subject';
-import { BookmarkSearchService } from './bookmark-search.service';
-import { Bookmark } from '../../model/bookmark';
+import {Component, OnInit} from "@angular/core";
+import {Observable} from "rxjs/Observable";
+import {BookmarkSearchService} from "./bookmark-search.service";
+import {Bookmark} from "../../model/bookmark";
 import {BookmarkStore} from "../store/BookmarkStore";
 import {FormControl} from "@angular/forms";
 
@@ -16,13 +14,9 @@ import {FormControl} from "@angular/forms";
 export class BookmarkSearchComponent implements OnInit {
 
     bookmarks: Observable<Bookmark[]>;
-    //private searchTerms = new Subject<string>();
     term = new FormControl();
 
-    constructor(
-        private bookmarkSearchService: BookmarkSearchService,
-        private bookmarkStore: BookmarkStore,
-        private router: Router) {}
+    constructor(private bookmarkStore: BookmarkStore) {}
 
     ngOnInit(): void {
         this.bookmarks = this.term.valueChanges
@@ -38,10 +32,5 @@ export class BookmarkSearchComponent implements OnInit {
                 console.log(error);
                 return Observable.of<Bookmark[]>([]);
             });
-    }
-
-    gotoDetail(bookmark: Bookmark): void {
-        let link = ['/bookmarks', bookmark._id];
-        this.router.navigate(link);
     }
 }
