@@ -6,9 +6,12 @@
     <button type="button" class="btn btn-danger" (click)="deleteBookmark(bookmark); $event.stopPropagation()">Delete</button>
   </div>
   <div class="card-block">
-    <b>Tags:</b> <span *ngFor="let tag of bookmark.tags">{{tag}},</span>
+    <b>Tags:</b>
+    <ul class="tags">
+      <li *ngFor="let tag of bookmark.tags">{{tag}}</li>
+    </ul>
   </div>
   <div class="card-footer">
-    <b>Category:</b>{{ bookmark.category }}
+    <b>Category:</b> {{ bookmark.category }}
   </div>
 </div>
