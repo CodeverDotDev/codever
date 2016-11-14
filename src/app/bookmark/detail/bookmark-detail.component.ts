@@ -1,7 +1,6 @@
 
 import { Component, Input } from '@angular/core';
 import { Bookmark } from '../../model/bookmark';
-import {BookmarkService} from "../bookmark.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {Location} from "@angular/common";
 import {BookmarkStore} from "../store/BookmarkStore";
@@ -16,7 +15,6 @@ export class BookmarkDetailComponent {
   bookmark: Bookmark;
 
   constructor(
-    private bookmarkService: BookmarkService,
     private bookmarkStore: BookmarkStore,
     private route: ActivatedRoute,
     private location: Location
@@ -25,18 +23,12 @@ export class BookmarkDetailComponent {
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
       let id = params['id'];
-      this.bookmarkService.getBookmark(id)
-        .then(bookmark => this.bookmark = bookmark);
+      this.bookmark = this.bookmarkStore.getBookmark(id);
     });
   }
 
   goBack(): void {
     this.location.back();
-  }
-
-  save():void {
-    this.bookmarkService.update(this.bookmark)
-      .then(() => this.goBack());
   }
 
   updateBookmark():void {
