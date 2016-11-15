@@ -96,7 +96,7 @@ export class BookmarkStore {
     return bookmarks.get(index);
   }
 
-  filterBookmarksBySearchTerm(term:string): Observable<Bookmark[]> {
+  filterBookmarksBySearchTerm(term:string): Bookmark[] {
     let bookmarks: List<Bookmark> = this._bookmarks.getValue();
     let filteredBookmarks: Array<Bookmark> = new Array();
     bookmarks.forEach(bookmark => {
@@ -130,7 +130,7 @@ export class BookmarkStore {
 
     console.log('I have been here, size ' + filteredBookmarks.length);
 
-    return Observable.of(filteredBookmarks);
+    return filteredBookmarks;
   }
 
 }

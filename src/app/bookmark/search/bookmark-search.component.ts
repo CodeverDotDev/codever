@@ -4,6 +4,7 @@ import {BookmarkSearchService} from "./bookmark-search.service";
 import {Bookmark} from "../../model/bookmark";
 import {BookmarkStore} from "../store/BookmarkStore";
 import {FormControl} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'bookmark-search',
@@ -16,7 +17,7 @@ export class BookmarkSearchComponent implements OnInit {
     bookmarks: Observable<Bookmark[]>;
     term = new FormControl();
 
-    constructor(private bookmarkStore: BookmarkStore) {}
+    constructor(private router: Router, private bookmarkStore: BookmarkStore) {}
 
     ngOnInit(): void {
         this.bookmarks = this.term.valueChanges
@@ -24,7 +25,7 @@ export class BookmarkSearchComponent implements OnInit {
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time
                 // return the http search observable
-                ? this.bookmarkStore.filterBookmarksBySearchTerm(term)
+                ? Observable.of(this.bookmarkStore.filterBookmarksBySearchTerm(term))
                 // or the observable of empty heroes if no search term
                 : Observable.of<Bookmark[]>([]))
             .catch(error => {
@@ -33,4 +34,18 @@ export class BookmarkSearchComponent implements OnInit {
                 return Observable.of<Bookmark[]>([]);
             });
     }
+
+  /**
+   *
+   * @param bookmark
+   */
+  gotoDetail(bookmark: Bookmark): void {
+    let link = ['/bookmarks', bookmark._id];
+    this.router.navigate(link);
+  }
+
+  deleteBookmark(deletedBookmark:Bookmark): void {
+    this.bookmarkStore.deleteBookmark(deletedBookmark);
+    this.term.reset();
+  }
 }
