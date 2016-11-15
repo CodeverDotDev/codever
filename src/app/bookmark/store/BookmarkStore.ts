@@ -5,13 +5,15 @@ import {List} from 'immutable';
 import {BookmarkService} from "../bookmark.service";
 import {Bookmark} from "../../model/bookmark";
 import {Logger} from "../../logger.service";
+import {ErrorService} from "../../error/error.service";
+import {Response} from "@angular/http";
 
 @Injectable()
 export class BookmarkStore {
 
     private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]))
 
-    constructor(private bookmarkService: BookmarkService, private logger:Logger) {
+    constructor(private bookmarkService: BookmarkService, private logger:Logger, private errorService: ErrorService) {
         this.logger.log('******** BookmarkStore constructor was called *************');
         this.loadInitialData();
     }
@@ -55,7 +57,12 @@ export class BookmarkStore {
     obs.subscribe(
       res => {
         this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-      });
+      },
+      (error: Response) => {
+        this.errorService.handleError(error.json());
+        return Observable.throw(error.json());
+      }
+    );
 
     return obs;
   }

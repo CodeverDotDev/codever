@@ -25,6 +25,8 @@ import {NavbarSearchService} from "./navigation/search/NavbarSearchService";
 import {SearchResultsComponent} from "./navigation/search/search-results.component";
 import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 import {Logger} from "./logger.service";
+import {ErrorService} from "./error/error.service";
+import {ErrorComponent} from "./error/error.component";
 
 @NgModule({
   imports: [
@@ -46,7 +48,8 @@ import {Logger} from "./logger.service";
     BookmarkSearchComponent,
     BookmarkFormComponent,
     AsyncBookmarksListComponent,
-    SearchResultsComponent
+    SearchResultsComponent,
+    ErrorComponent
   ],
   providers: [
     ApiService,
@@ -54,7 +57,8 @@ import {Logger} from "./logger.service";
     BookmarkSearchService,
     BookmarkStore,
     NavbarSearchService,
-    Logger
+    Logger,
+    ErrorService
   ],
   bootstrap: [AppComponent]
 })
