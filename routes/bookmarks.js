@@ -48,6 +48,21 @@ router.post('/', function(req, res, next){
 
   bookmark.save(function (err, updatedBookmark) {
     if (err){
+
+      if(err.name == 'ValidationError'){
+        var errorMessage = 'Following validations failed';
+        for (var i in err.errors) {
+          validationError = err.errors[i];
+          console.log("validation ererooooooooor " + validationError.message);
+          //errorMessage.concat('\n');
+          errorMessage += '\n' + validationError.message;
+          errorMessage.concat(validationError.message.toString());
+        }
+
+        console.log(" Final error message " + errorMessage);
+        return res.status(400).send({"title":"validation error", "message" : errorMessage});
+      }
+
       console.log(err);
       res.status(500).send(err);
     } else {
@@ -65,6 +80,11 @@ router.post('/', function(req, res, next){
 router.put('/:id', function(req, res, next) {
   Bookmark.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, bookmark){
     if(err){
+      if(err.name == 'ValidationError'){
+        var errorMessage = '';
+        return res.status(400).send({"title":"validation error", "message" : errorMessage});
+      }
+      console.log("SOooooooooome : " + err);
       return res.status(500).send(err);
     }
     if(!bookmark){
