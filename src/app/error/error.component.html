@@ -27,7 +27,7 @@
         <h4 class="modal-title">{{ error?.title }}</h4>
       </div>
       <div class="modal-body">
-        <p>{{ error?.message }}</p>
+        <p *ngFor="let errorMessage of error?.messages">{{ errorMessage }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="onErrorHandled()">Close</button>
