@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Bookmark = require('../models/bookmark');
+var Error = require('../models/error');
 
 /* GET bookmark by id. */
 router.get('/:id', function(req, res, next) {
@@ -50,17 +51,15 @@ router.post('/', function(req, res, next){
     if (err){
 
       if(err.name == 'ValidationError'){
-        var errorMessage = 'Following validations failed';
+        var errorMessages = [];
         for (var i in err.errors) {
-          validationError = err.errors[i];
-          console.log("validation ererooooooooor " + validationError.message);
-          //errorMessage.concat('\n');
-          errorMessage += '\n' + validationError.message;
-          errorMessage.concat(validationError.message.toString());
+          errorMessages.push(err.errors[i].message);
         }
 
-        console.log(" Final error message " + errorMessage);
-        return res.status(400).send({"title":"validation error", "message" : errorMessage});
+        var error = new Error('Validation Error', errorMessages);
+        console.log(JSON.stringify(error));
+        res.setHeader('Content-Type', 'application/json');
+        return res.status(400).send(JSON.stringify(new Error('Validation Error', errorMessages)));
       }
 
       console.log(err);
