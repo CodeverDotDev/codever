@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Bookmark = require('../models/bookmark');
-var Error = require('../models/error');
+var MyError = require('../models/error');
 
 /* GET bookmark by id. */
 router.get('/:id', function(req, res, next) {
@@ -56,10 +56,10 @@ router.post('/', function(req, res, next){
           errorMessages.push(err.errors[i].message);
         }
 
-        var error = new Error('Validation Error', errorMessages);
+        var error = new Error('Validation MyError', errorMessages);
         console.log(JSON.stringify(error));
         res.setHeader('Content-Type', 'application/json');
-        return res.status(400).send(JSON.stringify(new Error('Validation Error', errorMessages)));
+        return res.status(409).send(JSON.stringify(new MyError('Validation Error', errorMessages)));
       }
 
       console.log(err);
@@ -79,12 +79,11 @@ router.post('/', function(req, res, next){
 router.put('/:id', function(req, res, next) {
   Bookmark.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, bookmark){
     if(err){
-      if(err.name == 'ValidationError'){
-        var errorMessage = '';
-        return res.status(400).send({"title":"validation error", "message" : errorMessage});
+      if (err.name === 'MongoError' && err.code === 11000) {
+        res.status(409).send(new MyError('Duplicate key', [err.message]));
       }
-      console.log("SOooooooooome : " + err);
-      return res.status(500).send(err);
+
+      res.status(500).send(new MyError('Unknown Server Error', ['Unknow server error when updating bookmark ' + req.params.id]));
     }
     if(!bookmark){
       return res.status(404).send('Bookmark not found');
@@ -101,10 +100,10 @@ router.put('/:id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
   Bookmark.findByIdAndRemove(req.params.id, function(err, bookmark){
     if(err){
-      return res.status(500).send(err);
+      return res.status(500).send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.id]));
     }
     if(!bookmark){
-      return res.status(404).send('Bookmark not found');
+      return res.status(404).send(new MyError('Not Found Error', ['Bookmark with id ' + req.params.id + ' not found']));
     }
     res.status(204).send('Bookmark successfully deleted');
   });
