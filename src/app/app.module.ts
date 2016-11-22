@@ -1,6 +1,6 @@
 import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {HttpModule, JsonpModule} from '@angular/http';
+import {JsonpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { AppComponent } from './app.component';
@@ -27,6 +27,10 @@ import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 import {Logger} from "./logger.service";
 import {ErrorService} from "./error/error.service";
 import {ErrorComponent} from "./error/error.component";
+
+import {HttpModule, Http, XHRBackend, RequestOptions} from '@angular/http';
+import {KeycloakService} from "./keycloak/keycloak.service";
+import {KeycloakHttp} from "./keycloak/keycloak.http";
 
 @NgModule({
   imports: [
@@ -58,11 +62,24 @@ import {ErrorComponent} from "./error/error.component";
     BookmarkStore,
     NavbarSearchService,
     Logger,
-    ErrorService
+    ErrorService,
+    KeycloakService,
+    {
+      provide: Http,
+      useFactory:
+        (
+          backend: XHRBackend,
+          defaultOptions: RequestOptions,
+          keycloakService: KeycloakService
+        ) => new KeycloakHttp(backend, defaultOptions, keycloakService),
+      deps: [XHRBackend, RequestOptions, KeycloakService]
+    }
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  /*
+
   constructor(public appRef: ApplicationRef) {}
   hmrOnInit(store) {
     console.log('HMR store', store);
@@ -79,4 +96,5 @@ export class AppModule {
     store.disposeOldHosts();
     delete store.disposeOldHosts;
   }
+  */
 }
