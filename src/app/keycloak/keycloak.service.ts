@@ -7,7 +7,10 @@ export class KeycloakService {
   static auth: any = {};
 
   static init(): Promise<any> {
-    let keycloakAuth: any = new Keycloak('../../keycloak.json');
+    const Keycloak = require("keycloak-js/dist/keycloak.js");
+
+    let keycloakAuth: any = new Keycloak('keycloak/keycloak.json');
+
     KeycloakService.auth.loggedIn = false;
 
     return new Promise((resolve, reject) => {
