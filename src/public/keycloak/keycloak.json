@@ -1,0 +1,7 @@
+{
+  "realm": "codingpedia",
+  "auth-server-url": "http://localhost:8380/auth",
+  "ssl-required": "external",
+  "resource": "bookmarks",
+  "public-client": true
+}
