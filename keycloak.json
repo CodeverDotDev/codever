@@ -1,0 +1,8 @@
+{
+  "realm": "codingpedia",
+  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4ZcoYzcMud+Wc332LkMB9fIgOhG703S15amW36dD2sKM10HNAA5AMawNUbcyfUOQnNbsbrsbrrHzjnF6Exi416PFTcSWXN8ILB6xriTWVS4RE/8I+k1CevrZ6p/Vr3aqmvboRJiEGJGdOeo85tcDEEP9iEKPRlBp3yyfN2Weyo5bjJwOYJRPp2GCACb5kUd7fT8+0tfIIWs0CLc49FiU4vAoCWMwd6U438A/m//X/QRtgBT/X3wYhQwdyzUeuxbvw493SuKLY9FO4qE2DMl0lg1SFwiLhRpiBaQEpsbzduXSFwcwjnC8Hhs1FlCuiWwmKJAYhSkHaHrZS8YrnbWLbwIDAQAB",
+  "bearer-only": true,
+  "auth-server-url": "http://localhost:8380/auth",
+  "ssl-required": "external",
+  "resource": "bookmarks-api"
+}
