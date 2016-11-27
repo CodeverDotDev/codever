@@ -82,6 +82,26 @@ router.get('/:id/bookmarks',  function(req, res, next) {
 
 });
 
+/**
+ * full UPDATE via PUT - that is the whole document is required and will be updated
+ */
+router.put('/:userId/bookmarks/:bookmarkId', function(req, res, next) {
+  Bookmark.findOneAndUpdate({_id: req.params.bookmarkId, userId: req.params.userId}, req.body, {new: true}, function(err, bookmark){
+    if(err){
+      if (err.name === 'MongoError' && err.code === 11000) {
+        res.status(409).send(new MyError('Duplicate key', [err.message]));
+      }
+
+      res.status(500).send(new MyError('Unknown Server Error', ['Unknow server error when updating bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId]));
+    }
+    if(!bookmark){
+      return res.status(404).send('Bookmark not found for user');
+    }
+    res.status(200).send(bookmark);
+  });
+
+});
+
 /*
 * DELETE bookmark for user
 */
@@ -91,7 +111,7 @@ router.delete('/:userId/bookmarks/:bookmarkId', function(req, res, next) {
       return res.status(500).send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.bookmarkId]));
     }
     if(!bookmark){
-      return res.status(404).send(new MyError('Not Found Error', ['Bookmark with id ' + req.params.bookmarkId + ' not found']));
+      return res.status(404).send(new MyError('Not Found Error', ['Bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId + ' not found']));
     }
     res.status(204).send('Bookmark successfully deleted');
   });
