@@ -5,6 +5,7 @@ import {HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserBookmarkStore} from "./store/UserBookmarkStore";
 import {UserBookmarkService} from "./user-bookmark.service";
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   declarations : [
@@ -12,6 +13,7 @@ import {UserBookmarkService} from "./user-bookmark.service";
     AsyncUserBookmarksListComponent
   ],
   imports: [
+    CommonModule, //in the root module comes via the BrowserModule
     HttpModule,
     FormsModule,
     ReactiveFormsModule,
@@ -19,6 +21,10 @@ import {UserBookmarkService} from "./user-bookmark.service";
   providers: [
     UserBookmarkStore,
     UserBookmarkService
+  ],
+  exports: [
+    UserBookmarksComponent,
+    AsyncUserBookmarksListComponent
   ]
 })
 export class UserBookmarksModule {

@@ -31,6 +31,7 @@ import {ErrorComponent} from "./error/error.component";
 import {HttpModule, Http, XHRBackend, RequestOptions} from '@angular/http';
 import {KeycloakService} from "./keycloak/keycloak.service";
 import {KeycloakHttp} from "./keycloak/keycloak.http";
+import {UserBookmarksModule} from "./personal/user-bookmarks.module";
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import {KeycloakHttp} from "./keycloak/keycloak.http";
     FormsModule,
     ReactiveFormsModule,
     JsonpModule,
-    routing
+    routing,
+    UserBookmarksModule
   ],
   declarations: [
     AppComponent,
