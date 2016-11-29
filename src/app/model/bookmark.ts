@@ -6,6 +6,7 @@ export class Bookmark {
     category: string;
     tags: string[];
     tagsLine: string;
+    userId: String;
 
     constructor (
                  name: string,
@@ -14,7 +15,8 @@ export class Bookmark {
                  tags: string[],
                  description?: string,
                  _id?: string,
-                 tagsLine?: string
+                 tagsLine?: string,
+                 userId?: string
                  ){
         this.name = name;
         this.location = location;
@@ -23,5 +25,6 @@ export class Bookmark {
         this.description = description;
         this._id = _id;
         this.tagsLine = tagsLine;
+        this.userId = userId;
     }
 }
