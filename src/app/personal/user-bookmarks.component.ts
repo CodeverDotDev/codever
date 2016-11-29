@@ -7,9 +7,9 @@ import {Logger} from "../logger.service";
 import {UserBookmarkStore} from "./store/UserBookmarkStore";
 
 @Component({
-  selector: 'my-bookmarks',
-  templateUrl: './bookmarks.component.html',
-  styleUrls: ['./bookmarks.component.scss']
+  selector: 'my-user-bookmarks',
+  templateUrl: './user-bookmarks.component.html',
+  styleUrls: ['./user-bookmarks.component.scss']
 })
 export class UserBookmarksComponent implements  OnInit{
 
