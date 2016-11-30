@@ -6,6 +6,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserBookmarkStore} from "./store/UserBookmarkStore";
 import {UserBookmarkService} from "./user-bookmark.service";
 import {CommonModule} from "@angular/common";
+import {UserBookmarksRoutingModule} from "./user-bookmarks-routing.module";
 
 @NgModule({
   declarations : [
@@ -17,6 +18,7 @@ import {CommonModule} from "@angular/common";
     HttpModule,
     FormsModule,
     ReactiveFormsModule,
+    UserBookmarksRoutingModule
   ],
   providers: [
     UserBookmarkStore,
