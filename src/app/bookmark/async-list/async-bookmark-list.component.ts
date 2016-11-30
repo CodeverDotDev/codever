@@ -15,13 +15,7 @@ export class AsyncBookmarksListComponent{
   @Input()
   bookmarks: Observable<Bookmark[]>;
 
-  selectedBookmark: Bookmark;
-
-  constructor( private router: Router, private bookmarkService: BookmarkService, private bookmarkStore: BookmarkStore) { }
-
-  onSelect(bookmark: Bookmark): void {
-    this.selectedBookmark = bookmark;
-  }
+  constructor( private router: Router, private bookmarkStore: BookmarkStore) { }
 
   /**
    *

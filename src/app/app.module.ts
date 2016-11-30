@@ -1,21 +1,17 @@
-import { NgModule, ApplicationRef } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import {JsonpModule} from '@angular/http';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-
-import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { AboutComponent } from './about/about.component';
-import { ApiService } from './shared';
-import { routing } from './app.routing';
-
-import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
+import {NgModule} from "@angular/core";
+import {BrowserModule} from "@angular/platform-browser";
+import {JsonpModule, HttpModule} from "@angular/http";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {AppComponent} from "./app.component";
+import {HomeComponent} from "./home/home.component";
+import {AboutComponent} from "./about/about.component";
+import {ApiService} from "./shared";
+import {routing} from "./app.routing";
 import {BookmarkDetailComponent} from "./bookmark/detail/bookmark-detail.component";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkService} from "./bookmark/bookmark.service";
 import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
-
-import './rxjs-extensions';
+import "./rxjs-extensions";
 import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 import {AsyncBookmarksListComponent} from "./bookmark/async-list/async-bookmark-list.component";
 import {BookmarkStore} from "./bookmark/store/BookmarkStore";
@@ -28,11 +24,6 @@ import {Logger} from "./logger.service";
 import {ErrorService} from "./error/error.service";
 import {ErrorComponent} from "./error/error.component";
 
-import {HttpModule, Http, XHRBackend, RequestOptions} from '@angular/http';
-import {KeycloakService} from "./keycloak/keycloak.service";
-import {KeycloakHttp} from "./keycloak/keycloak.http";
-import {UserBookmarksModule} from "./personal/user-bookmarks.module";
-
 @NgModule({
   imports: [
     BrowserModule,
@@ -40,8 +31,7 @@ import {UserBookmarksModule} from "./personal/user-bookmarks.module";
     FormsModule,
     ReactiveFormsModule,
     JsonpModule,
-    routing,
-    UserBookmarksModule
+    routing
   ],
   declarations: [
     AppComponent,
@@ -64,18 +54,7 @@ import {UserBookmarksModule} from "./personal/user-bookmarks.module";
     BookmarkStore,
     NavbarSearchService,
     Logger,
-    ErrorService,
-    KeycloakService,
-    {
-      provide: Http,
-      useFactory:
-        (
-          backend: XHRBackend,
-          defaultOptions: RequestOptions,
-          keycloakService: KeycloakService
-        ) => new KeycloakHttp(backend, defaultOptions, keycloakService),
-      deps: [XHRBackend, RequestOptions, KeycloakService]
-    }
+    ErrorService
   ],
   bootstrap: [AppComponent]
 })
