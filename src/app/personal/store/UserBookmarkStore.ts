@@ -22,7 +22,6 @@ export class UserBookmarkStore {
         this.userBookmarkService.getAllBookmarks('078f9f09-e114-48fd-ab85-470059d0c278')
             .subscribe(
                 res => {
-                  console.log('Response to jSOOooon');
                   console.log(res.json());
                   let bookmarks = (<Object[]>res.json())
                     .map((bookmark: any) =>

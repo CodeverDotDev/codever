@@ -26,6 +26,9 @@ const routes: Routes = [
     path: 'bookmarks/:id',
     component: BookmarkDetailComponent
   },
+  { path: 'personal',
+    loadChildren: 'app/personal/user-bookmarks.module#UserBookmarksModule'
+  }
 ];
 
 export const routing = RouterModule.forRoot(routes);
