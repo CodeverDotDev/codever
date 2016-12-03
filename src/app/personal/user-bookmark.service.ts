@@ -15,7 +15,7 @@ export class UserBookmarkService {
   constructor(private http: Http) { }
 
   getAllBookmarks(userId:String): Observable<Response> {
-    console.log('******** BookmarkService.getAllBookmarks was called *************');
+    console.log('******** UserBookmarkService.getAllBookmarks was called *************');
     console.log('******** GET on ' + this.baseUrl + userId + '/bookmarks' +' *************');
     return this.http.get(this.baseUrl + userId + '/bookmarks');
   }
