@@ -9,13 +9,14 @@ import {Observable} from "rxjs";
 @Injectable()
 export class UserBookmarkService {
 
-  private baseUrl = 'http://localhost:3000/';  // URL to web api
+  private baseUrl = 'http://localhost:3000/users/';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http) { }
 
   getAllBookmarks(userId:String): Observable<Response> {
-    console.log('******** BookmarkService.getAllBookmarks was called *************')
+    console.log('******** BookmarkService.getAllBookmarks was called *************');
+    console.log('******** GET on ' + this.baseUrl + userId + '/bookmarks' +' *************');
     return this.http.get(this.baseUrl + userId + '/bookmarks');
   }
 

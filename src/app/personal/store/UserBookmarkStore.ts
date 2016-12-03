@@ -18,27 +18,28 @@ export class UserBookmarkStore {
         this.loadInitialData();
     }
 
-    private loadInitialData() {
-        this.userBookmarkService.getAllBookmarks('078f9f09-e114-48fd-ab85-470059d0c278')
-            .subscribe(
-                res => {
-                  console.log(res.json());
-                  let bookmarks = (<Object[]>res.json())
-                    .map((bookmark: any) =>
-                      new Bookmark(
-                                    bookmark.name,
-                                    bookmark.location,
-                                    bookmark.category,
-                                    bookmark.tags,
-                                    bookmark.description,
-                                    bookmark._id
-                      )
-                    );
+  private loadInitialData() {
+    this.logger.log('******** BookmarkStore.loadInitial was called *************');
+    this.userBookmarkService.getAllBookmarks('078f9f09-e114-48fd-ab85-470059d0c278')
+        .subscribe(
+            res => {
+              console.log(res.json());
+              let bookmarks = (<Object[]>res.json())
+                .map((bookmark: any) =>
+                  new Bookmark(
+                      bookmark.name,
+                      bookmark.location,
+                      bookmark.category,
+                      bookmark.tags,
+                      bookmark.description,
+                      bookmark._id
+                  )
+                );
 
-                  this._bookmarks.next(List(bookmarks));
-                },
-                err => console.log("Error retrieving bookmarks")
-            );
+              this._bookmarks.next(List(bookmarks));
+            },
+            err => console.log("Error retrieving bookmarks")
+          );
     }
 
     getBookmarks():Observable<List<Bookmark>> {
