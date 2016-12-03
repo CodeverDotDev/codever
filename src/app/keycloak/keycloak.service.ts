@@ -7,6 +7,7 @@ export class KeycloakService {
   static auth: any = {};
 
   static init(): Promise<any> {
+    console.log("keycloak STATIC init was called");
     const Keycloak = require("keycloak-js/dist/keycloak.js");
 
     let keycloakAuth: any = new Keycloak('keycloak/keycloak.json');
@@ -16,12 +17,15 @@ export class KeycloakService {
     return new Promise((resolve, reject) => {
       keycloakAuth.init({ onLoad: 'login-required' })
         .success(() => {
+          console.log("keycloak init SUCCESS");
           KeycloakService.auth.loggedIn = true;
           KeycloakService.auth.authz = keycloakAuth;
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/codingpedia/protocol/openid-connect/logout?redirect_uri=http://localhost:8080";
           resolve();
         })
-        .error(() => {
+
+      .error(() => {
+          console.log("keycloak init ERROR");
           reject();
         });
     });

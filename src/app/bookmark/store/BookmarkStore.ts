@@ -22,17 +22,17 @@ export class BookmarkStore {
         this.bookmarkService.getAllBookmarks()
             .subscribe(
                 res => {
-                  console.log('Response to jSOOooon');
+                  console.log('Response to JSON:');
                   console.log(res.json());
                   let bookmarks = (<Object[]>res.json())
                     .map((bookmark: any) =>
                       new Bookmark(
-                                    bookmark.name,
-                                    bookmark.location,
-                                    bookmark.category,
-                                    bookmark.tags,
-                                    bookmark.description,
-                                    bookmark._id
+                          bookmark.name,
+                          bookmark.location,
+                          bookmark.category,
+                          bookmark.tags,
+                          bookmark.description,
+                          bookmark._id
                       )
                     );
 
