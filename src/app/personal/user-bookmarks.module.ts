@@ -1,7 +1,7 @@
-import {NgModule, OnInit} from "@angular/core";
+import {NgModule} from "@angular/core";
 import {UserBookmarksComponent} from "./user-bookmarks.component";
 import {AsyncUserBookmarksListComponent} from "./async-list/async-user-bookmark-list.component";
-import {HttpModule, Http, XHRBackend, RequestOptions} from '@angular/http';
+import {HttpModule, Http, XHRBackend, RequestOptions} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserBookmarkStore} from "./store/UserBookmarkStore";
 import {UserBookmarkService} from "./user-bookmark.service";
@@ -9,7 +9,6 @@ import {CommonModule} from "@angular/common";
 import {UserBookmarksRoutingModule} from "./user-bookmarks-routing.module";
 import {KeycloakService} from "../keycloak/keycloak.service";
 import {KeycloakHttp} from "../keycloak/keycloak.http";
-import {RouterModule} from "@angular/router";
 
 export const routerConfig = [{
   path: '',
@@ -49,14 +48,19 @@ export const routerConfig = [{
     AsyncUserBookmarksListComponent
   ]
 })
-export class UserBookmarksModule implements OnInit{
+export class UserBookmarksModule {
 
-  ngOnInit(): void {
+  // I initialize the module.
+  constructor() {
+
+    console.log( "UserBookmarksModule Constructor." );
     KeycloakService.init()
-        .then(() => {
-          console.log("***** Keycloak correctly initialized ******");
-        })
-        .catch(() => window.location.reload());
+      .then(() => {
+        console.log("***** Keycloak correctly initialized ******");
+      })
+      .catch(() => window.location.reload());
+    console.groupEnd();
+
   }
 
 }
