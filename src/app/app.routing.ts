@@ -28,7 +28,7 @@ const routes: Routes = [
   },
   {
     path: 'personal',
-    loadChildren: 'app/personal/user-bookmarks.module#UserBookmarksModule'
+    loadChildren: './personal/user-bookmarks.module#UserBookmarksModule'
   }
 ];
 

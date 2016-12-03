@@ -50,6 +50,7 @@
     "@types/protractor": "^1.5.16",
     "@types/selenium-webdriver": "2.44.26",
     "angular2-template-loader": "^0.4.0",
+    "angular2-router-loader": "^0.3.4",
     "autoprefixer": "^6.3.2",
     "awesome-typescript-loader": "^2.2.4",
     "codelyzer": "0.0.26",
