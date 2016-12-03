@@ -14,12 +14,12 @@ export class UserBookmarkStore {
     private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]))
 
     constructor(private userBookmarkService: UserBookmarkService, private logger:Logger, private errorService: ErrorService) {
-        this.logger.log('******** BookmarkStore constructor was called *************');
+        this.logger.log('******** UserBookmarkStore constructor was called *************');
         this.loadInitialData();
     }
 
   private loadInitialData() {
-    this.logger.log('******** BookmarkStore.loadInitial was called *************');
+    this.logger.log('******** UserBookmarkStore.loadInitial was called *************');
     this.userBookmarkService.getAllBookmarks('078f9f09-e114-48fd-ab85-470059d0c278')
         .subscribe(
             res => {

@@ -22,9 +22,8 @@ export class UserBookmarksComponent implements  OnInit{
   ) { }
 
   getBookmarks(): void {
-    //this.allBookmarks = this.bookmarkService.getBookmarks();
     this.allUserBookmarks = this.userBookmarkStore.getBookmarks();
-    console.log('BookmarksComponent.getBookmarks - allBookmarks');
+    console.log('UserBookmarksComponent.getBookmarks - allBookmarks');
     console.log(this.allUserBookmarks);
   }
 
