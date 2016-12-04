@@ -14,12 +14,8 @@ import {UserBookmarkStore} from "./store/UserBookmarkStore";
 export class UserBookmarksComponent implements  OnInit{
 
   allUserBookmarks: Observable<List<Bookmark>>;
-  selectedBookmark: Bookmark;
 
-  constructor( private router: Router,
-               private userBookmarkStore: UserBookmarkStore,
-               private logger:Logger
-  ) { }
+  constructor(private userBookmarkStore: UserBookmarkStore) { }
 
   getBookmarks(): void {
     this.allUserBookmarks = this.userBookmarkStore.getBookmarks();
@@ -29,10 +25,6 @@ export class UserBookmarksComponent implements  OnInit{
 
   ngOnInit(): void {
     this.getBookmarks();
-  }
-
-  onSelect(bookmark: Bookmark): void {
-    this.selectedBookmark = bookmark;
   }
 
 }

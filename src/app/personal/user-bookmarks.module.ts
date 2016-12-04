@@ -32,6 +32,7 @@ export const routerConfig = [{
     UserBookmarkStore,
     UserBookmarkService,
     KeycloakService,
+    /*
     {
       provide: Http,
       useFactory:
@@ -42,6 +43,7 @@ export const routerConfig = [{
           ) => new KeycloakHttp(backend, defaultOptions, keycloakService),
       deps: [XHRBackend, RequestOptions, KeycloakService]
     }
+    */
   ],
   exports: [
     UserBookmarksComponent,
