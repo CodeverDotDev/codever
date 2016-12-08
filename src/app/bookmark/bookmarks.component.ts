@@ -11,14 +11,14 @@ import {List} from "immutable";
 })
 export class BookmarksComponent implements  OnInit{
 
-  allBookmarks: Observable<List<Bookmark>>;
+  publicBookmarks: Observable<List<Bookmark>>;
 
   constructor(private bookmarkStore: BookmarkStore) { }
 
   getBookmarks(): void {
-    this.allBookmarks = this.bookmarkStore.getBookmarks();
-    console.log('BookmarksComponent.getBookmarks - allBookmarks');
-    console.log(this.allBookmarks);
+    this.publicBookmarks = this.bookmarkStore.getBookmarks();
+    console.log('BookmarksComponent.getBookmarks - publicBookmarks');
+    console.log(this.publicBookmarks);
   }
 
   ngOnInit(): void {
