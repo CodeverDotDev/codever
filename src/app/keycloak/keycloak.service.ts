@@ -1,55 +1,52 @@
-import {Injectable} from "@angular/core";
-
-declare var Keycloak: any;
+import { Injectable } from "@angular/core";
+import {AsyncSubject, Observable} from "rxjs";
 
 @Injectable()
 export class KeycloakService {
-  static auth: any = {};
 
-  static init(): Promise<any> {
-    console.log("keycloak STATIC init was called");
-    const Keycloak = require("keycloak-js/dist/keycloak.js");
+  private static keycloak: any;
 
-    let keycloakAuth: any = new Keycloak('keycloak/keycloak.json');
+  public static initKeycloak(keycloakPath: string): Observable<any> {
+    let subject = new AsyncSubject();
+    const keycloak = require("keycloak-js/dist/keycloak.js");
+    let onload: any;
 
-    KeycloakService.auth.loggedIn = false;
+    onload = {onLoad: `login-required`};
 
-    return new Promise((resolve, reject) => {
-      keycloakAuth.init({ onLoad: 'login-required' })
-        .success(() => {
-          console.log("keycloak init SUCCESS");
-          KeycloakService.auth.loggedIn = true;
-          KeycloakService.auth.authz = keycloakAuth;
-          KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl + "/realms/codingpedia/protocol/openid-connect/logout?redirect_uri=http://localhost:8080";
-          resolve();
-        })
-
-      .error(() => {
-          console.log("keycloak init ERROR");
-          reject();
-        });
+    const keycloakAuth = new keycloak(keycloakPath);
+    keycloakAuth.init(onload).success(
+      () => {
+        console.log("************************************************yes");
+        KeycloakService.keycloak = keycloakAuth;
+        subject.next("success");
+        subject.complete();
+      }).error((error) => {
+        console.log("************************************************no");
+        subject.error(error);
+        subject.complete();
     });
+    return subject;
+  }
+
+  getKeycloak(): any {
+    return KeycloakService.keycloak;
   }
 
   logout() {
-    console.log('*** LOGOUT');
-    KeycloakService.auth.loggedIn = false;
-    KeycloakService.auth.authz = null;
-
-    window.location.href = KeycloakService.auth.logoutUrl;
-  }
-
-  getToken(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      if (KeycloakService.auth.authz.token) {
-        KeycloakService.auth.authz.updateToken(5)
-          .success(() => {
-            resolve(<string>KeycloakService.auth.authz.token);
-          })
-          .error(() => {
-            reject('Failed to refresh token');
-          });
-      }
+    /**
+     * setTimeout is required here otherwise logout will NOT work.
+     */
+    setTimeout(() => {
+      KeycloakService.keycloak.logout();
     });
   }
+
+  public hasRole(role: string): boolean {
+    if (!KeycloakService.keycloak) {
+      return false;
+    }
+    return KeycloakService.keycloak.hasRealmRole(role);
+  }
+
+
 }

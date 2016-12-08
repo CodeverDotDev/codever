@@ -23,6 +23,8 @@ import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 import {Logger} from "./logger.service";
 import {ErrorService} from "./error/error.service";
 import {ErrorComponent} from "./error/error.component";
+import {KeycloakService} from "./keycloak/keycloak.service";
+import {HttpWrapperService} from "./keycloak/http-wrapper.service";
 
 @NgModule({
   imports: [
@@ -54,7 +56,9 @@ import {ErrorComponent} from "./error/error.component";
     BookmarkStore,
     NavbarSearchService,
     Logger,
-    ErrorService
+    ErrorService,
+    KeycloakService,
+    HttpWrapperService,
   ],
   bootstrap: [AppComponent]
 })

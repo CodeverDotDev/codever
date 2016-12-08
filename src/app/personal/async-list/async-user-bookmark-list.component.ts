@@ -14,7 +14,9 @@ export class AsyncUserBookmarksListComponent{
   @Input()
   bookmarks: Observable<Bookmark[]>;
 
-  constructor( private router: Router, private userBookmarkStore: UserBookmarkStore) { }
+  constructor( private router: Router, private userBookmarkStore: UserBookmarkStore) {
+    console.log("Async Fuuuukiiiiiiing constructor");
+  }
 
   /**
    *
