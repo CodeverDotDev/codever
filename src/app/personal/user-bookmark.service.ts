@@ -5,6 +5,7 @@ import {Headers, Http, Response} from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from "rxjs";
+import {HttpWrapperService} from "../keycloak/http-wrapper.service";
 
 @Injectable()
 export class UserBookmarkService {
@@ -12,12 +13,12 @@ export class UserBookmarkService {
   private baseUrl = 'http://localhost:3000/users/';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
 
-  constructor(private http: Http) { }
+  constructor(private http: Http, private httpWrapper: HttpWrapperService) { }
 
   getAllBookmarks(userId:String): Observable<Response> {
     console.log('******** UserBookmarkService.getAllBookmarks was called *************');
     console.log('******** GET on ' + this.baseUrl + userId + '/bookmarks' +' *************');
-    return this.http.get(this.baseUrl + userId + '/bookmarks');
+    return this.httpWrapper.get(this.baseUrl + userId + '/bookmarks');
   }
 
   updateBookmark(bookmark:Bookmark): Observable<any> {

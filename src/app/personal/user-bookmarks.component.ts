@@ -13,14 +13,14 @@ import {UserBookmarkStore} from "./store/UserBookmarkStore";
 })
 export class UserBookmarksComponent implements  OnInit{
 
-  allUserBookmarks: Observable<List<Bookmark>>;
+  userBookmarks: Observable<List<Bookmark>>;
 
   constructor(private userBookmarkStore: UserBookmarkStore) { }
 
   getBookmarks(): void {
-    this.allUserBookmarks = this.userBookmarkStore.getBookmarks();
+    this.userBookmarks = this.userBookmarkStore.getBookmarks();
     console.log('UserBookmarksComponent.getBookmarks - allBookmarks');
-    console.log(this.allUserBookmarks);
+    console.log(this.userBookmarks);
   }
 
   ngOnInit(): void {

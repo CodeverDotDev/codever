@@ -8,7 +8,7 @@ import {UserBookmarkService} from "./user-bookmark.service";
 import {CommonModule} from "@angular/common";
 import {UserBookmarksRoutingModule} from "./user-bookmarks-routing.module";
 import {KeycloakService} from "../keycloak/keycloak.service";
-import {KeycloakHttp} from "../keycloak/keycloak.http";
+import {HttpWrapperService} from "../keycloak/http-wrapper.service";
 
 export const routerConfig = [{
   path: '',
@@ -26,12 +26,10 @@ export const routerConfig = [{
     FormsModule,
     ReactiveFormsModule,
     UserBookmarksRoutingModule
-    //RouterModule.forChild(routerConfig)
   ],
   providers: [
     UserBookmarkStore,
     UserBookmarkService,
-    KeycloakService,
     /*
     {
       provide: Http,
@@ -44,15 +42,12 @@ export const routerConfig = [{
       deps: [XHRBackend, RequestOptions, KeycloakService]
     }
     */
-  ],
-  exports: [
-    UserBookmarksComponent,
-    AsyncUserBookmarksListComponent
   ]
 })
 export class UserBookmarksModule {
 
   // I initialize the module.
+  /*
   constructor() {
 
     console.log( "UserBookmarksModule Constructor." );
@@ -64,5 +59,15 @@ export class UserBookmarksModule {
     console.groupEnd();
 
   }
+
+  constructor() {
+
+    console.log( "UserBookmarksModule Constructor." );
+    KeycloakService.initKeycloak('keycloak/keycloak.json').subscribe(() => {
+      console.log( "UserBookmarksModule Constructor. - AFTER INIT" );
+    });
+
+  }
+   */
 
 }
