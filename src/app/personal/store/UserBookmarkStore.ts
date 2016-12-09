@@ -7,47 +7,53 @@ import {Logger} from "../../logger.service";
 import {ErrorService} from "../../error/error.service";
 import {Response} from "@angular/http";
 import {UserBookmarkService} from "../user-bookmark.service";
+import {KeycloakService} from "../../keycloak/keycloak.service";
 
 @Injectable()
 export class UserBookmarkStore {
 
     private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]))
 
-    constructor(private userBookmarkService: UserBookmarkService, private logger:Logger, private errorService: ErrorService) {
+    private userId: String;
+
+    constructor(private userBookmarkService: UserBookmarkService,
+                private logger:Logger,
+                private errorService: ErrorService,
+                private keycloakService: KeycloakService) {
         this.logger.log('******** UserBookmarkStore constructor was called *************');
+        const keycloak = keycloakService.getKeycloak();
+        if(keycloak) {
+          this.userId = keycloak.subject;
+        }
         this.loadInitialData();
     }
 
   private loadInitialData() {
     this.logger.log('******** UserBookmarkStore.loadInitial was called *************');
-    this.userBookmarkService.getAllBookmarks('078f9f09-e114-48fd-ab85-470059d0c278')
-        .subscribe(
-            res => {
-              console.log(res.json());
-              let bookmarks = (<Object[]>res.json())
-                .map((bookmark: any) =>
-                  new Bookmark(
-                      bookmark.name,
-                      bookmark.location,
-                      bookmark.category,
-                      bookmark.tags,
-                      bookmark.description,
-                      bookmark._id
-                  )
-                );
+    this.userBookmarkService.getAllBookmarks(this.userId)
+      .subscribe(
+        res => {
+          console.log(res.json());
+          let bookmarks = (<Object[]>res.json())
+            .map((bookmark: any) =>
+              new Bookmark(
+                  bookmark.name,
+                  bookmark.location,
+                  bookmark.category,
+                  bookmark.tags,
+                  bookmark.description,
+                  bookmark._id
+              )
+            );
 
-              this._bookmarks.next(List(bookmarks));
-            },
-            err => console.log("Error retrieving bookmarks")
-          );
-    }
+          this._bookmarks.next(List(bookmarks));
+        },
+        err => console.log("Error retrieving bookmarks")
+      );
+  }
 
-    getBookmarks():Observable<List<Bookmark>> {
-        return this._bookmarks.asObservable();
-    }
-
-  get bookmarks() {
-    return this._bookmarks.asObservable();
+  getBookmarks():Observable<List<Bookmark>> {
+      return this._bookmarks.asObservable();
   }
 
   addBookmark(newBookmark:Bookmark):Observable<List<Bookmark>> {

@@ -17,14 +17,10 @@ export class UserBookmarksComponent implements  OnInit{
 
   constructor(private userBookmarkStore: UserBookmarkStore) { }
 
-  getBookmarks(): void {
-    this.userBookmarks = this.userBookmarkStore.getBookmarks();
-    console.log('UserBookmarksComponent.getBookmarks - allBookmarks');
-    console.log(this.userBookmarks);
-  }
-
   ngOnInit(): void {
-    this.getBookmarks();
+    this.userBookmarks = this.userBookmarkStore.getBookmarks();
+    console.log('UserBookmarksComponent.ngOnInit');
+    console.log(this.userBookmarks);
   }
 
 }
