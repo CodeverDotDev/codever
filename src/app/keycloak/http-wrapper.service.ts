@@ -12,8 +12,6 @@ export class HttpWrapperService {
     let subject = new AsyncSubject<Headers>();
     let headers = (options && options.headers) ? options.headers : new Headers();
     const keycloak = this.keycloakService.getKeycloak();
-    console.log("************************************************");
-    console.log(keycloak);
     if (keycloak && keycloak.token) {
       keycloak.updateToken(5).success(() => {
         headers.append("Authorization", "Bearer " + keycloak.token);
