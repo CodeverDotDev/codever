@@ -1,24 +1,31 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {Bookmark} from "../../model/bookmark";
 import {Location} from "@angular/common";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {BookmarkStore} from "../store/BookmarkStore";
+import {KeycloakService} from "../../keycloak/keycloak.service";
+import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 
 @Component({
-  selector: 'bookmark-form',
-  templateUrl: 'bookmark-form.component.html',
-  styleUrls: ['./bookmark-form.component.scss']
+  selector: 'user-bookmark-form',
+  templateUrl: 'new-user-bookmark-form.component.html'
 })
-export class BookmarkFormComponent implements OnInit {
+export class UserBookmarkFormComponent implements OnInit {
 
   model = new Bookmark('', '', '', [], '');
   bookmarkForm: FormGroup;
+  userId = null;
 
   constructor(
-    private bookmarkStore: BookmarkStore,
+    private userBookmarkStore: UserBookmarkStore,
     private location: Location,
-    private formBuilder: FormBuilder
-  ) {}
+    private formBuilder: FormBuilder,
+    private keycloakService: KeycloakService
+  ){
+    const keycloak = keycloakService.getKeycloak();
+    if(keycloak) {
+      this.userId = keycloak.subject;
+    }
+  }
 
   ngOnInit(): void {
     this.bookmarkForm = this.formBuilder.group({
@@ -38,7 +45,8 @@ export class BookmarkFormComponent implements OnInit {
     model.tags = model.tagsLine.split(",");
     var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description);
 
-    let obs = this.bookmarkStore.addBookmark(newBookmark);
+    newBookmark.userId = this.userId;
+    let obs = this.userBookmarkStore.addBookmark(this.userId, newBookmark);
 
     obs.subscribe(
       res => {
