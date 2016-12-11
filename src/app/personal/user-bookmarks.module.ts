@@ -9,6 +9,7 @@ import {CommonModule} from "@angular/common";
 import {UserBookmarksRoutingModule} from "./user-bookmarks-routing.module";
 import {KeycloakService} from "../keycloak/keycloak.service";
 import {HttpWrapperService} from "../keycloak/http-wrapper.service";
+import {UserBookmarkFormComponent} from "./new-user-bookmark/new-user-bookmark-form.component";
 
 export const routerConfig = [{
   path: '',
@@ -18,6 +19,7 @@ export const routerConfig = [{
 @NgModule({
   declarations : [
     UserBookmarksComponent,
+    UserBookmarkFormComponent,
     AsyncUserBookmarksListComponent
   ],
   imports: [
