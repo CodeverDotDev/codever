@@ -35,9 +35,9 @@ export class UserBookmarkService {
     //.catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
   }
 
-  saveBookmark(bookmark: Bookmark): Observable<any> {
-    return this.http
-      .post(this.baseUrl, JSON.stringify(bookmark), {headers: this.headers})
+  saveBookmark(userId:string, bookmark: Bookmark): Observable<any> {
+    return this.httpWrapper
+      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark))
       .share();
   }
 
