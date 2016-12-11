@@ -19,7 +19,9 @@ router.get('/', function(req, res, next) {
 /**
  * CREATE bookmark for user
  */
+//router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
 router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
+  console.log('******* Request body ********');
   console.log(req.body);
   var bookmark = new Bookmark({
     name: req.body.name,
@@ -30,7 +32,7 @@ router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
     userId: req.params.id
   });
 
-  console.log('Bookmark to create' + bookmark);
+  console.log('Bookmark to create ' + bookmark);
 
   bookmark.save(function (err, updatedBookmark) {
     if (err){
@@ -60,8 +62,8 @@ router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
 
 //GET bookmarks for user
 /* GET bookmarks listing. */
-//router.get('/:id/bookmarks', keycloak.protect(), function(req, res, next) {
-router.get('/:id/bookmarks',  function(req, res, next) {
+router.get('/:id/bookmarks', keycloak.protect(), function(req, res, next) {
+//router.get('/:id/bookmarks',  function(req, res, next) {
   if(req.query.term){
     var regExpTerm = new RegExp(req.query.term, 'i');
     var regExpSearch=[{name:{$regex:regExpTerm}}, {description:{$regex: regExpTerm }}, {category:{$regex:regExpTerm }}, {tags:{$regex:regExpTerm}}];
