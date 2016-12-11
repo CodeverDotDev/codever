@@ -47,6 +47,7 @@ export class HttpWrapperService {
   public post(url: string, postData: any, options?: RequestOptionsArgs): Observable<Response> {
     let subject = new AsyncSubject<Response>();
     this.getAuthHeader(options).subscribe((headers) => {
+      headers.append('Content-Type', 'application/json');
       this.http.post(url, postData, {
         headers: headers
       }).subscribe((data) => {

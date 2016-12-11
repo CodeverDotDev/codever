@@ -56,9 +56,9 @@ export class UserBookmarkStore {
       return this._bookmarks.asObservable();
   }
 
-  addBookmark(newBookmark:Bookmark):Observable<List<Bookmark>> {
+  addBookmark(userId:string, newBookmark:Bookmark):Observable<List<Bookmark>> {
 
-    let obs = this.userBookmarkService.saveBookmark(newBookmark);
+    let obs = this.userBookmarkService.saveBookmark(userId, newBookmark);
 
     obs.subscribe(
       res => {
