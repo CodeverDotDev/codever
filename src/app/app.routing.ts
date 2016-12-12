@@ -1,7 +1,6 @@
 import {RouterModule, Routes} from "@angular/router";
 import {AboutComponent} from "./about/about.component";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
-import {BookmarkDetailComponent} from "./bookmark/detail/bookmark-detail.component";
 import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 import {SearchResultsComponent} from "./navigation/search/search-results.component";
 
@@ -22,10 +21,7 @@ const routes: Routes = [
     path: 'search-results',
     component: SearchResultsComponent
   },
-  {
-    path: 'bookmarks/:id',
-    component: BookmarkDetailComponent
-  },
+
   {
     path: 'personal',
     loadChildren: './personal/user-bookmarks.module#UserBookmarksModule'

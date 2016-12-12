@@ -22,9 +22,8 @@ export class UserBookmarkService {
   }
 
   updateBookmark(bookmark:Bookmark): Observable<any> {
-    const url = `${this.baseUrl}/${bookmark._id}`;
-    return this.http
-      .put(url, JSON.stringify(bookmark), {headers: this.headers})
+    return this.httpWrapper
+      .put(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
       .share();
   }
 

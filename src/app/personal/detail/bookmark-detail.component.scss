@@ -27,3 +27,13 @@ button:disabled {
   color: #ccc;
   cursor: auto;
 }
+
+input[type=checkbox], input[type=radio] {
+  vertical-align: middle;
+  position: relative;
+  bottom: 1px;
+}
+
+#shared_label {
+  width:100%;
+}
