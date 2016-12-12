@@ -10,6 +10,7 @@ import {UserBookmarksRoutingModule} from "./user-bookmarks-routing.module";
 import {KeycloakService} from "../keycloak/keycloak.service";
 import {HttpWrapperService} from "../keycloak/http-wrapper.service";
 import {UserBookmarkFormComponent} from "./new-user-bookmark/new-user-bookmark-form.component";
+import {BookmarkDetailComponent} from "./detail/bookmark-detail.component";
 
 export const routerConfig = [{
   path: '',
@@ -20,7 +21,8 @@ export const routerConfig = [{
   declarations : [
     UserBookmarksComponent,
     UserBookmarkFormComponent,
-    AsyncUserBookmarksListComponent
+    AsyncUserBookmarksListComponent,
+    BookmarkDetailComponent
   ],
   imports: [
     CommonModule, //in the root module comes via the BrowserModule

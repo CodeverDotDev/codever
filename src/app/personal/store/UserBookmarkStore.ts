@@ -42,7 +42,10 @@ export class UserBookmarkStore {
                   bookmark.category,
                   bookmark.tags,
                   bookmark.description,
-                  bookmark._id
+                  bookmark._id,
+                  '',
+                  bookmark.userId,
+                  bookmark.shared
               )
             );
 

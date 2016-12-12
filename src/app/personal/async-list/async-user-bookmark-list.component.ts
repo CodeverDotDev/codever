@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
 import {Bookmark} from "../../model/bookmark";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
@@ -14,7 +14,7 @@ export class AsyncUserBookmarksListComponent{
   @Input()
   bookmarks: Observable<Bookmark[]>;
 
-  constructor( private router: Router, private userBookmarkStore: UserBookmarkStore) {
+  constructor( private route: ActivatedRoute, private router: Router, private userBookmarkStore: UserBookmarkStore) {
     console.log("Async Fuuuukiiiiiiing constructor");
   }
 
@@ -23,8 +23,9 @@ export class AsyncUserBookmarksListComponent{
    * @param bookmark
    */
   gotoDetail(bookmark: Bookmark): void {
-    let link = ['/bookmarks', bookmark._id];
-    this.router.navigate(link);
+    console.log("At least lands in the method........");
+    let link = ['./bookmarks', bookmark._id];
+    this.router.navigate(link, { relativeTo: this.route });
   }
 
   deleteBookmark(bookmark:Bookmark): void {

@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { Bookmark } from '../../model/bookmark';
 import {ActivatedRoute, Params} from "@angular/router";
 import {Location} from "@angular/common";
-import {BookmarkStore} from "../store/BookmarkStore";
+import {UserBookmarkStore} from "../store/UserBookmarkStore";
 
 @Component({
   selector: 'my-bookmark-detail',
@@ -15,7 +15,7 @@ export class BookmarkDetailComponent {
   bookmark: Bookmark;
 
   constructor(
-    private bookmarkStore: BookmarkStore,
+    private userBookmarkStore: UserBookmarkStore,
     private route: ActivatedRoute,
     private location: Location
   ) {}
@@ -23,11 +23,13 @@ export class BookmarkDetailComponent {
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
       let id = params['id'];
-      this.bookmark = this.bookmarkStore.getBookmark(id);
+      this.bookmark = this.userBookmarkStore.getBookmark(id);
+      this.bookmark.tagsLine = '';
       this.bookmark.tags.forEach(tag => {
         this.bookmark.tagsLine += tag + ",";
       });
       this.bookmark.tagsLine = this.bookmark.tagsLine.replace(/,\s*$/, ""); //remove last comma and trailing spaces
+      console.log(this.bookmark);
     });
   }
 
@@ -37,7 +39,7 @@ export class BookmarkDetailComponent {
 
   updateBookmark():void {
     this.bookmark.tags = this.bookmark.tagsLine.split(",");
-    let obs = this.bookmarkStore.updateBookmark(this.bookmark)
+    let obs = this.userBookmarkStore.updateBookmark(this.bookmark);
 
     obs.subscribe(
       res => {

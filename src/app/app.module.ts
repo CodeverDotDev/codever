@@ -7,7 +7,6 @@ import {HomeComponent} from "./home/home.component";
 import {AboutComponent} from "./about/about.component";
 import {ApiService} from "./shared";
 import {routing} from "./app.routing";
-import {BookmarkDetailComponent} from "./bookmark/detail/bookmark-detail.component";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkService} from "./bookmark/bookmark.service";
 import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
@@ -41,7 +40,6 @@ import {HttpWrapperService} from "./keycloak/http-wrapper.service";
     NavigationSearchComponent,
     HomeComponent,
     AboutComponent,
-    BookmarkDetailComponent,
     BookmarksComponent,
     BookmarkSearchComponent,
     BookmarkFormComponent,
