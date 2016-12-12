@@ -30,7 +30,7 @@ router.get('/', function(req, res, next) {
       res.send(bookmarks);
     });
   } else {//no filter - all bookmarks
-    Bookmark.find({}, function(err, bookmarks){
+    Bookmark.find({'shared':true}, function(err, bookmarks){
       if(err){
         return res.status(500).send(err);
       }
@@ -45,7 +45,7 @@ router.get('/', function(req, res, next) {
  */
 router.post('/', function(req, res, next){
   console.log(req.body);
-  var bookmark = new Bookmark(req.body); //expect the model structure in the body directly
+    var bookmark = new Bookmark(req.body); //expect the model structure in the body directly
 
   bookmark.save(function (err, updatedBookmark) {
     if (err){

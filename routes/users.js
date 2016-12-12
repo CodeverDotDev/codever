@@ -29,7 +29,8 @@ router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
     description: req.body.description,
     category: req.body.category,
     tags: req.body.tags,
-    userId: req.params.id
+    userId: req.params.id,
+    shared: req.body.shared
   });
 
   console.log('Bookmark to create ' + bookmark);
