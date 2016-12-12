@@ -8,7 +8,8 @@ var bookmarkSchema = new Schema({
     description: String,
     category: {type:String, required: true},
     tags: [String],
-    userId: {type: String, ref:'User'}
+    userId: {type: String, ref:'User'},
+    shared: Boolean
 },
 {
   timestamps: true
