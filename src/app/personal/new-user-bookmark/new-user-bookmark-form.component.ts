@@ -33,7 +33,8 @@ export class UserBookmarkFormComponent implements OnInit {
       location: ['', Validators.required],
       category: ['', Validators.required],
       tagsLine:['', Validators.required],
-      description:''
+      description:'',
+      shared: false
     });
   }
 
@@ -46,6 +47,8 @@ export class UserBookmarkFormComponent implements OnInit {
     var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description);
 
     newBookmark.userId = this.userId;
+    newBookmark.shared = model.shared;
+
     let obs = this.userBookmarkStore.addBookmark(this.userId, newBookmark);
 
     obs.subscribe(
