@@ -27,14 +27,13 @@ export class UserBookmarkService {
       .share();
   }
 
-  delete(id: string): Observable<any> {
-    const url = `${this.baseUrl}/${id}`;
-    return this.http.delete(url, {headers: this.headers}).share();
-    //.map((res:Response) => res.json()) // ...and calling .json() on the response to return data
-    //.catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
+  delete(bookmark:Bookmark): Observable<any> {
+    return this.httpWrapper
+      .delete(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers})
+      .share();
   }
 
-  saveBookmark(userId:string, bookmark: Bookmark): Observable<any> {
+  saveBookmark(userId:string, bookmark: Bookmark): Observable<Response> {
     return this.httpWrapper
       .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark))
       .share();
