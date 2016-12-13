@@ -8,6 +8,7 @@ import {ErrorService} from "../../error/error.service";
 import {Response} from "@angular/http";
 import {UserBookmarkService} from "../user-bookmark.service";
 import {KeycloakService} from "../../keycloak/keycloak.service";
+import {BookmarkStore} from "../../bookmark/store/BookmarkStore";
 
 @Injectable()
 export class UserBookmarkStore {
@@ -19,7 +20,9 @@ export class UserBookmarkStore {
     constructor(private userBookmarkService: UserBookmarkService,
                 private logger:Logger,
                 private errorService: ErrorService,
-                private keycloakService: KeycloakService) {
+                private keycloakService: KeycloakService,
+                private bookmarkStore: BookmarkStore
+    ) {
         this.logger.log('******** UserBookmarkStore constructor was called *************');
         const keycloak = keycloakService.getKeycloak();
         if(keycloak) {
@@ -59,7 +62,7 @@ export class UserBookmarkStore {
       return this._bookmarks.asObservable();
   }
 
-  addBookmark(userId:string, newBookmark:Bookmark):Observable<List<Bookmark>> {
+  addBookmark(userId:string, newBookmark:Bookmark):Observable<any> {
 
     let obs = this.userBookmarkService.saveBookmark(userId, newBookmark);
 
@@ -71,6 +74,10 @@ export class UserBookmarkStore {
         let newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
         newBookmark._id = newBookmarkId;
         this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
+
+        if(newBookmark.shared){
+          this.bookmarkStore.addBookmark(newBookmark);
+        }
       },
       (error: Response) => {
         this.errorService.handleError(error.json());
@@ -78,10 +85,10 @@ export class UserBookmarkStore {
       }
     );
 
-    return Observable.of(this._bookmarks);
+    return obs;
   }
 
-  deleteBookmark(deleted: Bookmark): Observable<any> {
+  deleteBookmark(deleted: Bookmark): void {
     let obs: Observable<any> = this.userBookmarkService.delete(deleted);
 
     obs.subscribe(
@@ -91,10 +98,12 @@ export class UserBookmarkStore {
         console.log('DELETED INDEEEX ' + index);
         this._bookmarks.next(bookmarks.delete(index));
         console.log(bookmarks);
+
+        if(deleted.shared) {
+          this.bookmarkStore.removeFromStore(deleted);
+        }
       }
     );
-
-    return obs;
   }
 
   updateBookmark(updated:Bookmark): Observable<any> {
@@ -106,6 +115,10 @@ export class UserBookmarkStore {
         let index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
         //let bookmark:Bookmark = bookmarks.get(index);
         this._bookmarks.next(bookmarks.set(index, updated));
+
+        if(updated.shared){
+          this.bookmarkStore.updateBookmark(updated);
+        }
       }
     );
 

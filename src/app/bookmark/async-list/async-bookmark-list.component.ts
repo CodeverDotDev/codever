@@ -26,8 +26,4 @@ export class AsyncBookmarksListComponent{
     this.router.navigate(link);
   }
 
-  deleteBookmark(bookmark:Bookmark): void {
-    this.bookmarkStore.deleteBookmark(bookmark);
-  }
-
 }
