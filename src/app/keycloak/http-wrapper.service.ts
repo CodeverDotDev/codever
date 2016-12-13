@@ -74,6 +74,24 @@ export class HttpWrapperService {
         subject.complete();
       });
     });
+
+    return subject;
+  }
+
+  public delete(url: string, postData: any, options?: RequestOptionsArgs): Observable<Response> {
+    let subject = new AsyncSubject<Response>();
+    this.getAuthHeader(options).subscribe((headers) => {
+      this.http.delete(url, {
+        headers: headers
+      }).subscribe((data) => {
+        subject.next(data);
+      }, (error) => {
+        subject.error(error);
+      }, () => {
+        subject.complete();
+      });
+    });
+
     return subject;
   }
 

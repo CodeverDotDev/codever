@@ -65,6 +65,11 @@ export class UserBookmarkStore {
 
     obs.subscribe(
       res => {
+        let headers = res.headers;
+        //get the bookmark id, which lies in the "location" response header
+        let lastSlashIndex = headers.get('location').lastIndexOf('/');
+        let newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
+        newBookmark._id = newBookmarkId;
         this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
       },
       (error: Response) => {
@@ -73,17 +78,19 @@ export class UserBookmarkStore {
       }
     );
 
-    return obs;
+    return Observable.of(this._bookmarks);
   }
 
   deleteBookmark(deleted: Bookmark): Observable<any> {
-    let obs: Observable<any> = this.userBookmarkService.delete(deleted._id);
+    let obs: Observable<any> = this.userBookmarkService.delete(deleted);
 
     obs.subscribe(
       res =>  {
         let bookmarks: List<Bookmark> = this._bookmarks.getValue();
         let index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+        console.log('DELETED INDEEEX ' + index);
         this._bookmarks.next(bookmarks.delete(index));
+        console.log(bookmarks);
       }
     );
 
