@@ -43,9 +43,4 @@ export class BookmarkSearchComponent implements OnInit {
     let link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }
-
-  deleteBookmark(deletedBookmark:Bookmark): void {
-    this.bookmarkStore.deleteBookmark(deletedBookmark);
-    this.term.reset();
-  }
 }

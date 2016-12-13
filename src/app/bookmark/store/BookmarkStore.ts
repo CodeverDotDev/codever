@@ -42,65 +42,25 @@ export class BookmarkStore {
             );
     }
 
-    getBookmarks():Observable<List<Bookmark>> {
-        return this._bookmarks.asObservable();
-    }
-
-  get bookmarks() {
+  getBookmarks():Observable<List<Bookmark>> {
     return this._bookmarks.asObservable();
   }
 
-  addBookmark(newBookmark:Bookmark):Observable<List<Bookmark>> {
-
-    let obs = this.bookmarkService.saveBookmark(newBookmark);
-
-    obs.subscribe(
-      res => {
-        this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-      },
-      (error: Response) => {
-        this.errorService.handleError(error.json());
-        return Observable.throw(error.json());
-      }
-    );
-
-    return obs;
+  addBookmark(newBookmark:Bookmark): void {
+    this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
   }
 
-  deleteBookmark(deleted: Bookmark): Observable<any> {
-    let obs: Observable<any> = this.bookmarkService.delete(deleted._id);
-
-    obs.subscribe(
-      res =>  {
-        let bookmarks: List<Bookmark> = this._bookmarks.getValue();
-        let index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-        this._bookmarks.next(bookmarks.delete(index));
-      }
-    );
-
-    return obs;
+  removeFromStore(deleted: Bookmark): void {
+    let bookmarks: List<Bookmark> = this._bookmarks.getValue();
+    let index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+    this._bookmarks.next(bookmarks.delete(index));
   }
 
-  updateBookmark(updated:Bookmark): Observable<any> {
-    let obs: Observable<any> = this.bookmarkService.updateBookmark(updated);
-
-    obs.subscribe(
-      res => {
-        let bookmarks = this._bookmarks.getValue();
-        let index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-        //let bookmark:Bookmark = bookmarks.get(index);
-        this._bookmarks.next(bookmarks.set(index, updated));
-      }
-    );
-
-    return obs;
-  }
-
-  getBookmark(id:string): Bookmark{
+  updateBookmark(updated:Bookmark): void {
     let bookmarks = this._bookmarks.getValue();
-    let index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
-
-    return bookmarks.get(index);
+    let index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
+    //let bookmark:Bookmark = bookmarks.get(index);
+    this._bookmarks.next(bookmarks.set(index, updated));
   }
 
   filterBookmarksBySearchTerm(term:string): Bookmark[] {

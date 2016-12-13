@@ -11,7 +11,6 @@ import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkService} from "./bookmark/bookmark.service";
 import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
 import "./rxjs-extensions";
-import {BookmarkFormComponent} from "./bookmark/form/bookmark-form.component";
 import {AsyncBookmarksListComponent} from "./bookmark/async-list/async-bookmark-list.component";
 import {BookmarkStore} from "./bookmark/store/BookmarkStore";
 import {NavigationComponent} from "./navigation/navigation.component";
@@ -42,7 +41,6 @@ import {HttpWrapperService} from "./keycloak/http-wrapper.service";
     AboutComponent,
     BookmarksComponent,
     BookmarkSearchComponent,
-    BookmarkFormComponent,
     AsyncBookmarksListComponent,
     SearchResultsComponent,
     ErrorComponent
