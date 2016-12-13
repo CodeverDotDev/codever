@@ -88,7 +88,7 @@ router.get('/:id/bookmarks', keycloak.protect(), function(req, res, next) {
 /**
  * full UPDATE via PUT - that is the whole document is required and will be updated
  */
-router.put('/:userId/bookmarks/:bookmarkId', function(req, res, next) {
+router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), function(req, res, next) {
   Bookmark.findOneAndUpdate({_id: req.params.bookmarkId, userId: req.params.userId}, req.body, {new: true}, function(err, bookmark){
     if(err){
       if (err.name === 'MongoError' && err.code === 11000) {
@@ -108,7 +108,7 @@ router.put('/:userId/bookmarks/:bookmarkId', function(req, res, next) {
 /*
 * DELETE bookmark for user
 */
-router.delete('/:userId/bookmarks/:bookmarkId', function(req, res, next) {
+router.delete('/:userId/bookmarks/:bookmarkId', keycloak.protect(), function(req, res, next) {
   Bookmark.findOneAndRemove({_id: req.params.bookmarkId, userId: req.params.userId}, function(err, bookmark){
     if(err){
       return res.status(500).send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.bookmarkId]));
