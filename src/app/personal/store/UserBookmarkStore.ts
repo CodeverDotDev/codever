@@ -96,8 +96,11 @@ export class UserBookmarkStore {
         let bookmarks: List<Bookmark> = this._bookmarks.getValue();
         let index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
         console.log('DELETED INDEEEX ' + index);
-        this._bookmarks.next(bookmarks.delete(index));
-        console.log(bookmarks);
+        var listWithoutElement = bookmarks.delete(index);
+        this._bookmarks.next(listWithoutElement);
+        bookmarks.forEach(bookmark => {
+          console.log(bookmark);
+        });
 
         if(deleted.shared) {
           this.bookmarkStore.removeFromStore(deleted);
