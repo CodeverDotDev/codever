@@ -19,8 +19,6 @@ export class UserBookmarksComponent implements  OnInit{
 
   ngOnInit(): void {
     this.userBookmarks = this.userBookmarkStore.getBookmarks();
-    console.log('UserBookmarksComponent.ngOnInit');
-    console.log(this.userBookmarks);
   }
 
 }
