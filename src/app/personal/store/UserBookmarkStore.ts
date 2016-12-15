@@ -13,7 +13,7 @@ import {BookmarkStore} from "../../bookmark/store/BookmarkStore";
 @Injectable()
 export class UserBookmarkStore {
 
-    private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]))
+    private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
 
     private userId: String;
 
@@ -36,7 +36,6 @@ export class UserBookmarkStore {
     this.userBookmarkService.getAllBookmarks(this.userId)
       .subscribe(
         res => {
-          console.log(res.json());
           let bookmarks = (<Object[]>res.json())
             .map((bookmark: any) =>
               new Bookmark(
@@ -98,7 +97,7 @@ export class UserBookmarkStore {
         console.log('DELETED INDEEEX ' + index);
         var listWithoutElement = bookmarks.delete(index);
         this._bookmarks.next(listWithoutElement);
-        bookmarks.forEach(bookmark => {
+        listWithoutElement.forEach(bookmark => {
           console.log(bookmark);
         });
 
