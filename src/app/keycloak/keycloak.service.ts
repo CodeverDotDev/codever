@@ -16,12 +16,10 @@ export class KeycloakService {
     const keycloakAuth = new keycloak(keycloakPath);
     keycloakAuth.init(onload).success(
       () => {
-        console.log("************************************************yes");
         KeycloakService.keycloak = keycloakAuth;
         subject.next("success");
         subject.complete();
       }).error((error) => {
-        console.log("************************************************no");
         subject.error(error);
         subject.complete();
     });
