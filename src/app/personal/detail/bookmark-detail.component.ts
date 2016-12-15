@@ -1,8 +1,7 @@
 
-import { Component, Input } from '@angular/core';
-import { Bookmark } from '../../model/bookmark';
-import {ActivatedRoute, Params} from "@angular/router";
-import {Location} from "@angular/common";
+import {Component} from "@angular/core";
+import {Bookmark} from "../../model/bookmark";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
 
 @Component({
@@ -17,7 +16,7 @@ export class BookmarkDetailComponent {
   constructor(
     private userBookmarkStore: UserBookmarkStore,
     private route: ActivatedRoute,
-    private location: Location
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -33,18 +32,17 @@ export class BookmarkDetailComponent {
     });
   }
 
-  goBack(): void {
-    this.location.back();
-  }
-
   updateBookmark():void {
     this.bookmark.tags = this.bookmark.tagsLine.split(",");
     let obs = this.userBookmarkStore.updateBookmark(this.bookmark);
 
     obs.subscribe(
       res => {
-        this.goBack();
+        this.goToUserBookmarks()
       });
   }
 
+  goToUserBookmarks(): void {
+    this.router.navigate(['/personal']);
+  }
 }
