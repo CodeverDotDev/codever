@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {Bookmark} from "../../model/bookmark";
-import {Location} from "@angular/common";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {KeycloakService} from "../../keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'user-bookmark-form',
@@ -17,7 +17,7 @@ export class UserBookmarkFormComponent implements OnInit {
 
   constructor(
     private userBookmarkStore: UserBookmarkStore,
-    private location: Location,
+    private router: Router,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService
   ){
@@ -38,10 +38,6 @@ export class UserBookmarkFormComponent implements OnInit {
     });
   }
 
-  goBack(): void {
-    this.location.back();
-  }
-
   saveBookmark(model: Bookmark, isValid: boolean) {
     model.tags = model.tagsLine.split(",");
     var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description);
@@ -53,7 +49,7 @@ export class UserBookmarkFormComponent implements OnInit {
 
     obs.subscribe(
       res => {
-        this.goBack();
+        this.router.navigate(['/personal']);
       });
   }
 }
