@@ -87,7 +87,7 @@ export class UserBookmarkStore {
     return obs;
   }
 
-  deleteBookmark(deleted: Bookmark): void {
+  deleteBookmark(deleted: Bookmark): Observable<any> {
     let obs: Observable<any> = this.userBookmarkService.delete(deleted);
 
     obs.subscribe(
@@ -106,6 +106,8 @@ export class UserBookmarkStore {
         }
       }
     );
+
+    return obs;
   }
 
   updateBookmark(updated:Bookmark): Observable<any> {
