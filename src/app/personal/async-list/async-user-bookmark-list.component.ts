@@ -14,9 +14,7 @@ export class AsyncUserBookmarksListComponent{
   @Input()
   bookmarks: Observable<Bookmark[]>;
 
-  constructor( private route: ActivatedRoute, private router: Router, private userBookmarkStore: UserBookmarkStore) {
-    console.log("Async Fuuuukiiiiiiing constructor");
-  }
+  constructor( private route: ActivatedRoute, private router: Router, private userBookmarkStore: UserBookmarkStore) {}
 
   /**
    *
@@ -29,7 +27,12 @@ export class AsyncUserBookmarksListComponent{
   }
 
   deleteBookmark(bookmark:Bookmark): void {
-    this.userBookmarkStore.deleteBookmark(bookmark);
+
+    let obs = this.userBookmarkStore.deleteBookmark(bookmark);
+    obs.subscribe(
+      res => {
+        this.router.navigate(['/personal']);
+      });
   }
 
 }
