@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, NgZone} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
 import {Bookmark} from "../../model/bookmark";
@@ -14,14 +14,17 @@ export class AsyncUserBookmarksListComponent{
   @Input()
   bookmarks: Observable<Bookmark[]>;
 
-  constructor( private route: ActivatedRoute, private router: Router, private userBookmarkStore: UserBookmarkStore) {}
+  constructor(
+    private zone:NgZone, //TODO without explicitly running the zone functionality the view does not get updated, though model and everything gets updated
+    private route: ActivatedRoute,
+    private router: Router,
+    private userBookmarkStore: UserBookmarkStore) {}
 
   /**
    *
    * @param bookmark
    */
   gotoDetail(bookmark: Bookmark): void {
-    console.log("At least lands in the method........");
     let link = ['./bookmarks', bookmark._id];
     this.router.navigate(link, { relativeTo: this.route });
   }
@@ -31,7 +34,9 @@ export class AsyncUserBookmarksListComponent{
     let obs = this.userBookmarkStore.deleteBookmark(bookmark);
     obs.subscribe(
       res => {
-        this.router.navigate(['/personal']);
+        this.zone.run(() => {
+          console.log("ZONE RUN bookmark deleted");
+        });
       });
   }
 

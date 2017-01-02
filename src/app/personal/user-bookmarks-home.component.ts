@@ -1,9 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Bookmark} from "../model/bookmark";
-import {Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {List} from "immutable";
-import {Logger} from "../logger.service";
 import {UserBookmarkStore} from "./store/UserBookmarkStore";
 
 @Component({

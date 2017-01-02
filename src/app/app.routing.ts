@@ -17,10 +17,12 @@ const routes: Routes = [
     component: SearchResultsComponent
   },
 
+  /*
   {
     path: 'personal',
     loadChildren: './personal/user-bookmarks.module#UserBookmarksModule'
   }
+  */
 ];
 
 export const routing = RouterModule.forRoot(routes);
