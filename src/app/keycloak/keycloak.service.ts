@@ -14,7 +14,7 @@ export class KeycloakService {
     onload = {onLoad: `login-required`};
 
     const keycloakAuth = new keycloak(keycloakPath);
-    keycloakAuth.init(onload).success(
+    keycloakAuth.init().success(
       () => {
         KeycloakService.keycloak = keycloakAuth;
         subject.next("success");
@@ -24,6 +24,16 @@ export class KeycloakService {
         subject.complete();
     });
     return subject;
+  }
+
+  public login(){
+    let options: any;
+    options = {redirectUri: `http://localhost:8080/personal`};
+    KeycloakService.keycloak.login(options);
+  }
+
+  public  isLoggedIn():boolean{
+    return KeycloakService.keycloak.authenticated;
   }
 
   getKeycloak(): any {
