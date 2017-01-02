@@ -24,6 +24,7 @@ import {ErrorComponent} from "./error/error.component";
 import {KeycloakService} from "./keycloak/keycloak.service";
 import {HttpWrapperService} from "./keycloak/http-wrapper.service";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
+import {AuthGuard} from "./auth-guard.service";
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import {UserBookmarksModule} from "./personal/user-bookmarks.module";
     ErrorComponent
   ],
   providers: [
+    AuthGuard,
     ApiService,
     BookmarkService,
     BookmarkSearchService,
