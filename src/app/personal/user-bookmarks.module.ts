@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core";
-import {UserBookmarksComponent} from "./user-bookmarks.component";
+import {UserBookmarksComponent} from "./user-bookmarks-home.component";
 import {AsyncUserBookmarksListComponent} from "./async-list/async-user-bookmark-list.component";
 import {HttpModule, Http, XHRBackend, RequestOptions} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -11,6 +11,7 @@ import {KeycloakService} from "../keycloak/keycloak.service";
 import {HttpWrapperService} from "../keycloak/http-wrapper.service";
 import {UserBookmarkFormComponent} from "./new-user-bookmark/new-user-bookmark-form.component";
 import {BookmarkDetailComponent} from "./detail/bookmark-detail.component";
+import {PersonalBookmarksComponent} from "./personal-bookmarks.component";
 
 export const routerConfig = [{
   path: '',
@@ -22,7 +23,8 @@ export const routerConfig = [{
     UserBookmarksComponent,
     UserBookmarkFormComponent,
     AsyncUserBookmarksListComponent,
-    BookmarkDetailComponent
+    BookmarkDetailComponent,
+    PersonalBookmarksComponent
   ],
   imports: [
     CommonModule, //in the root module comes via the BrowserModule

@@ -1,20 +1,31 @@
 import {RouterModule} from "@angular/router";
-import {UserBookmarksComponent} from "./user-bookmarks.component";
+import {UserBookmarksComponent} from "./user-bookmarks-home.component";
 import {NgModule} from "@angular/core/src/metadata/ng_module";
 import {UserBookmarkFormComponent} from "./new-user-bookmark/new-user-bookmark-form.component";
 import {BookmarkDetailComponent} from "./detail/bookmark-detail.component";
+import {PersonalBookmarksComponent} from "./personal-bookmarks.component";
 
 @NgModule({
   imports: [RouterModule.forChild([
-    { path: '', component: UserBookmarksComponent },
     {
-      path: 'new',
-      component: UserBookmarkFormComponent
-    },
-    {
-      path: 'bookmarks/:id',
-      component: BookmarkDetailComponent
-    },
+      path: 'personal',
+      component: PersonalBookmarksComponent,
+      children:[
+        {
+          path: '',
+          component: UserBookmarksComponent
+        },
+        {
+          path: 'new',
+          component: UserBookmarkFormComponent
+        },
+        {
+          path: 'bookmarks/:id',
+          component: BookmarkDetailComponent
+        }
+      ]
+    }
+
   ])],
   exports: [RouterModule]
 })
