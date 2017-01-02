@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {KeycloakService} from "../keycloak/keycloak.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'my-navigation',
@@ -6,4 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavigationComponent {
 
+  constructor(private keycloakService: KeycloakService,  private router: Router){}
+
+  logout(){
+    this.keycloakService.logout();
+    this.router.navigate(['/']);
+  }
 }
