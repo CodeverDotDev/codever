@@ -14,3 +14,8 @@ a {
 .ng-invalid:not(form)  {
   border-left: 5px solid #a94442; /* red */
 }
+
+// bootstrap override
+.card-block {
+  padding: 1.0rem;
+}
