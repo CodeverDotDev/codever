@@ -1,24 +1,24 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, NgZone} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {BookmarkSearchService} from "./bookmark-search.service";
 import {Bookmark} from "../../model/bookmark";
-import {BookmarkStore} from "../store/BookmarkStore";
 import {FormControl} from "@angular/forms";
-import {Router} from "@angular/router";
 import {BookmarkFilterService} from "../../filter.service";
+import {UserBookmarkStore} from "../store/UserBookmarkStore";
 
 @Component({
-    selector: 'bookmark-search',
-    templateUrl: 'bookmark-search.component.html',
-    styleUrls: [ 'bookmark-search.component.scss' ],
-    providers: [BookmarkSearchService]
+    selector: 'personal-bookmark-search',
+    templateUrl: 'personal-bookmark-search.component.html',
+    styleUrls: [ 'personal-bookmark-search.component.scss' ]
 })
-export class BookmarkSearchComponent implements OnInit {
+export class PersonalBookmarkSearchComponent implements OnInit {
 
     bookmarks: Observable<Bookmark[]>;
     term = new FormControl();
 
-    constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
+    constructor(
+      private zone:NgZone,
+      private userBookmarkStore: UserBookmarkStore,
+      private bookmarkFilterService: BookmarkFilterService) {}
 
     ngOnInit(): void {
         this.bookmarks = this.term.valueChanges
@@ -26,7 +26,7 @@ export class BookmarkSearchComponent implements OnInit {
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time
                 // return the http search observable
-                ? Observable.of(this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarkStore.getBookmarksValue()))
+                ? Observable.of(this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.userBookmarkStore.getBookmarksValue()))
                 // or the observable of empty heroes if no search term
                 : Observable.of<Bookmark[]>([]))
             .catch(error => {
@@ -34,14 +34,9 @@ export class BookmarkSearchComponent implements OnInit {
                 console.log(error);
                 return Observable.of<Bookmark[]>([]);
             });
+      this.zone.run(() => {
+        console.log("ZONE RUN bookmark deleted");
+      });
     }
 
-  /**
-   *
-   * @param bookmark
-   */
-  gotoDetail(bookmark: Bookmark): void {
-    let link = ['/bookmarks', bookmark._id];
-    this.router.navigate(link);
-  }
 }

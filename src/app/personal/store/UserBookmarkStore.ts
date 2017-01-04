@@ -173,5 +173,8 @@ export class UserBookmarkStore {
     return filteredBookmarks;
   }
 
+  getBookmarksValue():List<Bookmark> {
+    return this._bookmarks.getValue();
+  }
 }
 
