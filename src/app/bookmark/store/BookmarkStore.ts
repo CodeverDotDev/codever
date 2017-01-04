@@ -46,6 +46,10 @@ export class BookmarkStore {
     return this._bookmarks.asObservable();
   }
 
+  getBookmarksValue():List<Bookmark> {
+    return this._bookmarks.getValue();
+  }
+
   addBookmark(newBookmark:Bookmark): void {
     this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
   }

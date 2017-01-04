@@ -25,6 +25,8 @@ import {KeycloakService} from "./keycloak/keycloak.service";
 import {HttpWrapperService} from "./keycloak/http-wrapper.service";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
 import {AuthGuard} from "./auth-guard.service";
+import {BookmarkFilterService} from "./filter.service";
+import {PersonalBookmarkSearchComponent} from "./personal/search/personal-bookmark-search.component";
 
 @NgModule({
   imports: [
@@ -59,6 +61,7 @@ import {AuthGuard} from "./auth-guard.service";
     ErrorService,
     KeycloakService,
     HttpWrapperService,
+    BookmarkFilterService
   ],
   bootstrap: [AppComponent]
 })
