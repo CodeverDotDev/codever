@@ -19,3 +19,19 @@ a {
 .card-block {
   padding: 1.0rem;
 }
+
+ul.tags {
+  list-style: none;
+  display: inline-block;
+  padding-left: 0.5rem;
+  margin-bottom: 0.2rem;
+  font-style: italic;
+}
+
+ul.tags li {
+  display:inline
+}
+
+ul.tags li:not(:last-child):after {
+  content: ', ';
+}

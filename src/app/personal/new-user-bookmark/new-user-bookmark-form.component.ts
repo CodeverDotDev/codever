@@ -31,7 +31,6 @@ export class UserBookmarkFormComponent implements OnInit {
     this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
-      category: ['', Validators.required],
       tagsLine:['', Validators.required],
       description:'',
       shared: false

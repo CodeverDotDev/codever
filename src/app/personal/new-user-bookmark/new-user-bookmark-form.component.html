@@ -25,18 +25,6 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="name">Category*</label>
-        <input type="text" class="form-control" id="category"
-               required
-               name="category"
-               formControlName="category"
-               placeholder="e.g. java or javascript">
-        <div [hidden]="bookmarkForm.controls.category.valid || (bookmarkForm.controls.category.pristine && !submitted)"
-             class="alert alert-danger">
-          Category is required
-        </div>
-      </div>
-      <div class="form-group">
         <label for="tags">Tags* - comma separated</label>
         <input type="text" class="form-control" id="tags"
                formControlName="tagsLine"
@@ -48,11 +36,11 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description">Notes...</label>
         <textarea class="form-control"
                   id="description"
                   formControlName="description"
-                  placeholder="Write a short description to search in later">
+                  placeholder="Make some notes to help you later by searching...">
         </textarea>
       </div>
       <div class="form-check">
