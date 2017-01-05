@@ -1,7 +1,7 @@
 <div class="container">
   <div class="col-md-8 col-md-offset-2">
     <div *ngIf="bookmark">
-      <h2>{{bookmark.name}} details!</h2>
+      <h2>Edit... {{bookmark.name}} </h2>
       <form #form="ngForm" (ngSubmit)="updateBookmark(form.value)">
         <div class="form-group">
           <label>Name* </label>
@@ -55,7 +55,7 @@
             <strong> Make this bookmark public so others can benefit from it </strong>
           </label>
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-default">Save</button>
       </form>
     </div>
   </div>
