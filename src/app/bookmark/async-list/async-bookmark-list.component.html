@@ -1,15 +1,10 @@
-<div *ngFor="let bookmark of bookmarks | async" class="card">
-  <div class="card-block">
-    <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank">{{ bookmark.name }}</a></h4>
-    <p class="card-text">{{ bookmark.description }}</p>
-  </div>
-  <div class="card-block">
-    <b>Tags:</b>
+<div class="list-group">
+  <a *ngFor="let bookmark of bookmarks | async" href="{{bookmark.location}}" class="list-group-item list-group-item-action">
+    <h5 class="list-group-item-heading">{{ bookmark.name }}</h5>
+    <p class="list-group-item-text">{{ bookmark.description }}</p>
+    <em>Tags:</em>
     <ul class="tags">
       <li *ngFor="let tag of bookmark.tags">{{tag}}</li>
     </ul>
-  </div>
-  <div class="card-footer">
-    <b>Category:</b> {{ bookmark.category }}
-  </div>
+  </a>
 </div>

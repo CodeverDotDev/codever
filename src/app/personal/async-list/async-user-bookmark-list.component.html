@@ -5,13 +5,10 @@
     <button type="button" class="btn btn-primary" (click)="gotoDetail(bookmark)">Edit</button>
     <button type="button" class="btn btn-danger" (click)="deleteBookmark(bookmark)">Delete</button>
   </div>
-  <div class="card-block">
+  <div class="card-footer">
     <b>Tags:</b>
     <ul class="tags">
       <li *ngFor="let tag of bookmark.tags">{{tag}}</li>
     </ul>
-  </div>
-  <div class="card-footer">
-    <b>Category:</b> {{ bookmark.category }}
   </div>
 </div>
