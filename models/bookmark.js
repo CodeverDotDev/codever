@@ -6,7 +6,7 @@ var bookmarkSchema = new Schema({
     name: {type:String, required: true, unique: true},
     location: {type:String, required: true, unique: true},
     description: String,
-    category: {type:String, required: true},
+    category: {type:String},
     tags: [String],
     userId: {type: String, ref:'User'},
     shared: Boolean
