@@ -1,14 +1,8 @@
-ul.tags {
-  list-style: none;
-  display: inline-block;
-  padding-left: 0.5rem;
-  margin-bottom: 0.2rem;
+.tags-group {
+  padding: 0.3rem 0 0.3rem 0;
+  margin-bottom: 0.5rem;
 }
 
-ul.tags li {
-  display:inline
-}
-
-ul.tags li:not(:last-child):after {
-  content: ', ';
+.tag {
+  margin-right: 0.3rem;
 }
