@@ -21,7 +21,6 @@ export class BookmarkFilterService {
     let hit:boolean =false;
     if(bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || bookmark.category.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.tags.indexOf(term.toLowerCase()) !== -1
     ){
       return true;
