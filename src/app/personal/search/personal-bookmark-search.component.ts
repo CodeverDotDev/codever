@@ -4,6 +4,7 @@ import {Bookmark} from "../../model/bookmark";
 import {FormControl} from "@angular/forms";
 import {BookmarkFilterService} from "../../filter.service";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'personal-bookmark-search',
@@ -17,6 +18,8 @@ export class PersonalBookmarkSearchComponent implements OnInit {
 
     constructor(
       private zone:NgZone,
+      private route: ActivatedRoute,
+      private router: Router,
       private userBookmarkStore: UserBookmarkStore,
       private bookmarkFilterService: BookmarkFilterService) {}
 
@@ -38,5 +41,27 @@ export class PersonalBookmarkSearchComponent implements OnInit {
         console.log("ZONE RUN bookmark deleted");
       });
     }
+
+  /**
+   *
+   * @param bookmark
+   */
+  gotoDetail(bookmark: Bookmark): void {
+    let link = ['./bookmarks', bookmark._id];
+    this.router.navigate(link, { relativeTo: this.route });
+  }
+
+  deleteBookmark(deleted:Bookmark): void {
+
+    let obs = this.userBookmarkStore.deleteBookmark(deleted);
+    obs.subscribe(
+      res => {
+        this.zone.run(() => {
+          console.log("ZONE RUN bookmark deleted");
+        });
+
+        this.term.patchValue({term:''});
+      });
+  }
 
 }
