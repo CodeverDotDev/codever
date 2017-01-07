@@ -11,13 +11,9 @@
     <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)">Edit</button>
     <button type="button" class="btn btn-danger btn-sm" (click)="deleteBookmark(bookmark)">Delete</button>
   </div>
-  <div class="card-block">
-    <b>Tags:</b>
-    <ul class="tags">
-      <li *ngFor="let tag of bookmark.tags">{{tag}}</li>
-    </ul>
-  </div>
   <div class="card-footer">
-    <b>Category:</b> {{ bookmark.category }}
+    <div class="tags-group">
+      <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{tag}} </span>
+    </div>
   </div>
 </div>
