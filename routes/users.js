@@ -6,8 +6,11 @@ var Keycloak = require('keycloak-connect');
 var Bookmark = require('../models/bookmark');
 var MyError = require('../models/error');
 
+var common = require('./common');
+var config = common.config();
+
 //add keycloak middleware
-var keycloak = new Keycloak({ scope: 'openid' });
+var keycloak = new Keycloak({ scope: 'openid' }, config.keycloak);
 router.use( keycloak.middleware() );
 
 /* GET users listing. */
