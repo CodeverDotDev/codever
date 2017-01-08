@@ -26,7 +26,7 @@ export class BookmarkSearchComponent implements OnInit {
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time
                 // return the http search observable
-                ? Observable.of(this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarkStore.getBookmarksValue()))
+                ? this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarkStore.getBookmarks())
                 // or the observable of empty heroes if no search term
                 : Observable.of<Bookmark[]>([]))
             .catch(error => {
