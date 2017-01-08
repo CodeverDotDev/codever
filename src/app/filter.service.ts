@@ -2,18 +2,29 @@
 import {Injectable} from "@angular/core";
 import {Bookmark} from "./model/bookmark";
 import {List} from "immutable";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class BookmarkFilterService {
 
-  filterBookmarksBySearchTerm(query:string, bookmarks:List<Bookmark>): Bookmark[] {
+  filterBookmarksBySearchTerm(query:string, observableListBookmark:Observable<List<Bookmark>>): Observable<Bookmark[]> {
     var terms = query.split("+");
-    let filteredBookmarks = bookmarks;
-    terms.forEach(term => {
-      filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim())).toList();
-    });
+    let result = Observable.of<Bookmark[]>([]);
+    observableListBookmark.subscribe(
+      bookmarks => {
+        let filteredBookmarks = bookmarks;
+        terms.forEach(term => {
+          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim())).toList();
+        });
 
-    return filteredBookmarks.toArray();
+        result = Observable.of(filteredBookmarks.toArray());
+      },
+      err => {
+        console.log("Error filtering bookmakrs");
+      }
+    );
+
+    return result;
   }
 
 

@@ -29,7 +29,7 @@ export class PersonalBookmarkSearchComponent implements OnInit {
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time
                 // return the http search observable
-                ? Observable.of(this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.userBookmarkStore.getBookmarksValue()))
+                ? this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.userBookmarkStore.getBookmarks())
                 // or the observable of empty heroes if no search term
                 : Observable.of<Bookmark[]>([]))
             .catch(error => {
@@ -60,7 +60,10 @@ export class PersonalBookmarkSearchComponent implements OnInit {
           console.log("ZONE RUN bookmark deleted");
         });
 
-        this.term.patchValue({term:''});
+        setTimeout(() => {
+          this.term.reset();
+        });
+
       });
   }
 
