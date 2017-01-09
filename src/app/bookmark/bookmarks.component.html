@@ -2,6 +2,26 @@
   <bookmark-search></bookmark-search>
 
   <hr>
+  <div class="tags-group">
+    <span *ngFor="let tag of tags" class="tag tag-default tag-pill float-xs-left"><a href="#{{tag.name}}">{{tag.name}}</a></span>
+  </div>
+
+  <hr>
+  <div *ngFor="let tag of tags">
+    <br>
+    <h3 id="{{tag.name}}">{{tag.name}}</h3>
+    <div class="list-group">
+      <a *ngFor="let bookmark of tag.bookmarks" href="{{bookmark.location}}" class="list-group-item list-group-item-action">
+        <h5 class="list-group-item-heading">{{ bookmark.name }}</h5>
+        <p class="list-group-item-text">{{ bookmark.description }}</p>
+        <div class="tags-group">
+          <span *ngFor="let bookmarkTag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{bookmarkTag}} </span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <hr>
   <h3>Public bookmarks</h3>
   <my-async-bookmark-list [bookmarks]="publicBookmarks"></my-async-bookmark-list>
 
