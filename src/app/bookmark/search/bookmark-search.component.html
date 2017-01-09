@@ -10,9 +10,7 @@
     <p class="card-text">{{ bookmark.description }}</p>
   </div>
   <div class="card-footer">
-    <b>Tags:</b>
-    <ul class="tags">
-      <li *ngFor="let tag of bookmark.tags">{{tag}}</li>
-    </ul>
-  </div>
+    <div class="tags-group">
+      <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{tag}} </span>
+    </div>
 </div>
