@@ -1,6 +1,6 @@
 // styles in src/style directory are applied to the whole page
 body {
-    background: #82a7a4;
+    background: #e7eaea;
 }
 a {
     color: #03A9F4;
@@ -15,10 +15,21 @@ a {
   border-left: 5px solid #a94442; /* red */
 }
 
-// bootstrap override
+// START bootstrap override
 .card-block {
   padding: 1.0rem;
 }
+
+.card-footer {
+  padding: 0.2rem 1.0rem;
+}
+
+.tag-pill{
+  padding: 0.3rem 0.6rem;
+  border-radius: 10rem;
+  margin-bottom: 0.3rem;
+}
+// END bootstrap override
 
 ul.tags {
   list-style: none;
@@ -43,5 +54,11 @@ ul.tags li:not(:last-child):after {
 
 .tag {
   margin-right: 0.3rem;
+}
+
+.clear {
+  clear: both;
+  margin: 0;
+  padding: 0;
 }
 

@@ -14,9 +14,11 @@
       <a *ngFor="let bookmark of tag.bookmarks" href="{{bookmark.location}}" class="list-group-item list-group-item-action">
         <h5 class="list-group-item-heading">{{ bookmark.name }}</h5>
         <p class="list-group-item-text">{{ bookmark.description }}</p>
+        <hr>
         <div class="tags-group">
           <span *ngFor="let bookmarkTag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{bookmarkTag}} </span>
         </div>
+        <div class="clear"></div>
       </a>
     </div>
   </div>
