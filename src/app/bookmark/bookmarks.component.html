@@ -4,6 +4,7 @@
   <h2>Tags</h2>
   <div class="tags-group">
     <span *ngFor="let tag of tags" class="tag tag-default tag-pill float-xs-left"><a href="#{{tag.name}}">{{tag.name}}</a></span>
+    <div class="clear"></div>
   </div>
 
   <hr>
@@ -16,15 +17,10 @@
         <p class="list-group-item-text">{{ bookmark.description }}</p>
         <hr>
         <div class="tags-group">
-          <span *ngFor="let bookmarkTag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{bookmarkTag}} </span>
+          <span *ngFor="let bookmarkTag of bookmark.tags" class="tag tag-default tag-pill float-xs-left"><a href="#{{bookmarkTag.trim()}}">{{bookmarkTag}}</a></span>
         </div>
         <div class="clear"></div>
       </a>
     </div>
   </div>
-
-  <hr>
-  <h3>Public bookmarks</h3>
-  <my-async-bookmark-list [bookmarks]="publicBookmarks"></my-async-bookmark-list>
-
 </div>
