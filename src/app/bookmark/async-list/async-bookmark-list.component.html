@@ -1,9 +1,0 @@
-<div class="list-group">
-  <a *ngFor="let bookmark of bookmarks | async" href="{{bookmark.location}}" class="list-group-item list-group-item-action">
-    <h5 class="list-group-item-heading">{{ bookmark.name }}</h5>
-    <p class="list-group-item-text">{{ bookmark.description }}</p>
-    <div class="tags-group">
-      <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{tag}} </span>
-    </div>
-  </a>
-</div>
