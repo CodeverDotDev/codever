@@ -8,10 +8,15 @@ import {Router} from "@angular/router";
 })
 export class NavigationComponent {
 
+
   constructor(private keycloakService: KeycloakService,  private router: Router){}
 
   logout(){
     this.keycloakService.logout();
     this.router.navigate(['/']);
+  }
+
+  login(){
+    this.keycloakService.login();
   }
 }
