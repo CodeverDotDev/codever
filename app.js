@@ -11,7 +11,7 @@ var users = require('./routes/users');
 var bookmarks = require('./routes/bookmarks');
 
 var app = express();
-mongoose.connect('localhost:27017/codingpedia-bookmarks');
+mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,9 +35,9 @@ app.use(function(req, res, next) {
 });
 
 
-app.use('/', routes);
-app.use('/users', users);
-app.use('/bookmarks', bookmarks);
+app.use('/api', routes);
+app.use('/api/users', users);
+app.use('/api/bookmarks', bookmarks);
 //app.use('/categories', categories);
 
 // catch 404 and forward to error handler
