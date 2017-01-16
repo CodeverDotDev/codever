@@ -15,7 +15,11 @@ export class BookmarkService {
   constructor(private http: Http) { }
 
   getAllBookmarks(): Observable<Response> {
-    console.log('******** BookmarkService.getAllBookmarks was called *************')
+    if (process.env.ENV === 'build') {//PRODUCTION
+      this.bookmarksUrl = 'http://production:3000/api/users/';
+    } else {//DEV
+      this.bookmarksUrl = 'http://localhost:3000/api/bookmarks/';
+    }
     return this.http.get(this.bookmarksUrl);
   }
 
