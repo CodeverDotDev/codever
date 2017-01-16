@@ -9,7 +9,7 @@ import {Observable} from "rxjs";
 @Injectable()
 export class BookmarkService {
 
-  private bookmarksUrl = 'http://localhost:3000/bookmarks';  // URL to web api
+  private bookmarksUrl = 'http://localhost:3000/api/bookmarks';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http) { }
