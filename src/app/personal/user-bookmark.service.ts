@@ -10,7 +10,7 @@ import {HttpWrapperService} from "../keycloak/http-wrapper.service";
 @Injectable()
 export class UserBookmarkService {
 
-  private baseUrl = 'http://localhost:3000/users/';  // URL to web api
+  private baseUrl = 'http://localhost:3000/api/users/';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http, private httpWrapper: HttpWrapperService) { }
