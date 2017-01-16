@@ -10,10 +10,16 @@ import {HttpWrapperService} from "../keycloak/http-wrapper.service";
 @Injectable()
 export class UserBookmarkService {
 
-  private baseUrl = 'http://localhost:3000/api/users/';  // URL to web api
+  private baseUrl = 'http://localhost:3000/api/users/';  // URL to web api - default is the DEV environment
   private headers = new Headers({'Content-Type': 'application/json'});
 
-  constructor(private http: Http, private httpWrapper: HttpWrapperService) { }
+  constructor(private http: Http, private httpWrapper: HttpWrapperService) {
+    if (process.env.ENV === 'build') {//PRODUCTION
+      this.baseUrl = 'http://production:3000/api/users/';
+    } else {//DEV
+      this.baseUrl = 'http://localhost:3000/api/users/';
+    }
+  }
 
   getAllBookmarks(userId:String): Observable<Response> {
     console.log('******** UserBookmarkService.getAllBookmarks was called *************');
