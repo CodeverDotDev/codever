@@ -9,17 +9,14 @@ import {Observable} from "rxjs";
 @Injectable()
 export class BookmarkService {
 
-  private bookmarksUrl = 'http://localhost:3000/api/bookmarks';  // URL to web api
+  private bookmarksUrl = '';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
 
-  constructor(private http: Http) { }
+  constructor(private http: Http) {
+    this.bookmarksUrl = process.env.API_URL + '/bookmarks/';
+  }
 
   getAllBookmarks(): Observable<Response> {
-    if (process.env.ENV === 'build') {//PRODUCTION
-      this.bookmarksUrl = 'http://production:3000/api/users/';
-    } else {//DEV
-      this.bookmarksUrl = 'http://localhost:3000/api/bookmarks/';
-    }
     return this.http.get(this.bookmarksUrl);
   }
 

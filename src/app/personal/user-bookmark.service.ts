@@ -14,11 +14,7 @@ export class UserBookmarkService {
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http, private httpWrapper: HttpWrapperService) {
-    if (process.env.ENV === 'build') {//PRODUCTION
-      this.baseUrl = 'http://production:3000/api/users/';
-    } else {//DEV
-      this.baseUrl = 'http://localhost:3000/api/users/';
-    }
+    this.baseUrl = process.env.API_URL + '/users/';
   }
 
   getAllBookmarks(userId:String): Observable<Response> {
