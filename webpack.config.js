@@ -19,6 +19,7 @@ var ENV = process.env.npm_lifecycle_event;
 var isTestWatch = ENV === 'test-watch';
 var isTest = ENV === 'test' || isTestWatch;
 var isProd = ENV === 'build';
+var API_URL = process.env.API_URL = ''
 
 module.exports = function makeWebpackConfig() {
   /**
@@ -43,6 +44,12 @@ module.exports = function makeWebpackConfig() {
     config.devtool = 'eval-source-map';
   }
 
+  if (isProd) {
+    API_URL = 'http://production:3000/api';
+  } else {
+    API_URL = 'http://localhost:3000/api';
+  }
+
   /**
    * Entry
    * Reference: http://webpack.github.io/docs/configuration.html#entry
@@ -64,7 +71,7 @@ module.exports = function makeWebpackConfig() {
     chunkFilename: isProd ? '[id].[hash].chunk.js' : '[id].chunk.js'
   };
 
-  /**
+   /**
    * Resolve
    * Reference: http://webpack.github.io/docs/configuration.html#resolve
    */
@@ -162,7 +169,8 @@ module.exports = function makeWebpackConfig() {
     new webpack.DefinePlugin({
       // Environment helpers
       'process.env': {
-        ENV: JSON.stringify(ENV)
+        ENV: JSON.stringify(ENV),
+        'API_URL' : JSON.stringify(API_URL)
       }
     }),
 
