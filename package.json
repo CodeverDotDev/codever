@@ -12,6 +12,7 @@
     "express": "~4.13.4",
     "jade": "~1.11.0",
     "keycloak-connect": "^2.5.0",
+    "mongoose": "~4.3.0",
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.0"
   },
