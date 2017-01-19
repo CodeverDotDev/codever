@@ -45,7 +45,7 @@ router.get('/', function(req, res, next) {
  */
 router.post('/', function(req, res, next){
   console.log(req.body);
-    var bookmark = new Bookmark(req.body); //expect the model structure in the body directly
+  var bookmark = new Bookmark(req.body); //expect the model structure in the body directly
 
   bookmark.save(function (err, updatedBookmark) {
     if (err){
