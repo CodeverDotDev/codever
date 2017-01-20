@@ -13,7 +13,7 @@
     "jade": "~1.11.0",
     "keycloak-connect": "^2.5.0",
     "mongoose": "~4.3.7",
-    "mongoose-unique-validator": "1.0.3",
+    "mongoose-unique-validator": "1.0.2",
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.0"
   },
