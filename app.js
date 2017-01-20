@@ -13,6 +13,10 @@ var bookmarks = require('./routes/bookmarks');
 var app = express();
 mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
 
+
+// sets port 3000 to default or unless otherwise specified in the environment
+app.set('port', process.env.PORT || 3000);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
