@@ -19,7 +19,8 @@ var ENV = process.env.npm_lifecycle_event;
 var isTestWatch = ENV === 'test-watch';
 var isTest = ENV === 'test' || isTestWatch;
 var isProd = ENV === 'build';
-var API_URL = process.env.API_URL = ''
+var API_URL = process.env.API_URL = '';
+var KEYCLOAK_CONFIG_FILE_URL = process.env.KEYCLOAK_CONFIG_FILE_URL = '';
 
 module.exports = function makeWebpackConfig() {
   /**
@@ -45,9 +46,11 @@ module.exports = function makeWebpackConfig() {
   }
 
   if (isProd) {
-    API_URL = 'http://production:3000/api';
+    API_URL = 'http://localhost:3000/api';
+    KEYCLOAK_CONFIG_FILE_URL='keycloak/keycloak-p.json';
   } else {
     API_URL = 'http://localhost:3000/api';
+    KEYCLOAK_CONFIG_FILE_URL='keycloak/keycloak.json';
   }
 
   /**
@@ -170,7 +173,8 @@ module.exports = function makeWebpackConfig() {
       // Environment helpers
       'process.env': {
         ENV: JSON.stringify(ENV),
-        'API_URL' : JSON.stringify(API_URL)
+        'API_URL' : JSON.stringify(API_URL),
+        'KEYCLOAK_CONFIG_FILE_URL' : JSON.stringify(KEYCLOAK_CONFIG_FILE_URL)
       }
     }),
 

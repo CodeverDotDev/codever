@@ -20,7 +20,7 @@ if (document.readyState === 'complete') {
 }
 */
 
-KeycloakService.initKeycloak('keycloak/keycloak.json').subscribe(() => {
+KeycloakService.initKeycloak(process.env.KEYCLOAK_CONFIG_FILE_URL).subscribe(() => {
   if (document.readyState === "complete") {
     main();
   } else {
