@@ -48,7 +48,8 @@ export class BookmarksComponent implements  OnInit{
               }
             });
           });
-          this.tags.push(new Tag(tag, tagBookmarks));
+
+          this.tags.push(new Tag(tag.toString(), tagBookmarks));
         });
       },
       err => {
