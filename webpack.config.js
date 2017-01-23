@@ -21,6 +21,7 @@ var isTest = ENV === 'test' || isTestWatch;
 var isProd = ENV === 'build';
 var API_URL = process.env.API_URL = '';
 var KEYCLOAK_CONFIG_FILE_URL = process.env.KEYCLOAK_CONFIG_FILE_URL = '';
+var HOST = process.env.HOST = '';
 
 module.exports = function makeWebpackConfig() {
   /**
@@ -46,11 +47,13 @@ module.exports = function makeWebpackConfig() {
   }
 
   if (isProd) {
-    API_URL = 'http://localhost:3000/api';
+    API_URL = 'https://bookmarks.codingpedia.org/api';
     KEYCLOAK_CONFIG_FILE_URL='keycloak/keycloak-p.json';
+    HOST= 'https://bookmarks.codingpedia.org/';
   } else {
     API_URL = 'http://localhost:3000/api';
     KEYCLOAK_CONFIG_FILE_URL='keycloak/keycloak.json';
+    HOST= 'http://localhost:8080/';
   }
 
   /**
@@ -174,7 +177,8 @@ module.exports = function makeWebpackConfig() {
       'process.env': {
         ENV: JSON.stringify(ENV),
         'API_URL' : JSON.stringify(API_URL),
-        'KEYCLOAK_CONFIG_FILE_URL' : JSON.stringify(KEYCLOAK_CONFIG_FILE_URL)
+        'KEYCLOAK_CONFIG_FILE_URL' : JSON.stringify(KEYCLOAK_CONFIG_FILE_URL),
+        'HOST' : JSON.stringify(HOST),
       }
     }),
 
