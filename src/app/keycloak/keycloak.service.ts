@@ -11,9 +11,8 @@ export class KeycloakService {
     const keycloak = require("keycloak-js/dist/keycloak.js");
     let onload: any;
 
-    onload = {onLoad: `login-required`};
-
     const keycloakAuth = new keycloak(keycloakPath);
+    //const keycloakAuth = new keycloak('keycloak.json');
     keycloakAuth.init().success(
       () => {
         KeycloakService.keycloak = keycloakAuth;
@@ -28,7 +27,7 @@ export class KeycloakService {
 
   public login(){
     let options: any;
-    options = {redirectUri: `http://localhost:8080/personal`};
+    options = {redirectUri: process.env.HOST + 'personal'};
     KeycloakService.keycloak.login(options);
   }
 
@@ -45,7 +44,9 @@ export class KeycloakService {
      * setTimeout is required here otherwise logout will NOT work.
      */
     setTimeout(() => {
-      KeycloakService.keycloak.logout();
+      let options: any;
+      options = {redirectUri: process.env.HOST};
+      KeycloakService.keycloak.logout(options);
     });
   }
 
