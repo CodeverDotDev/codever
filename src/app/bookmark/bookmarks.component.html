@@ -12,7 +12,7 @@
     <br>
     <h3 id="{{tag.name}}">{{tag.name}}</h3>
     <div class="list-group">
-      <a *ngFor="let bookmark of tag.bookmarks" href="{{bookmark.location}}" class="list-group-item list-group-item-action">
+      <a *ngFor="let bookmark of tag.bookmarks" href="{{bookmark.location}}" class="list-group-item list-group-item-action" target="_blank">
         <h5 class="list-group-item-heading">{{ bookmark.name }}</h5>
         <p class="list-group-item-text">{{ bookmark.description }}</p>
         <hr>
