@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Bookmark} from "../../model/bookmark";
-import {FormGroup, FormBuilder, Validators} from "@angular/forms";
+import {FormGroup, FormBuilder, Validators, FormControl} from "@angular/forms";
 import {KeycloakService} from "../../keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 import {Router} from "@angular/router";
@@ -28,12 +28,28 @@ export class UserBookmarkFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
       tagsLine:['', Validators.required],
       description:'',
       shared: false
+    });
+
+    //this.location = this.bookmarkForm.controls.['location'];
+
+    /*
+    this.location.valueChanges.subscribe(data => {
+      console.log('Location value changes', data);
+    });
+    */
+
+
+    this.bookmarkForm.valueChanges.subscribe(data => {
+      if(data.location){
+        console.log('location changed', data);
+      }
     });
   }
 
