@@ -15,7 +15,9 @@
     "mongoose": "~4.3.7",
     "mongoose-unique-validator": "1.0.2",
     "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "request"    : "latest",
+    "cheerio"    : "latest"
   },
   "devDependencies": {
     "nodemon": "^1.10.2"

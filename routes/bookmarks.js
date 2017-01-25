@@ -1,4 +1,6 @@
 var express = require('express');
+var request = require('request');
+var cheerio = require('cheerio');
 var router = express.Router();
 var Bookmark = require('../models/bookmark');
 var MyError = require('../models/error');
@@ -16,6 +18,20 @@ router.get('/:id', function(req, res, next) {
     res.send(bookmark);
   });
 
+});
+
+/* GET title of bookmark given its url */
+router.get('/scrape', function(req, res, next) {
+  if(req.query.url){
+    request(req.query.url, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var $ = cheerio.load(body);
+        var title = $("title").text();
+
+        res.send(title);
+      }
+    });
+  }
 });
 
 /* GET bookmarks listing. */
