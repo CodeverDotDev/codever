@@ -5,6 +5,22 @@ var router = express.Router();
 var Bookmark = require('../models/bookmark');
 var MyError = require('../models/error');
 
+/* GET title of bookmark given its url */
+router.get('/scrape', function(req, res, next) {
+  if(req.query.url){
+    request(req.query.url, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var $ = cheerio.load(body);
+        var webpageTitle = $("title").text();
+        var webpage = {
+          title: webpageTitle
+        }
+        res.send(webpage);
+      }
+    });
+  }
+});
+
 /* GET bookmark by id. */
 router.get('/:id', function(req, res, next) {
   Bookmark.findById(req.params.id, function(err, bookmark){
@@ -18,20 +34,6 @@ router.get('/:id', function(req, res, next) {
     res.send(bookmark);
   });
 
-});
-
-/* GET title of bookmark given its url */
-router.get('/scrape', function(req, res, next) {
-  if(req.query.url){
-    request(req.query.url, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var $ = cheerio.load(body);
-        var title = $("title").text();
-
-        res.send(title);
-      }
-    });
-  }
 });
 
 /* GET bookmarks listing. */
