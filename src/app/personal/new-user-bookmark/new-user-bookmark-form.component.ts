@@ -73,7 +73,7 @@ export class UserBookmarkFormComponent implements OnInit {
           this.bookmarkService.getBookmarkTitle(formData.location).subscribe(response => {
             console.log('Respoooooooonse: ', response);
             if(response){
-              this.bookmarkForm.patchValue({name:response.title});
+              this.bookmarkForm.patchValue({name:response.title}, {emitEvent: false});
             }
           });
         }
