@@ -4,6 +4,7 @@ import {FormGroup, FormBuilder, Validators, FormControl} from "@angular/forms";
 import {KeycloakService} from "../../keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 import {Router} from "@angular/router";
+import {BookmarkService} from "../../bookmark/bookmark.service";
 
 @Component({
   selector: 'user-bookmark-form',
@@ -19,7 +20,8 @@ export class UserBookmarkFormComponent implements OnInit {
     private userBookmarkStore: UserBookmarkStore,
     private router: Router,
     private formBuilder: FormBuilder,
-    private keycloakService: KeycloakService
+    private keycloakService: KeycloakService,
+    private bookmarkService: BookmarkService
   ){
     const keycloak = keycloakService.getKeycloak();
     if(keycloak) {
@@ -45,12 +47,37 @@ export class UserBookmarkFormComponent implements OnInit {
     });
     */
 
-
-    this.bookmarkForm.valueChanges.subscribe(data => {
-      if(data.location){
-        console.log('location changed', data);
-      }
+ /*
+    this.bookmarkForm.valueChanges
+      .debounceTime(800)
+      .distinctUntilChanged()
+      .subscribe(formData => {
+        if(formData.location){
+          console.log('location changed', formData);
+          this.bookmarkService.getBookmarkTitle(formData.location).subscribe(response => {
+            console.log('Respoooooooonse: ', response);
+            if(response){
+              this.bookmarkForm.patchValue({name:response.title});
+            }
+          });
+        }
     });
+    */
+
+    this.bookmarkForm.valueChanges
+      //.debounceTime(800)
+      //.distinctUntilChanged()
+      .subscribe(formData => {
+        if(formData.location){
+          console.log('location changed', formData);
+          this.bookmarkService.getBookmarkTitle(formData.location).subscribe(response => {
+            console.log('Respoooooooonse: ', response);
+            if(response){
+              this.bookmarkForm.patchValue({name:response.title});
+            }
+          });
+        }
+      });
   }
 
   saveBookmark(model: Bookmark, isValid: boolean) {
