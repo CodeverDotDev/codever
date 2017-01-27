@@ -5,6 +5,7 @@ import {Headers, Http, Response} from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from "rxjs";
+import {Webpage} from "../model/webpage";
 
 @Injectable()
 export class BookmarkService {
@@ -19,6 +20,17 @@ export class BookmarkService {
   getAllBookmarks(): Observable<Response> {
     return this.http.get(this.bookmarksUrl);
   }
+
+  getBookmarkTitle(url: String): Observable<Webpage>{
+    return this.http
+      .get(`${this.bookmarksUrl}scrape?url=${url}`)
+      .share()
+      .map((response: Response) => {
+        return new Webpage(response.json().title);
+      });
+      //.catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
 
   updateBookmark(bookmark:Bookmark): Observable<any> {
     const url = `${this.bookmarksUrl}/${bookmark._id}`;
