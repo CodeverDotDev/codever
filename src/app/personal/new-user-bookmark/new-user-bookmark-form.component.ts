@@ -43,7 +43,7 @@ export class UserBookmarkFormComponent implements OnInit {
       .debounceTime(800)
       .distinctUntilChanged()
       .subscribe(formData => {
-        if(formData.location){
+        if(formData.location && !formData.name){
           console.log('location changed', formData);
           this.bookmarkService.getBookmarkTitle(formData.location).subscribe(response => {
             console.log('Respoooooooonse: ', response);
