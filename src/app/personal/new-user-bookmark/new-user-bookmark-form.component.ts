@@ -39,15 +39,6 @@ export class UserBookmarkFormComponent implements OnInit {
       shared: false
     });
 
-    //this.location = this.bookmarkForm.controls.['location'];
-
-    /*
-    this.location.valueChanges.subscribe(data => {
-      console.log('Location value changes', data);
-    });
-    */
-
- /*
     this.bookmarkForm.valueChanges
       .debounceTime(800)
       .distinctUntilChanged()
@@ -57,23 +48,7 @@ export class UserBookmarkFormComponent implements OnInit {
           this.bookmarkService.getBookmarkTitle(formData.location).subscribe(response => {
             console.log('Respoooooooonse: ', response);
             if(response){
-              this.bookmarkForm.patchValue({name:response.title});
-            }
-          });
-        }
-    });
-    */
-
-    this.bookmarkForm.valueChanges
-      //.debounceTime(800)
-      //.distinctUntilChanged()
-      .subscribe(formData => {
-        if(formData.location){
-          console.log('location changed', formData);
-          this.bookmarkService.getBookmarkTitle(formData.location).subscribe(response => {
-            console.log('Respoooooooonse: ', response);
-            if(response){
-              this.bookmarkForm.patchValue({name:response.title}, {emitEvent: false});
+              this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
             }
           });
         }
