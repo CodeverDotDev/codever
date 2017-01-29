@@ -7,6 +7,7 @@
 <div *ngFor="let bookmark of bookmarks | async" class="card">
   <div class="card-block">
     <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank">{{ bookmark.name }}</a></h4>
+    <p class="list-group-item-text url-under-title">{{ bookmark.location }}</p>
     <p class="card-text">{{ bookmark.description }}</p>
   </div>
   <div class="card-footer">

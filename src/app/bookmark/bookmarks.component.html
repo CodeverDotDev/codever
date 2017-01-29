@@ -14,6 +14,7 @@
     <div class="list-group">
       <a *ngFor="let bookmark of tag.bookmarks" href="{{bookmark.location}}" class="list-group-item list-group-item-action" target="_blank">
         <h5 class="list-group-item-heading">{{ bookmark.name }}</h5>
+        <p class="list-group-item-text url-under-title">{{ bookmark.location }}</p>
         <p class="list-group-item-text">{{ bookmark.description }}</p>
         <hr>
         <div class="tags-group">
