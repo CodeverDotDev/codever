@@ -1,7 +1,7 @@
 Codingpedia bookmarks - Backend REST API
 ========================================
 
-Backend REST API developed with NodeJS/ExpressJS to support the [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/).
+Backend REST API supporting [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/).
 
 This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html), [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). The authentication and authorization
  on the website are taken care of via [Keycloak](http://www.keycloak.org/). As you can imagine is some setup required for development, but it's quite easy and straight forward.
