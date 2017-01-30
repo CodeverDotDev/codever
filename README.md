@@ -1,5 +1,5 @@
-Codingpedia bookmarks backend REST API
-======================================
+Codingpedia bookmarks - Backend REST API
+========================================
 
 Backend REST API developed with NodeJS/ExpressJS to support the [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/).
 
