@@ -2,11 +2,17 @@
   <my-navigation></my-navigation>
 </header>
 <main>
-  <!-- Images (and assets) are parsed and loaded from within the public directory
-  <img src="/img/angular.png">
-  -->
+
   <router-outlet></router-outlet>
   <app-error></app-error>
+
+  <!-- Github ribbon -->
+  <div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/Codingpedia/bookmarks" target="_blank">Fork me on GitHub</a>
+    </div>
+  </div>
+
 </main>
 <footer>
   <a [href]="url">Codingpedia Bookmarks</a>
