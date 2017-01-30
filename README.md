@@ -8,7 +8,7 @@ This project is developed with the MEAN stack, featuring [MongoDB](https://docs.
 
 The setup is split in two sections
 * the front-end concerning angular/webpack setup
-* back-end concerning mongo, keycloak
+* back-end concerning mongo, keycloak, node
 
 Here is listed how to setup the front-end part. See [backend-end setup](https://github.com/Codingpedia/bookmarks-api) to complete configuration for local development.
 
