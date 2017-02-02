@@ -30,7 +30,10 @@ export class UserBookmarkFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.buildForm();
+  }
 
+  buildForm(): void {
     this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
@@ -39,6 +42,19 @@ export class UserBookmarkFormComponent implements OnInit {
       shared: false
     });
 
+    this.bookmarkForm.controls['location'].valueChanges
+      .debounceTime(800)
+      .distinctUntilChanged()
+      .subscribe(location => {
+        console.log('Location: ', location);
+        this.bookmarkService.getBookmarkTitle(location).subscribe(response => {
+          if(response){
+            this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
+          }
+        });
+      });
+
+    /*
     this.bookmarkForm.valueChanges
       .debounceTime(800)
       .distinctUntilChanged()
@@ -53,6 +69,7 @@ export class UserBookmarkFormComponent implements OnInit {
           });
         }
       });
+      */
   }
 
   saveBookmark(model: Bookmark, isValid: boolean) {
