@@ -1,7 +1,6 @@
 import {RouterModule, Routes} from "@angular/router";
 import {AboutComponent} from "./about/about.component";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
-import {SearchResultsComponent} from "./navigation/search/search-results.component";
 
 const routes: Routes = [
   {
@@ -11,11 +10,7 @@ const routes: Routes = [
   {
     path: 'about',
     component: AboutComponent
-  },
-  {
-    path: 'search-results',
-    component: SearchResultsComponent
-  },
+  }
 
   /*
   {
