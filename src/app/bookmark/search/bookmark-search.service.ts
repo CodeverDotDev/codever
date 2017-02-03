@@ -26,7 +26,6 @@ export class BookmarkSearchService {
   advancedSearch(term: string): Observable<Bookmark[]> {
     var searchQuery='?name='+term;
     if(term.includes('(')){
-      var searchTextNameAndDescription= term.substr(0, term.indexOf('+')).trim();
       var regExpCategory=new RegExp('\[(.*?)\]');
       var searchTextCategoryMatches=regExpCategory.exec(term);
       if(searchTextCategoryMatches.length > 0){

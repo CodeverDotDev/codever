@@ -13,9 +13,6 @@ import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.compone
 import "./rxjs-extensions";
 import {BookmarkStore} from "./bookmark/store/BookmarkStore";
 import {NavigationComponent} from "./navigation/navigation.component";
-import {NavigationSearchComponent} from "./navigation/search/navigation-search.component";
-import {NavbarSearchService} from "./navigation/search/NavbarSearchService";
-import {SearchResultsComponent} from "./navigation/search/search-results.component";
 import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 import {Logger} from "./logger.service";
 import {ErrorService} from "./error/error.service";
@@ -39,12 +36,10 @@ import {BookmarkFilterService} from "./filter.service";
   declarations: [
     AppComponent,
     NavigationComponent,
-    NavigationSearchComponent,
     HomeComponent,
     AboutComponent,
     BookmarksComponent,
     BookmarkSearchComponent,
-    SearchResultsComponent,
     ErrorComponent
   ],
   providers: [
@@ -53,7 +48,6 @@ import {BookmarkFilterService} from "./filter.service";
     BookmarkService,
     BookmarkSearchService,
     BookmarkStore,
-    NavbarSearchService,
     Logger,
     ErrorService,
     KeycloakService,
