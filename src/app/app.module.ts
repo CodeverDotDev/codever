@@ -5,7 +5,6 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppComponent} from "./app.component";
 import {HomeComponent} from "./home/home.component";
 import {AboutComponent} from "./about/about.component";
-import {ApiService} from "./shared";
 import {routing} from "./app.routing";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkService} from "./bookmark/bookmark.service";
@@ -44,7 +43,6 @@ import {BookmarkFilterService} from "./filter.service";
   ],
   providers: [
     AuthGuard,
-    ApiService,
     BookmarkService,
     BookmarkSearchService,
     BookmarkStore,

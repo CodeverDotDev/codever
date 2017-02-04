@@ -1,19 +1,17 @@
 
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
-import {List} from 'immutable';
+import {List} from "immutable";
 import {BookmarkService} from "../bookmark.service";
 import {Bookmark} from "../../model/bookmark";
 import {Logger} from "../../logger.service";
-import {ErrorService} from "../../error/error.service";
-import {Response} from "@angular/http";
 
 @Injectable()
 export class BookmarkStore {
 
     private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]))
 
-    constructor(private bookmarkService: BookmarkService, private logger:Logger, private errorService: ErrorService) {
+    constructor(private bookmarkService: BookmarkService, private logger:Logger) {
         this.logger.log('******** BookmarkStore constructor was called *************');
         this.loadInitialData();
     }

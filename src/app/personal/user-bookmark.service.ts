@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Bookmark} from '../model/bookmark';
 
-import {Headers, Http, Response} from "@angular/http";
+import {Headers, Response} from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from "rxjs";
@@ -13,7 +13,7 @@ export class UserBookmarkService {
   private baseUrl = '';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
 
-  constructor(private http: Http, private httpWrapper: HttpWrapperService) {
+  constructor(private httpWrapper: HttpWrapperService) {
     this.baseUrl = process.env.API_URL + '/users/';
   }
 

@@ -9,7 +9,6 @@ export class KeycloakService {
   public static initKeycloak(keycloakPath: string): Observable<any> {
     let subject = new AsyncSubject();
     const keycloak = require("keycloak-js/dist/keycloak.js");
-    let onload: any;
 
     const keycloakAuth = new keycloak(keycloakPath);
     //const keycloakAuth = new keycloak('keycloak.json');

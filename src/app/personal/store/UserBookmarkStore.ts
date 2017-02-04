@@ -53,7 +53,7 @@ export class UserBookmarkStore {
 
           this._bookmarks.next(List(bookmarks));
         },
-        err => console.log("Error retrieving bookmarks")
+        err => console.error("Error retrieving bookmarks", err)
       );
   }
 
