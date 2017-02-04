@@ -78,7 +78,7 @@ export class HttpWrapperService {
     return subject;
   }
 
-  public delete(url: string, postData: any, options?: RequestOptionsArgs): Observable<Response> {
+  public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
     let subject = new AsyncSubject<Response>();
     this.getAuthHeader(options).subscribe((headers) => {
       this.http.delete(url, {

@@ -29,7 +29,6 @@ export class BookmarkFilterService {
 
 
   private bookmarkContainsTerm(bookmark: Bookmark, term: string):boolean {
-    let hit:boolean =false;
     if(bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.tags.indexOf(term.toLowerCase()) !== -1

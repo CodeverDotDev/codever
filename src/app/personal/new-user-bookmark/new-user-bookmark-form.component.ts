@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Bookmark} from "../../model/bookmark";
-import {FormGroup, FormBuilder, Validators, FormControl} from "@angular/forms";
+import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {KeycloakService} from "../../keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 import {Router} from "@angular/router";
@@ -53,26 +53,9 @@ export class UserBookmarkFormComponent implements OnInit {
           }
         });
       });
-
-    /*
-    this.bookmarkForm.valueChanges
-      .debounceTime(800)
-      .distinctUntilChanged()
-      .subscribe(formData => {
-        if(formData.location && !formData.name){
-          console.log('location changed', formData);
-          this.bookmarkService.getBookmarkTitle(formData.location).subscribe(response => {
-            console.log('Respoooooooonse: ', response);
-            if(response){
-              this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
-            }
-          });
-        }
-      });
-      */
   }
 
-  saveBookmark(model: Bookmark, isValid: boolean) {
+  saveBookmark(model: Bookmark) {
     model.tags = model.tagsLine.split(",");
     var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description);
 
@@ -83,6 +66,7 @@ export class UserBookmarkFormComponent implements OnInit {
 
     obs.subscribe(
       res => {
+        console.log(res);
         this.router.navigate(['/personal']);
       });
   }
