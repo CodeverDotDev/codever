@@ -1,32 +1,40 @@
-import {Injectable} from "@angular/core";
+import {Injectable, NgZone} from "@angular/core";
 import {Http, RequestOptionsArgs, Response, Headers } from "@angular/http";
 import {Observable, AsyncSubject} from "rxjs";
 import {KeycloakService} from "./keycloak.service";
 
 @Injectable()
 export class HttpWrapperService {
-  constructor(private http: Http, private keycloakService: KeycloakService) {
+  constructor(private http: Http, private keycloakService: KeycloakService, private ngZone: NgZone) {
   }
 
   private getAuthHeader(options?: RequestOptionsArgs): Observable<Headers> {
     let subject = new AsyncSubject<Headers>();
     let headers = (options && options.headers) ? options.headers : new Headers();
     const keycloak = this.keycloakService.getKeycloak();
+
     if (keycloak && keycloak.token) {
       keycloak.updateToken(5).success(() => {
         headers.append("Authorization", "Bearer " + keycloak.token);
-        subject.next(headers);
-        subject.complete();
+        this.ngZone.run(() => {
+          subject.next(headers);
+          subject.complete();
+        });
       }).error(() => {
+        this.ngZone.run(() => {
+          subject.next(headers);
+          subject.complete();
+        });
+      });
+    } else {
+      this.ngZone.run(() => {
         subject.next(headers);
         subject.complete();
       });
-    } else {
-      subject.next(headers);
-      subject.complete();
     }
     return subject;
   }
+
 
   public get(url: string, options?: RequestOptionsArgs): Observable<Response> {
     let subject = new AsyncSubject<Response>();
@@ -34,11 +42,17 @@ export class HttpWrapperService {
       this.http.get(url, {
         headers: headers
       }).subscribe((data) => {
+        this.ngZone.run(() => {
           subject.next(data);
+        });
       }, (error) => {
+        this.ngZone.run(() => {
           subject.error(error);
+        });
       }, () => {
+        this.ngZone.run(() => {
           subject.complete();
+        });
       });
     });
     return subject;
@@ -51,11 +65,17 @@ export class HttpWrapperService {
       this.http.post(url, postData, {
         headers: headers
       }).subscribe((data) => {
+        this.ngZone.run(() => {
           subject.next(data);
+        });
       }, (error) => {
+        this.ngZone.run(() => {
           subject.error(error);
+        });
       }, () => {
+        this.ngZone.run(() => {
           subject.complete();
+        });
       });
     });
     return subject;
@@ -67,14 +87,19 @@ export class HttpWrapperService {
       this.http.put(url, postData, {
         headers: headers
       }).subscribe((data) => {
-        subject.next(data);
+        this.ngZone.run(() => {
+          subject.next(data);
+        });
       }, (error) => {
-        subject.error(error);
+        this.ngZone.run(() => {
+          subject.error(error);
+        });
       }, () => {
-        subject.complete();
+        this.ngZone.run(() => {
+          subject.complete();
+        });
       });
     });
-
     return subject;
   }
 
@@ -84,11 +109,17 @@ export class HttpWrapperService {
       this.http.delete(url, {
         headers: headers
       }).subscribe((data) => {
-        subject.next(data);
+        this.ngZone.run(() => {
+          subject.next(data);
+        });
       }, (error) => {
-        subject.error(error);
+        this.ngZone.run(() => {
+          subject.error(error);
+        });
       }, () => {
-        subject.complete();
+        this.ngZone.run(() => {
+          subject.complete();
+        });
       });
     });
 
