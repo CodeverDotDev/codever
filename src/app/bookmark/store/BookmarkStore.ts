@@ -12,7 +12,6 @@ export class BookmarkStore {
     private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]))
 
     constructor(private bookmarkService: BookmarkService, private logger:Logger) {
-        this.logger.log('******** BookmarkStore constructor was called *************');
         this.loadInitialData();
     }
 

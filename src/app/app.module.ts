@@ -3,7 +3,6 @@ import {BrowserModule} from "@angular/platform-browser";
 import {JsonpModule, HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppComponent} from "./app.component";
-import {HomeComponent} from "./home/home.component";
 import {AboutComponent} from "./about/about.component";
 import {routing} from "./app.routing";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
@@ -35,7 +34,6 @@ import {BookmarkFilterService} from "./filter.service";
   declarations: [
     AppComponent,
     NavigationComponent,
-    HomeComponent,
     AboutComponent,
     BookmarksComponent,
     BookmarkSearchComponent,

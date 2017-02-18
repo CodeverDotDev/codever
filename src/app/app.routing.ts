@@ -11,13 +11,6 @@ const routes: Routes = [
     path: 'about',
     component: AboutComponent
   }
-
-  /*
-  {
-    path: 'personal',
-    loadChildren: './personal/user-bookmarks.module#UserBookmarksModule'
-  }
-  */
 ];
 
 export const routing = RouterModule.forRoot(routes);
