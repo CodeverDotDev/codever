@@ -43,7 +43,7 @@ export class UserBookmarkFormComponent implements OnInit {
     });
 
     this.bookmarkForm.controls['location'].valueChanges
-      .debounceTime(800)
+      .debounceTime(400)
       .distinctUntilChanged()
       .subscribe(location => {
         console.log('Location: ', location);

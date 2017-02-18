@@ -35,45 +35,7 @@ export const routerConfig = [{
   ],
   providers: [
     UserBookmarkStore,
-    UserBookmarkService,
-    /*
-    {
-      provide: Http,
-      useFactory:
-          (
-              backend: XHRBackend,
-              defaultOptions: RequestOptions,
-              keycloakService: KeycloakService
-          ) => new KeycloakHttp(backend, defaultOptions, keycloakService),
-      deps: [XHRBackend, RequestOptions, KeycloakService]
-    }
-    */
+    UserBookmarkService
   ]
 })
-export class UserBookmarksModule {
-
-  // I initialize the module.
-  /*
-  constructor() {
-
-    console.log( "UserBookmarksModule Constructor." );
-    KeycloakService.init()
-      .then(() => {
-        console.log("***** Keycloak correctly initialized ******");
-      })
-      .catch(() => window.location.reload());
-    console.groupEnd();
-
-  }
-
-  constructor() {
-
-    console.log( "UserBookmarksModule Constructor." );
-    KeycloakService.initKeycloak('keycloak/keycloak.json').subscribe(() => {
-      console.log( "UserBookmarksModule Constructor. - AFTER INIT" );
-    });
-
-  }
-   */
-
-}
+export class UserBookmarksModule {}

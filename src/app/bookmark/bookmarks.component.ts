@@ -56,23 +56,6 @@ export class BookmarksComponent implements  OnInit{
         console.log("Error filtering bookmakrs");
       }
     );
-
-
-
-    /**/
-    /*
-    //now iterated through all tags and build the tags[] list
-    let map = allTags.map(x => {
-      let bookmarksWithTag = [];
-      bookmarks.forEach(bookmark => {
-        if(bookmark.tags.indexOf(x.toLowerCase()) !== -1){
-          bookmarksWithTag.push(bookmark);
-        }
-      });
-
-      return new Tag(x, bookmarksWithTag);
-    });
-    */
   }
 
 }

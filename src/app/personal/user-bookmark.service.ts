@@ -18,8 +18,6 @@ export class UserBookmarkService {
   }
 
   getAllBookmarks(userId:String): Observable<Response> {
-    console.log('******** UserBookmarkService.getAllBookmarks was called *************');
-    console.log('******** GET on ' + this.baseUrl + userId + '/bookmarks' +' *************');
     return this.httpWrapper.get(this.baseUrl + userId + '/bookmarks');
   }
 
