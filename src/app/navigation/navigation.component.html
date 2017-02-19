@@ -2,14 +2,17 @@
 <nav class="navbar navbar-light bg-faded">
   <a class="navbar-brand" [routerLink]="['']" routerLinkActive="active">
     <img src="/img/logo.png" width="35" height="35" class="d-inline-block align-top" alt="">
-    Bookmarks
+    Public Bookmarks
   </a>
   <ul class="nav navbar-nav">
     <li class="nav-item">
-      <a class="nav-link" [routerLink]="['personal']" routerLinkActive="active">Personal</a>
+      <a class="nav-link" [routerLink]="['personal']" routerLinkActive="active">Personal list</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" [routerLink]="['about']" routerLinkActive="active">About</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="http://www.codingpedia.org/tags/#coding bookmarks" target="_blank">Blog</a>
     </li>
     <li *ngIf="keycloakService.isLoggedIn()" class="nav-item">
       <a class="nav-link" (click)="logout()">Logout</a>
