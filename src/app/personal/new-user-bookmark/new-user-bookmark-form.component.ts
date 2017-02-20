@@ -12,7 +12,7 @@ import {BookmarkService} from "../../bookmark/bookmark.service";
 })
 export class UserBookmarkFormComponent implements OnInit {
 
-  model = new Bookmark('', '', '', [], '');
+  model = new Bookmark('', '', '', [], '',  '');
   bookmarkForm: FormGroup;
   userId = null;
 
@@ -57,7 +57,7 @@ export class UserBookmarkFormComponent implements OnInit {
 
   saveBookmark(model: Bookmark) {
     model.tags = model.tagsLine.split(",");
-    var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description);
+    var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description, null);
 
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;

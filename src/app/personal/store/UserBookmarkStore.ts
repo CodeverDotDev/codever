@@ -44,6 +44,7 @@ export class UserBookmarkStore {
                   bookmark.category,
                   bookmark.tags,
                   bookmark.description,
+                  bookmark.descriptionHtml,
                   bookmark._id,
                   '',
                   bookmark.userId,

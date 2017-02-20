@@ -8,7 +8,8 @@
   <div class="card-block">
     <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank">{{ bookmark.name }}</a></h4>
     <p class="list-group-item-text url-under-title">{{ bookmark.location }}</p>
-    <p class="card-text">{{ bookmark.description }}</p>
+    <p *ngIf="!bookmark.descriptionHtml" class="card-text">{{ bookmark.description }}</p>
+    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml"></div>
   </div>
   <div class="card-footer">
     <div class="tags-group">

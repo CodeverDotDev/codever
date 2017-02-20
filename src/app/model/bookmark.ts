@@ -3,6 +3,7 @@ export class Bookmark {
     name: string;
     location: string;
     description: string;
+    descriptionHtml: string;
     category: string;
     tags: string[];
     tagsLine: string;
@@ -15,6 +16,7 @@ export class Bookmark {
                  category: string,
                  tags: string[],
                  description?: string,
+                 descriptionHtml?: string,
                  _id?: string,
                  tagsLine?: string,
                  userId?: string,
@@ -25,6 +27,7 @@ export class Bookmark {
         this.category = category;
         this.tags = tags;
         this.description = description;
+        this.descriptionHtml = descriptionHtml;
         this._id = _id;
         this.tagsLine = tagsLine;
         this.userId = userId;
