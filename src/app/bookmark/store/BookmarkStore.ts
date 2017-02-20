@@ -29,6 +29,7 @@ export class BookmarkStore {
                           bookmark.category,
                           bookmark.tags,
                           bookmark.description,
+                          bookmark.descriptionHtml,
                           bookmark._id
                       )
                     );
