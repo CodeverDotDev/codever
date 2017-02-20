@@ -87,7 +87,7 @@ router.get('/:id/bookmarks', keycloak.protect(), function(req, res, next) {
         return res.status(500).send(err);
       }
       res.send(bookmarks);
-    });
+    }).sort({updatedAt: -1});
   }
 
 });
