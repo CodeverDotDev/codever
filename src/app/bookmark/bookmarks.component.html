@@ -12,9 +12,9 @@
     <br>
     <h3 id="{{tag.name}}">{{tag.name}}</h3>
     <div class="list-group">
-      <a *ngFor="let bookmark of tag.bookmarks" href="{{bookmark.location}}" class="list-group-item list-group-item-action" target="_blank">
-        <h5 class="list-group-item-heading">{{ bookmark.name }}</h5>
-        <p class="list-group-item-text url-under-title">{{ bookmark.location }}</p>
+      <div *ngFor="let bookmark of tag.bookmarks" class="list-group-item list-group-item-action">
+        <h5 class="list-group-item-heading"> <a href="{{bookmark.location}}" target="_blank">{{ bookmark.name }}</a></h5>
+        <p class="list-group-item-text url-under-title"> <a href="{{bookmark.location}}" target="_blank" style="text-decoration: none">{{ bookmark.location }}</a></p>
         <p *ngIf="!bookmark.descriptionHtml" class="list-group-item-text">{{ bookmark.description }}</p>
         <div *ngIf="bookmark.descriptionHtml"  [innerHtml]="bookmark.descriptionHtml"></div>
         <hr>
@@ -22,7 +22,7 @@
           <span *ngFor="let bookmarkTag of bookmark.tags" class="tag tag-default tag-pill float-xs-left"><a href="#{{bookmarkTag.trim()}}">{{bookmarkTag}}</a></span>
         </div>
         <div class="clear"></div>
-      </a>
+      </div>
     </div>
   </div>
 </div>
