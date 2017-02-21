@@ -6,6 +6,9 @@ import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 import {Router} from "@angular/router";
 import {BookmarkService} from "../../bookmark/bookmark.service";
 
+const showdown = require('showdown');
+const converter = new showdown.Converter();
+
 @Component({
   selector: 'user-bookmark-form',
   templateUrl: 'new-user-bookmark-form.component.html'
@@ -61,6 +64,8 @@ export class UserBookmarkFormComponent implements OnInit {
 
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;
+
+    newBookmark.descriptionHtml = converter.makeHtml(newBookmark.description);
 
     let obs = this.userBookmarkStore.addBookmark(this.userId, newBookmark);
 
