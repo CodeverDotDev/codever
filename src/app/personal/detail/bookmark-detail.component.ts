@@ -4,6 +4,9 @@ import {Bookmark} from "../../model/bookmark";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
 
+const showdown = require('showdown');
+const converter = new showdown.Converter();
+
 @Component({
   selector: 'my-bookmark-detail',
   templateUrl: './bookmark-detail.component.html',
@@ -34,6 +37,8 @@ export class BookmarkDetailComponent {
 
   updateBookmark():void {
     this.bookmark.tags = this.bookmark.tagsLine.split(",");
+    this.bookmark.descriptionHtml = converter.makeHtml(this.bookmark.description);
+
     let obs = this.userBookmarkStore.updateBookmark(this.bookmark);
 
     obs.subscribe(

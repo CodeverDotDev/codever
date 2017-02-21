@@ -33,12 +33,14 @@
     "@angular/platform-browser": "2.4.2",
     "@angular/platform-browser-dynamic": "2.4.2",
     "@angular/router": "3.4.2",
+    "@types/showdown": "^1.4.31",
     "bootstrap": "^4.0.0-alpha.5",
     "core-js": "^2.4.1",
     "immutable": "^3.7.6",
     "keycloak-js": "2.3.0",
     "reflect-metadata": "^0.1.3",
     "rxjs": "5.0.1",
+    "showdown": "^1.6.4",
     "zone.js": "^0.7.2"
   },
   "devDependencies": {
@@ -89,6 +91,7 @@
     "typescript": "2.0.10",
     "url-loader": "^0.5.6",
     "webpack": "^2.1.0-beta.25",
-    "webpack-dev-server": "2.1.0-beta.9"
+    "webpack-dev-server": "2.1.0-beta.9",
+    "@types/showdown": "^1.4.31"
   }
 }

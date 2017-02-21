@@ -13,3 +13,4 @@ import '@angularclass/hmr';
 // You can import js, ts, css, sass, ...
 import 'bootstrap/dist/css/bootstrap.css';
 import "keycloak-js/dist/keycloak.js";
+import "showdown/dist/showdown.js";
