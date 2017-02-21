@@ -28,12 +28,13 @@ router.get('/', function(req, res, next) {
  */
 //router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
 router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
+  var descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml: converter.makeHtml(req.body.description);
 
   var bookmark = new Bookmark({
     name: req.body.name,
     location: req.body.location,
     description: req.body.description,
-    descriptionHtml: converter.makeHtml(req.body.description),
+    descriptionHtml: descriptionHtml,
     category: req.body.category,
     tags: req.body.tags,
     userId: req.params.id,
@@ -94,10 +95,12 @@ router.get('/:id/bookmarks', keycloak.protect(), function(req, res, next) {
 
 /**
  * full UPDATE via PUT - that is the whole document is required and will be updated
+ * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), function(req, res, next) {
-  req.body.descriptionHtml = converter.makeHtml(req.body.description);
-  console.log(req.body);
+  if(!req.body.descriptionHtml){
+    req.body.descriptionHtml = converter.makeHtml(req.body.description);
+  }
   Bookmark.findOneAndUpdate({_id: req.params.bookmarkId, userId: req.params.userId}, req.body, {new: true}, function(err, bookmark){
     if(err){
       if (err.name === 'MongoError' && err.code === 11000) {
