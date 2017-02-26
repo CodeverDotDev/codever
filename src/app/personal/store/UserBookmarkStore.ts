@@ -73,7 +73,8 @@ export class UserBookmarkStore {
         let lastSlashIndex = headers.get('location').lastIndexOf('/');
         let newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
         newBookmark._id = newBookmarkId;
-        this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
+        //this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
+        this._bookmarks.next(this._bookmarks.getValue().unshift(newBookmark));
 
         if(newBookmark.shared){
           this.bookmarkStore.addBookmark(newBookmark);
@@ -118,8 +119,7 @@ export class UserBookmarkStore {
       res => {
         let bookmarks = this._bookmarks.getValue();
         let index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-        //let bookmark:Bookmark = bookmarks.get(index);
-        this._bookmarks.next(bookmarks.set(index, updated));
+        this._bookmarks.next(bookmarks.delete(index).unshift(updated)); //move the updated bookmark to the top of the list, to immediately see the results
 
         if(updated.shared){
           this.bookmarkStore.updateBookmark(updated);
