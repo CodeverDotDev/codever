@@ -25,9 +25,8 @@ export class BookmarkSearchComponent implements OnInit {
             .debounceTime(400)        // wait for 300ms pause in events
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time
-                // return the http search observable
                 ? this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarkStore.getBookmarks())
-                // or the observable of empty heroes if no search term
+                // or the observable of empty bookmarks if no search term
                 : Observable.of<Bookmark[]>([]))
             .catch(error => {
                 // TODO: real error handling

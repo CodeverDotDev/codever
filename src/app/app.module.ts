@@ -20,9 +20,12 @@ import {HttpWrapperService} from "./keycloak/http-wrapper.service";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
 import {AuthGuard} from "./auth-guard.service";
 import {BookmarkFilterService} from "./filter.service";
+import {HighLightPipe} from "./shared/highlight.pipe";
+import {SharedModule} from "./shared/shared.module";
 
 @NgModule({
   imports: [
+    SharedModule,
     BrowserModule,
     HttpModule,
     FormsModule,
