@@ -73,6 +73,12 @@ ul.tags li:not(:last-child):after {
   margin-top: -3px;
 }
 
+//highlight
+.highlight {
+  background: yellow;
+  color: black;
+}
+
 // START Github fork ribbon
 /* Left will inherit from right (so we don't need to duplicate code) */
 .github-fork-ribbon {

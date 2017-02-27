@@ -11,6 +11,7 @@ import {UserBookmarkFormComponent} from "./new-user-bookmark/new-user-bookmark-f
 import {BookmarkDetailComponent} from "./detail/bookmark-detail.component";
 import {PersonalBookmarksComponent} from "./personal-bookmarks.component";
 import {PersonalBookmarkSearchComponent} from "./search/personal-bookmark-search.component";
+import {SharedModule} from "../shared/shared.module";
 
 export const routerConfig = [{
   path: '',
@@ -27,6 +28,7 @@ export const routerConfig = [{
     PersonalBookmarkSearchComponent
   ],
   imports: [
+    SharedModule,
     CommonModule, //in the root module comes via the BrowserModule
     HttpModule,
     FormsModule,

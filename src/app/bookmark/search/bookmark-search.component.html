@@ -1,19 +1,24 @@
 <div id="search-component">
-    <input type="text" class="form-control" [formControl]="term" placeholder="Search in public bookmarks...">
+    <input type="text" class="form-control" [formControl]="term" placeholder="Search in public bookmarks... &quot;+&quot; sign to look for mutiple terms">
 </div>
 
 <br>
 
+<div *ngIf="(bookmarks|async)?.length == 0 && term.value" class="alert alert-info" role="alert">
+  No bookmarks found. Please try a different search
+</div>
+
 <div *ngFor="let bookmark of bookmarks | async" class="card">
   <div class="card-block">
-    <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank">{{ bookmark.name }}</a></h4>
-    <p class="list-group-item-text url-under-title">{{ bookmark.location }}</p>
-    <p *ngIf="!bookmark.descriptionHtml" class="card-text">{{ bookmark.description }}</p>
-    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml"></div>
+    <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: term.value"></a></h4>
+    <p class="list-group-item-text url-under-title" [innerHtml]="bookmark.location | highlight: term.value"></p>
+    <p *ngIf="!bookmark.descriptionHtml" class="card-text">{{ bookmark.description| highlight: term.value }}</p>
+    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlight: term.value"></div>
   </div>
   <div class="card-footer">
     <div class="tags-group">
-      <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{tag}} </span>
+      <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left" [innerHtml]="tag | highlight: term.value"></span>
     </div>
   </div>
 </div>
+
