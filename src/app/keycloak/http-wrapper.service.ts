@@ -14,23 +14,24 @@ export class HttpWrapperService {
     const keycloak = this.keycloakService.getKeycloak();
 
     if (keycloak && keycloak.token) {
-      keycloak.updateToken(5).success(() => {
+      keycloak.updateToken(30).success(() => {
         headers.append("Authorization", "Bearer " + keycloak.token);
         this.ngZone.run(() => {
           subject.next(headers);
           subject.complete();
         });
       }).error(() => {
+        /*
         this.ngZone.run(() => {
           subject.next(headers);
           subject.complete();
         });
+        */
+        this.keycloakService.login();
       });
     } else {
-      this.ngZone.run(() => {
-        subject.next(headers);
-        subject.complete();
-      });
+      //not authenticated redirect to login
+      this.keycloakService.login();
     }
     return subject;
   }
