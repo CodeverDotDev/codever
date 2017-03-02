@@ -14,7 +14,7 @@ export class BookmarkFilterService {
    * @returns {any} - the filtered list
    */
   filterBookmarksBySearchTerm(query:string, observableListBookmark:Observable<List<Bookmark>>): Observable<Bookmark[]> {
-    var terms = query.split("+");
+    var terms = query.split(" ");
     let result = Observable.of<Bookmark[]>([]);
     observableListBookmark.subscribe(
       bookmarks => {

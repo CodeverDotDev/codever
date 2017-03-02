@@ -1,5 +1,5 @@
 <div id="search-component">
-    <input type="text" class="form-control" [formControl]="term" placeholder="Search in public bookmarks... &quot;+&quot; sign to look for mutiple terms">
+    <input type="text" class="form-control" [formControl]="term" placeholder="Search in public bookmarks...">
 </div>
 
 <br>
@@ -13,7 +13,7 @@
     <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: term.value"></a></h4>
     <p class="list-group-item-text url-under-title" [innerHtml]="bookmark.location | highlight: term.value"></p>
     <p *ngIf="!bookmark.descriptionHtml" class="card-text" [innerHtml]="bookmark.description | highlight: term.value"></p>
-    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlight: term.value"></div>
+    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: term.value"></div>
   </div>
   <div class="card-footer">
     <div class="tags-group">
