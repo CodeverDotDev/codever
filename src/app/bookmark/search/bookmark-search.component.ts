@@ -22,7 +22,7 @@ export class BookmarkSearchComponent implements OnInit {
 
     ngOnInit(): void {
         this.bookmarks = this.term.valueChanges
-            .debounceTime(400)        // wait for 300ms pause in events
+            .debounceTime(600)        // wait for 300ms pause in events
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => term   // switch to new observable each time
                 ? this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarkStore.getBookmarks())
