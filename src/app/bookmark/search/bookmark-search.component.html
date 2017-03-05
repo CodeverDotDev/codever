@@ -4,7 +4,7 @@
 
 <br>
 
-<div *ngIf="(bookmarks|async)?.length == 0 && term.value" class="alert alert-info" role="alert">
+<div *ngIf="showNotFound" class="alert alert-info" role="alert">
   No bookmarks found. Please try a different search
 </div>
 

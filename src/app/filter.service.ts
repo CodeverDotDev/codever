@@ -13,9 +13,9 @@ export class BookmarkFilterService {
    * @param observableListBookmark - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarksBySearchTerm(query:string, observableListBookmark:Observable<List<Bookmark>>): Observable<Bookmark[]> {
+  filterBookmarksBySearchTerm(query:string, observableListBookmark:Observable<List<Bookmark>>): Bookmark[] {
     var terms = query.split(" ");
-    let result = Observable.of<Bookmark[]>([]);
+    let result:Bookmark[] = [];
     observableListBookmark.subscribe(
       bookmarks => {
         let filteredBookmarks = bookmarks; //we start with all bookmarks
@@ -23,7 +23,7 @@ export class BookmarkFilterService {
           filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim())).toList();
         });
 
-        result = Observable.of(filteredBookmarks.toArray());
+        result = filteredBookmarks.toArray();
       },
       err => {
         console.log("Error filtering bookmakrs");
