@@ -15,6 +15,7 @@ export class PersonalBookmarkSearchComponent implements OnInit {
 
     bookmarks: Observable<Bookmark[]>;
     term = new FormControl();
+    public showNotFound: boolean = false;
 
     constructor(
       private zone:NgZone,
@@ -27,11 +28,21 @@ export class PersonalBookmarkSearchComponent implements OnInit {
         this.bookmarks = this.term.valueChanges
             .debounceTime(600)        // wait for 300ms pause in events
             .distinctUntilChanged()   // ignore if next search term is same as previous
-            .switchMap(term => term   // switch to new observable each time
-                // return the http search observable
-                ? this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.userBookmarkStore.getBookmarks())
-                // or the observable of empty heroes if no search term
-                : Observable.of<Bookmark[]>([]))
+            .switchMap(term => {
+              if(term){// switch to new observable each time
+                let filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.userBookmarkStore.getBookmarks());
+                if(filterBookmarksBySearchTerm.length > 0 ){
+                  this.showNotFound = false;
+                  return Observable.of(filterBookmarksBySearchTerm);
+                } else {
+                  this.showNotFound = true;
+                  return Observable.of<Bookmark[]>([])
+                }
+              } else {
+                // or the observable of empty bookmarks if no search term
+                return Observable.of<Bookmark[]>([])
+              }
+            })
             .catch(error => {
                 // TODO: real error handling
                 console.log(error);
