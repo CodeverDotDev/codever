@@ -18,12 +18,12 @@ export class BookmarkFilterService {
     let result:Bookmark[] = [];
     observableListBookmark.subscribe(
       bookmarks => {
-        let filteredBookmarks = bookmarks; //we start with all bookmarks
+        let filteredBookmarks = bookmarks.toArray(); //we start with all bookmarks
         terms.forEach(term => {
-          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim())).toList();
+          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim()));
         });
 
-        result = filteredBookmarks.toArray();
+        result = filteredBookmarks;
       },
       err => {
         console.log("Error filtering bookmakrs");
@@ -41,21 +41,27 @@ export class BookmarkFilterService {
    * @returns {boolean}
    */
   private bookmarkContainsTerm(bookmark: Bookmark, term: string):boolean {
+    let result: boolean = false;
     if(bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.tags.indexOf(term.toLowerCase()) !== -1
     ){
-      return true;
+      result=true;
     }
 
-    //if not found already look through the tags also
-    bookmark.tags.forEach(tag => {
-      if(tag.indexOf(term.toLowerCase()) !== -1){
-        return true;
-      }
-    });
+    if(result) {
+      return true;
+    } else {
+      //if not found already look through the tags also
+      bookmark.tags.forEach(tag => {
+        if(tag.toLowerCase().indexOf(term.toLowerCase()) !== -1){
+          result= true;
+        }
+      });
+    }
 
-    return false;
+
+    return result;
   }
 }
