@@ -1,7 +1,0 @@
-{
-  "realm": "codingpedia",
-  "auth-server-url": "/auth",
-  "ssl-required": "external",
-  "resource": "bookmarks",
-  "public-client": true
-}
