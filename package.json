@@ -12,7 +12,7 @@
     "debug": "~2.2.0",
     "express": "~4.13.4",
     "jade": "~1.11.0",
-    "keycloak-connect": "^2.5.0",
+    "keycloak-connect": "2.5.0",
     "mongoose": "~4.3.7",
     "mongoose-unique-validator": "1.0.2",
     "morgan": "~1.7.0",
