@@ -12,6 +12,7 @@ import {BookmarkDetailComponent} from "./detail/bookmark-detail.component";
 import {PersonalBookmarksComponent} from "./personal-bookmarks.component";
 import {PersonalBookmarkSearchComponent} from "./search/personal-bookmark-search.component";
 import {SharedModule} from "../shared/shared.module";
+import {MarkdownService} from "./markdown.service";
 
 export const routerConfig = [{
   path: '',
@@ -37,7 +38,8 @@ export const routerConfig = [{
   ],
   providers: [
     UserBookmarkStore,
-    UserBookmarkService
+    UserBookmarkService,
+    MarkdownService
   ]
 })
 export class UserBookmarksModule {}
