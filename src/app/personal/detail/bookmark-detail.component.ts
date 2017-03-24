@@ -3,9 +3,7 @@ import {Component} from "@angular/core";
 import {Bookmark} from "../../model/bookmark";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
-
-const showdown = require('showdown');
-const converter = new showdown.Converter();
+import {MarkdownService} from "../markdown.service";
 
 @Component({
   selector: 'my-bookmark-detail',
@@ -18,6 +16,7 @@ export class BookmarkDetailComponent {
 
   constructor(
     private userBookmarkStore: UserBookmarkStore,
+    private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -37,7 +36,7 @@ export class BookmarkDetailComponent {
 
   updateBookmark():void {
     this.bookmark.tags = this.bookmark.tagsLine.split(",");
-    this.bookmark.descriptionHtml = converter.makeHtml(this.bookmark.description);
+    this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
 
     let obs = this.userBookmarkStore.updateBookmark(this.bookmark);
 

@@ -5,9 +5,7 @@ import {KeycloakService} from "../../keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 import {Router} from "@angular/router";
 import {BookmarkService} from "../../bookmark/bookmark.service";
-
-const showdown = require('showdown');
-const converter = new showdown.Converter();
+import {MarkdownService} from "../markdown.service";
 
 @Component({
   selector: 'user-bookmark-form',
@@ -24,7 +22,8 @@ export class UserBookmarkFormComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
-    private bookmarkService: BookmarkService
+    private bookmarkService: BookmarkService,
+    private markdownServce: MarkdownService
   ){
     const keycloak = keycloakService.getKeycloak();
     if(keycloak) {
@@ -65,7 +64,7 @@ export class UserBookmarkFormComponent implements OnInit {
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;
 
-    newBookmark.descriptionHtml = converter.makeHtml(newBookmark.description);
+    newBookmark.descriptionHtml = this.markdownServce.toHtml(newBookmark.description);
 
     let obs = this.userBookmarkStore.addBookmark(this.userId, newBookmark);
 
