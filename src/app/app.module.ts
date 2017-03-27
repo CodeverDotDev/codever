@@ -3,7 +3,7 @@ import {BrowserModule} from "@angular/platform-browser";
 import {JsonpModule, HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppComponent} from "./app.component";
-import {AboutComponent} from "./about/about.component";
+import {AboutComponent} from "./public/about/about.component";
 import {routing} from "./app.routing";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkService} from "./bookmark/bookmark.service";
@@ -19,13 +19,13 @@ import {KeycloakService} from "./keycloak/keycloak.service";
 import {HttpWrapperService} from "./keycloak/http-wrapper.service";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
 import {AuthGuard} from "./auth-guard.service";
-import {BookmarkFilterService} from "./filter.service";
-import {HighLightPipe} from "./shared/highlight.pipe";
 import {SharedModule} from "./shared/shared.module";
+import {CoreModule} from "./core/core.module";
 
 @NgModule({
   imports: [
     SharedModule,
+    CoreModule,
     BrowserModule,
     HttpModule,
     FormsModule,
@@ -50,8 +50,7 @@ import {SharedModule} from "./shared/shared.module";
     Logger,
     ErrorService,
     KeycloakService,
-    HttpWrapperService,
-    BookmarkFilterService
+    HttpWrapperService
   ],
   bootstrap: [AppComponent]
 })
