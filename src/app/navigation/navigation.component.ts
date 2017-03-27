@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {KeycloakService} from "../keycloak/keycloak.service";
+import {KeycloakService} from "../core/keycloak/keycloak.service";
 import {Router} from "@angular/router";
 
 @Component({

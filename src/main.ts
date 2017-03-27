@@ -1,7 +1,7 @@
 import {enableProdMode} from "@angular/core";
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import {AppModule} from "./app/app.module";
-import {KeycloakService} from "./app/keycloak/keycloak.service";
+import {KeycloakService} from "./app/core/keycloak/keycloak.service";
 
 // depending on the env mode, enable prod mode or add debugging modules
 if (process.env.ENV === 'build') {
