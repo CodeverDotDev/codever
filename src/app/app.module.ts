@@ -12,7 +12,6 @@ import "./rxjs-extensions";
 import {BookmarkStore} from "./bookmark/store/BookmarkStore";
 import {NavigationComponent} from "./navigation/navigation.component";
 import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
-import {Logger} from "./logger.service";
 import {ErrorService} from "./error/error.service";
 import {ErrorComponent} from "./error/error.component";
 import {KeycloakService} from "./keycloak/keycloak.service";
@@ -47,7 +46,6 @@ import {CoreModule} from "./core/core.module";
     BookmarkService,
     BookmarkSearchService,
     BookmarkStore,
-    Logger,
     ErrorService,
     KeycloakService,
     HttpWrapperService
