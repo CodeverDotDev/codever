@@ -7,7 +7,7 @@ import {Logger} from "../../core/logger.service";
 import {ErrorService} from "../../error/error.service";
 import {Response} from "@angular/http";
 import {UserBookmarkService} from "../user-bookmark.service";
-import {KeycloakService} from "../../keycloak/keycloak.service";
+import {KeycloakService} from "../../core/keycloak/keycloak.service";
 import {BookmarkStore} from "../../bookmark/store/BookmarkStore";
 
 @Injectable()

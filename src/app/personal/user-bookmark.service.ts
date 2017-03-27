@@ -5,7 +5,7 @@ import {Headers, Response} from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from "rxjs";
-import {HttpWrapperService} from "../keycloak/http-wrapper.service";
+import {HttpWrapperService} from "../core/keycloak/http-wrapper.service";
 
 @Injectable()
 export class UserBookmarkService {
