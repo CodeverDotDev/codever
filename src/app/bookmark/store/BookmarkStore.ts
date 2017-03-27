@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {List} from "immutable";
 import {BookmarkService} from "../bookmark.service";
 import {Bookmark} from "../../model/bookmark";
-import {Logger} from "../../logger.service";
+import {Logger} from "../../core/logger.service";
 
 @Injectable()
 export class BookmarkStore {
