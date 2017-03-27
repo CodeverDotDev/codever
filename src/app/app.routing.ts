@@ -1,5 +1,5 @@
 import {RouterModule, Routes} from "@angular/router";
-import {AboutComponent} from "./about/about.component";
+import {AboutComponent} from "./public/about/about.component";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
 
 const routes: Routes = [
