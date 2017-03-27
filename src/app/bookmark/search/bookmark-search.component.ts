@@ -5,7 +5,7 @@ import {Bookmark} from "../../model/bookmark";
 import {BookmarkStore} from "../store/BookmarkStore";
 import {FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
-import {BookmarkFilterService} from "../../filter.service";
+import {BookmarkFilterService} from "../../core/filter.service";
 
 @Component({
     selector: 'bookmark-search',
