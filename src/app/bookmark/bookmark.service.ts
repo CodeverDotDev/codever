@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Bookmark} from '../model/bookmark';
+import {Bookmark} from '../core/model/bookmark';
 
 import {Headers, Http, Response} from "@angular/http";
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from "rxjs";
-import {Webpage} from "../model/webpage";
+import {Webpage} from "../core/model/webpage";
 
 @Injectable()
 export class BookmarkService {

@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core";
-import {Bookmark} from "../model/bookmark";
+import {Bookmark} from "../core/model/bookmark";
 import {Observable} from "rxjs";
 import {BookmarkStore} from "./store/BookmarkStore";
 import {List} from "immutable";
-import {Tag} from "../model/tags";
+import {Tag} from "../core/model/tags";
 
 @Component({
   selector: 'my-bookmarks',

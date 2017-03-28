@@ -1,5 +1,5 @@
 import {Component, OnInit, NgZone} from "@angular/core";
-import {Bookmark} from "../model/bookmark";
+import {Bookmark} from "../core/model/bookmark";
 import {Observable} from "rxjs";
 import {List} from "immutable";
 import {UserBookmarkStore} from "./store/UserBookmarkStore";

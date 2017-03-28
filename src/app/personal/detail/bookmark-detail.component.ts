@@ -1,6 +1,6 @@
 
 import {Component} from "@angular/core";
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
 import {MarkdownService} from "../markdown.service";

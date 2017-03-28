@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {KeycloakService} from "../../core/keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
