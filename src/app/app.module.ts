@@ -4,7 +4,7 @@ import {JsonpModule, HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppComponent} from "./app.component";
 import {AboutComponent} from "./public/about/about.component";
-import {routing} from "./app.routing";
+import {AppRoutingModule} from "./app.routing";
 import {BookmarksComponent} from "./bookmark/bookmarks.component";
 import {BookmarkService} from "./bookmark/bookmark.service";
 import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
@@ -29,7 +29,7 @@ import {CoreModule} from "./core/core.module";
     ReactiveFormsModule,
     JsonpModule,
     UserBookmarksModule,
-    routing
+    AppRoutingModule
   ],
   declarations: [
     AppComponent,
