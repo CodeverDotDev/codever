@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
-import {KeycloakService} from "../core/keycloak/keycloak.service";
 import {Router} from "@angular/router";
+import {KeycloakService} from "../keycloak/keycloak.service";
 
 @Component({
   selector: 'my-navigation',
