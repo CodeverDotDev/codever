@@ -2,7 +2,7 @@
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
 import {List} from 'immutable';
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {Logger} from "../../core/logger.service";
 import {ErrorService} from "../../core/error/error.service";
 import {Response} from "@angular/http";

@@ -1,6 +1,6 @@
 
 import {Injectable} from "@angular/core";
-import {Bookmark} from "../model/bookmark";
+import {Bookmark} from "./model/bookmark";
 import {List} from "immutable";
 import {Observable} from "rxjs";
 

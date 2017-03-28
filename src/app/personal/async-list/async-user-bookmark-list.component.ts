@@ -1,7 +1,7 @@
 import {Component, Input, NgZone} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
 
 @Component({
