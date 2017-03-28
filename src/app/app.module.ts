@@ -12,8 +12,6 @@ import "./rxjs-extensions";
 import {BookmarkStore} from "./bookmark/store/BookmarkStore";
 import {NavigationComponent} from "./navigation/navigation.component";
 import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
-import {ErrorService} from "./error/error.service";
-import {ErrorComponent} from "./error/error.component";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
 import {AuthGuard} from "./auth-guard.service";
 import {SharedModule} from "./shared/shared.module";
@@ -36,15 +34,13 @@ import {CoreModule} from "./core/core.module";
     NavigationComponent,
     AboutComponent,
     BookmarksComponent,
-    BookmarkSearchComponent,
-    ErrorComponent
+    BookmarkSearchComponent
   ],
   providers: [
     AuthGuard,
     BookmarkService,
     BookmarkSearchService,
-    BookmarkStore,
-    ErrorService
+    BookmarkStore
   ],
   bootstrap: [AppComponent]
 })

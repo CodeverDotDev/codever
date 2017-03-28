@@ -4,6 +4,8 @@ import {BookmarkFilterService} from "./filter.service";
 import {Logger} from "./logger.service";
 import {KeycloakService} from "./keycloak/keycloak.service";
 import {HttpWrapperService} from "./keycloak/http-wrapper.service";
+import {ErrorService} from "./error/error.service";
+import {ErrorComponent} from "./error/error.component";
 
 /**
  * Gather services and components that are used by several modules, in a single CoreModule, that you import once when
@@ -13,11 +15,18 @@ import {HttpWrapperService} from "./keycloak/http-wrapper.service";
  */
 @NgModule({
   imports:      [ CommonModule ],
+  declarations: [
+    ErrorComponent
+  ],
+  exports: [
+    ErrorComponent
+  ],
   providers: [
     BookmarkFilterService,
     Logger,
     KeycloakService,
-    HttpWrapperService
+    HttpWrapperService,
+    ErrorService
   ]
 })
 export class CoreModule {
