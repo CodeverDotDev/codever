@@ -10,7 +10,6 @@ import {BookmarkService} from "./bookmark/bookmark.service";
 import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
 import "./rxjs-extensions";
 import {BookmarkStore} from "./bookmark/store/BookmarkStore";
-import {NavigationComponent} from "./navigation/navigation.component";
 import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
 import {AuthGuard} from "./auth-guard.service";
@@ -31,7 +30,6 @@ import {CoreModule} from "./core/core.module";
   ],
   declarations: [
     AppComponent,
-    NavigationComponent,
     AboutComponent,
     BookmarksComponent,
     BookmarkSearchComponent
