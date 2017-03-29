@@ -4,7 +4,7 @@ import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {KeycloakService} from "../../core/keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 import {Router} from "@angular/router";
-import {BookmarkService} from "../../bookmark/bookmark.service";
+import {BookmarkService} from "../../public/bookmark/bookmark.service";
 import {MarkdownService} from "../markdown.service";
 
 @Component({

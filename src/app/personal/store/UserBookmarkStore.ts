@@ -8,7 +8,7 @@ import {ErrorService} from "../../core/error/error.service";
 import {Response} from "@angular/http";
 import {UserBookmarkService} from "../user-bookmark.service";
 import {KeycloakService} from "../../core/keycloak/keycloak.service";
-import {BookmarkStore} from "../../bookmark/store/BookmarkStore";
+import {BookmarkStore} from "../../public/bookmark/store/BookmarkStore";
 
 @Injectable()
 export class UserBookmarkStore {

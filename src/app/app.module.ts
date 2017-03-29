@@ -3,18 +3,13 @@ import {BrowserModule} from "@angular/platform-browser";
 import {JsonpModule, HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppComponent} from "./app.component";
-import {AboutComponent} from "./public/about/about.component";
 import {AppRoutingModule} from "./app.routing";
-import {BookmarksComponent} from "./bookmark/bookmarks.component";
-import {BookmarkService} from "./bookmark/bookmark.service";
-import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
 import "./rxjs-extensions";
-import {BookmarkStore} from "./bookmark/store/BookmarkStore";
-import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
 import {AuthGuard} from "./auth-guard.service";
 import {SharedModule} from "./shared/shared.module";
 import {CoreModule} from "./core/core.module";
+import {PublicBookmarksModule} from "./public/public.module";
 
 @NgModule({
   imports: [
@@ -26,19 +21,14 @@ import {CoreModule} from "./core/core.module";
     ReactiveFormsModule,
     JsonpModule,
     UserBookmarksModule,
+    PublicBookmarksModule,
     AppRoutingModule
   ],
   declarations: [
-    AppComponent,
-    AboutComponent,
-    BookmarksComponent,
-    BookmarkSearchComponent
+    AppComponent
   ],
   providers: [
-    AuthGuard,
-    BookmarkService,
-    BookmarkSearchService,
-    BookmarkStore
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
