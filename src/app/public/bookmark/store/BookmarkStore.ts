@@ -2,16 +2,15 @@
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
 import {List} from "immutable";
+import {Bookmark} from "../../../core/model/bookmark";
 import {BookmarkService} from "../bookmark.service";
-import {Bookmark} from "../../core/model/bookmark";
-import {Logger} from "../../core/logger.service";
 
 @Injectable()
 export class BookmarkStore {
 
     private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]))
 
-    constructor(private bookmarkService: BookmarkService, private logger:Logger) {
+    constructor(private bookmarkService: BookmarkService) {
         this.loadInitialData();
     }
 

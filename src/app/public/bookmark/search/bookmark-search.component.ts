@@ -1,11 +1,11 @@
 import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {BookmarkSearchService} from "./bookmark-search.service";
-import {Bookmark} from "../../core/model/bookmark";
 import {BookmarkStore} from "../store/BookmarkStore";
 import {FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
-import {BookmarkFilterService} from "../../core/filter.service";
+import {BookmarkFilterService} from "../../../core/filter.service";
+import {Bookmark} from "../../../core/model/bookmark";
 
 @Component({
     selector: 'bookmark-search',
