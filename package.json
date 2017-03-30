@@ -1,6 +1,6 @@
 {
   "name": "bookmarks-api.codingpedia.org",
-  "version": "1.0.0",
+  "version": "1.1.0-SNAPSHOT",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
