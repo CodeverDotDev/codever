@@ -1,6 +1,6 @@
 import { Injectable }     from '@angular/core';
 import {CanActivate}    from '@angular/router';
-import {KeycloakService} from "./core/keycloak/keycloak.service";
+import {KeycloakService} from "./keycloak/keycloak.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
