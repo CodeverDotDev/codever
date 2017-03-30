@@ -47,6 +47,15 @@ router.get('/', function(req, res, next) {
       }
       res.send(bookmarks);
     });
+  } else if(req.query.tag){//get all bookmarks tagged with "tag"
+    //Bookmark.find({ tags: req.query.tag }, function(err, bookmarks){ //TODO when making strict tags, that is the exact tag name
+    Bookmark.find({ tags: { $regex: new RegExp(req.query.tag, "ig")} }, function(err, bookmarks){
+      if(err){
+        console.log(err);
+        return res.status(500).send(err);
+      }
+      res.send(bookmarks);
+    });
   } else {//no filter - all bookmarks
     Bookmark.find({'shared':true}, function(err, bookmarks){
       if(err){
