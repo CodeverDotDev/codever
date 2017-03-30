@@ -6,7 +6,6 @@ import {AppComponent} from "./app.component";
 import {AppRoutingModule} from "./app.routing";
 import "./rxjs-extensions";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
-import {AuthGuard} from "./auth-guard.service";
 import {SharedModule} from "./shared/shared.module";
 import {CoreModule} from "./core/core.module";
 import {PublicBookmarksModule} from "./public/public.module";
@@ -26,9 +25,6 @@ import {PublicBookmarksModule} from "./public/public.module";
   ],
   declarations: [
     AppComponent
-  ],
-  providers: [
-    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
