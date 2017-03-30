@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {UserBookmarksComponent} from "./user-bookmarks-home.component";
-import {AsyncUserBookmarksListComponent} from "./async-list/async-user-bookmark-list.component";
+import {AsyncUserBookmarksListComponent} from "./async-list/async-personal-bookmark-list.component";
 import {HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserBookmarkStore} from "./store/UserBookmarkStore";
