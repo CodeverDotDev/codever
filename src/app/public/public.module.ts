@@ -10,13 +10,16 @@ import {BookmarkService} from "./bookmark/bookmark.service";
 import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
 import {BookmarkStore} from "./bookmark/store/BookmarkStore";
 import {AsyncPublicBookmarksListComponent} from "./bookmark/async-list/async-public-bookmark-list.component";
+import {TagService} from "./tag/tag.service";
+import {TagComponent} from "./tag/tag.component";
 
 @NgModule({
   declarations : [
     AboutComponent,
     BookmarksComponent,
     BookmarkSearchComponent,
-    AsyncPublicBookmarksListComponent
+    AsyncPublicBookmarksListComponent,
+    TagComponent
   ],
   imports: [
     SharedModule,
@@ -28,7 +31,8 @@ import {AsyncPublicBookmarksListComponent} from "./bookmark/async-list/async-pub
   providers: [
     BookmarkService,
     BookmarkSearchService,
-    BookmarkStore
+    BookmarkStore,
+    TagService
   ]
 })
 export class PublicBookmarksModule {}
