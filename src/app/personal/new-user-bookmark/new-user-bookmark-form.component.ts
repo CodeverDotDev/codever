@@ -58,8 +58,11 @@ export class UserBookmarkFormComponent implements OnInit {
   }
 
   saveBookmark(model: Bookmark) {
-    model.tags = model.tagsLine.split(",");
-    var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description, null);
+    model.tags = model.tagsLine.split(",").map(function(item) {
+      return item.trim();
+    });
+
+    var newBookmark = new Bookmark(model.name, model.location, model.category, model.tags, model.description, null);
 
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;
