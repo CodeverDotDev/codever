@@ -35,7 +35,9 @@ export class BookmarkDetailComponent {
   }
 
   updateBookmark():void {
-    this.bookmark.tags = this.bookmark.tagsLine.split(",");
+    this.bookmark.tags = this.bookmark.tagsLine.split(",").map(function(item) {
+      return item.trim();
+    });
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
 
     let obs = this.userBookmarkStore.updateBookmark(this.bookmark);
