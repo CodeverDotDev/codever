@@ -1,13 +1,13 @@
 import {Component, Input, NgZone} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
 
 @Component({
-  selector: 'my-async-user-bookmark-list',
-  templateUrl: './async-user-bookmark-list.component.html',
-  styleUrls: ['./async-user-bookmark-list.component.scss']
+  selector: 'my-async-personal-bookmark-list',
+  templateUrl: './async-personal-bookmark-list.component.html',
+  styleUrls: ['./async-personal-bookmark-list.component.scss']
 })
 export class AsyncUserBookmarksListComponent{
 

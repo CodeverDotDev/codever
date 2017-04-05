@@ -1,13 +1,11 @@
 import {Component, OnInit} from "@angular/core";
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {KeycloakService} from "../../keycloak/keycloak.service";
+import {KeycloakService} from "../../core/keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 import {Router} from "@angular/router";
-import {BookmarkService} from "../../bookmark/bookmark.service";
-
-const showdown = require('showdown');
-const converter = new showdown.Converter();
+import {BookmarkService} from "../../public/bookmark/bookmark.service";
+import {MarkdownService} from "../markdown.service";
 
 @Component({
   selector: 'user-bookmark-form',
@@ -24,7 +22,8 @@ export class UserBookmarkFormComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
-    private bookmarkService: BookmarkService
+    private bookmarkService: BookmarkService,
+    private markdownServce: MarkdownService
   ){
     const keycloak = keycloakService.getKeycloak();
     if(keycloak) {
@@ -59,13 +58,16 @@ export class UserBookmarkFormComponent implements OnInit {
   }
 
   saveBookmark(model: Bookmark) {
-    model.tags = model.tagsLine.split(",");
-    var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description, null);
+    model.tags = model.tagsLine.split(",").map(function(item) {
+      return item.trim();
+    });
+
+    var newBookmark = new Bookmark(model.name, model.location, model.category, model.tags, model.description, null);
 
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;
 
-    newBookmark.descriptionHtml = converter.makeHtml(newBookmark.description);
+    newBookmark.descriptionHtml = this.markdownServce.toHtml(newBookmark.description);
 
     let obs = this.userBookmarkStore.addBookmark(this.userId, newBookmark);
 

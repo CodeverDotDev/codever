@@ -3,55 +3,28 @@ import {BrowserModule} from "@angular/platform-browser";
 import {JsonpModule, HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppComponent} from "./app.component";
-import {AboutComponent} from "./about/about.component";
-import {routing} from "./app.routing";
-import {BookmarksComponent} from "./bookmark/bookmarks.component";
-import {BookmarkService} from "./bookmark/bookmark.service";
-import {BookmarkSearchComponent} from "./bookmark/search/bookmark-search.component";
+import {AppRoutingModule} from "./app.routing";
 import "./rxjs-extensions";
-import {BookmarkStore} from "./bookmark/store/BookmarkStore";
-import {NavigationComponent} from "./navigation/navigation.component";
-import {BookmarkSearchService} from "./bookmark/search/bookmark-search.service";
-import {Logger} from "./logger.service";
-import {ErrorService} from "./error/error.service";
-import {ErrorComponent} from "./error/error.component";
-import {KeycloakService} from "./keycloak/keycloak.service";
-import {HttpWrapperService} from "./keycloak/http-wrapper.service";
 import {UserBookmarksModule} from "./personal/user-bookmarks.module";
-import {AuthGuard} from "./auth-guard.service";
-import {BookmarkFilterService} from "./filter.service";
-import {HighLightPipe} from "./shared/highlight.pipe";
 import {SharedModule} from "./shared/shared.module";
+import {CoreModule} from "./core/core.module";
+import {PublicBookmarksModule} from "./public/public.module";
 
 @NgModule({
   imports: [
     SharedModule,
+    CoreModule,
     BrowserModule,
     HttpModule,
     FormsModule,
     ReactiveFormsModule,
     JsonpModule,
     UserBookmarksModule,
-    routing
+    PublicBookmarksModule,
+    AppRoutingModule
   ],
   declarations: [
-    AppComponent,
-    NavigationComponent,
-    AboutComponent,
-    BookmarksComponent,
-    BookmarkSearchComponent,
-    ErrorComponent
-  ],
-  providers: [
-    AuthGuard,
-    BookmarkService,
-    BookmarkSearchService,
-    BookmarkStore,
-    Logger,
-    ErrorService,
-    KeycloakService,
-    HttpWrapperService,
-    BookmarkFilterService
+    AppComponent
   ],
   bootstrap: [AppComponent]
 })

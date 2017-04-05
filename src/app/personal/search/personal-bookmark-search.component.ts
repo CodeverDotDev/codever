@@ -1,10 +1,10 @@
 import {Component, OnInit, NgZone} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {FormControl} from "@angular/forms";
-import {BookmarkFilterService} from "../../filter.service";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
 import {ActivatedRoute, Router} from "@angular/router";
+import {BookmarkFilterService} from "../../core/filter.service";
 
 @Component({
     selector: 'personal-bookmark-search',
