@@ -1,6 +1,6 @@
 
 import {Component} from "@angular/core";
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserBookmarkStore} from "../store/UserBookmarkStore";
 import {MarkdownService} from "../markdown.service";
@@ -35,7 +35,9 @@ export class BookmarkDetailComponent {
   }
 
   updateBookmark():void {
-    this.bookmark.tags = this.bookmark.tagsLine.split(",");
+    this.bookmark.tags = this.bookmark.tagsLine.split(",").map(function(item) {
+      return item.trim();
+    });
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
 
     let obs = this.userBookmarkStore.updateBookmark(this.bookmark);
