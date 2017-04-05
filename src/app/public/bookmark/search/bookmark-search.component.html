@@ -1,0 +1,13 @@
+<div id="search-component" class="input-group">
+    <span class="input-group-addon" id="basic-addon1">Search</span>
+    <input type="text" class="form-control" [formControl]="term" placeholder="in public bookmarks...">
+</div>
+
+<br>
+
+<div *ngIf="showNotFound" class="alert alert-info" role="alert">
+  No bookmarks found. Please try a different search
+</div>
+
+<my-async-public-bookmark-list [bookmarks]="filteredBookmarks" [highlightedText]="highlightedText"></my-async-public-bookmark-list>
+

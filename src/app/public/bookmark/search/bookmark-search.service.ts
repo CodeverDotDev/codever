@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import {Bookmark} from "../../model/bookmark";
 import {Http, Response} from "@angular/http";
 import {Observable} from "rxjs";
+import {Bookmark} from "../../../core/model/bookmark";
 
 @Injectable()
 export class BookmarkSearchService {

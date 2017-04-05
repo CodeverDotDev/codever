@@ -4,7 +4,7 @@ import {NgModule} from "@angular/core/src/metadata/ng_module";
 import {UserBookmarkFormComponent} from "./new-user-bookmark/new-user-bookmark-form.component";
 import {BookmarkDetailComponent} from "./detail/bookmark-detail.component";
 import {PersonalBookmarksComponent} from "./personal-bookmarks.component";
-import {AuthGuard} from "../auth-guard.service";
+import {AuthGuard} from "../core/auth-guard.service";
 
 @NgModule({
   imports: [RouterModule.forChild([

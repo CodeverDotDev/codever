@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {UserBookmarksComponent} from "./user-bookmarks-home.component";
-import {AsyncUserBookmarksListComponent} from "./async-list/async-user-bookmark-list.component";
+import {AsyncUserBookmarksListComponent} from "./async-list/async-personal-bookmark-list.component";
 import {HttpModule} from "@angular/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserBookmarkStore} from "./store/UserBookmarkStore";
@@ -12,6 +12,7 @@ import {BookmarkDetailComponent} from "./detail/bookmark-detail.component";
 import {PersonalBookmarksComponent} from "./personal-bookmarks.component";
 import {PersonalBookmarkSearchComponent} from "./search/personal-bookmark-search.component";
 import {SharedModule} from "../shared/shared.module";
+import {MarkdownService} from "./markdown.service";
 
 export const routerConfig = [{
   path: '',
@@ -37,7 +38,8 @@ export const routerConfig = [{
   ],
   providers: [
     UserBookmarkStore,
-    UserBookmarkService
+    UserBookmarkService,
+    MarkdownService
   ]
 })
 export class UserBookmarksModule {}
