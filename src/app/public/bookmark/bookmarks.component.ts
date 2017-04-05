@@ -1,9 +1,11 @@
 import {Component, OnInit} from "@angular/core";
-import {Bookmark} from "../model/bookmark";
 import {Observable} from "rxjs";
 import {BookmarkStore} from "./store/BookmarkStore";
 import {List} from "immutable";
-import {Tag} from "../model/tags";
+import {Bookmark} from "../../core/model/bookmark";
+import {Tag} from "../../core/model/tags";
+import {ActivatedRoute} from "@angular/router";
+
 
 @Component({
   selector: 'my-bookmarks',
@@ -14,14 +16,28 @@ export class BookmarksComponent implements  OnInit{
 
   publicBookmarks: Observable<List<Bookmark>>;
   tags: Tag[] = [];
+  query: string = '';
 
-  constructor(private bookmarkStore: BookmarkStore) { }
+  constructor(private bookmarkStore: BookmarkStore,  private route: ActivatedRoute) { }
 
   getBookmarks(): void {
     this.publicBookmarks = this.bookmarkStore.getBookmarks();
   }
 
   ngOnInit(): void {
+
+    this.route
+      .queryParams
+      .subscribe(params => {
+        if(params['search']){
+          this.query = params['search'];
+          this.query = this.query.replace('+', ' ');
+        } else if(params['q']){
+          this.query = params['q'];
+          this.query = this.query.replace('+', ' ');
+        }
+      });
+
     this.getBookmarks();
 
     this.publicBookmarks.subscribe(

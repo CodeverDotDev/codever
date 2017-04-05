@@ -275,7 +275,7 @@ module.exports = function makeWebpackConfig() {
     contentBase: './src/public',
     historyApiFallback: true,
     quiet: true,
-    stats: 'minimal' // none (or false), errors-only, minimal, normal (or true) and verbose
+    stats: 'normal' // none (or false), errors-only, minimal, normal (or true) and verbose
   };
 
   return config;

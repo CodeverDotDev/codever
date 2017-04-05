@@ -1,6 +1,7 @@
 <div class="container">
-  <bookmark-search></bookmark-search>
-
+  <div *ngIf="publicBookmarks">
+    <bookmark-search [bookmarks]="publicBookmarks" [query]="query"></bookmark-search>
+  </div>
   <h2>Tags</h2>
   <div class="tags-group">
     <span *ngFor="let tag of tags" class="tag tag-default tag-pill float-xs-left"><a href="#{{tag.name}}">{{tag.name}}</a></span>

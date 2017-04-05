@@ -1,10 +1,10 @@
 import {Component, OnInit} from "@angular/core";
-import {Bookmark} from "../../model/bookmark";
+import {Bookmark} from "../../core/model/bookmark";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {KeycloakService} from "../../keycloak/keycloak.service";
+import {KeycloakService} from "../../core/keycloak/keycloak.service";
 import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
 import {Router} from "@angular/router";
-import {BookmarkService} from "../../bookmark/bookmark.service";
+import {BookmarkService} from "../../public/bookmark/bookmark.service";
 import {MarkdownService} from "../markdown.service";
 
 @Component({
@@ -58,8 +58,11 @@ export class UserBookmarkFormComponent implements OnInit {
   }
 
   saveBookmark(model: Bookmark) {
-    model.tags = model.tagsLine.split(",");
-    var newBookmark = new Bookmark(model.name, model.location, model.category,model.tagsLine.split(","), model.description, null);
+    model.tags = model.tagsLine.split(",").map(function(item) {
+      return item.trim();
+    });
+
+    var newBookmark = new Bookmark(model.name, model.location, model.category, model.tags, model.description, null);
 
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;
