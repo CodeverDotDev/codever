@@ -1,6 +1,6 @@
 import {RouterModule} from "@angular/router";
 import {UserBookmarksComponent} from "./user-bookmarks-home.component";
-import {NgModule} from "@angular/core/src/metadata/ng_module";
+import {NgModule} from "@angular/core";
 import {UserBookmarkFormComponent} from "./new-user-bookmark/new-user-bookmark-form.component";
 import {BookmarkDetailComponent} from "./detail/bookmark-detail.component";
 import {PersonalBookmarksComponent} from "./personal-bookmarks.component";

@@ -1,6 +1,6 @@
 
 
-import {Pipe} from "@angular/core/src/metadata/directives";
+import {Pipe} from "@angular/core";
 import {PipeTransform} from "@angular/core";
 
 @Pipe({ name: 'highlight' })
