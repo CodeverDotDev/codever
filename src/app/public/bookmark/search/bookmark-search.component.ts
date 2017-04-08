@@ -6,7 +6,7 @@ import {FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
 import {BookmarkFilterService} from "../../../core/filter.service";
 import {Bookmark} from "../../../core/model/bookmark";
-import {Input} from "@angular/core/src/metadata/directives";
+import {Input} from "@angular/core";
 import {List} from "immutable";
 
 @Component({
