@@ -13,7 +13,7 @@ export class AsyncPublicBookmarksListComponent{
   bookmarks: Observable<Bookmark[]>;
 
   @Input()
-  highlightedText: string;
+  queryText: string;
 
   constructor() {}
 
