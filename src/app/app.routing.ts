@@ -6,6 +6,11 @@ import {TagComponent} from "./public/tag/tag.component";
 
 const routes: Routes = [
   {
+    path: 'search',
+    redirectTo: '',
+    pathMatch:'full'
+  },
+  {
     path: '',
     component: BookmarksComponent
   },
