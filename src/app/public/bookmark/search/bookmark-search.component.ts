@@ -26,7 +26,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   filteredBookmarks: Observable<Bookmark[]>;
 
   term = new FormControl();
-  highlightedText: string;
+  queryText: string;
   public showNotFound: boolean = false;
   constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
 
@@ -37,7 +37,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
       .distinctUntilChanged()   // ignore if next search term is same as previous
       .switchMap(term => {
         if(term){// switch to new observable each time
-          this.highlightedText = term;
+          this.queryText = term;
           let filterBookmarksBySearchTerm:Bookmark[] = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarks);
           if(filterBookmarksBySearchTerm.length > 0 ){
             this.showNotFound = false;
