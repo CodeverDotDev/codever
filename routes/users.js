@@ -37,6 +37,7 @@ router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
     descriptionHtml: descriptionHtml,
     category: req.body.category,
     tags: req.body.tags,
+    publishedOn: req.body.publishedOn,
     userId: req.params.id,
     shared: req.body.shared
   });
