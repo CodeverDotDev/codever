@@ -7,6 +7,7 @@ export class Bookmark {
     category: string;
     tags: string[];
     tagsLine: string;
+    publishedOn: Date;
     userId: String;
     shared: boolean;
 
@@ -15,10 +16,12 @@ export class Bookmark {
                  location: string,
                  category: string,
                  tags: string[],
+                 publishedOn?: Date,
                  description?: string,
                  descriptionHtml?: string,
                  _id?: string,
                  tagsLine?: string,
+
                  userId?: string,
                  shared?: boolean
                  ){
@@ -30,6 +33,7 @@ export class Bookmark {
         this.descriptionHtml = descriptionHtml;
         this._id = _id;
         this.tagsLine = tagsLine;
+        this.publishedOn = publishedOn;
         this.userId = userId;
         this.shared = shared;
     }

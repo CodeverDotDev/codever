@@ -7,6 +7,7 @@
   </div>
   <div class="card-footer">
     <div class="tags-group">
+      <span *ngIf="bookmark.publishedOn" class="tag tag-pill  tag-info float-xs-left">{{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
       <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left" [innerHtml]="tag | highlight: queryText"></span>
     </div>
   </div>
