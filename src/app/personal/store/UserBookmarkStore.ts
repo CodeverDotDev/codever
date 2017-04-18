@@ -44,6 +44,7 @@ export class UserBookmarkStore {
                   bookmark.category,
                   bookmark.tags,
                   bookmark.publishedOn,
+                  bookmark.githubURL,
                   bookmark.description,
                   bookmark.descriptionHtml,
                   bookmark._id,

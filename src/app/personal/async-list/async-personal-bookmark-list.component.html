@@ -10,6 +10,7 @@
   <div class="card-footer">
     <div class="tags-group">
       <span *ngIf="bookmark.publishedOn" class="tag tag-pill  tag-info float-xs-left">{{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
+      <span *ngIf="bookmark.githubURL" class="tag tag-pill  tag-primary float-xs-left"><a href="{{bookmark.githubURL}}" target="_blank">GitHub URL</a></span>
       <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{tag}} </span>
     </div>
   </div>
