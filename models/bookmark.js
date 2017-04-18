@@ -10,6 +10,7 @@ var bookmarkSchema = new Schema({
     category: {type:String},
     tags: [String],
     publishedOn: Date,
+    githubURL: {type:String},
     userId: {type: String, ref:'User'},
     shared: Boolean
 },
