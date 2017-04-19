@@ -36,7 +36,7 @@ export class BookmarkDetailComponent {
 
   updateBookmark():void {
     this.bookmark.tags = this.bookmark.tagsLine.split(",").map(function(item) {
-      return item.trim();
+      return item.trim().replace(' ', '-');//replace spaces between words (if any) in a tag with dashes
     });
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
 

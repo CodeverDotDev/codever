@@ -9,6 +9,11 @@ export class BookmarkFilterService {
 
   /**
    * Filters a list of bookmarks based on the query string.
+   *
+   * Tags are enclosed in square brackets - e.g [angular]. The filter is now permissive, that is when starting with
+   * "[" the filter assumes that the tag is what comes after even though there is no enclosing "]". That is now to support
+   * the autosearch feature
+   *
    * @param query - is a string of search terms; multiple terms are separated via the "+" sign
    * @param observableListBookmark - the list to be filtered
    * @returns {any} - the filtered list
@@ -20,7 +25,17 @@ export class BookmarkFilterService {
       bookmarks => {
         let filteredBookmarks = bookmarks.toArray(); //we start with all bookmarks
         terms.forEach(term => {
-          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim()));
+          if(term.substring(0,1) === '['){
+            let matches = term.match(/\[(.*?)\]/);
+            if (matches) {
+              let tag = matches[1];
+              filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag.trim()));
+            } else {
+              filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, term.substring(1, term.length).trim()));
+            }
+          } else {
+            filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim()));
+          }
         });
 
         result = filteredBookmarks;
@@ -64,4 +79,16 @@ export class BookmarkFilterService {
 
     return result;
   }
+
+  private bookmarkContainsTag(bookmark: Bookmark, tag: string):boolean {
+    let result: boolean = false;
+    bookmark.tags.forEach(bookmarkTag => {
+      if(bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
+        result = true;
+      }
+    });
+
+    return result;
+  }
+
 }

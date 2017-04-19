@@ -6,7 +6,7 @@ import {FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
 import {BookmarkFilterService} from "../../../core/filter.service";
 import {Bookmark} from "../../../core/model/bookmark";
-import {Input} from "@angular/core/src/metadata/directives";
+import {Input} from "@angular/core";
 import {List} from "immutable";
 
 @Component({
@@ -26,7 +26,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   filteredBookmarks: Observable<Bookmark[]>;
 
   term = new FormControl();
-  highlightedText: string;
+  queryText: string;
   public showNotFound: boolean = false;
   constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
 
@@ -37,7 +37,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
       .distinctUntilChanged()   // ignore if next search term is same as previous
       .switchMap(term => {
         if(term){// switch to new observable each time
-          this.highlightedText = term;
+          this.queryText = term;
           let filterBookmarksBySearchTerm:Bookmark[] = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarks);
           if(filterBookmarksBySearchTerm.length > 0 ){
             this.showNotFound = false;

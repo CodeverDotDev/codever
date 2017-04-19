@@ -1,10 +1,15 @@
 import {RouterModule, Routes} from "@angular/router";
 import {AboutComponent} from "./public/about/about.component";
 import {BookmarksComponent} from "./public/bookmark/bookmarks.component";
-import {NgModule} from "@angular/core/src/metadata/ng_module";
+import {NgModule} from "@angular/core";
 import {TagComponent} from "./public/tag/tag.component";
 
 const routes: Routes = [
+  {
+    path: 'search',
+    redirectTo: '',
+    pathMatch:'full'
+  },
   {
     path: '',
     component: BookmarksComponent

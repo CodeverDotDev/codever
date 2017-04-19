@@ -13,7 +13,7 @@ import {MarkdownService} from "../markdown.service";
 })
 export class UserBookmarkFormComponent implements OnInit {
 
-  model = new Bookmark('', '', '', [], '',  '');
+  model = new Bookmark('', '', '', [], null, '', '',  '');
   bookmarkForm: FormGroup;
   userId = null;
 
@@ -40,6 +40,8 @@ export class UserBookmarkFormComponent implements OnInit {
       name: ['', Validators.required],
       location: ['', Validators.required],
       tagsLine:['', Validators.required],
+      publishedOn:null,
+      githubURL: '',
       description:'',
       shared: false
     });
@@ -59,10 +61,10 @@ export class UserBookmarkFormComponent implements OnInit {
 
   saveBookmark(model: Bookmark) {
     model.tags = model.tagsLine.split(",").map(function(item) {
-      return item.trim();
+      return item.trim().replace(' ', '-');//replace spaces between words (if any) in a tag with dashes
     });
 
-    var newBookmark = new Bookmark(model.name, model.location, model.category, model.tags, model.description, null);
+    var newBookmark = new Bookmark(model.name, model.location, model.category, model.tags, model.publishedOn, model.githubURL, model.description, null);
 
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;
