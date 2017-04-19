@@ -13,6 +13,7 @@ export class TagComponent implements OnInit {
 
   bookmarksForTag: Observable<Bookmark[]>;
   tag: string;
+  queryText: string;
 
   constructor(private tagService: TagService, private route: ActivatedRoute) { }
 
@@ -21,6 +22,7 @@ export class TagComponent implements OnInit {
       .map(params => params['tag'])
       .subscribe((tag) => {
           this.tag = tag;
+          this.queryText = '[' + tag + ']';
           this.bookmarksForTag = this.tagService.getBookmarksForTag(tag);
       });
   }

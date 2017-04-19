@@ -1,13 +1,15 @@
 <div *ngFor="let bookmark of bookmarks | async" class="card">
   <div class="card-block">
-    <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: highlightedText"></a></h4>
-    <p class="list-group-item-text url-under-title" [innerHtml]="bookmark.location | highlight: highlightedText"></p>
-    <p *ngIf="!bookmark.descriptionHtml" class="card-text" [innerHtml]="bookmark.description | highlight: highlightedText"></p>
-    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: highlightedText"></div>
+    <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText"></a></h4>
+    <p class="list-group-item-text url-under-title" [innerHtml]="bookmark.location | highlight: queryText"></p>
+    <p *ngIf="!bookmark.descriptionHtml" class="card-text" [innerHtml]="bookmark.description | highlight: queryText"></p>
+    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: queryText"></div>
   </div>
   <div class="card-footer">
     <div class="tags-group">
-      <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left" [innerHtml]="tag | highlight: highlightedText"></span>
+      <span *ngIf="bookmark.publishedOn" class="tag tag-pill  tag-info float-xs-left">{{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
+      <span *ngIf="bookmark.githubURL" class="tag tag-pill  tag-primary float-xs-left"><a href="{{bookmark.githubURL}}" target="_blank">GitHub URL</a></span>
+      <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left" [innerHtml]="tag | highlight: queryText"></span>
     </div>
   </div>
 </div>

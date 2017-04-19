@@ -29,11 +29,25 @@
         <input type="text" class="form-control" id="tags"
                formControlName="tagsLine"
                pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
-               placeholder='keywoards - comma separated (e.g. "jvm, regex")'>
+               placeholder='keywoards - comma separated, maximum five, multiple words with dash (e.g. "ruby-on-rails, regex")'>
         <div [hidden]="bookmarkForm.controls.tagsLine.valid || (bookmarkForm.controls.tagsLine.pristine && !submitted)"
              class="alert alert-danger">
           Please provide the non-empty words separated with comma, "-" is allowed: (validating regex - ^[-\w\s]+(?:,[-\w\s]*)*$)
         </div>
+      </div>
+      <div class="form-group">
+        <label for="publishedOn">Published on</label>
+        <input type="date" class="form-control" id="publishedOn"
+               formControlName="publishedOn"
+               placeholder='Date when page was published yyyy-MM-dd'>
+      </div>
+      <div class="form-group">
+        <label for="githubURL">GitHub URL</label>
+        <input type="url"
+               class="form-control"
+               id="githubURL"
+               formControlName="githubURL"
+               placeholder='URL of the post, project on GitHub - e.g. https://github.com/Codingpedia/bookmarks'>
       </div>
       <div class="form-group">
         <label for="description" style="width: 100%">Notes... Support for <a href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown</a></label>
