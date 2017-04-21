@@ -36,6 +36,7 @@
     "@types/showdown": "^1.4.31",
     "bootstrap": "4.0.0-alpha.5",
     "core-js": "^2.4.1",
+    "font-awesome": "^4.7.0",
     "immutable": "^3.7.6",
     "keycloak-js": "2.5.5",
     "reflect-metadata": "^0.1.3",
