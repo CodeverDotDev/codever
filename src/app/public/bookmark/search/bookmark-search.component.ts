@@ -1,4 +1,4 @@
-import {Component, OnInit, AfterViewInit} from "@angular/core";
+import {Component, OnInit, AfterViewInit, OnChanges, SimpleChanges} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {BookmarkSearchService} from "./bookmark-search.service";
 import {BookmarkStore} from "../store/BookmarkStore";
@@ -73,4 +73,9 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
     let link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }
+
+  setQueryFromParentComponent(queryFromOutside: string){
+    this.term.setValue(queryFromOutside);
+  }
+
 }

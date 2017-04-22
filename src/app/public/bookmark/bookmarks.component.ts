@@ -1,10 +1,12 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, AfterViewInit} from "@angular/core";
 import {Observable} from "rxjs";
 import {BookmarkStore} from "./store/BookmarkStore";
 import {List} from "immutable";
 import {Bookmark} from "../../core/model/bookmark";
 import {Tag} from "../../core/model/tags";
 import {ActivatedRoute} from "@angular/router";
+import {BookmarkSearchComponent} from "./search/bookmark-search.component";
+import {ViewChild} from "@angular/core";
 
 
 @Component({
@@ -12,11 +14,14 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './bookmarks.component.html',
   styleUrls: ['./bookmarks.component.scss']
 })
-export class BookmarksComponent implements  OnInit{
+export class BookmarksComponent implements OnInit {
 
   publicBookmarks: Observable<List<Bookmark>>;
   tags: Tag[] = [];
   query: string = '';
+
+  @ViewChild(BookmarkSearchComponent)
+  private searchComponent: BookmarkSearchComponent;
 
   constructor(private bookmarkStore: BookmarkStore,  private route: ActivatedRoute) { }
 
@@ -74,4 +79,7 @@ export class BookmarksComponent implements  OnInit{
     );
   }
 
+  onTagClick(tag: string){
+    this.searchComponent.setQueryFromParentComponent('[' + tag + ']');
+  }
 }
