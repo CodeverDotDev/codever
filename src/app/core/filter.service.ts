@@ -19,23 +19,20 @@ export class BookmarkFilterService {
    * @returns {any} - the filtered list
    */
   filterBookmarksBySearchTerm(query:string, observableListBookmark:Observable<List<Bookmark>>): Bookmark[] {
-    var terms = query.split(" ");
+
+    let termsAndTags:[string[], string[]] = this.splitSearchQuery(query);
+    var terms:string[] = termsAndTags[0];
+    var tags:string[] = termsAndTags[1];
     let result:Bookmark[] = [];
+
     observableListBookmark.subscribe(
       bookmarks => {
         let filteredBookmarks = bookmarks.toArray(); //we start with all bookmarks
+        tags.forEach(tag => {
+          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag));
+        });
         terms.forEach(term => {
-          if(term.substring(0,1) === '['){
-            let matches = term.match(/\[(.*?)\]/);
-            if (matches) {
-              let tag = matches[1];
-              filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag.trim()));
-            } else {
-              filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, term.substring(1, term.length).trim()));
-            }
-          } else {
-            filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim()));
-          }
+          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim()));
         });
 
         result = filteredBookmarks;
@@ -44,6 +41,78 @@ export class BookmarkFilterService {
         console.log("Error filtering bookmakrs");
       }
     );
+
+    return result;
+  }
+
+  /**
+   * It will parse the search query and returns the search terms and tags to filter.
+   * It is permissive, in the sense that "[angul" is seen as the "angul" tag - needed for autocomplete
+   * To see what should come out check the filter.service.spec.ts test examples
+   *
+   * @param query to be parsed
+   * @returns a tuple of terms (first element) and tags (second element)
+   */
+  public splitSearchQuery(query: string):[string[], string[]]{
+
+    let result:[string[], string[]] = [[], []];
+
+    let terms:string[] = [];
+    let term:string = '';
+    let tags:string[]= [];
+    let tag:string = '';
+
+    let isInsideTerm:boolean = false;
+    let isInsideTag:boolean = false;
+
+
+    for(var i=0; i < query.length; i++ ){
+      let currentCharacter = query[i];
+      if(currentCharacter === ' '){
+        if(!isInsideTag){
+          if(!isInsideTerm){
+            continue;
+          } else {
+            terms.push(term);
+            isInsideTerm = false;
+            term = '';
+          }
+        } else {
+          tag += ' ';
+        }
+      } else if(currentCharacter === '['){
+        if(isInsideTag){
+          tags.push(tag.trim());
+          tag = '';
+        } else {
+          isInsideTag = true;
+        }
+      } else if(currentCharacter === ']'){
+        if(isInsideTag){
+          isInsideTag = false;
+          tags.push(tag.trim());
+          tag = '';
+        }
+      } else {
+        if(isInsideTag) {
+          tag += currentCharacter;
+        } else {
+          isInsideTerm = true;
+          term += currentCharacter;
+        }
+      }
+    }
+
+    if(tag.length > 0){
+      tags.push(tag.trim());
+    }
+
+    if(term.length > 0){
+      terms.push(term);
+    }
+
+    result[0] = terms;
+    result[1] = tags;
 
     return result;
   }
