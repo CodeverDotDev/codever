@@ -13,5 +13,10 @@
   "awesomeTypescriptLoaderOptions": {
     "forkChecker": true,
     "useWebpackText": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/main.aot.ts"
+  ]
 }
