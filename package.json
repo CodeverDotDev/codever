@@ -32,7 +32,6 @@
     "@angular/platform-browser": "4.0.1",
     "@angular/platform-browser-dynamic": "4.0.1",
     "@angular/router": "4.0.1",
-    "@types/showdown": "^1.4.31",
     "bootstrap": "4.0.0-alpha.5",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
