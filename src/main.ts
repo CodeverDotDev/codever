@@ -12,14 +12,6 @@ export function main() {
     return platformBrowserDynamic().bootstrapModule(AppModule);
 }
 
-/*
-if (document.readyState === 'complete') {
-    main();
-} else {
-    document.addEventListener('DOMContentLoaded', main);
-}
-*/
-
 KeycloakService.initKeycloak(process.env.KEYCLOAK_CONFIG_FILE_URL).subscribe(() => {
   if (document.readyState === "complete") {
     main();
