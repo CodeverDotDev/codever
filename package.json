@@ -21,7 +21,6 @@
     "ci": "npm run e2e && npm run test",
     "docs": "typedoc --options typedoc.json src/app/app.component.ts",
     "start": "npm run server",
-    "start:hmr": "npm run server -- --hot",
     "postinstall": "npm run webdriver-update"
   },
   "dependencies": {
@@ -45,8 +44,6 @@
     "zone.js": "^0.8.5"
   },
   "devDependencies": {
-    "@angularclass/hmr": "^1.0.1",
-    "@angularclass/hmr-loader": "^3.0.2",
     "@types/core-js": "^0.9.0",
     "@types/jasmine": "^2.5.41",
     "@types/lodash": "4.14.50",
