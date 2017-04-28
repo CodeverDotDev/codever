@@ -1,21 +1,22 @@
-import {enableProdMode} from "@angular/core";
-import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
-import {AppModule} from "./app/app.module";
-import {KeycloakService} from "./app/core/keycloak/keycloak.service";
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-// depending on the env mode, enable prod mode or add debugging modules
-if (process.env.ENV === 'build') {
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+import {KeycloakService} from './app/core/keycloak/keycloak.service';
+
+if (environment.production) {
   enableProdMode();
 }
 
 export function main() {
-    return platformBrowserDynamic().bootstrapModule(AppModule);
+  return platformBrowserDynamic().bootstrapModule(AppModule);
 }
 
-KeycloakService.initKeycloak(process.env.KEYCLOAK_CONFIG_FILE_URL).subscribe(() => {
-  if (document.readyState === "complete") {
+KeycloakService.initKeycloak().subscribe(() => {
+  if (document.readyState === 'complete') {
     main();
   } else {
-    document.addEventListener("DOMContentLoaded", main);
+    document.addEventListener('DOMContentLoaded', main);
   }
 });
