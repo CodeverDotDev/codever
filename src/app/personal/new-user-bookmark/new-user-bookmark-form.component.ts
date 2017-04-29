@@ -1,11 +1,11 @@
-import {Component, OnInit} from "@angular/core";
-import {Bookmark} from "../../core/model/bookmark";
-import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {KeycloakService} from "../../core/keycloak/keycloak.service";
-import {UserBookmarkStore} from "../../personal/store/UserBookmarkStore";
-import {Router} from "@angular/router";
-import {BookmarkService} from "../../public/bookmark/bookmark.service";
-import {MarkdownService} from "../markdown.service";
+import {Component, OnInit} from '@angular/core';
+import {Bookmark} from '../../core/model/bookmark';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {KeycloakService} from '../../core/keycloak/keycloak.service';
+import {UserBookmarkStore} from '../../personal/store/UserBookmarkStore';
+import {Router} from '@angular/router';
+import {BookmarkService} from '../../public/bookmark/bookmark.service';
+import {MarkdownService} from '../markdown.service';
 
 @Component({
   selector: 'user-bookmark-form',
@@ -26,7 +26,7 @@ export class UserBookmarkFormComponent implements OnInit {
     private markdownServce: MarkdownService
   ){
     const keycloak = keycloakService.getKeycloak();
-    if(keycloak) {
+    if (keycloak) {
       this.userId = keycloak.subject;
     }
   }
@@ -39,10 +39,10 @@ export class UserBookmarkFormComponent implements OnInit {
     this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
-      tagsLine:['', Validators.required],
-      publishedOn:null,
+      tagsLine: ['', Validators.required],
+      publishedOn: null,
       githubURL: '',
-      description:'',
+      description: '',
       shared: false
     });
 
@@ -52,7 +52,7 @@ export class UserBookmarkFormComponent implements OnInit {
       .subscribe(location => {
         console.log('Location: ', location);
         this.bookmarkService.getBookmarkTitle(location).subscribe(response => {
-          if(response){
+          if (response){
             this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
           }
         });
@@ -60,18 +60,18 @@ export class UserBookmarkFormComponent implements OnInit {
   }
 
   saveBookmark(model: Bookmark) {
-    model.tags = model.tagsLine.split(",").map(function(item) {
-      return item.trim().replace(' ', '-');//replace spaces between words (if any) in a tag with dashes
+    model.tags = model.tagsLine.split(',').map(function(item) {
+      return item.trim().replace(' ', '-'); // replace spaces between words (if any) in a tag with dashes
     });
 
-    var newBookmark = new Bookmark(model.name, model.location, model.category, model.tags, model.publishedOn, model.githubURL, model.description, null);
+    const newBookmark = new Bookmark(model.name, model.location, model.category, model.tags, model.publishedOn, model.githubURL, model.description, null);
 
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;
 
     newBookmark.descriptionHtml = this.markdownServce.toHtml(newBookmark.description);
 
-    let obs = this.userBookmarkStore.addBookmark(this.userId, newBookmark);
+    const obs = this.userBookmarkStore.addBookmark(this.userId, newBookmark);
 
     obs.subscribe(
       res => {

@@ -1,76 +1,41 @@
+# Codingpedia bookmarks, aka #codingmarks
 
-# Codingpedia bookmarks
+(Cu)rated bookmarks for developers. Visit [http://codingmarks.org](http://codingmarks.org) or [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/) to look through the public bookmarks and create your own list.
 
-(Cu)rated bookmarks for developers. Visit [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/) to look through the public bookmarks and create your own list.
+This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html), [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
+ is done via [Keycloak](http://www.keycloak.org/) 
 
-This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html), [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). The authentication and authorization
- on the website are taken care of via [Keycloak](http://www.keycloak.org/). As you can imagine is some setup required for development, but it's quite easy and straight forward.
-
-The setup is split in two sections
-* the front-end concerning angular/webpack setup
-* back-end concerning mongo, keycloak, node
+There is a **two-step** setup required for development 
+* **front-end** concerning angular/angular-cli setup
+* **back-end** concerning mongodb, keycloak, node
 
 Here is listed how to setup the front-end part. See [backend-end setup](https://github.com/Codingpedia/bookmarks-api) to complete configuration for local development.
 
-## Getting started
+# Front-end
 
-The front-end is built with Angular and used the [preboot/angular2-webpack](https://github.com/preboot/angular2-webpack) seed project.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.1.
 
-### Dependencies
+## Development server
 
-What you need to run this app:
-* `node` and `npm` (Use [NVM](https://github.com/creationix/nvm))
-* Ensure you're running Node (`v5.x.x`+) and NPM (`3.x.x`+)
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-### Installation and develop on local machine
+## Code scaffolding
 
-```bash
-# clone front-end repo
-$ git clone https://github.com/Codingpedia/bookmarks.git codingpedia-bookmarks
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
 
-# change directory to your app
-$ cd codingpedia-bookmarks
+## Build
 
-# install the dependencies with npm
-$ npm install
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
-# start the server
-$ npm start
-```
-go to [http://localhost:8080](http://localhost:8080) in your browser.
+## Running unit tests
 
-### Testing
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-### 1. Unit Tests
+## Running end-to-end tests
 
-* single run: `npm test`
-* live mode (TDD style): `npm run test-watch`
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Before running the tests make sure you are serving the app via `ng serve`.
 
-#### 2. End-to-End Tests (aka. e2e, integration)
+## Further help
 
-* single run:
-  * in a tab, *if not already running!*: `npm start`
-  * in a new tab: `npm run webdriver-start`
-  * in another new tab: `npm run e2e`
-* interactive mode:
-  * instead of the last command above, you can run: `npm run e2e-live`
-  * when debugging or first writing test suites, you may find it helpful to try out Protractor commands without starting up the entire test suite. You can do this with the element explorer.
-  * you can learn more about [Protractor Interactive Mode here](https://github.com/angular/protractor/blob/master/docs/debugging.md#testing-out-protractor-interactively)
-
-### Production
-
-To build the application, run:
-
-* `npm run build`
-
-You can now go to `/dist` and deploy that to the server!
-
-### Documentation
-
-Api docs (using [TypeDoc](http://typedoc.org/)) for the code with the following:
-
-* `npm run docs`
-
-# License
-
-[MIT](/LICENSE)
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

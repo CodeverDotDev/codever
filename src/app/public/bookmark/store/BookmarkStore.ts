@@ -20,7 +20,7 @@ export class BookmarkStore {
                 res => {
                   console.log('Response to JSON:');
                   console.log(res.json());
-                  let bookmarks = (<Object[]>res.json())
+                  const bookmarks = (<Object[]>res.json())
                     .map((bookmark: any) =>
                       new Bookmark(
                           bookmark.name,
@@ -37,15 +37,15 @@ export class BookmarkStore {
 
                   this._bookmarks.next(List(bookmarks));
                 },
-                err => console.log("Error retrieving bookmarks")
+                err => console.log('Error retrieving bookmarks')
             );
     }
 
-  getBookmarks():Observable<List<Bookmark>> {
+  getBookmarks(): Observable<List<Bookmark>> {
     return this._bookmarks.asObservable();
   }
 
-  getBookmarksValue():List<Bookmark> {
+  getBookmarksValue(): List<Bookmark> {
     return this._bookmarks.getValue();
   }
 

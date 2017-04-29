@@ -1,4 +1,3 @@
-import {HighLightHtmlPipe} from "./highlight.no-html-tags.pipe";
 import {HighLightPipe} from "./highlight.pipe";
 
 describe('HighlightHtml Pipe', () => {

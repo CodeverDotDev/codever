@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 
-const showdown = require('showdown');
+import * as showdown from 'showdown';
+
+// const showdown = require('showdown');
 const converter = new showdown.Converter();
 
 @Injectable()
