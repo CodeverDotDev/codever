@@ -14,12 +14,13 @@
     <li class="nav-item">
       <a class="nav-link" href="http://www.codingpedia.org/tags/#coding bookmarks" target="_blank">Blog</a>
     </li>
-    <li *ngIf="keycloakService.isLoggedIn()" class="nav-item">
-      <a class="nav-link" (click)="logout()">Logout <i class="fa fa-unlock"></i></a>
+    <li *ngIf="isLoggedIn else notLoggedIn" class="nav-item">
+      <a class="nav-link" (click)="logout()">Logout <i class="fa fa-lock"></i></a>
     </li>
-
-    <li *ngIf="!keycloakService.isLoggedIn()" class="nav-item">
-      <a class="nav-link" (click)="login()">Login <i class="fa fa-lock"></i></a>
-    </li>
+    <ng-template #notLoggedIn>
+      <li *ngIf="!keycloakService.isLoggedIn()" class="nav-item">
+        <a class="nav-link" (click)="login()">Login <i class="fa fa-unlock"></i></a>
+      </li>
+    </ng-template>
   </ul>
 </nav>

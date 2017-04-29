@@ -9,14 +9,6 @@ if (environment.production) {
   enableProdMode();
 }
 
-export function main() {
-  return platformBrowserDynamic().bootstrapModule(AppModule);
-}
-
-KeycloakService.initKeycloak().subscribe(() => {
-  if (document.readyState === 'complete') {
-    main();
-  } else {
-    document.addEventListener('DOMContentLoaded', main);
-  }
-});
+KeycloakService.initKeycloak()
+  .then(() => platformBrowserDynamic().bootstrapModule(AppModule))
+  .catch(e => window.location.reload());
