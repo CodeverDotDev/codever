@@ -1,41 +1,43 @@
-import { Injectable } from "@angular/core";
-import {AsyncSubject, Observable} from "rxjs";
+import {Injectable} from '@angular/core';
+import {AsyncSubject} from 'rxjs/AsyncSubject';
+
+import {environment} from 'environments/environment';
+import * as Keycloak from 'keycloak-js';
 
 @Injectable()
 export class KeycloakService {
 
-  private static keycloak: any;
+  private static auth: any = {};
 
-  public static initKeycloak(keycloakPath: string): Observable<any> {
-    let subject = new AsyncSubject();
-    const keycloak = require("keycloak-js/dist/keycloak.js");
+  public static initKeycloak(): Promise<any> {
+    const subject = new AsyncSubject();
+    // const keycloak = require('keycloak-js/dist/keycloak.js');
 
-    const keycloakAuth = new keycloak(keycloakPath);
-    //const keycloakAuth = new keycloak('keycloak.json');
-    keycloakAuth.init().success(
-      () => {
-        KeycloakService.keycloak = keycloakAuth;
-        subject.next("success");
-        subject.complete();
-      }).error((error) => {
-        subject.error(error);
-        subject.complete();
+    const keycloakAuth = new Keycloak(environment.keycloak);
+    return new Promise((resolve, reject) => {
+      keycloakAuth.init()
+        .success(() => {
+          KeycloakService.auth = keycloakAuth;
+          resolve();
+        })
+        .error((error) => {
+          reject();
+        });
     });
-    return subject;
   }
 
-  public login(){
+  public login() {
     let options: any;
-    options = {redirectUri: process.env.HOST + 'personal'};
-    KeycloakService.keycloak.login(options);
+    options = {redirectUri: environment.HOST + 'personal'};
+    KeycloakService.auth.login(options);
   }
 
-  public  isLoggedIn():boolean{
-    return KeycloakService.keycloak.authenticated;
+  public  isLoggedIn(): boolean {
+    return KeycloakService.auth.authenticated;
   }
 
   getKeycloak(): any {
-    return KeycloakService.keycloak;
+    return KeycloakService.auth;
   }
 
   logout() {
@@ -44,16 +46,16 @@ export class KeycloakService {
      */
     setTimeout(() => {
       let options: any;
-      options = {redirectUri: process.env.HOST};
-      KeycloakService.keycloak.logout(options);
+      options = {redirectUri: environment.HOST};
+      KeycloakService.auth.logout(options);
     });
   }
 
   public hasRole(role: string): boolean {
-    if (!KeycloakService.keycloak) {
+    if (!KeycloakService.auth) {
       return false;
     }
-    return KeycloakService.keycloak.hasRealmRole(role);
+    return KeycloakService.auth.hasRealmRole(role);
   }
 
 
