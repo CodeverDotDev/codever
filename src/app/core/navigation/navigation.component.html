@@ -1,7 +1,7 @@
 <!-- Image and text -->
 <nav class="navbar navbar-light bg-faded">
   <a class="navbar-brand" [routerLink]="['']" routerLinkActive="active">
-    <img src="/img/logo.png" width="35" height="35" class="d-inline-block align-top" alt="">
+    <img src="assets/logo.png" width="35" height="35" class="d-inline-block align-top" alt="">
     Public Bookmarks
   </a>
   <ul class="nav navbar-nav">
@@ -14,12 +14,13 @@
     <li class="nav-item">
       <a class="nav-link" href="http://www.codingpedia.org/tags/#coding bookmarks" target="_blank">Blog</a>
     </li>
-    <li *ngIf="keycloakService.isLoggedIn()" class="nav-item">
-      <a class="nav-link" (click)="logout()">Logout <i class="fa fa-unlock"></i></a>
+    <li *ngIf="isLoggedIn else notLoggedIn" class="nav-item">
+      <a class="nav-link" (click)="logout()">Logout <i class="fa fa-lock"></i></a>
     </li>
-
-    <li *ngIf="!keycloakService.isLoggedIn()" class="nav-item">
-      <a class="nav-link" (click)="login()">Login <i class="fa fa-lock"></i></a>
-    </li>
+    <ng-template #notLoggedIn>
+      <li *ngIf="!keycloakService.isLoggedIn()" class="nav-item">
+        <a class="nav-link" (click)="login()">Login <i class="fa fa-unlock"></i></a>
+      </li>
+    </ng-template>
   </ul>
 </nav>

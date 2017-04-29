@@ -16,6 +16,10 @@ a {
 }
 
 // START bootstrap override
+// version 4
+@import 'variables';
+@import '../node_modules/bootstrap/scss/bootstrap';
+
 .card-block {
   padding: 1.0rem;
 }

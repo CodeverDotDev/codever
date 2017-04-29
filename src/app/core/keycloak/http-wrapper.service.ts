@@ -1,7 +1,8 @@
-import {Injectable, NgZone} from "@angular/core";
-import {Http, RequestOptionsArgs, Response, Headers } from "@angular/http";
-import {Observable, AsyncSubject} from "rxjs";
-import {KeycloakService} from "./keycloak.service";
+import {Injectable, NgZone} from '@angular/core';
+import {Http, RequestOptionsArgs, Response, Headers } from '@angular/http';
+import {Observable} from 'rxjs/Observable';
+import {AsyncSubject} from 'rxjs/AsyncSubject';
+import {KeycloakService} from './keycloak.service';
 
 @Injectable()
 export class HttpWrapperService {
@@ -9,13 +10,13 @@ export class HttpWrapperService {
   }
 
   private getAuthHeader(options?: RequestOptionsArgs): Observable<Headers> {
-    let subject = new AsyncSubject<Headers>();
-    let headers = (options && options.headers) ? options.headers : new Headers();
-    const keycloak = this.keycloakService.getKeycloak();
+    const subject = new AsyncSubject<Headers>();
+    const headers = (options && options.headers) ? options.headers : new Headers();
+    const auth = this.keycloakService.getKeycloak();
 
-    if (keycloak && keycloak.token) {
-      keycloak.updateToken(30).success(() => {
-        headers.append("Authorization", "Bearer " + keycloak.token);
+    if (auth && auth.token) {
+      auth.updateToken(30).success(() => {
+        headers.append('Authorization', 'Bearer ' + auth.token);
         this.ngZone.run(() => {
           subject.next(headers);
           subject.complete();
@@ -30,7 +31,7 @@ export class HttpWrapperService {
         this.keycloakService.login();
       });
     } else {
-      //not authenticated redirect to login
+      // not authenticated redirect to login
       this.keycloakService.login();
     }
     return subject;
@@ -38,7 +39,7 @@ export class HttpWrapperService {
 
 
   public get(url: string, options?: RequestOptionsArgs): Observable<Response> {
-    let subject = new AsyncSubject<Response>();
+    const subject = new AsyncSubject<Response>();
     this.getAuthHeader(options).subscribe((headers) => {
       this.http.get(url, {
         headers: headers
@@ -60,7 +61,7 @@ export class HttpWrapperService {
   }
 
   public post(url: string, postData: any, options?: RequestOptionsArgs): Observable<Response> {
-    let subject = new AsyncSubject<Response>();
+    const subject = new AsyncSubject<Response>();
     this.getAuthHeader(options).subscribe((headers) => {
       headers.append('Content-Type', 'application/json');
       this.http.post(url, postData, {
@@ -83,7 +84,7 @@ export class HttpWrapperService {
   }
 
   public put(url: string, postData: any, options?: RequestOptionsArgs): Observable<Response> {
-    let subject = new AsyncSubject<Response>();
+    const subject = new AsyncSubject<Response>();
     this.getAuthHeader(options).subscribe((headers) => {
       this.http.put(url, postData, {
         headers: headers
@@ -105,7 +106,7 @@ export class HttpWrapperService {
   }
 
   public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
-    let subject = new AsyncSubject<Response>();
+    const subject = new AsyncSubject<Response>();
     this.getAuthHeader(options).subscribe((headers) => {
       this.http.delete(url, {
         headers: headers
