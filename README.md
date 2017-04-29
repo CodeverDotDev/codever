@@ -1,4 +1,17 @@
-# Bookmarks
+# Codingpedia bookmarks, aka #codingmarks
+
+(Cu)rated bookmarks for developers. Visit [http://codingmarks.org](http://codingmarks.org) or [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/) to look through the public bookmarks and create your own list.
+
+This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html), [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
+ is done via [Keycloak](http://www.keycloak.org/) 
+
+There is a **two-step** setup required for development 
+* **front-end** concerning angular/angular-cli setup
+* **back-end** concerning mongodb, keycloak, node
+
+Here is listed how to setup the front-end part. See [backend-end setup](https://github.com/Codingpedia/bookmarks-api) to complete configuration for local development.
+
+# Front-end
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.1.
 
