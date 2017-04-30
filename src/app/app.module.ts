@@ -1,14 +1,14 @@
-import {NgModule} from "@angular/core";
-import {BrowserModule} from "@angular/platform-browser";
-import {JsonpModule, HttpModule} from "@angular/http";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {AppComponent} from "./app.component";
-import {AppRoutingModule} from "./app.routing";
-import "./rxjs-extensions";
-import {UserBookmarksModule} from "./personal/user-bookmarks.module";
-import {SharedModule} from "./shared/shared.module";
-import {CoreModule} from "./core/core.module";
-import {PublicBookmarksModule} from "./public/public.module";
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {JsonpModule, HttpModule} from '@angular/http';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {AppComponent} from './app.component';
+import {AppRoutingModule} from './app.routing';
+import './rxjs-extensions';
+import {PersonalBookmarksModule} from './personal/personal-bookmarks.module';
+import {SharedModule} from './shared/shared.module';
+import {CoreModule} from './core/core.module';
+import {PublicBookmarksModule} from './public/public.module';
 
 @NgModule({
   imports: [
@@ -19,7 +19,7 @@ import {PublicBookmarksModule} from "./public/public.module";
     FormsModule,
     ReactiveFormsModule,
     JsonpModule,
-    UserBookmarksModule,
+    PersonalBookmarksModule,
     PublicBookmarksModule,
     AppRoutingModule
   ],
