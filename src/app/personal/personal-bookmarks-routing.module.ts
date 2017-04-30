@@ -1,5 +1,5 @@
 import {RouterModule} from '@angular/router';
-import {UserBookmarksComponent} from './personal-bookmarks-home.component';
+import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
 import {NgModule} from '@angular/core';
 import {NewPersonalBookmarkFormComponent} from './new-personal-bookmark/new-personal-bookmark-form.component';
 import {PersonalBookmarkDetailComponent} from './detail/personal-bookmark-detail.component';
@@ -15,7 +15,7 @@ import {AuthGuard} from '../core/auth-guard.service';
       children: [
         {
           path: '',
-          component: UserBookmarksComponent
+          component: PersonalBookmarksListComponent
         },
         {
           path: 'new',
