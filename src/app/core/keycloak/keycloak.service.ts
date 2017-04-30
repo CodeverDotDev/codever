@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {AsyncSubject} from 'rxjs/AsyncSubject';
 
 import {environment} from 'environments/environment';
 import * as Keycloak from 'keycloak-js';
@@ -10,7 +9,6 @@ export class KeycloakService {
   private static auth: any = {};
 
   public static initKeycloak(): Promise<any> {
-    const subject = new AsyncSubject();
     // const keycloak = require('keycloak-js/dist/keycloak.js');
 
     const keycloakAuth = new Keycloak(environment.keycloak);
