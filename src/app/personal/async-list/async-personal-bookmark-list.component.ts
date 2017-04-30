@@ -1,8 +1,8 @@
-import {Component, Input, NgZone} from "@angular/core";
-import {Router, ActivatedRoute} from "@angular/router";
-import {Observable} from "rxjs";
-import {Bookmark} from "../../core/model/bookmark";
-import {UserBookmarkStore} from "../store/UserBookmarkStore";
+import {Component, Input, NgZone} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+import {Bookmark} from '../../core/model/bookmark';
+import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
 
 @Component({
   selector: 'my-async-personal-bookmark-list',
@@ -15,27 +15,27 @@ export class AsyncUserBookmarksListComponent{
   bookmarks: Observable<Bookmark[]>;
 
   constructor(
-    private zone:NgZone, //TODO without explicitly running the zone functionality the view does not get updated, though model and everything gets updated
+    private zone: NgZone, // TODO without explicitly running the zone functionality the view does not get updated, though model and everything gets updated
     private route: ActivatedRoute,
     private router: Router,
-    private userBookmarkStore: UserBookmarkStore) {}
+    private userBookmarkStore: PersonalBookmarksStore) {}
 
   /**
    *
    * @param bookmark
    */
   gotoDetail(bookmark: Bookmark): void {
-    let link = ['./bookmarks', bookmark._id];
+    const link = ['./bookmarks', bookmark._id];
     this.router.navigate(link, { relativeTo: this.route });
   }
 
-  deleteBookmark(bookmark:Bookmark): void {
+  deleteBookmark(bookmark: Bookmark): void {
 
-    let obs = this.userBookmarkStore.deleteBookmark(bookmark);
+    const obs = this.userBookmarkStore.deleteBookmark(bookmark);
     obs.subscribe(
       res => {
         this.zone.run(() => {
-          console.log("ZONE RUN bookmark deleted");
+          console.log('ZONE RUN bookmark deleted');
         });
       });
   }

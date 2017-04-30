@@ -2,29 +2,29 @@ import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {KeycloakService} from '../../core/keycloak/keycloak.service';
-import {UserBookmarkStore} from '../../personal/store/UserBookmarkStore';
+import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
 import {BookmarkService} from '../../public/bookmark/bookmark.service';
 import {MarkdownService} from '../markdown.service';
 
 @Component({
-  selector: 'user-bookmark-form',
-  templateUrl: 'new-user-bookmark-form.component.html'
+  selector: 'new-personal-bookmark-form',
+  templateUrl: './new-personal-bookmark-form.component.html'
 })
-export class UserBookmarkFormComponent implements OnInit {
+export class NewPersonalBookmarkFormComponent implements OnInit {
 
   model = new Bookmark('', '', '', [], null, '', '',  '');
   bookmarkForm: FormGroup;
   userId = null;
 
   constructor(
-    private userBookmarkStore: UserBookmarkStore,
+    private personalBookmarksStore: PersonalBookmarksStore,
     private router: Router,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
     private bookmarkService: BookmarkService,
     private markdownServce: MarkdownService
-  ){
+  ) {
     const keycloak = keycloakService.getKeycloak();
     if (keycloak) {
       this.userId = keycloak.subject;
@@ -52,7 +52,7 @@ export class UserBookmarkFormComponent implements OnInit {
       .subscribe(location => {
         console.log('Location: ', location);
         this.bookmarkService.getBookmarkTitle(location).subscribe(response => {
-          if (response){
+          if (response) {
             this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
           }
         });
@@ -71,7 +71,7 @@ export class UserBookmarkFormComponent implements OnInit {
 
     newBookmark.descriptionHtml = this.markdownServce.toHtml(newBookmark.description);
 
-    const obs = this.userBookmarkStore.addBookmark(this.userId, newBookmark);
+    const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
 
     obs.subscribe(
       res => {
