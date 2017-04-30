@@ -1,14 +1,14 @@
 import {NgModule} from '@angular/core';
-import {UserBookmarksComponent} from './user-bookmarks-home.component';
+import {UserBookmarksComponent} from './personal-bookmarks-home.component';
 import {AsyncUserBookmarksListComponent} from './async-list/async-personal-bookmark-list.component';
 import {HttpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {UserBookmarkStore} from './store/UserBookmarkStore';
-import {UserBookmarkService} from './user-bookmark.service';
+import {PersonalBookmarksStore} from './store/PersonalBookmarksStore';
+import {PersonalBookmarksService} from './personal-bookmarks.service';
 import {CommonModule} from '@angular/common';
-import {UserBookmarksRoutingModule} from './user-bookmarks-routing.module';
-import {UserBookmarkFormComponent} from './new-user-bookmark/new-user-bookmark-form.component';
-import {BookmarkDetailComponent} from './detail/bookmark-detail.component';
+import {PersonalBookmarksRoutingModule} from './personal-bookmarks-routing.module';
+import {NewPersonalBookmarkFormComponent} from './new-personal-bookmark/new-personal-bookmark-form.component';
+import {PersonalBookmarkDetailComponent} from './detail/personal-bookmark-detail.component';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {PersonalBookmarkSearchComponent} from './search/personal-bookmark-search.component';
 import {SharedModule} from '../shared/shared.module';
@@ -22,9 +22,9 @@ export const routerConfig = [{
 @NgModule({
   declarations : [
     UserBookmarksComponent,
-    UserBookmarkFormComponent,
+    NewPersonalBookmarkFormComponent,
     AsyncUserBookmarksListComponent,
-    BookmarkDetailComponent,
+    PersonalBookmarkDetailComponent,
     PersonalBookmarksComponent,
     PersonalBookmarkSearchComponent
   ],
@@ -34,11 +34,11 @@ export const routerConfig = [{
     HttpModule,
     FormsModule,
     ReactiveFormsModule,
-    UserBookmarksRoutingModule
+    PersonalBookmarksRoutingModule
   ],
   providers: [
-    UserBookmarkStore,
-    UserBookmarkService,
+    PersonalBookmarksStore,
+    PersonalBookmarksService,
     MarkdownService
   ]
 })

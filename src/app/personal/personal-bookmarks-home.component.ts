@@ -2,13 +2,13 @@ import {Component, OnInit, NgZone} from "@angular/core";
 import {Bookmark} from "../core/model/bookmark";
 import {Observable} from "rxjs";
 import {List} from "immutable";
-import {UserBookmarkStore} from "./store/UserBookmarkStore";
+import {PersonalBookmarksStore} from "./store/PersonalBookmarksStore";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'my-user-bookmarks',
-  templateUrl: './user-bookmarks.component.html',
-  styleUrls: ['./user-bookmarks.component.scss']
+  templateUrl: './personal-bookmarks.component.html',
+  styleUrls: ['./personal-bookmarks.component.scss']
 })
 export class UserBookmarksComponent implements  OnInit{
 
@@ -18,7 +18,7 @@ export class UserBookmarksComponent implements  OnInit{
     private zone:NgZone,
     private route: ActivatedRoute,
     private router: Router,
-    private userBookmarkStore: UserBookmarkStore) { }
+    private userBookmarkStore: PersonalBookmarksStore) { }
 
   ngOnInit(): void {
     this.userBookmarks = this.userBookmarkStore.getBookmarks();

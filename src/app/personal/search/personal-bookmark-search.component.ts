@@ -2,7 +2,7 @@ import {Component, OnInit, NgZone} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {Bookmark} from "../../core/model/bookmark";
 import {FormControl} from "@angular/forms";
-import {UserBookmarkStore} from "../store/UserBookmarkStore";
+import {PersonalBookmarksStore} from "../store/PersonalBookmarksStore";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BookmarkFilterService} from "../../core/filter.service";
 
@@ -21,7 +21,7 @@ export class PersonalBookmarkSearchComponent implements OnInit {
       private zone:NgZone,
       private route: ActivatedRoute,
       private router: Router,
-      private userBookmarkStore: UserBookmarkStore,
+      private userBookmarkStore: PersonalBookmarksStore,
       private bookmarkFilterService: BookmarkFilterService) {}
 
     ngOnInit(): void {
