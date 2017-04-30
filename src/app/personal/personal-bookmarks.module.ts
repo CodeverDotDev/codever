@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {UserBookmarksComponent} from './personal-bookmarks-home.component';
+import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
 import {AsyncUserBookmarksListComponent} from './async-list/async-personal-bookmark-list.component';
 import {HttpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -16,7 +16,7 @@ import {MarkdownService} from './markdown.service';
 
 @NgModule({
   declarations : [
-    UserBookmarksComponent,
+    PersonalBookmarksListComponent,
     NewPersonalBookmarkFormComponent,
     AsyncUserBookmarksListComponent,
     PersonalBookmarkDetailComponent,
