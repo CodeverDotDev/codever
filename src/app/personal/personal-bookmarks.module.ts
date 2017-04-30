@@ -42,4 +42,4 @@ export const routerConfig = [{
     MarkdownService
   ]
 })
-export class UserBookmarksModule {}
+export class PersonalBookmarksModule {}
