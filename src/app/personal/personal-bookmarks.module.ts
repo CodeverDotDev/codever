@@ -14,11 +14,6 @@ import {PersonalBookmarkSearchComponent} from './search/personal-bookmark-search
 import {SharedModule} from '../shared/shared.module';
 import {MarkdownService} from './markdown.service';
 
-export const routerConfig = [{
-  path: '',
-  component: UserBookmarksComponent
-}];
-
 @NgModule({
   declarations : [
     UserBookmarksComponent,
