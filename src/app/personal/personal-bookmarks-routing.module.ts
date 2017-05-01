@@ -9,7 +9,7 @@ import {AuthGuard} from '../core/auth-guard.service';
 @NgModule({
   imports: [RouterModule.forChild([
     {
-      path: 'personal',
+      path: '',
       component: PersonalBookmarksComponent,
       canActivate: [AuthGuard],
       children: [
