@@ -21,6 +21,10 @@ const routes: Routes = [
   {
     path: 'about',
     component: AboutComponent
+  },
+  {
+    path: 'personal',
+    loadChildren: 'app/personal/personal-bookmarks.module#PersonalBookmarksModule'
   }
 ];
 
