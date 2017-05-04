@@ -1,14 +1,14 @@
-import {RouterModule, Routes} from "@angular/router";
-import {AboutComponent} from "./public/about/about.component";
-import {BookmarksComponent} from "./public/bookmark/bookmarks.component";
-import {NgModule} from "@angular/core";
-import {TagComponent} from "./public/tag/tag.component";
+import {RouterModule, Routes} from '@angular/router';
+import {AboutComponent} from './public/about/about.component';
+import {BookmarksComponent} from './public/bookmark/bookmarks.component';
+import {NgModule} from '@angular/core';
+import {TagComponent} from './public/tag/tag.component';
 
 const routes: Routes = [
   {
     path: 'search',
     redirectTo: '',
-    pathMatch:'full'
+    pathMatch: 'full'
   },
   {
     path: '',
@@ -21,6 +21,10 @@ const routes: Routes = [
   {
     path: 'about',
     component: AboutComponent
+  },
+  {
+    path: 'personal',
+    loadChildren: 'app/personal/personal-bookmarks.module#PersonalBookmarksModule'
   }
 ];
 
