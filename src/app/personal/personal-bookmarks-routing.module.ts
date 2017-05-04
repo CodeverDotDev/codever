@@ -1,29 +1,29 @@
 import {RouterModule} from '@angular/router';
-import {UserBookmarksComponent} from './user-bookmarks-home.component';
+import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
 import {NgModule} from '@angular/core';
-import {UserBookmarkFormComponent} from './new-user-bookmark/new-user-bookmark-form.component';
-import {BookmarkDetailComponent} from './detail/bookmark-detail.component';
+import {NewPersonalBookmarkFormComponent} from './new-personal-bookmark/new-personal-bookmark-form.component';
+import {PersonalBookmarkDetailComponent} from './detail/personal-bookmark-detail.component';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {AuthGuard} from '../core/auth-guard.service';
 
 @NgModule({
   imports: [RouterModule.forChild([
     {
-      path: 'personal',
+      path: '',
       component: PersonalBookmarksComponent,
       canActivate: [AuthGuard],
       children: [
         {
           path: '',
-          component: UserBookmarksComponent
+          component: PersonalBookmarksListComponent
         },
         {
           path: 'new',
-          component: UserBookmarkFormComponent
+          component: NewPersonalBookmarkFormComponent
         },
         {
           path: 'bookmarks/:id',
-          component: BookmarkDetailComponent
+          component: PersonalBookmarkDetailComponent
         }
       ]
     }
@@ -31,4 +31,4 @@ import {AuthGuard} from '../core/auth-guard.service';
   ])],
   exports: [RouterModule]
 })
-export class UserBookmarksRoutingModule {}
+export class PersonalBookmarksRoutingModule {}
