@@ -4,13 +4,13 @@ import {Bookmark} from '../core/model/bookmark';
 import {Headers, Response} from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
-import {Observable} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
 import {HttpWrapperService} from '../core/keycloak/http-wrapper.service';
 
 import { environment } from 'environments/environment';
 
 @Injectable()
-export class UserBookmarkService {
+export class PersonalBookmarksService {
 
   private baseUrl = '';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
