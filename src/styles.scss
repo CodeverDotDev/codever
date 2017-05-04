@@ -15,11 +15,6 @@ a {
   border-left: 5px solid #a94442; /* red */
 }
 
-// START bootstrap override
-// version 4
-@import 'variables';
-@import '../node_modules/bootstrap/scss/bootstrap';
-
 .card-block {
   padding: 1.0rem;
 }
@@ -202,6 +197,10 @@ $rotation-angle: 45deg;
 
 // END Github fork ribbon
 
+// START bootstrap override
+// version 4
+@import 'variables';
+@import '~bootstrap/scss/bootstrap';
+
 //import font-awesome
-$fa-font-path: "~font-awesome/fonts";
 @import '~font-awesome/scss/font-awesome.scss';
