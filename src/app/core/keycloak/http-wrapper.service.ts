@@ -16,7 +16,7 @@ export class HttpWrapperService {
 
     if (auth && auth.token) {
       auth.updateToken(30).success(() => {
-        headers.append('Authorization', 'Bearer ' + auth.token);
+        headers.set('Authorization', 'Bearer ' + auth.token);
         this.ngZone.run(() => {
           subject.next(headers);
           subject.complete();
