@@ -1,6 +1,6 @@
 {
   "name": "bookmarks-api.codingpedia.org",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -12,7 +12,7 @@
     "debug": "~2.2.0",
     "express": "~4.13.4",
     "jade": "~1.11.0",
-    "keycloak-connect": "2.5.5",
+    "keycloak-connect": "3.1.0",
     "mongoose": "~4.3.7",
     "mongoose-unique-validator": "1.0.2",
     "morgan": "~1.7.0",
