@@ -6,19 +6,19 @@ Backend REST API supporting [https://bookmarks.codingpedia.org](https://bookmark
 This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html), [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). The authentication and authorization
  on the website are taken care of via [Keycloak](http://www.keycloak.org/). As you can imagine is some setup required for development, but it's quite easy and straight forward.
 
-The setup is split in two sections
-* the front-end concerning angular/webpack setup
-* back-end concerning mongo, keycloak
+There is a **two-step** setup required for development 
+* **front-end** concerning angular/angular-cli setup
+* **back-end** concerning mongodb, keycloak, nodejs
 
-Here is listed how to setup the back-end part. See [front-end setup](https://github.com/Codingpedia/bookmarks) to complete configuration for local development.
+Here is listed how to setup the **back-end** part. See [front-end setup](https://github.com/Codingpedia/bookmarks) to complete configuration for local development.
 
 ## Getting started
 
 ### Dependencies
 
 What you need to run this app:
-* `node` and `npm` (Use [NVM](https://github.com/creationix/nvm))
-* Ensure you're running Node (`v5.x.x`+) and NPM (`3.x.x`+)
+* `node` and `npm` (I recommend to use [NVM](https://github.com/creationix/nvm))
+* Ensure you're running Node at least (`v6.x.x`+) and NPM (`3.x.x`+)
 
 #### MongoDB
 
@@ -50,7 +50,9 @@ local                  0.000GB
 
 #### Keycloak
 
-[Install Keycloak, version 2.5.0.Final](https://keycloak.gitbooks.io/server-installation-and-configuration/content/index.html) and start in the [standalone operating mode](https://keycloak.gitbooks.io/server-installation-and-configuration/content/topics/operating-mode/standalone.html) with a port offset of 300:
+This is the "heaviest" we need to setup for development, but by using Keycloak we get lots of things like Single-Sign On, 
+OpenId-Connect Support, social logins, user admin console, that otherwise would take lots of effort to implement by ourselves.
+To make your life easier I have prepare a wiki page on how to [Setup Keycloak](https://github.com/Codingpedia/bookmarks-api/wiki/Setup-Keycloak).
 
 ### Installation and develop on local machine
 
