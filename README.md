@@ -50,7 +50,7 @@ local                  0.000GB
 
 #### Keycloak
 
-This is the "heaviest" we need to setup for development, but by using Keycloak we get lots of things like Single-Sign On, 
+This is the "heaviest" step, we need to setup for development. But by using Keycloak we get lots of things like Single-Sign On, 
 OpenId-Connect Support, social logins, user admin console, that otherwise would take lots of effort to implement by ourselves.
 To make your life easier I have prepare a wiki page on how to [Setup Keycloak](https://github.com/Codingpedia/bookmarks-api/wiki/Setup-Keycloak).
 
