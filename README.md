@@ -1,20 +1,29 @@
-Codingpedia bookmarks - Backend REST API
-========================================
+# Codingpedia bookmarks, aka #codingmarks
 
-Backend REST API supporting [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/).
+This repo contains the back-end source code of the [codingmarks.org](http://codingmarks.org) website - (cu)rated bookmarks for developers.
+ It can also be reached via [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/):
+ 
+![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
 
-This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html), [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). The authentication and authorization
- on the website are taken care of via [Keycloak](http://www.keycloak.org/). As you can imagine is some setup required for development, but it's quite easy and straight forward.
+This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
+ [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
+ is done via [Keycloak](http://www.keycloak.org/): 
+ 
+![Network Diagram](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/network-diagram.png)
+
+***
+
+# Development setup
 
 There is a **two-step** setup required for development 
-* **front-end** concerning angular/angular-cli setup
-* **back-end** concerning mongodb, keycloak, nodejs
+* **[front-end setup](https://github.com/Codingpedia/bookmarks)** concerning angular/angular-cli setup; this is described on this page
+* **backend-end setup** concerning mongodb, keycloak, nodejs
 
-Here is listed how to setup the **back-end** part. See [front-end setup](https://github.com/Codingpedia/bookmarks) to complete configuration for local development.
+> You need to complete both parts for local development
 
-## Getting started
+## Back-end
 
-### Dependencies
+### Prerequisites
 
 What you need to run this app:
 * `node` and `npm` (I recommend to use [NVM](https://github.com/creationix/nvm))
@@ -50,9 +59,9 @@ local                  0.000GB
 
 #### Keycloak
 
-This is the "heaviest" step, we need to setup for development. But by using Keycloak we get lots of things like Single-Sign On, 
+This is the "heaviest" step, we need to set up for development. But by using Keycloak we get lots of things like Single-Sign On, 
 OpenId-Connect Support, social logins, user admin console, that otherwise would take lots of effort to implement by ourselves.
-To make your life easier, I have prepared a wiki page on how to [Setup Keycloak](https://github.com/Codingpedia/bookmarks-api/wiki/Setup-Keycloak).
+To make our life easier, I have prepared a wiki page about [Keycloak Setup For Development](https://github.com/Codingpedia/bookmarks-api/wiki/Keycloak-Setup-for-Development).
 
 ### Installation and develop on local machine
 
