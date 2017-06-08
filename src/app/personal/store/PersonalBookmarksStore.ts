@@ -79,7 +79,7 @@ export class PersonalBookmarksStore {
         // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
         this._bookmarks.next(this._bookmarks.getValue().unshift(newBookmark));
 
-        if (newBookmark.shared){
+        if (newBookmark.shared) {
           this.bookmarkStore.addBookmark(newBookmark);
         }
       },
