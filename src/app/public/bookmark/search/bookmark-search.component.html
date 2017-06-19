@@ -1,6 +1,6 @@
 <div id="search-component" class="input-group">
     <span class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>
-    <input type="text" class="form-control" [formControl]="term" placeholder="in public bookmarks... (tag filtering via square brackets: e.g. [angular])">
+    <input type="text" class="form-control" [formControl]="term" placeholder="Search in public bookmarks... (tag filtering via square brackets: e.g. [angular])">
 </div>
 
 <br>
@@ -9,5 +9,15 @@
   No bookmarks found. Please try a different search
 </div>
 
+<div *ngIf="numberOfResultsFiltered > 0" class="alert alert-success" role="alert">
+  {{numberOfResultsFiltered}} results found <span *ngIf="numberOfResultsFiltered > 50"> - please consider refining your search</span>
+</div>
+
+
 <my-async-public-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="queryText"></my-async-public-bookmark-list>
+<div *ngIf="numberOfResultsFiltered > 0" >
+  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()" [disabled]="counter>=numberOfResultsFiltered">Show more</button>
+  <hr/>
+</div>
+
 
