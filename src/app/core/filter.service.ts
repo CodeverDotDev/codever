@@ -81,7 +81,7 @@ export class BookmarkFilterService {
           tag += ' ';
         }
       } else if (currentCharacter === '[') {
-        if (isInsideTag){
+        if (isInsideTag) {
           tags.push(tag.trim());
           tag = '';
         } else {
@@ -103,11 +103,11 @@ export class BookmarkFilterService {
       }
     }
 
-    if (tag.length > 0){
+    if (tag.length > 0) {
       tags.push(tag.trim());
     }
 
-    if (term.length > 0){
+    if (term.length > 0) {
       terms.push(term);
     }
 
@@ -119,6 +119,8 @@ export class BookmarkFilterService {
 
   /**
    * Checks if one search term is present in the bookmark's metadata (name, location, description, tags)
+   * There is still an internal debate to use the contains method (less restrictive) and the
+   * RegExp with matching words (more restrictive and does not support propery Unicode)
    *
    * @param bookmark
    * @param term
@@ -126,33 +128,41 @@ export class BookmarkFilterService {
    */
   private bookmarkContainsTerm(bookmark: Bookmark, term: string): boolean {
     let result = false;
-    if (bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
+    const pattern = new RegExp('\\b' + term.toLowerCase() + '\\b');
+/*    if (bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.tags.indexOf(term.toLowerCase()) !== -1
-    ){
-      result = true;
-    }
+    ) {*/
+      if (pattern.test(bookmark.name.toLowerCase())
+        || pattern.test(bookmark.location.toLowerCase())
+        || pattern.test(bookmark.description.toLowerCase())
+      ) {
+        result = true;
+      }
 
     if (result) {
       return true;
     } else {
       // if not found already look through the tags also
       bookmark.tags.forEach(tag => {
-        if (tag.toLowerCase().indexOf(term.toLowerCase()) !== -1){
+        if (pattern.test(tag.toLowerCase())) {
           result = true;
         }
       });
     }
-
 
     return result;
   }
 
   private bookmarkContainsTag(bookmark: Bookmark, tag: string): boolean {
     let result = false;
+    // const pattern = new RegExp('\\b' + tag.toLowerCase() + '\\b');
+    const pattern = new RegExp('\s' + tag.toLowerCase() + '\s');
     bookmark.tags.forEach(bookmarkTag => {
-      if (bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
+      // if (bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
+       if (bookmarkTag.toLowerCase() === tag.toLowerCase()) {
+      // if (pattern.test(bookmarkTag.toLowerCase())) {
         result = true;
       }
     });
