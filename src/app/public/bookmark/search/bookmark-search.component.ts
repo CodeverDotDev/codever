@@ -61,6 +61,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
             return Observable.of<Bookmark[]>([]);
           }
         } else {
+          this.numberOfResultsFiltered = 0;
           // or the observable of empty bookmarks if no search term
           return Observable.of<Bookmark[]>([]);
         }
