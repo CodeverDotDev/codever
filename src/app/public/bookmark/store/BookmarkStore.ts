@@ -32,7 +32,8 @@ export class BookmarkStore {
                           bookmark.githubURL,
                           bookmark.description,
                           bookmark.descriptionHtml,
-                          bookmark._id
+                          bookmark._id,
+                          bookmark.language
                       )
                     );
 

@@ -51,7 +51,8 @@ export class PersonalBookmarksStore {
                   bookmark._id,
                   '',
                   bookmark.userId,
-                  bookmark.shared
+                  bookmark.shared,
+                  bookmark.language
               )
             );
 
