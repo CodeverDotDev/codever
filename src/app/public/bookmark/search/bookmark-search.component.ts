@@ -32,6 +32,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   public numberOfResultsFiltered: number;
   counter = 10;
   previousTerm: string;
+  language = 'en';
 
   constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
 
@@ -51,7 +52,8 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
           }
 
           this.queryText = term;
-          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarks);
+          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.bookmarks);
+          console.log(this.language);
           this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
           if (this.numberOfResultsFiltered > 0 ) {
             this.showNotFound = false;
@@ -98,4 +100,9 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
     this.term.setValue(queryFromOutside);
   }
 
+  onLanguageChange(newValue) {
+    console.log('onLanguageChange' + newValue);
+    this.language = newValue;
+    this.term.setValue(this.queryText);
+  }
 }

@@ -13,7 +13,7 @@ import {MarkdownService} from '../markdown.service';
 })
 export class NewPersonalBookmarkFormComponent implements OnInit {
 
-  model = new Bookmark('', '', '', [], null, '', '',  '');
+  model = new Bookmark('', '', '', [], null, '', '',  '', 'en');
   bookmarkForm: FormGroup;
   userId = null;
 

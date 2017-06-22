@@ -18,7 +18,7 @@ export class BookmarkFilterService {
    * @param observableListBookmark - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarksBySearchTerm(query: string, observableListBookmark: Observable<List<Bookmark>>): Bookmark[] {
+  filterBookmarksBySearchTerm(query: string, language: string, observableListBookmark: Observable<List<Bookmark>>): Bookmark[] {
 
     const termsAndTags: [string[], string[]] = this.splitSearchQuery(query);
     const terms: string[] = termsAndTags[0];
@@ -28,6 +28,9 @@ export class BookmarkFilterService {
     observableListBookmark.subscribe(
       bookmarks => {
         let filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
+        if (language) {
+          filteredBookmarks = filteredBookmarks.filter( x => x.language === language);
+        }
         tags.forEach(tag => {
           filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag));
         });
