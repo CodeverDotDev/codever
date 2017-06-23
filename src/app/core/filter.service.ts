@@ -28,7 +28,7 @@ export class BookmarkFilterService {
     observableListBookmark.subscribe(
       bookmarks => {
         let filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
-        if (language) {
+        if (language && language !== 'all') {
           filteredBookmarks = filteredBookmarks.filter( x => x.language === language);
         }
         tags.forEach(tag => {

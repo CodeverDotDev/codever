@@ -26,14 +26,14 @@ export class BookmarkStore {
                       new Bookmark(
                           bookmark.name,
                           bookmark.location,
+                          bookmark.language,
                           bookmark.category,
                           bookmark.tags,
                           bookmark.publishedOn,
                           bookmark.githubURL,
                           bookmark.description,
                           bookmark.descriptionHtml,
-                          bookmark._id,
-                          bookmark.language
+                          bookmark._id
                       )
                     );
 

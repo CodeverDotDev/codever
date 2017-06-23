@@ -5,6 +5,7 @@
 
 <div id="language-select" class="input-group">
   <select class="form-control form-control-sm" style="width:20%;float: right;margin-top: 5px;" [ngModel]="language" (ngModelChange)="onLanguageChange($event)">
+    <option value=all selected="selected">Filter by language</option>
     <option value=af>Afrikaans</option>
     <option value=sq>Albanian</option>
     <option value=am>Amharic</option>
@@ -25,7 +26,7 @@
     <option value=cs>Czech</option>
     <option value=da>Danish</option>
     <option value=nl>Dutch</option>
-    <option value=en selected="selected">English</option>
+    <option value=en>English</option>
     <option value=eo>Esperanto</option>
     <option value=et>Estonian</option>
     <option value=tl>Filipino</option>

@@ -42,6 +42,7 @@ export class PersonalBookmarksStore {
               new Bookmark(
                   bookmark.name,
                   bookmark.location,
+                  bookmark.language,
                   bookmark.category,
                   bookmark.tags,
                   bookmark.publishedOn,
@@ -51,8 +52,7 @@ export class PersonalBookmarksStore {
                   bookmark._id,
                   '',
                   bookmark.userId,
-                  bookmark.shared,
-                  bookmark.language
+                  bookmark.shared
               )
             );
 

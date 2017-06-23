@@ -76,7 +76,8 @@ export class BookmarksComponent implements OnInit {
     );
   }
 
-  onTagClick(tag: string){
+  onTagClick(tag: string) {
     this.searchComponent.setQueryFromParentComponent('[' + tag + ']');
+    this.searchComponent.language = 'all';
   }
 }
