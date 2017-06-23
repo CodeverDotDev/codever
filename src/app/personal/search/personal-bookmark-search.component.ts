@@ -30,7 +30,7 @@ export class PersonalBookmarkSearchComponent implements OnInit {
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => {
               if (term) {// switch to new observable each time
-                const filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, 'en', this.userBookmarkStore.getBookmarks());
+                const filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, 'all', this.userBookmarkStore.getBookmarks());
                 if (filterBookmarksBySearchTerm.length > 0 ) {
                   this.showNotFound = false;
                   return Observable.of(filterBookmarksBySearchTerm);

@@ -32,7 +32,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   public numberOfResultsFiltered: number;
   counter = 10;
   previousTerm: string;
-  language = 'en';
+  language = 'all';
 
   constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
 
