@@ -33,6 +33,7 @@ router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
   var bookmark = new Bookmark({
     name: req.body.name,
     location: req.body.location,
+    language: req.body.language,
     description: req.body.description,
     descriptionHtml: descriptionHtml,
     category: req.body.category,
