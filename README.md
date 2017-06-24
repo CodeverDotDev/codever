@@ -1,24 +1,33 @@
-Codingpedia bookmarks - Backend REST API
-========================================
+# Codingpedia bookmarks, aka #codingmarks
 
-Backend REST API supporting [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/).
+This repo contains the back-end source code of the [codingmarks.org](http://codingmarks.org) website - (cu)rated bookmarks for developers.
+ It can also be reached via [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/):
+ 
+![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
 
-This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html), [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). The authentication and authorization
- on the website are taken care of via [Keycloak](http://www.keycloak.org/). As you can imagine is some setup required for development, but it's quite easy and straight forward.
+This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
+ [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
+ is done via [Keycloak](http://www.keycloak.org/): 
+ 
+![Network Diagram](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/network-diagram.png)
 
-The setup is split in two sections
-* the front-end concerning angular/webpack setup
-* back-end concerning mongo, keycloak
+***
 
-Here is listed how to setup the back-end part. See [front-end setup](https://github.com/Codingpedia/bookmarks) to complete configuration for local development.
+# Development setup
 
-## Getting started
+There is a **two-step** setup required for development 
+* **[front-end setup](https://github.com/Codingpedia/bookmarks)** concerning angular/angular-cli setup; this is described on this page
+* **backend-end setup** concerning mongodb, keycloak, nodejs
 
-### Dependencies
+> You need to complete both parts for local development
+
+## Back-end
+
+### Prerequisites
 
 What you need to run this app:
-* `node` and `npm` (Use [NVM](https://github.com/creationix/nvm))
-* Ensure you're running Node (`v5.x.x`+) and NPM (`3.x.x`+)
+* `node` and `npm` (I recommend to use [NVM](https://github.com/creationix/nvm))
+* Ensure you're running Node at least (`v6.x.x`+) and NPM (`3.x.x`+)
 
 #### MongoDB
 
@@ -50,7 +59,9 @@ local                  0.000GB
 
 #### Keycloak
 
-[Install Keycloak, version 2.5.0.Final](https://keycloak.gitbooks.io/server-installation-and-configuration/content/index.html) and start in the [standalone operating mode](https://keycloak.gitbooks.io/server-installation-and-configuration/content/topics/operating-mode/standalone.html) with a port offset of 300:
+This is the "heaviest" step, we need to set up for development. But by using Keycloak we get lots of things like Single-Sign On, 
+OpenId-Connect Support, social logins, user admin console, that otherwise would take lots of effort to implement by ourselves.
+To make our life easier, I have prepared a wiki page about [Keycloak Setup For Development](https://github.com/Codingpedia/bookmarks-api/wiki/Keycloak-Setup-for-Development).
 
 ### Installation and develop on local machine
 
