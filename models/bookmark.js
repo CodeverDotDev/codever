@@ -12,7 +12,8 @@ var bookmarkSchema = new Schema({
     publishedOn: Date,
     githubURL: {type:String},
     userId: {type: String, ref:'User'},
-    shared: Boolean
+    shared: Boolean,
+    language: String
 },
 {
   timestamps: true
