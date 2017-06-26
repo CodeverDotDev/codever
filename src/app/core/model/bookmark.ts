@@ -12,6 +12,8 @@ export class Bookmark {
     userId: String;
     shared: boolean;
     language: string;
+    createdAt: Date;
+    updatedAt: Date;
 
     constructor (
                  name: string,
@@ -26,7 +28,9 @@ export class Bookmark {
                  _id?: string,
                  tagsLine?: string,
                  userId?: string,
-                 shared?: boolean
+                 shared?: boolean,
+                 createdAt?: Date,
+                 updatedAt?: Date
                  ) {
         this.name = name;
         this.location = location;
@@ -41,5 +45,7 @@ export class Bookmark {
         this.publishedOn = publishedOn;
         this.userId = userId;
         this.shared = shared;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

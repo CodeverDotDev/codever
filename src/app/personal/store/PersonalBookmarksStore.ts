@@ -52,15 +52,36 @@ export class PersonalBookmarksStore {
                   bookmark._id,
                   '',
                   bookmark.userId,
-                  bookmark.shared
+                  bookmark.shared,
+                  bookmark.createdAt,
+                  bookmark.updatedAt
               )
-            );
+            ).sort((a, b) => {
+              if (a.updatedAt < b.updatedAt) {
+                return 1;
+              } else if (a.updatedAt > b.updatedAt) {
+                return -1;
+              } else {
+                return 0;
+              }
+            });
 
           this._bookmarks.next(List(bookmarks));
         },
         err => console.error('Error retrieving bookmarks', err)
       );
   }
+
+  // Function to compare two objects by comparing their `unwrappedName` property.
+  compareFn(a: Bookmark, b: Bookmark): number {
+    if (a.publishedOn < b.publishedOn) {
+      return -1;
+    } else if (a.publishedOn > b.publishedOn) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
 
   getBookmarks(): Observable<List<Bookmark>> {
       return this._bookmarks.asObservable();
