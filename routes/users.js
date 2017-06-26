@@ -87,11 +87,12 @@ router.get('/:id/bookmarks', keycloak.protect(), function(req, res, next) {
     });
   } else {//no filter - all bookmarks
     Bookmark.find({userId:req.params.id}, function(err, bookmarks){
+    //Bookmark.find({userId:req.params.id}).lean().exec(function(err, bookmarks){
       if(err){
         return res.status(500).send(err);
       }
       res.send(bookmarks);
-    }).sort({updatedAt: -1});
+    });//.sort({updatedAt: -1});
   }
 
 });
