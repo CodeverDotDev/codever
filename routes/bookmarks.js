@@ -57,7 +57,8 @@ router.get('/', function(req, res, next) {
       res.send(bookmarks);
     });
   } else {//no filter - all bookmarks
-    Bookmark.find({'shared':true}, function(err, bookmarks){
+    //Bookmark.find({'shared':true}, function(err, bookmarks){
+    Bookmark.find({'shared':true}).lean().exec(function(err, bookmarks){
       if(err){
         return res.status(500).send(err);
       }
