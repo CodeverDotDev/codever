@@ -42,6 +42,7 @@ export class PersonalBookmarksStore {
               new Bookmark(
                   bookmark.name,
                   bookmark.location,
+                  bookmark.language,
                   bookmark.category,
                   bookmark.tags,
                   bookmark.publishedOn,
@@ -51,15 +52,36 @@ export class PersonalBookmarksStore {
                   bookmark._id,
                   '',
                   bookmark.userId,
-                  bookmark.shared
+                  bookmark.shared,
+                  bookmark.createdAt,
+                  bookmark.updatedAt
               )
-            );
+            ).sort((a, b) => {
+              if (a.updatedAt < b.updatedAt) {
+                return 1;
+              } else if (a.updatedAt > b.updatedAt) {
+                return -1;
+              } else {
+                return 0;
+              }
+            });
 
           this._bookmarks.next(List(bookmarks));
         },
         err => console.error('Error retrieving bookmarks', err)
       );
   }
+
+  // Function to compare two objects by comparing their `unwrappedName` property.
+  compareFn(a: Bookmark, b: Bookmark): number {
+    if (a.publishedOn < b.publishedOn) {
+      return -1;
+    } else if (a.publishedOn > b.publishedOn) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
 
   getBookmarks(): Observable<List<Bookmark>> {
       return this._bookmarks.asObservable();
@@ -79,7 +101,7 @@ export class PersonalBookmarksStore {
         // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
         this._bookmarks.next(this._bookmarks.getValue().unshift(newBookmark));
 
-        if (newBookmark.shared){
+        if (newBookmark.shared) {
           this.bookmarkStore.addBookmark(newBookmark);
         }
       },
@@ -107,7 +129,7 @@ export class PersonalBookmarksStore {
         });
 
         if (deleted.shared) {
-          this.bookmarkStore.removeFromStore(deleted);
+          this.bookmarkStore.removeFromPublicStore(deleted);
         }
       }
     );
@@ -124,7 +146,7 @@ export class PersonalBookmarksStore {
         const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
         this._bookmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
-        if (updated.shared){
+        if (updated.shared) {
           this.bookmarkStore.updateBookmark(updated);
         }
       }

@@ -1,8 +1,8 @@
 
-import {Injectable} from "@angular/core";
-import {Bookmark} from "./model/bookmark";
-import {List} from "immutable";
-import {Observable} from "rxjs";
+import {Injectable} from '@angular/core';
+import {Bookmark} from './model/bookmark';
+import {List} from 'immutable';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class BookmarkFilterService {
@@ -18,16 +18,19 @@ export class BookmarkFilterService {
    * @param observableListBookmark - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarksBySearchTerm(query:string, observableListBookmark:Observable<List<Bookmark>>): Bookmark[] {
+  filterBookmarksBySearchTerm(query: string, language: string, observableListBookmark: Observable<List<Bookmark>>): Bookmark[] {
 
-    let termsAndTags:[string[], string[]] = this.splitSearchQuery(query);
-    var terms:string[] = termsAndTags[0];
-    var tags:string[] = termsAndTags[1];
-    let result:Bookmark[] = [];
+    const termsAndTags: [string[], string[]] = this.splitSearchQuery(query);
+    const terms: string[] = termsAndTags[0];
+    const tags: string[] = termsAndTags[1];
+    let result: Bookmark[] = [];
 
     observableListBookmark.subscribe(
       bookmarks => {
-        let filteredBookmarks = bookmarks.toArray(); //we start with all bookmarks
+        let filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
+        if (language && language !== 'all') {
+          filteredBookmarks = filteredBookmarks.filter( x => x.language === language);
+        }
         tags.forEach(tag => {
           filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag));
         });
@@ -38,7 +41,7 @@ export class BookmarkFilterService {
         result = filteredBookmarks;
       },
       err => {
-        console.log("Error filtering bookmakrs");
+        console.log('Error filtering bookmakrs');
       }
     );
 
@@ -53,24 +56,24 @@ export class BookmarkFilterService {
    * @param query to be parsed
    * @returns a tuple of terms (first element) and tags (second element)
    */
-  public splitSearchQuery(query: string):[string[], string[]]{
+  public splitSearchQuery(query: string): [string[], string[]]{
 
-    let result:[string[], string[]] = [[], []];
+    const result: [string[], string[]] = [[], []];
 
-    let terms:string[] = [];
-    let term:string = '';
-    let tags:string[]= [];
-    let tag:string = '';
+    const terms: string[] = [];
+    let term = '';
+    const tags: string[] = [];
+    let tag = '';
 
-    let isInsideTerm:boolean = false;
-    let isInsideTag:boolean = false;
+    let isInsideTerm = false;
+    let isInsideTag = false;
 
 
-    for(var i=0; i < query.length; i++ ){
-      let currentCharacter = query[i];
-      if(currentCharacter === ' '){
-        if(!isInsideTag){
-          if(!isInsideTerm){
+    for (let i = 0; i < query.length; i++ ) {
+      const currentCharacter = query[i];
+      if (currentCharacter === ' ') {
+        if (!isInsideTag) {
+          if (!isInsideTerm) {
             continue;
           } else {
             terms.push(term);
@@ -80,21 +83,21 @@ export class BookmarkFilterService {
         } else {
           tag += ' ';
         }
-      } else if(currentCharacter === '['){
-        if(isInsideTag){
+      } else if (currentCharacter === '[') {
+        if (isInsideTag) {
           tags.push(tag.trim());
           tag = '';
         } else {
           isInsideTag = true;
         }
-      } else if(currentCharacter === ']'){
-        if(isInsideTag){
+      } else if (currentCharacter === ']') {
+        if (isInsideTag) {
           isInsideTag = false;
           tags.push(tag.trim());
           tag = '';
         }
       } else {
-        if(isInsideTag) {
+        if (isInsideTag) {
           tag += currentCharacter;
         } else {
           isInsideTerm = true;
@@ -103,11 +106,11 @@ export class BookmarkFilterService {
       }
     }
 
-    if(tag.length > 0){
+    if (tag.length > 0) {
       tags.push(tag.trim());
     }
 
-    if(term.length > 0){
+    if (term.length > 0) {
       terms.push(term);
     }
 
@@ -119,40 +122,50 @@ export class BookmarkFilterService {
 
   /**
    * Checks if one search term is present in the bookmark's metadata (name, location, description, tags)
+   * There is still an internal debate to use the contains method (less restrictive) and the
+   * RegExp with matching words (more restrictive and does not support propery Unicode)
    *
    * @param bookmark
    * @param term
    * @returns {boolean}
    */
-  private bookmarkContainsTerm(bookmark: Bookmark, term: string):boolean {
-    let result: boolean = false;
-    if(bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
+  private bookmarkContainsTerm(bookmark: Bookmark, term: string): boolean {
+    let result = false;
+    const pattern = new RegExp('\\b' + term.toLowerCase() + '\\b');
+/*    if (bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.tags.indexOf(term.toLowerCase()) !== -1
-    ){
-      result=true;
-    }
+    ) {*/
+      if (pattern.test(bookmark.name.toLowerCase())
+        || pattern.test(bookmark.location.toLowerCase())
+        || pattern.test(bookmark.description.toLowerCase())
+      ) {
+        result = true;
+      }
 
-    if(result) {
+    if (result) {
       return true;
     } else {
-      //if not found already look through the tags also
+      // if not found already look through the tags also
       bookmark.tags.forEach(tag => {
-        if(tag.toLowerCase().indexOf(term.toLowerCase()) !== -1){
-          result= true;
+        if (pattern.test(tag.toLowerCase())) {
+          result = true;
         }
       });
     }
 
-
     return result;
   }
 
-  private bookmarkContainsTag(bookmark: Bookmark, tag: string):boolean {
-    let result: boolean = false;
+  private bookmarkContainsTag(bookmark: Bookmark, tag: string): boolean {
+    let result = false;
+    // const pattern = new RegExp('\\b' + tag.toLowerCase() + '\\b');
+    const pattern = new RegExp('\s' + tag.toLowerCase() + '\s');
     bookmark.tags.forEach(bookmarkTag => {
-      if(bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
+      // if (bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
+       if (bookmarkTag.toLowerCase() === tag.toLowerCase()) {
+      // if (pattern.test(bookmarkTag.toLowerCase())) {
         result = true;
       }
     });
