@@ -49,6 +49,6 @@ export class PersonalBookmarkDetailComponent implements OnInit{
   }
 
   goToUserBookmarks(): void {
-    this.router.navigate(['/personal']);
+    this.router.navigate(['/personal'], { fragment: 'navbar' });
   }
 }
