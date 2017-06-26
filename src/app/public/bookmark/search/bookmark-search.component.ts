@@ -1,13 +1,13 @@
-import {Component, OnInit, AfterViewInit, OnChanges, SimpleChanges} from "@angular/core";
-import {Observable} from "rxjs/Observable";
-import {BookmarkSearchService} from "./bookmark-search.service";
-import {BookmarkStore} from "../store/BookmarkStore";
-import {FormControl} from "@angular/forms";
-import {Router} from "@angular/router";
-import {BookmarkFilterService} from "../../../core/filter.service";
-import {Bookmark} from "../../../core/model/bookmark";
-import {Input} from "@angular/core";
-import {List} from "immutable";
+import {Component, OnInit, AfterViewInit, OnChanges, SimpleChanges} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {BookmarkSearchService} from './bookmark-search.service';
+import {BookmarkStore} from '../store/BookmarkStore';
+import {FormControl} from '@angular/forms';
+import {Router} from '@angular/router';
+import {BookmarkFilterService} from '../../../core/filter.service';
+import {Bookmark} from '../../../core/model/bookmark';
+import {Input} from '@angular/core';
+import {List} from 'immutable';
 
 @Component({
     selector: 'bookmark-search',
@@ -24,31 +24,48 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   query: string;
 
   filteredBookmarks: Observable<Bookmark[]>;
+  filterBookmarksBySearchTerm: Bookmark[];
 
   term = new FormControl();
   queryText: string;
-  public showNotFound: boolean = false;
+  public showNotFound = false;
+  public numberOfResultsFiltered: number;
+  counter = 10;
+  previousTerm: string;
+  language = 'all';
+
   constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
 
   ngOnInit(): void {
 
     this.filteredBookmarks = this.term.valueChanges
-      .debounceTime(600)        // wait for 600ms pause in events
-      .distinctUntilChanged()   // ignore if next search term is same as previous
+      .debounceTime(800)        // wait for 800ms pause in events
+      // TODO - next line should be reactived when getting results via HTTP
+      // .distinctUntilChanged()   ignore if next search term is same as previous
       .switchMap(term => {
-        if(term){// switch to new observable each time
+        // this.counter = 0; // we initialise the counter
+        if (term) { // switch to new observable each time
+
+          if (this.previousTerm !== term ) {
+            this.previousTerm = term;
+            this.counter = 10;
+          }
+
           this.queryText = term;
-          let filterBookmarksBySearchTerm:Bookmark[] = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.bookmarks);
-          if(filterBookmarksBySearchTerm.length > 0 ){
+          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.bookmarks);
+          console.log(this.language);
+          this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
+          if (this.numberOfResultsFiltered > 0 ) {
             this.showNotFound = false;
-            return Observable.of(filterBookmarksBySearchTerm);
+            return Observable.of(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
           } else {
             this.showNotFound = true;
-            return Observable.of<Bookmark[]>([])
+            return Observable.of<Bookmark[]>([]);
           }
         } else {
+          this.numberOfResultsFiltered = 0;
           // or the observable of empty bookmarks if no search term
-          return Observable.of<Bookmark[]>([])
+          return Observable.of<Bookmark[]>([]);
         }
       })
       .catch(error => {
@@ -59,8 +76,13 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   }
 
+  showMoreResults() {
+    this.term.setValue(this.queryText); // trigger this.term.valueChanges
+    this.counter += 10;
+  }
+
   ngAfterViewInit(): void {
-    if(this.query) {
+    if (this.query) {
       this.term.setValue(this.query);
     }
   }
@@ -70,12 +92,17 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
    * @param bookmark
    */
   gotoDetail(bookmark: Bookmark): void {
-    let link = ['/bookmarks', bookmark._id];
+    const link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }
 
-  setQueryFromParentComponent(queryFromOutside: string){
+  setQueryFromParentComponent(queryFromOutside: string) {
     this.term.setValue(queryFromOutside);
   }
 
+  onLanguageChange(newValue) {
+    console.log('onLanguageChange' + newValue);
+    this.language = newValue;
+    this.term.setValue(this.queryText);
+  }
 }

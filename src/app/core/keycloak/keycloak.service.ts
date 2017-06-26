@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 import {environment} from 'environments/environment';
-import * as Keycloak from 'keycloak-js';
+// import {KeycloakClient} from 'keycloak-js';
 
 @Injectable()
 export class KeycloakService {
@@ -9,9 +9,9 @@ export class KeycloakService {
   private static auth: any = {};
 
   public static initKeycloak(): Promise<any> {
-    // const keycloak = require('keycloak-js/dist/keycloak.js');
+    const keycloak = require('keycloak-js/dist/keycloak.js');
 
-    const keycloakAuth = new Keycloak(environment.keycloak);
+    const keycloakAuth = new keycloak(environment.keycloak);
     return new Promise((resolve, reject) => {
       keycloakAuth.init()
         .success(() => {

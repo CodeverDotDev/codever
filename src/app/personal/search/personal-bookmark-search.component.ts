@@ -1,10 +1,10 @@
-import {Component, OnInit, NgZone} from "@angular/core";
-import {Observable} from "rxjs/Observable";
-import {Bookmark} from "../../core/model/bookmark";
-import {FormControl} from "@angular/forms";
-import {PersonalBookmarksStore} from "../store/PersonalBookmarksStore";
-import {ActivatedRoute, Router} from "@angular/router";
-import {BookmarkFilterService} from "../../core/filter.service";
+import {Component, OnInit, NgZone} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {Bookmark} from '../../core/model/bookmark';
+import {FormControl} from '@angular/forms';
+import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
+import {ActivatedRoute, Router} from '@angular/router';
+import {BookmarkFilterService} from '../../core/filter.service';
 
 @Component({
     selector: 'personal-bookmark-search',
@@ -15,10 +15,10 @@ export class PersonalBookmarkSearchComponent implements OnInit {
 
     bookmarks: Observable<Bookmark[]>;
     term = new FormControl();
-    public showNotFound: boolean = false;
+    public showNotFound = false;
 
     constructor(
-      private zone:NgZone,
+      private zone: NgZone,
       private route: ActivatedRoute,
       private router: Router,
       private userBookmarkStore: PersonalBookmarksStore,
@@ -29,18 +29,18 @@ export class PersonalBookmarkSearchComponent implements OnInit {
             .debounceTime(600)        // wait for 300ms pause in events
             .distinctUntilChanged()   // ignore if next search term is same as previous
             .switchMap(term => {
-              if(term){// switch to new observable each time
-                let filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.userBookmarkStore.getBookmarks());
-                if(filterBookmarksBySearchTerm.length > 0 ){
+              if (term) {// switch to new observable each time
+                const filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, 'all', this.userBookmarkStore.getBookmarks());
+                if (filterBookmarksBySearchTerm.length > 0 ) {
                   this.showNotFound = false;
                   return Observable.of(filterBookmarksBySearchTerm);
                 } else {
                   this.showNotFound = true;
-                  return Observable.of<Bookmark[]>([])
+                  return Observable.of<Bookmark[]>([]);
                 }
               } else {
                 // or the observable of empty bookmarks if no search term
-                return Observable.of<Bookmark[]>([])
+                return Observable.of<Bookmark[]>([]);
               }
             })
             .catch(error => {
@@ -49,7 +49,7 @@ export class PersonalBookmarkSearchComponent implements OnInit {
                 return Observable.of<Bookmark[]>([]);
             });
       this.zone.run(() => {
-        console.log("ZONE RUN bookmark deleted");
+        console.log('ZONE RUN bookmark deleted');
       });
     }
 
@@ -58,17 +58,17 @@ export class PersonalBookmarkSearchComponent implements OnInit {
    * @param bookmark
    */
   gotoDetail(bookmark: Bookmark): void {
-    let link = ['./bookmarks', bookmark._id];
+    const link = ['./bookmarks', bookmark._id];
     this.router.navigate(link, { relativeTo: this.route });
   }
 
-  deleteBookmark(deleted:Bookmark): void {
+  deleteBookmark(deleted: Bookmark): void {
 
-    let obs = this.userBookmarkStore.deleteBookmark(deleted);
+    const obs = this.userBookmarkStore.deleteBookmark(deleted);
     obs.subscribe(
       res => {
         this.zone.run(() => {
-          console.log("ZONE RUN bookmark deleted");
+          console.log('ZONE RUN bookmark deleted');
         });
 
         setTimeout(() => {

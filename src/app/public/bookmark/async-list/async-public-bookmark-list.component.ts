@@ -1,6 +1,6 @@
-import {Component, Input} from "@angular/core";
-import {Observable} from "rxjs";
-import {Bookmark} from "../../../core/model/bookmark";
+import {Component, Input} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {Bookmark} from '../../../core/model/bookmark';
 
 @Component({
   selector: 'my-async-public-bookmark-list',

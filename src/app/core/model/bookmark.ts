@@ -11,10 +11,14 @@ export class Bookmark {
     githubURL: string;
     userId: String;
     shared: boolean;
+    language: string;
+    createdAt: Date;
+    updatedAt: Date;
 
     constructor (
                  name: string,
                  location: string,
+                 language: string,
                  category: string,
                  tags: string[],
                  publishedOn?: Date,
@@ -24,10 +28,13 @@ export class Bookmark {
                  _id?: string,
                  tagsLine?: string,
                  userId?: string,
-                 shared?: boolean
-                 ){
+                 shared?: boolean,
+                 createdAt?: Date,
+                 updatedAt?: Date
+                 ) {
         this.name = name;
         this.location = location;
+        this.language = language;
         this.category = category;
         this.tags = tags;
         this.githubURL = githubURL;
@@ -38,5 +45,7 @@ export class Bookmark {
         this.publishedOn = publishedOn;
         this.userId = userId;
         this.shared = shared;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

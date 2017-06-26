@@ -13,7 +13,7 @@ import {MarkdownService} from '../markdown.service';
 })
 export class NewPersonalBookmarkFormComponent implements OnInit {
 
-  model = new Bookmark('', '', '', [], null, '', '',  '');
+  model = new Bookmark('', '', 'en', '', [], null, '', '',  '' );
   bookmarkForm: FormGroup;
   userId = null;
 
@@ -43,7 +43,8 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
       publishedOn: null,
       githubURL: '',
       description: '',
-      shared: false
+      shared: false,
+      language: 'en'
     });
 
     this.bookmarkForm.controls['location'].valueChanges
@@ -64,7 +65,7 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
       return item.trim().replace(' ', '-'); // replace spaces between words (if any) in a tag with dashes
     });
 
-    const newBookmark = new Bookmark(model.name, model.location, model.category, model.tags, model.publishedOn, model.githubURL, model.description, null);
+    const newBookmark = new Bookmark(model.name, model.location, model.language, model.category, model.tags, model.publishedOn, model.githubURL, model.description, null);
 
     newBookmark.userId = this.userId;
     newBookmark.shared = model.shared;
