@@ -129,7 +129,7 @@ export class PersonalBookmarksStore {
         });
 
         if (deleted.shared) {
-          this.bookmarkStore.removeFromStore(deleted);
+          this.bookmarkStore.removeFromPublicStore(deleted);
         }
       }
     );
@@ -146,7 +146,7 @@ export class PersonalBookmarksStore {
         const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
         this._bookmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
-        if (updated.shared){
+        if (updated.shared) {
           this.bookmarkStore.updateBookmark(updated);
         }
       }
