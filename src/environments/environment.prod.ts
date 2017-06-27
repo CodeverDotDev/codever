@@ -4,7 +4,7 @@ export const environment = {
   HOST: 'https://bookmarks.codingpedia.org/',
   keycloak:  {
     'realm': 'codingpedia',
-    'url': 'https://bookmarks.codingpedia.org/auth',
-    'clientId': 'bookmarks'
+    'url': 'https://www.codingmarks.org/auth',
+    'clientId': 'codingmarks'
   }
 };
