@@ -1,5 +1,5 @@
 {
-  "name": "bookmarks-api.codingpedia.org",
+  "name": "codingmarks-api",
   "version": "1.6.0",
   "private": true,
   "scripts": {
