@@ -1,7 +1,6 @@
 # Codingpedia bookmarks, aka #codingmarks
 
 This repo contains the front-end source code of the [codingmarks.org](http://codingmarks.org) website - (cu)rated bookmarks for developers.
- It can also be reached via [https://bookmarks.codingpedia.org](https://bookmarks.codingpedia.org/):
  
 ![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
 
