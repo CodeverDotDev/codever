@@ -14,6 +14,11 @@ import {AuthGuard} from '../core/auth-guard.service';
       canActivate: [AuthGuard],
       children: [
         {
+          path: 'search',
+          redirectTo: '',
+          pathMatch: 'full'
+        },
+        {
           path: '',
           component: PersonalBookmarksListComponent
         },
