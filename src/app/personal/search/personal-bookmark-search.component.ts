@@ -1,4 +1,4 @@
-import {Component, OnInit, NgZone} from '@angular/core';
+import {Component, OnInit, NgZone, Input, AfterViewInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormControl} from '@angular/forms';
@@ -11,13 +11,16 @@ import {BookmarkFilterService} from '../../core/filter.service';
     templateUrl: 'personal-bookmark-search.component.html',
     styleUrls: [ 'personal-bookmark-search.component.scss' ]
 })
-export class PersonalBookmarkSearchComponent implements OnInit {
+export class PersonalBookmarkSearchComponent implements OnInit, AfterViewInit  {
 
     bookmarks: Observable<Bookmark[]>;
     term = new FormControl();
     public showNotFound = false;
 
-    constructor(
+    @Input()
+    query: string;
+
+  constructor(
       private zone: NgZone,
       private route: ActivatedRoute,
       private router: Router,
@@ -78,4 +81,10 @@ export class PersonalBookmarkSearchComponent implements OnInit {
       });
   }
 
+
+  ngAfterViewInit(): void {
+    if (this.query) {
+      this.term.setValue(this.query);
+    }
+  }
 }

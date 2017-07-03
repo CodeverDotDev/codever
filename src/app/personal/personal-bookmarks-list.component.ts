@@ -13,6 +13,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class PersonalBookmarksListComponent implements  OnInit{
 
   userBookmarks: Observable<List<Bookmark>>;
+  query = '';
+
+  sessionId: Observable<string>;
+  sessionIdValue = '';
 
   constructor(
     private zone: NgZone,
@@ -21,6 +25,28 @@ export class PersonalBookmarksListComponent implements  OnInit{
     private userBookmarkStore: PersonalBookmarksStore) { }
 
   ngOnInit(): void {
+
+    this.sessionId = this.route
+      .queryParamMap
+      .map(params => params.get('q') || 'None');
+
+      this.sessionId.subscribe(value => {
+        this.sessionIdValue = value;
+        console.log('query param value' + this.sessionIdValue);
+      });
+
+    this.route
+      .queryParams
+      .subscribe(params => {
+        if (params['search']) {
+          this.query = params['search'];
+          this.query = this.query.replace(/\+/g, ' ');
+        } else if (params['q']) {
+          this.query = params['q'];
+          this.query = this.query.replace(/\+/g,  ' ');
+        }
+      });
+
     this.userBookmarks = this.userBookmarkStore.getBookmarks();
     this.userBookmarks.subscribe(
       res => {
