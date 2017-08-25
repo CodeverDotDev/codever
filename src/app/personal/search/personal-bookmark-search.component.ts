@@ -51,9 +51,6 @@ export class PersonalBookmarkSearchComponent implements OnInit, AfterViewInit  {
                 console.log(error);
                 return Observable.of<Bookmark[]>([]);
             });
-      this.zone.run(() => {
-        console.log('ZONE RUN bookmark deleted');
-      });
     }
 
   /**
@@ -84,6 +81,7 @@ export class PersonalBookmarkSearchComponent implements OnInit, AfterViewInit  {
 
   ngAfterViewInit(): void {
     if (this.query) {
+      console.log('---------------- set QUERY ' + this.query);
       this.term.setValue(this.query);
     }
   }
