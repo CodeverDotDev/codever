@@ -19,19 +19,24 @@ export class KeycloakService {
           resolve();
         })
         .error((error) => {
-          reject();
+          reject(error);
         });
     });
   }
 
-  public login() {
+  public login(): Promise<any> {
     let options: any;
     options = {redirectUri: environment.HOST + 'personal'};
-    KeycloakService.auth.login(options);
+    // KeycloakService.auth.login(options);
+    return new Promise<any>((resolve, reject) => {
+      KeycloakService.auth.login(options)
+        .success(resolve)
+        .error(reject);
+    });
   }
 
   public  isLoggedIn(): boolean {
-    return KeycloakService.auth.authenticated;
+    return KeycloakService.auth && KeycloakService.auth.authenticated;
   }
 
   getKeycloak(): any {
@@ -39,14 +44,10 @@ export class KeycloakService {
   }
 
   logout() {
-    /**
-     * setTimeout is required here otherwise logout will NOT work.
-     */
-    setTimeout(() => {
-      let options: any;
-      options = {redirectUri: environment.HOST};
-      KeycloakService.auth.logout(options);
-    });
+    let options: any;
+    options = {redirectUri: environment.HOST};
+    KeycloakService.auth.logout(options);
+
   }
 
   public hasRole(role: string): boolean {
@@ -56,5 +57,25 @@ export class KeycloakService {
     return KeycloakService.auth.hasRealmRole(role);
   }
 
+  public getToken(): string {
+    return this.getKeycloak() ? this.getKeycloak().token : undefined;
+  }
 
+  public getUserInfo(): Promise<IUserInfo> {
+    return new Promise<IUserInfo>((resolve, reject) => {
+      KeycloakService.auth.loadUserInfo()
+        .success(resolve)
+        .error(reject);
+    });
+  }
+
+}
+
+export interface IUserInfo {
+  email?: string;
+  family_name?: string;
+  given_name?: string;
+  name?: string; /** given_name + family_name */
+  preferred_username?: string; /** Username by default email*/
+  sub?: string; /** keycloak id */
 }
