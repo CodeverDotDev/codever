@@ -8,7 +8,7 @@ import {ErrorService} from './error/error.service';
 import {ErrorComponent} from './error/error.component';
 import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
-import {AuthGuard} from './auth-guard.service';
+// import {AuthGuard} from '../personal/auth-guard.service';
 
 /**
  * Gather services and components that are used by several modules, in a single CoreModule, that you import once when
@@ -34,8 +34,7 @@ import {AuthGuard} from './auth-guard.service';
     Logger,
     KeycloakService,
     HttpWrapperService,
-    ErrorService,
-    AuthGuard
+    ErrorService
   ]
 })
 export class CoreModule {

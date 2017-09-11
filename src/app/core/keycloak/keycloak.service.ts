@@ -25,11 +25,8 @@ export class KeycloakService {
   }
 
   public login(): Promise<any> {
-    let options: any;
-    options = {redirectUri: environment.HOST + 'personal'};
-    // KeycloakService.auth.login(options);
     return new Promise<any>((resolve, reject) => {
-      KeycloakService.auth.login(options)
+      KeycloakService.auth.login()
         .success(resolve)
         .error(reject);
     });
