@@ -9,7 +9,7 @@
       <a class="nav-link" [routerLink]="['personal']" routerLinkActive="active">Personal list</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [routerLink]="['about']" routerLinkActive="active">About</a>
+      <a class="nav-link" [routerLink]="['about']" [queryParams]="{q: 'java'}" preserveQueryParams routerLinkActive="active">About</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="http://www.codingpedia.org/tags/#codingmarks" target="_blank">Blog</a>

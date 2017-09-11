@@ -21,8 +21,8 @@ export class HttpWrapperService {
     if (auth && auth.token) {
       auth.updateToken(30).success(() => {
         headers.set('Authorization', 'Bearer ' + auth.token);
-          subject.next(headers);
-          subject.complete();
+        subject.next(headers);
+        subject.complete();
       }).error(() => {
         this.keycloakService.login();
       });
@@ -47,27 +47,27 @@ export class HttpWrapperService {
     return this.executeWithData('put', url, postData, options);
   }
 
-/*  public put(url: string, postData: any, options?: RequestOptionsArgs): Observable<Response> {
-    const subject = new AsyncSubject<Response>();
-    this.getAuthHeader(options).subscribe((headers) => {
-      this.http.put(url, postData, {
-        headers: headers
-      }).subscribe((data) => {
-        this.ngZone.run(() => {
-          subject.next(data);
-        });
-      }, (error) => {
-        this.ngZone.run(() => {
-          subject.error(error);
-        });
-      }, () => {
-        this.ngZone.run(() => {
-          subject.complete();
-        });
-      });
-    });
-    return subject;
-  }*/
+  /*  public put(url: string, postData: any, options?: RequestOptionsArgs): Observable<Response> {
+   const subject = new AsyncSubject<Response>();
+   this.getAuthHeader(options).subscribe((headers) => {
+   this.http.put(url, postData, {
+   headers: headers
+   }).subscribe((data) => {
+   this.ngZone.run(() => {
+   subject.next(data);
+   });
+   }, (error) => {
+   this.ngZone.run(() => {
+   subject.error(error);
+   });
+   }, () => {
+   this.ngZone.run(() => {
+   subject.complete();
+   });
+   });
+   });
+   return subject;
+   }*/
 
   public delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
     return this.execute('delete', url, options);
@@ -79,27 +79,27 @@ export class HttpWrapperService {
 
     const observable = new Observable((observer) => {
 
-        this.getAuthHeader(options).subscribe((headers) => {
+      this.getAuthHeader(options).subscribe((headers) => {
 
-          if (typeof options === 'undefined') {
-            options = {};
-          }
-          options.headers = headers;
+        if (typeof options === 'undefined') {
+          options = {};
+        }
+        options.headers = headers;
 
-          this.http[method](url, options).subscribe((data) => {
-            this.ngZone.run(() => {
-              observer.next(data);
-            });
-          }, (error) => {
-            this.ngZone.run(() => {
-              observer.error(error);
-            });
-          }, () => {
-            this.ngZone.run(() => {
-              observer.complete();
-            });
+        this.http[method](url, options).subscribe((data) => {
+          this.ngZone.run(() => {
+            observer.next(data);
+          });
+        }, (error) => {
+          this.ngZone.run(() => {
+            observer.error(error);
+          });
+        }, () => {
+          this.ngZone.run(() => {
+            observer.complete();
           });
         });
+      });
 
     });
 
