@@ -36,10 +36,10 @@ export class BookmarksComponent implements OnInit {
       .subscribe(params => {
         if (params['search']) {
           this.query = params['search'];
-          this.query = this.query.replace('+', ' ');
+          this.query = this.query.replace(/\+/g, ' ');
         } else if (params['q']) {
           this.query = params['q'];
-          this.query = this.query.replace('+', ' ');
+          this.query = this.query.replace(/\+/g,  ' ');
         }
       });
 

@@ -1,4 +1,4 @@
-import {MarkdownService} from "./markdown.service";
+import {MarkdownService} from './markdown.service';
 
 describe('Markdown transformer service', () => {
   let markdownService: MarkdownService;

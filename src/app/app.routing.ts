@@ -32,7 +32,12 @@ const routes: Routes = [
  * See App routing @https://angular.io/docs/ts/latest/guide/ngmodule.html
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(
+      routes,
+      { enableTracing: true }
+    )
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
