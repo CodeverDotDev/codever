@@ -24,34 +24,15 @@ export class PersonalBookmarksListComponent implements OnInit {
     private userBookmarkStore: PersonalBookmarksStore) { }
 
   ngOnInit(): void {
-
-    this.sessionId = this.route
-      .queryParamMap
-      .map(params => params.get('q') || 'None');
-
-      this.sessionId.subscribe(value => {
-        this.sessionIdValue = value;
-        console.log('query param value ' + this.sessionIdValue);
-      });
-
     this.query = this.route.snapshot.queryParamMap.get('q');
     if (this.query) {
       this.query = this.query.replace(/\+/g,  ' ');
+    } else {
+      this.query = this.route.snapshot.queryParamMap.get('search');
+      if (this.query) {
+        this.query = this.query.replace(/\+/g,  ' ');
+      }
     }
-
-    console.log('Querry string after replacemennnnnnt -------------------------------' + this.query);
-/*    this.route
-      .queryParams
-      .subscribe(params => {
-        if (params['search']) {
-          this.query = params['search'];
-          this.query = this.query.replace(/\+/g, ' ');
-        } else if (params['q']) {
-          this.query = params['q'];
-          this.query = this.query.replace(/\+/g,  ' ');
-        }
-      });*/
-
     this.userBookmarks = this.userBookmarkStore.getBookmarks();
   }
 
