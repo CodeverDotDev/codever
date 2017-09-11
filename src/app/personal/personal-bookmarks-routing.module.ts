@@ -31,25 +31,6 @@ const personalBookmarksRoutes: Routes = [
       }
     ]
   }
-/*    {
-      path: 'search',
-      redirectTo: '',
-      pathMatch: 'full'
-    },
-    {
-      path: '',
-      component: PersonalBookmarksListComponent,
-      canActivate: [AuthGuard],
-    },
-    {
-      path: 'new',
-      component: NewPersonalBookmarkFormComponent
-    },
-    {
-      path: 'bookmarks/:id',
-      component: PersonalBookmarkDetailComponent
-    }*/
-
 ];
 @NgModule({
   imports: [RouterModule.forChild(personalBookmarksRoutes)],
