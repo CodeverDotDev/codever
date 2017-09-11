@@ -39,7 +39,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
 
     this.filteredBookmarks = this.term.valueChanges
-      .debounceTime(800)        // wait for 800ms pause in events
+      .debounceTime(1000)        // wait for 800ms pause in events
       // TODO - next line should be reactived when getting results via HTTP
       // .distinctUntilChanged()   ignore if next search term is same as previous
       .switchMap(term => {
