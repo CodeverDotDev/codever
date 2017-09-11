@@ -13,7 +13,7 @@ import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {PersonalBookmarkSearchComponent} from './search/personal-bookmark-search.component';
 import {SharedModule} from '../shared/shared.module';
 import {MarkdownService} from './markdown.service';
-import {AuthGuard} from "../core/auth-guard.service";
+import {AuthGuard} from './auth-guard.service';
 
 @NgModule({
   declarations : [

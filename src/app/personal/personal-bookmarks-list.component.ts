@@ -34,7 +34,13 @@ export class PersonalBookmarksListComponent implements OnInit {
         console.log('query param value ' + this.sessionIdValue);
       });
 
-    this.route
+    this.query = this.route.snapshot.queryParamMap.get('q');
+    if (this.query) {
+      this.query = this.query.replace(/\+/g,  ' ');
+    }
+
+    console.log('Querry string after replacemennnnnnt -------------------------------' + this.query);
+/*    this.route
       .queryParams
       .subscribe(params => {
         if (params['search']) {
@@ -44,7 +50,7 @@ export class PersonalBookmarksListComponent implements OnInit {
           this.query = params['q'];
           this.query = this.query.replace(/\+/g,  ' ');
         }
-      });
+      });*/
 
     this.userBookmarks = this.userBookmarkStore.getBookmarks();
   }

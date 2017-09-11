@@ -1,39 +1,58 @@
-import {RouterModule} from '@angular/router';
+import {RouterModule, Routes} from '@angular/router';
 import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
 import {NgModule} from '@angular/core';
 import {NewPersonalBookmarkFormComponent} from './new-personal-bookmark/new-personal-bookmark-form.component';
 import {PersonalBookmarkDetailComponent} from './detail/personal-bookmark-detail.component';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
-import {AuthGuard} from '../core/auth-guard.service';
+import {AuthGuard} from './auth-guard.service';
 
-@NgModule({
-  imports: [RouterModule.forChild([
+const personalBookmarksRoutes: Routes = [
+  {
+    path: '',
+    component: PersonalBookmarksComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'search',
+        redirectTo: '',
+        pathMatch: 'full'
+      },
+      {
+        path: '',
+        component: PersonalBookmarksListComponent
+      },
+      {
+        path: 'new',
+        component: NewPersonalBookmarkFormComponent
+      },
+      {
+        path: 'bookmarks/:id',
+        component: PersonalBookmarkDetailComponent
+      }
+    ]
+  }
+/*    {
+      path: 'search',
+      redirectTo: '',
+      pathMatch: 'full'
+    },
     {
       path: '',
-      component: PersonalBookmarksComponent,
+      component: PersonalBookmarksListComponent,
       canActivate: [AuthGuard],
-      children: [
-        {
-          path: 'search',
-          redirectTo: '',
-          pathMatch: 'full'
-        },
-        {
-          path: '',
-          component: PersonalBookmarksListComponent
-        },
-        {
-          path: 'new',
-          component: NewPersonalBookmarkFormComponent
-        },
-        {
-          path: 'bookmarks/:id',
-          component: PersonalBookmarkDetailComponent
-        }
-      ]
-    }
+    },
+    {
+      path: 'new',
+      component: NewPersonalBookmarkFormComponent
+    },
+    {
+      path: 'bookmarks/:id',
+      component: PersonalBookmarkDetailComponent
+    }*/
 
-  ])],
+];
+@NgModule({
+  imports: [RouterModule.forChild(personalBookmarksRoutes)],
   exports: [RouterModule]
 })
 export class PersonalBookmarksRoutingModule {}
