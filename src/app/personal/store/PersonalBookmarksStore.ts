@@ -24,7 +24,6 @@ export class PersonalBookmarksStore {
                 private keycloakService: KeycloakService,
                 private bookmarkStore: BookmarkStore
     ) {
-        this.logger.log('******** PersonalBookmarksStore constructor was called *************');
         const keycloak = keycloakService.getKeycloak();
         if (keycloak) {
           this.userId = keycloak.subject;
@@ -33,7 +32,6 @@ export class PersonalBookmarksStore {
     }
 
   private loadInitialData() {
-    this.logger.log('******** PersonalBookmarksStore.loadInitial was called *************');
     this.userBookmarkService.getAllBookmarks(this.userId)
       .subscribe(
         res => {
