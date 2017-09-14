@@ -1,32 +1,30 @@
-<div class="container">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand"  [routerLink]="['']" routerLinkActive="active">
-      <img src="assets/logo.png" width="35" height="35" class="d-inline-block align-top" alt="">
-      Public Bookmarks
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" [routerLink]="['personal']" routerLinkActive="active">Personal list</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand"  [routerLink]="['']" routerLinkActive="active">
+    <img src="assets/logo.png" width="35" height="35" class="d-inline-block align-top" alt="">
+    Public Bookmarks
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" [routerLink]="['personal']" routerLinkActive="active">Personal list</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['about']" routerLinkActive="active">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://www.codingpedia.org/tags/#codingmarks" target="_blank">Blog</a>
+      </li>
+      <li *ngIf="isLoggedIn else notLoggedIn" class="nav-item">
+        <a class="nav-link" (click)="logout()">Logout <i class="fa fa-lock"></i></a>
+      </li>
+      <ng-template #notLoggedIn>
+        <li *ngIf="!keycloakService.isLoggedIn()" class="nav-item">
+          <a class="nav-link" (click)="login()">Login <i class="fa fa-unlock"></i></a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['about']" routerLinkActive="active">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="http://www.codingpedia.org/tags/#codingmarks" target="_blank">Blog</a>
-        </li>
-        <li *ngIf="isLoggedIn else notLoggedIn" class="nav-item">
-          <a class="nav-link" (click)="logout()">Logout <i class="fa fa-lock"></i></a>
-        </li>
-        <ng-template #notLoggedIn>
-          <li *ngIf="!keycloakService.isLoggedIn()" class="nav-item">
-            <a class="nav-link" (click)="login()">Login <i class="fa fa-unlock"></i></a>
-          </li>
-        </ng-template>
-      </ul>
-    </div>
-  </nav>
-</div>
+      </ng-template>
+    </ul>
+  </div>
+</nav>
