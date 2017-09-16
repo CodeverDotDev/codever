@@ -15,21 +15,6 @@ a {
   border-left: 5px solid #a94442; /* red */
 }
 
-.card-block {
-  padding: 1.0rem;
-}
-
-.card-footer {
-  padding: 0.2rem 1.0rem;
-}
-
-.tag-pill{
-  padding: 0.3rem 0.6rem;
-  border-radius: 10rem;
-  margin-bottom: 0.3rem;
-}
-// END bootstrap override
-
 ul.tags {
   list-style: none;
   display: inline-block;
@@ -54,7 +39,7 @@ ul.tags li:not(:last-child):after {
   }
 }
 
-.tag {
+.badge {
   margin-right: 0.3rem;
 }
 
@@ -195,12 +180,38 @@ $rotation-angle: 45deg;
   }
 }
 
+#language-select{
+  width:20%;
+  float: right;
+  margin-top: 5px;
+}
 // END Github fork ribbon
 
-// START bootstrap override
+
 // version 4
 @import 'variables';
 @import '~bootstrap/scss/bootstrap';
 
 //import font-awesome
 @import '~font-awesome/scss/font-awesome.scss';
+
+// START bootstrap override
+.card {
+  margin-bottom: 0.5rem;
+}
+.card-body {
+  padding: 1rem;
+}
+
+.card-footer {
+  padding: 0rem 1.25rem;
+}
+
+.badge {
+  padding: 0.25rem;
+}
+// END bootstrap override
+
+label {
+  width: 100%;
+}
