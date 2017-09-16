@@ -1,11 +1,11 @@
-<div class="container" id="public-search-box">
+<div id="public-search-box">
   <div *ngIf="publicBookmarks">
     <bookmark-search [bookmarks]="publicBookmarks" [query]="query"></bookmark-search>
   </div>
 
   <h2>Tags</h2>
   <div class="tags-group">
-    <a href="#navbar"><span *ngFor="let tag of tags" class="tag tag-default tag-pill float-xs-left" (click)="onTagClick(tag.name)" style="cursor: pointer">{{tag.name}}</span></a>
+    <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag.name)" style="cursor: pointer">{{tag.name}}</span>
     <div class="clear"></div>
   </div>
 </div>
