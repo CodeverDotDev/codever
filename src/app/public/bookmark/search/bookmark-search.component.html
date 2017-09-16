@@ -3,8 +3,8 @@
     <input type="text" class="form-control" [formControl]="term" placeholder="Search in public bookmarks... (tag filtering via square brackets: e.g. [angular])">
 </div>
 
-<div id="language-select" class="input-group">
-  <select class="form-control form-control-sm" style="width:20%;float: right;margin-top: 5px;" [ngModel]="language" (ngModelChange)="onLanguageChange($event)">
+<div id="language-select" class="input-group" readonly>
+  <select class="form-control form-control-sm"  [ngModel]="language" (ngModelChange)="onLanguageChange($event)">
     <option value=all selected="selected">Filter by language</option>
     <option value=af>Afrikaans</option>
     <option value=sq>Albanian</option>
@@ -112,6 +112,7 @@
   </select>
 </div>
 
+<div class="clear"></div>
 <br>
 
 <div *ngIf="showNotFound" class="alert alert-info" role="alert">

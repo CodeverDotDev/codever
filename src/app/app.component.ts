@@ -9,5 +9,5 @@ import 'styles.scss';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  url = 'https://github.com/Codingpedia/bookmarks';
+  url = 'https://github.com/Codingpedia/codingmarks';
 }
