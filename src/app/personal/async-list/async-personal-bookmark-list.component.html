@@ -1,6 +1,6 @@
 <div *ngFor="let bookmark of bookmarks | async; let i=index" >
   <div *ngIf="i < 13" class="card">
-    <div class="card-block">
+    <div class="card-body">
       <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank">{{ bookmark.name }}</a></h4>
       <p class="list-group-item-text url-under-title">{{ bookmark.location }}</p>
       <p *ngIf="!bookmark.descriptionHtml" class="card-text">{{ bookmark.description }}</p>
@@ -10,9 +10,9 @@
     </div>
     <div class="card-footer">
       <div class="tags-group">
-        <span *ngIf="bookmark.publishedOn" class="tag tag-pill  tag-info float-xs-left"><i class="fa fa-calendar"></i> {{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
-        <span *ngIf="bookmark.githubURL" class="tag tag-pill  tag-primary float-xs-left"><a href="{{bookmark.githubURL}}" target="_blank"><i class="fa fa-github"></i> GitHub URL</a></span>
-        <span *ngFor="let tag of bookmark.tags" class="tag tag-default tag-pill float-xs-left">{{tag}} </span>
+        <span *ngIf="bookmark.publishedOn" class="badge badge-info float-xs-left"><i class="fa fa-calendar"></i> {{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
+        <span *ngIf="bookmark.githubURL" class="badge  badge-primary float-xs-left"><a href="{{bookmark.githubURL}}" target="_blank"><i class="fa fa-github"></i> GitHub URL</a></span>
+        <span *ngFor="let tag of bookmark.tags" class="badge badge-secondary float-xs-left">{{tag}} </span>
       </div>
     </div>
   </div>
