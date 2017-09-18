@@ -52,7 +52,8 @@ export class PersonalBookmarksStore {
                   bookmark.userId,
                   bookmark.shared,
                   bookmark.createdAt,
-                  bookmark.updatedAt
+                  bookmark.updatedAt,
+                  bookmark.starredBy
               )
             ).sort((a, b) => {
               if (a.updatedAt < b.updatedAt) {
