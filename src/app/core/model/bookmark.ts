@@ -14,6 +14,7 @@ export class Bookmark {
     language: string;
     createdAt: Date;
     updatedAt: Date;
+    starredBy: string[];
 
     constructor (
                  name: string,
@@ -30,7 +31,8 @@ export class Bookmark {
                  userId?: string,
                  shared?: boolean,
                  createdAt?: Date,
-                 updatedAt?: Date
+                 updatedAt?: Date,
+                 starredBy?: string[]
                  ) {
         this.name = name;
         this.location = location;
@@ -47,5 +49,6 @@ export class Bookmark {
         this.shared = shared;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.starredBy = starredBy;
     }
 }
