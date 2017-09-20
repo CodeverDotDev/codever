@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../core/model/bookmark';
@@ -10,10 +10,20 @@ import {KeycloakService} from '../../core/keycloak/keycloak.service';
   templateUrl: './async-personal-bookmark-list.component.html',
   styleUrls: ['./async-personal-bookmark-list.component.scss']
 })
-export class AsyncUserBookmarksListComponent{
+export class AsyncUserBookmarksListComponent implements OnInit {
+
+  userId: string;
 
   @Input()
   bookmarks: Observable<Bookmark[]>;
+
+  ngOnInit(): void {
+    if (this.keycloakService.isLoggedIn()) {
+      this.keycloakService.getUserInfo().then(userInfo => {
+        this.userId = userInfo.sub;
+      });
+    }
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -35,18 +45,13 @@ export class AsyncUserBookmarksListComponent{
     const obs = this.userBookmarkStore.deleteBookmark(bookmark);
   }
 
-  async starBookmark(bookmark: Bookmark) {
-    if (this.keycloakService.isLoggedIn()) {
-      this.keycloakService.getUserInfo().then(userInfo => {
-        console.log(userInfo.sub);
-        if (!bookmark.starredBy) {
-          bookmark.starredBy = [];
-        } else {
-          bookmark.starredBy.push(userInfo.sub);
-        }
-        const obs = this.userBookmarkStore.updateBookmark(bookmark);
-      });
+  starBookmark(bookmark: Bookmark): void {
+    if (this.userId) {
+      if (!bookmark.starredBy) {
+        bookmark.starredBy = [];
+      } else {
+        bookmark.starredBy.push(this.userId);
+      }
     }
-
   }
 }
