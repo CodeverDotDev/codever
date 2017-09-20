@@ -10,7 +10,7 @@ import {MarkdownService} from '../markdown.service';
   templateUrl: './personal-bookmark-detail.component.html',
   styleUrls: ['./personal-bookmark-detail.component.scss']
 })
-export class PersonalBookmarkDetailComponent implements OnInit{
+export class PersonalBookmarkDetailComponent implements OnInit {
 
   bookmark: Bookmark;
 

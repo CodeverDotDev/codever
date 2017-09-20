@@ -10,12 +10,19 @@
     </div>
     <div class="card-footer">
       <div class="tags-group">
-        <div class="input-group  mb-2 mb-sm-0" style="display:inline-flex; width: 10%">
-          <span class="input-group-addon" id="btnGroupAddon2" (click)="starBookmark(bookmark)"><i class="fa fa-star-o"></i></span>
+        <div class="input-group-sm  mb-2 mb-sm-0" style="display:inline-flex; width: 10%">
+          <span *ngIf="bookmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-addon" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
+            <i class="fa fa-star-o"></i>
+          </span>
+          <ng-template #starred>
+            <span class="input-group-addon" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
+              <i class="fa fa-star"></i>
+            </span>
+          </ng-template>
           <input type="text" value="{{bookmark.starredBy.length}}" class="form-control" placeholder="Input group example" readonly>
         </div>
         <span *ngIf="bookmark.publishedOn" class="badge badge-info float-xs-left"><i class="fa fa-calendar"></i> {{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
-        <span *ngIf="bookmark.githubURL" class="badge  badge-primary float-xs-left"><a href="{{bookmark.githubURL}}" target="_blank"><i class="fa fa-github"></i> GitHub URL</a></span>
+        <span *ngIf="bookmark.githubURL" class="badge badge-primary float-xs-left"><a href="{{bookmark.githubURL}}" target="_blank"><i class="fa fa-github"></i> GitHub URL</a></span>
         <span *ngFor="let tag of bookmark.tags" class="badge badge-secondary float-xs-left">{{tag}} </span>
       </div>
     </div>
