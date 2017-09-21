@@ -52,6 +52,19 @@ export class AsyncUserBookmarksListComponent implements OnInit {
       } else {
         bookmark.starredBy.push(this.userId);
       }
+      const obs = this.userBookmarkStore.updateBookmark(bookmark);
+    }
+  }
+
+  unstarBookmark(bookmark: Bookmark): void {
+    if (this.userId) {
+      if (!bookmark.starredBy) {
+        bookmark.starredBy = [];
+      } else {
+        const index = bookmark.starredBy.indexOf(this.userId);
+        bookmark.starredBy.splice(index, 1);
+      }
+      const obs = this.userBookmarkStore.updateBookmark(bookmark);
     }
   }
 }
