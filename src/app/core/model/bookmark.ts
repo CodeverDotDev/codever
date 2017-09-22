@@ -49,6 +49,10 @@ export class Bookmark {
         this.shared = shared;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.starredBy = starredBy;
+        if (starredBy) {
+          this.starredBy = [];
+        } else {
+          this.starredBy = starredBy;
+        }
     }
 }
