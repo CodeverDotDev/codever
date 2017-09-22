@@ -5,12 +5,14 @@
       <p class="list-group-item-text url-under-title">{{ bookmark.location }}</p>
       <p *ngIf="!bookmark.descriptionHtml" class="card-text">{{ bookmark.description }}</p>
       <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml"></div>
-      <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)"><i class="fa fa-edit"></i> Edit</button>
-      <button type="button" class="btn btn-danger btn-sm" (click)="deleteBookmark(bookmark)"><i class="fa fa-trash-o"></i> Delete</button>
+      <div *ngIf="bookmark.userId == userId">
+        <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)"><i class="fa fa-edit"></i> Edit</button>
+        <button type="button" class="btn btn-danger btn-sm" (click)="deleteBookmark(bookmark)"><i class="fa fa-trash-o"></i> Delete</button>
+      </div>
     </div>
     <div class="card-footer">
       <div class="tags-group">
-        <div class="input-group-sm  mb-2 mb-sm-0" style="display:inline-flex; width: 4rem; height: 1.4rem">
+        <div class="input-group-sm  mb-2 mb-sm-0 star-group">
           <span *ngIf="bookmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-addon" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
             <i class="fa fa-star-o"></i>
           </span>
