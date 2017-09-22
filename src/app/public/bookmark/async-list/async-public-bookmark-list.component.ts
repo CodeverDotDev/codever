@@ -7,7 +7,7 @@ import {Bookmark} from '../../../core/model/bookmark';
   templateUrl: './async-public-bookmark-list.component.html',
   styleUrls: ['./async-public-bookmark-list.component.scss']
 })
-export class AsyncPublicBookmarksListComponent{
+export class AsyncPublicBookmarksListComponent {
 
   @Input()
   bookmarks: Observable<Bookmark[]>;
