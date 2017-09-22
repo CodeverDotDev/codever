@@ -120,12 +120,8 @@ export class PersonalBookmarksStore {
       res =>  {
         const bookmarks: List<Bookmark> = this._bookmarks.getValue();
         const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-        console.log('DELETED INDEEEX ' + index);
         const listWithoutElement = bookmarks.delete(index);
         this._bookmarks.next(listWithoutElement);
-        listWithoutElement.forEach(bookmark => {
-          console.log(bookmark);
-        });
 
         if (deleted.shared) {
           this.bookmarkStore.removeFromPublicStore(deleted);
