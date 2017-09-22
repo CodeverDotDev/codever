@@ -71,12 +71,12 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     newBookmark.shared = model.shared;
 
     newBookmark.descriptionHtml = this.markdownServce.toHtml(newBookmark.description);
+    newBookmark.starredBy = [];
 
     const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
 
     obs.subscribe(
       res => {
-        console.log(res);
         this.router.navigate(['/personal']);
       });
   }
