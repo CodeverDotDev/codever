@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {KeycloakService} from '../../core/keycloak/keycloak.service';
-import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
+import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
 import {BookmarkService} from '../../public/bookmark/bookmark.service';
 import {MarkdownService} from '../markdown.service';

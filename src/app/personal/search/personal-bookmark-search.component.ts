@@ -2,7 +2,7 @@ import {Component, OnInit, NgZone, Input, AfterViewInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormControl} from '@angular/forms';
-import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
+import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BookmarkFilterService} from '../../core/filter.service';
 

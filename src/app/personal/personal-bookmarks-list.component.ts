@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../core/model/bookmark';
 import {Observable} from 'rxjs/Observable';
 import {List} from 'immutable';
-import {PersonalBookmarksStore} from './store/PersonalBookmarksStore';
+import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({

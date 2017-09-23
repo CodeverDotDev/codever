@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../core/model/bookmark';
-import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
+import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {KeycloakService} from '../../core/keycloak/keycloak.service';
 
 @Component({

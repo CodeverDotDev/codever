@@ -3,12 +3,12 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {List} from 'immutable';
-import {Bookmark} from '../../core/model/bookmark';
-import {Logger} from '../../core/logger.service';
-import {ErrorService} from '../../core/error/error.service';
+import {Bookmark} from '../model/bookmark';
+import {Logger} from '../logger.service';
+import {ErrorService} from '../error/error.service';
 import {Response} from '@angular/http';
 import {PersonalBookmarksService} from '../personal-bookmarks.service';
-import {KeycloakService} from '../../core/keycloak/keycloak.service';
+import {KeycloakService} from '../keycloak/keycloak.service';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 
 @Injectable()

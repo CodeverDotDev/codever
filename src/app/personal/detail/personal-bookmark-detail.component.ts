@@ -2,7 +2,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
+import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {MarkdownService} from '../markdown.service';
 
 @Component({
