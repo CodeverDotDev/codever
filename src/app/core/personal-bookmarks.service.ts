@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Bookmark} from '../core/model/bookmark';
+import {Bookmark} from './model/bookmark';
 
 import {Headers, Response} from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from 'rxjs/Observable';
-import {HttpWrapperService} from '../core/keycloak/http-wrapper.service';
+import {HttpWrapperService} from './keycloak/http-wrapper.service';
 
 import { environment } from 'environments/environment';
 
