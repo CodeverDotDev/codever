@@ -52,9 +52,10 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
       .distinctUntilChanged()
       .subscribe(location => {
         console.log('Location: ', location);
-        this.bookmarkService.getBookmarkTitle(location).subscribe(response => {
+        this.bookmarkService.getScrapingData(location).subscribe(response => {
           if (response) {
             this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
+            this.bookmarkForm.controls['description'].patchValue(response.metaDescription, {emitEvent : false});
           }
         });
       });
