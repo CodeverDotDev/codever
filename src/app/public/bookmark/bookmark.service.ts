@@ -24,12 +24,12 @@ export class BookmarkService {
     return this.http.get(this.bookmarksUrl);
   }
 
-  getBookmarkTitle(url: String): Observable<Webpage>{
+  getScrapingData(url: String): Observable<Webpage>{
     return this.http
       .get(`${this.bookmarksUrl}scrape?url=${url}`)
       .share()
       .map((response: Response) => {
-        return new Webpage(response.json().title);
+        return new Webpage(response.json().title, response.json().metaDescription);
       });
       // .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
   }
