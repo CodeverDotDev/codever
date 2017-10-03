@@ -10,10 +10,12 @@ router.get('/scrape', function(req, res, next) {
   if(req.query.url){
     request(req.query.url, function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        var $ = cheerio.load(body);
-        var webpageTitle = $("title").text();
-        var webpage = {
-          title: webpageTitle
+        const $ = cheerio.load(body);
+        const webpageTitle = $("title").text();
+        const metaDescription =  $('meta[name=description]').attr("content");
+        const webpage = {
+          title: webpageTitle,
+          metaDescription: metaDescription
         }
         res.send(webpage);
       }
