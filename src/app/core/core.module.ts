@@ -8,8 +8,8 @@ import {ErrorService} from './error/error.service';
 import {ErrorComponent} from './error/error.component';
 import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
-import {PersonalBookmarksStore} from "./store/PersonalBookmarksStore";
-import {PersonalBookmarksService} from "./personal-bookmarks.service";
+import {PersonalBookmarksStore} from './store/PersonalBookmarksStore';
+import {PersonalBookmarksService} from './personal-bookmarks.service';
 // import {AuthGuard} from '../personal/auth-guard.service';
 
 /**

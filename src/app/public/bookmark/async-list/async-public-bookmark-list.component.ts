@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Injector} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../../core/model/bookmark';
 import {KeycloakService} from '../../../core/keycloak/keycloak.service';
@@ -21,12 +21,26 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   @Input()
   queryText: string;
 
+  private route: ActivatedRoute;
+  private router: Router;
+  private userBookmarkStore: PersonalBookmarksStore;
+  private publicBookmarkStore: BookmarkStore;
+  private keycloakService: KeycloakService;
+
+  displayModal = 'none';
+
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private userBookmarkStore: PersonalBookmarksStore,
-    private publicBookmarkStore: BookmarkStore,
-    private keycloakService: KeycloakService) {}
+    private injector: Injector,
+) {
+    this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
+    this.router = <Router>this.injector.get(Router);
+    this.publicBookmarkStore = <BookmarkStore>this.injector.get(BookmarkStore);
+    this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
+
+    if (this.keycloakService.isLoggedIn()) {
+      this.userBookmarkStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
+    }
+  }
 
   ngOnInit(): void {
     if (this.keycloakService.isLoggedIn()) {
@@ -51,6 +65,9 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   }
 
   starBookmark(bookmark: Bookmark): void {
+    if (!this.keycloakService.isLoggedIn()) {
+      this.displayModal = 'block';
+    }
     if (this.userId) {
       if (!bookmark.starredBy) {
         bookmark.starredBy = [];
@@ -73,4 +90,12 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
     }
   }
 
+
+  onLoginClick() {
+    this.keycloakService.login();
+  }
+
+  onCancelClick() {
+    this.displayModal = 'none';
+  }
 }
