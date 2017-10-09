@@ -12,7 +12,6 @@ import {BookmarkStore} from './bookmark/store/BookmarkStore';
 import {AsyncPublicBookmarksListComponent} from './bookmark/async-list/async-public-bookmark-list.component';
 import {TagService} from './tag/tag.service';
 import {TagComponent} from './tag/tag.component';
-import {PersonalBookmarksStore} from "../core/store/PersonalBookmarksStore";
 
 @NgModule({
   declarations : [
