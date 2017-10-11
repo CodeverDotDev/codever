@@ -5,6 +5,7 @@ import {KeycloakService} from '../../../core/keycloak/keycloak.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PersonalBookmarksStore} from '../../../core/store/PersonalBookmarksStore';
 import {BookmarkStore} from '../store/BookmarkStore';
+import {BookmarkService} from '../bookmark.service';
 
 @Component({
   selector: 'my-async-public-bookmark-list',
@@ -25,6 +26,7 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   private router: Router;
   private userBookmarkStore: PersonalBookmarksStore;
   private publicBookmarkStore: BookmarkStore;
+  private bookmarkService: BookmarkService;
   private keycloakService: KeycloakService;
 
   displayModal = 'none';
@@ -36,6 +38,7 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
     this.router = <Router>this.injector.get(Router);
     this.publicBookmarkStore = <BookmarkStore>this.injector.get(BookmarkStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
+    this.bookmarkService = <BookmarkService>this.injector.get(BookmarkService);
 
     if (this.keycloakService.isLoggedIn()) {
       this.userBookmarkStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
@@ -74,7 +77,7 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
       } else {
         bookmark.starredBy.push(this.userId);
       }
-      const obs = this.userBookmarkStore.updateBookmark(bookmark);
+      this.updateBookmark(bookmark);
     }
   }
 
@@ -86,7 +89,21 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
         const index = bookmark.starredBy.indexOf(this.userId);
         bookmark.starredBy.splice(index, 1);
       }
+      this.updateBookmark(bookmark);
+
+    }
+  }
+
+  private updateBookmark(bookmark: Bookmark) {
+    if (this.userId === bookmark.userId) {
       const obs = this.userBookmarkStore.updateBookmark(bookmark);
+    } else {
+      const obs = this.bookmarkService.updateBookmark(bookmark);
+      obs.subscribe(
+        res => {
+          this.publicBookmarkStore.updateBookmark(bookmark);
+        }
+      );
     }
   }
 
