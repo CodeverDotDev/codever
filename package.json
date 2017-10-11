@@ -29,7 +29,6 @@
     "jquery": "^3.0.0",
     "keycloak-js": "3.1.0",
     "ngx-bootstrap": "^1.9.3",
-    "popper.js": "^1.12.5",
     "rxjs": "^5.1.0",
     "showdown": "^1.6.4",
     "zone.js": "^0.8.4"
