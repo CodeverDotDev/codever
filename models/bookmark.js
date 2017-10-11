@@ -13,7 +13,8 @@ var bookmarkSchema = new Schema({
     githubURL: {type:String},
     userId: {type: String, ref:'User'},
     shared: Boolean,
-    language: String
+    language: String,
+    starredBy: [String]
 },
 {
   timestamps: true
@@ -21,4 +22,5 @@ var bookmarkSchema = new Schema({
 
 bookmarkSchema.plugin(mongooseUniqueValidator);
 
+module.exports = mongoose.model('Bookmark', bookmarkSchema);
 module.exports = mongoose.model('Bookmark', bookmarkSchema);
