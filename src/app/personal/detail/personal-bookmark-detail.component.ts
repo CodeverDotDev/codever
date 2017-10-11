@@ -2,7 +2,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
+import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {MarkdownService} from '../markdown.service';
 
 @Component({
@@ -10,7 +10,7 @@ import {MarkdownService} from '../markdown.service';
   templateUrl: './personal-bookmark-detail.component.html',
   styleUrls: ['./personal-bookmark-detail.component.scss']
 })
-export class PersonalBookmarkDetailComponent implements OnInit{
+export class PersonalBookmarkDetailComponent implements OnInit {
 
   bookmark: Bookmark;
 
