@@ -3,8 +3,8 @@ import {PersonalBookmarksListComponent} from './personal-bookmarks-list.componen
 import {AsyncUserBookmarksListComponent} from './async-list/async-personal-bookmark-list.component';
 import {HttpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {PersonalBookmarksStore} from './store/PersonalBookmarksStore';
-import {PersonalBookmarksService} from './personal-bookmarks.service';
+import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';
+import {PersonalBookmarksService} from '../core/personal-bookmarks.service';
 import {CommonModule} from '@angular/common';
 import {PersonalBookmarksRoutingModule} from './personal-bookmarks-routing.module';
 import {NewPersonalBookmarkFormComponent} from './new-personal-bookmark/new-personal-bookmark-form.component';
@@ -33,8 +33,6 @@ import {AuthGuard} from './auth-guard.service';
     PersonalBookmarksRoutingModule
   ],
   providers: [
-    PersonalBookmarksStore,
-    PersonalBookmarksService,
     MarkdownService,
     AuthGuard
   ]
