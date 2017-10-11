@@ -28,7 +28,9 @@ router.get('/', function(req, res, next) {
  */
 //router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
 router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
-  var descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml: converter.makeHtml(req.body.description);
+  const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml: converter.makeHtml(req.body.description);
+
+  console.log(req.body);
 
   var bookmark = new Bookmark({
     name: req.body.name,
@@ -41,7 +43,8 @@ router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
     publishedOn: req.body.publishedOn,
     githubURL: req.body.githubURL,
     userId: req.params.id,
-    shared: req.body.shared
+    shared: req.body.shared,
+    starredBy: req.body.starredBy
   });
 
   console.log('Bookmark to create ' + bookmark);
