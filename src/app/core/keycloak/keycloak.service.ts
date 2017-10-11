@@ -12,10 +12,16 @@ export class KeycloakService {
     const keycloak = require('keycloak-js/dist/keycloak.js');
 
     const keycloakAuth = new keycloak(environment.keycloak);
+    KeycloakService.auth.loggedIn = false;
+
     return new Promise((resolve, reject) => {
       keycloakAuth.init()
         .success(() => {
-          KeycloakService.auth = keycloakAuth;
+          // KeycloakService.auth = keycloakAuth;
+          KeycloakService.auth.authz = keycloakAuth;
+          KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
+            + '/realms/codingmarks/protocol/openid-connect/logout?redirect_uri='
+            + document.baseURI;
           resolve();
         })
         .error((error) => {
@@ -26,24 +32,40 @@ export class KeycloakService {
 
   public login(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      KeycloakService.auth.login()
-        .success(resolve)
-        .error(reject);
+      KeycloakService.auth.authz.login()
+        .success(() => {
+          console.log('SUUUUUUUUUUCESSSSSS');
+          KeycloakService.auth.loggedIn = true;
+          resolve();
+        })
+        .error(() => {
+          console.log('Errror - SUUUUUUUUUUCESSSSSS');
+            reject();
+        });
     });
   }
 
   public  isLoggedIn(): boolean {
-    return KeycloakService.auth && KeycloakService.auth.authenticated;
+    return KeycloakService.auth && KeycloakService.auth.authz.authenticated;
   }
 
   getKeycloak(): any {
-    return KeycloakService.auth;
+    return KeycloakService.auth.authz;
   }
 
   logout() {
+/*    let options: any;
+    options = {redirectUri: environment.HOST};
+    KeycloakService.auth.logout(options);*/
+
+
     let options: any;
     options = {redirectUri: environment.HOST};
-    KeycloakService.auth.logout(options);
+    KeycloakService.auth.authz.logout(options);
+
+    console.log('*** LOGOUT');
+    KeycloakService.auth.loggedIn = false;
+    KeycloakService.auth.authz = null;
 
   }
 
@@ -51,7 +73,7 @@ export class KeycloakService {
     if (!KeycloakService.auth) {
       return false;
     }
-    return KeycloakService.auth.hasRealmRole(role);
+    return KeycloakService.auth.authz.hasRealmRole(role);
   }
 
   public getToken(): string {
@@ -60,7 +82,7 @@ export class KeycloakService {
 
   public getUserInfo(): Promise<IUserInfo> {
     return new Promise<IUserInfo>((resolve, reject) => {
-      KeycloakService.auth.loadUserInfo()
+      KeycloakService.auth.authz.loadUserInfo()
         .success(resolve)
         .error(reject);
     });

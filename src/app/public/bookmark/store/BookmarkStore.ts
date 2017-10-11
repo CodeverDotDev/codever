@@ -34,7 +34,13 @@ export class BookmarkStore {
                           bookmark.githubURL,
                           bookmark.description,
                           bookmark.descriptionHtml,
-                          bookmark._id
+                          bookmark._id,
+                          '',
+                          bookmark.userId,
+                          bookmark.shared,
+                          bookmark.createdAt,
+                          bookmark.updatedAt,
+                          bookmark.starredBy
                       )
                     );
 
@@ -46,7 +52,7 @@ export class BookmarkStore {
 
   getBookmarks(): Observable<List<Bookmark>> {
     if (!this._bookmarks) {
-      this._bookmarks = new BehaviorSubject(List([]))
+      this._bookmarks = new BehaviorSubject(List([]));
       this.loadInitialData();
     }
     return this._bookmarks.asObservable();

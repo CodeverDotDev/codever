@@ -3,12 +3,12 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {List} from 'immutable';
-import {Bookmark} from '../../core/model/bookmark';
-import {Logger} from '../../core/logger.service';
-import {ErrorService} from '../../core/error/error.service';
+import {Bookmark} from '../model/bookmark';
+import {Logger} from '../logger.service';
+import {ErrorService} from '../error/error.service';
 import {Response} from '@angular/http';
 import {PersonalBookmarksService} from '../personal-bookmarks.service';
-import {KeycloakService} from '../../core/keycloak/keycloak.service';
+import {KeycloakService} from '../keycloak/keycloak.service';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 
 @Injectable()
@@ -52,7 +52,8 @@ export class PersonalBookmarksStore {
                   bookmark.userId,
                   bookmark.shared,
                   bookmark.createdAt,
-                  bookmark.updatedAt
+                  bookmark.updatedAt,
+                  bookmark.starredBy
               )
             ).sort((a, b) => {
               if (a.updatedAt < b.updatedAt) {
@@ -119,12 +120,8 @@ export class PersonalBookmarksStore {
       res =>  {
         const bookmarks: List<Bookmark> = this._bookmarks.getValue();
         const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-        console.log('DELETED INDEEEX ' + index);
         const listWithoutElement = bookmarks.delete(index);
         this._bookmarks.next(listWithoutElement);
-        listWithoutElement.forEach(bookmark => {
-          console.log(bookmark);
-        });
 
         if (deleted.shared) {
           this.bookmarkStore.removeFromPublicStore(deleted);

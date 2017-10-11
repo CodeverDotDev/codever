@@ -62,6 +62,9 @@ ul.tags li:not(:last-child):after {
   background: yellow;
   color: black;
 }
+.star-group{
+  display:inline-flex; width: 4rem; height: 1.4rem
+}
 
 // START Github fork ribbon
 /* Left will inherit from right (so we don't need to duplicate code) */

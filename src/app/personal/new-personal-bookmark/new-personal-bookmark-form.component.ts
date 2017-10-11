@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {KeycloakService} from '../../core/keycloak/keycloak.service';
-import {PersonalBookmarksStore} from '../store/PersonalBookmarksStore';
+import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
 import {BookmarkService} from '../../public/bookmark/bookmark.service';
 import {MarkdownService} from '../markdown.service';
@@ -52,9 +52,10 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
       .distinctUntilChanged()
       .subscribe(location => {
         console.log('Location: ', location);
-        this.bookmarkService.getBookmarkTitle(location).subscribe(response => {
+        this.bookmarkService.getScrapingData(location).subscribe(response => {
           if (response) {
             this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
+            this.bookmarkForm.controls['description'].patchValue(response.metaDescription, {emitEvent : false});
           }
         });
       });
@@ -71,12 +72,12 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     newBookmark.shared = model.shared;
 
     newBookmark.descriptionHtml = this.markdownServce.toHtml(newBookmark.description);
+    newBookmark.starredBy = [];
 
     const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
 
     obs.subscribe(
       res => {
-        console.log(res);
         this.router.navigate(['/personal']);
       });
   }

@@ -17,7 +17,7 @@
         <a class="nav-link" (click)="logout()">Logout <i class="fa fa-lock"></i></a>
       </li>
       <ng-template #notLoggedIn>
-        <li *ngIf="!keycloakService.isLoggedIn()" class="nav-item">
+        <li class="nav-item">
           <a class="nav-link" (click)="login()">Login <i class="fa fa-unlock"></i></a>
         </li>
       </ng-template>
