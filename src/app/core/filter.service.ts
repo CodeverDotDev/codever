@@ -137,9 +137,9 @@ export class BookmarkFilterService {
       || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.tags.indexOf(term.toLowerCase()) !== -1
     ) {*/
-      if (pattern.test(bookmark.name.toLowerCase())
-        || pattern.test(bookmark.location.toLowerCase())
-        || pattern.test(bookmark.description.toLowerCase())
+      if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
+        || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
+        || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
       ) {
         result = true;
       }
