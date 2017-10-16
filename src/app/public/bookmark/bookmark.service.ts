@@ -9,7 +9,7 @@ import {Bookmark} from '../../core/model/bookmark';
 
 import { environment } from 'environments/environment';
 import {HttpWrapperService} from 'app/core/keycloak/http-wrapper.service';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 
 @Injectable()
 export class BookmarkService {
@@ -21,7 +21,7 @@ export class BookmarkService {
               private httpClient: HttpClient,
               private httpWrapper: HttpWrapperService) {
     // this.bookmarksUrl = process.env.API_URL + '/bookmarks/';
-    this.bookmarksUrl = environment.API_URL + '/bookmarks/';
+    this.bookmarksUrl = environment.API_URL + '/bookmarks';
   }
 
   getAllBookmarks(): Observable<Response> {
@@ -30,9 +30,15 @@ export class BookmarkService {
 
   getScrapingData(url: String): Observable<Webpage> {
     return this.httpClient
-      .get<Webpage>(`${this.bookmarksUrl}scrape?url=${url}`);
+      .get<Webpage>(`${this.bookmarksUrl}/scrape?url=${url}`);
   }
 
+  getPublicBookmarkByLocation(url: string): Observable<Bookmark> {
+    let params = new HttpParams();
+    params = params.append('location', url);
+    return this.httpClient
+      .get<Bookmark>(`${this.bookmarksUrl}`, {params: params});
+  }
 
   updateBookmark(bookmark: Bookmark): Observable<any> {
     return this.httpWrapper
