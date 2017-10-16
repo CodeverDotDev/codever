@@ -157,5 +157,15 @@ export class PersonalBookmarksStore {
     return bookmarks.get(index);
   }
 
+  getBookmarkByLocation(location: string): Bookmark {
+    const bookmarks = this._bookmarks.getValue();
+    const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark.location === location);
+    if ( index >= 0 ) {
+      return bookmarks.get(index);
+    } else {
+      return null;
+    }
+  }
+
 }
 
