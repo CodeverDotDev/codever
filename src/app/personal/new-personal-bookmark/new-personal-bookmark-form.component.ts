@@ -19,6 +19,7 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
 
   displayModal = 'none';
   makePublic = false;
+  personalBookmarkPresent = false;
 
   constructor(
     private personalBookmarksStore: PersonalBookmarksStore,
@@ -55,12 +56,18 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
       .distinctUntilChanged()
       .subscribe(location => {
         console.log('Location: ', location);
-        this.bookmarkService.getScrapingData(location).subscribe(response => {
-          if (response) {
-            this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
-            this.bookmarkForm.controls['description'].patchValue(response.metaDescription, {emitEvent : false});
-          }
-        });
+        if (this.personalBookmarksStore.getBookmarkByLocation(location)) {
+          this.personalBookmarkPresent = true;
+        } else {
+          this.personalBookmarkPresent = false;
+          this.bookmarkService.getScrapingData(location).subscribe(response => {
+            if (response) {
+              this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
+              this.bookmarkForm.controls['description'].patchValue(response.metaDescription, {emitEvent : false});
+            }
+          });
+        }
+
       });
   }
 

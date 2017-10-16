@@ -30,6 +30,9 @@
            class="alert alert-danger">
         Location is required
       </div>
+      <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
+        You have already bookmarked this URL.
+      </div>
     </div>
     <div class="form-group">
       <label for="name">Title*</label>
