@@ -38,8 +38,7 @@ export class PersonalBookmarksService {
 
   saveBookmark(userId: string, bookmark: Bookmark): Observable<Response> {
     return this.httpWrapper
-      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark))
-      .share();
+      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark));
   }
 
 }
