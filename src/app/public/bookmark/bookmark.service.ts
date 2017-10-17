@@ -10,6 +10,7 @@ import {Bookmark} from '../../core/model/bookmark';
 import { environment } from 'environments/environment';
 import {HttpWrapperService} from 'app/core/keycloak/http-wrapper.service';
 import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClientWrapperService} from '../../core/keycloak/http-client-wrapper.service';
 
 @Injectable()
 export class BookmarkService {
@@ -19,7 +20,7 @@ export class BookmarkService {
 
   constructor(private http: Http,
               private httpClient: HttpClient,
-              private httpWrapper: HttpWrapperService) {
+              private httpWrapper: HttpClientWrapperService) {
     // this.bookmarksUrl = process.env.API_URL + '/bookmarks/';
     this.bookmarksUrl = environment.API_URL + '/bookmarks';
   }
@@ -51,12 +52,6 @@ export class BookmarkService {
     return this.http.delete(url, {headers: this.headers}).share();
         // .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
         // .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
-  }
-
-  saveBookmark(bookmark: Bookmark): Observable<any> {
-    return this.http
-      .post(this.bookmarksUrl, JSON.stringify(bookmark), {headers: this.headers})
-      .share();
   }
 
 }

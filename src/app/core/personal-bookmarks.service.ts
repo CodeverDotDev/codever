@@ -8,6 +8,7 @@ import {Observable} from 'rxjs/Observable';
 import {HttpWrapperService} from './keycloak/http-wrapper.service';
 
 import { environment } from 'environments/environment';
+import {HttpClientWrapperService} from './keycloak/http-client-wrapper.service';
 
 @Injectable()
 export class PersonalBookmarksService {
@@ -15,7 +16,7 @@ export class PersonalBookmarksService {
   private baseUrl = '';  // URL to web api
   private headers = new Headers({'Content-Type': 'application/json'});
 
-  constructor(private httpWrapper: HttpWrapperService) {
+  constructor(private httpWrapper: HttpClientWrapperService) {
     // this.baseUrl = process.env.API_URL + '/users/';
     this.baseUrl = environment.API_URL + '/users/';
   }
@@ -36,7 +37,8 @@ export class PersonalBookmarksService {
 
   saveBookmark(userId: string, bookmark: Bookmark): Observable<Response> {
     return this.httpWrapper
-      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark));
+      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark))
+      .shareReplay();
   }
 
 }
