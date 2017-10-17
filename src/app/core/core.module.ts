@@ -10,6 +10,7 @@ import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
 import {PersonalBookmarksStore} from './store/PersonalBookmarksStore';
 import {PersonalBookmarksService} from './personal-bookmarks.service';
+import {HttpClientWrapperService} from "./keycloak/http-client-wrapper.service";
 // import {AuthGuard} from '../personal/auth-guard.service';
 
 /**
@@ -36,6 +37,7 @@ import {PersonalBookmarksService} from './personal-bookmarks.service';
     Logger,
     KeycloakService,
     HttpWrapperService,
+    HttpClientWrapperService,
     ErrorService,
     PersonalBookmarksStore,
     PersonalBookmarksService
