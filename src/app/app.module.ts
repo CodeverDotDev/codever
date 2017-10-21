@@ -8,7 +8,8 @@ import './rxjs-extensions';
 import {SharedModule} from './shared/shared.module';
 import {CoreModule} from './core/core.module';
 import {PublicBookmarksModule} from './public/public.module';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {AuthInterceptor} from './core/keycloak/auth.interceptor';
 
 @NgModule({
   imports: [
@@ -25,6 +26,11 @@ import {HttpClientModule} from '@angular/common/http';
     // routing module
     AppRoutingModule
   ],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true,
+  }],
   declarations: [
     AppComponent
   ],

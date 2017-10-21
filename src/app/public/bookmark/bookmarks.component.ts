@@ -1,4 +1,4 @@
-import {Component, OnInit, AfterViewInit} from '@angular/core';
+import {Component, OnInit, AfterViewInit, NgZone} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {BookmarkStore} from './store/BookmarkStore';
 import {List} from 'immutable';
@@ -23,10 +23,19 @@ export class BookmarksComponent implements OnInit {
   @ViewChild(BookmarkSearchComponent)
   private searchComponent: BookmarkSearchComponent;
 
-  constructor(private bookmarkStore: BookmarkStore,  private route: ActivatedRoute) { }
+  constructor(private bookmarkStore: BookmarkStore,
+              private route: ActivatedRoute,
+              private zone: NgZone
+              ) { }
 
   getBookmarks(): void {
     this.publicBookmarks = this.bookmarkStore.getBookmarks();
+    this.publicBookmarks.subscribe(
+      res => {
+        this.zone.run(() => {
+          console.log('ZONE RUN for initial load of bookmarks'); // need to investigate this, or merge it with the async list stuff....
+        });
+      });
   }
 
   ngOnInit(): void {

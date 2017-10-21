@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 
 import {environment} from 'environments/environment';
+import {Observable} from "rxjs/Observable";
+import {AsyncSubject} from "rxjs/AsyncSubject";
+import {HttpHeaders, HttpRequest} from "@angular/common/http";
 // import {KeycloakClient} from 'keycloak-js';
 
 @Injectable()
@@ -28,6 +31,48 @@ export class KeycloakService {
           reject(error);
         });
     });
+  }
+  public getAuthHeader(): Observable<HttpHeaders> {
+    const subject = new AsyncSubject<HttpHeaders>();
+    const headers = new HttpHeaders();
+
+    const auth = this.getKeycloak();
+
+    if (auth && auth.token) {
+      auth.updateToken(30).success(() => {
+        headers.set('Authorization', 'Bearer ' + auth.token);
+        subject.next(headers);
+        subject.complete();
+      }).error(() => {
+        console.error('Failed to update token');
+        subject.complete();
+      });
+    } else {
+      // not authenticated redirect to login
+      this.login();
+    }
+    return subject;
+  }
+
+  public setAuthHeader(req: HttpRequest<any>): Observable<HttpRequest<any>> {
+    const subject = new AsyncSubject<HttpRequest<any>>();
+
+    const auth = this.getKeycloak();
+
+    if (auth && auth.token) {
+      auth.updateToken(30).success(() => {
+        const authReq = req.clone({headers: req.headers.set('Authorization', 'Bearer ' + auth.token)});
+        subject.next(authReq);
+        subject.complete();
+      }).error(() => {
+        console.error('Failed to update token');
+        subject.complete();
+      });
+    } else {
+      // not authenticated redirect to login
+      this.login();
+    }
+    return subject;
   }
 
   public login(): Promise<any> {
@@ -80,13 +125,13 @@ export class KeycloakService {
     return this.getKeycloak() ? this.getKeycloak().token : undefined;
   }
 
-  public getUserInfo(): Promise<IUserInfo> {
+/*  public getUserInfo(): Promise<IUserInfo> {
     return new Promise<IUserInfo>((resolve, reject) => {
       KeycloakService.auth.authz.loadUserInfo()
         .success(resolve)
         .error(reject);
     });
-  }
+  }*/
 
 }
 
