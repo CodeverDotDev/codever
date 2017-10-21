@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {Bookmark} from '../core/model/bookmark';
 import {Observable} from 'rxjs/Observable';
 import {List} from 'immutable';
@@ -20,6 +20,7 @@ export class PersonalBookmarksListComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private zone: NgZone,
     private router: Router,
     private userBookmarkStore: PersonalBookmarksStore) { }
 
@@ -34,6 +35,12 @@ export class PersonalBookmarksListComponent implements OnInit {
       }
     }
     this.userBookmarks = this.userBookmarkStore.getBookmarks();
+    this.userBookmarks.subscribe(
+      res => {
+        this.zone.run(() => {
+          console.log('ZONE RUN for initial load of bookmarks'); // need to investigate this, or merge it with the async list stuff....
+        });
+      });
   }
 
   goToAddNewPersonalBookmark(): void {

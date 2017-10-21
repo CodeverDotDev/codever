@@ -9,24 +9,23 @@ import {Bookmark} from '../../core/model/bookmark';
 
 import { environment } from 'environments/environment';
 import {HttpWrapperService} from 'app/core/keycloak/http-wrapper.service';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {HttpClientWrapperService} from '../../core/keycloak/http-client-wrapper.service';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 @Injectable()
 export class BookmarkService {
 
   private bookmarksUrl = '';  // URL to web api
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: Http,
               private httpClient: HttpClient,
-              private httpWrapper: HttpClientWrapperService) {
+              private httpWrapper: HttpWrapperService) {
     // this.bookmarksUrl = process.env.API_URL + '/bookmarks/';
     this.bookmarksUrl = environment.API_URL + '/bookmarks';
   }
 
-  getAllBookmarks(): Observable<Response> {
-    return this.http.get(this.bookmarksUrl);
+  getAllBookmarks(): Observable<Bookmark[]> {
+    return this.httpClient.get<Bookmark[]>(this.bookmarksUrl);
   }
 
   getScrapingData(url: String): Observable<Webpage> {
@@ -42,16 +41,23 @@ export class BookmarkService {
   }
 
   updateBookmark(bookmark: Bookmark): Observable<any> {
-    return this.httpWrapper
-      .put(environment.API_URL + '/users/' + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
-      .share();
+    return this.httpClient
+      .put(environment.API_URL + '/users/' + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark),
+            {headers: this.headers})
+      .shareReplay();
   }
 
   delete(id: string): Observable<any> {
     const url = `${this.bookmarksUrl}/${id}`;
-    return this.http.delete(url, {headers: this.headers}).share();
+    return this.httpClient.delete(url, {headers: this.headers}).shareReplay();
         // .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
         // .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
+  }
+
+  saveBookmark(bookmark: Bookmark): Observable<any> {
+    return this.httpClient
+      .post(this.bookmarksUrl, JSON.stringify(bookmark), {headers: this.headers})
+      .share();
   }
 
 }

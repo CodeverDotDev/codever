@@ -10,6 +10,8 @@ import {Response} from '@angular/http';
 import {PersonalBookmarksService} from '../personal-bookmarks.service';
 import {KeycloakService} from '../keycloak/keycloak.service';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
+import {Router} from "@angular/router";
+import 'rxjs/add/operator/shareReplay';
 
 @Injectable()
 export class PersonalBookmarksStore {
@@ -20,50 +22,32 @@ export class PersonalBookmarksStore {
 
     constructor(private userBookmarkService: PersonalBookmarksService,
                 private logger: Logger,
+                private router: Router,
                 private errorService: ErrorService,
                 private keycloakService: KeycloakService,
                 private bookmarkStore: BookmarkStore
     ) {
         const keycloak = keycloakService.getKeycloak();
-        if (keycloak) {
+        if (keycloak.subject) {
           this.userId = keycloak.subject;
+          this.loadInitialData();
         }
-        this.loadInitialData();
     }
 
   private loadInitialData() {
     this.userBookmarkService.getAllBookmarks(this.userId)
       .subscribe(
-        res => {
-          const bookmarks = (<Object[]>res.json())
-            .map((bookmark: any) =>
-              new Bookmark(
-                  bookmark.name,
-                  bookmark.location,
-                  bookmark.language,
-                  bookmark.category,
-                  bookmark.tags,
-                  bookmark.publishedOn,
-                  bookmark.githubURL,
-                  bookmark.description,
-                  bookmark.descriptionHtml,
-                  bookmark._id,
-                  '',
-                  bookmark.userId,
-                  bookmark.shared,
-                  bookmark.createdAt,
-                  bookmark.updatedAt,
-                  bookmark.starredBy
-              )
-            ).sort((a, b) => {
-              if (a.updatedAt < b.updatedAt) {
-                return 1;
-              } else if (a.updatedAt > b.updatedAt) {
-                return -1;
-              } else {
-                return 0;
-              }
-            });
+        data => {
+          let bookmarks: Bookmark[] = <Bookmark[]>data;
+          bookmarks = bookmarks.sort((a, b) => {
+            if (a.updatedAt < b.updatedAt) {
+              return 1;
+            } else if (a.updatedAt > b.updatedAt) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
 
           this._bookmarks.next(List(bookmarks));
         },
@@ -103,6 +87,7 @@ export class PersonalBookmarksStore {
         if (newBookmark.shared) {
           this.bookmarkStore.addBookmark(newBookmark);
         }
+        this.router.navigate(['/personal']);
       },
       (error: Response) => {
         this.errorService.handleError(error.json());
