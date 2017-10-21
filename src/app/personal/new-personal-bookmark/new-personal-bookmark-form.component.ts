@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {KeycloakService} from '../../core/keycloak/keycloak.service';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
@@ -16,6 +16,10 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
   model = new Bookmark('', '', 'en', '', [], null, '', '',  '' );
   bookmarkForm: FormGroup;
   userId = null;
+
+  displayModal = 'none';
+  makePublic = false;
+  personalBookmarkPresent = false;
 
   constructor(
     private personalBookmarksStore: PersonalBookmarksStore,
@@ -52,12 +56,18 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
       .distinctUntilChanged()
       .subscribe(location => {
         console.log('Location: ', location);
-        this.bookmarkService.getScrapingData(location).subscribe(response => {
-          if (response) {
-            this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
-            this.bookmarkForm.controls['description'].patchValue(response.metaDescription, {emitEvent : false});
-          }
-        });
+        if (this.personalBookmarksStore.getBookmarkByLocation(location)) {
+          this.personalBookmarkPresent = true;
+        } else {
+          this.personalBookmarkPresent = false;
+          this.bookmarkService.getScrapingData(location).subscribe(response => {
+            if (response) {
+              this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
+              this.bookmarkForm.controls['description'].patchValue(response.metaDescription, {emitEvent : false});
+            }
+          });
+        }
+
       });
   }
 
@@ -75,10 +85,30 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     newBookmark.starredBy = [];
 
     const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
-
-    obs.subscribe(
-      res => {
-        this.router.navigate(['/personal']);
-      });
   }
+
+  onClickMakePublic(checkboxValue) {
+    if (checkboxValue) {
+      this.makePublic = true;
+      const location: string = this.bookmarkForm.controls['location'].value;
+      this.bookmarkService.getPublicBookmarkByLocation(location).subscribe(response => {
+        if (response) {
+          console.log(response);
+          this.displayModal = 'block';
+        }
+      });
+    }
+  }
+
+  onStarClick() {
+    console.log('Starred the bookmark');
+    this.displayModal = 'none';
+    this.makePublic = false;
+  }
+
+  onCancelClick() {
+    this.displayModal = 'none';
+    this.makePublic = false;
+  }
+
 }
