@@ -10,6 +10,7 @@ import {Response} from '@angular/http';
 import {PersonalBookmarksService} from '../personal-bookmarks.service';
 import {KeycloakService} from '../keycloak/keycloak.service';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class PersonalBookmarksStore {
@@ -19,6 +20,7 @@ export class PersonalBookmarksStore {
     private userId: String;
 
     constructor(private userBookmarkService: PersonalBookmarksService,
+                private router: Router,
                 private logger: Logger,
                 private errorService: ErrorService,
                 private keycloakService: KeycloakService,
@@ -103,6 +105,7 @@ export class PersonalBookmarksStore {
         if (newBookmark.shared) {
           this.bookmarkStore.addBookmark(newBookmark);
         }
+          this.router.navigate(['/personal']);
       },
       (error: Response) => {
         this.errorService.handleError(error.json());

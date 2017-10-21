@@ -42,21 +42,7 @@ export class BookmarkService {
 
   updateBookmark(bookmark: Bookmark): Observable<any> {
     return this.httpWrapper
-      .put(environment.API_URL + '/users/' + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
-      .share();
-  }
-
-  delete(id: string): Observable<any> {
-    const url = `${this.bookmarksUrl}/${id}`;
-    return this.http.delete(url, {headers: this.headers}).share();
-        // .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
-        // .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
-  }
-
-  saveBookmark(bookmark: Bookmark): Observable<any> {
-    return this.http
-      .post(this.bookmarksUrl, JSON.stringify(bookmark), {headers: this.headers})
-      .share();
+      .put(environment.API_URL + '/users/' + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers});
   }
 
 }
