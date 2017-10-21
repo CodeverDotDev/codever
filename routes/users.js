@@ -68,7 +68,7 @@ router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
       res.status(500).send(err);
     } else {
       res.set('Location', 'http://localhost:3000/' + req.params.id + '/bookmarks/' + updatedBookmark.id);
-      res.status(201).send('Bookmark created for userId ' + req.params.id);
+      res.status(201).send({response:'Bookmark created for userId ' + req.params.id});
     }
     // saved!
   });
