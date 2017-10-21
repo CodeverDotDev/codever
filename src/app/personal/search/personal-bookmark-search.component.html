@@ -13,7 +13,7 @@
   <div class="card-body">
     <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank"  [innerHtml]="bookmark.name | highlight: term.value"></a></h4>
     <p class="list-group-item-text url-under-title" [innerHtml]="bookmark.location | highlight: term.value"></p>
-    <p *ngIf="!bookmark.descriptionHtml" class="card-text" [innerHtml]="bookmark.description | highlight: term.value"></p>
+    <p *ngIf="!bookmark.descriptionHtml && bookmark.description" class="card-text" [innerHtml]="bookmark.description | highlight: term.value"></p>
     <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlight: term.value"></div>
     <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)">Edit</button>
     <button type="button" class="btn btn-danger btn-sm" (click)="deleteBookmark(bookmark)">Delete</button>
