@@ -85,11 +85,6 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     newBookmark.starredBy = [];
 
     const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
-
-    obs.subscribe(
-      res => {
-        this.router.navigate(['/personal']);
-      });
   }
 
   onClickMakePublic(checkboxValue) {
