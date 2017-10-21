@@ -19,9 +19,7 @@ export class AsyncUserBookmarksListComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.keycloakService.isLoggedIn()) {
-      this.keycloakService.getUserInfo().then(userInfo => {
-        this.userId = userInfo.sub;
-      });
+      this.userId = this.keycloakService.getKeycloak().subject;
     }
   }
 

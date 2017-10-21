@@ -1,3 +1,22 @@
+<div class="modal" [ngStyle]="{'display': displayModal}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Login is required</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"  (click)="onCancelClick()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>This URL is already public on Codingmarks.org. You can save it as private and star it to help it get exposure</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"(click)="onStarClick()">Star codingmark</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onCancelClick()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="col-md-8 col-md-offset-2">
   <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
     <div class="form-group">
@@ -10,6 +29,9 @@
       <div [hidden]="bookmarkForm.controls.location.valid || (bookmarkForm.controls.location.pristine)"
            class="alert alert-danger">
         Location is required
+      </div>
+      <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
+        You have already bookmarked this URL.
       </div>
     </div>
     <div class="form-group">
@@ -169,7 +191,7 @@
     </div>
     <div class="form-check">
       <label class="form-check-label">
-        <input class="form-check-input" type="checkbox" value="true" formControlName="shared">
+        <input #publicCodingmark [checked]="makePublic" (click)="onClickMakePublic(publicCodingmark.checked)" class="form-check-input" type="checkbox" value="true" formControlName="shared">
         <strong> Make this bookmark public so others can benefit from it </strong>
       </label>
     </div>
