@@ -26,20 +26,17 @@ export class PersonalBookmarksService {
 
   updateBookmark(bookmark: Bookmark): Observable<any> {
     return this.httpWrapper
-      .put(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
-      .share();
+      .put(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers});
   }
 
   delete(bookmark: Bookmark): Observable<any> {
     return this.httpWrapper
-      .delete(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers})
-      .share();
+      .delete(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers});
   }
 
   saveBookmark(userId: string, bookmark: Bookmark): Observable<Response> {
     return this.httpWrapper
-      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark))
-      .share();
+      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark));
   }
 
 }
