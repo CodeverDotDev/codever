@@ -21,7 +21,7 @@
   <div class="card-body">
     <h4 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText"></a></h4>
     <p class="list-group-item-text url-under-title" [innerHtml]="bookmark.location | highlight: queryText"></p>
-    <p *ngIf="!bookmark.descriptionHtml" class="card-text" [innerHtml]="bookmark.description | highlight: queryText"></p>
+    <p *ngIf="!bookmark.descriptionHtml && bookmark.description" class="card-text" [innerHtml]="bookmark.description | highlight: queryText"></p>
     <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: queryText"></div>
     <div *ngIf="bookmark.userId == userId">
       <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)"><i class="fa fa-edit"></i> Edit</button>
