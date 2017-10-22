@@ -1,4 +1,4 @@
-# show indexes
+// show indexes
 codingpedia> db.bookmarks.getIndexes()
 [
 	{
@@ -21,11 +21,11 @@ codingpedia> db.bookmarks.getIndexes()
 	}
 ]
 
-# drop index
+// drop index
 codingpedia> db.bookmarks.dropIndex("location_1");
 { "nIndexesWas" : 2, "ok" : 1 }
 
-# create compound unique index
+// create compound unique index
 codingpedia> db.bookmarks.createIndex( { location: 1, userId:1 }, { unique: true } );
 {
 	"createdCollectionAutomatically" : false,
@@ -34,7 +34,7 @@ codingpedia> db.bookmarks.createIndex( { location: 1, userId:1 }, { unique: true
 	"ok" : 1
 }
 
-# verify index created
+// verify index created
 
 codingpedia> db.bookmarks.getIndexes()
 [
