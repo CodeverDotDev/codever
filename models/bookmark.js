@@ -4,7 +4,7 @@ var mongooseUniqueValidator = require('mongoose-unique-validator');
 
 var bookmarkSchema = new Schema({
     name: {type:String, required: true},
-    location: {type:String, required: true, unique: true},
+    location: {type:String, required: true},
     description: String,
     descriptionHtml: String,
     category: {type:String},

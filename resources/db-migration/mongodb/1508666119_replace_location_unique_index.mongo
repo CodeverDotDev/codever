@@ -1,0 +1,59 @@
+// show indexes
+codingpedia> db.bookmarks.getIndexes()
+[
+	{
+		"v" : 1,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_",
+		"ns" : "codingpedia-bookmarks.bookmarks"
+	},
+	{
+		"v" : 1,
+		"unique" : true,
+		"key" : {
+			"location" : 1
+		},
+		"name" : "location_1",
+		"ns" : "codingpedia-bookmarks.bookmarks",
+		"background" : true
+	}
+]
+
+// drop index
+codingpedia> db.bookmarks.dropIndex("location_1");
+{ "nIndexesWas" : 2, "ok" : 1 }
+
+// create compound unique index
+codingpedia> db.bookmarks.createIndex( { location: 1, userId:1 }, { unique: true } );
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 1,
+	"numIndexesAfter" : 2,
+	"ok" : 1
+}
+
+// verify index created
+
+codingpedia> db.bookmarks.getIndexes()
+[
+	{
+		"v" : 1,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_",
+		"ns" : "codingpedia-bookmarks.bookmarks"
+	},
+	{
+		"v" : 1,
+		"unique" : true,
+		"key" : {
+			"location" : 1,
+			"userId" : 1
+		},
+		"name" : "location_1_userId_1",
+		"ns" : "codingpedia-bookmarks.bookmarks"
+	}
+]
