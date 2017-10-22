@@ -98,6 +98,9 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
           console.log(response);
           this.displayModal = 'block';
           this.existingPublicBookmark = response;
+          this.bookmarkForm.patchValue({
+            shared: false
+          });
         }
       });
     }
@@ -107,7 +110,7 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     console.log('Starred the bookmark');
     this.displayModal = 'none';
     this.makePublic = false;
-    if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) == -1) {
+    if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
      this.existingPublicBookmark.starredBy.push(this.userId);
      this.updateBookmark(this.existingPublicBookmark);
     }
