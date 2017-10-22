@@ -1,0 +1,13 @@
+db.bookmarks.find({}).forEach(
+  function(doc){
+    if(doc.tags){
+      print(doc.tags);
+      var trimmedTags = [];
+      doc.tags.forEach(function(tag){
+        trimmedTags.push(tag.trim());
+      });
+
+      db.bookmarks.update({"_id": doc._id}, {"$set":{ "tags":trimmedTags } });
+    }
+  }
+);
