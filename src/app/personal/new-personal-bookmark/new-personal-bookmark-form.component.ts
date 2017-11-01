@@ -6,7 +6,7 @@ import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
 import {BookmarkService} from '../../public/bookmark/bookmark.service';
 import {MarkdownService} from '../markdown.service';
-import {BookmarkStore} from "../../public/bookmark/store/BookmarkStore";
+import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 
 @Component({
   selector: 'new-personal-bookmark-form',
@@ -115,6 +115,7 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
      this.updateBookmark(this.existingPublicBookmark);
     }
   }
+
   private updateBookmark(bookmark: Bookmark) {
     const obs = this.bookmarkService.updateBookmark(bookmark);
     obs.subscribe(
