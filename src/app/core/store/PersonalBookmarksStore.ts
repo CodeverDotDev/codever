@@ -149,6 +149,11 @@ export class PersonalBookmarksStore {
         }
         this.router.navigate(['/personal'], { fragment: 'navbar' });
       }
+      ,
+      (error: Response) => {
+        this.errorService.handleError(error.json());
+        return Observable.throw(error.json());
+      }
     );
 
     return obs;
