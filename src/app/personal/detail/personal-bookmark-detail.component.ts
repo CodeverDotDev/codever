@@ -1,7 +1,6 @@
-
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {MarkdownService} from '../markdown.service';
 
@@ -17,8 +16,7 @@ export class PersonalBookmarkDetailComponent implements OnInit {
   constructor(
     private userBookmarkStore: PersonalBookmarksStore,
     private markdownService: MarkdownService,
-    private route: ActivatedRoute,
-    private router: Router
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +42,4 @@ export class PersonalBookmarkDetailComponent implements OnInit {
 
   }
 
-  goToUserBookmarks(): void {
-    this.router.navigate(['/personal'], { fragment: 'navbar' });
-  }
 }
