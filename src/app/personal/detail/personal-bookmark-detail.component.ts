@@ -28,7 +28,6 @@ export class PersonalBookmarkDetailComponent implements OnInit {
         this.bookmark.tagsLine += tag + ',';
       });
       this.bookmark.tagsLine = this.bookmark.tagsLine.replace(/,\s*$/, ''); // remove last comma and trailing spaces
-      console.log(this.bookmark);
     });
   }
 
@@ -39,7 +38,6 @@ export class PersonalBookmarkDetailComponent implements OnInit {
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
 
     this.userBookmarkStore.updateBookmark(this.bookmark);
-
   }
 
 }
