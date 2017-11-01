@@ -40,12 +40,8 @@ export class PersonalBookmarkDetailComponent implements OnInit {
     });
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
 
-    const obs = this.userBookmarkStore.updateBookmark(this.bookmark);
+    this.userBookmarkStore.updateBookmark(this.bookmark);
 
-    obs.subscribe(
-      res => {
-        this.goToUserBookmarks();
-      });
   }
 
   goToUserBookmarks(): void {
