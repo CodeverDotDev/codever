@@ -39,114 +39,34 @@ router.get('/:id', function(req, res, next) {
 });
 
 /* GET bookmarks listing. */
-router.get('/', function(req, res, next) {
-  if(req.query.term){
-    var regExpTerm = new RegExp(req.query.term, 'i');
-    var regExpSearch=[{name:{$regex:regExpTerm}}, {description:{$regex: regExpTerm }}, {category:{$regex:regExpTerm }}, {tags:{$regex:regExpTerm}}];
-    Bookmark.find({'$or':regExpSearch}, function(err, bookmarks){
-      if(err){
-        return res.status(500).send(err);
-      }
+router.get('/', async (req, res) => {
+  try
+  {
+    if(req.query.term){
+      var regExpTerm = new RegExp(req.query.term, 'i');
+      var regExpSearch=[{name:{$regex:regExpTerm}}, {description:{$regex: regExpTerm }}, {category:{$regex:regExpTerm }}, {tags:{$regex:regExpTerm}}];
+      const bookmarks = await Bookmark.find({'$or':regExpSearch})
       res.send(bookmarks);
-    });
-  } else if (req.query.location) {
-    Bookmark.findOne({'shared':true, location: req.query.location}).lean().exec(function(err, bookmark){
-      if(err){
-        return res.status(500).send(err);
-      }
+    } else if (req.query.location) {
+      const bookmark = await Bookmark.findOne({'shared':true, location: req.query.location}).lean().exec()
       if(!bookmark){
         return res.status(404).send("Bookmark not found");
       }
       res.send(bookmark);
-    });
-  } else if(req.query.tag){//get all bookmarks tagged with "tag"
-    //Bookmark.find({ tags: req.query.tag }, function(err, bookmarks){ //TODO when making strict tags, that is the exact tag name
-    Bookmark.find({ tags: { $regex: new RegExp(req.query.tag, "ig")} }, function(err, bookmarks){
-      if(err){
-        console.log(err);
-        return res.status(500).send(err);
-      }
+    } else if(req.query.tag){//get all bookmarks tagged with "tag"
+      //Bookmark.find({ tags: req.query.tag }, function(err, bookmarks){ //TODO when making strict tags, that is the exact tag name
+      const bookmarks = await Bookmark.find({ tags: { $regex: new RegExp(req.query.tag, "ig")} });
+        res.send(bookmarks);
+    } else {//no filter - all bookmarks
+      //Bookmark.find({'shared':true}, function(err, bookmarks){
+      const bookmarks = await Bookmark.find({'shared':true}).lean().exec();
       res.send(bookmarks);
-    });
-  } else {//no filter - all bookmarks
-    //Bookmark.find({'shared':true}, function(err, bookmarks){
-    Bookmark.find({'shared':true}).lean().exec(function(err, bookmarks){
-      if(err){
-        return res.status(500).send(err);
-      }
-      res.send(bookmarks);
-    });
+    }
   }
-
-});
-
-/**
- * CREATE bookmark
- */
-router.post('/', function(req, res, next){
-  var bookmark = new Bookmark(req.body); //expect the model structure in the body directly
-  console.log(bookmark);
-
-  bookmark.save(function (err, updatedBookmark) {
-    if (err){
-
-      if(err.name == 'ValidationError'){
-        var errorMessages = [];
-        for (var i in err.errors) {
-          errorMessages.push(err.errors[i].message);
-        }
-
-        var error = new Error('Validation MyError', errorMessages);
-        console.log(JSON.stringify(error));
-        res.setHeader('Content-Type', 'application/json');
-        return res.status(409).send(JSON.stringify(new MyError('Validation Error', errorMessages)));
-      }
-
-      console.log(err);
-      res.status(500).send(err);
-    } else {
-      res.set('Location', 'http://localhost:3000/api/bookmarks/' + updatedBookmark.id);
-      res.status(201).send('Bookmark created');
-    }
-    // saved!
-  });
-
-});
-
-/**
- * full UPDATE via PUT - that is the whole document is required and will be updated
- */
-router.put('/:id', function(req, res, next) {
-  Bookmark.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, bookmark){
-    if(err){
-      if (err.name === 'MongoError' && err.code === 11000) {
-        res.status(409).send(new MyError('Duplicate key', [err.message]));
-      }
-
-      res.status(500).send(new MyError('Unknown Server Error', ['Unknow server error when updating bookmark ' + req.params.id]));
-    }
-    if(!bookmark){
-      return res.status(404).send('Bookmark not found');
-    }
-    res.status(200).send(bookmark);
-  });
-
-});
-
-
-/**
- * DELETE
- */
-router.delete('/:id', function(req, res, next) {
-  Bookmark.findByIdAndRemove(req.params.id, function(err, bookmark){
-    if(err){
-      return res.status(500).send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.id]));
-    }
-    if(!bookmark){
-      return res.status(404).send(new MyError('Not Found Error', ['Bookmark with id ' + req.params.id + ' not found']));
-    }
-    res.status(204).send('Bookmark successfully deleted');
-  });
+  catch (err)
+  {
+    return res.status(500).send(err);
+  }
 
 });
 
