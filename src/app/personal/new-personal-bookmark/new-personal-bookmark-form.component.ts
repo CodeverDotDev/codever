@@ -6,7 +6,7 @@ import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
 import {BookmarkService} from '../../public/bookmark/bookmark.service';
 import {MarkdownService} from '../markdown.service';
-import {BookmarkStore} from "../../public/bookmark/store/BookmarkStore";
+import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 
 @Component({
   selector: 'new-personal-bookmark-form',
@@ -98,6 +98,9 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
           console.log(response);
           this.displayModal = 'block';
           this.existingPublicBookmark = response;
+          this.bookmarkForm.patchValue({
+            shared: false
+          });
         }
       });
     }
@@ -107,11 +110,12 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     console.log('Starred the bookmark');
     this.displayModal = 'none';
     this.makePublic = false;
-    if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) == -1) {
+    if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
      this.existingPublicBookmark.starredBy.push(this.userId);
      this.updateBookmark(this.existingPublicBookmark);
     }
   }
+
   private updateBookmark(bookmark: Bookmark) {
     const obs = this.bookmarkService.updateBookmark(bookmark);
     obs.subscribe(

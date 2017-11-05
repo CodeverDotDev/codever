@@ -46,7 +46,7 @@ export class KeycloakService {
   }
 
   public  isLoggedIn(): boolean {
-    return KeycloakService.auth && KeycloakService.auth.authz.authenticated;
+    return KeycloakService.auth.authz && KeycloakService.auth.authz.authenticated;
   }
 
   getKeycloak(): any {
@@ -54,10 +54,6 @@ export class KeycloakService {
   }
 
   logout() {
-/*    let options: any;
-    options = {redirectUri: environment.HOST};
-    KeycloakService.auth.logout(options);*/
-
 
     let options: any;
     options = {redirectUri: environment.HOST};
