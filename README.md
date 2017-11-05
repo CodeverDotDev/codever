@@ -4,10 +4,9 @@
 
 Collection of (cu)rated coding bookmarks. Create your personal bookmark list, rate and share your hidden gems
  so everybody can benefit. The public codingmarks are also published weekly on Github 
- at [https://github.com/Codingpedia/codingmarks](https://github.com/Codingpedia/codingmarks): 
+ at [https://github.com/Codingpedia/codingmarks](https://github.com/Codingpedia/codingmarks):
  
-<img align="center" src="https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png">
-
+![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
 ---
 This repo contains the Angular front-end source code of the [www.codingmarks.org](http://codingmarks.org) website
 
