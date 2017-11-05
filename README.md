@@ -1,4 +1,4 @@
-![alt text](src/assets/codingmarks-logo-md.png)
+<img align="left" src="src/assets/codingmarks-logo-md.png">
 # Codingpedia bookmarks, aka #codingmarks
 
 This repo contains the front-end source code of the [codingmarks.org](http://codingmarks.org) website - (cu)rated bookmarks for developers.
