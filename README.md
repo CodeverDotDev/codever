@@ -1,8 +1,10 @@
 # Codingpedia bookmarks, aka #codingmarks
+
 <img align="left" src="src/assets/codingmarks-logo-md.png">
+
 Collection of (cu)rated coding bookmarks. Create your personal bookmark list, rate and share your hidden gems
  so everybody can benefit. The public codingmarks are also published weekly on Github 
- at [https://github.com/Codingpedia/codingmarks](https://github.com/Codingpedia/codingmarks)
+ at [https://github.com/Codingpedia/codingmarks](https://github.com/Codingpedia/codingmarks): 
  
 <img align="center" src="https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png">
 
