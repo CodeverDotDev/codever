@@ -20,7 +20,6 @@ export class BookmarkService {
   constructor(private http: Http,
               private httpClient: HttpClient,
               private httpWrapper: HttpWrapperService) {
-    // this.bookmarksUrl = process.env.API_URL + '/bookmarks/';
     this.bookmarksUrl = environment.API_URL + '/bookmarks';
   }
 

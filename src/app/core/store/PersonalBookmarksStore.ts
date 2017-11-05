@@ -105,7 +105,7 @@ export class PersonalBookmarksStore {
         if (newBookmark.shared) {
           this.bookmarkStore.addBookmark(newBookmark);
         }
-          this.router.navigate(['/personal']);
+        this.router.navigate(['/personal']);
       },
       (error: Response) => {
         this.errorService.handleError(error.json());
@@ -147,6 +147,12 @@ export class PersonalBookmarksStore {
         if (updated.shared) {
           this.bookmarkStore.updateBookmark(updated);
         }
+        this.router.navigate(['/personal'], { fragment: 'navbar' });
+      }
+      ,
+      (error: Response) => {
+        this.errorService.handleError(error.json());
+        return Observable.throw(error.json());
       }
     );
 
