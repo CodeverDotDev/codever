@@ -25,7 +25,6 @@ router.get('/', function(req, res, next) {
 /**
  * CREATE bookmark for user
  */
-//router.post('/:id/bookmarks', keycloak.protect(), function(req, res, next){
 router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
   const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml: converter.makeHtml(req.body.description);
 
