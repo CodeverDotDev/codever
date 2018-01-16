@@ -23,6 +23,29 @@ router.get('/scrape', function(req, res, next) {
   }
 });
 
+/**
+ * Returns the codingmarks added in the last days. The number of days to look back is specified via
+ * the query parameter numberOfDays. If not present it defaults to 7, last week.
+ *
+ */
+router.get('/latest-entries', async (req, res) => {
+  try
+  {
+    const numberOfDaysToLookBack = req.query.days ? req.query.days : 7;
+
+    const bookmarks = await Bookmark.find(
+      {
+        createdAt: { $gte: new Date((new Date().getTime() - (numberOfDaysToLookBack * 24 * 60 * 60 * 1000))) }
+      }).lean().exec();
+
+    res.send(bookmarks);
+  }
+  catch (err)
+  {
+    return res.status(500).send(err);
+  }
+});
+
 /* GET bookmark by id. */
 router.get('/:id', function(req, res, next) {
   Bookmark.findById(req.params.id, function(err, bookmark){
@@ -69,6 +92,7 @@ router.get('/', async (req, res) => {
   }
 
 });
+
 
 /* TODO - maybe implement later advancedSearch */
 router.get('/advanced-search', function(req, res, next) {
