@@ -37,8 +37,8 @@ router.get('/latest-entries', async (req, res) => {
     if(req.query.since) {
       const bookmarks = await Bookmark.find(
         {
-          createdAt: { $gte: new Date((new Date().getTime() - req.query.since)) }
-        }).lean().exec();
+          createdAt: { $gte: new Date(parseFloat(req.query.since,0)) }
+        }).sort({createdAt: 'desc'}).lean().exec();
 
       res.send(bookmarks);
     } else {
@@ -47,7 +47,7 @@ router.get('/latest-entries', async (req, res) => {
       const bookmarks = await Bookmark.find(
         {
           createdAt: { $gte: new Date((new Date().getTime() - (numberOfDaysToLookBack * 24 * 60 * 60 * 1000))) }
-        }).lean().exec();
+        }).sort({createdAt: 'desc'}).lean().exec();
 
       res.send(bookmarks);
     }
