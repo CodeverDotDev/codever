@@ -24,21 +24,34 @@ router.get('/scrape', function(req, res, next) {
 });
 
 /**
- * Returns the codingmarks added in the last days. The number of days to look back is specified via
- * the query parameter numberOfDays. If not present it defaults to 7, last week.
+ * Returns the codingmarks added lately.
+ * The since parameter is a timestamp which specifies the date since we want to look back.
+ * If this parameter is present it has priority. If it is not present, the number of days to look back might be specified via
+ * the query parameter numberOfDays. If not present it defaults to 7 days, last week.
  *
  */
 router.get('/latest-entries', async (req, res) => {
   try
   {
-    const numberOfDaysToLookBack = req.query.days ? req.query.days : 7;
 
-    const bookmarks = await Bookmark.find(
-      {
-        createdAt: { $gte: new Date((new Date().getTime() - (numberOfDaysToLookBack * 24 * 60 * 60 * 1000))) }
-      }).lean().exec();
+    if(req.query.since) {
+      const bookmarks = await Bookmark.find(
+        {
+          createdAt: { $gte: new Date((new Date().getTime() - req.query.since)) }
+        }).lean().exec();
 
-    res.send(bookmarks);
+      res.send(bookmarks);
+    } else {
+      const numberOfDaysToLookBack = req.query.days ? req.query.days : 7;
+
+      const bookmarks = await Bookmark.find(
+        {
+          createdAt: { $gte: new Date((new Date().getTime() - (numberOfDaysToLookBack * 24 * 60 * 60 * 1000))) }
+        }).lean().exec();
+
+      res.send(bookmarks);
+    }
+
   }
   catch (err)
   {
