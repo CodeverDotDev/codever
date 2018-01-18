@@ -24,9 +24,10 @@ router.get('/scrape', function(req, res, next) {
 });
 
 /**
- * Returns the codingmarks added lately.
- * The since parameter is a timestamp which specifies the date since we want to look back.
- * If this parameter is present it has priority. If it is not present, the number of days to look back might be specified via
+ * Returns the codingmarks added recently.
+ *
+ * The since query parameter is a timestamp which specifies the date since we want to look forward to present time.
+ * If this parameter is present it has priority. If it is not present, we might specify the number of days to look back via
  * the query parameter numberOfDays. If not present it defaults to 7 days, last week.
  *
  */
