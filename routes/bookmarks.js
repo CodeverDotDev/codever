@@ -36,10 +36,15 @@ router.get('/latest-entries', async (req, res) => {
   {
 
     if(req.query.since) {
+      const toDate = req.query.to ? new Date(parseFloat(req.query.to,0)) : new Date();
       const bookmarks = await Bookmark.find(
         {
           'shared':true,
-          createdAt: { $gte: new Date(parseFloat(req.query.since,0)) }
+          createdAt: {
+            $gte: new Date(parseFloat(req.query.since,0)),
+            $lte: toDate
+          }
+
         }).sort({createdAt: 'desc'}).lean().exec();
 
       res.send(bookmarks);
