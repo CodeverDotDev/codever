@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {KeycloakService} from '../keycloak/keycloak.service';
+import {KeycloakService} from 'keycloak-angular';
 
 @Component({
   selector: 'my-navigation',
@@ -10,8 +10,8 @@ export class NavigationComponent  implements OnInit {
 
   isLoggedIn: boolean;
 
-  ngOnInit(): void {
-    this.isLoggedIn = this.keycloakService.isLoggedIn();
+  async ngOnInit(): Promise<void> {
+    this.isLoggedIn = await this.keycloakService.isLoggedIn();
   }
 
   constructor(private keycloakService: KeycloakService,  private router: Router) {}
@@ -22,7 +22,6 @@ export class NavigationComponent  implements OnInit {
   }
 
   login() {
-    this.keycloakService.login();
-    this.isLoggedIn = true;
+    this.keycloakService.login().then(() => this.isLoggedIn = true);
   }
 }

@@ -8,30 +8,29 @@ import {Logger} from '../logger.service';
 import {ErrorService} from '../error/error.service';
 import {Response} from '@angular/http';
 import {PersonalBookmarksService} from '../personal-bookmarks.service';
-import {KeycloakService} from '../keycloak/keycloak.service';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 import 'rxjs/add/operator/shareReplay';
+import {KeycloakService} from 'keycloak-angular';
 
 @Injectable()
 export class PersonalBookmarksStore {
 
-    private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
+  private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
 
-    private userId: String;
+  private userId: String;
 
-    constructor(private userBookmarkService: PersonalBookmarksService,
+  constructor(private userBookmarkService: PersonalBookmarksService,
                 private logger: Logger,
                 private router: Router,
                 private errorService: ErrorService,
                 private keycloakService: KeycloakService,
                 private bookmarkStore: BookmarkStore
     ) {
-        const keycloak = keycloakService.getKeycloak();
-        if (keycloak.subject) {
-          this.userId = keycloak.subject;
-          this.loadInitialData();
-        }
+      keycloakService.loadUserProfile().then( keycloakProfile => {
+        this.userId = keycloakProfile.id;
+        this.loadInitialData();
+      });
     }
 
   private loadInitialData() {

@@ -1,12 +1,12 @@
 import {Component, NgZone, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {KeycloakService} from '../../core/keycloak/keycloak.service';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
 import {BookmarkService} from '../../public/bookmark/bookmark.service';
 import {MarkdownService} from '../markdown.service';
 import {HttpErrorResponse} from '@angular/common/http';
+import {KeycloakService} from 'keycloak-angular';
 
 @Component({
   selector: 'new-personal-bookmark-form',
@@ -31,10 +31,10 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     private markdownServce: MarkdownService,
     private zone: NgZone
   ) {
-    const keycloak = keycloakService.getKeycloak();
-    if (keycloak) {
-      this.userId = keycloak.subject;
-    }
+    keycloakService.loadUserProfile().then( keycloakProfile => {
+    this.userId = keycloakProfile.id;
+  });
+
   }
 
   ngOnInit(): void {

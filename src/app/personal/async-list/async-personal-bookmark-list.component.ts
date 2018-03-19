@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../core/model/bookmark';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
-import {KeycloakService} from '../../core/keycloak/keycloak.service';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'my-async-personal-bookmark-list',
@@ -18,9 +18,13 @@ export class AsyncUserBookmarksListComponent implements OnInit {
   bookmarks: Observable<Bookmark[]>;
 
   ngOnInit(): void {
-    if (this.keycloakService.isLoggedIn()) {
-        this.userId = this.keycloakService.getKeycloak().subject;
-    }
+    this.keycloakService.isLoggedIn().then(isLoogedIn => {
+      if (isLoogedIn) {
+        this.keycloakService.loadUserProfile().then( keycloakProfile => {
+          this.userId = keycloakProfile.id;
+        });
+      }
+    });
   }
 
   constructor(
