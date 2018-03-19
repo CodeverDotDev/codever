@@ -27,6 +27,7 @@
     "font-awesome": "^4.7.0",
     "immutable": "^3.7.6",
     "jquery": "^3.0.0",
+    "keycloak-angular": "^1.2.5",
     "keycloak-js": "3.1.0",
     "ngx-bootstrap": "^1.9.3",
     "rxjs": "^5.1.0",

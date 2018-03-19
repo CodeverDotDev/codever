@@ -1,14 +1,13 @@
 import {Injectable} from '@angular/core';
 
-import {Headers, Http, Response} from '@angular/http';
+import {Http} from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from 'rxjs/Observable';
 import {Webpage} from '../../core/model/webpage';
 import {Bookmark} from '../../core/model/bookmark';
 
-import { environment } from 'environments/environment';
-import {HttpWrapperService} from 'app/core/keycloak/http-wrapper.service';
+import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 @Injectable()
@@ -17,11 +16,9 @@ export class BookmarkService {
   private bookmarksUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private http: Http,
-              private httpClient: HttpClient,
-              private httpWrapper: HttpWrapperService) {
+  constructor(private httpClient: HttpClient) {
     // this.bookmarksUrl = process.env.API_URL + '/bookmarks/';
-    this.bookmarksUrl = environment.API_URL + '/bookmarks';
+    this.bookmarksUrl = environment.API_URL + '/public/bookmarks';
   }
 
   getAllBookmarks(): Observable<Bookmark[]> {

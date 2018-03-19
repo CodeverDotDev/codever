@@ -5,10 +5,9 @@ import {Headers, Response} from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from 'rxjs/Observable';
-import {HttpWrapperService} from './keycloak/http-wrapper.service';
 
 import { environment } from 'environments/environment';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 
 @Injectable()
 export class PersonalBookmarksService {
@@ -16,8 +15,7 @@ export class PersonalBookmarksService {
   private baseUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private httpWrapper: HttpWrapperService,
-              private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient) {
     // this.baseUrl = process.env.API_URL + '/users/';
     this.baseUrl = environment.API_URL + '/users/';
   }

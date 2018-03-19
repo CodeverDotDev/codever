@@ -2,15 +2,12 @@ import {NgModule, Optional, SkipSelf} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {BookmarkFilterService} from './filter.service';
 import {Logger} from './logger.service';
-import {KeycloakService} from './keycloak/keycloak.service';
-import {HttpWrapperService} from './keycloak/http-wrapper.service';
 import {ErrorService} from './error/error.service';
 import {ErrorComponent} from './error/error.component';
 import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
 import {PersonalBookmarksStore} from './store/PersonalBookmarksStore';
 import {PersonalBookmarksService} from './personal-bookmarks.service';
-import {HttpClientWrapperService} from "./keycloak/http-client-wrapper.service";
 // import {AuthGuard} from '../personal/auth-guard.service';
 
 /**
@@ -35,9 +32,6 @@ import {HttpClientWrapperService} from "./keycloak/http-client-wrapper.service";
   providers: [
     BookmarkFilterService,
     Logger,
-    KeycloakService,
-    HttpWrapperService,
-    HttpClientWrapperService,
     ErrorService,
     PersonalBookmarksStore,
     PersonalBookmarksService

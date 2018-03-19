@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpModule, JsonpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -8,8 +8,9 @@ import './rxjs-extensions';
 import {SharedModule} from './shared/shared.module';
 import {CoreModule} from './core/core.module';
 import {PublicBookmarksModule} from './public/public.module';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {AuthInterceptor} from './core/keycloak/auth.interceptor';
+import {HttpClientModule} from '@angular/common/http';
+import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
+import {initializer} from "./app-init";
 
 @NgModule({
   imports: [
@@ -24,13 +25,17 @@ import {AuthInterceptor} from './core/keycloak/auth.interceptor';
     CoreModule,
     PublicBookmarksModule,
     // routing module
-    AppRoutingModule
+    AppRoutingModule,
+    KeycloakAngularModule
   ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-  }],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializer,
+      multi: true,
+      deps: [KeycloakService]
+    }
+  ],
   declarations: [
     AppComponent
   ],
