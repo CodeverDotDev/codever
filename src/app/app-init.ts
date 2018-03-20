@@ -11,7 +11,7 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
             clientId: 'bookmarks' // .ie: account
           },
           initOptions: {
-            onLoad: 'login-required',
+            onLoad: 'check-sso',
             checkLoginIframe: false
           },
           bearerExcludedUrls: [
