@@ -46,8 +46,8 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   }
 
   ngOnInit(): void {
-    this.keycloakService.isLoggedIn().then(isLoogedIn => {
-      if (isLoogedIn) {
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
         this.keycloakService.loadUserProfile().then( keycloakProfile => {
           this.userId = keycloakProfile.id;
         });
@@ -70,9 +70,13 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   }
 
   starBookmark(bookmark: Bookmark): void {
-    if (!this.keycloakService.isLoggedIn()) {
-      this.displayModal = 'block';
-    }
+
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (!isLoggedIn) {
+        this.displayModal = 'block';
+      }
+    });
+
     if (this.userId) {
       if (!bookmark.starredBy) {
         bookmark.starredBy = [];
