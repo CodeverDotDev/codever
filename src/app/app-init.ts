@@ -1,4 +1,5 @@
 import { KeycloakService } from 'keycloak-angular';
+import {environment} from '../environments/environment';
 
 export function initializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => {
@@ -6,9 +7,9 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
       try {
         await keycloak.init({
           config: {
-            url: 'http://localhost:8380/auth/', // .ie: http://localhost:8080/auth/
-            realm: 'codingpedia', // .ie: master
-            clientId: 'bookmarks' // .ie: account
+            url: environment.keycloak.url, // .ie: http://localhost:8080/auth/
+            realm: environment.keycloak.realm, // .ie: master
+            clientId: environment.keycloak.clientId // .ie: account
           },
           initOptions: {
             onLoad: 'check-sso',
