@@ -17,7 +17,7 @@ export class PersonalBookmarksService {
 
   constructor(private httpClient: HttpClient) {
     // this.baseUrl = process.env.API_URL + '/users/';
-    this.baseUrl = environment.API_URL + '/users/';
+    this.baseUrl = environment.API_URL + '/private/users/';
   }
 
   getAllBookmarks(userId: String): Observable<Bookmark[]> {

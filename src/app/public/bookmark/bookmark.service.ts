@@ -39,7 +39,7 @@ export class BookmarkService {
 
   updateBookmark(bookmark: Bookmark): Observable<any> {
     return this.httpClient
-      .put(environment.API_URL + '/users/' + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark),
+      .put(environment.API_URL + '/private/users/' + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark),
             {headers: this.headers})
       .shareReplay();
   }
