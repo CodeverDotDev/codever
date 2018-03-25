@@ -14,6 +14,7 @@ import {PersonalBookmarkSearchComponent} from './search/personal-bookmark-search
 import {SharedModule} from '../shared/shared.module';
 import {MarkdownService} from './markdown.service';
 import {AuthGuard} from './auth-guard.service';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   declarations : [
@@ -27,6 +28,7 @@ import {AuthGuard} from './auth-guard.service';
   imports: [
     SharedModule,
     CommonModule, // in the root module comes via the BrowserModule
+    RouterModule,
     HttpModule,
     FormsModule,
     ReactiveFormsModule,

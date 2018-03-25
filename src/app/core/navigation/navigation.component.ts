@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {KeycloakService} from 'keycloak-angular';
+import {KeycloakOptions, KeycloakService} from 'keycloak-angular';
 import {environment} from "../../../environments/environment";
 
 @Component({
@@ -22,6 +22,8 @@ export class NavigationComponent  implements OnInit {
   }
 
   login() {
-    this.keycloakService.login().then(() => this.isLoggedIn = true);
+    let options: Keycloak.KeycloakLoginOptions = {};
+    options.redirectUri = environment.APP_HOME_URL  + '/personal';
+    this.keycloakService.login(options).then(() => this.isLoggedIn = true);
   }
 }
