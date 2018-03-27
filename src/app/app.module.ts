@@ -9,8 +9,9 @@ import {SharedModule} from './shared/shared.module';
 import {CoreModule} from './core/core.module';
 import {PublicBookmarksModule} from './public/public.module';
 import {HttpClientModule} from '@angular/common/http';
-import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
-import {initializer} from "./app-init";
+import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
+import {initializer} from './app-init';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import {initializer} from "./app-init";
     FormsModule,
     ReactiveFormsModule,
     JsonpModule,
+    RouterModule,
     // app modules - notice that PersonalBookmarksModule is not listed, as it is lazy loaded
     SharedModule,
     CoreModule,
