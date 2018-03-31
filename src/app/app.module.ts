@@ -25,10 +25,10 @@ import {RouterModule} from '@angular/router';
     // app modules - notice that PersonalBookmarksModule is not listed, as it is lazy loaded
     SharedModule,
     CoreModule,
+    KeycloakAngularModule,
     PublicBookmarksModule,
     // routing module
-    AppRoutingModule,
-    KeycloakAngularModule
+    AppRoutingModule
   ],
   providers: [
     {
