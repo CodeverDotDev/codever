@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
-import {ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {MarkdownService} from '../markdown.service';
 
@@ -16,7 +16,8 @@ export class PersonalBookmarkDetailComponent implements OnInit {
   constructor(
     private userBookmarkStore: PersonalBookmarksStore,
     private markdownService: MarkdownService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -28,6 +29,7 @@ export class PersonalBookmarkDetailComponent implements OnInit {
         this.bookmark.tagsLine += tag + ',';
       });
       this.bookmark.tagsLine = this.bookmark.tagsLine.replace(/,\s*$/, ''); // remove last comma and trailing spaces
+      console.log(this.bookmark);
     });
   }
 
@@ -37,7 +39,15 @@ export class PersonalBookmarkDetailComponent implements OnInit {
     });
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
 
-    this.userBookmarkStore.updateBookmark(this.bookmark);
+    const obs = this.userBookmarkStore.updateBookmark(this.bookmark);
+
+    obs.subscribe(
+      res => {
+        this.goToUserBookmarks();
+      });
   }
 
+  goToUserBookmarks(): void {
+    this.router.navigate(['/personal'], { fragment: 'navbar' });
+  }
 }
