@@ -17,7 +17,6 @@ export class BookmarkService {
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient) {
-    // this.bookmarksUrl = process.env.API_URL + '/bookmarks/';
     this.bookmarksUrl = environment.API_URL + '/public/bookmarks';
   }
 
@@ -47,8 +46,6 @@ export class BookmarkService {
   delete(id: string): Observable<any> {
     const url = `${this.bookmarksUrl}/${id}`;
     return this.httpClient.delete(url, {headers: this.headers}).shareReplay();
-        // .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
-        // .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
   }
 
   saveBookmark(bookmark: Bookmark): Observable<any> {

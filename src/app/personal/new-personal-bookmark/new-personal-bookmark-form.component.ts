@@ -7,6 +7,7 @@ import {BookmarkService} from '../../public/bookmark/bookmark.service';
 import {MarkdownService} from '../markdown.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {KeycloakService} from 'keycloak-angular';
+import {BookmarkStore} from "../../public/bookmark/store/BookmarkStore";
 
 @Component({
   selector: 'new-personal-bookmark-form',
