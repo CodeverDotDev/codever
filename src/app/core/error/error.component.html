@@ -1,37 +1,20 @@
 <div class="backdrop" [ngStyle]="{'display': display}"></div>
 
-<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display': display}">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" aria-label="Close" (click)="onErrorHandled()"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{ error?.title }}</h4>
-            </div>
-            <div class="modal-body">
-                <p>{{ error?.messages }}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="onErrorHandled()">Close</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div class="modal" [ngStyle]="{'display': display}">
+<div class="modal" tabindex="-1" [ngStyle]="{'display': display}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onErrorHandled()">
+        <h5 class="modal-title">{{ error?.title }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"  (click)="onErrorHandled()">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">{{ error?.title }}</h4>
       </div>
       <div class="modal-body">
-        <p *ngFor="let errorMessage of error?.messages">{{ errorMessage }}</p>
+        <p *ngFor="let errorMessage of error?.messages">{{ errorMessage }} </p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="onErrorHandled()">Close</button>
       </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    </div>
+  </div>
+</div>

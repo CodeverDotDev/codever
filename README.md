@@ -1,10 +1,16 @@
 # Codingpedia bookmarks, aka #codingmarks
 
-This repo contains the front-end source code of the [codingmarks.org](http://codingmarks.org) website - (cu)rated bookmarks for developers.
+<img align="left" src="src/assets/codingmarks-logo-md.png">
+
+Collection of (cu)rated coding bookmarks. Create your personal bookmark list, rate and share your hidden gems
+ so everybody can benefit. The public codingmarks are also published weekly on Github 
+ at [https://github.com/Codingpedia/codingmarks](https://github.com/Codingpedia/codingmarks):
  
 ![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
+---
+This repo contains the Angular front-end source code of the [www.codingmarks.org](http://codingmarks.org) website
 
-This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
+The project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
  [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
  is done via [Keycloak](http://www.keycloak.org/): 
  
