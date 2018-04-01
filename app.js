@@ -53,8 +53,8 @@ app.use(function(req, res, next) {
 
 
 app.use('/api', routes);
-app.use('/api/users', users);
-app.use('/api/bookmarks', bookmarks);
+app.use('/api/private/users', users);
+app.use('/api/public/bookmarks', bookmarks);
 //app.use('/categories', categories);
 
 // catch 404 and forward to error handler
