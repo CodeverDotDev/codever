@@ -17,7 +17,7 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
   private model: any;
   bookmarkForm: FormGroup;
   userId = null;
-
+  existingPublicBookmark: Bookmark;
   displayModal = 'none';
   makePublic = false;
   personalBookmarkPresent = false;
@@ -29,7 +29,7 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     private keycloakService: KeycloakService,
     private bookmarkService: BookmarkService,
     private markdownServce: MarkdownService,
-    private zone: NgZone
+    private publicBookmarkStore: BookmarkStore
   ) {
     keycloakService.loadUserProfile().then( keycloakProfile => {
     this.userId = keycloakProfile.id;
@@ -93,14 +93,6 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
   };
 
     const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
-
-    obs.subscribe(
-      res => {
-        this.zone.run(() => {
-          console.log('ZONE RUN for initial load of bookmarks'); // need to investigate this, or merge it with the async list stuff....
-        });
-        this.router.navigate(['/personal']);
-      });
   }
 
   onClickMakePublic(checkboxValue) {
@@ -111,19 +103,12 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
         if (response) {
           console.log(response);
           this.displayModal = 'block';
+          this.existingPublicBookmark = response;
+          this.bookmarkForm.patchValue({
+            shared: false
+          });
         }
-      },
-        (err: HttpErrorResponse) => {
-          if (err.error instanceof Error) {
-            // A client-side or network error occurred. Handle it accordingly.
-            console.log('An error occurred:', err.error.message);
-          } else {
-            // The backend returned an unsuccessful response code.
-            // The response body may contain clues as to what went wrong,
-            console.log(`Backend returned code ${err.status}, body was: ${err.error}`);
-          }
-        }
-      );
+      });
     }
   }
 
@@ -131,6 +116,19 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     console.log('Starred the bookmark');
     this.displayModal = 'none';
     this.makePublic = false;
+    if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
+     this.existingPublicBookmark.starredBy.push(this.userId);
+     this.updateBookmark(this.existingPublicBookmark);
+    }
+  }
+
+  private updateBookmark(bookmark: Bookmark) {
+    const obs = this.bookmarkService.updateBookmark(bookmark);
+    obs.subscribe(
+      res => {
+        this.publicBookmarkStore.updateBookmark(bookmark);
+      }
+    );
   }
 
   onCancelClick() {
