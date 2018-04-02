@@ -18,16 +18,16 @@ const personalBookmarksRoutes: Routes = [
         pathMatch: 'full'
       },
       {
-        path: '',
-        component: PersonalBookmarksListComponent
-      },
-      {
         path: 'new',
         component: NewPersonalBookmarkFormComponent
       },
       {
         path: 'bookmarks/:id',
         component: PersonalBookmarkDetailComponent
+      },
+      {
+        path: '',
+        component: PersonalBookmarksListComponent
       }
     ]
   }

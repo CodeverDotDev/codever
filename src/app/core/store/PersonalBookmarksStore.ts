@@ -8,64 +8,45 @@ import {Logger} from '../logger.service';
 import {ErrorService} from '../error/error.service';
 import {Response} from '@angular/http';
 import {PersonalBookmarksService} from '../personal-bookmarks.service';
-import {KeycloakService} from '../keycloak/keycloak.service';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 import {Router} from '@angular/router';
+import 'rxjs/add/operator/shareReplay';
+import {KeycloakService} from 'keycloak-angular';
 
 @Injectable()
 export class PersonalBookmarksStore {
 
-    private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
+  private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
 
-    private userId: String;
+  private userId: String;
 
-    constructor(private userBookmarkService: PersonalBookmarksService,
-                private router: Router,
+  constructor(private userBookmarkService: PersonalBookmarksService,
                 private logger: Logger,
+                private router: Router,
                 private errorService: ErrorService,
                 private keycloakService: KeycloakService,
                 private bookmarkStore: BookmarkStore
     ) {
-        const keycloak = keycloakService.getKeycloak();
-        if (keycloak) {
-          this.userId = keycloak.subject;
-        }
+      keycloakService.loadUserProfile().then( keycloakProfile => {
+        this.userId = keycloakProfile.id;
         this.loadInitialData();
+      });
     }
 
   private loadInitialData() {
     this.userBookmarkService.getAllBookmarks(this.userId)
       .subscribe(
-        res => {
-          const bookmarks = (<Object[]>res.json())
-            .map((bookmark: any) =>
-              new Bookmark(
-                  bookmark.name,
-                  bookmark.location,
-                  bookmark.language,
-                  bookmark.category,
-                  bookmark.tags,
-                  bookmark.publishedOn,
-                  bookmark.githubURL,
-                  bookmark.description,
-                  bookmark.descriptionHtml,
-                  bookmark._id,
-                  '',
-                  bookmark.userId,
-                  bookmark.shared,
-                  bookmark.createdAt,
-                  bookmark.updatedAt,
-                  bookmark.starredBy
-              )
-            ).sort((a, b) => {
-              if (a.updatedAt < b.updatedAt) {
-                return 1;
-              } else if (a.updatedAt > b.updatedAt) {
-                return -1;
-              } else {
-                return 0;
-              }
-            });
+        data => {
+          let bookmarks: Bookmark[] = <Bookmark[]>data;
+          bookmarks = bookmarks.sort((a, b) => {
+            if (a.updatedAt < b.updatedAt) {
+              return 1;
+            } else if (a.updatedAt > b.updatedAt) {
+              return -1;
+            } else {
+              return 0;
+            }
+          });
 
           this._bookmarks.next(List(bookmarks));
         },
@@ -147,12 +128,6 @@ export class PersonalBookmarksStore {
         if (updated.shared) {
           this.bookmarkStore.updateBookmark(updated);
         }
-        this.router.navigate(['/personal'], { fragment: 'navbar' });
-      }
-      ,
-      (error: Response) => {
-        this.errorService.handleError(error.json());
-        return Observable.throw(error.json());
       }
     );
 

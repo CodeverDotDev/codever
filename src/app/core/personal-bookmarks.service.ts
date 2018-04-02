@@ -5,38 +5,41 @@ import {Headers, Response} from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 import {Observable} from 'rxjs/Observable';
-import {HttpWrapperService} from './keycloak/http-wrapper.service';
 
 import { environment } from 'environments/environment';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 
 @Injectable()
 export class PersonalBookmarksService {
 
   private baseUrl = '';  // URL to web api
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private httpWrapper: HttpWrapperService) {
+  constructor(private httpClient: HttpClient) {
     // this.baseUrl = process.env.API_URL + '/users/';
-    this.baseUrl = environment.API_URL + '/users/';
+    this.baseUrl = environment.API_URL + '/private/users/';
   }
 
-  getAllBookmarks(userId: String): Observable<Response> {
-    return this.httpWrapper.get(this.baseUrl + userId + '/bookmarks');
+  getAllBookmarks(userId: String): Observable<Bookmark[]> {
+    return this.httpClient.get<Bookmark[]>(this.baseUrl + userId + '/bookmarks').shareReplay();
   }
 
   updateBookmark(bookmark: Bookmark): Observable<any> {
-    return this.httpWrapper
-      .put(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers});
+    return this.httpClient
+      .put(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
+      .shareReplay();
   }
 
   delete(bookmark: Bookmark): Observable<any> {
-    return this.httpWrapper
-      .delete(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers});
+    return this.httpClient
+      .delete(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers})
+      .shareReplay();
   }
 
-  saveBookmark(userId: string, bookmark: Bookmark): Observable<Response> {
-    return this.httpWrapper
-      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark));
+  saveBookmark(userId: string, bookmark: Bookmark): Observable<any> {
+    return this.httpClient
+      .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark), {headers: this.headers, observe: 'response'})
+      .shareReplay();
   }
 
 }

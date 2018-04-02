@@ -20,30 +20,7 @@ export class BookmarkStore {
         this.bookmarkService.getAllBookmarks()
             .subscribe(
                 res => {
-                  console.log('Response to JSON:');
-                  console.log(res.json());
-                  const bookmarks = (<Object[]>res.json())
-                    .map((bookmark: any) =>
-                      new Bookmark(
-                          bookmark.name,
-                          bookmark.location,
-                          bookmark.language,
-                          bookmark.category,
-                          bookmark.tags,
-                          bookmark.publishedOn,
-                          bookmark.githubURL,
-                          bookmark.description,
-                          bookmark.descriptionHtml,
-                          bookmark._id,
-                          '',
-                          bookmark.userId,
-                          bookmark.shared,
-                          bookmark.createdAt,
-                          bookmark.updatedAt,
-                          bookmark.starredBy
-                      )
-                    );
-
+                  const bookmarks: Bookmark[] = <Bookmark[]>res;
                   this._bookmarks.next(List(bookmarks));
                 },
                 err => console.log('Error retrieving bookmarks')

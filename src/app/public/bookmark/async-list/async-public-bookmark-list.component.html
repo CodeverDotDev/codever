@@ -31,11 +31,11 @@
   <div class="card-footer">
     <div class="tags-group">
       <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-          <span *ngIf="bookmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-addon" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
+          <span *ngIf="bookmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-text" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
             <i class="fa fa-star-o"></i>
           </span>
         <ng-template #starred>
-            <span class="input-group-addon" id="btnGroupAddon3" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
+            <span class="input-group-text" id="btnGroupAddon3" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
               <i class="fa fa-star"></i>
             </span>
         </ng-template>

@@ -9,23 +9,6 @@ input {
   font-size: 1em;
   padding-left: .4em;
 }
-button {
-  margin-top: 20px;
-  font-family: Arial;
-  background-color: #eee;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer; cursor: hand;
-}
-button:hover {
-  background-color: #cfd8dc;
-}
-button:disabled {
-  background-color: #eee;
-  color: #ccc;
-  cursor: auto;
-}
 
 input[type=checkbox], input[type=radio] {
   vertical-align: middle;

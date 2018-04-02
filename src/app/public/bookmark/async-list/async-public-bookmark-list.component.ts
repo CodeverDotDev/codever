@@ -1,11 +1,11 @@
 import {Component, Input, OnInit, Injector} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../../core/model/bookmark';
-import {KeycloakService} from '../../../core/keycloak/keycloak.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PersonalBookmarksStore} from '../../../core/store/PersonalBookmarksStore';
 import {BookmarkStore} from '../store/BookmarkStore';
 import {BookmarkService} from '../bookmark.service';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'my-async-public-bookmark-list',
@@ -46,9 +46,13 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.keycloakService.isLoggedIn()) {
-      this.userId = this.keycloakService.getKeycloak().subject;
-    }
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
+        this.keycloakService.loadUserProfile().then( keycloakProfile => {
+          this.userId = keycloakProfile.id;
+        });
+      }
+    });
   }
 
   /**
@@ -66,9 +70,13 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   }
 
   starBookmark(bookmark: Bookmark): void {
-    if (!this.keycloakService.isLoggedIn()) {
-      this.displayModal = 'block';
-    }
+
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (!isLoggedIn) {
+        this.displayModal = 'block';
+      }
+    });
+
     if (this.userId) {
       if (!bookmark.starredBy) {
         bookmark.starredBy = [];

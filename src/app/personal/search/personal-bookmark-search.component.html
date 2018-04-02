@@ -1,5 +1,7 @@
 <div id="search-component" class="input-group">
-  <span class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1"><i class="fa fa-search"></i></span>
+  </div>
   <input type="text" class="form-control" [formControl]="term" placeholder="Search in personal bookmarks... (tag filtering via square brackets: e.g. [angular])">
 </div>
 

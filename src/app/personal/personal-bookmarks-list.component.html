@@ -1,7 +1,5 @@
-<div class="container">
-  <personal-bookmark-search [query]="query"></personal-bookmark-search>
-  <button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()">Add New Bookmark</button>
-  <hr>
-  <h3>Personal bookmarks - last updated</h3>
-  <my-async-personal-bookmark-list [bookmarks]="userBookmarks"></my-async-personal-bookmark-list>
-</div>
+<personal-bookmark-search [query]="query"></personal-bookmark-search>
+<button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()">Add New Bookmark</button>
+<hr>
+<h3>Personal bookmarks - last updated</h3>
+<my-async-personal-bookmark-list [bookmarks]="userBookmarks"></my-async-personal-bookmark-list>
