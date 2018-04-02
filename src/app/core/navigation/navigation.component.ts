@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {KeycloakService} from '../keycloak/keycloak.service';
+import {KeycloakOptions, KeycloakService} from 'keycloak-angular';
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'my-navigation',
@@ -10,19 +11,19 @@ export class NavigationComponent  implements OnInit {
 
   isLoggedIn: boolean;
 
-  ngOnInit(): void {
-    this.isLoggedIn = this.keycloakService.isLoggedIn();
+  async ngOnInit(): Promise<void> {
+    this.isLoggedIn = await this.keycloakService.isLoggedIn();
   }
 
   constructor(private keycloakService: KeycloakService,  private router: Router) {}
 
   logout() {
-    this.keycloakService.logout();
-    this.router.navigate(['/']);
+    this.keycloakService.logout(environment.APP_HOME_URL);
   }
 
   login() {
-    this.keycloakService.login();
-    this.isLoggedIn = true;
+    let options: Keycloak.KeycloakLoginOptions = {};
+    options.redirectUri = environment.APP_HOME_URL  + '/personal';
+    this.keycloakService.login(options).then(() => this.isLoggedIn = true);
   }
 }

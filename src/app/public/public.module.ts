@@ -12,6 +12,7 @@ import {BookmarkStore} from './bookmark/store/BookmarkStore';
 import {AsyncPublicBookmarksListComponent} from './bookmark/async-list/async-public-bookmark-list.component';
 import {TagService} from './tag/tag.service';
 import {TagComponent} from './tag/tag.component';
+import {PublicBookmarksRoutingModule} from './public-routing.module';
 
 @NgModule({
   declarations : [
@@ -26,7 +27,8 @@ import {TagComponent} from './tag/tag.component';
     CommonModule, // in the root module it comes via the BrowserModule
     HttpModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PublicBookmarksRoutingModule
   ],
   providers: [
     BookmarkService,
