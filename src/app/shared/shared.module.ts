@@ -1,14 +1,19 @@
-import {NgModule} from "@angular/core";
-import {HighLightPipe} from "./highlight.pipe";
-import {HighLightHtmlPipe} from "./highlight.no-html-tags.pipe";
+import {NgModule} from '@angular/core';
+import {HighLightPipe} from './highlight.pipe';
+import {HighLightHtmlPipe} from './highlight.no-html-tags.pipe';
+import {BookmarkComponent} from './bookmark.component';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
 
 
 /**
  * Add a SharedModule to hold the common components, directives, and pipes and share them with the modules that need them.
- * See - https://angular.io/docs/ts/latest/guide/ngmodule.html#!#shared-module for more details
+ * See - https://angular.io/guide/sharing-ngmodules
  */
 @NgModule({
-  declarations: [ HighLightPipe, HighLightHtmlPipe ],
-  exports:      [ HighLightPipe, HighLightHtmlPipe ]
+  imports:      [ CommonModule ],
+  declarations: [ HighLightPipe, HighLightHtmlPipe, BookmarkComponent, AsyncBookmarkListComponent ],
+  exports:      [ HighLightPipe, HighLightHtmlPipe, BookmarkComponent, AsyncBookmarkListComponent, CommonModule, FormsModule ]
 })
 export class SharedModule { }

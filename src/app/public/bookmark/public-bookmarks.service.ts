@@ -11,7 +11,7 @@ import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 @Injectable()
-export class BookmarkService {
+export class PublicBookmarksService {
 
   private bookmarksUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});

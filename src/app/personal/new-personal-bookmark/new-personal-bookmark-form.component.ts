@@ -1,13 +1,12 @@
-import {Component, NgZone, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
-import {BookmarkService} from '../../public/bookmark/bookmark.service';
 import {MarkdownService} from '../markdown.service';
-import {HttpErrorResponse} from '@angular/common/http';
 import {KeycloakService} from 'keycloak-angular';
-import {BookmarkStore} from "../../public/bookmark/store/BookmarkStore";
+import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
+import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.service';
 
 @Component({
   selector: 'new-personal-bookmark-form',
@@ -28,7 +27,7 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
-    private bookmarkService: BookmarkService,
+    private bookmarkService: PublicBookmarksService,
     private markdownServce: MarkdownService,
     private publicBookmarkStore: BookmarkStore
   ) {
