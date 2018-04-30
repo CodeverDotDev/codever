@@ -2,10 +2,7 @@ import {NgModule} from '@angular/core';
 import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
 import {AsyncUserBookmarksListComponent} from './async-list/async-personal-bookmark-list.component';
 import {HttpModule} from '@angular/http';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';
-import {PersonalBookmarksService} from '../core/personal-bookmarks.service';
-import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule} from '@angular/forms';
 import {PersonalBookmarksRoutingModule} from './personal-bookmarks-routing.module';
 import {NewPersonalBookmarkFormComponent} from './new-personal-bookmark/new-personal-bookmark-form.component';
 import {PersonalBookmarkDetailComponent} from './detail/personal-bookmark-detail.component';
@@ -27,10 +24,8 @@ import {RouterModule} from '@angular/router';
   ],
   imports: [
     SharedModule,
-    CommonModule, // in the root module comes via the BrowserModule
     RouterModule,
     HttpModule,
-    FormsModule,
     ReactiveFormsModule,
     PersonalBookmarksRoutingModule
   ],

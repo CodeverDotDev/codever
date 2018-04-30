@@ -5,14 +5,18 @@ import {PipeTransform} from '@angular/core';
 export class HighLightHtmlPipe implements PipeTransform {
 
   transform(text: string, search): string {
-    let pattern = search.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-    pattern = pattern.split(' ').filter((t) => {
-      return t.length > 0;
-    }).join('|');
-    pattern = '(' + pattern + ')' + '(?![^<]*>)';
-    const regex = new RegExp(pattern, 'gi');
+    if (!search || search === undefined) {
+      return text;
+    } else {
+      let pattern = search.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+      pattern = pattern.split(' ').filter((t) => {
+        return t.length > 0;
+      }).join('|');
+      pattern = '(' + pattern + ')' + '(?![^<]*>)';
+      const regex = new RegExp(pattern, 'gi');
 
-    return search ? text.replace(regex, (match) => `<span class="highlight">${match}</span>`) : text;
+      return search ? text.replace(regex, (match) => `<span class="highlight">${match}</span>`) : text;
+    }
   }
 
 }

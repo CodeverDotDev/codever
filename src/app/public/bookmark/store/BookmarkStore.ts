@@ -4,14 +4,14 @@ import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {List} from 'immutable';
 import {Bookmark} from '../../../core/model/bookmark';
-import {BookmarkService} from '../bookmark.service';
+import {PublicBookmarksService} from '../public-bookmarks.service';
 
 @Injectable()
 export class BookmarkStore {
 
     private _bookmarks: BehaviorSubject<List<Bookmark>>;
 
-    constructor(private bookmarkService: BookmarkService) {}
+    constructor(private bookmarkService: PublicBookmarksService) {}
 
   /**
    * The initial data is loaded either when the home page is requested (directly or via search parameters)
