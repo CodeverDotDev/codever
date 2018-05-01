@@ -7,7 +7,6 @@ import {BookmarksComponent} from './bookmark/bookmarks.component';
 import {BookmarkSearchComponent} from './bookmark/search/bookmark-search.component';
 import {BookmarkSearchService} from './bookmark/search/bookmark-search.service';
 import {BookmarkStore} from './bookmark/store/BookmarkStore';
-import {AsyncPublicBookmarksListComponent} from './bookmark/async-list/async-public-bookmark-list.component';
 import {TagService} from './tag/tag.service';
 import {TagComponent} from './tag/tag.component';
 import {PublicBookmarksRoutingModule} from './public-routing.module';
@@ -18,7 +17,6 @@ import {PublicBookmarksService} from './bookmark/public-bookmarks.service';
     AboutComponent,
     BookmarksComponent,
     BookmarkSearchComponent,
-    AsyncPublicBookmarksListComponent,
     TagComponent
   ],
   imports: [

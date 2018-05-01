@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {HighLightPipe} from './highlight.pipe';
 import {HighLightHtmlPipe} from './highlight.no-html-tags.pipe';
-import {BookmarkComponent} from './bookmark.component';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
@@ -13,7 +12,7 @@ import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
  */
 @NgModule({
   imports:      [ CommonModule ],
-  declarations: [ HighLightPipe, HighLightHtmlPipe, BookmarkComponent, AsyncBookmarkListComponent ],
-  exports:      [ HighLightPipe, HighLightHtmlPipe, BookmarkComponent, AsyncBookmarkListComponent, CommonModule, FormsModule ]
+  declarations: [ HighLightPipe, HighLightHtmlPipe, AsyncBookmarkListComponent ],
+  exports:      [ HighLightPipe, HighLightHtmlPipe, AsyncBookmarkListComponent, CommonModule, FormsModule ]
 })
 export class SharedModule { }
