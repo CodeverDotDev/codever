@@ -126,7 +126,7 @@
 </div>
 
 
-<app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="queryText" [shownSize]="10"></app-async-bookmark-list>
+<app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="queryText" [shownSize]="counter"></app-async-bookmark-list>
 <div *ngIf="numberOfResultsFiltered > 0" >
   <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()" [disabled]="counter>=numberOfResultsFiltered">Show more</button>
   <hr/>
