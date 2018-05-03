@@ -1,4 +1,4 @@
 <div class="container">
   <h2>Tagged with {{tag}}</h2>
-  <my-async-public-bookmark-list [bookmarks]="bookmarksForTag" [queryText]="tag"></my-async-public-bookmark-list>
+  <app-async-bookmark-list [bookmarks]="bookmarksForTag" [queryText]="tag" [shownSize]="100"></app-async-bookmark-list>
 </div>

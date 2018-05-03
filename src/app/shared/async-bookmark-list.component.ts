@@ -1,19 +1,19 @@
-import {Component, Input, OnInit, Injector} from '@angular/core';
+import {Component, Injector, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {Bookmark} from '../../../core/model/bookmark';
-import {ActivatedRoute, Router} from '@angular/router';
-import {PersonalBookmarksStore} from '../../../core/store/PersonalBookmarksStore';
-import {BookmarkStore} from '../store/BookmarkStore';
-import {BookmarkService} from '../bookmark.service';
-import {KeycloakService} from "keycloak-angular";
+import {Bookmark} from '../core/model/bookmark';
+import {Router} from '@angular/router';
+import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';
+import {BookmarkStore} from '../public/bookmark/store/BookmarkStore';
+import {KeycloakService} from 'keycloak-angular';
+import {PublicBookmarksService} from '../public/bookmark/public-bookmarks.service';
 
 @Component({
-  selector: 'my-async-public-bookmark-list',
-  templateUrl: './async-public-bookmark-list.component.html',
-  styleUrls: ['./async-public-bookmark-list.component.scss']
+  selector: 'app-async-bookmark-list',
+  templateUrl: './async-bookmark-list.component.html'
 })
-export class AsyncPublicBookmarksListComponent  implements OnInit {
+export class AsyncBookmarkListComponent  implements OnInit {
 
+  @Input()
   userId: string;
 
   @Input()
@@ -22,11 +22,13 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   @Input()
   queryText: string;
 
-  private route: ActivatedRoute;
+  @Input()
+  shownSize: number;
+
   private router: Router;
   private userBookmarkStore: PersonalBookmarksStore;
   private publicBookmarkStore: BookmarkStore;
-  private bookmarkService: BookmarkService;
+  private bookmarkService: PublicBookmarksService;
   private keycloakService: KeycloakService;
 
   displayModal = 'none';
@@ -34,11 +36,10 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
   constructor(
     private injector: Injector,
 ) {
-    this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
     this.router = <Router>this.injector.get(Router);
     this.publicBookmarkStore = <BookmarkStore>this.injector.get(BookmarkStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
-    this.bookmarkService = <BookmarkService>this.injector.get(BookmarkService);
+    this.bookmarkService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
 
     if (this.keycloakService.isLoggedIn()) {
       this.userBookmarkStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
@@ -61,7 +62,7 @@ export class AsyncPublicBookmarksListComponent  implements OnInit {
    */
   gotoDetail(bookmark: Bookmark): void {
     const link = ['./personal/bookmarks', bookmark._id];
-    this.router.navigate(link, { relativeTo: this.route });
+    this.router.navigate(link);
   }
 
   deleteBookmark(bookmark: Bookmark): void {
