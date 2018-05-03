@@ -12,6 +12,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {initializer} from './app-init';
 import {RouterModule} from '@angular/router';
+import {PageNotFoundComponent} from './not-found.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import {RouterModule} from '@angular/router';
     }
   ],
   declarations: [
-    AppComponent
+    AppComponent,
+    PageNotFoundComponent
   ],
   bootstrap: [AppComponent]
 })
