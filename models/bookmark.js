@@ -14,7 +14,8 @@ var bookmarkSchema = new Schema({
     userId: {type: String, ref:'User'},
     shared: Boolean,
     language: String,
-    starredBy: [String]
+    starredBy: [String],
+    lastAccessedAt: Date
 },
 {
   timestamps: true
