@@ -101,6 +101,13 @@ export class AsyncBookmarkListComponent  implements OnInit {
     }
   }
 
+  updateLastAccess(bookmark: Bookmark) {
+    if (this.userId === bookmark.userId) {
+      bookmark.lastAccessedAt = new Date();
+      const obs = this.userBookmarkStore.updateBookmark(bookmark);
+    }
+  }
+
   private updateBookmark(bookmark: Bookmark) {
     if (this.userId === bookmark.userId) {
       const obs = this.userBookmarkStore.updateBookmark(bookmark);

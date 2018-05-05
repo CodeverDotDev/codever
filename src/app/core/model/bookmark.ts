@@ -13,5 +13,6 @@ export interface Bookmark {
   language: string;
   createdAt?: Date;
   updatedAt?: Date;
+  lastAccessedAt?: Date;
   starredBy?: string[];
 }
