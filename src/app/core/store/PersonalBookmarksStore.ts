@@ -39,9 +39,9 @@ export class PersonalBookmarksStore {
         data => {
           let bookmarks: Bookmark[] = <Bookmark[]>data;
           bookmarks = bookmarks.sort((a, b) => {
-            if (a.updatedAt < b.updatedAt) {
+            if (a.lastAccessedAt < b.lastAccessedAt) {
               return 1;
-            } else if (a.updatedAt > b.updatedAt) {
+            } else if (a.lastAccessedAt > b.lastAccessedAt) {
               return -1;
             } else {
               return 0;
