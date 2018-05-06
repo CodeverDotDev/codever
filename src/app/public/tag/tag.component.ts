@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {TagService} from "./tag.service";
-import {ActivatedRoute} from "@angular/router";
-import {Bookmark} from "../../core/model/bookmark";
-import {Observable} from "rxjs";
+import {TagService} from './tag.service';
+import {ActivatedRoute} from '@angular/router';
+import {Bookmark} from '../../core/model/bookmark';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-tag',
