@@ -11,7 +11,7 @@ const publicBookmarksRoutes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'tagged/:tag',
+    path: 'tags/:tag',
     component: TagComponent
   },
   {

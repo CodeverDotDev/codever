@@ -1,4 +1,6 @@
 <div class="container">
-  <h2>Tagged with {{tag}}</h2>
+  <br/>
+  <h2>Latest {{tag}} codingmarks</h2>
+  <hr/>
   <app-async-bookmark-list [bookmarks]="bookmarksForTag" [queryText]="tag" [shownSize]="100"></app-async-bookmark-list>
 </div>
