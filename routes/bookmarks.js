@@ -98,12 +98,12 @@ router.get('/', async (req, res) => {
       }
       res.send(bookmark);
     } else if(req.query.tag){//get all bookmarks tagged with "tag"
-      //Bookmark.find({ tags: req.query.tag }, function(err, bookmarks){ //TODO when making strict tags, that is the exact tag name
-      const bookmarks = await Bookmark.find({ tags: { $regex: new RegExp(req.query.tag, "ig")} });
-        res.send(bookmarks);
+      //const bookmarks = await Bookmark.find({ tags: { $regex: new RegExp(req.query.tag, "ig")} }).sort({createdAt: -1});
+      const bookmarks = await Bookmark.find({ tags: req.query.tag }).sort({createdAt: -1}).lean().exec();
+      res.send(bookmarks);
     } else {//no filter - all bookmarks
       //Bookmark.find({'shared':true}, function(err, bookmarks){
-      const bookmarks = await Bookmark.find({'shared':true}).lean().exec();
+      const bookmarks = await Bookmark.find({'shared':true}).sort({createdAt: -1}).lean().exec();
       res.send(bookmarks);
     }
   }
