@@ -40,7 +40,8 @@ router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
     githubURL: req.body.githubURL,
     userId: req.params.id,
     shared: req.body.shared,
-    starredBy: req.body.starredBy
+    starredBy: req.body.starredBy,
+    lastAccessedAt: req.body.lastAccessedAt
   });
 
   try{
