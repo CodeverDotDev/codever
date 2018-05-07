@@ -9,7 +9,7 @@ import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.service';
 
 @Component({
-  selector: 'new-personal-bookmark-form',
+  selector: 'app-new-personal-bookmark-form',
   templateUrl: './new-personal-bookmark-form.component.html'
 })
 export class NewPersonalBookmarkFormComponent implements OnInit {
@@ -89,7 +89,8 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
       descriptionHtml: this.markdownServce.toHtml(model.description),
       userId: this.userId,
       shared: model.shared,
-      starredBy: []
+      starredBy: [],
+      lastAccessedAt: new Date()
   };
 
     const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);

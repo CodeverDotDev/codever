@@ -1,4 +1,10 @@
 <div class="container">
-  <h2>Tagged with {{tag}}</h2>
-  <app-async-bookmark-list [bookmarks]="bookmarksForTag" [queryText]="tag" [shownSize]="100"></app-async-bookmark-list>
+  <br/>
+  <h2>Latest {{tag}} codingmarks</h2>
+  <hr/>
+  <app-async-bookmark-list [bookmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter"></app-async-bookmark-list>
+</div>
+<div *ngIf="(bookmarksForTag$ | async)?.length - counter > 0" >
+  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()" [disabled]="counter>=(bookmarksForTag$ | async)?.length">Show more</button>
+  <hr/>
 </div>

@@ -39,8 +39,9 @@ export class PersonalBookmarksStore {
         data => {
           let bookmarks: Bookmark[] = <Bookmark[]>data;
           bookmarks = bookmarks.sort((a, b) => {
-            return a.lastAccessedAt == null ? (b.lastAccessedAt == null ? 0 : 1)
-              : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
+            const result: number = a.lastAccessedAt == null ? (b.lastAccessedAt == null ? 0 : 1)
+              : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0
+            return result;
           });
 
           this._bookmarks.next(List(bookmarks));
