@@ -10,7 +10,7 @@ import {Input} from '@angular/core';
 import {List} from 'immutable';
 
 @Component({
-    selector: 'bookmark-search',
+    selector: 'app-pubic-bookmark-search',
     templateUrl: 'bookmark-search.component.html',
     styleUrls: [ 'bookmark-search.component.scss' ],
     providers: [BookmarkSearchService]
