@@ -43,15 +43,4 @@ export class PublicBookmarksService {
       .shareReplay();
   }
 
-  delete(id: string): Observable<any> {
-    const url = `${this.bookmarksUrl}/${id}`;
-    return this.httpClient.delete(url, {headers: this.headers}).shareReplay();
-  }
-
-  saveBookmark(bookmark: Bookmark): Observable<any> {
-    return this.httpClient
-      .post(this.bookmarksUrl, JSON.stringify(bookmark), {headers: this.headers})
-      .share();
-  }
-
 }
