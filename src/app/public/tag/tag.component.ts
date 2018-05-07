@@ -11,9 +11,10 @@ import {Observable} from 'rxjs/Observable';
 })
 export class TagComponent implements OnInit {
 
-  bookmarksForTag: Observable<Bookmark[]>;
+  bookmarksForTag$: Observable<Bookmark[]>;
   tag: string;
   queryText: string;
+  counter = 10;
 
   constructor(private tagService: TagService, private route: ActivatedRoute) { }
 
@@ -23,8 +24,12 @@ export class TagComponent implements OnInit {
       .subscribe((tag) => {
           this.tag = tag;
           this.queryText = '[' + tag + ']';
-          this.bookmarksForTag = this.tagService.getBookmarksForTag(tag);
+          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(tag);
       });
+  }
+
+  showMoreResults() {
+    this.counter += 10;
   }
 
 }
