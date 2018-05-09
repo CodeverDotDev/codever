@@ -119,7 +119,7 @@ export class PersonalBookmarksStore {
       res => {
         const bookmarks = this._bookmarks.getValue();
         const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-        //this._bookmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
+        this._bookmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
           this.bookmarkStore.updateBookmark(updated);
