@@ -1,5 +1,22 @@
 <personal-bookmark-search [query]="query"></personal-bookmark-search>
-<button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()">Add New Bookmark</button>
+<button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()"> <i class="fa fa-plus"></i> Add New Bookmark</button>
 <hr>
-<h3>Personal bookmarks - last accessed</h3>
-<app-async-bookmark-list [bookmarks]="userBookmarks" [shownSize]="10"></app-async-bookmark-list>
+<h3>Personal bookmarks</h3>
+<ul class="nav nav-tabs" style="margin-top: 1em">
+  <li class="nav-item">
+    <a class="nav-link personal-tabs" [ngClass]="{active: showLastAccessed}" (click)="toggleLastAccessed()">Last accessed</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link personal-tabs" [ngClass]="{active: !showLastAccessed}" (click)="toggleLastModified()">Last modified</a>
+  </li>
+</ul>
+<br/>
+
+<div *ngIf="showLastAccessed;else lastModified">
+  <app-async-bookmark-list [bookmarks]="userBookmarks" [shownSize]="10"></app-async-bookmark-list>
+</div>
+
+<ng-template #lastModified>
+  <app-async-bookmark-list [bookmarks]="userBookmarksLastUpdated" [shownSize]="10"></app-async-bookmark-list>
+</ng-template>
+
