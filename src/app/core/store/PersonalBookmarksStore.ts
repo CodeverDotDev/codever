@@ -40,7 +40,7 @@ export class PersonalBookmarksStore {
           let bookmarks: Bookmark[] = <Bookmark[]>data;
           bookmarks = bookmarks.sort((a, b) => {
             const result: number = a.lastAccessedAt == null ? (b.lastAccessedAt == null ? 0 : 1)
-              : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0
+              : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
             return result;
           });
 
@@ -77,7 +77,7 @@ export class PersonalBookmarksStore {
         const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
         newBookmark._id = newBookmarkId;
         // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-        this._bookmarks.next(this._bookmarks.getValue().unshift(newBookmark));
+        this._bookmarks.next(this._bookmarks.getValue().unshift(newBookmark)); // insert at the top (index 0)
 
         if (newBookmark.shared) {
           this.bookmarkStore.addBookmark(newBookmark);
@@ -119,7 +119,7 @@ export class PersonalBookmarksStore {
       res => {
         const bookmarks = this._bookmarks.getValue();
         const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-        this._bookmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
+        //this._bookmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
           this.bookmarkStore.updateBookmark(updated);
