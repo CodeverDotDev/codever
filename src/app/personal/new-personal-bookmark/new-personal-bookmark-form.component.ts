@@ -90,7 +90,7 @@ export class NewPersonalBookmarkFormComponent implements OnInit {
       userId: this.userId,
       shared: model.shared,
       starredBy: [],
-      lastAccessedAt: new Date()
+      lastAccessedAt: null
   };
 
     const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
