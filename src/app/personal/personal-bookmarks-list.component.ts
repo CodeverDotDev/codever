@@ -13,7 +13,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class PersonalBookmarksListComponent implements OnInit {
 
   userBookmarks: Observable<List<Bookmark>>;
+  userBookmarksLastUpdated: Observable<List<Bookmark>>;
   query = '';
+  showLastAccessed = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,10 +33,27 @@ export class PersonalBookmarksListComponent implements OnInit {
       }
     }
     this.userBookmarks = this.userBookmarkStore.getBookmarks();
+    this.userBookmarksLastUpdated = this.userBookmarks.map((data) => {
+        return data.sort((a, b) => {
+          if (a.updatedAt < b.updatedAt) { return 1; }
+          if (a.updatedAt > b.updatedAt) { return -1; }
+          if (a.updatedAt === b.updatedAt) { return 0; }
+        });
+    });
   }
 
   goToAddNewPersonalBookmark(): void {
     const link = ['./new'];
     this.router.navigate(link, { relativeTo: this.route });
   }
+
+  toggleLastAccessed(): void {
+    this.showLastAccessed = true;
+  }
+
+  toggleLastModified(): void {
+    this.showLastAccessed = false;
+  }
+
+
 }
