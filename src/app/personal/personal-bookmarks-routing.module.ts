@@ -2,9 +2,9 @@ import {RouterModule, Routes} from '@angular/router';
 import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
 import {NgModule} from '@angular/core';
 import {NewPersonalBookmarkFormComponent} from './new-personal-bookmark/new-personal-bookmark-form.component';
-import {PersonalBookmarkDetailComponent} from './detail/personal-bookmark-detail.component';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {AuthGuard} from './auth-guard.service';
+import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
 
 const personalBookmarksRoutes: Routes = [
   {
@@ -23,7 +23,7 @@ const personalBookmarksRoutes: Routes = [
       },
       {
         path: 'bookmarks/:id',
-        component: PersonalBookmarkDetailComponent
+        component: UpdatePersonalBookmarkComponent
       },
       {
         path: '',
