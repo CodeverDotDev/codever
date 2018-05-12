@@ -10,9 +10,9 @@ import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.ser
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
-  templateUrl: './new-personal-bookmark-form.component.html'
+  templateUrl: './create-new-personal-bookmark.component.html'
 })
-export class NewPersonalBookmarkFormComponent implements OnInit {
+export class CreateNewPersonalBookmarkComponent implements OnInit {
 
   private model: any;
   bookmarkForm: FormGroup;

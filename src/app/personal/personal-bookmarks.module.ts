@@ -3,7 +3,6 @@ import {PersonalBookmarksListComponent} from './personal-bookmarks-list.componen
 import {HttpModule} from '@angular/http';
 import {ReactiveFormsModule} from '@angular/forms';
 import {PersonalBookmarksRoutingModule} from './personal-bookmarks-routing.module';
-import {NewPersonalBookmarkFormComponent} from './new-personal-bookmark/new-personal-bookmark-form.component';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {PersonalBookmarkSearchComponent} from './search/personal-bookmark-search.component';
 import {SharedModule} from '../shared/shared.module';
@@ -11,11 +10,12 @@ import {MarkdownService} from './markdown.service';
 import {AuthGuard} from './auth-guard.service';
 import {RouterModule} from '@angular/router';
 import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
+import {CreateNewPersonalBookmarkComponent} from './create/create-new-personal-bookmark.component';
 
 @NgModule({
   declarations : [
     PersonalBookmarksListComponent,
-    NewPersonalBookmarkFormComponent,
+    CreateNewPersonalBookmarkComponent,
     UpdatePersonalBookmarkComponent,
     PersonalBookmarksComponent,
     PersonalBookmarkSearchComponent
