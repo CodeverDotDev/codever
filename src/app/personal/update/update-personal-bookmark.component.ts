@@ -5,11 +5,11 @@ import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {MarkdownService} from '../markdown.service';
 
 @Component({
-  selector: 'my-bookmark-detail',
-  templateUrl: './personal-bookmark-detail.component.html',
-  styleUrls: ['./personal-bookmark-detail.component.scss']
+  selector: 'app-update-bookmark',
+  templateUrl: './update-personal-bookmark.component.html',
+  styleUrls: ['./update-personal-bookmark.component.scss']
 })
-export class PersonalBookmarkDetailComponent implements OnInit {
+export class UpdatePersonalBookmarkComponent implements OnInit {
 
   bookmark: Bookmark;
 
@@ -38,6 +38,7 @@ export class PersonalBookmarkDetailComponent implements OnInit {
       return item.trim().replace(' ', '-'); // replace spaces between words (if any) in a tag with dashes
     });
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
+    this.bookmark.updatedAt = new Date();
 
     const obs = this.userBookmarkStore.updateBookmark(this.bookmark);
 
