@@ -1,5 +1,5 @@
 import {Component, Injector, Input, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Bookmark} from '../core/model/bookmark';
 import {Router} from '@angular/router';
 import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';

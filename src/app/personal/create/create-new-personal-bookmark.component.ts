@@ -1,3 +1,5 @@
+
+import {distinctUntilChanged, debounceTime} from 'rxjs/operators';
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -53,9 +55,9 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
       language: 'en'
     });
 
-    this.bookmarkForm.controls['location'].valueChanges
-      .debounceTime(400)
-      .distinctUntilChanged()
+    this.bookmarkForm.controls['location'].valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),)
       .subscribe(location => {
         console.log('Location: ', location);
         if (this.personalBookmarksStore.getBookmarkByLocation(location)) {

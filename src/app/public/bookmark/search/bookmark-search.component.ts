@@ -1,5 +1,8 @@
+
+import {of as observableOf, Observable} from 'rxjs';
+
+import {catchError, switchMap, debounceTime} from 'rxjs/operators';
 import {Component, OnInit, AfterViewInit, OnChanges, SimpleChanges} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import {BookmarkSearchService} from './bookmark-search.service';
 import {BookmarkStore} from '../store/BookmarkStore';
 import {FormControl} from '@angular/forms';
@@ -38,11 +41,11 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    this.filteredBookmarks = this.term.valueChanges
-      .debounceTime(1500)
+    this.filteredBookmarks = this.term.valueChanges.pipe(
+      debounceTime(1500),
       // TODO - next line should be reactived when getting results via HTTP
       // .distinctUntilChanged()   ignore if next search term is same as previous
-      .switchMap(term => {
+      switchMap(term => {
         // this.counter = 0; // we initialise the counter
         if (term) { // switch to new observable each time
 
@@ -56,21 +59,21 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
           this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
           if (this.numberOfResultsFiltered > 0 ) {
             this.showNotFound = false;
-            return Observable.of(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
+            return observableOf(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
           } else {
             this.showNotFound = true;
-            return Observable.of<Bookmark[]>([]);
+            return observableOf<Bookmark[]>([]);
           }
         } else {
           this.numberOfResultsFiltered = 0;
           // or the observable of empty bookmarks if no search term
-          return Observable.of<Bookmark[]>([]);
+          return observableOf<Bookmark[]>([]);
         }
-      })
-      .catch(error => {
+      }),
+      catchError(error => {
         console.log(error);
-        return Observable.of<Bookmark[]>([]);
-      });
+        return observableOf<Bookmark[]>([]);
+      }),);
 
 
   }
