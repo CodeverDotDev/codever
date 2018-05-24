@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 
 import {Http} from '@angular/http';
 
-import 'rxjs/add/operator/toPromise';
-import {Observable} from 'rxjs/Observable';
+
+import {Observable} from 'rxjs';
 import {Webpage} from '../../core/model/webpage';
 import {Bookmark} from '../../core/model/bookmark';
 

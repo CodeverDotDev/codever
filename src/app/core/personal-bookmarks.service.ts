@@ -3,8 +3,8 @@ import {Bookmark} from './model/bookmark';
 
 import {Headers, Response} from '@angular/http';
 
-import 'rxjs/add/operator/toPromise';
-import {Observable} from 'rxjs/Observable';
+
+import {Observable} from 'rxjs';
 
 import { environment } from 'environments/environment';
 import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';

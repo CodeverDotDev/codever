@@ -1,6 +1,8 @@
+
+import {map} from 'rxjs/operators';
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../core/model/bookmark';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {List} from 'immutable';
 import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -33,13 +35,13 @@ export class PersonalBookmarksListComponent implements OnInit {
       }
     }
     this.userBookmarks = this.userBookmarkStore.getBookmarks();
-    this.userBookmarksLastUpdated = this.userBookmarks.map((data) => {
+    this.userBookmarksLastUpdated = this.userBookmarks.pipe(map((data) => {
         return data.sort((a, b) => {
           if (a.updatedAt < b.updatedAt) { return 1; }
           if (a.updatedAt > b.updatedAt) { return -1; }
           if (a.updatedAt === b.updatedAt) { return 0; }
         });
-    });
+    }));
   }
 
   goToAddNewPersonalBookmark(): void {

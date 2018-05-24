@@ -1,8 +1,10 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import {TagService} from './tag.service';
 import {ActivatedRoute} from '@angular/router';
 import {Bookmark} from '../../core/model/bookmark';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-tag',
@@ -19,8 +21,8 @@ export class TagComponent implements OnInit {
   constructor(private tagService: TagService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.route.params
-      .map(params => params['tag'])
+    this.route.params.pipe(
+      map(params => params['tag']))
       .subscribe((tag) => {
           this.tag = tag;
           this.queryText = '[' + tag + ']';

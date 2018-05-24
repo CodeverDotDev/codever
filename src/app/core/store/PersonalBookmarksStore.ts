@@ -1,7 +1,7 @@
 
+import {throwError as observableThrowError, Observable, BehaviorSubject} from 'rxjs';
+
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {List} from 'immutable';
 import {Bookmark} from '../model/bookmark';
 import {Logger} from '../logger.service';
@@ -10,7 +10,7 @@ import {Response} from '@angular/http';
 import {PersonalBookmarksService} from '../personal-bookmarks.service';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 import {Router} from '@angular/router';
-import 'rxjs/add/operator/shareReplay';
+
 import {KeycloakService} from 'keycloak-angular';
 
 @Injectable()
@@ -86,7 +86,7 @@ export class PersonalBookmarksStore {
       },
       (error: Response) => {
         this.errorService.handleError(error.json());
-        return Observable.throw(error.json());
+        return observableThrowError(error.json());
       }
     );
 
