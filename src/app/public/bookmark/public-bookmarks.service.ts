@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 
-import {Http} from '@angular/http';
-
-
 import {Observable} from 'rxjs';
 import {Webpage} from '../../core/model/webpage';
 import {Bookmark} from '../../core/model/bookmark';
 
 import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {shareReplay} from 'rxjs/operators';
 
 @Injectable()
 export class PublicBookmarksService {
@@ -40,7 +38,7 @@ export class PublicBookmarksService {
     return this.httpClient
       .put(environment.API_URL + '/private/users/' + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark),
             {headers: this.headers})
-      .shareReplay();
+      .pipe(shareReplay());
   }
 
 }
