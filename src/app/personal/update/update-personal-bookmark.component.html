@@ -132,6 +132,25 @@
           <option value=zu>Zulu</option>
         </select>
       </div>
+
+      <mat-form-field class="full-width">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let tag of bookmark.tags" [selectable]="selectable"
+                    [removable]="removable" (removed)="remove(tag)">
+            {{tag}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="Tags comma separated ..."
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="addOnBlur"
+                 pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
+                 (matChipInputTokenEnd)="add($event)"
+                 required
+          />
+        </mat-chip-list>
+      </mat-form-field>
+
       <div class="form-group">
         <label for="tags">Tags</label>
         <input type="text"

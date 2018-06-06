@@ -11,6 +11,7 @@ import {AuthGuard} from './auth-guard.service';
 import {RouterModule} from '@angular/router';
 import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
 import {CreateNewPersonalBookmarkComponent} from './create/create-new-personal-bookmark.component';
+import {MatChipsModule, MatFormFieldModule, MatIconModule, MatInputModule} from "@angular/material";
 
 @NgModule({
   declarations : [
@@ -23,8 +24,11 @@ import {CreateNewPersonalBookmarkComponent} from './create/create-new-personal-b
   imports: [
     SharedModule,
     RouterModule,
-    HttpModule,
     ReactiveFormsModule,
+    MatChipsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
     PersonalBookmarksRoutingModule
   ],
   providers: [
