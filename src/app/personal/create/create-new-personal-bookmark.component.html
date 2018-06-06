@@ -155,17 +155,25 @@
         <option value=zu>Zulu</option>
       </select>
     </div>
-    <div class="form-group">
-      <label for="tags">Tags* - comma separated</label>
-      <input type="text" class="form-control" id="tags"
-             formControlName="tagsLine"
-             pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
-             placeholder='keywoards - comma separated, maximum five, multiple words with dash (e.g. "ruby-on-rails, regex")'>
-      <div [hidden]="bookmarkForm.controls.tagsLine.valid || (bookmarkForm.controls.tagsLine.pristine)"
-           class="alert alert-danger">
-        Please provide the non-empty words separated with comma, "-" is allowed: (validating regex - ^[-\w\s]+(?:,[-\w\s]*)*$)
-      </div>
-    </div>
+
+    <mat-form-field  class="full-width">
+      <mat-chip-list #chipList>
+        <mat-chip *ngFor="let tag of bookmarkForm.get('tags').controls; let i = index;" [selectable]="selectable"
+                  [removable]="removable" (removed)="remove(i)">
+          {{tag.value}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <input placeholder="Tags comma separated ..."
+               [matChipInputFor]="chipList"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               [matChipInputAddOnBlur]="addOnBlur"
+               pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
+               (matChipInputTokenEnd)="add($event)"
+               required
+        />
+      </mat-chip-list>
+    </mat-form-field>
+
     <div class="form-group">
       <label for="publishedOn">Published on <i class="fa fa-calendar"></i></label>
       <input type="date" class="form-control" id="publishedOn"

@@ -226,3 +226,9 @@ $rotation-angle: 45deg;
 label {
   width: 100%;
 }
+
+.full-width {
+  width: 100%;
+}
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";

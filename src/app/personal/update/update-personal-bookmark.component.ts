@@ -3,6 +3,8 @@ import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {MarkdownService} from '../markdown.service';
+import {MatChipInputEvent} from "@angular/material";
+import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
 
 @Component({
   selector: 'app-update-bookmark',
@@ -12,6 +14,14 @@ import {MarkdownService} from '../markdown.service';
 export class UpdatePersonalBookmarkComponent implements OnInit {
 
   bookmark: Bookmark;
+
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+
+  // Enter, comma, space
+  separatorKeysCodes = [ENTER, COMMA, SPACE];
 
   constructor(
     private userBookmarkStore: PersonalBookmarksStore,
@@ -24,19 +34,11 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     this.route.params.forEach((params: Params) => {
       const id = params['id'];
       this.bookmark = this.userBookmarkStore.getBookmark(id);
-      this.bookmark.tagsLine = '';
-      this.bookmark.tags.forEach(tag => {
-        this.bookmark.tagsLine += tag + ',';
-      });
-      this.bookmark.tagsLine = this.bookmark.tagsLine.replace(/,\s*$/, ''); // remove last comma and trailing spaces
       console.log(this.bookmark);
     });
   }
 
   updateBookmark(): void {
-    this.bookmark.tags = this.bookmark.tagsLine.split(',').map(function(item) {
-      return item.trim().replace(' ', '-'); // replace spaces between words (if any) in a tag with dashes
-    });
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
     this.bookmark.updatedAt = new Date();
 
@@ -50,5 +52,28 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
   goToUserBookmarks(): void {
     this.router.navigate(['/personal'], { fragment: 'navbar' });
+  }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    // Add our fruit
+    if ((value || '').trim()) {
+      this.bookmark.tags.push( value.trim().toLowerCase());
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  remove(tag: any): void {
+    const index = this.bookmark.tags.indexOf(tag);
+
+    if (index >= 0) {
+      this.bookmark.tags.splice(index, 1);
+    }
   }
 }

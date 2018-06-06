@@ -2,13 +2,15 @@
 import {distinctUntilChanged, debounceTime} from 'rxjs/operators';
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {Router} from '@angular/router';
 import {MarkdownService} from '../markdown.service';
 import {KeycloakService} from 'keycloak-angular';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.service';
+import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
+import {MatChipInputEvent} from "@angular/material";
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -16,7 +18,6 @@ import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.ser
 })
 export class CreateNewPersonalBookmarkComponent implements OnInit {
 
-  private model: any;
   bookmarkForm: FormGroup;
   userId = null;
   existingPublicBookmark: Bookmark;
@@ -24,9 +25,17 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   makePublic = false;
   personalBookmarkPresent = false;
 
+  // chips
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+
+  // Enter, comma, space
+  separatorKeysCodes = [ENTER, COMMA, SPACE];
+
   constructor(
     private personalBookmarksStore: PersonalBookmarksStore,
-    private router: Router,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
     private bookmarkService: PublicBookmarksService,
@@ -47,7 +56,8 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
-      tagsLine: ['', Validators.required],
+      // tags: [this.formBuilder.array([]), Validators.required],
+      tags: this.formBuilder.array([]),
       publishedOn: null,
       githubURL: '',
       description: '',
@@ -76,10 +86,6 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   }
 
   saveBookmark(model: Bookmark) {
-    model.tags = model.tagsLine.split(',').map(function(item) {
-      return item.trim().replace(' ', '-'); // replace spaces between words (if any) in a tag with dashes
-    });
-
     const newBookmark: Bookmark = {
       name: model.name,
       location: model.location,
@@ -137,6 +143,30 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   onCancelClick() {
     this.displayModal = 'none';
     this.makePublic = false;
+  }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    // Add our fruit
+    if ((value || '').trim()) {
+      const tags = this.bookmarkForm.get('tags') as FormArray;
+      tags.push(this.formBuilder.control(value.trim()));
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  remove(index: number): void {
+    const tags = this.bookmarkForm.get('tags')as FormArray;
+
+    if (index >= 0) {
+      tags.removeAt(index);
+    }
   }
 
 }
