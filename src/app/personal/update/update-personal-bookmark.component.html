@@ -133,6 +133,7 @@
         </select>
       </div>
 
+      <label for="tags">Tags</label>
       <mat-form-field class="full-width">
         <mat-chip-list #chipList>
           <mat-chip *ngFor="let tag of bookmark.tags" [selectable]="selectable"
@@ -140,27 +141,18 @@
             {{tag}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
-          <input placeholder="Tags comma separated ..."
+          <input placeholder="Tags* - max 5, comma separated ..."
                  [matChipInputFor]="chipList"
                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                  [matChipInputAddOnBlur]="addOnBlur"
                  pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
                  (matChipInputTokenEnd)="add($event)"
+                 name="tags"
+                 id="tags"
                  required
           />
         </mat-chip-list>
       </mat-form-field>
-
-      <div class="form-group">
-        <label for="tags">Tags</label>
-        <input type="text"
-               class="form-control"
-               [(ngModel)]="bookmark.tagsLine"
-               name="tags"
-               id="tags"
-               pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
-               placeholder='keywoards - comma separated, maximum five, multiple words with dash (e.g. "ruby-on-rails, regex'>
-      </div>
       <div class="form-group">
         <label for="publishedOn">Published on <i class="fa fa-calendar"></i></label>
         <input type="date"
