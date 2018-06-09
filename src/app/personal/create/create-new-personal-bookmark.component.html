@@ -163,7 +163,7 @@
           {{tag.value}}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
-        <input placeholder="Tags comma separated ..."
+        <input placeholder="Tags* - max 5, use comma, space or enter to separate..."
                [matChipInputFor]="chipList"
                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                [matChipInputAddOnBlur]="addOnBlur"
@@ -173,6 +173,7 @@
         />
       </mat-chip-list>
     </mat-form-field>
+
 
     <div class="form-group">
       <label for="publishedOn">Published on <i class="fa fa-calendar"></i></label>
