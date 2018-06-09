@@ -26,7 +26,6 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   personalBookmarkPresent = false;
 
   // chips
-  visible = true;
   selectable = true;
   removable = true;
   addOnBlur = true;
@@ -56,8 +55,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
-      // tags: [this.formBuilder.array([]), Validators.required],
-      tags: this.formBuilder.array([]),
+      tags: this.formBuilder.array([], [Validators.required]),
       publishedOn: null,
       githubURL: '',
       description: '',
