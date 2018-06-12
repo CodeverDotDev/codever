@@ -155,17 +155,34 @@
         <option value=zu>Zulu</option>
       </select>
     </div>
-    <div class="form-group">
-      <label for="tags">Tags* - comma separated</label>
-      <input type="text" class="form-control" id="tags"
-             formControlName="tagsLine"
-             pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
-             placeholder='keywoards - comma separated, maximum five, multiple words with dash (e.g. "ruby-on-rails, regex")'>
-      <div [hidden]="bookmarkForm.controls.tagsLine.valid || (bookmarkForm.controls.tagsLine.pristine)"
+
+    <div id="tags">
+      <mat-form-field  class="full-width">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let tag of bookmarkForm.get('tags').controls; let i = index;" [selectable]="selectable"
+                    [removable]="removable" (removed)="remove(i)">
+            {{tag.value}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="&nbsp;&nbsp;Tags* - max 5, use comma, space or enter to separate..."
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="addOnBlur"
+                 pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
+                 (matChipInputTokenEnd)="add($event)"
+                 formArrayName="tags"
+                 required
+          />
+        </mat-chip-list>
+        <mat-error *ngIf="bookmarkForm.get('tags').status === 'INVALID'">{{getTagsErrorMessage()}}</mat-error>
+      </mat-form-field>
+      <div [hidden]="bookmarkForm.get('tags').status === 'VALID' || bookmarkForm.get('tags').pristine"
            class="alert alert-danger">
-        Please provide the non-empty words separated with comma, "-" is allowed: (validating regex - ^[-\w\s]+(?:,[-\w\s]*)*$)
+        Tags are required
       </div>
     </div>
+
+
     <div class="form-group">
       <label for="publishedOn">Published on <i class="fa fa-calendar"></i></label>
       <input type="date" class="form-control" id="publishedOn"
@@ -195,7 +212,7 @@
         <strong> Make this bookmark public so others can benefit from it </strong>
       </label>
     </div>
-    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid">Submit</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid || personalBookmarkPresent">Submit</button>
   </form>
 </div>
 

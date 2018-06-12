@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/toPromise';
-import {Observable} from 'rxjs/Observable';
+
+import {Observable} from 'rxjs';
 import {Bookmark} from '../../core/model/bookmark';
 
 import { environment } from 'environments/environment';

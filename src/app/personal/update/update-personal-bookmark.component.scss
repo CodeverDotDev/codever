@@ -19,3 +19,11 @@ input[type=checkbox], input[type=radio] {
 #shared_label {
   width:100%;
 }
+
+mat-chip {
+  max-width: 200px;
+}
+
+.demo-chip-list {
+  width: 100%;
+}

@@ -22,7 +22,7 @@ export class AuthGuard extends KeycloakAuthGuard {
         if (!this.roles || this.roles.length === 0) {
           resolve(false);
         }
-        let granted = false;
+        let granted: boolean = false;
         for (const requiredRole of requiredRoles) {
           if (this.roles.indexOf(requiredRole) > -1) {
             granted = true;

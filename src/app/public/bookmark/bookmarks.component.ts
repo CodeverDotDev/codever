@@ -1,5 +1,5 @@
 import {Component, OnInit, AfterViewInit, NgZone} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {BookmarkStore} from './store/BookmarkStore';
 import {List} from 'immutable';
 import {Bookmark} from '../../core/model/bookmark';

@@ -1,6 +1,9 @@
+
+import {throwError as observableThrowError, Observable} from 'rxjs';
+
+import {catchError, map} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../../core/model/bookmark';
 
 @Injectable()
@@ -12,9 +15,9 @@ export class BookmarkSearchService {
 
   search(term: string): Observable<Bookmark[]> {
     const response = this.http
-        .get(`${this.bookmarksUrl}/?term=${term}`)
-        .map((res: Response) => res.json())
-        .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+        .get(`${this.bookmarksUrl}/?term=${term}`).pipe(
+        map((res: Response) => res.json()),
+        catchError((error: any) => observableThrowError(error.json().error || 'Server error')),);
 
     return response;
   }
@@ -36,9 +39,9 @@ export class BookmarkSearchService {
     }
 
     const response = this.http
-      .get(`${this.bookmarksUrl}${searchQuery}`)
-      .map((res: Response) => res.json())
-      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+      .get(`${this.bookmarksUrl}${searchQuery}`).pipe(
+      map((res: Response) => res.json()),
+      catchError((error: any) => observableThrowError(error.json().error || 'Server error')),);
 
     return response;
   }

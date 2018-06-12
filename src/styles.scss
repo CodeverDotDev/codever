@@ -65,7 +65,7 @@ ul.tags li:not(:last-child):after {
 .star-group{
   display:inline-flex; width: 4rem; height: 1.4rem;
   vertical-align: middle;
-  margin-right: 0.3rem;
+  margin-right: 0.5rem;
   input:nth-child(2) {
     width: 1.8rem;
   }
@@ -218,8 +218,17 @@ $rotation-angle: 45deg;
 .badge {
   padding: 0.25rem;
 }
+.btn-sm {
+  margin-right: 0.5rem;
+}
 // END bootstrap override
 
 label {
   width: 100%;
 }
+
+.full-width {
+  width: 100%;
+}
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
