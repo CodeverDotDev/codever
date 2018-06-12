@@ -156,23 +156,31 @@
       </select>
     </div>
 
-    <mat-form-field  class="full-width">
-      <mat-chip-list #chipList>
-        <mat-chip *ngFor="let tag of bookmarkForm.get('tags').controls; let i = index;" [selectable]="selectable"
-                  [removable]="removable" (removed)="remove(i)">
-          {{tag.value}}
-          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip>
-        <input placeholder="Tags* - max 5, use comma, space or enter to separate..."
-               [matChipInputFor]="chipList"
-               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-               [matChipInputAddOnBlur]="addOnBlur"
-               pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
-               (matChipInputTokenEnd)="add($event)"
-               required
-        />
-      </mat-chip-list>
-    </mat-form-field>
+    <div id="tags">
+      <mat-form-field  class="full-width">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let tag of bookmarkForm.get('tags').controls; let i = index;" [selectable]="selectable"
+                    [removable]="removable" (removed)="remove(i)">
+            {{tag.value}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="&nbsp;&nbsp;Tags* - max 5, use comma, space or enter to separate..."
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="addOnBlur"
+                 pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
+                 (matChipInputTokenEnd)="add($event)"
+                 formArrayName="tags"
+                 required
+          />
+        </mat-chip-list>
+        <mat-error *ngIf="bookmarkForm.get('tags').status === 'INVALID'">{{getTagsErrorMessage()}}</mat-error>
+      </mat-form-field>
+      <div [hidden]="bookmarkForm.get('tags').status === 'VALID' || bookmarkForm.get('tags').pristine"
+           class="alert alert-danger">
+        Tags are required
+      </div>
+    </div>
 
 
     <div class="form-group">
@@ -204,7 +212,7 @@
         <strong> Make this bookmark public so others can benefit from it </strong>
       </label>
     </div>
-    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid">Submit</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid || personalBookmarkPresent">Submit</button>
   </form>
 </div>
 

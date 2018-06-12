@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
-import {HttpModule} from '@angular/http';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {PersonalBookmarksRoutingModule} from './personal-bookmarks-routing.module';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {PersonalBookmarkSearchComponent} from './search/personal-bookmark-search.component';
@@ -24,6 +23,7 @@ import {MatChipsModule, MatFormFieldModule, MatIconModule, MatInputModule} from 
   imports: [
     SharedModule,
     RouterModule,
+    FormsModule,
     ReactiveFormsModule,
     MatChipsModule,
     MatFormFieldModule,
