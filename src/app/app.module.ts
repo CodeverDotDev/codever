@@ -1,6 +1,6 @@
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {HttpModule, JsonpModule} from '@angular/http';
+import {JsonpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app.routing';
@@ -13,11 +13,17 @@ import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {initializer} from './app-init';
 import {RouterModule} from '@angular/router';
 import {PageNotFoundComponent} from './not-found.component';
+import {MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule} from '@angular/material';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
+  exports: [
+    MatChipsModule
+  ],
   imports: [
     BrowserModule,
-    HttpModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -37,6 +43,12 @@ import {PageNotFoundComponent} from './not-found.component';
       useFactory: initializer,
       multi: true,
       deps: [KeycloakService]
+    },
+    {
+      provide: MAT_CHIPS_DEFAULT_OPTIONS,
+      useValue: {
+        separatorKeyCodes: [ENTER, COMMA]
+      }
     }
   ],
   declarations: [

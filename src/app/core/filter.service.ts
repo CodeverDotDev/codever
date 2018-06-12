@@ -2,7 +2,7 @@
 import {Injectable} from '@angular/core';
 import {Bookmark} from './model/bookmark';
 import {List} from 'immutable';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class BookmarkFilterService {

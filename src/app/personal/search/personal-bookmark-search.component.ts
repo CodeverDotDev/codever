@@ -1,5 +1,8 @@
+
+import {of as observableOf, Observable} from 'rxjs';
+
+import {catchError, switchMap, distinctUntilChanged, debounceTime} from 'rxjs/operators';
 import {Component, OnInit, NgZone, Input, AfterViewInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormControl} from '@angular/forms';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
@@ -28,29 +31,29 @@ export class PersonalBookmarkSearchComponent implements OnInit, AfterViewInit  {
       private bookmarkFilterService: BookmarkFilterService) {}
 
     ngOnInit(): void {
-        this.bookmarks = this.term.valueChanges
-            .debounceTime(600)        // wait for 300ms pause in events
-            .distinctUntilChanged()   // ignore if next search term is same as previous
-            .switchMap(term => {
+        this.bookmarks = this.term.valueChanges.pipe(
+            debounceTime(600),        // wait for 300ms pause in events
+            distinctUntilChanged(),   // ignore if next search term is same as previous
+            switchMap(term => {
               if (term) {// switch to new observable each time
                 const filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, 'all', this.userBookmarkStore.getBookmarks());
                 if (filterBookmarksBySearchTerm.length > 0 ) {
                   this.showNotFound = false;
-                  return Observable.of(filterBookmarksBySearchTerm);
+                  return observableOf(filterBookmarksBySearchTerm);
                 } else {
                   this.showNotFound = true;
-                  return Observable.of<Bookmark[]>([]);
+                  return observableOf<Bookmark[]>([]);
                 }
               } else {
                 // or the observable of empty bookmarks if no search term
-                return Observable.of<Bookmark[]>([]);
+                return observableOf<Bookmark[]>([]);
               }
-            })
-            .catch(error => {
+            }),
+            catchError(error => {
                 // TODO: real error handling
                 console.log(error);
-                return Observable.of<Bookmark[]>([]);
-            });
+                return observableOf<Bookmark[]>([]);
+            }),);
     }
 
   /**
