@@ -62,7 +62,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
       language: 'en'
     });
 
-    this.bookmarkForm.controls['location'].valueChanges.pipe(
+    this.bookmarkForm.get('location').valueChanges.pipe(
       debounceTime(400),
       distinctUntilChanged(), )
       .subscribe(location => {
@@ -73,8 +73,8 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
           this.personalBookmarkPresent = false;
           this.bookmarkService.getScrapingData(location).subscribe(response => {
             if (response) {
-              this.bookmarkForm.controls['name'].patchValue(response.title, {emitEvent : false});
-              this.bookmarkForm.controls['description'].patchValue(response.metaDescription, {emitEvent : false});
+              this.bookmarkForm.get('name').patchValue(response.title, {emitEvent : false});
+              this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent : false});
             }
           });
         }
@@ -177,5 +177,5 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
         '';*/
   }
 
-  get tags() { return this.bookmarkForm.get('tags'); }
+  get tags() { return <FormArray>this.bookmarkForm.get('tags'); }
 }
