@@ -150,7 +150,7 @@
         </select>
       </div>
 
-      <label for="tags">Tags</label>
+      <label for="tags">Tags*</label>
       <mat-form-field class="full-width">
         <mat-chip-list #chipList>
           <mat-chip *ngFor="let tag of bookmark.tags" [selectable]="selectable"
@@ -158,7 +158,7 @@
             {{tag}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
-          <input placeholder="Tags* - max 5, use comma, space or enter to separate..."
+          <input placeholder="Max 5, use comma, space or enter to separate..."
                  [matChipInputFor]="chipList"
                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                  [matChipInputAddOnBlur]="addOnBlur"

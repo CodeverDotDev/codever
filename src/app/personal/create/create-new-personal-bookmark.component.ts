@@ -1,20 +1,19 @@
-
-import {distinctUntilChanged, debounceTime} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
-import {Router} from '@angular/router';
 import {MarkdownService} from '../markdown.service';
 import {KeycloakService} from 'keycloak-angular';
 import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.service';
-import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
-import {MatChipInputEvent} from "@angular/material";
+import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
+import {MatChipInputEvent} from '@angular/material';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
-  templateUrl: './create-new-personal-bookmark.component.html'
+  templateUrl: './create-new-personal-bookmark.component.html',
+  styleUrls: ['./create-new-personal-bookmark.component.scss']
 })
 export class CreateNewPersonalBookmarkComponent implements OnInit {
 
@@ -65,7 +64,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
 
     this.bookmarkForm.controls['location'].valueChanges.pipe(
       debounceTime(400),
-      distinctUntilChanged(),)
+      distinctUntilChanged(), )
       .subscribe(location => {
         console.log('Location: ', location);
         if (this.personalBookmarksStore.getBookmarkByLocation(location)) {
@@ -160,11 +159,23 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   }
 
   remove(index: number): void {
-    const tags = this.bookmarkForm.get('tags')as FormArray;
+    const tags = this.bookmarkForm.get('tags') as FormArray;
 
     if (index >= 0) {
       tags.removeAt(index);
     }
   }
 
+  getTagsErrorMessage() {
+    if (this.bookmarkForm.get('tags').hasError('required')) {
+      console.log(this.bookmarkForm.get('tags').errors, 'erori :');
+      //consothis.bookmarkForm.get('tags').status
+      return 'You must enter a value';
+    }
+/*    return this.bookmarkForm.get('tags').hasError('required') ? 'You must enter a value' :
+      this.bookmarkForm.get('tags').hasError('email') ? 'Not a valid email' :
+        '';*/
+  }
+
+  get tags() { return this.bookmarkForm.get('tags'); }
 }
