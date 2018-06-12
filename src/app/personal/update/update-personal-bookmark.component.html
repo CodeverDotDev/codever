@@ -1,7 +1,7 @@
 <div class="col-md-8 col-md-offset-2">
   <div *ngIf="bookmark">
     <h2>Edit... {{bookmark.name}} </h2>
-    <form #form="ngForm" (ngSubmit)="updateBookmark(form.value)">
+    <form #bookmarkForm="ngForm" (ngSubmit)="updateBookmark(bookmarkForm.value)">
       <div class="form-group">
         <label>Name* </label>
         <input class="form-control form-control-lg" type="text"
@@ -9,7 +9,16 @@
                [(ngModel)]="bookmark.name"
                placeholder="name"
                required
+               #name="ngModel"
         />
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="alert alert-danger">
+
+          <div *ngIf="name.errors.required">
+            Name is required.
+          </div>
+
+        </div>
       </div>
       <div class="form-group">
         <label>Location* </label>
@@ -18,7 +27,15 @@
                [(ngModel)]="bookmark.location"
                placeholder="location"
                required
+               #location="ngModel"
         />
+        <div *ngIf="location.invalid && (location.dirty || location.touched)"
+             class="alert alert-danger">
+          <div *ngIf="location.errors.required">
+            Location is required.
+          </div>
+
+        </div>
       </div>
       <div class="form-group">
         <label for="language">Language*</label>
@@ -132,16 +149,27 @@
           <option value=zu>Zulu</option>
         </select>
       </div>
-      <div class="form-group">
-        <label for="tags">Tags</label>
-        <input type="text"
-               class="form-control"
-               [(ngModel)]="bookmark.tagsLine"
-               name="tags"
-               id="tags"
-               pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
-               placeholder='keywoards - comma separated, maximum five, multiple words with dash (e.g. "ruby-on-rails, regex'>
-      </div>
+
+      <label for="tags">Tags*</label>
+      <mat-form-field class="full-width">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let tag of bookmark.tags" [selectable]="selectable"
+                    [removable]="removable" (removed)="remove(tag)">
+            {{tag}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="Max 5, use comma, space or enter to separate..."
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="addOnBlur"
+                 pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
+                 (matChipInputTokenEnd)="add($event)"
+                 name="tags"
+                 id="tags"
+                 required
+          />
+        </mat-chip-list>
+      </mat-form-field>
       <div class="form-group">
         <label for="publishedOn">Published on <i class="fa fa-calendar"></i></label>
         <input type="date"
@@ -177,7 +205,7 @@
           <strong> Make this bookmark public so others can benefit from it </strong>
         </label>
       </div>
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary" [disabled]="bookmarkForm.invalid">Save</button>
     </form>
   </div>
 </div>

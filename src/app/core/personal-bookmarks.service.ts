@@ -3,8 +3,10 @@ import {Bookmark} from './model/bookmark';
 
 import {Headers, Response} from '@angular/http';
 
-import 'rxjs/add/operator/toPromise';
-import {Observable} from 'rxjs/Observable';
+import {shareReplay} from 'rxjs/operators';
+
+
+import {Observable} from 'rxjs';
 
 import { environment } from 'environments/environment';
 import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
@@ -21,25 +23,25 @@ export class PersonalBookmarksService {
   }
 
   getAllBookmarks(userId: String): Observable<Bookmark[]> {
-    return this.httpClient.get<Bookmark[]>(this.baseUrl + userId + '/bookmarks').shareReplay();
+    return this.httpClient.get<Bookmark[]>(this.baseUrl + userId + '/bookmarks').pipe(shareReplay());
   }
 
   updateBookmark(bookmark: Bookmark): Observable<any> {
     return this.httpClient
       .put(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
-      .shareReplay();
+      .pipe(shareReplay());
   }
 
   delete(bookmark: Bookmark): Observable<any> {
     return this.httpClient
       .delete(this.baseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers})
-      .shareReplay();
+      .pipe(shareReplay());
   }
 
   saveBookmark(userId: string, bookmark: Bookmark): Observable<any> {
     return this.httpClient
       .post(this.baseUrl + userId + '/bookmarks', JSON.stringify(bookmark), {headers: this.headers, observe: 'response'})
-      .shareReplay();
+      .pipe(shareReplay());
   }
 
 }
