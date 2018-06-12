@@ -44,6 +44,14 @@ router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
     lastAccessedAt: req.body.lastAccessedAt
   });
 
+  console.log(bookmark.name);
+  if(!bookmark.name || !bookmark.location || !bookmark.tags || !bookmark.tags.length === 0) {
+    res.status(400).send(new MyError('Missing required attributes', ['Missing required attributes']));
+  }
+  if(bookmark.tags.length > 5){
+    res.status(400).send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
+  }
+
   try{
     let newBookmark = await bookmark.save();
 
@@ -83,6 +91,15 @@ router.get('/:id/bookmarks', keycloak.protect(), async (req, res) => {
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res) => {
+
+  if(!req.body.name || !req.body.location || !req.body.tags || !req.body.tags.length === 0){
+    res.status(400).send(new MyError('Missing required attributes', ['Missing required attributes']));
+  }
+
+  if(req.body.tags.length > 5){
+    res.status(400).send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
+  }
+
   if(!req.body.descriptionHtml){
     req.body.descriptionHtml = converter.makeHtml(req.body.description);
   }
