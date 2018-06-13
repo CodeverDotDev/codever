@@ -45,7 +45,7 @@ router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
   });
 
   console.log(bookmark.name);
-  if(!bookmark.name || !bookmark.location || !bookmark.tags || !bookmark.tags.length === 0) {
+  if(!bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0) {
     res.status(400).send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
   if(bookmark.tags.length > 5){
@@ -92,7 +92,7 @@ router.get('/:id/bookmarks', keycloak.protect(), async (req, res) => {
  */
 router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res) => {
 
-  if(!req.body.name || !req.body.location || !req.body.tags || !req.body.tags.length === 0){
+  if(!req.body.name || !req.body.location || !req.body.tags || req.body.tags.length === 0){
     res.status(400).send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
 
