@@ -165,15 +165,22 @@
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
           <input placeholder="&nbsp;&nbsp;Tags* - max 5, use comma, space or enter to separate..."
+                 #tagInput
                  [matChipInputFor]="chipList"
                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                  [matChipInputAddOnBlur]="addOnBlur"
+                 [matAutocomplete]="auto"
                  pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
                  (matChipInputTokenEnd)="add($event)"
                  formArrayName="tags"
                  required
           />
         </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+            {{ tag }}
+          </mat-option>
+        </mat-autocomplete>
         <mat-error *ngIf="bookmarkForm.get('tags').status === 'INVALID'">{{getTagsErrorMessage()}}</mat-error>
       </mat-form-field>
       <div [hidden]="bookmarkForm.get('tags').status === 'VALID' || bookmarkForm.get('tags').pristine"
