@@ -11,6 +11,7 @@ import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
 import {Observable} from 'rxjs/index';
 import {map, startWith} from 'rxjs/internal/operators';
+import {languages} from '../../shared/language-options';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -33,6 +34,8 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
 
   // Enter, comma, space
   separatorKeysCodes = [ENTER, COMMA, SPACE];
+
+  languages = languages;
 
   allTags = [
     'Apple',
@@ -64,14 +67,9 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
       map((tag: string | null) => tag ? this.filter(tag) : this.allTags.slice())
-/*      startWith(''),
-      map(val => this.filter(val))*/
     );
   }
 
-/*  filter(val: string): string[] {
-    return this.allTags.filter(option => option.toLowerCase().indexOf(val.toLowerCase()) === 0);
-  }*/
   filter(name: string) {
     return this.allTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
