@@ -117,11 +117,6 @@ export const languages = [
   {'code': 'nr', 'name': 'South Ndebele', 'nativeName': 'isiNdebele'},
   {'code': 'oc', 'name': 'Occitan', 'nativeName': 'Occitan'},
   {'code': 'oj', 'name': 'Ojibwe, Ojibwa', 'nativeName': 'ᐊᓂᔑᓈᐯᒧᐎᓐ'},
-  {
-    'code': 'cu',
-    'name': 'Old Church Slavonic, Church Slavic, Church Slavonic, Old Bulgarian, Old Slavonic',
-    'nativeName': 'ѩзыкъ словѣньскъ'
-  },
   {'code': 'om', 'name': 'Oromo', 'nativeName': 'Afaan Oromoo'},
   {'code': 'or', 'name': 'Oriya', 'nativeName': 'ଓଡ଼ିଆ'},
   {'code': 'os', 'name': 'Ossetian, Ossetic', 'nativeName': 'ирон æвзаг'},
