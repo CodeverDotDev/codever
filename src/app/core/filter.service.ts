@@ -20,9 +20,9 @@ export class BookmarkFilterService {
    */
   filterBookmarksBySearchTerm(query: string, language: string, observableListBookmark: Observable<List<Bookmark>>): Bookmark[] {
 
-    const termsAndTags: [string[], string[]] = this.splitSearchQuery(query);
-    const terms: string[] = termsAndTags[0];
-    const tags: string[] = termsAndTags[1];
+    const searchedTermsAndTags: [string[], string[]] = this.splitSearchQuery(query);
+    const searchedTerms: string[] = searchedTermsAndTags[0];
+    const searchedTags: string[] = searchedTermsAndTags[1];
     let result: Bookmark[] = [];
 
     observableListBookmark.subscribe(
@@ -31,11 +31,11 @@ export class BookmarkFilterService {
         if (language && language !== 'all') {
           filteredBookmarks = filteredBookmarks.filter( x => x.language === language);
         }
-        tags.forEach(tag => {
+        searchedTags.forEach(tag => {
           filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag));
         });
-        terms.forEach(term => {
-          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTerm(x, term.trim()));
+        searchedTerms.forEach(term => {
+          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsSearchedTerm(x, term.trim()));
         });
 
         result = filteredBookmarks;
@@ -126,12 +126,12 @@ export class BookmarkFilterService {
    * RegExp with matching words (more restrictive and does not support propery Unicode)
    *
    * @param bookmark
-   * @param term
+   * @param searchedTerm
    * @returns {boolean}
    */
-  private bookmarkContainsTerm(bookmark: Bookmark, term: string): boolean {
+  private bookmarkContainsSearchedTerm(bookmark: Bookmark, searchedTerm: string): boolean {
     let result = false;
-    const pattern = new RegExp('\\b' + term.toLowerCase() + '\\b');
+    const pattern = new RegExp('\\b' + searchedTerm.toLowerCase() + '\\b');
 /*    if (bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
@@ -139,6 +139,7 @@ export class BookmarkFilterService {
     ) {*/
       if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
         || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
+        || (bookmark.location.toLowerCase().indexOf(searchedTerm.toLowerCase()) !== -1) // enables search of entire url "/" is not caught in regex as not word character
         || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
       ) {
         result = true;
