@@ -9,8 +9,8 @@ import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.service';
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
-import {Observable} from 'rxjs/index';
-import {map, startWith} from 'rxjs/internal/operators';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 import {languages} from '../../shared/language-options';
 
 @Component({
@@ -66,19 +66,11 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
 
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
-      map((tag: string | null) => tag ? this.filter(tag) : this.allTags.slice())
+      map((tag: string | null) => {
+        console.log(tag);
+        return tag ? this.filter(tag) : this.allTags.slice();
+      })
     );
-  }
-
-  filter(name: string) {
-    return this.allTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    const tags = this.bookmarkForm.get('tags') as FormArray;
-    tags.push(this.formBuilder.control(event.option.viewValue));
-    this.tagInput.nativeElement.value = '';
-    this.tagCtrl.setValue(null);
   }
 
   ngOnInit(): void {
@@ -113,8 +105,44 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
             }
           });
         }
-
       });
+  }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    // Add our tag
+    if ((value || '').trim()) {
+      const tags = this.bookmarkForm.get('tags') as FormArray;
+      tags.push(this.formBuilder.control(value.trim()));
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+
+    this.tagCtrl.setValue(null);
+  }
+
+  remove(index: number): void {
+    const tags = this.bookmarkForm.get('tags') as FormArray;
+
+    if (index >= 0) {
+      tags.removeAt(index);
+    }
+  }
+
+  filter(name: string) {
+    return this.allTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    const tags = this.bookmarkForm.get('tags') as FormArray;
+    tags.push(this.formBuilder.control(event.option.viewValue));
+    this.tagInput.nativeElement.value = '';
+    this.tagCtrl.setValue(null);
   }
 
   saveBookmark(model: Bookmark) {
@@ -154,7 +182,6 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   }
 
   onStarClick() {
-    console.log('Starred the bookmark');
     this.displayModal = 'none';
     this.makePublic = false;
     if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
@@ -175,32 +202,6 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   onCancelClick() {
     this.displayModal = 'none';
     this.makePublic = false;
-  }
-
-  add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-
-    // Add our fruit
-    if ((value || '').trim()) {
-      const tags = this.bookmarkForm.get('tags') as FormArray;
-      tags.push(this.formBuilder.control(value.trim()));
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-
-    this.tagCtrl.setValue(null);
-  }
-
-  remove(index: number): void {
-    const tags = this.bookmarkForm.get('tags') as FormArray;
-
-    if (index >= 0) {
-      tags.removeAt(index);
-    }
   }
 
   getTagsErrorMessage() {
