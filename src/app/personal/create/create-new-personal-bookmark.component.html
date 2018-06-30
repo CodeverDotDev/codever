@@ -66,6 +66,7 @@
           </mat-chip>
           <input placeholder="&nbsp;&nbsp;Tags* - max 5, use comma, space or enter to separate..."
                  #tagInput
+                 [formControl]="tagCtrl"
                  [matChipInputFor]="chipList"
                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                  [matChipInputAddOnBlur]="addOnBlur"
