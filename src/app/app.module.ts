@@ -16,6 +16,7 @@ import {PageNotFoundComponent} from './not-found.component';
 import {MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule} from '@angular/material';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {OverlayModule} from "@angular/cdk/overlay";
 
 @NgModule({
   exports: [
@@ -34,6 +35,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     CoreModule,
     KeycloakAngularModule,
     PublicBookmarksModule,
+    OverlayModule,
     // routing module
     AppRoutingModule
   ],
