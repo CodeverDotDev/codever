@@ -3,8 +3,9 @@ import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {MarkdownService} from '../markdown.service';
-import {MatChipInputEvent} from "@angular/material";
-import {COMMA, ENTER, SPACE} from "@angular/cdk/keycodes";
+import {MatChipInputEvent} from '@angular/material';
+import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
+import {languages} from '../../shared/language-options';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -22,6 +23,8 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
   // Enter, comma, space
   separatorKeysCodes = [ENTER, COMMA, SPACE];
+
+  languages = languages;
 
   constructor(
     private userBookmarkStore: PersonalBookmarksStore,

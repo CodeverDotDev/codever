@@ -11,6 +11,7 @@ import {BookmarkFilterService} from '../../../core/filter.service';
 import {Bookmark} from '../../../core/model/bookmark';
 import {Input} from '@angular/core';
 import {List} from 'immutable';
+import {languages} from '../../../shared/language-options';
 
 @Component({
     selector: 'app-pubic-bookmark-search',
@@ -36,6 +37,8 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   counter = 10;
   previousTerm: string;
   language = 'all';
+
+  languages = languages;
 
   constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
 
@@ -73,7 +76,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
       catchError(error => {
         console.log(error);
         return observableOf<Bookmark[]>([]);
-      }),);
+      }), );
 
 
   }
