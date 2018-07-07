@@ -12,6 +12,8 @@ import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {languages} from '../../shared/language-options';
+import {allTags} from '../../core/model/all-tags.const';
+import {tagsValidator} from '../../shared/tags-validation.directive';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -37,13 +39,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
 
   languages = languages;
 
-  allTags = [
-    'Apple',
-    'Lemon',
-    'Lime',
-    'Orange',
-    'Strawberry'
-  ];
+  allTags = allTags;
 
   tagCtrl = new FormControl();
 
@@ -67,7 +63,6 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
       map((tag: string | null) => {
-        console.log(tag);
         return tag ? this.filter(tag) : this.allTags.slice();
       })
     );
@@ -81,7 +76,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
-      tags: this.formBuilder.array([], [Validators.required]),
+      tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
       githubURL: '',
       description: '',
@@ -124,6 +119,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     }
 
     this.tagCtrl.setValue(null);
+    this.tags.markAsDirty();
   }
 
   remove(index: number): void {
@@ -132,6 +128,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     if (index >= 0) {
       tags.removeAt(index);
     }
+    this.tags.markAsDirty();
   }
 
   filter(name: string) {
@@ -204,14 +201,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     this.makePublic = false;
   }
 
-  getTagsErrorMessage() {
-    if (this.bookmarkForm.get('tags').hasError('required')) {
-      return 'You must enter a value';
-    }
-/*    return this.bookmarkForm.get('tags').hasError('required') ? 'You must enter a value' :
-      this.bookmarkForm.get('tags').hasError('email') ? 'Not a valid email' :
-        '';*/
-  }
-
   get tags() { return <FormArray>this.bookmarkForm.get('tags'); }
 }
+
+

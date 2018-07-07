@@ -65,6 +65,7 @@
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
           <input placeholder="&nbsp;&nbsp;Tags* - max 5, use comma, space or enter to separate..."
+                 matInput
                  #tagInput
                  [formControl]="tagCtrl"
                  [matChipInputFor]="chipList"
@@ -74,7 +75,6 @@
                  pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
                  (matChipInputTokenEnd)="add($event)"
                  formArrayName="tags"
-                 required
           />
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
@@ -82,14 +82,17 @@
             {{ tag }}
           </mat-option>
         </mat-autocomplete>
-        <mat-error *ngIf="bookmarkForm.get('tags').status === 'INVALID'">{{getTagsErrorMessage()}}</mat-error>
       </mat-form-field>
-      <div [hidden]="bookmarkForm.get('tags').status === 'VALID' || bookmarkForm.get('tags').pristine"
+      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)"
            class="alert alert-danger">
-        Tags are required
+        <div *ngIf="tags.errors.tagsAreRequired">
+          Tags are required.
+        </div>
+        <div *ngIf="tags.errors.tooManyTags">
+          You can add maximum 5 tags.
+        </div>
       </div>
     </div>
-
 
     <div class="form-group">
       <label for="publishedOn">Published on <i class="fa fa-calendar"></i></label>
