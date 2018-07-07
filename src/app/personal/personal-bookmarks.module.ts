@@ -10,7 +10,12 @@ import {AuthGuard} from './auth-guard.service';
 import {RouterModule} from '@angular/router';
 import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
 import {CreateNewPersonalBookmarkComponent} from './create/create-new-personal-bookmark.component';
-import {MatChipsModule, MatFormFieldModule, MatIconModule, MatInputModule} from "@angular/material";
+import {
+  MatAutocompleteModule, MatChipsModule, MatFormFieldModule, MatIconModule,
+  MatInputModule
+} from '@angular/material';
+import {OverlayModule} from "@angular/cdk/overlay";
+
 
 @NgModule({
   declarations : [
@@ -24,11 +29,13 @@ import {MatChipsModule, MatFormFieldModule, MatIconModule, MatInputModule} from 
     SharedModule,
     RouterModule,
     FormsModule,
+    OverlayModule,
     ReactiveFormsModule,
     MatChipsModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    MatAutocompleteModule,
     PersonalBookmarksRoutingModule
   ],
   providers: [
