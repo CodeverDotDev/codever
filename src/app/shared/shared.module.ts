@@ -4,6 +4,7 @@ import {HighLightHtmlPipe} from './highlight.no-html-tags.pipe';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
+import {TagsValidatorDirective} from "./tags-validation.directive";
 
 
 /**
@@ -12,7 +13,7 @@ import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
  */
 @NgModule({
   imports:      [ CommonModule ],
-  declarations: [ HighLightPipe, HighLightHtmlPipe, AsyncBookmarkListComponent ],
+  declarations: [ HighLightPipe, HighLightHtmlPipe, AsyncBookmarkListComponent, TagsValidatorDirective ],
   exports:      [ HighLightPipe, HighLightHtmlPipe, AsyncBookmarkListComponent, CommonModule, FormsModule ]
 })
 export class SharedModule { }
