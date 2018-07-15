@@ -430,6 +430,7 @@ export const allTags = [
   'news',
   'nexus',
   'nginx',
+  'ngrx',
   'niezależne-od-języka-programowania',
   'node',
   'node.js',
