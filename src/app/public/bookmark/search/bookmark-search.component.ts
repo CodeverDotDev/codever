@@ -14,7 +14,7 @@ import {List} from 'immutable';
 import {languages} from '../../../shared/language-options';
 
 @Component({
-    selector: 'app-pubic-bookmark-search',
+    selector: 'app-public-bookmark-search',
     templateUrl: 'bookmark-search.component.html',
     styleUrls: [ 'bookmark-search.component.scss' ],
     providers: [BookmarkSearchService]
