@@ -207,7 +207,6 @@ export const allTags = [
   'event-driven',
   'event-stream',
   'exception-handling',
-  'expressj',
   'expressjs',
   'f-sharp',
   'fair-use',
