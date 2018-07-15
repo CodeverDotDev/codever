@@ -432,8 +432,6 @@ export const allTags = [
   'nginx',
   'ngrx',
   'niezależne-od-języka-programowania',
-  'node',
-  'node.js',
   'nodejs',
   'nodemon',
   'non-dépendant-du-langage',
