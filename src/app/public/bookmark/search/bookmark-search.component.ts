@@ -28,7 +28,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   query: string;
 
   filteredBookmarks: Observable<Bookmark[]>;
-  filterBookmarksBySearchTerm: Bookmark[];
+  private filterBookmarksBySearchTerm: Bookmark[];
 
   term = new FormControl();
   queryText: string;
