@@ -10,11 +10,11 @@ import {ViewChild} from '@angular/core';
 
 
 @Component({
-  selector: 'my-bookmarks',
-  templateUrl: './bookmarks.component.html',
-  styleUrls: ['./bookmarks.component.scss']
+  selector: 'app-public-bookmarks',
+  templateUrl: './public-bookmarks.component.html',
+  styleUrls: ['./public-bookmarks.component.scss']
 })
-export class BookmarksComponent implements OnInit {
+export class PublicBookmarksComponent implements OnInit {
 
   publicBookmarks: Observable<List<Bookmark>>;
   tags: Tag[] = [];
