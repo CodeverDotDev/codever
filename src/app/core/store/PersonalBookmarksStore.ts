@@ -8,10 +8,10 @@ import {Logger} from '../logger.service';
 import {ErrorService} from '../error/error.service';
 import {Response} from '@angular/http';
 import {PersonalBookmarksService} from '../personal-bookmarks.service';
-import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 import {Router} from '@angular/router';
 
 import {KeycloakService} from 'keycloak-angular';
+import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
 
 @Injectable()
 export class PersonalBookmarksStore {
@@ -25,7 +25,7 @@ export class PersonalBookmarksStore {
                 private router: Router,
                 private errorService: ErrorService,
                 private keycloakService: KeycloakService,
-                private bookmarkStore: BookmarkStore
+                private bookmarkStore: PublicBookmarksStore
     ) {
       keycloakService.loadUserProfile().then( keycloakProfile => {
         this.userId = keycloakProfile.id;

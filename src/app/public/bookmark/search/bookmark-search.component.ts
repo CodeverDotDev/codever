@@ -4,7 +4,6 @@ import {of as observableOf, Observable} from 'rxjs';
 import {catchError, switchMap, debounceTime} from 'rxjs/operators';
 import {Component, OnInit, AfterViewInit, OnChanges, SimpleChanges} from '@angular/core';
 import {BookmarkSearchService} from './bookmark-search.service';
-import {BookmarkStore} from '../store/BookmarkStore';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {BookmarkFilterService} from '../../../core/filter.service';
@@ -12,6 +11,7 @@ import {Bookmark} from '../../../core/model/bookmark';
 import {Input} from '@angular/core';
 import {List} from 'immutable';
 import {languages} from '../../../shared/language-options';
+import {PublicBookmarksStore} from '../store/public-bookmarks.store';
 
 @Component({
     selector: 'app-public-bookmark-search',
@@ -40,7 +40,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   languages = languages;
 
-  constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
+  constructor(private router: Router, private bookmarkStore: PublicBookmarksStore, private bookmarkFilterService: BookmarkFilterService) {}
 
   ngOnInit(): void {
 

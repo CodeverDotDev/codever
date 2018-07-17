@@ -5,12 +5,12 @@ import {SharedModule} from '../shared/shared.module';
 import {AboutComponent} from './about/about.component';
 import {BookmarkSearchComponent} from './bookmark/search/bookmark-search.component';
 import {BookmarkSearchService} from './bookmark/search/bookmark-search.service';
-import {BookmarkStore} from './bookmark/store/BookmarkStore';
 import {TagService} from './tag/tag.service';
 import {TagComponent} from './tag/tag.component';
 import {PublicBookmarksRoutingModule} from './public-routing.module';
 import {PublicBookmarksService} from './bookmark/public-bookmarks.service';
 import {PublicBookmarksComponent} from './bookmark/public-bookmarks.component';
+import {PublicBookmarksStore} from './bookmark/store/public-bookmarks.store';
 
 @NgModule({
   declarations : [
@@ -27,7 +27,7 @@ import {PublicBookmarksComponent} from './bookmark/public-bookmarks.component';
   providers: [
     PublicBookmarksService,
     BookmarkSearchService,
-    BookmarkStore,
+    PublicBookmarksStore,
     TagService
   ]
 })
