@@ -491,6 +491,7 @@ export const allTags = [
   'picolisp',
   'pki',
   'play-scala',
+  'plugins',
   'plt',
   'pm2',
   'podcast',
