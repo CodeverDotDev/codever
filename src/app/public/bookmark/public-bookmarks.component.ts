@@ -4,7 +4,7 @@ import {List} from 'immutable';
 import {Bookmark} from '../../core/model/bookmark';
 import {Tag} from '../../core/model/tags';
 import {ActivatedRoute} from '@angular/router';
-import {BookmarkSearchComponent} from './search/bookmark-search.component';
+import {BookmarkSearchComponent} from '../../shared/search/bookmark-search.component';
 import {ViewChild} from '@angular/core';
 import {PublicBookmarksStore} from './store/public-bookmarks.store';
 

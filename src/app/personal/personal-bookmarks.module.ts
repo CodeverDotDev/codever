@@ -28,9 +28,7 @@ import {OverlayModule} from "@angular/cdk/overlay";
   imports: [
     SharedModule,
     RouterModule,
-    FormsModule,
     OverlayModule,
-    ReactiveFormsModule,
     MatChipsModule,
     MatFormFieldModule,
     MatInputModule,
