@@ -1,11 +1,10 @@
-import {Component, OnInit, NgZone} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs';
 import {List} from 'immutable';
 import {Bookmark} from '../../core/model/bookmark';
 import {Tag} from '../../core/model/tags';
 import {ActivatedRoute} from '@angular/router';
 import {BookmarkSearchComponent} from '../../shared/search/bookmark-search.component';
-import {ViewChild} from '@angular/core';
 import {PublicBookmarksStore} from './store/public-bookmarks.store';
 
 
@@ -40,17 +39,13 @@ export class PublicBookmarksComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.route
-      .queryParams
-      .subscribe(params => {
-        if (params['search']) {
-          this.query = params['search'];
-          this.query = this.query.replace(/\+/g, ' ');
-        } else if (params['q']) {
-          this.query = params['q'];
-          this.query = this.query.replace(/\+/g,  ' ');
-        }
-      });
+    this.query = this.route.snapshot.queryParamMap.get('search');
+    if (!this.query) {
+      this.query = this.route.snapshot.queryParamMap.get('q');
+      if (this.query) {
+        this.query = this.query.replace(/\+/g, ' ');
+      }
+    }
 
     this.getBookmarks();
 
