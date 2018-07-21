@@ -1,7 +1,7 @@
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {JsonpModule} from '@angular/http';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ReactiveFormsModule} from '@angular/forms';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app.routing';
 import './rxjs-extensions';
@@ -16,7 +16,7 @@ import {PageNotFoundComponent} from './not-found.component';
 import {MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule} from '@angular/material';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {OverlayModule} from "@angular/cdk/overlay";
+import {OverlayModule} from '@angular/cdk/overlay';
 
 @NgModule({
   exports: [
@@ -26,7 +26,6 @@ import {OverlayModule} from "@angular/cdk/overlay";
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule,
     ReactiveFormsModule,
     JsonpModule,
     RouterModule,

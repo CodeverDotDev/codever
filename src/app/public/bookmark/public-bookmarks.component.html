@@ -1,0 +1,11 @@
+<div id="public-search-box">
+  <div *ngIf="publicBookmarks">
+    <app-bookmark-search [bookmarks]="publicBookmarks" [query]="query" [context]="'public'"></app-bookmark-search>
+  </div>
+
+  <h2>Tags</h2>
+  <div class="tags-group">
+    <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag)" style="cursor: pointer">{{tag}}</span>
+    <div class="clear"></div>
+  </div>
+</div>
