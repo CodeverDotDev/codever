@@ -5,7 +5,7 @@
 
   <h2>Tags</h2>
   <div class="tags-group">
-    <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag.name)" style="cursor: pointer">{{tag.name}}</span>
+    <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag)" style="cursor: pointer">{{tag}}</span>
     <div class="clear"></div>
   </div>
 </div>
