@@ -3,9 +3,9 @@ import {Observable} from 'rxjs';
 import {Bookmark} from '../core/model/bookmark';
 import {Router} from '@angular/router';
 import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';
-import {BookmarkStore} from '../public/bookmark/store/BookmarkStore';
 import {KeycloakService} from 'keycloak-angular';
 import {PublicBookmarksService} from '../public/bookmark/public-bookmarks.service';
+import {PublicBookmarksStore} from '../public/bookmark/store/public-bookmarks.store';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -27,7 +27,7 @@ export class AsyncBookmarkListComponent  implements OnInit {
 
   private router: Router;
   private userBookmarkStore: PersonalBookmarksStore;
-  private publicBookmarkStore: BookmarkStore;
+  private publicBookmarkStore: PublicBookmarksStore;
   private bookmarkService: PublicBookmarksService;
   private keycloakService: KeycloakService;
 
@@ -37,7 +37,7 @@ export class AsyncBookmarkListComponent  implements OnInit {
     private injector: Injector,
 ) {
     this.router = <Router>this.injector.get(Router);
-    this.publicBookmarkStore = <BookmarkStore>this.injector.get(BookmarkStore);
+    this.publicBookmarkStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
     this.bookmarkService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
 

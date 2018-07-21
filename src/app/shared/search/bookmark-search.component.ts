@@ -1,23 +1,19 @@
+import {Observable, of as observableOf} from 'rxjs';
 
-import {of as observableOf, Observable} from 'rxjs';
-
-import {catchError, switchMap, debounceTime} from 'rxjs/operators';
-import {Component, OnInit, AfterViewInit, OnChanges, SimpleChanges} from '@angular/core';
-import {BookmarkSearchService} from './bookmark-search.service';
-import {BookmarkStore} from '../store/BookmarkStore';
+import {catchError, debounceTime, switchMap} from 'rxjs/operators';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
-import {BookmarkFilterService} from '../../../core/filter.service';
-import {Bookmark} from '../../../core/model/bookmark';
-import {Input} from '@angular/core';
+import {BookmarkFilterService} from '../../core/filter.service';
+import {Bookmark} from '../../core/model/bookmark';
 import {List} from 'immutable';
-import {languages} from '../../../shared/language-options';
+import {languages} from '../language-options';
+import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
 
 @Component({
-    selector: 'app-pubic-bookmark-search',
-    templateUrl: 'bookmark-search.component.html',
-    styleUrls: [ 'bookmark-search.component.scss' ],
-    providers: [BookmarkSearchService]
+    selector: 'app-bookmark-search',
+    templateUrl: './bookmark-search.component.html',
+    styleUrls: [ './bookmark-search.component.scss' ]
 })
 export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
@@ -27,8 +23,11 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   @Input()
   query: string;
 
+  @Input()
+  context: string;
+
   filteredBookmarks: Observable<Bookmark[]>;
-  filterBookmarksBySearchTerm: Bookmark[];
+  private filterBookmarksBySearchTerm: Bookmark[];
 
   term = new FormControl();
   queryText: string;
@@ -40,7 +39,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   languages = languages;
 
-  constructor(private router: Router, private bookmarkStore: BookmarkStore, private bookmarkFilterService: BookmarkFilterService) {}
+  constructor(private router: Router, private bookmarkStore: PublicBookmarksStore, private bookmarkFilterService: BookmarkFilterService) {}
 
   ngOnInit(): void {
 

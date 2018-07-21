@@ -1,8 +1,8 @@
 import {RouterModule, Routes} from '@angular/router';
 import {NgModule} from '@angular/core';
-import {BookmarksComponent} from './bookmark/bookmarks.component';
 import {TagComponent} from './tag/tag.component';
 import {AboutComponent} from './about/about.component';
+import {PublicBookmarksComponent} from './bookmark/public-bookmarks.component';
 
 const publicBookmarksRoutes: Routes = [
   {
@@ -20,7 +20,7 @@ const publicBookmarksRoutes: Routes = [
   },
   {
     path: '',
-    component: BookmarksComponent
+    component: PublicBookmarksComponent
   }
 ];
 @NgModule({

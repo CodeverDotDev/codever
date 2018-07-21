@@ -5,15 +5,15 @@ import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angul
 import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
 import {MarkdownService} from '../markdown.service';
 import {KeycloakService} from 'keycloak-angular';
-import {BookmarkStore} from '../../public/bookmark/store/BookmarkStore';
 import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.service';
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {languages} from '../../shared/language-options';
-import {allTags} from '../../core/model/all-tags.const';
+import {allTags} from '../../core/model/all-tags.const.en';
 import {tagsValidator} from '../../shared/tags-validation.directive';
+import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -53,7 +53,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     private keycloakService: KeycloakService,
     private bookmarkService: PublicBookmarksService,
     private markdownServce: MarkdownService,
-    private publicBookmarkStore: BookmarkStore
+    private publicBookmarkStore: PublicBookmarksStore
   ) {
 
     keycloakService.loadUserProfile().then( keycloakProfile => {
