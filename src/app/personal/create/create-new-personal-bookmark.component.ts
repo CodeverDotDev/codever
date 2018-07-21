@@ -11,7 +11,7 @@ import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {languages} from '../../shared/language-options';
-import {allTags} from '../../core/model/all-tags.const';
+import {allTags} from '../../core/model/all-tags.const.en';
 import {tagsValidator} from '../../shared/tags-validation.directive';
 import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
 
