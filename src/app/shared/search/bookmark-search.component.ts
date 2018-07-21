@@ -11,7 +11,7 @@ import {languages} from '../language-options';
 import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
 
 @Component({
-    selector: 'app-public-bookmark-search',
+    selector: 'app-bookmark-search',
     templateUrl: './bookmark-search.component.html',
     styleUrls: [ './bookmark-search.component.scss' ]
 })
@@ -22,6 +22,9 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
   query: string;
+
+  @Input()
+  context: string;
 
   filteredBookmarks: Observable<Bookmark[]>;
   private filterBookmarksBySearchTerm: Bookmark[];

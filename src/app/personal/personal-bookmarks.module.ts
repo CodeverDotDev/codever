@@ -1,9 +1,7 @@
 import {NgModule} from '@angular/core';
 import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {PersonalBookmarksRoutingModule} from './personal-bookmarks-routing.module';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
-import {PersonalBookmarkSearchComponent} from './search/personal-bookmark-search.component';
 import {SharedModule} from '../shared/shared.module';
 import {MarkdownService} from './markdown.service';
 import {AuthGuard} from './auth-guard.service';
@@ -14,7 +12,7 @@ import {
   MatAutocompleteModule, MatChipsModule, MatFormFieldModule, MatIconModule,
   MatInputModule
 } from '@angular/material';
-import {OverlayModule} from "@angular/cdk/overlay";
+import {OverlayModule} from '@angular/cdk/overlay';
 
 
 @NgModule({
@@ -22,8 +20,7 @@ import {OverlayModule} from "@angular/cdk/overlay";
     PersonalBookmarksListComponent,
     CreateNewPersonalBookmarkComponent,
     UpdatePersonalBookmarkComponent,
-    PersonalBookmarksComponent,
-    PersonalBookmarkSearchComponent
+    PersonalBookmarksComponent
   ],
   imports: [
     SharedModule,
