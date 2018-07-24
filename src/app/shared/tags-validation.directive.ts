@@ -4,7 +4,7 @@ import {
   ValidatorFn
 } from '@angular/forms';
 
-/** A hero's name can't match the hero's alter ego */
+/** At least one tag is required with a maximum of 5 */
 export const tagsValidator: ValidatorFn = (control: FormArray): ValidationErrors | null => {
   const validationResponse = control.length === 0 ? {'tagsAreRequired': true} : control.length > 5 ? {'tooManyTags': true} : null;
   return validationResponse;
