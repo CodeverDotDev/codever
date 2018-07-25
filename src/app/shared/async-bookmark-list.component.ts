@@ -9,7 +9,8 @@ import {PublicBookmarksStore} from '../public/bookmark/store/public-bookmarks.st
 
 @Component({
   selector: 'app-async-bookmark-list',
-  templateUrl: './async-bookmark-list.component.html'
+  templateUrl: './async-bookmark-list.component.html',
+    styleUrls: [ './async-bookmark-list.component.scss' ]
 })
 export class AsyncBookmarkListComponent  implements OnInit {
 
