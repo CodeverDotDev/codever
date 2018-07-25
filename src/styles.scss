@@ -53,8 +53,6 @@ ul.tags li:not(:last-child):after {
 .url-under-title {
   font-size: small;
   font-style: italic;
-  margin-bottom: 10px;
-  margin-top: -3px;
 }
 
 //highlight
@@ -208,7 +206,7 @@ $rotation-angle: 45deg;
   margin-bottom: 0.5rem;
 }
 .card-body {
-  padding: 1rem;
+  padding: 0.8rem;
 }
 
 .card-footer {
