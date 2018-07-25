@@ -485,7 +485,6 @@ export const allTags = [
   'redux',
   'regex',
   'regular-expressions',
-  'regulární-výrazy',
   'resources',
   'rest',
   'rest-client',

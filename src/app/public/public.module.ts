@@ -7,6 +7,7 @@ import {PublicBookmarksRoutingModule} from './public-routing.module';
 import {PublicBookmarksService} from './bookmark/public-bookmarks.service';
 import {PublicBookmarksComponent} from './bookmark/public-bookmarks.component';
 import {PublicBookmarksStore} from './bookmark/store/public-bookmarks.store';
+import {MatTabsModule} from '@angular/material';
 
 @NgModule({
   declarations : [
@@ -16,7 +17,8 @@ import {PublicBookmarksStore} from './bookmark/store/public-bookmarks.store';
   ],
   imports: [
     SharedModule,
-    PublicBookmarksRoutingModule
+    PublicBookmarksRoutingModule,
+    MatTabsModule
   ],
   providers: [
     PublicBookmarksService,
