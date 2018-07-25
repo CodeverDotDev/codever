@@ -60,13 +60,22 @@
                  [matChipInputFor]="chipList"
                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                  [matChipInputAddOnBlur]="addOnBlur"
-                 pattern="^[-\w\s]+(?:,[-\w\s]*)*$"
                  (matChipInputTokenEnd)="add($event)"
                  name="tags"
                  id="tags"
-                 required
+                 matInput
+                 [matAutocomplete]="tdAuto"
+                 [(ngModel)]="currentTag"
+                 (ngModelChange)="tdTags = filterSuggestedTags(currentTag)"
+                 appTagsSizeValidator
+                 #tags="ngModel"
           />
         </mat-chip-list>
+        <mat-autocomplete #tdAuto="matAutocomplete">
+          <mat-option *ngFor="let tag of tdTags" [value]="tag">
+            <span>{{ tag }}</span>
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
       <div class="form-group">
         <label for="publishedOn">Published on <i class="fa fa-calendar"></i></label>

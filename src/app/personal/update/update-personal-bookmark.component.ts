@@ -6,6 +6,7 @@ import {MarkdownService} from '../markdown.service';
 import {MatChipInputEvent} from '@angular/material';
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
 import {languages} from '../../shared/language-options';
+import {allTags} from '../../core/model/all-tags.const.en';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -26,12 +27,18 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
   languages = languages;
 
+  tdTags: string[];
+  suggestedTags = allTags;
+  currentTag = '';
+
   constructor(
     private userBookmarkStore: PersonalBookmarksStore,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) {
+    this.tdTags = allTags;
+  }
 
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
@@ -63,12 +70,14 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
     // Add our fruit
     if ((value || '').trim()) {
-      this.bookmark.tags.push( value.trim().toLowerCase());
+      this.bookmark.tags.push( this.currentTag);
     }
 
     // Reset the input value
     if (input) {
       input.value = '';
+      this.currentTag = '';
+      this.tdTags = allTags;
     }
   }
 
@@ -78,5 +87,14 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     if (index >= 0) {
       this.bookmark.tags.splice(index, 1);
     }
+  }
+
+  filterSuggestedTags(val: string) {
+    return val ? this._filter(this.suggestedTags, val) : this.suggestedTags;
+  }
+
+  private _filter(tags: string[], val: string) {
+    const filterValue = val.toLowerCase();
+    return tags.filter(tag => tag.toLowerCase().startsWith(filterValue));
   }
 }
