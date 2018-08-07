@@ -17,6 +17,8 @@ import {MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule} from '@angular/material';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {OverlayModule} from '@angular/cdk/overlay';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   exports: [
@@ -36,7 +38,8 @@ import {OverlayModule} from '@angular/cdk/overlay';
     PublicBookmarksModule,
     OverlayModule,
     // routing module
-    AppRoutingModule
+    AppRoutingModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     {
