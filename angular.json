@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bookmarks": {
+    "codingmarks": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -18,7 +18,8 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
-              "src/assets/favicon.ico"
+              "src/assets/favicon.ico",
+              "src/manifest.json"
             ],
             "styles": [
               "src/styles.scss"
@@ -41,25 +42,26 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "serviceWorker": true
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "bookmarks:build"
+            "browserTarget": "codingmarks:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "bookmarks:build:production"
+              "browserTarget": "codingmarks:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bookmarks:build"
+            "browserTarget": "codingmarks:build"
           }
         },
         "test": {
@@ -75,7 +77,8 @@
             ],
             "assets": [
               "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              "src/manifest.json"
             ]
           }
         },
@@ -91,7 +94,7 @@
         }
       }
     },
-    "bookmarks-e2e": {
+    "codingmarks-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -100,7 +103,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "bookmarks:serve"
+            "devServerTarget": "codingmarks:serve"
           }
         },
         "lint": {
@@ -115,7 +118,7 @@
       }
     }
   },
-  "defaultProject": "bookmarks",
+  "defaultProject": "codingmarks",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
