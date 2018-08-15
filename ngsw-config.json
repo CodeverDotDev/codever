@@ -20,5 +20,18 @@
         "/assets/**"
       ]
     }
-  }]
+  }],
+  "dataGroups": [
+    {
+      "name": "api-performance",
+      "urls": [
+        "/api"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "3d"
+      }
+    }
+  ]
 }
