@@ -508,6 +508,8 @@ export const allTags = [
   'sather',
   'scala',
   'scalability',
+  'scheduler',
+  'scheduling',
   'scheme',
   'scilab',
   'scp',
