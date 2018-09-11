@@ -1,4 +1,4 @@
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators';
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -9,9 +9,7 @@ import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.ser
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
 import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
 import {languages} from '../../shared/language-options';
-import {allTags} from '../../core/model/all-tags.const.en';
 import {tagsValidator} from '../../shared/tags-validation.directive';
 import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
 
@@ -39,7 +37,8 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
 
   languages = languages;
 
-  allTags = allTags;
+
+  autocompleteTags = [];
 
   tagCtrl = new FormControl();
 
@@ -60,10 +59,12 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
       this.userId = keycloakProfile.id;
     });
 
+    this.autocompleteTags = personalBookmarksStore.getPersonalAutomcompleteTags()
+
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
       map((tag: string | null) => {
-        return tag ? this.filter(tag) : this.allTags.slice();
+        return tag ? this.filter(tag) : this.autocompleteTags.slice();
       })
     );
   }
@@ -132,7 +133,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   }
 
   filter(name: string) {
-    return this.allTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
+    return this.autocompleteTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
