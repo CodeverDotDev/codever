@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 
 import {KeycloakService} from 'keycloak-angular';
 import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
+import {publicTags} from '../model/all-tags.const.en';
 
 @Injectable()
 export class PersonalBookmarksStore {
@@ -19,6 +20,9 @@ export class PersonalBookmarksStore {
   private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
 
   private userId: String;
+
+  private personalTags: Set<string>;
+  autocompleteTags = publicTags;
 
   constructor(private userBookmarkService: PersonalBookmarksService,
                 private logger: Logger,
@@ -44,25 +48,27 @@ export class PersonalBookmarksStore {
             return result;
           });
 
+          this.personalTags = new Set();
+          bookmarks.forEach(bookmark => {
+            // allTags.merge(allTags, OrderedSet.fromKeys(bookmark.tags));
+            bookmark.tags.forEach(tag => {
+              this.personalTags = this.personalTags.add(tag.trim().toLowerCase());
+            });
+          });
           this._bookmarks.next(List(bookmarks));
         },
         err => console.error('Error retrieving bookmarks', err)
       );
   }
 
-  // Function to compare two objects by comparing their `unwrappedName` property.
-  compareFn(a: Bookmark, b: Bookmark): number {
-    if (a.publishedOn < b.publishedOn) {
-      return -1;
-    } else if (a.publishedOn > b.publishedOn) {
-      return 1;
-    } else {
-      return 0;
-    }
-  };
-
   getBookmarks(): Observable<List<Bookmark>> {
       return this._bookmarks.asObservable();
+  }
+
+  getPersonalAutomcompleteTags(): string[] {
+    this.personalTags.forEach(e => this.autocompleteTags.add(e));
+
+    return Array.from(this.autocompleteTags).sort();
   }
 
   addBookmark(userId: string, newBookmark: Bookmark): Observable<any> {

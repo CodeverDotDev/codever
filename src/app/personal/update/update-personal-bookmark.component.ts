@@ -28,7 +28,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   languages = languages;
 
   tdTags: string[];
-  suggestedTags = allTags;
+  autocompleteTags = [];
   currentTag = '';
 
   constructor(
@@ -44,8 +44,8 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     this.route.params.forEach((params: Params) => {
       const id = params['id'];
       this.bookmark = this.userBookmarkStore.getBookmark(id);
-      console.log(this.bookmark);
     });
+    this.autocompleteTags = this.userBookmarkStore.getPersonalAutomcompleteTags();
   }
 
   updateBookmark(): void {
@@ -90,7 +90,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   }
 
   filterSuggestedTags(val: string) {
-    return val ? this._filter(this.suggestedTags, val) : this.suggestedTags;
+    return val ? this._filter(this.autocompleteTags, val) : this.autocompleteTags;
   }
 
   private _filter(tags: string[], val: string) {
