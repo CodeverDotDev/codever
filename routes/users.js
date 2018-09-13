@@ -26,6 +26,12 @@ router.get('/', function(req, res, next) {
  * CREATE bookmark for user
  */
 router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
+
+  let userId = req.kauth.grant.access_token.content.sub;
+  if(userId !== req.params.id) {
+    return res.status(401);
+  }
+
   const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml: converter.makeHtml(req.body.description);
 
   const bookmark = new Bookmark({
@@ -69,15 +75,19 @@ router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
 });
 
 /* GET bookmarks for user */
-router.get('/:id/bookmarks', keycloak.protect(), async (req, res) => {
+router.get('/:userId/bookmarks', keycloak.protect(), async (req, res) => {
   try{
     let bookmarks;
+    let userId = req.kauth.grant.access_token.content.sub;
+    if(userId !== req.params.userId) {
+      return res.status(401);
+    }
     if(req.query.term){
       var regExpTerm = new RegExp(req.query.term, 'i');
       var regExpSearch=[{name:{$regex:regExpTerm}}, {description:{$regex: regExpTerm }}, {category:{$regex:regExpTerm }}, {tags:{$regex:regExpTerm}}];
-      bookmarks = await Bookmark.find({userId:req.params.id, '$or':regExpSearch});
+      bookmarks = await Bookmark.find({userId:req.params.userId, '$or':regExpSearch});
     } else {//no filter - all bookmarks
-      bookmarks = await Bookmark.find({userId:req.params.id});
+      bookmarks = await Bookmark.find({userId:req.params.userId});
     }
 
     res.send(bookmarks);
@@ -92,6 +102,11 @@ router.get('/:id/bookmarks', keycloak.protect(), async (req, res) => {
  */
 router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res) => {
 
+  let userId = req.kauth.grant.access_token.content.sub;
+  if(userId !== req.params.userId) {
+    return res.status(401);
+  }
+
   if(!req.body.name || !req.body.location || !req.body.tags || req.body.tags.length === 0){
     res.status(400).send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
@@ -99,6 +114,7 @@ router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res
   if(req.body.tags.length > 5){
     res.status(400).send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
+
 
   if(!req.body.descriptionHtml){
     req.body.descriptionHtml = converter.makeHtml(req.body.description);
@@ -123,6 +139,14 @@ router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res
 * DELETE bookmark for user
 */
 router.delete('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res) => {
+
+  let userId = req.kauth.grant.access_token.content.sub;
+  console.log("user id delete", userId);
+  if(userId !== req.params.userId) {
+    return res.status(401);
+  }
+  console.log("user id delete", userId);
+
   try {
     let bookmark = await Bookmark.findOneAndRemove({_id: req.params.bookmarkId, userId: req.params.userId});
 
