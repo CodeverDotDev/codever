@@ -25,11 +25,12 @@ router.get('/', function(req, res, next) {
 /**
  * CREATE bookmark for user
  */
-router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
+router.post('/:userId/bookmarks', keycloak.protect(), async (req, res) => {
 
   let userId = req.kauth.grant.access_token.content.sub;
-  if(userId !== req.params.id) {
-    return res.status(401);
+  if(userId !== req.params.userId) {
+    console.log("req")
+    return res.status(401).send({response:'Operation not allowed - userId does not match logged in user'});
   }
 
   const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml: converter.makeHtml(req.body.description);
@@ -44,7 +45,7 @@ router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
     tags: req.body.tags,
     publishedOn: req.body.publishedOn,
     githubURL: req.body.githubURL,
-    userId: req.params.id,
+    userId: req.params.userId,
     shared: req.body.shared,
     starredBy: req.body.starredBy,
     lastAccessedAt: req.body.lastAccessedAt
@@ -61,8 +62,8 @@ router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
   try{
     let newBookmark = await bookmark.save();
 
-    res.set('Location', 'http://localhost:3000/' + req.params.id + '/bookmarks/' + newBookmark.id);
-    res.status(201).send({response:'Bookmark created for userId ' + req.params.id});
+    res.set('Location', 'http://localhost:3000/' + req.params.userId + '/bookmarks/' + newBookmark.id);
+    res.status(201).send({response:'Bookmark created for userId ' + req.params.userId});
 
   } catch (err){
     if (err.name === 'MongoError' && err.code === 11000) {
@@ -80,7 +81,7 @@ router.get('/:userId/bookmarks', keycloak.protect(), async (req, res) => {
     let bookmarks;
     let userId = req.kauth.grant.access_token.content.sub;
     if(userId !== req.params.userId) {
-      return res.status(401);
+      return res.status(401).send({response:'Operation not allowed - userId does not match logged in user'});
     }
     if(req.query.term){
       var regExpTerm = new RegExp(req.query.term, 'i');
@@ -104,7 +105,7 @@ router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res
 
   let userId = req.kauth.grant.access_token.content.sub;
   if(userId !== req.params.userId) {
-    return res.status(401);
+    return res.status(401).send({response:'Operation not allowed - userId does not match logged in user'});
   }
 
   if(!req.body.name || !req.body.location || !req.body.tags || req.body.tags.length === 0){
@@ -143,7 +144,7 @@ router.delete('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, 
   let userId = req.kauth.grant.access_token.content.sub;
   console.log("user id delete", userId);
   if(userId !== req.params.userId) {
-    return res.status(401);
+    return res.status(401).send({response:'Operation not allowed - userId does not match logged in user'});
   }
   console.log("user id delete", userId);
 
