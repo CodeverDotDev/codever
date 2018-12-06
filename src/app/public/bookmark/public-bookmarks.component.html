@@ -4,14 +4,14 @@
   </div>
 
   <mat-tab-group>
+    <mat-tab label="Recent">
+      <app-async-bookmark-list [bookmarks]="publicBookmarks" [shownSize]="30"></app-async-bookmark-list>
+    </mat-tab>
     <mat-tab label="Tags">
       <div class="tags-group">
         <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag)" style="cursor: pointer">{{tag}}</span>
         <div class="clear"></div>
       </div>
-    </mat-tab>
-    <mat-tab label="Recent">
-      <app-async-bookmark-list [bookmarks]="publicBookmarks" [shownSize]="30"></app-async-bookmark-list>
     </mat-tab>
   </mat-tab-group>
 </div>
