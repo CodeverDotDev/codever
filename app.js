@@ -1,6 +1,5 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -16,13 +15,8 @@ var rfs = require('rotating-file-stream');
 var app = express();
 mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
 
-
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 //access logging setup
 const logDirectory = (process.env.CONTAINER_HOME || '.') + '/log';
