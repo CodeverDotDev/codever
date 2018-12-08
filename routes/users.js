@@ -32,25 +32,8 @@ router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
     return res.status(401);
   }
 
-  const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml: converter.makeHtml(req.body.description);
+  const bookmark = buildCodingmarkFromRequest(req);
 
-  const bookmark = new Bookmark({
-    name: req.body.name,
-    location: req.body.location,
-    language: req.body.language,
-    description: req.body.description,
-    descriptionHtml: descriptionHtml,
-    category: req.body.category,
-    tags: req.body.tags,
-    publishedOn: req.body.publishedOn,
-    githubURL: req.body.githubURL,
-    userId: req.params.id,
-    shared: req.body.shared,
-    starredBy: req.body.starredBy,
-    lastAccessedAt: req.body.lastAccessedAt
-  });
-
-  console.log(bookmark.name);
   if(!bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0) {
     res.status(400).send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
@@ -73,6 +56,27 @@ router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
   }
 
 });
+
+let buildCodingmarkFromRequest = function (req) {
+  const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml: converter.makeHtml(req.body.description);
+  const bookmark = new Bookmark({
+    name: req.body.name,
+    location: req.body.location,
+    language: req.body.language,
+    description: req.body.description,
+    descriptionHtml: descriptionHtml,
+    category: req.body.category,
+    tags: req.body.tags,
+    publishedOn: req.body.publishedOn,
+    githubURL: req.body.githubURL,
+    userId: req.params.id,
+    shared: req.body.shared,
+    starredBy: req.body.starredBy,
+    lastAccessedAt: req.body.lastAccessedAt
+  });
+
+  return bookmark;
+};
 
 /* GET bookmarks for user */
 router.get('/:userId/bookmarks', keycloak.protect(), async (req, res) => {
