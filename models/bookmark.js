@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var mongooseUniqueValidator = require('mongoose-unique-validator');
 
 var bookmarkSchema = new Schema({
     name: {type:String, required: true},
@@ -20,8 +19,6 @@ var bookmarkSchema = new Schema({
 {
   timestamps: true
 });
-
-bookmarkSchema.plugin(mongooseUniqueValidator);
 
 module.exports = mongoose.model('Bookmark', bookmarkSchema);
 module.exports = mongoose.model('Bookmark', bookmarkSchema);
