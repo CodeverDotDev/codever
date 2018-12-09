@@ -93,7 +93,7 @@ router.get('/', async (req, res) => {
       const bookmarks = await Bookmark.find({'$or':regExpSearch})
       res.send(bookmarks);
     } else if (req.query.location) {
-      const bookmark = await Bookmark.findOne({'shared':true, location: req.query.location}).lean().exec()
+      const bookmark = await Bookmark.findOne({'shared':true, location: req.query.location}).lean().exec();
       if(!bookmark){
         return res.status(HttpStatus.NOT_FOUND).send("Codingmark not found");
       }
