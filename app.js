@@ -12,6 +12,8 @@ var bookmarks = require('./routes/bookmarks');
 var fs = require('fs-extra');
 var rfs = require('rotating-file-stream');
 
+var HttpStatus = require('http-status-codes');
+
 var app = express();
 mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
 
@@ -54,7 +56,7 @@ app.use('/api/public/bookmarks', bookmarks);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
-  err.status = 404;
+  err.status = HttpStatus.NOT_FOUND;
   next(err);
 });
 
@@ -64,7 +66,7 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
+    res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR);
     res.render('error', {
       message: err.message,
       error: err
@@ -75,7 +77,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
+  res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR);
   res.render('error', {
     message: err.message,
     error: {}
