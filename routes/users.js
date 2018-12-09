@@ -48,7 +48,7 @@ router.post('/:userId/bookmarks', keycloak.protect(), async (request, response) 
     let newBookmark = await bookmark.save();
 
     response
-      .set('Location', 'http://localhost:3000/' + request.params.userId + '/bookmarks/' + newBookmark.id)
+      .set('Location', `${config.basicApiUrl}private/${request.params.userId}/codingmarks/${newBookmark.id}`)
       .status(HttpStatus.CREATED)
       .send({response:'Bookmark created for userId ' + request.params.userId});
 
