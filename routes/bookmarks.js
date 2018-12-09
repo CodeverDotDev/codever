@@ -3,7 +3,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var router = express.Router();
 var Bookmark = require('../models/bookmark');
-var MyError = require('../models/error');
+var HttpStatus = require('http-status-codes');
 
 /* GET title of bookmark given its url */
 router.get('/scrape', function(req, res, next) {
@@ -63,7 +63,7 @@ router.get('/latest-entries', async (req, res) => {
   }
   catch (err)
   {
-    return res.status(500).send(err);
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
   }
 });
 
@@ -72,10 +72,10 @@ router.get('/:id', function(req, res, next) {
   Bookmark.findById(req.params.id, function(err, bookmark){
     if(err){
       console.log(err);
-      return res.status(500).send(err);
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
     }
     if(!bookmark){
-      return res.status(404).send("Bookmark not found");
+      return res.status(HttpStatus.NOT_FOUND).send("Codingmark not found");
     }
     res.send(bookmark);
   });
@@ -84,6 +84,7 @@ router.get('/:id', function(req, res, next) {
 
 /* GET bookmarks listing. */
 router.get('/', async (req, res) => {
+  console.log(module.filename);
   try
   {
     if(req.query.term){
@@ -94,7 +95,7 @@ router.get('/', async (req, res) => {
     } else if (req.query.location) {
       const bookmark = await Bookmark.findOne({'shared':true, location: req.query.location}).lean().exec()
       if(!bookmark){
-        return res.status(404).send("Bookmark not found");
+        return res.status(HttpStatus.NOT_FOUND).send("Codingmark not found");
       }
       res.send(bookmark);
     } else if(req.query.tag){//get all bookmarks tagged with "tag"
@@ -108,7 +109,7 @@ router.get('/', async (req, res) => {
   }
   catch (err)
   {
-    return res.status(500).send(err);
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
   }
 
 });
@@ -133,14 +134,14 @@ router.get('/advanced-search', function(req, res, next) {
   if(regexSearch.length > 0){
     Bookmark.find().or(regexSearch, function(err, bookmarks){
       if(err){
-        return res.status(500).send(err);
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
       }
       res.send(bookmarks);
     });
   } else {//no filter - all bookmarks
     Bookmark.find({}, function(err, bookmarks){
       if(err){
-        return res.status(500).send(err);
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
       }
       res.send(bookmarks);
     });

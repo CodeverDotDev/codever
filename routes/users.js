@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongoose');
 var Keycloak = require('keycloak-connect');
 
 var Bookmark = require('../models/bookmark');
@@ -9,50 +8,58 @@ var MyError = require('../models/error');
 var common = require('./common');
 var config = common.config();
 
+var HttpStatus = require('http-status-codes');
+
 //showdown converter - https://github.com/showdownjs/showdown
 var showdown  = require('showdown'),
-  converter = new showdown.Converter();
+    converter = new showdown.Converter();
 
 //add keycloak middleware
 var keycloak = new Keycloak({ scope: 'openid' }, config.keycloak);
 router.use( keycloak.middleware() );
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const MAX_NUMBER_OF_TAGS = 8;
 
 /**
  * CREATE bookmark for user
  */
-router.post('/:id/bookmarks', keycloak.protect(), async (req, res) => {
+router.post('/:userId/bookmarks', keycloak.protect(), async (req, res) => {
 
   let userId = req.kauth.grant.access_token.content.sub;
-  if(userId !== req.params.id) {
-    return res.status(401);
+  if(userId !== req.params.userId) {
+    return res.status(HttpStatus.UNAUTHORIZED);
   }
 
   const bookmark = buildCodingmarkFromRequest(req);
 
   if(!bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0) {
-    res.status(400).send(new MyError('Missing required attributes', ['Missing required attributes']));
+    res
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
-  if(bookmark.tags.length > 5){
-    res.status(400).send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
+  if(bookmark.tags.length > MAX_NUMBER_OF_TAGS){
+    res
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
   try{
     let newBookmark = await bookmark.save();
 
-    res.set('Location', 'http://localhost:3000/' + req.params.id + '/bookmarks/' + newBookmark.id);
-    res.status(201).send({response:'Bookmark created for userId ' + req.params.id});
+    res
+      .set('Location', 'http://localhost:3000/' + req.params.userId + '/bookmarks/' + newBookmark.id)
+      .status(HttpStatus.CREATED)
+      .send({response:'Bookmark created for userId ' + req.params.userId});
 
   } catch (err){
     if (err.name === 'MongoError' && err.code === 11000) {
-      res.status(409).send(new MyError('Duplicate key', [err.message]));
+      res
+        .status(HttpStatus.CONFLICT)
+        .send(new MyError('Duplicate key', [err.message]));
     }
-
-    res.status(500).send(err);
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
   }
 
 });
@@ -84,7 +91,7 @@ router.get('/:userId/bookmarks', keycloak.protect(), async (req, res) => {
     let bookmarks;
     let userId = req.kauth.grant.access_token.content.sub;
     if(userId !== req.params.userId) {
-      return res.status(401);
+      return res.status(HttpStatus.UNAUTHORIZED);
     }
     if(req.query.term){
       var regExpTerm = new RegExp(req.query.term, 'i');
@@ -96,7 +103,9 @@ router.get('/:userId/bookmarks', keycloak.protect(), async (req, res) => {
 
     res.send(bookmarks);
   } catch (err) {
-    return res.status(500).send(err);
+    return res
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .send(err);
   }
 });
 
@@ -108,17 +117,21 @@ router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res
 
   let userId = req.kauth.grant.access_token.content.sub;
   if(userId !== req.params.userId) {
-    return res.status(401);
+    return res.status(HttpStatus.UNAUTHORIZED);
   }
 
-  if(!req.body.name || !req.body.location || !req.body.tags || req.body.tags.length === 0){
-    res.status(400).send(new MyError('Missing required attributes', ['Missing required attributes']));
+  const requiredAttributesMissing = !req.body.name || !req.body.location || !req.body.tags || req.body.tags.length === 0;
+  if(requiredAttributesMissing){
+    res
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
 
-  if(req.body.tags.length > 5){
-    res.status(400).send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
+  if(req.body.tags.length > MAX_NUMBER_OF_TAGS){
+    res
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
-
 
   if(!req.body.descriptionHtml){
     req.body.descriptionHtml = converter.makeHtml(req.body.description);
@@ -126,16 +139,23 @@ router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res
   try {
     let bookmark = await Bookmark.findOneAndUpdate({_id: req.params.bookmarkId, userId: req.params.userId}, req.body, {new: true});
 
-    if (!bookmark) {
-      return res.status(404).send(new MyError('Not Found Error', ['Bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId + ' not found']));
+    const codingmarkNotFound = !bookmark;
+    if (codingmarkNotFound) {
+      return res
+              .status(HttpStatus.NOT_FOUND)
+              .send(new MyError('Not Found Error', ['Bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId + ' not found']));
     } else {
-      res.status(200).send(bookmark);
+      res
+        .status(200)
+        .send(bookmark);
     }
   } catch (err) {
     if (err.name === 'MongoError' && err.code === 11000) {
-      res.status(409).send(new MyError('Duplicate key', [err.message]));
+      res
+        .status(HttpStatus.CONFLICT)
+        .send(new MyError('Duplicate key', [err.message]));
     }
-    res.status(500).send(new MyError('Unknown Server Error', ['Unknow server error when updating bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId]));
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when updating bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId]));
   }
 });
 
@@ -145,22 +165,22 @@ router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res
 router.delete('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res) => {
 
   let userId = req.kauth.grant.access_token.content.sub;
-  console.log("user id delete", userId);
   if(userId !== req.params.userId) {
-    return res.status(401);
+    return res.status(HttpStatus.UNAUTHORIZED);
   }
-  console.log("user id delete", userId);
 
   try {
     let bookmark = await Bookmark.findOneAndRemove({_id: req.params.bookmarkId, userId: req.params.userId});
 
     if (!bookmark) {
-      return res.status(404).send(new MyError('Not Found Error', ['Bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId + ' not found']));
+      return res.status(HttpStatus.NOT_FOUND).send(new MyError('Not Found Error', ['Bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId + ' not found']));
     } else {
-      res.status(204).send('Bookmark successfully deleted');
+      res.status(HttpStatus.NO_CONTENT).send('Bookmark successfully deleted');
     }
   } catch (err) {
-    return res.status(500).send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.bookmarkId]));
+    return res
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.bookmarkId]));
   }
 });
 
