@@ -12,6 +12,14 @@ info:
     name: MIT
 basePath: "/api"
 paths:
+  "/":
+    get:
+      description: message with link to Swagger docs
+      produces:
+        - text/html
+      responses:
+        '200':
+          description: message with link to Swagger docs
   "/public/codingmarks":
     get:
       description: returns all public (shared) codingmarks
