@@ -23,7 +23,7 @@ const MAX_NUMBER_OF_TAGS = 8;
 /**
  * CREATE bookmark for user
  */
-router.post('/:userId/bookmarks', keycloak.protect(), async (request, response) => {
+router.post('/:userId/codingmarks', keycloak.protect(), async (request, response) => {
 
   let userId = request.kauth.grant.access_token.content.sub;
   if(userId !== request.params.userId) {
@@ -88,7 +88,7 @@ let buildCodingmarkFromRequest = function (req) {
 };
 
 /* GET bookmarks for user */
-router.get('/:userId/bookmarks', keycloak.protect(), async (request, response) => {
+router.get('/:userId/codingmarks', keycloak.protect(), async (request, response) => {
   try{
     let bookmarks;
     let userId = request.kauth.grant.access_token.content.sub;
@@ -115,7 +115,7 @@ router.get('/:userId/bookmarks', keycloak.protect(), async (request, response) =
  * full UPDATE via PUT - that is the whole document is required and will be updated
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
-router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (request, response) => {
+router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (request, response) => {
 
   let userId = request.kauth.grant.access_token.content.sub;
   if(userId !== request.params.userId) {
@@ -139,13 +139,13 @@ router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (request,
     request.body.descriptionHtml = converter.makeHtml(request.body.description);
   }
   try {
-    let bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId, userId: request.params.userId}, request.body, {new: true});
+    const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.codingmarkId, userId: request.params.userId}, request.body, {new: true});
 
     const codingmarkNotFound = !bookmark;
     if (codingmarkNotFound) {
       return response
-              .status(HttpStatus.NOT_FOUND)
-              .send(new MyError('Not Found Error', ['Bookmark for user id ' + request.params.userId + ' and bookmark id '+ request.params.bookmarkId + ' not found']));
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError('Not Found Error', ['Bookmark for user id ' + request.params.userId + ' and bookmark id '+ request.params.codingmarkId + ' not found']));
     } else {
       response
         .status(200)
@@ -157,32 +157,32 @@ router.put('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (request,
                 .status(HttpStatus.CONFLICT)
                 .send(new MyError('Duplicate key', [err.message]));
     }
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when updating bookmark for user id ' + request.params.userId + ' and bookmark id '+ request.params.bookmarkId]));
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when updating bookmark for user id ' + request.params.userId + ' and bookmark id '+ request.params.codingmarkId]));
   }
 });
 
 /*
 * DELETE bookmark for user
 */
-router.delete('/:userId/bookmarks/:bookmarkId', keycloak.protect(), async (req, res) => {
+router.delete('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (req, res) => {
 
-  let userId = req.kauth.grant.access_token.content.sub;
+  const userId = req.kauth.grant.access_token.content.sub;
   if(userId !== req.params.userId) {
     return res.status(HttpStatus.UNAUTHORIZED);
   }
 
   try {
-    let bookmark = await Bookmark.findOneAndRemove({_id: req.params.bookmarkId, userId: req.params.userId});
+    const bookmark = await Bookmark.findOneAndRemove({_id: req.params.codingmarkId, userId: req.params.userId});
 
     if (!bookmark) {
-      return res.status(HttpStatus.NOT_FOUND).send(new MyError('Not Found Error', ['Bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.bookmarkId + ' not found']));
+      return res.status(HttpStatus.NOT_FOUND).send(new MyError('Not Found Error', ['Bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.codingmarkId + ' not found']));
     } else {
       res.status(HttpStatus.NO_CONTENT).send('Bookmark successfully deleted');
     }
   } catch (err) {
     return res
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.bookmarkId]));
+            .send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.codingmarkId]));
   }
 });
 
