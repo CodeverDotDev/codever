@@ -1,0 +1,218 @@
+---
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Codingmarks api
+  description: API supporting the codingmarks.org website
+  contact:
+    name: Adrian Matei
+    email: ama@codingpedia.org
+    url: http://www.adrianmatei.me
+  license:
+    name: MIT
+basePath: "/api"
+paths:
+  "/public/codingmarks":
+    get:
+      description: returns all public (shared) codingmarks
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: all public codingmarks
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/codingmark"
+  "/private/users/{userId}/codingmarks":
+    get:
+      description: list of user's codingmarks
+      operationId: getUserCodingmarks
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: keycloak user id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: list of user's codingmarks
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/codingmark"
+        '401':
+          description: unauthorized (you need to have a valid token) and userId must match the subject in token
+    post:
+      description: create new codingmark for user
+      operationId: createCodingmark
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: keycloak user id
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Data that replaces placeholders in the sent emails
+          required: true
+          schema:
+            "$ref": "#/definitions/codingmark"
+      responses:
+        '201':
+          description: Empty response, status is relevant
+          headers:
+            location:
+              schema:
+                type: string
+              description: resource url of the newly created codingmark
+        '401':
+          description: unauthorized (you need to have a valid token) and userId must match the subject in token
+        '409':
+          description: conflict
+
+  "/private/users/{userId}/codingmarks/{codingmarkId}":
+    put:
+      description: (full) update existing codingmark of suer
+      operationId: updateCodingmark
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: keycloak user id
+          required: true
+          type: string
+        - name: codingmarkId
+          in: path
+          description: id of the codingmark
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Complete codingmark to be updated
+          required: true
+          schema:
+            "$ref": "#/definitions/codingmark"
+      responses:
+        '200':
+          description: OK when operation successful and updated codingmark in body
+          schema:
+            "$ref": "#/definitions/codingmark"
+        '404':
+          description: NOT_FOUND when codingmark cannot be found for user
+          schema:
+            "$ref": "#/definitions/myError"
+        '401':
+          description: unauthorized (you need to have a valid token) and userId must match the subject in token
+        '500':
+          description: internal server error, when unknown server error is catched
+          schema:
+            "$ref": "#/definitions/myError"
+    delete:
+      description: deletes codingmark of user
+      operationId: updateCodingmark
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: keycloak user id
+          required: true
+          type: string
+        - name: codingmarkId
+          in: path
+          description: id of the codingmark
+          required: true
+          type: string
+      responses:
+        '204':
+          description: OK (No content) when operation successful and codingmark was removed
+        '404':
+          description: NOT_FOUND when codingmark cannot be found for user
+          schema:
+            "$ref": "#/definitions/myError"
+        '401':
+          description: unauthorized (you need to have a valid token) and userId must match the subject in token
+        '500':
+          description: internal server error, when unknown server error is catched
+          schema:
+            "$ref": "#/definitions/myError"
+definitions:
+  codingmark:
+    type: object
+    required:
+      - name
+      - location
+      - tags
+      - userId
+      - language
+    properties:
+      _id:
+        type: string
+      updatedAt:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      descriptionHtml:
+        type: string
+      language:
+        type: string
+      lastAccessedAt:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      publishedOn:
+        type: string
+      shared:
+        type: boolean
+      starredBy:
+        type: array
+        items:
+          type: string
+      tags:
+        type: array
+        items:
+          type: string
+      userId:
+        type: string
+  myError:
+    type: object
+    properties:
+      title:
+        type: string
+      messages:
+        type: array
+        items:
+          type: string
+
