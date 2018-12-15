@@ -5,9 +5,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var bookmarks = require('./routes/bookmarks');
+var apiBasePath = require('./routes/index');
+var privateCodingmarks = require('./routes/private-codingmarks');
+var publicCodingmarks = require('./routes/public-codingmarks');
 
 var fs = require('fs-extra');
 var rfs = require('rotating-file-stream');
@@ -19,6 +19,7 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./docs/swagger.yaml');
 
 var app = express();
+
 mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
 
 // sets port 3000 to default or unless otherwise specified in the environment
@@ -56,9 +57,9 @@ app.use(function(req, res, next) {
 });
 
 
-app.use('/api', routes);
-app.use('/api/private/users', users);
-app.use('/api/public/codingmarks', bookmarks);
+app.use('/api', apiBasePath);
+app.use('/api/private/users', privateCodingmarks);
+app.use('/api/public/codingmarks', publicCodingmarks);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
