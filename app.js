@@ -14,24 +14,32 @@ var rfs = require('rotating-file-stream');
 
 var HttpStatus = require('http-status-codes');
 
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./docs/swagger.yaml');
+
 var app = express();
 mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
 
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);
 
-//access logging setup
-const logDirectory = (process.env.CONTAINER_HOME || '.') + '/log';
-// ensure log directory exists
-fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-// create a rotating write stream
-let accessLogStream = rfs('access.log', {
-  interval: '1d', // rotate daily
-  path: logDirectory
-})
+let setUpLogging = function () {
+  const logDirectory = (process.env.CONTAINER_HOME || '.') + '/log';
+  // ensure log directory exists
+  fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+  // create a rotating write stream
+  let accessLogStream = rfs('access.log', {
+    interval: '1d', // rotate daily
+    path: logDirectory
+  })
+  app.use(logger('combined', {stream: accessLogStream}));// logs in file in Apache style format
+  app.use(logger('dev'));// logs at the console in 'dev' format
+};
 
-app.use(logger('combined', {stream: accessLogStream}));// logs in file in Apache style format
-app.use(logger('dev'));// logs at the console in 'dev' format
+setUpLogging();
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));//swagger docs are not protected
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,8 +58,7 @@ app.use(function(req, res, next) {
 
 app.use('/api', routes);
 app.use('/api/private/users', users);
-app.use('/api/public/bookmarks', bookmarks);
-//app.use('/categories', categories);
+app.use('/api/public/codingmarks', bookmarks);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -67,7 +74,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR);
-    res.render('error', {
+    res.render({
       message: err.message,
       error: err
     });
@@ -78,7 +85,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR);
-  res.render('error', {
+  res.render({
     message: err.message,
     error: {}
   });
