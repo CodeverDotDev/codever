@@ -78,7 +78,7 @@ let buildCodingmarkFromRequest = function (req) {
     tags: req.body.tags,
     publishedOn: req.body.publishedOn,
     githubURL: req.body.githubURL,
-    userId: req.params.id,
+    userId: req.params.userId,
     shared: req.body.shared,
     starredBy: req.body.starredBy,
     lastAccessedAt: req.body.lastAccessedAt
