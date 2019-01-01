@@ -1,6 +1,6 @@
 # Codingpedia bookmarks, aka #codingmarks
 
-This repo contains the back-end source code of the [codingmarks.org](http://codingmarks.org) website - (cu)rated bookmarks for developers.
+This repo contains the back-end API source code of the [codingmarks.org](http://codingmarks.org) website - (cu)rated bookmarks for developers.
  
 ![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
 
@@ -15,8 +15,8 @@ This project is developed with the MEAN stack, featuring [MongoDB](https://docs.
 # Development setup
 
 There is a **two-step** setup required for development 
-* **[front-end setup](https://github.com/Codingpedia/bookmarks)** concerning angular/angular-cli setup; this is described on this page
-* **backend-end setup** concerning mongodb, keycloak, nodejs
+* **[front-end setup](https://github.com/Codingpedia/bookmarks)** concerning angular/angular-cli setup
+* **backend-end setup** concerning mongodb, keycloak, nodejs;  this is described here
 
 > You need to complete both parts for local development
 
@@ -58,27 +58,33 @@ local                  0.000GB
 
 #### Keycloak
 
-This is the "heaviest" step, we need to set up for development. But by using Keycloak we get lots of things like Single-Sign On, 
+This is the **heaviest** step, we need to set up for development. But by using Keycloak we get lots of things like Single-Sign On, 
 OpenId-Connect Support, social logins, user admin console, that otherwise would take lots of effort to implement by ourselves.
-To make our life easier, I have prepared a wiki page about [Keycloak Setup For Development](https://github.com/Codingpedia/bookmarks-api/wiki/Keycloak-Setup-for-Development).
+To make our life easier, I have prepared a wiki page about [Keycloak Setup For Development](https://github.com/Codingpedia/codingmarks-api/wiki/Keycloak-Setup-for-Development).
 
 ### Installation and develop on local machine
 
 ```bash
-# clone front-end repo
-$ git clone https://github.com/Codingpedia/bookmarks-api.git codingpedia-bookmarks-api
+# clone backend repo
+$ git clone https://github.com/Codingpedia/codingmarks-api.git
 
-# change directory to your app
-$ cd codingpedia-bookmarks-api
+# change directory to the app
+$ cd codingmarks-api
+
+# use the preconfigured node version
+$ nvm use
 
 # install the dependencies with npm
 $ npm install
 
 # start the server with nodemon, so that changes in the dynamically reflected
-$ DEBUG=codingpedia-bookmarks-api:* nodemon start
+$ DEBUG=codingmarks-api:* nodemon start
 ```
 
-go to [http://localhost:3000](http://localhost:3000) in your browser. You should see the following message - **API Backend supporting Codingpedia Bookmarks**
+### Swagger docs
+
+* [local](http://localhost:3000/api/docs)
+* [production](https://www.codingmarks.org/api/docs)
 
 # License
 

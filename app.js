@@ -1,41 +1,46 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var bookmarks = require('./routes/bookmarks');
+var apiBasePath = require('./routes/index');
+var privateCodingmarks = require('./routes/private-codingmarks');
+var publicCodingmarks = require('./routes/public-codingmarks');
 
 var fs = require('fs-extra');
 var rfs = require('rotating-file-stream');
 
-var app = express();
-mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
+var HttpStatus = require('http-status-codes');
 
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./docs/swagger.yaml');
+
+var app = express();
+
+mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
 
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+let setUpLogging = function () {
+  const logDirectory = (process.env.CONTAINER_HOME || '.') + '/log';
+  // ensure log directory exists
+  fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+  // create a rotating write stream
+  let accessLogStream = rfs('access.log', {
+    interval: '1d', // rotate daily
+    path: logDirectory
+  })
+  app.use(logger('combined', {stream: accessLogStream}));// logs in file in Apache style format
+  app.use(logger('dev'));// logs at the console in 'dev' format
+};
 
-//access logging setup
-const logDirectory = (process.env.CONTAINER_HOME || '.') + '/log';
-// ensure log directory exists
-fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-// create a rotating write stream
-let accessLogStream = rfs('access.log', {
-  interval: '1d', // rotate daily
-  path: logDirectory
-})
+setUpLogging();
 
-app.use(logger('combined', {stream: accessLogStream}));// logs in file in Apache style format
-app.use(logger('dev'));// logs at the console in 'dev' format
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));//swagger docs are not protected
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -52,15 +57,14 @@ app.use(function(req, res, next) {
 });
 
 
-app.use('/api', routes);
-app.use('/api/private/users', users);
-app.use('/api/public/bookmarks', bookmarks);
-//app.use('/categories', categories);
+app.use('/api', apiBasePath);
+app.use('/api/private/users', privateCodingmarks);
+app.use('/api/public/codingmarks', publicCodingmarks);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
-  err.status = 404;
+  err.status = HttpStatus.NOT_FOUND;
   next(err);
 });
 
@@ -70,8 +74,8 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
+    res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR);
+    res.render({
       message: err.message,
       error: err
     });
@@ -81,8 +85,8 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
+  res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR);
+  res.render({
     message: err.message,
     error: {}
   });
