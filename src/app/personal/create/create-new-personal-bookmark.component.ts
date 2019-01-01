@@ -5,13 +5,13 @@ import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angul
 import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
 import {MarkdownService} from '../markdown.service';
 import {KeycloakService} from 'keycloak-angular';
-import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.service';
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
 import {Observable} from 'rxjs';
 import {languages} from '../../shared/language-options';
 import {tagsValidator} from '../../shared/tags-validation.directive';
-import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
+import {PublicCodingmarksStore} from '../../public/bookmark/store/public-codingmarks-store.service';
+import {PublicCodingmarksService} from '../../public/bookmark/public-codingmarks.service';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -49,9 +49,9 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     private personalBookmarksStore: PersonalCodingmarksStore,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
-    private bookmarkService: PublicBookmarksService,
+    private publicCodingmarksService: PublicCodingmarksService,
     private markdownServce: MarkdownService,
-    private publicBookmarkStore: PublicBookmarksStore
+    private publicCodingmarksStore: PublicCodingmarksStore
   ) {
 
     keycloakService.loadUserProfile().then( keycloakProfile => {
@@ -92,7 +92,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
           this.personalBookmarkPresent = true;
         } else {
           this.personalBookmarkPresent = false;
-          this.bookmarkService.getScrapingData(location).subscribe(response => {
+          this.publicCodingmarksService.getScrapingData(location).subscribe(response => {
             if (response) {
               this.bookmarkForm.get('name').patchValue(response.title, {emitEvent : false});
               this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent : false});
@@ -164,7 +164,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
     if (checkboxValue) {
       this.makePublic = true;
       const location: string = this.bookmarkForm.controls['location'].value;
-      this.bookmarkService.getPublicBookmarkByLocation(location).subscribe(response => {
+      this.publicCodingmarksService.getPublicCodingmarkByLocation(location).subscribe(response => {
         if (response) {
           console.log(response);
           this.displayModal = 'block';
@@ -187,10 +187,10 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   }
 
   private updateBookmark(bookmark: Bookmark) {
-    const obs = this.bookmarkService.updateBookmark(bookmark);
+    const obs = this.publicCodingmarksService.updateCodingmark(bookmark);
     obs.subscribe(
       res => {
-        this.publicBookmarkStore.updateBookmark(bookmark);
+        this.publicCodingmarksStore.updateBookmark(bookmark);
       }
     );
   }

@@ -26,17 +26,17 @@
     <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: queryText"></div>
     <div *ngIf="bookmark.userId == userId">
       <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)"><i class="fa fa-edit"></i> Edit</button>
-      <button type="button" class="btn btn-danger btn-sm" (click)="deleteBookmark(bookmark)"><i class="fa fa-trash-o"></i> Delete</button>
+      <button type="button" class="btn btn-danger btn-sm" (click)="deleteCodingmark(bookmark)"><i class="fa fa-trash-o"></i> Delete</button>
     </div>
   </div>
     <div class="card-footer">
     <div class="tags-group">
       <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-          <span *ngIf="bookmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-text star-span" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
+          <span *ngIf="bookmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-text star-span" id="btnGroupAddon2" (click)="starCodingmark(bookmark)" style="cursor:pointer">
             <i class="fa fa-star-o"></i>
           </span>
         <ng-template #starred>
-            <span class="input-group-text star-span" id="btnGroupAddon3" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
+            <span class="input-group-text star-span" id="btnGroupAddon3" (click)="unstarCodingmark(bookmark)" style="cursor:pointer">
               <i class="fa fa-star"></i>
             </span>
         </ng-template>

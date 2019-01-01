@@ -8,7 +8,7 @@ import {BookmarkFilterService} from '../../core/filter.service';
 import {Bookmark} from '../../core/model/bookmark';
 import {List} from 'immutable';
 import {languages} from '../language-options';
-import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
+import {PublicCodingmarksStore} from '../../public/bookmark/store/public-codingmarks-store.service';
 
 @Component({
     selector: 'app-bookmark-search',
@@ -39,7 +39,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   languages = languages;
 
-  constructor(private router: Router, private bookmarkStore: PublicBookmarksStore, private bookmarkFilterService: BookmarkFilterService) {}
+  constructor(private router: Router, private bookmarkStore: PublicCodingmarksStore, private bookmarkFilterService: BookmarkFilterService) {}
 
   ngOnInit(): void {
 

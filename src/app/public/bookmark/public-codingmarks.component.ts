@@ -4,31 +4,29 @@ import {List} from 'immutable';
 import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute} from '@angular/router';
 import {BookmarkSearchComponent} from '../../shared/search/bookmark-search.component';
-import {PublicBookmarksStore} from './store/public-bookmarks.store';
+import {PublicCodingmarksStore} from './store/public-codingmarks-store.service';
 import {allTags} from '../../core/model/all-tags.const.en';
 
 
 @Component({
   selector: 'app-public-bookmarks',
-  templateUrl: './public-bookmarks.component.html',
-  styleUrls: ['./public-bookmarks.component.scss']
+  templateUrl: './public-codingmarks.component.html',
+  styleUrls: ['./public-codingmarks.component.scss']
 })
-export class PublicBookmarksComponent implements OnInit {
+export class PublicCodingmarksComponent implements OnInit {
 
-  publicBookmarks: Observable<List<Bookmark>>;
+  publicCodingmarks$: Observable<List<Bookmark>>;
   tags: string[] = allTags;
   query = '';
 
   @ViewChild(BookmarkSearchComponent)
   private searchComponent: BookmarkSearchComponent;
 
-  constructor(private bookmarkStore: PublicBookmarksStore,
-              private route: ActivatedRoute,
-              private zone: NgZone
+  constructor(private publicCodingmarksStore: PublicCodingmarksStore,
+              private route: ActivatedRoute
               ) { }
 
   ngOnInit(): void {
-
     this.query = this.route.snapshot.queryParamMap.get('search');
     if (!this.query) {
       this.query = this.route.snapshot.queryParamMap.get('q');
@@ -37,19 +35,8 @@ export class PublicBookmarksComponent implements OnInit {
       }
     }
 
-    this.getBookmarks();
+    this.publicCodingmarks$ = this.publicCodingmarksStore.getBookmarks();
   }
-
-  getBookmarks(): void {
-    this.publicBookmarks = this.bookmarkStore.getBookmarks();
-    this.publicBookmarks.subscribe(
-      res => {
-        this.zone.run(() => {
-          console.log('ZONE RUN for initial load of bookmarks'); // need to investigate this, or merge it with the async list stuff....
-        });
-      });
-  }
-
 
   onTagClick(tag: string) {
     this.searchComponent.setQueryFromParentComponent('[' + tag + ']');

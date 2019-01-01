@@ -4,15 +4,15 @@ import {Bookmark} from '../core/model/bookmark';
 import {Router} from '@angular/router';
 import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
-import {PublicBookmarksService} from '../public/bookmark/public-bookmarks.service';
-import {PublicBookmarksStore} from '../public/bookmark/store/public-bookmarks.store';
+import {PublicCodingmarksStore} from '../public/bookmark/store/public-codingmarks-store.service';
+import {PublicCodingmarksService} from '../public/bookmark/public-codingmarks.service';
 
 @Component({
-  selector: 'app-async-bookmark-list',
-  templateUrl: './async-bookmark-list.component.html',
-    styleUrls: [ './async-bookmark-list.component.scss' ]
+  selector: 'app-async-codingmark-list',
+  templateUrl: './async-codingmark-list.component.html',
+    styleUrls: [ './async-codingmark-list.component.scss' ]
 })
-export class AsyncBookmarkListComponent  implements OnInit {
+export class AsyncCodingmarkListComponent  implements OnInit {
 
   @Input()
   userId: string;
@@ -27,9 +27,9 @@ export class AsyncBookmarkListComponent  implements OnInit {
   shownSize: number;
 
   private router: Router;
-  private userBookmarkStore: PersonalCodingmarksStore;
-  private publicBookmarkStore: PublicBookmarksStore;
-  private bookmarkService: PublicBookmarksService;
+  private personalCodingmarksStore: PersonalCodingmarksStore;
+  private publicCodingmarksStore: PublicCodingmarksStore;
+  private publicCodingmarksService: PublicCodingmarksService;
   private keycloakService: KeycloakService;
 
   displayModal = 'none';
@@ -38,12 +38,12 @@ export class AsyncBookmarkListComponent  implements OnInit {
     private injector: Injector,
 ) {
     this.router = <Router>this.injector.get(Router);
-    this.publicBookmarkStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
+    this.publicCodingmarksStore = <PublicCodingmarksStore>this.injector.get(PublicCodingmarksStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
-    this.bookmarkService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
+    this.publicCodingmarksService = <PublicCodingmarksService>this.injector.get(PublicCodingmarksService);
 
     if (this.keycloakService.isLoggedIn()) {
-      this.userBookmarkStore = <PersonalCodingmarksStore>this.injector.get(PersonalCodingmarksStore);
+      this.personalCodingmarksStore = <PersonalCodingmarksStore>this.injector.get(PersonalCodingmarksStore);
     }
   }
 
@@ -66,12 +66,12 @@ export class AsyncBookmarkListComponent  implements OnInit {
     this.router.navigate(link);
   }
 
-  deleteBookmark(bookmark: Bookmark): void {
-    const obs = this.userBookmarkStore.deleteBookmark(bookmark);
-    const obs2 = this.publicBookmarkStore.removeFromPublicStore(bookmark);
+  deleteCodingmark(bookmark: Bookmark): void {
+    const obs = this.personalCodingmarksStore.deleteBookmark(bookmark);
+    const obs2 = this.publicCodingmarksStore.removeFromPublicStore(bookmark);
   }
 
-  starBookmark(bookmark: Bookmark): void {
+  starCodingmark(bookmark: Bookmark): void {
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (!isLoggedIn) {
@@ -85,11 +85,11 @@ export class AsyncBookmarkListComponent  implements OnInit {
       } else {
         bookmark.starredBy.push(this.userId);
       }
-      this.updateBookmark(bookmark);
+      this.updateCodingmark(bookmark);
     }
   }
 
-  unstarBookmark(bookmark: Bookmark): void {
+  unstarCodingmark(bookmark: Bookmark): void {
     if (this.userId) {
       if (!bookmark.starredBy) {
         bookmark.starredBy = [];
@@ -97,7 +97,7 @@ export class AsyncBookmarkListComponent  implements OnInit {
         const index = bookmark.starredBy.indexOf(this.userId);
         bookmark.starredBy.splice(index, 1);
       }
-      this.updateBookmark(bookmark);
+      this.updateCodingmark(bookmark);
 
     }
   }
@@ -105,18 +105,18 @@ export class AsyncBookmarkListComponent  implements OnInit {
   updateLastAccess(bookmark: Bookmark) {
     if (this.userId === bookmark.userId) {
       bookmark.lastAccessedAt = new Date();
-      const obs = this.userBookmarkStore.updateBookmark(bookmark);
+      const obs = this.personalCodingmarksStore.updateBookmark(bookmark);
     }
   }
 
-  private updateBookmark(bookmark: Bookmark) {
+  private updateCodingmark(bookmark: Bookmark) {
     if (this.userId === bookmark.userId) {
-      const obs = this.userBookmarkStore.updateBookmark(bookmark);
+      const obs = this.personalCodingmarksStore.updateBookmark(bookmark);
     } else {
-      const obs = this.bookmarkService.updateBookmark(bookmark);
+      const obs = this.publicCodingmarksService.updateCodingmark(bookmark);
       obs.subscribe(
         res => {
-          this.publicBookmarkStore.updateBookmark(bookmark);
+          this.publicCodingmarksStore.updateBookmark(bookmark);
         }
       );
     }

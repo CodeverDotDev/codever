@@ -9,7 +9,7 @@ import {PersonalCodingmarkService} from '../personal-codingmark.service';
 import {Router} from '@angular/router';
 
 import {KeycloakService} from 'keycloak-angular';
-import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
+import {PublicCodingmarksStore} from '../../public/bookmark/store/public-codingmarks-store.service';
 import {publicTags} from '../model/all-tags.const.en';
 import {HttpResponse} from '@angular/common/http';
 
@@ -28,7 +28,7 @@ export class PersonalCodingmarksStore {
                 private router: Router,
                 private errorService: ErrorService,
                 private keycloakService: KeycloakService,
-                private bookmarkStore: PublicBookmarksStore
+                private publicCodingmarksStore: PublicCodingmarksStore
     ) {
       keycloakService.loadUserProfile().then( keycloakProfile => {
         this.userId = keycloakProfile.id;
@@ -87,7 +87,7 @@ export class PersonalCodingmarksStore {
             this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(newBookmark)); // insert at the top (index 0)
 
             if (newBookmark.shared) {
-              this.bookmarkStore.addBookmark(newBookmark);
+              this.publicCodingmarksStore.addBookmark(newBookmark);
             }
             this.router.navigate(['/personal']);
           },
@@ -109,7 +109,7 @@ export class PersonalCodingmarksStore {
         this._personalCodingmarks.next(listWithoutElement);
 
         if (deleted.shared) {
-          this.bookmarkStore.removeFromPublicStore(deleted);
+          this.publicCodingmarksStore.removeFromPublicStore(deleted);
         }
       }
     );
@@ -127,7 +127,7 @@ export class PersonalCodingmarksStore {
         this._personalCodingmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
-          this.bookmarkStore.updateBookmark(updated);
+          this.publicCodingmarksStore.updateBookmark(updated);
         }
       }
     );
