@@ -9,7 +9,7 @@ const routes: Routes = [
   },
     {
     path: 'personal',
-    loadChildren: 'app/personal/personal-bookmarks.module#PersonalBookmarksModule'
+    loadChildren: 'app/personal/personal-codingmarks.module#PersonalCodingmarksModule'
   },
   {
     path: '',

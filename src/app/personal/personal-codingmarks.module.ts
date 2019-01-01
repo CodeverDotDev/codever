@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
-import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
-import {PersonalBookmarksRoutingModule} from './personal-bookmarks-routing.module';
-import {PersonalBookmarksComponent} from './personal-bookmarks.component';
+import {PersonalCodingmarksListComponent} from './personal-codingmarks-list.component';
+import {PersonalCodingmarksRoutingModule} from './personal-codingmarks-routing.module';
+import {PersonalCodingmarksComponent} from './personal-codingmarks.component';
 import {SharedModule} from '../shared/shared.module';
 import {MarkdownService} from './markdown.service';
 import {AuthGuard} from './auth-guard.service';
@@ -17,10 +17,10 @@ import {OverlayModule} from '@angular/cdk/overlay';
 
 @NgModule({
   declarations : [
-    PersonalBookmarksListComponent,
+    PersonalCodingmarksListComponent,
     CreateNewPersonalBookmarkComponent,
     UpdatePersonalBookmarkComponent,
-    PersonalBookmarksComponent
+    PersonalCodingmarksComponent
   ],
   imports: [
     SharedModule,
@@ -31,11 +31,11 @@ import {OverlayModule} from '@angular/cdk/overlay';
     MatInputModule,
     MatIconModule,
     MatAutocompleteModule,
-    PersonalBookmarksRoutingModule
+    PersonalCodingmarksRoutingModule
   ],
   providers: [
     MarkdownService,
     AuthGuard
   ]
 })
-export class PersonalBookmarksModule {}
+export class PersonalCodingmarksModule {}

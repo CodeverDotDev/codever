@@ -1,7 +1,7 @@
 import {RouterModule, Routes} from '@angular/router';
-import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
+import {PersonalCodingmarksListComponent} from './personal-codingmarks-list.component';
 import {NgModule} from '@angular/core';
-import {PersonalBookmarksComponent} from './personal-bookmarks.component';
+import {PersonalCodingmarksComponent} from './personal-codingmarks.component';
 import {AuthGuard} from './auth-guard.service';
 import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
 import {CreateNewPersonalBookmarkComponent} from './create/create-new-personal-bookmark.component';
@@ -9,7 +9,7 @@ import {CreateNewPersonalBookmarkComponent} from './create/create-new-personal-b
 const personalBookmarksRoutes: Routes = [
   {
     path: '',
-    component: PersonalBookmarksComponent,
+    component: PersonalCodingmarksComponent,
     canActivate: [AuthGuard],
     children: [
       {
@@ -27,7 +27,7 @@ const personalBookmarksRoutes: Routes = [
       },
       {
         path: '',
-        component: PersonalBookmarksListComponent
+        component: PersonalCodingmarksListComponent
       }
     ]
   }
@@ -36,4 +36,4 @@ const personalBookmarksRoutes: Routes = [
   imports: [RouterModule.forChild(personalBookmarksRoutes)],
   exports: [RouterModule]
 })
-export class PersonalBookmarksRoutingModule {}
+export class PersonalCodingmarksRoutingModule {}
