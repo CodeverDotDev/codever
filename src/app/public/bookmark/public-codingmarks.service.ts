@@ -9,7 +9,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {shareReplay} from 'rxjs/operators';
 
 @Injectable()
-export class PublicBookmarksService {
+export class PublicCodingmarksService {
 
   private bookmarksUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
@@ -18,7 +18,7 @@ export class PublicBookmarksService {
     this.bookmarksUrl = environment.API_URL + '/public/codingmarks';
   }
 
-  getAllBookmarks(): Observable<Bookmark[]> {
+  getAllPublicCodingmarks(): Observable<Bookmark[]> {
     return this.httpClient.get<Bookmark[]>(this.bookmarksUrl);
   }
 
@@ -27,16 +27,16 @@ export class PublicBookmarksService {
       .get<Webpage>(`${this.bookmarksUrl}/scrape?url=${url}`);
   }
 
-  getPublicBookmarkByLocation(url: string): Observable<Bookmark> {
+  getPublicCodingmarkByLocation(url: string): Observable<Bookmark> {
     let params = new HttpParams();
     params = params.append('location', url);
     return this.httpClient
       .get<Bookmark>(`${this.bookmarksUrl}`, {params: params});
   }
 
-  updateBookmark(bookmark: Bookmark): Observable<any> {
+  updateCodingmark(bookmark: Bookmark): Observable<any> {
     return this.httpClient
-      .put(environment.API_URL + '/private/users/' + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark),
+      .put(environment.API_URL + '/private/users/' + bookmark.userId + '/codingmarks/' + bookmark._id, JSON.stringify(bookmark),
             {headers: this.headers})
       .pipe(shareReplay());
   }

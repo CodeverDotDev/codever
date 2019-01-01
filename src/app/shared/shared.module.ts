@@ -3,7 +3,7 @@ import {HighLightPipe} from './highlight.pipe';
 import {HighLightHtmlPipe} from './highlight.no-html-tags.pipe';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
+import {AsyncCodingmarkListComponent} from './async-codingmark-list.component';
 import {TagsValidatorDirective} from './tags-validation.directive';
 import {BookmarkSearchComponent} from './search/bookmark-search.component';
 
@@ -21,7 +21,7 @@ import {BookmarkSearchComponent} from './search/bookmark-search.component';
   declarations: [
     HighLightPipe,
     HighLightHtmlPipe,
-    AsyncBookmarkListComponent,
+    AsyncCodingmarkListComponent,
     TagsValidatorDirective,
     BookmarkSearchComponent
   ],
@@ -31,7 +31,7 @@ import {BookmarkSearchComponent} from './search/bookmark-search.component';
     ReactiveFormsModule,
     HighLightPipe,
     HighLightHtmlPipe,
-    AsyncBookmarkListComponent,
+    AsyncCodingmarkListComponent,
     BookmarkSearchComponent
   ]
 })
