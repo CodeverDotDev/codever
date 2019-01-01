@@ -15,7 +15,7 @@ export class PublicBookmarksService {
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient) {
-    this.bookmarksUrl = environment.API_URL + '/public/bookmarks';
+    this.bookmarksUrl = environment.API_URL + '/public/codingmarks';
   }
 
   getAllBookmarks(): Observable<Bookmark[]> {

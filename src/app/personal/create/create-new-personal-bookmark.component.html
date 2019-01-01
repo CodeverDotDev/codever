@@ -64,7 +64,7 @@
             {{tag.value}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
-          <input placeholder="&nbsp;&nbsp;Tags* - max 5, use comma, space or enter to separate..."
+          <input placeholder="&nbsp;&nbsp;Tags* - max 8, use comma, space or enter to separate them..."
                  matInput
                  #tagInput
                  [formControl]="tagCtrl"
@@ -89,7 +89,7 @@
           Tags are required.
         </div>
         <div *ngIf="tags.errors.tooManyTags">
-          You can add maximum 5 tags.
+          You can add maximum 8 tags.
         </div>
       </div>
     </div>
