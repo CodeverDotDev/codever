@@ -157,7 +157,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
       lastAccessedAt: null
   };
 
-    const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
+    this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
   }
 
   onClickMakePublic(checkboxValue) {
