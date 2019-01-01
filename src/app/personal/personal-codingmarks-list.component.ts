@@ -9,10 +9,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-user-bookmarks',
-  templateUrl: './personal-bookmarks-list.component.html',
-  styleUrls: ['./personal-bookmarks-list.component.scss']
+  templateUrl: './personal-codingmarks-list.component.html',
+  styleUrls: ['./personal-codingmarks-list.component.scss']
 })
-export class PersonalBookmarksListComponent implements OnInit {
+export class PersonalCodingmarksListComponent implements OnInit {
 
   personalCodingmarks$: Observable<List<Bookmark>>;
   lastUpdatedPersonalCodingmarks$: Observable<Bookmark[]>;
