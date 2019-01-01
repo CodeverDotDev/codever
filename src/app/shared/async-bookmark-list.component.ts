@@ -2,7 +2,7 @@ import {Component, Injector, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Bookmark} from '../core/model/bookmark';
 import {Router} from '@angular/router';
-import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';
+import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
 import {PublicBookmarksService} from '../public/bookmark/public-bookmarks.service';
 import {PublicBookmarksStore} from '../public/bookmark/store/public-bookmarks.store';
@@ -27,7 +27,7 @@ export class AsyncBookmarkListComponent  implements OnInit {
   shownSize: number;
 
   private router: Router;
-  private userBookmarkStore: PersonalBookmarksStore;
+  private userBookmarkStore: PersonalCodingmarksStore;
   private publicBookmarkStore: PublicBookmarksStore;
   private bookmarkService: PublicBookmarksService;
   private keycloakService: KeycloakService;
@@ -43,7 +43,7 @@ export class AsyncBookmarkListComponent  implements OnInit {
     this.bookmarkService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
 
     if (this.keycloakService.isLoggedIn()) {
-      this.userBookmarkStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
+      this.userBookmarkStore = <PersonalCodingmarksStore>this.injector.get(PersonalCodingmarksStore);
     }
   }
 

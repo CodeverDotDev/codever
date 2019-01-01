@@ -2,7 +2,7 @@ import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
+import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
 import {MarkdownService} from '../markdown.service';
 import {KeycloakService} from 'keycloak-angular';
 import {PublicBookmarksService} from '../../public/bookmark/public-bookmarks.service';
@@ -46,7 +46,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
   @ViewChild('tagInput') tagInput: ElementRef;
 
   constructor(
-    private personalBookmarksStore: PersonalBookmarksStore,
+    private personalBookmarksStore: PersonalCodingmarksStore,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
     private bookmarkService: PublicBookmarksService,

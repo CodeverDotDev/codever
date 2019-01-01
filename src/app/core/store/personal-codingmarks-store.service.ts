@@ -1,13 +1,11 @@
-
-import {throwError as observableThrowError, Observable, BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable, throwError as observableThrowError} from 'rxjs';
 
 import {Injectable} from '@angular/core';
 import {List} from 'immutable';
 import {Bookmark} from '../model/bookmark';
 import {Logger} from '../logger.service';
 import {ErrorService} from '../error/error.service';
-import {Response} from '@angular/http';
-import {PersonalBookmarksService} from '../personal-bookmarks.service';
+import {PersonalCodingmarkService} from '../personal-codingmark.service';
 import {Router} from '@angular/router';
 
 import {KeycloakService} from 'keycloak-angular';
@@ -16,16 +14,16 @@ import {publicTags} from '../model/all-tags.const.en';
 import {HttpResponse} from '@angular/common/http';
 
 @Injectable()
-export class PersonalBookmarksStore {
+export class PersonalCodingmarksStore {
 
-  private _bookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
+  private _personalCodingmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
 
   private userId: String;
 
   private personalTags: Set<string>;
   autocompleteTags = publicTags;
 
-  constructor(private userBookmarkService: PersonalBookmarksService,
+  constructor(private personalCodingmarkService: PersonalCodingmarkService,
                 private logger: Logger,
                 private router: Router,
                 private errorService: ErrorService,
@@ -39,7 +37,7 @@ export class PersonalBookmarksStore {
     }
 
   private loadInitialData() {
-    this.userBookmarkService.getAllBookmarks(this.userId)
+    this.personalCodingmarkService.getAllPersonalCodingmarks(this.userId)
       .subscribe(
         data => {
           let bookmarks: Bookmark[] = <Bookmark[]>data;
@@ -56,25 +54,28 @@ export class PersonalBookmarksStore {
               this.personalTags = this.personalTags.add(tag.trim().toLowerCase());
             });
           });
-          this._bookmarks.next(List(bookmarks));
+          this._personalCodingmarks.next(List(bookmarks));
         },
         err => console.error('Error retrieving codingmarks', err)
       );
   }
 
-  getBookmarks(): Observable<List<Bookmark>> {
-      return this._bookmarks.asObservable();
+  getPersonalCodingmarks(): Observable<List<Bookmark>> {
+      return this._personalCodingmarks.asObservable();
   }
 
   getPersonalAutomcompleteTags(): string[] {
-    this.personalTags.forEach(e => this.autocompleteTags.add(e));
-
-    return Array.from(this.autocompleteTags).sort();
+    if (this.personalTags) {
+      this.personalTags.forEach(e => this.autocompleteTags.add(e));
+      return Array.from(this.autocompleteTags).sort();
+    } else {
+      return [];
+    }
   }
 
   addBookmark(userId: string, newBookmark: Bookmark): void {
 
-    const obs = this.userBookmarkService.saveBookmark(userId, newBookmark)
+    const obs = this.personalCodingmarkService.createCodingmark(userId, newBookmark)
       .subscribe(
         res => {
           const headers = res.headers;
@@ -83,7 +84,7 @@ export class PersonalBookmarksStore {
             const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
             newBookmark._id = newBookmarkId;
             // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-            this._bookmarks.next(this._bookmarks.getValue().unshift(newBookmark)); // insert at the top (index 0)
+            this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(newBookmark)); // insert at the top (index 0)
 
             if (newBookmark.shared) {
               this.bookmarkStore.addBookmark(newBookmark);
@@ -98,14 +99,14 @@ export class PersonalBookmarksStore {
   }
 
   deleteBookmark(deleted: Bookmark): Observable<any> {
-    const obs: Observable<any> = this.userBookmarkService.delete(deleted);
+    const obs: Observable<any> = this.personalCodingmarkService.deleteCodingmark(deleted);
 
     obs.subscribe(
       res =>  {
-        const bookmarks: List<Bookmark> = this._bookmarks.getValue();
+        const bookmarks: List<Bookmark> = this._personalCodingmarks.getValue();
         const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
         const listWithoutElement = bookmarks.delete(index);
-        this._bookmarks.next(listWithoutElement);
+        this._personalCodingmarks.next(listWithoutElement);
 
         if (deleted.shared) {
           this.bookmarkStore.removeFromPublicStore(deleted);
@@ -117,13 +118,13 @@ export class PersonalBookmarksStore {
   }
 
   updateBookmark(updated: Bookmark): Observable<any> {
-    const obs: Observable<any> = this.userBookmarkService.updateBookmark(updated);
+    const obs: Observable<any> = this.personalCodingmarkService.updateCodingmark(updated);
 
     obs.subscribe(
       res => {
-        const bookmarks = this._bookmarks.getValue();
+        const bookmarks = this._personalCodingmarks.getValue();
         const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-        this._bookmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
+        this._personalCodingmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
           this.bookmarkStore.updateBookmark(updated);
@@ -135,14 +136,14 @@ export class PersonalBookmarksStore {
   }
 
   getBookmark(id: string): Bookmark {
-    const bookmarks = this._bookmarks.getValue();
+    const bookmarks = this._personalCodingmarks.getValue();
     const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
 
     return bookmarks.get(index);
   }
 
   getBookmarkByLocation(location: string): Bookmark {
-    const bookmarks = this._bookmarks.getValue();
+    const bookmarks = this._personalCodingmarks.getValue();
     const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark.location === location);
     if ( index >= 0 ) {
       return bookmarks.get(index);
