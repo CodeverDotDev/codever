@@ -1,5 +1,5 @@
 <button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()" style="margin-top: 1rem"> <i class="fa fa-plus"></i> Add New Bookmark</button>
-<app-bookmark-search [bookmarks]="userBookmarks" [query]="query" [context]="'personal'"></app-bookmark-search>
+<app-bookmark-search [bookmarks]="personalCodingmarks$" [query]="query" [context]="'personal'"></app-bookmark-search>
 <hr style="margin-top: 0;">
 <h3>Personal bookmarks</h3>
 <ul class="nav nav-tabs" style="margin-top: 1em">
@@ -12,10 +12,10 @@
 </ul>
 
 <div *ngIf="showLastAccessed;else lastModified">
-  <app-async-bookmark-list [bookmarks]="userBookmarks" [shownSize]="10"></app-async-bookmark-list>
+  <app-async-bookmark-list [bookmarks]="personalCodingmarks$" [shownSize]="10"></app-async-bookmark-list>
 </div>
 
 <ng-template #lastModified>
-  <app-async-bookmark-list [bookmarks]="userBookmarksLastUpdated" [shownSize]="10"></app-async-bookmark-list>
+  <app-async-bookmark-list [bookmarks]="lastUpdatedPersonalCodingmarks$" [shownSize]="10"></app-async-bookmark-list>
 </ng-template>
 

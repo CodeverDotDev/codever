@@ -4,7 +4,7 @@ import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../core/model/bookmark';
 import {Observable} from 'rxjs';
 import {List} from 'immutable';
-import {PersonalBookmarksStore} from '../core/store/PersonalBookmarksStore';
+import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
@@ -14,15 +14,15 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class PersonalBookmarksListComponent implements OnInit {
 
-  userBookmarks: Observable<List<Bookmark>>;
-  userBookmarksLastUpdated: Observable<Bookmark[]>;
+  personalCodingmarks$: Observable<List<Bookmark>>;
+  lastUpdatedPersonalCodingmarks$: Observable<Bookmark[]>;
   query = '';
   showLastAccessed = true;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private userBookmarkStore: PersonalBookmarksStore) { }
+    private personalCodingmarksStore: PersonalCodingmarksStore) { }
 
   ngOnInit(): void {
     this.query = this.route.snapshot.queryParamMap.get('q');
@@ -34,8 +34,8 @@ export class PersonalBookmarksListComponent implements OnInit {
         this.query = this.query.replace(/\+/g,  ' ');
       }
     }
-    this.userBookmarks = this.userBookmarkStore.getBookmarks();
-    this.userBookmarksLastUpdated = this.userBookmarks.pipe(map((data) => {
+    this.personalCodingmarks$ = this.personalCodingmarksStore.getPersonalCodingmarks();
+    this.lastUpdatedPersonalCodingmarks$ = this.personalCodingmarks$.pipe(map((data) => {
         return data.sort((a, b) => {
           if (a.updatedAt < b.updatedAt) { return 1; }
           if (a.updatedAt > b.updatedAt) { return -1; }

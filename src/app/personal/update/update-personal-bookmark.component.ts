@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
+import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
 import {MarkdownService} from '../markdown.service';
 import {MatChipInputEvent} from '@angular/material';
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
@@ -32,7 +32,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   currentTag = '';
 
   constructor(
-    private userBookmarkStore: PersonalBookmarksStore,
+    private personalCodingmarksStore: PersonalCodingmarksStore,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private router: Router
@@ -43,16 +43,16 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
       const id = params['id'];
-      this.bookmark = this.userBookmarkStore.getBookmark(id);
+      this.bookmark = this.personalCodingmarksStore.getBookmark(id);
     });
-    this.autocompleteTags = this.userBookmarkStore.getPersonalAutomcompleteTags();
+    this.autocompleteTags = this.personalCodingmarksStore.getPersonalAutomcompleteTags();
   }
 
   updateBookmark(): void {
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
     this.bookmark.updatedAt = new Date();
 
-    const obs = this.userBookmarkStore.updateBookmark(this.bookmark);
+    const obs = this.personalCodingmarksStore.updateBookmark(this.bookmark);
 
     obs.subscribe(
       res => {
