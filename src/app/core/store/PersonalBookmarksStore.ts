@@ -13,6 +13,7 @@ import {Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
 import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
 import {publicTags} from '../model/all-tags.const.en';
+import {HttpResponse} from '@angular/common/http';
 
 @Injectable()
 export class PersonalBookmarksStore {
@@ -57,7 +58,7 @@ export class PersonalBookmarksStore {
           });
           this._bookmarks.next(List(bookmarks));
         },
-        err => console.error('Error retrieving bookmarks', err)
+        err => console.error('Error retrieving codingmarks', err)
       );
   }
 
@@ -71,32 +72,29 @@ export class PersonalBookmarksStore {
     return Array.from(this.autocompleteTags).sort();
   }
 
-  addBookmark(userId: string, newBookmark: Bookmark): Observable<any> {
+  addBookmark(userId: string, newBookmark: Bookmark): void {
 
-    const obs = this.userBookmarkService.saveBookmark(userId, newBookmark);
+    const obs = this.userBookmarkService.saveBookmark(userId, newBookmark)
+      .subscribe(
+        res => {
+          const headers = res.headers;
+            // get the bookmark id, which lies in the "location" response header
+            const lastSlashIndex = headers.get('location').lastIndexOf('/');
+            const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
+            newBookmark._id = newBookmarkId;
+            // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
+            this._bookmarks.next(this._bookmarks.getValue().unshift(newBookmark)); // insert at the top (index 0)
 
-    obs.subscribe(
-      res => {
-        const headers = res.headers;
-        // get the bookmark id, which lies in the "location" response header
-        const lastSlashIndex = headers.get('location').lastIndexOf('/');
-        const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
-        newBookmark._id = newBookmarkId;
-        // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-        this._bookmarks.next(this._bookmarks.getValue().unshift(newBookmark)); // insert at the top (index 0)
-
-        if (newBookmark.shared) {
-          this.bookmarkStore.addBookmark(newBookmark);
-        }
-        this.router.navigate(['/personal']);
-      },
-      (error: Response) => {
-        this.errorService.handleError(error.json());
-        return observableThrowError(error.json());
-      }
-    );
-
-    return obs;
+            if (newBookmark.shared) {
+              this.bookmarkStore.addBookmark(newBookmark);
+            }
+            this.router.navigate(['/personal']);
+          },
+          (error: HttpResponse<any>) => {
+            this.errorService.handleError(error.body.json());
+            return observableThrowError(error.body.json());
+          }
+        );
   }
 
   deleteBookmark(deleted: Bookmark): Observable<any> {

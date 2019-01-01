@@ -4,9 +4,10 @@ import {
   ValidatorFn
 } from '@angular/forms';
 
-/** At least one tag is required with a maximum of 5 */
+/** At least one tag is required with a maximum of 8 */
 export const tagsValidator: ValidatorFn = (control: FormArray): ValidationErrors | null => {
-  const validationResponse = control.length === 0 ? {'tagsAreRequired': true} : control.length > 5 ? {'tooManyTags': true} : null;
+  const maxNumberOfTags = 8;
+  const validationResponse = control.length === 0 ? {'tagsAreRequired': true} : control.length > maxNumberOfTags ? {'tooManyTags': true} : null;
   return validationResponse;
 };
 

@@ -37,7 +37,6 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
 
   languages = languages;
 
-
   autocompleteTags = [];
 
   tagCtrl = new FormControl();
@@ -89,7 +88,6 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
       debounceTime(400),
       distinctUntilChanged(), )
       .subscribe(location => {
-        console.log('Location: ', location);
         if (this.personalBookmarksStore.getBookmarkByLocation(location)) {
           this.personalBookmarkPresent = true;
         } else {
@@ -159,7 +157,7 @@ export class CreateNewPersonalBookmarkComponent implements OnInit {
       lastAccessedAt: null
   };
 
-    const obs = this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
+    this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
   }
 
   onClickMakePublic(checkboxValue) {
