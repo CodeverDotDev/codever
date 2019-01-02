@@ -12,10 +12,10 @@ import {PublicCodingmarksStore} from '../../public/bookmark/store/public-codingm
 
 @Component({
     selector: 'app-bookmark-search',
-    templateUrl: './bookmark-search.component.html',
-    styleUrls: [ './bookmark-search.component.scss' ]
+    templateUrl: './codingmark-search.component.html',
+    styleUrls: [ './codingmark-search.component.scss' ]
 })
-export class BookmarkSearchComponent implements OnInit, AfterViewInit {
+export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
   bookmarks: Observable<List<Bookmark>>;
@@ -95,7 +95,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
    *
    * @param bookmark
    */
-  gotoDetail(bookmark: Bookmark): void {
+  gotoCodingmarkDetail(bookmark: Bookmark): void {
     const link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }

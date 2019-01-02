@@ -5,7 +5,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AsyncCodingmarkListComponent} from './async-codingmark-list.component';
 import {TagsValidatorDirective} from './tags-validation.directive';
-import {BookmarkSearchComponent} from './search/bookmark-search.component';
+import {CodingmarkSearchComponent} from './search/codingmark-search.component';
 
 
 /**
@@ -23,7 +23,7 @@ import {BookmarkSearchComponent} from './search/bookmark-search.component';
     HighLightHtmlPipe,
     AsyncCodingmarkListComponent,
     TagsValidatorDirective,
-    BookmarkSearchComponent
+    CodingmarkSearchComponent
   ],
   exports: [
     CommonModule,
@@ -32,7 +32,7 @@ import {BookmarkSearchComponent} from './search/bookmark-search.component';
     HighLightPipe,
     HighLightHtmlPipe,
     AsyncCodingmarkListComponent,
-    BookmarkSearchComponent
+    CodingmarkSearchComponent
   ]
 })
 export class SharedModule { }
