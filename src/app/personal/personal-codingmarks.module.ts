@@ -6,7 +6,7 @@ import {SharedModule} from '../shared/shared.module';
 import {MarkdownService} from './markdown.service';
 import {AuthGuard} from './auth-guard.service';
 import {RouterModule} from '@angular/router';
-import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
+import {UpdatePersonalCodingmarkComponent} from './update/update-personal-codingmark.component';
 import {CreatePersonalCodingmarkComponent} from './create/create-personal-codingmark.component';
 import {
   MatAutocompleteModule, MatChipsModule, MatFormFieldModule, MatIconModule,
@@ -19,7 +19,7 @@ import {OverlayModule} from '@angular/cdk/overlay';
   declarations : [
     PersonalCodingmarksListComponent,
     CreatePersonalCodingmarkComponent,
-    UpdatePersonalBookmarkComponent,
+    UpdatePersonalCodingmarkComponent,
     PersonalCodingmarksComponent
   ],
   imports: [
