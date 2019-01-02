@@ -15,10 +15,10 @@ import {PublicCodingmarksService} from '../../public/bookmark/public-codingmarks
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
-  templateUrl: './create-new-personal-bookmark.component.html',
-  styleUrls: ['./create-new-personal-bookmark.component.scss']
+  templateUrl: './create-personal-codingmark.component.html',
+  styleUrls: ['./create-personal-codingmark.component.scss']
 })
-export class CreateNewPersonalBookmarkComponent implements OnInit {
+export class CreatePersonalCodingmarkComponent implements OnInit {
 
   bookmarkForm: FormGroup;
   userId = null;

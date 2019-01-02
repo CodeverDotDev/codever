@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import {List} from 'immutable';
 import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute} from '@angular/router';
-import {BookmarkSearchComponent} from '../../shared/search/bookmark-search.component';
+import {CodingmarkSearchComponent} from '../../shared/search/codingmark-search.component';
 import {PublicCodingmarksStore} from './store/public-codingmarks-store.service';
 import {allTags} from '../../core/model/all-tags.const.en';
 
@@ -19,8 +19,8 @@ export class PublicCodingmarksComponent implements OnInit {
   tags: string[] = allTags;
   query = '';
 
-  @ViewChild(BookmarkSearchComponent)
-  private searchComponent: BookmarkSearchComponent;
+  @ViewChild(CodingmarkSearchComponent)
+  private searchComponent: CodingmarkSearchComponent;
 
   constructor(private publicCodingmarksStore: PublicCodingmarksStore,
               private route: ActivatedRoute

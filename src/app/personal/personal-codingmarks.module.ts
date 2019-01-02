@@ -7,7 +7,7 @@ import {MarkdownService} from './markdown.service';
 import {AuthGuard} from './auth-guard.service';
 import {RouterModule} from '@angular/router';
 import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
-import {CreateNewPersonalBookmarkComponent} from './create/create-new-personal-bookmark.component';
+import {CreatePersonalCodingmarkComponent} from './create/create-personal-codingmark.component';
 import {
   MatAutocompleteModule, MatChipsModule, MatFormFieldModule, MatIconModule,
   MatInputModule
@@ -18,7 +18,7 @@ import {OverlayModule} from '@angular/cdk/overlay';
 @NgModule({
   declarations : [
     PersonalCodingmarksListComponent,
-    CreateNewPersonalBookmarkComponent,
+    CreatePersonalCodingmarkComponent,
     UpdatePersonalBookmarkComponent,
     PersonalCodingmarksComponent
   ],
