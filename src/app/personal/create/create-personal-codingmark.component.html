@@ -18,7 +18,7 @@
   </div>
 </div>
 <div class="col-md-8 col-md-offset-2">
-  <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
+  <form [formGroup]="codingmarkForm" novalidate (ngSubmit)="saveCodingmark(codingmarkForm.value)">
     <div class="form-group">
       <label for="location">Location*</label>
       <input type="text" class="form-control" id="location"
@@ -26,11 +26,11 @@
              name="location"
              formControlName="location"
              placeholder="Usually an URL">
-      <div [hidden]="bookmarkForm.get('location').valid || (bookmarkForm.get('location').pristine)"
+      <div [hidden]="codingmarkForm.get('location').valid || (codingmarkForm.get('location').pristine)"
            class="alert alert-danger">
         Location is required
       </div>
-      <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
+      <div [hidden]="!personalCodingmarkPresent" class="alert alert-danger">
         You have already bookmarked this URL.
       </div>
     </div>
@@ -40,7 +40,7 @@
              required
              formControlName="name"
              placeholder="Name of the bookmark to recognize later">
-      <div [hidden]="bookmarkForm.get('name').valid || (bookmarkForm.get('name').pristine)"
+      <div [hidden]="codingmarkForm.get('name').valid || (codingmarkForm.get('name').pristine)"
            class="alert alert-danger">
         Name is required
       </div>
@@ -123,7 +123,7 @@
         <strong> Make this bookmark public so others can benefit from it </strong>
       </label>
     </div>
-    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid || personalBookmarkPresent">Submit</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!codingmarkForm.valid || personalCodingmarkPresent">Submit</button>
   </form>
 </div>
 

@@ -20,12 +20,12 @@ import {PublicCodingmarksService} from '../../public/bookmark/public-codingmarks
 })
 export class CreatePersonalCodingmarkComponent implements OnInit {
 
-  bookmarkForm: FormGroup;
+  codingmarkForm: FormGroup;
   userId = null;
-  existingPublicBookmark: Bookmark;
+  existingPublicCodingmark: Bookmark;
   displayModal = 'none';
   makePublic = false;
-  personalBookmarkPresent = false;
+  personalCodingmarkPresent = false;
 
   // chips
   selectable = true;
@@ -73,7 +73,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
   }
 
   buildForm(): void {
-    this.bookmarkForm = this.formBuilder.group({
+    this.codingmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
@@ -84,18 +84,18 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
       language: 'en'
     });
 
-    this.bookmarkForm.get('location').valueChanges.pipe(
+    this.codingmarkForm.get('location').valueChanges.pipe(
       debounceTime(400),
       distinctUntilChanged(), )
       .subscribe(location => {
-        if (this.personalBookmarksStore.getBookmarkByLocation(location)) {
-          this.personalBookmarkPresent = true;
+        if (this.personalBookmarksStore.getCodingmarkByLocation(location)) {
+          this.personalCodingmarkPresent = true;
         } else {
-          this.personalBookmarkPresent = false;
+          this.personalCodingmarkPresent = false;
           this.publicCodingmarksService.getScrapingData(location).subscribe(response => {
             if (response) {
-              this.bookmarkForm.get('name').patchValue(response.title, {emitEvent : false});
-              this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent : false});
+              this.codingmarkForm.get('name').patchValue(response.title, {emitEvent : false});
+              this.codingmarkForm.get('description').patchValue(response.metaDescription, {emitEvent : false});
             }
           });
         }
@@ -108,7 +108,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
 
     // Add our tag
     if ((value || '').trim()) {
-      const tags = this.bookmarkForm.get('tags') as FormArray;
+      const tags = this.codingmarkForm.get('tags') as FormArray;
       tags.push(this.formBuilder.control(value.trim()));
     }
 
@@ -122,7 +122,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
   }
 
   remove(index: number): void {
-    const tags = this.bookmarkForm.get('tags') as FormArray;
+    const tags = this.codingmarkForm.get('tags') as FormArray;
 
     if (index >= 0) {
       tags.removeAt(index);
@@ -135,14 +135,14 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    const tags = this.bookmarkForm.get('tags') as FormArray;
+    const tags = this.codingmarkForm.get('tags') as FormArray;
     tags.push(this.formBuilder.control(event.option.viewValue));
     this.tagInput.nativeElement.value = '';
     this.tagCtrl.setValue(null);
   }
 
-  saveBookmark(model: Bookmark) {
-    const newBookmark: Bookmark = {
+  saveCodingmark(model: Bookmark) {
+    const newCodingmark: Bookmark = {
       name: model.name,
       location: model.location,
       language: model.language,
@@ -157,19 +157,19 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
       lastAccessedAt: null
   };
 
-    this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
+    this.personalBookmarksStore.addCodingmark(this.userId, newCodingmark);
   }
 
   onClickMakePublic(checkboxValue) {
     if (checkboxValue) {
       this.makePublic = true;
-      const location: string = this.bookmarkForm.controls['location'].value;
+      const location: string = this.codingmarkForm.controls['location'].value;
       this.publicCodingmarksService.getPublicCodingmarkByLocation(location).subscribe(response => {
         if (response) {
           console.log(response);
           this.displayModal = 'block';
-          this.existingPublicBookmark = response;
-          this.bookmarkForm.patchValue({
+          this.existingPublicCodingmark = response;
+          this.codingmarkForm.patchValue({
             shared: false
           });
         }
@@ -180,9 +180,9 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
   onStarClick() {
     this.displayModal = 'none';
     this.makePublic = false;
-    if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
-     this.existingPublicBookmark.starredBy.push(this.userId);
-     this.updateBookmark(this.existingPublicBookmark);
+    if ( this.existingPublicCodingmark.starredBy.indexOf(this.userId) === -1) {
+     this.existingPublicCodingmark.starredBy.push(this.userId);
+     this.updateBookmark(this.existingPublicCodingmark);
     }
   }
 
@@ -200,7 +200,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
     this.makePublic = false;
   }
 
-  get tags() { return <FormArray>this.bookmarkForm.get('tags'); }
+  get tags() { return <FormArray>this.codingmarkForm.get('tags'); }
 }
 
 

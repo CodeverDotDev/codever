@@ -73,7 +73,7 @@ export class PersonalCodingmarksStore {
     }
   }
 
-  addBookmark(userId: string, newBookmark: Bookmark): void {
+  addCodingmark(userId: string, newBookmark: Bookmark): void {
 
     const obs = this.personalCodingmarkService.createCodingmark(userId, newBookmark)
       .subscribe(
@@ -98,7 +98,7 @@ export class PersonalCodingmarksStore {
         );
   }
 
-  deleteBookmark(deleted: Bookmark): Observable<any> {
+  deleteCodingmark(deleted: Bookmark): Observable<any> {
     const obs: Observable<any> = this.personalCodingmarkService.deleteCodingmark(deleted);
 
     obs.subscribe(
@@ -117,7 +117,7 @@ export class PersonalCodingmarksStore {
     return obs;
   }
 
-  updateBookmark(updated: Bookmark): Observable<any> {
+  updateCodingmark(updated: Bookmark): Observable<any> {
     const obs: Observable<any> = this.personalCodingmarkService.updateCodingmark(updated);
 
     obs.subscribe(
@@ -135,18 +135,18 @@ export class PersonalCodingmarksStore {
     return obs;
   }
 
-  getBookmark(id: string): Bookmark {
+  getCodingmarkById(id: string): Bookmark {
     const bookmarks = this._personalCodingmarks.getValue();
     const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
 
     return bookmarks.get(index);
   }
 
-  getBookmarkByLocation(location: string): Bookmark {
-    const bookmarks = this._personalCodingmarks.getValue();
-    const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark.location === location);
+  getCodingmarkByLocation(location: string): Bookmark {
+    const codingmarks = this._personalCodingmarks.getValue();
+    const index = codingmarks.findIndex((codingmark: Bookmark) => codingmark.location === location);
     if ( index >= 0 ) {
-      return bookmarks.get(index);
+      return codingmarks.get(index);
     } else {
       return null;
     }
