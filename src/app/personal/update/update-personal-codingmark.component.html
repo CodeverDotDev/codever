@@ -1,7 +1,7 @@
 <div class="col-md-8 col-md-offset-2">
   <div *ngIf="bookmark">
     <h2>Edit... {{bookmark.name}} </h2>
-    <form #bookmarkForm="ngForm" (ngSubmit)="updateBookmark(bookmarkForm.value)">
+    <form #bookmarkForm="ngForm" (ngSubmit)="updateCodingmark(bookmarkForm.value)">
       <div class="form-group">
         <label>Name* </label>
         <input class="form-control form-control-lg" type="text"

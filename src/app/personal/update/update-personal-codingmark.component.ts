@@ -43,24 +43,24 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
       const id = params['id'];
-      this.bookmark = this.personalCodingmarksStore.getBookmark(id);
+      this.bookmark = this.personalCodingmarksStore.getCodingmarkById(id);
     });
     this.autocompleteTags = this.personalCodingmarksStore.getPersonalAutomcompleteTags();
   }
 
-  updateBookmark(): void {
+  updateCodingmark(): void {
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
     this.bookmark.updatedAt = new Date();
 
-    const obs = this.personalCodingmarksStore.updateBookmark(this.bookmark);
+    const obs = this.personalCodingmarksStore.updateCodingmark(this.bookmark);
 
     obs.subscribe(
       res => {
-        this.goToUserBookmarks();
+        this.navigateToPersonalCodingmarks();
       });
   }
 
-  goToUserBookmarks(): void {
+  navigateToPersonalCodingmarks(): void {
     this.router.navigate(['/personal'], { fragment: 'navbar' });
   }
 

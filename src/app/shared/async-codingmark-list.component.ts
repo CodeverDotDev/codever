@@ -67,7 +67,7 @@ export class AsyncCodingmarkListComponent  implements OnInit {
   }
 
   deleteCodingmark(bookmark: Bookmark): void {
-    const obs = this.personalCodingmarksStore.deleteBookmark(bookmark);
+    const obs = this.personalCodingmarksStore.deleteCodingmark(bookmark);
     const obs2 = this.publicCodingmarksStore.removeFromPublicStore(bookmark);
   }
 
@@ -105,13 +105,13 @@ export class AsyncCodingmarkListComponent  implements OnInit {
   updateLastAccess(bookmark: Bookmark) {
     if (this.userId === bookmark.userId) {
       bookmark.lastAccessedAt = new Date();
-      const obs = this.personalCodingmarksStore.updateBookmark(bookmark);
+      const obs = this.personalCodingmarksStore.updateCodingmark(bookmark);
     }
   }
 
   private updateCodingmark(bookmark: Bookmark) {
     if (this.userId === bookmark.userId) {
-      const obs = this.personalCodingmarksStore.updateBookmark(bookmark);
+      const obs = this.personalCodingmarksStore.updateCodingmark(bookmark);
     } else {
       const obs = this.publicCodingmarksService.updateCodingmark(bookmark);
       obs.subscribe(
