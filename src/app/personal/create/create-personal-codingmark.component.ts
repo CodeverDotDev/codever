@@ -46,7 +46,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
   @ViewChild('tagInput') tagInput: ElementRef;
 
   constructor(
-    private personalBookmarksStore: PersonalCodingmarksStore,
+    private personalCodingmarksStore: PersonalCodingmarksStore,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
     private publicCodingmarksService: PublicCodingmarksService,
@@ -58,7 +58,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
       this.userId = keycloakProfile.id;
     });
 
-    this.autocompleteTags = personalBookmarksStore.getPersonalAutomcompleteTags()
+    this.autocompleteTags = personalCodingmarksStore.getPersonalAutomcompleteTags()
 
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
@@ -88,7 +88,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
       debounceTime(400),
       distinctUntilChanged(), )
       .subscribe(location => {
-        if (this.personalBookmarksStore.getCodingmarkByLocation(location)) {
+        if (this.personalCodingmarksStore.getCodingmarkByLocation(location)) {
           this.personalCodingmarkPresent = true;
         } else {
           this.personalCodingmarkPresent = false;
@@ -157,7 +157,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
       lastAccessedAt: null
   };
 
-    this.personalBookmarksStore.addCodingmark(this.userId, newCodingmark);
+    this.personalCodingmarksStore.addCodingmark(this.userId, newCodingmark);
   }
 
   onClickMakePublic(checkboxValue) {
@@ -182,11 +182,11 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
     this.makePublic = false;
     if ( this.existingPublicCodingmark.starredBy.indexOf(this.userId) === -1) {
      this.existingPublicCodingmark.starredBy.push(this.userId);
-     this.updateBookmark(this.existingPublicCodingmark);
+     this.updateCodingmark(this.existingPublicCodingmark);
     }
   }
 
-  private updateBookmark(bookmark: Bookmark) {
+  private updateCodingmark(bookmark: Bookmark) {
     const obs = this.publicCodingmarksService.updateCodingmark(bookmark);
     obs.subscribe(
       res => {
