@@ -1,0 +1,13 @@
+<div class="show-hide" #codingmarkText>
+  <div class="bigger-text-wrapper" *ngIf="viewHeight > 100 else wholeText">
+    <input id="ch{{i}}}" type="checkbox">
+    <label for="ch{{i}}}"><i class="fa arrow-alt-circle-down"></i> </label>
+    <div class="text" *ngIf="!bookmark.descriptionHtml && bookmark.description" class="card-text" [innerHtml]="bookmark.description | highlight: queryText"></div>
+    <div class="text" *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: queryText"></div>
+    <br/>
+  </div>
+  <ng-template #wholeText>
+    <div *ngIf="!bookmark.descriptionHtml && bookmark.description" class="card-text" [innerHtml]="bookmark.description | highlight: queryText"></div>
+    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: queryText"></div>
+  </ng-template>
+</div>

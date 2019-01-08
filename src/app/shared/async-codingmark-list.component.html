@@ -19,12 +19,11 @@
 </div>
 <div class="codingmarks-list" *ngFor="let bookmark of bookmarks | async; let i=index" >
   <div *ngIf="i < shownSize" class="card">
-    <div class="card-body">
+    <div class="card-body show-hide">
     <h5 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText" (click)="updateLastAccess(bookmark)"></a></h5>
     <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="bookmark.location | slice:0:150 | highlight: queryText"></span></h6>
-    <p *ngIf="!bookmark.descriptionHtml && bookmark.description" class="card-text" [innerHtml]="bookmark.description | highlight: queryText"></p>
-    <div *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: queryText"></div>
-    <div *ngIf="bookmark.userId == userId">
+    <app-codingmark-text [bookmark]="bookmark"></app-codingmark-text>
+    <div class="edit-buttons-wrapper" *ngIf="bookmark.userId == userId">
       <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)"><i class="fa fa-edit"></i> Edit</button>
       <button type="button" class="btn btn-danger btn-sm" (click)="deleteCodingmark(bookmark)"><i class="fa fa-trash-o"></i> Delete</button>
     </div>
