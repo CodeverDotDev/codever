@@ -6,6 +6,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AsyncCodingmarkListComponent} from './async-codingmark-list.component';
 import {TagsValidatorDirective} from './tags-validation.directive';
 import {CodingmarkSearchComponent} from './search/codingmark-search.component';
+import {CodingmarkTextComponent} from './codingmark-text.component';
 
 
 /**
@@ -22,6 +23,7 @@ import {CodingmarkSearchComponent} from './search/codingmark-search.component';
     HighLightPipe,
     HighLightHtmlPipe,
     AsyncCodingmarkListComponent,
+    CodingmarkTextComponent,
     TagsValidatorDirective,
     CodingmarkSearchComponent
   ],
@@ -32,6 +34,7 @@ import {CodingmarkSearchComponent} from './search/codingmark-search.component';
     HighLightPipe,
     HighLightHtmlPipe,
     AsyncCodingmarkListComponent,
+    CodingmarkTextComponent,
     CodingmarkSearchComponent
   ]
 })
