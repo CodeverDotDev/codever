@@ -12,6 +12,7 @@ import {languages} from '../../shared/language-options';
 import {tagsValidator} from '../../shared/tags-validation.directive';
 import {PublicCodingmarksStore} from '../../public/bookmark/store/public-codingmarks-store.service';
 import {PublicCodingmarksService} from '../../public/bookmark/public-codingmarks.service';
+import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -79,7 +80,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
       githubURL: '',
-      description: '',
+      description: ['', descriptionSizeValidator],
       shared: false,
       language: 'en'
     });
@@ -201,6 +202,8 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
   }
 
   get tags() { return <FormArray>this.codingmarkForm.get('tags'); }
+
+  get description() { return this.codingmarkForm.get('description'); }
 }
 
 
