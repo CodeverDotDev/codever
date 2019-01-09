@@ -83,8 +83,7 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)"
-           class="alert alert-danger">
+      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)" class="alert alert-danger">
         <div *ngIf="tags.errors.tagsAreRequired">
           Tags are required.
         </div>
@@ -109,18 +108,26 @@
              placeholder='URL of the post, project on GitHub - e.g. https://github.com/Codingpedia/codingmarks.org'>
     </div>
     <div class="form-group">
-      <label for="description" style="width: 100%">Notes... Support for <a href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown</a></label>
+      <label for="description" style="width: 100%">Description - <a href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown</a> supported</label>
       <textarea class="form-control"
                 id="description"
                 formControlName="description"
-                placeholder="Make some notes to help you later by searching... You can use Markdown for a nicer layout"
+                placeholder="Make some notes to help you later by searching... Max 1000 characters and 21 lines"
                 style="height: 250px">
       </textarea>
+      <div *ngIf="description.invalid && (description.dirty || description.touched)" class="alert alert-danger">
+        <div *ngIf="description.errors.tooManyLines">
+          Your notes have {{description.errors.tooManyLines.value}} lines. Maximum 21 lines are allowed.
+        </div>
+        <div *ngIf="description.errors.tooManyCharacters">
+          Your notes have {{description.errors.tooManyCharacters.value}} characters. Maximum 1000 characters are allowed.
+        </div>
+      </div>
     </div>
     <div class="form-check">
       <label class="form-check-label">
         <input #publicCodingmark [checked]="makePublic" (click)="onClickMakePublic(publicCodingmark.checked)" class="form-check-input" type="checkbox" value="true" formControlName="shared">
-        <strong> Make this bookmark public so others can benefit from it </strong>
+        <strong> Make this codingmark public so others can benefit from it </strong>
       </label>
     </div>
     <button type="submit" class="btn btn-primary" [disabled]="!codingmarkForm.valid || personalCodingmarkPresent">Submit</button>
