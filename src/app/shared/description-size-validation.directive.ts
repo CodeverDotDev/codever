@@ -2,8 +2,8 @@ import {Directive} from '@angular/core';
 import {AbstractControl, FormArray, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn} from '@angular/forms';
 
 export const descriptionSizeValidator: ValidatorFn = (control: FormArray): ValidationErrors | null => {
-  const maxNumberOfCharacters = 1000;
-  const maxNumberOfLines = 21;
+  const maxNumberOfCharacters = 1500;
+  const maxNumberOfLines = 100;
   const numberOfLines = control.value.split('\n').length;
   const numberOfCharacters = control.value.length;
   const validationResponse = numberOfLines > maxNumberOfLines ? {'tooManyLines': {value: numberOfLines}} : numberOfCharacters > maxNumberOfCharacters ? {'tooManyCharacters': {value: numberOfCharacters}} : null;

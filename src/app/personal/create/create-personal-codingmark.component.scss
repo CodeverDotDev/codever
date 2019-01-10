@@ -1,8 +1,12 @@
-
 #tags input.mat-chip-input {
   text-indent: 10px;
 
 }
 #tags input.ng-valid {
   border-left: 0;
+}
+
+.description-chars-counter {
+  float:right;
+  margin-bottom:0.5rem;
 }
