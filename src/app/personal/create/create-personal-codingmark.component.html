@@ -112,15 +112,17 @@
       <textarea class="form-control"
                 id="description"
                 formControlName="description"
-                placeholder="Make some notes to help you later by searching... Max 1000 characters and 21 lines"
+                placeholder="Writing descriptions with keywords can help find your codingmarks more easily through search. You can give an overview of the codingmark and place keywords in the beginning of the description."
                 style="height: 250px">
       </textarea>
+      <div class="description-chars-counter">{{description.value.length}} / 1500</div>
+      <div class="clear"></div>
       <div *ngIf="description.invalid && (description.dirty || description.touched)" class="alert alert-danger">
         <div *ngIf="description.errors.tooManyLines">
-          Your notes have {{description.errors.tooManyLines.value}} lines. Maximum 21 lines are allowed.
+          Your description has {{description.errors.tooManyLines.value}} lines. Maximum 100 lines are allowed.
         </div>
         <div *ngIf="description.errors.tooManyCharacters">
-          Your notes have {{description.errors.tooManyCharacters.value}} characters. Maximum 1000 characters are allowed.
+          Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 1500 characters are allowed.
         </div>
       </div>
     </div>
