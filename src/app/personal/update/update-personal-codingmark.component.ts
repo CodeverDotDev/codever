@@ -17,7 +17,6 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
 
   bookmark: Bookmark;
 
-  visible = true;
   selectable = true;
   removable = true;
   addOnBlur = true;
@@ -64,7 +63,7 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
     this.router.navigate(['/personal'], { fragment: 'navbar' });
   }
 
-  add(event: MatChipInputEvent): void {
+  addTag(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
@@ -81,7 +80,7 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
     }
   }
 
-  remove(tag: any): void {
+  removeTag(tag: any): void {
     const index = this.bookmark.tags.indexOf(tag);
 
     if (index >= 0) {
