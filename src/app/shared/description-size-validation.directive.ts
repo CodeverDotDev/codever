@@ -1,7 +1,7 @@
 import {Directive} from '@angular/core';
-import {AbstractControl, FormArray, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn} from '@angular/forms';
+import {FormControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn} from '@angular/forms';
 
-export const descriptionSizeValidator: ValidatorFn = (control: FormArray): ValidationErrors | null => {
+export const descriptionSizeValidator: ValidatorFn = (control: FormControl): ValidationErrors | null => {
   const maxNumberOfCharacters = 1500;
   const maxNumberOfLines = 100;
   const numberOfLines = control.value.split('\n').length;
@@ -16,7 +16,7 @@ export const descriptionSizeValidator: ValidatorFn = (control: FormArray): Valid
   providers: [{ provide: NG_VALIDATORS, useExisting: DescriptionSizeValidatorDirective, multi: true }]
 })
 export class DescriptionSizeValidatorDirective implements Validator {
-  validate(control: AbstractControl): ValidationErrors {
+  validate(control: FormControl): ValidationErrors {
     return descriptionSizeValidator(control);
   }
 }
