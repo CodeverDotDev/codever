@@ -110,7 +110,6 @@
         </textarea>
         <div class="description-chars-counter">{{bookmark.description.length}} / 1500</div>
         <div class="clear"></div>
-        {{description.errors | json}}
         <div *ngIf="description.invalid && (description.dirty || description.touched)" class="alert alert-danger">
           <div *ngIf="description.errors.tooManyLines">
             Your description has {{description.errors.tooManyLines.value}} lines. Maximum 100 lines are allowed.
