@@ -7,6 +7,7 @@ import {AsyncCodingmarkListComponent} from './async-codingmark-list.component';
 import {TagsValidatorDirective} from './tags-validation.directive';
 import {CodingmarkSearchComponent} from './search/codingmark-search.component';
 import {CodingmarkTextComponent} from './codingmark-text.component';
+import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
 
 
 /**
@@ -25,6 +26,7 @@ import {CodingmarkTextComponent} from './codingmark-text.component';
     AsyncCodingmarkListComponent,
     CodingmarkTextComponent,
     TagsValidatorDirective,
+    DescriptionSizeValidatorDirective,
     CodingmarkSearchComponent
   ],
   exports: [
@@ -35,6 +37,7 @@ import {CodingmarkTextComponent} from './codingmark-text.component';
     HighLightHtmlPipe,
     AsyncCodingmarkListComponent,
     CodingmarkTextComponent,
+    DescriptionSizeValidatorDirective,
     CodingmarkSearchComponent
   ]
 })
