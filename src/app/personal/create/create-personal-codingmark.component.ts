@@ -15,7 +15,7 @@ import {PublicCodingmarksService} from '../../public/codingmark/public-codingmar
 import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
 
 @Component({
-  selector: 'app-new-personal-bookmark-form',
+  selector: 'app-new-personal-codingmark-form',
   templateUrl: './create-personal-codingmark.component.html',
   styleUrls: ['./create-personal-codingmark.component.scss']
 })

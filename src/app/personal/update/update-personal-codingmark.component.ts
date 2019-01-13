@@ -9,7 +9,7 @@ import {languages} from '../../shared/language-options';
 import {allTags} from '../../core/model/all-tags.const.en';
 
 @Component({
-  selector: 'app-update-bookmark',
+  selector: 'app-update-codingmark',
   templateUrl: './update-personal-codingmark.component.html',
   styleUrls: ['./update-personal-codingmark.component.scss']
 })

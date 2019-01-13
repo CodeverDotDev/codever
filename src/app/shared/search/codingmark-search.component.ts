@@ -11,14 +11,14 @@ import {languages} from '../language-options';
 import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
 
 @Component({
-    selector: 'app-bookmark-search',
+    selector: 'app-codingmark-search',
     templateUrl: './codingmark-search.component.html',
     styleUrls: [ './codingmark-search.component.scss' ]
 })
 export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
-  bookmarks: Observable<List<Codingmark>>;
+  codingmarks: Observable<List<Codingmark>>;
 
   @Input()
   query: string;
@@ -57,7 +57,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
           }
 
           this.queryText = term;
-          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.bookmarks);
+          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.codingmarks);
           this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
           if (this.numberOfResultsFiltered > 0 ) {
             this.showNotFound = false;
@@ -68,7 +68,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
           }
         } else {
           this.numberOfResultsFiltered = 0;
-          // or the observable of empty bookmarks if no search term
+          // or the observable of empty codingmarks if no search term
           return observableOf<Codingmark[]>([]);
         }
       }),
@@ -93,10 +93,10 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   /**
    *
-   * @param bookmark
+   * @param codingmark
    */
   gotoCodingmarkDetail(codingmark: Codingmark): void {
-    const link = ['/bookmarks', codingmark._id];
+    const link = ['/codingmarks', codingmark._id];
     this.router.navigate(link);
   }
 

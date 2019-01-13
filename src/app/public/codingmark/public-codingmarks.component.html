@@ -1,11 +1,11 @@
 <div id="public-search-box">
   <div *ngIf="publicCodingmarks$">
-    <app-bookmark-search [bookmarks]="publicCodingmarks$" [query]="query" [context]="'public'"></app-bookmark-search>
+    <app-codingmark-search [codingmarks]="publicCodingmarks$" [query]="query" [context]="'public'"></app-codingmark-search>
   </div>
 
   <mat-tab-group>
     <mat-tab label="Recent">
-      <app-async-codingmark-list [bookmarks]="publicCodingmarks$" [shownSize]="30"></app-async-codingmark-list>
+      <app-async-codingmark-list [codingmarks]="publicCodingmarks$" [shownSize]="30"></app-async-codingmark-list>
     </mat-tab>
     <mat-tab label="Tags">
       <div class="tags-group">

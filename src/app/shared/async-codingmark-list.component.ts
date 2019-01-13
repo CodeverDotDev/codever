@@ -18,7 +18,7 @@ export class AsyncCodingmarkListComponent  implements OnInit {
   userId: string;
 
   @Input()
-  bookmarks: Observable<Codingmark[]>;
+  codingmarks: Observable<Codingmark[]>;
 
   @Input()
   queryText: string;
@@ -59,16 +59,16 @@ export class AsyncCodingmarkListComponent  implements OnInit {
 
   /**
    *
-   * @param bookmark
+   * @param codingmark
    */
-  gotoDetail(bookmark: Codingmark): void {
-    const link = ['./personal/bookmarks', bookmark._id];
+  gotoDetail(codingmark: Codingmark): void {
+    const link = ['./personal/codingmarks', codingmark._id];
     this.router.navigate(link);
   }
 
-  deleteCodingmark(bookmark: Codingmark): void {
-    const obs = this.personalCodingmarksStore.deleteCodingmark(bookmark);
-    const obs2 = this.publicCodingmarksStore.removeFromPublicStore(bookmark);
+  deleteCodingmark(codingmark: Codingmark): void {
+    const obs = this.personalCodingmarksStore.deleteCodingmark(codingmark);
+    const obs2 = this.publicCodingmarksStore.removeFromPublicStore(codingmark);
   }
 
   starCodingmark(codingmark: Codingmark): void {
@@ -89,15 +89,15 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     }
   }
 
-  unstarCodingmark(bookmark: Codingmark): void {
+  unstarCodingmark(codingmark: Codingmark): void {
     if (this.userId) {
-      if (!bookmark.starredBy) {
-        bookmark.starredBy = [];
+      if (!codingmark.starredBy) {
+        codingmark.starredBy = [];
       } else {
-        const index = bookmark.starredBy.indexOf(this.userId);
-        bookmark.starredBy.splice(index, 1);
+        const index = codingmark.starredBy.indexOf(this.userId);
+        codingmark.starredBy.splice(index, 1);
       }
-      this.updateCodingmark(bookmark);
+      this.updateCodingmark(codingmark);
 
     }
   }
@@ -109,14 +109,14 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     }
   }
 
-  private updateCodingmark(bookmark: Codingmark) {
-    if (this.userId === bookmark.userId) {
-      const obs = this.personalCodingmarksStore.updateCodingmark(bookmark);
+  private updateCodingmark(codingmark: Codingmark) {
+    if (this.userId === codingmark.userId) {
+      const obs = this.personalCodingmarksStore.updateCodingmark(codingmark);
     } else {
-      const obs = this.publicCodingmarksService.updateCodingmark(bookmark);
+      const obs = this.publicCodingmarksService.updateCodingmark(codingmark);
       obs.subscribe(
         res => {
-          this.publicCodingmarksStore.updateBookmark(bookmark);
+          this.publicCodingmarksStore.updateBookmark(codingmark);
         }
       );
     }
