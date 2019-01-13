@@ -95,8 +95,8 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
    *
    * @param bookmark
    */
-  gotoCodingmarkDetail(bookmark: Codingmark): void {
-    const link = ['/bookmarks', bookmark._id];
+  gotoCodingmarkDetail(codingmark: Codingmark): void {
+    const link = ['/bookmarks', codingmark._id];
     this.router.navigate(link);
   }
 

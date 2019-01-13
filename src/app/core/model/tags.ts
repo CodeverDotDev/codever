@@ -1,4 +1,4 @@
-import {Codingmark} from "./codingmark";
+import {Codingmark} from './codingmark';
 
 export class Tag {
   name: string;
@@ -9,7 +9,7 @@ export class Tag {
   constructor (
     name: string,
     bookmarks: Codingmark[]
-  ){
+  ) {
     this.name = name;
     this.bookmarks = bookmarks;
   }

@@ -40,21 +40,21 @@ export class PersonalCodingmarksStore {
     this.personalCodingmarkService.getAllPersonalCodingmarks(this.userId)
       .subscribe(
         data => {
-          let bookmarks: Codingmark[] = <Codingmark[]>data;
-          bookmarks = bookmarks.sort((a, b) => {
+          let codingmarks: Codingmark[] = <Codingmark[]>data;
+          codingmarks = codingmarks.sort((a, b) => {
             const result: number = a.lastAccessedAt == null ? (b.lastAccessedAt == null ? 0 : 1)
               : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
             return result;
           });
 
           this.personalTags = new Set();
-          bookmarks.forEach(bookmark => {
+          codingmarks.forEach(codingmark => {
             // allTags.merge(allTags, OrderedSet.fromKeys(bookmark.tags));
-            bookmark.tags.forEach(tag => {
+            codingmark.tags.forEach(tag => {
               this.personalTags = this.personalTags.add(tag.trim().toLowerCase());
             });
           });
-          this._personalCodingmarks.next(List(bookmarks));
+          this._personalCodingmarks.next(List(codingmarks));
         },
         err => console.error('Error retrieving codingmarks', err)
       );
@@ -73,21 +73,21 @@ export class PersonalCodingmarksStore {
     }
   }
 
-  addCodingmark(userId: string, newBookmark: Codingmark): void {
+  addCodingmark(userId: string, codingmark: Codingmark): void {
 
-    const obs = this.personalCodingmarkService.createCodingmark(userId, newBookmark)
+    const obs = this.personalCodingmarkService.createCodingmark(userId, codingmark)
       .subscribe(
         res => {
           const headers = res.headers;
             // get the bookmark id, which lies in the "location" response header
             const lastSlashIndex = headers.get('location').lastIndexOf('/');
             const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
-            newBookmark._id = newBookmarkId;
+            codingmark._id = newBookmarkId;
             // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-            this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(newBookmark)); // insert at the top (index 0)
+            this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(codingmark)); // insert at the top (index 0)
 
-            if (newBookmark.shared) {
-              this.publicCodingmarksStore.addBookmark(newBookmark);
+            if (codingmark.shared) {
+              this.publicCodingmarksStore.addBookmark(codingmark);
             }
             this.router.navigate(['/personal']);
           },
@@ -104,7 +104,7 @@ export class PersonalCodingmarksStore {
     obs.subscribe(
       res =>  {
         const bookmarks: List<Codingmark> = this._personalCodingmarks.getValue();
-        const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+        const index = bookmarks.findIndex((codingmark) => codingmark._id === deleted._id);
         const listWithoutElement = bookmarks.delete(index);
         this._personalCodingmarks.next(listWithoutElement);
 
@@ -123,7 +123,7 @@ export class PersonalCodingmarksStore {
     obs.subscribe(
       res => {
         const bookmarks = this._personalCodingmarks.getValue();
-        const index = bookmarks.findIndex((bookmark: Codingmark) => bookmark._id === updated._id);
+        const index = bookmarks.findIndex((codingmark: Codingmark) => codingmark._id === updated._id);
         this._personalCodingmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
@@ -137,7 +137,7 @@ export class PersonalCodingmarksStore {
 
   getCodingmarkById(id: string): Codingmark {
     const bookmarks = this._personalCodingmarks.getValue();
-    const index = bookmarks.findIndex((bookmark: Codingmark) => bookmark._id === id);
+    const index = bookmarks.findIndex((codingmark: Codingmark) => codingmark._id === id);
 
     return bookmarks.get(index);
   }

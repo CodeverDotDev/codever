@@ -71,7 +71,7 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     const obs2 = this.publicCodingmarksStore.removeFromPublicStore(bookmark);
   }
 
-  starCodingmark(bookmark: Codingmark): void {
+  starCodingmark(codingmark: Codingmark): void {
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (!isLoggedIn) {
@@ -80,12 +80,12 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     });
 
     if (this.userId) {
-      if (!bookmark.starredBy) {
-        bookmark.starredBy = [];
+      if (!codingmark.starredBy) {
+        codingmark.starredBy = [];
       } else {
-        bookmark.starredBy.push(this.userId);
+        codingmark.starredBy.push(this.userId);
       }
-      this.updateCodingmark(bookmark);
+      this.updateCodingmark(codingmark);
     }
   }
 
@@ -102,10 +102,10 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     }
   }
 
-  updateLastAccess(bookmark: Codingmark) {
-    if (this.userId === bookmark.userId) {
-      bookmark.lastAccessedAt = new Date();
-      const obs = this.personalCodingmarksStore.updateCodingmark(bookmark);
+  updateLastAccess(codingmark: Codingmark) {
+    if (this.userId === codingmark.userId) {
+      codingmark.lastAccessedAt = new Date();
+      const obs = this.personalCodingmarksStore.updateCodingmark(codingmark);
     }
   }
 

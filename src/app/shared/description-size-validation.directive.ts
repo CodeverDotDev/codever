@@ -4,7 +4,7 @@ import {FormControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn} fr
 export const descriptionSizeValidator: ValidatorFn = (control: FormControl): ValidationErrors | null => {
   const maxNumberOfCharacters = 1500;
   const maxNumberOfLines = 100;
-  if (control.value === null) {
+  if (!control.value) {
     return null;
   }
   const numberOfLines = control.value.split('\n').length;

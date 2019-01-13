@@ -23,21 +23,21 @@ export class PersonalCodingmarkService {
     return this.httpClient.get<Codingmark[]>(this.baseUrl + userId + '/codingmarks').pipe(shareReplay());
   }
 
-  updateCodingmark(bookmark: Codingmark): Observable<any> {
+  updateCodingmark(codingmark: Codingmark): Observable<any> {
     return this.httpClient
-      .put(this.baseUrl + bookmark.userId + '/codingmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
+      .put(this.baseUrl + codingmark.userId + '/codingmarks/' + codingmark._id, JSON.stringify(codingmark), {headers: this.headers})
       .pipe(shareReplay());
   }
 
-  deleteCodingmark(bookmark: Codingmark): Observable<any> {
+  deleteCodingmark(codingmark: Codingmark): Observable<any> {
     return this.httpClient
-      .delete(this.baseUrl + bookmark.userId + '/codingmarks/' + bookmark._id, {headers: this.headers})
+      .delete(this.baseUrl + codingmark.userId + '/codingmarks/' + codingmark._id, {headers: this.headers})
       .pipe(shareReplay());
   }
 
-  createCodingmark(userId: string, bookmark: Codingmark): Observable<any> {
+  createCodingmark(userId: string, codingmark: Codingmark): Observable<any> {
     return this.httpClient
-      .post(this.baseUrl + userId + '/codingmarks', JSON.stringify(bookmark), {headers: this.headers, observe: 'response'})
+      .post(this.baseUrl + userId + '/codingmarks', JSON.stringify(codingmark), {headers: this.headers, observe: 'response'})
       .pipe(shareReplay());
   }
 
