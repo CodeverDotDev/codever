@@ -129,7 +129,7 @@ export class BookmarkFilterService {
    * @param searchedTerm
    * @returns {boolean}
    */
-  private bookmarkContainsSearchedTerm(bookmark: Codingmark, searchedTerm: string): boolean {
+  private bookmarkContainsSearchedTerm(codingmark: Codingmark, searchedTerm: string): boolean {
     let result = false;
     const pattern = new RegExp('\\b' + searchedTerm.toLowerCase() + '\\b');
 /*    if (bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
@@ -137,10 +137,10 @@ export class BookmarkFilterService {
       || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
       || bookmark.tags.indexOf(term.toLowerCase()) !== -1
     ) {*/
-      if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
-        || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
-        || (bookmark.location.toLowerCase().indexOf(searchedTerm.toLowerCase()) !== -1) // enables search of entire url "/" is not caught in regex as not word character
-        || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
+      if ((codingmark.name && pattern.test(codingmark.name.toLowerCase()))
+        || (codingmark.location && pattern.test(codingmark.location.toLowerCase()))
+        || (codingmark.location.toLowerCase().indexOf(searchedTerm.toLowerCase()) !== -1) // enables search of entire url "/" is not caught in regex as not word character
+        || (codingmark.description && pattern.test(codingmark.description.toLowerCase()))
       ) {
         result = true;
       }
@@ -149,7 +149,7 @@ export class BookmarkFilterService {
       return true;
     } else {
       // if not found already look through the tags also
-      bookmark.tags.forEach(tag => {
+      codingmark.tags.forEach(tag => {
         if (pattern.test(tag.toLowerCase())) {
           result = true;
         }
@@ -159,11 +159,11 @@ export class BookmarkFilterService {
     return result;
   }
 
-  private bookmarkContainsTag(bookmark: Codingmark, tag: string): boolean {
+  private bookmarkContainsTag(codingmark: Codingmark, tag: string): boolean {
     let result = false;
     // const pattern = new RegExp('\\b' + tag.toLowerCase() + '\\b');
     const pattern = new RegExp('\s' + tag.toLowerCase() + '\s');
-    bookmark.tags.forEach(bookmarkTag => {
+    codingmark.tags.forEach(bookmarkTag => {
       // if (bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
        if (bookmarkTag.toLowerCase() === tag.toLowerCase()) {
       // if (pattern.test(bookmarkTag.toLowerCase())) {

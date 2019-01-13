@@ -187,11 +187,11 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
     }
   }
 
-  private updateCodingmark(bookmark: Codingmark) {
-    const obs = this.publicCodingmarksService.updateCodingmark(bookmark);
+  private updateCodingmark(codingmark: Codingmark) {
+    const obs = this.publicCodingmarksService.updateCodingmark(codingmark);
     obs.subscribe(
       res => {
-        this.publicCodingmarksStore.updateBookmark(bookmark);
+        this.publicCodingmarksStore.updateBookmark(codingmark);
       }
     );
   }

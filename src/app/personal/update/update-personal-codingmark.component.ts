@@ -15,7 +15,7 @@ import {allTags} from '../../core/model/all-tags.const.en';
 })
 export class UpdatePersonalCodingmarkComponent implements OnInit {
 
-  bookmark: Codingmark;
+  codingmark: Codingmark;
 
   selectable = true;
   removable = true;
@@ -42,16 +42,16 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
       const id = params['id'];
-      this.bookmark = this.personalCodingmarksStore.getCodingmarkById(id);
+      this.codingmark = this.personalCodingmarksStore.getCodingmarkById(id);
     });
     this.autocompleteTags = this.personalCodingmarksStore.getPersonalAutomcompleteTags();
   }
 
   updateCodingmark(): void {
-    this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
-    this.bookmark.updatedAt = new Date();
+    this.codingmark.descriptionHtml = this.markdownService.toHtml(this.codingmark.description);
+    this.codingmark.updatedAt = new Date();
 
-    const obs = this.personalCodingmarksStore.updateCodingmark(this.bookmark);
+    const obs = this.personalCodingmarksStore.updateCodingmark(this.codingmark);
 
     obs.subscribe(
       res => {
@@ -69,7 +69,7 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
 
     // Add our fruit
     if ((value || '').trim()) {
-      this.bookmark.tags.push( this.currentTag);
+      this.codingmark.tags.push( this.currentTag);
     }
 
     // Reset the input value
@@ -81,10 +81,10 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
   }
 
   removeTag(tag: any): void {
-    const index = this.bookmark.tags.indexOf(tag);
+    const index = this.codingmark.tags.indexOf(tag);
 
     if (index >= 0) {
-      this.bookmark.tags.splice(index, 1);
+      this.codingmark.tags.splice(index, 1);
     }
   }
 
