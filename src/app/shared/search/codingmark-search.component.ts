@@ -8,7 +8,7 @@ import {BookmarkFilterService} from '../../core/filter.service';
 import {Codingmark} from '../../core/model/codingmark';
 import {List} from 'immutable';
 import {languages} from '../language-options';
-import {PublicCodingmarksStore} from '../../public/bookmark/store/public-codingmarks-store.service';
+import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
 
 @Component({
     selector: 'app-bookmark-search',

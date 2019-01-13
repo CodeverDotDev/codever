@@ -2,7 +2,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {NgModule} from '@angular/core';
 import {TagComponent} from './tag/tag.component';
 import {AboutComponent} from './about/about.component';
-import {PublicCodingmarksComponent} from './bookmark/public-codingmarks.component';
+import {PublicCodingmarksComponent} from './codingmark/public-codingmarks.component';
 
 const publicBookmarksRoutes: Routes = [
   {
