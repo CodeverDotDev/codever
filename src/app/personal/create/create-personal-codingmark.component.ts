@@ -10,8 +10,8 @@ import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material
 import {Observable} from 'rxjs';
 import {languages} from '../../shared/language-options';
 import {tagsValidator} from '../../shared/tags-validation.directive';
-import {PublicCodingmarksStore} from '../../public/bookmark/store/public-codingmarks-store.service';
-import {PublicCodingmarksService} from '../../public/bookmark/public-codingmarks.service';
+import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
+import {PublicCodingmarksService} from '../../public/codingmark/public-codingmarks.service';
 import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
 
 @Component({

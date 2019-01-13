@@ -9,7 +9,7 @@ import {PersonalCodingmarkService} from '../personal-codingmark.service';
 import {Router} from '@angular/router';
 
 import {KeycloakService} from 'keycloak-angular';
-import {PublicCodingmarksStore} from '../../public/bookmark/store/public-codingmarks-store.service';
+import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
 import {publicTags} from '../model/all-tags.const.en';
 import {HttpResponse} from '@angular/common/http';
 

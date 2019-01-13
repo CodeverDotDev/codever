@@ -4,8 +4,8 @@ import {Codingmark} from '../core/model/codingmark';
 import {Router} from '@angular/router';
 import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
-import {PublicCodingmarksStore} from '../public/bookmark/store/public-codingmarks-store.service';
-import {PublicCodingmarksService} from '../public/bookmark/public-codingmarks.service';
+import {PublicCodingmarksStore} from '../public/codingmark/store/public-codingmarks-store.service';
+import {PublicCodingmarksService} from '../public/codingmark/public-codingmarks.service';
 
 @Component({
   selector: 'app-async-codingmark-list',
