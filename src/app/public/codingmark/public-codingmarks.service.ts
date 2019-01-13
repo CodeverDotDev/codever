@@ -34,9 +34,9 @@ export class PublicCodingmarksService {
       .get<Codingmark>(`${this.bookmarksUrl}`, {params: params});
   }
 
-  updateCodingmark(bookmark: Codingmark): Observable<any> {
+  updateCodingmark(codingmark: Codingmark): Observable<any> {
     return this.httpClient
-      .put(environment.API_URL + '/private/users/' + bookmark.userId + '/codingmarks/' + bookmark._id, JSON.stringify(bookmark),
+      .put(environment.API_URL + '/private/users/' + codingmark.userId + '/codingmarks/' + codingmark._id, JSON.stringify(codingmark),
             {headers: this.headers})
       .pipe(shareReplay());
   }

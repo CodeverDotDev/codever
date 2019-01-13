@@ -12,7 +12,7 @@ export class TagService {
   private bookmarksUrl = '';  // URL to web api
 
   constructor(private httpClient: HttpClient) {
-    this.bookmarksUrl = environment.API_URL + '/public/bookmarks/';
+    this.bookmarksUrl = environment.API_URL + '/public/codingmarks/';
   }
 
   getBookmarksForTag(tag: string): Observable<Codingmark[]> {

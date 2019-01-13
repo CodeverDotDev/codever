@@ -8,7 +8,7 @@ import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
-  selector: 'app-user-bookmarks',
+  selector: 'app-user-codingmarks',
   templateUrl: './personal-codingmarks-list.component.html',
   styleUrls: ['./personal-codingmarks-list.component.scss']
 })

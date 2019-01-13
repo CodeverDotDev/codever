@@ -1,7 +1,7 @@
 <button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()" style="margin-top: 1rem"> <i class="fa fa-plus"></i> Add New Codingmark</button>
-<app-bookmark-search [bookmarks]="personalCodingmarks$" [query]="query" [context]="'personal'"></app-bookmark-search>
+<app-codingmark-search [codingmarks]="personalCodingmarks$" [query]="query" [context]="'personal'"></app-codingmark-search>
 <hr style="margin-top: 0;">
-<h3>Personal bookmarks</h3>
+<h3>Personal codingmarks</h3>
 <ul class="nav nav-tabs" style="margin-top: 1em">
   <li class="nav-item">
     <a class="nav-link personal-tabs" [ngClass]="{active: showLastAccessed}" (click)="toggleLastAccessed()">Last visited</a>
@@ -12,10 +12,10 @@
 </ul>
 
 <div *ngIf="showLastAccessed;else lastModified">
-  <app-async-codingmark-list [bookmarks]="personalCodingmarks$" [shownSize]="10"></app-async-codingmark-list>
+  <app-async-codingmark-list [codingmarks]="personalCodingmarks$" [shownSize]="10"></app-async-codingmark-list>
 </div>
 
 <ng-template #lastModified>
-  <app-async-codingmark-list [bookmarks]="lastUpdatedPersonalCodingmarks$" [shownSize]="10"></app-async-codingmark-list>
+  <app-async-codingmark-list [codingmarks]="lastUpdatedPersonalCodingmarks$" [shownSize]="10"></app-async-codingmark-list>
 </ng-template>
 

@@ -9,7 +9,7 @@ import {allTags} from '../../core/model/all-tags.const.en';
 
 
 @Component({
-  selector: 'app-public-bookmarks',
+  selector: 'app-public-codingmarks',
   templateUrl: './public-codingmarks.component.html',
   styleUrls: ['./public-codingmarks.component.scss']
 })

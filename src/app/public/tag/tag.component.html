@@ -2,7 +2,7 @@
   <br/>
   <h2>Latest {{tag}} codingmarks</h2>
   <hr/>
-  <app-async-codingmark-list [bookmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter"></app-async-codingmark-list>
+  <app-async-codingmark-list [codingmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter"></app-async-codingmark-list>
 </div>
 <div *ngIf="(bookmarksForTag$ | async)?.length - counter > 0" >
   <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()" [disabled]="counter>=(bookmarksForTag$ | async)?.length">Show more</button>

@@ -17,7 +17,7 @@ import {Codingmark} from '../core/model/codingmark';
 export class CodingmarkTextComponent  implements  AfterViewInit, AfterViewChecked {
 
   @Input()
-  bookmark: Codingmark;
+  codingmark: Codingmark;
 
   show = false; // add one more property
 

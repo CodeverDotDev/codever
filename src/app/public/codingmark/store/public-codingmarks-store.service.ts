@@ -19,10 +19,10 @@ export class PublicCodingmarksStore {
         this.publicCodingmarksService.getAllPublicCodingmarks()
             .subscribe(
                 res => {
-                  const bookmarks: Codingmark[] = <Codingmark[]>res;
-                  this._publicCodingmarks.next(List(bookmarks));
+                  const codingmarks: Codingmark[] = <Codingmark[]>res;
+                  this._publicCodingmarks.next(List(codingmarks));
                 },
-                err => console.log('Error retrieving bookmarks')
+                err => console.log('Error retrieving codingmarks')
             );
     }
 
@@ -35,7 +35,7 @@ export class PublicCodingmarksStore {
   }
 
   /**
-   * Method called from PersonalBookmarkStore, when a user adds a new public bookmark.
+   * Method called from PersonalBookmarkStore, when a user adds a new public codingmark.
    * @param newBookmark
    */
   addBookmark(newBookmark: Codingmark): void {
@@ -45,28 +45,28 @@ export class PublicCodingmarksStore {
   }
 
   /**
-   * Method is called from PersonalBookmarkStore, when the user removes a bookmark from there
+   * Method is called from PersonalBookmarkStore, when the user removes a codingmark from there
    * @param deleted
    */
   removeFromPublicStore(deleted: Codingmark): void {
       if (this._publicCodingmarks) {
-        const bookmarks: List<Codingmark> = this._publicCodingmarks.getValue();
-        const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-        this._publicCodingmarks.next(bookmarks.delete(index));
+        const codingmarks: List<Codingmark> = this._publicCodingmarks.getValue();
+        const index = codingmarks.findIndex((codingmark) => codingmark._id === deleted._id);
+        this._publicCodingmarks.next(codingmarks.delete(index));
       }
   }
 
   /**
-   *  Method is called from PersonalBookmarkStore, when the user updates the bookmark there
+   *  Method is called from PersonalBookmarkStore, when the user updates the codingmark there
    *
    * @param updated
    */
   updateBookmark(updated: Codingmark): void {
     if (this._publicCodingmarks) {
-      const bookmarks = this._publicCodingmarks.getValue();
-      const index = bookmarks.findIndex((bookmark: Codingmark) => bookmark._id === updated._id);
-      // let bookmark:Bookmark = bookmarks.get(index);
-      this._publicCodingmarks.next(bookmarks.set(index, updated));
+      const codingmarks = this._publicCodingmarks.getValue();
+      const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark._id === updated._id);
+      // let codingmark:codingmark = codingmarks.get(index);
+      this._publicCodingmarks.next(codingmarks.set(index, updated));
     }
   }
 

@@ -49,7 +49,7 @@ export class PersonalCodingmarksStore {
 
           this.personalTags = new Set();
           codingmarks.forEach(codingmark => {
-            // allTags.merge(allTags, OrderedSet.fromKeys(bookmark.tags));
+            // allTags.merge(allTags, OrderedSet.fromKeys(codingmark.tags));
             codingmark.tags.forEach(tag => {
               this.personalTags = this.personalTags.add(tag.trim().toLowerCase());
             });
@@ -79,7 +79,7 @@ export class PersonalCodingmarksStore {
       .subscribe(
         res => {
           const headers = res.headers;
-            // get the bookmark id, which lies in the "location" response header
+            // get the codingmark id, which lies in the "location" response header
             const lastSlashIndex = headers.get('location').lastIndexOf('/');
             const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
             codingmark._id = newBookmarkId;
@@ -103,9 +103,9 @@ export class PersonalCodingmarksStore {
 
     obs.subscribe(
       res =>  {
-        const bookmarks: List<Codingmark> = this._personalCodingmarks.getValue();
-        const index = bookmarks.findIndex((codingmark) => codingmark._id === deleted._id);
-        const listWithoutElement = bookmarks.delete(index);
+        const codingmarks: List<Codingmark> = this._personalCodingmarks.getValue();
+        const index = codingmarks.findIndex((codingmark) => codingmark._id === deleted._id);
+        const listWithoutElement = codingmarks.delete(index);
         this._personalCodingmarks.next(listWithoutElement);
 
         if (deleted.shared) {
@@ -122,9 +122,9 @@ export class PersonalCodingmarksStore {
 
     obs.subscribe(
       res => {
-        const bookmarks = this._personalCodingmarks.getValue();
-        const index = bookmarks.findIndex((codingmark: Codingmark) => codingmark._id === updated._id);
-        this._personalCodingmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
+        const codingmarks = this._personalCodingmarks.getValue();
+        const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark._id === updated._id);
+        this._personalCodingmarks.next(codingmarks.delete(index).unshift(updated)); // move the updated codingmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
           this.publicCodingmarksStore.updateBookmark(updated);
@@ -136,10 +136,10 @@ export class PersonalCodingmarksStore {
   }
 
   getCodingmarkById(id: string): Codingmark {
-    const bookmarks = this._personalCodingmarks.getValue();
-    const index = bookmarks.findIndex((codingmark: Codingmark) => codingmark._id === id);
+    const codingmarks = this._personalCodingmarks.getValue();
+    const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark._id === id);
 
-    return bookmarks.get(index);
+    return codingmarks.get(index);
   }
 
   getCodingmarkByLocation(location: string): Codingmark {

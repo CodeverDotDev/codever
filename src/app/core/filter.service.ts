@@ -8,7 +8,7 @@ import {Observable} from 'rxjs';
 export class BookmarkFilterService {
 
   /**
-   * Filters a list of bookmarks based on the query string.
+   * Filters a list of codingmarks based on the query string.
    *
    * Tags are enclosed in square brackets - e.g [angular]. The filter is now permissive, that is when starting with
    * "[" the filter assumes that the tag is what comes after even though there is no enclosing "]". That is now to support
@@ -26,8 +26,8 @@ export class BookmarkFilterService {
     let result: Codingmark[] = [];
 
     observableListBookmark.subscribe(
-      bookmarks => {
-        let filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
+      codingmarks => {
+        let filteredBookmarks = codingmarks.toArray(); // we start with all codingmarks
         if (language && language !== 'all') {
           filteredBookmarks = filteredBookmarks.filter( x => x.language === language);
         }
@@ -121,21 +121,21 @@ export class BookmarkFilterService {
   }
 
   /**
-   * Checks if one search term is present in the bookmark's metadata (name, location, description, tags)
+   * Checks if one search term is present in the codingmark's metadata (name, location, description, tags)
    * There is still an internal debate to use the contains method (less restrictive) and the
    * RegExp with matching words (more restrictive and does not support propery Unicode)
    *
-   * @param bookmark
+   * @param codingmark
    * @param searchedTerm
    * @returns {boolean}
    */
   private bookmarkContainsSearchedTerm(codingmark: Codingmark, searchedTerm: string): boolean {
     let result = false;
     const pattern = new RegExp('\\b' + searchedTerm.toLowerCase() + '\\b');
-/*    if (bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || bookmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || bookmark.tags.indexOf(term.toLowerCase()) !== -1
+/*    if (codingmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || codingmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || codingmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || codingmark.tags.indexOf(term.toLowerCase()) !== -1
     ) {*/
       if ((codingmark.name && pattern.test(codingmark.name.toLowerCase()))
         || (codingmark.location && pattern.test(codingmark.location.toLowerCase()))
