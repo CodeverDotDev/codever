@@ -1,14 +1,14 @@
-import {Bookmark} from "./bookmark";
+import {Codingmark} from "./codingmark";
 
 export class Tag {
   name: string;
-  bookmarks: Bookmark[];
+  bookmarks: Codingmark[];
   userId: String;
   shared: boolean;
 
   constructor (
     name: string,
-    bookmarks: Bookmark[]
+    bookmarks: Codingmark[]
   ){
     this.name = name;
     this.bookmarks = bookmarks;

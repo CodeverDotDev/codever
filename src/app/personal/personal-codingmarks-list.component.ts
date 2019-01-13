@@ -1,7 +1,7 @@
 
 import {map} from 'rxjs/operators';
 import {Component, OnInit} from '@angular/core';
-import {Bookmark} from '../core/model/bookmark';
+import {Codingmark} from '../core/model/codingmark';
 import {Observable} from 'rxjs';
 import {List} from 'immutable';
 import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
@@ -14,8 +14,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class PersonalCodingmarksListComponent implements OnInit {
 
-  personalCodingmarks$: Observable<List<Bookmark>>;
-  lastUpdatedPersonalCodingmarks$: Observable<Bookmark[]>;
+  personalCodingmarks$: Observable<List<Codingmark>>;
+  lastUpdatedPersonalCodingmarks$: Observable<Codingmark[]>;
   query = '';
   showLastAccessed = true;
 

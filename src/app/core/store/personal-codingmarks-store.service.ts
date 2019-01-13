@@ -2,7 +2,7 @@ import {BehaviorSubject, Observable, throwError as observableThrowError} from 'r
 
 import {Injectable} from '@angular/core';
 import {List} from 'immutable';
-import {Bookmark} from '../model/bookmark';
+import {Codingmark} from '../model/codingmark';
 import {Logger} from '../logger.service';
 import {ErrorService} from '../error/error.service';
 import {PersonalCodingmarkService} from '../personal-codingmark.service';
@@ -16,7 +16,7 @@ import {HttpResponse} from '@angular/common/http';
 @Injectable()
 export class PersonalCodingmarksStore {
 
-  private _personalCodingmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
+  private _personalCodingmarks: BehaviorSubject<List<Codingmark>> = new BehaviorSubject(List([]));
 
   private userId: String;
 
@@ -40,7 +40,7 @@ export class PersonalCodingmarksStore {
     this.personalCodingmarkService.getAllPersonalCodingmarks(this.userId)
       .subscribe(
         data => {
-          let bookmarks: Bookmark[] = <Bookmark[]>data;
+          let bookmarks: Codingmark[] = <Codingmark[]>data;
           bookmarks = bookmarks.sort((a, b) => {
             const result: number = a.lastAccessedAt == null ? (b.lastAccessedAt == null ? 0 : 1)
               : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
@@ -60,7 +60,7 @@ export class PersonalCodingmarksStore {
       );
   }
 
-  getPersonalCodingmarks(): Observable<List<Bookmark>> {
+  getPersonalCodingmarks(): Observable<List<Codingmark>> {
       return this._personalCodingmarks.asObservable();
   }
 
@@ -73,7 +73,7 @@ export class PersonalCodingmarksStore {
     }
   }
 
-  addCodingmark(userId: string, newBookmark: Bookmark): void {
+  addCodingmark(userId: string, newBookmark: Codingmark): void {
 
     const obs = this.personalCodingmarkService.createCodingmark(userId, newBookmark)
       .subscribe(
@@ -98,12 +98,12 @@ export class PersonalCodingmarksStore {
         );
   }
 
-  deleteCodingmark(deleted: Bookmark): Observable<any> {
+  deleteCodingmark(deleted: Codingmark): Observable<any> {
     const obs: Observable<any> = this.personalCodingmarkService.deleteCodingmark(deleted);
 
     obs.subscribe(
       res =>  {
-        const bookmarks: List<Bookmark> = this._personalCodingmarks.getValue();
+        const bookmarks: List<Codingmark> = this._personalCodingmarks.getValue();
         const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
         const listWithoutElement = bookmarks.delete(index);
         this._personalCodingmarks.next(listWithoutElement);
@@ -117,13 +117,13 @@ export class PersonalCodingmarksStore {
     return obs;
   }
 
-  updateCodingmark(updated: Bookmark): Observable<any> {
+  updateCodingmark(updated: Codingmark): Observable<any> {
     const obs: Observable<any> = this.personalCodingmarkService.updateCodingmark(updated);
 
     obs.subscribe(
       res => {
         const bookmarks = this._personalCodingmarks.getValue();
-        const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
+        const index = bookmarks.findIndex((bookmark: Codingmark) => bookmark._id === updated._id);
         this._personalCodingmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
@@ -135,16 +135,16 @@ export class PersonalCodingmarksStore {
     return obs;
   }
 
-  getCodingmarkById(id: string): Bookmark {
+  getCodingmarkById(id: string): Codingmark {
     const bookmarks = this._personalCodingmarks.getValue();
-    const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
+    const index = bookmarks.findIndex((bookmark: Codingmark) => bookmark._id === id);
 
     return bookmarks.get(index);
   }
 
-  getCodingmarkByLocation(location: string): Bookmark {
+  getCodingmarkByLocation(location: string): Codingmark {
     const codingmarks = this._personalCodingmarks.getValue();
-    const index = codingmarks.findIndex((codingmark: Bookmark) => codingmark.location === location);
+    const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark.location === location);
     if ( index >= 0 ) {
       return codingmarks.get(index);
     } else {
