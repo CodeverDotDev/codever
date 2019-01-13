@@ -1,6 +1,6 @@
 import {Component, Injector, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Bookmark} from '../core/model/bookmark';
+import {Codingmark} from '../core/model/codingmark';
 import {Router} from '@angular/router';
 import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
@@ -18,7 +18,7 @@ export class AsyncCodingmarkListComponent  implements OnInit {
   userId: string;
 
   @Input()
-  bookmarks: Observable<Bookmark[]>;
+  bookmarks: Observable<Codingmark[]>;
 
   @Input()
   queryText: string;
@@ -61,17 +61,17 @@ export class AsyncCodingmarkListComponent  implements OnInit {
    *
    * @param bookmark
    */
-  gotoDetail(bookmark: Bookmark): void {
+  gotoDetail(bookmark: Codingmark): void {
     const link = ['./personal/bookmarks', bookmark._id];
     this.router.navigate(link);
   }
 
-  deleteCodingmark(bookmark: Bookmark): void {
+  deleteCodingmark(bookmark: Codingmark): void {
     const obs = this.personalCodingmarksStore.deleteCodingmark(bookmark);
     const obs2 = this.publicCodingmarksStore.removeFromPublicStore(bookmark);
   }
 
-  starCodingmark(bookmark: Bookmark): void {
+  starCodingmark(bookmark: Codingmark): void {
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (!isLoggedIn) {
@@ -89,7 +89,7 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     }
   }
 
-  unstarCodingmark(bookmark: Bookmark): void {
+  unstarCodingmark(bookmark: Codingmark): void {
     if (this.userId) {
       if (!bookmark.starredBy) {
         bookmark.starredBy = [];
@@ -102,14 +102,14 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     }
   }
 
-  updateLastAccess(bookmark: Bookmark) {
+  updateLastAccess(bookmark: Codingmark) {
     if (this.userId === bookmark.userId) {
       bookmark.lastAccessedAt = new Date();
       const obs = this.personalCodingmarksStore.updateCodingmark(bookmark);
     }
   }
 
-  private updateCodingmark(bookmark: Bookmark) {
+  private updateCodingmark(bookmark: Codingmark) {
     if (this.userId === bookmark.userId) {
       const obs = this.personalCodingmarksStore.updateCodingmark(bookmark);
     } else {

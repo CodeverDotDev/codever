@@ -7,7 +7,7 @@ import {
   Input,
   ViewChild
 } from '@angular/core';
-import {Bookmark} from '../core/model/bookmark';
+import {Codingmark} from '../core/model/codingmark';
 
 @Component({
   selector: 'app-codingmark-text',
@@ -17,7 +17,7 @@ import {Bookmark} from '../core/model/bookmark';
 export class CodingmarkTextComponent  implements  AfterViewInit, AfterViewChecked {
 
   @Input()
-  bookmark: Bookmark;
+  bookmark: Codingmark;
 
   show = false; // add one more property
 

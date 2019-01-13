@@ -1,6 +1,6 @@
 
 import {Injectable} from '@angular/core';
-import {Bookmark} from './model/bookmark';
+import {Codingmark} from './model/codingmark';
 import {List} from 'immutable';
 import {Observable} from 'rxjs';
 
@@ -18,12 +18,12 @@ export class BookmarkFilterService {
    * @param observableListBookmark - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarksBySearchTerm(query: string, language: string, observableListBookmark: Observable<List<Bookmark>>): Bookmark[] {
+  filterBookmarksBySearchTerm(query: string, language: string, observableListBookmark: Observable<List<Codingmark>>): Codingmark[] {
 
     const searchedTermsAndTags: [string[], string[]] = this.splitSearchQuery(query);
     const searchedTerms: string[] = searchedTermsAndTags[0];
     const searchedTags: string[] = searchedTermsAndTags[1];
-    let result: Bookmark[] = [];
+    let result: Codingmark[] = [];
 
     observableListBookmark.subscribe(
       bookmarks => {
@@ -129,7 +129,7 @@ export class BookmarkFilterService {
    * @param searchedTerm
    * @returns {boolean}
    */
-  private bookmarkContainsSearchedTerm(bookmark: Bookmark, searchedTerm: string): boolean {
+  private bookmarkContainsSearchedTerm(bookmark: Codingmark, searchedTerm: string): boolean {
     let result = false;
     const pattern = new RegExp('\\b' + searchedTerm.toLowerCase() + '\\b');
 /*    if (bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
@@ -159,7 +159,7 @@ export class BookmarkFilterService {
     return result;
   }
 
-  private bookmarkContainsTag(bookmark: Bookmark, tag: string): boolean {
+  private bookmarkContainsTag(bookmark: Codingmark, tag: string): boolean {
     let result = false;
     // const pattern = new RegExp('\\b' + tag.toLowerCase() + '\\b');
     const pattern = new RegExp('\s' + tag.toLowerCase() + '\s');
