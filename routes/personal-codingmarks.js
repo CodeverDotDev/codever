@@ -145,7 +145,7 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
     if (codingmarkNotFound) {
       return response
         .status(HttpStatus.NOT_FOUND)
-        .send(new MyError('Not Found Error', ['Bookmark for user id ' + request.params.userId + ' and bookmark id '+ request.params.codingmarkId + ' not found']));
+        .send(new MyError('Not Found Error', ['Codingmark for user id ' + request.params.userId + ' and codingmark id '+ request.params.codingmarkId + ' not found']));
     } else {
       response
         .status(200)
@@ -157,7 +157,7 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
                 .status(HttpStatus.CONFLICT)
                 .send(new MyError('Duplicate key', [err.message]));
     }
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when updating bookmark for user id ' + request.params.userId + ' and bookmark id '+ request.params.codingmarkId]));
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when updating codingmark for user id ' + request.params.userId + ' and codingmark id '+ request.params.codingmarkId]));
   }
 });
 

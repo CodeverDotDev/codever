@@ -6,8 +6,9 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var apiBasePath = require('./routes/index');
-var privateCodingmarks = require('./routes/private-codingmarks');
+var personalCodingmarks = require('./routes/personal-codingmarks');
 var publicCodingmarks = require('./routes/public-codingmarks');
+var securedPublicCodingmarks = require('./routes/secured-public-codingmarks');
 
 var fs = require('fs-extra');
 var rfs = require('rotating-file-stream');
@@ -58,8 +59,9 @@ app.use(function(req, res, next) {
 
 
 app.use('/api', apiBasePath);
-app.use('/api/private/users', privateCodingmarks);
+app.use('/api/personal/users', personalCodingmarks);
 app.use('/api/public/codingmarks', publicCodingmarks);
+app.use('/api/secured/public/codingmarks', securedPublicCodingmarks);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
