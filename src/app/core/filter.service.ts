@@ -1,6 +1,6 @@
 
 import {Injectable} from '@angular/core';
-import {Bookmark} from './model/bookmark';
+import {Codingmark} from './model/codingmark';
 import {List} from 'immutable';
 import {Observable} from 'rxjs';
 
@@ -8,7 +8,7 @@ import {Observable} from 'rxjs';
 export class BookmarkFilterService {
 
   /**
-   * Filters a list of bookmarks based on the query string.
+   * Filters a list of codingmarks based on the query string.
    *
    * Tags are enclosed in square brackets - e.g [angular]. The filter is now permissive, that is when starting with
    * "[" the filter assumes that the tag is what comes after even though there is no enclosing "]". That is now to support
@@ -18,16 +18,16 @@ export class BookmarkFilterService {
    * @param observableListBookmark - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarksBySearchTerm(query: string, language: string, observableListBookmark: Observable<List<Bookmark>>): Bookmark[] {
+  filterBookmarksBySearchTerm(query: string, language: string, observableListBookmark: Observable<List<Codingmark>>): Codingmark[] {
 
     const searchedTermsAndTags: [string[], string[]] = this.splitSearchQuery(query);
     const searchedTerms: string[] = searchedTermsAndTags[0];
     const searchedTags: string[] = searchedTermsAndTags[1];
-    let result: Bookmark[] = [];
+    let result: Codingmark[] = [];
 
     observableListBookmark.subscribe(
-      bookmarks => {
-        let filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
+      codingmarks => {
+        let filteredBookmarks = codingmarks.toArray(); // we start with all codingmarks
         if (language && language !== 'all') {
           filteredBookmarks = filteredBookmarks.filter( x => x.language === language);
         }
@@ -121,26 +121,26 @@ export class BookmarkFilterService {
   }
 
   /**
-   * Checks if one search term is present in the bookmark's metadata (name, location, description, tags)
+   * Checks if one search term is present in the codingmark's metadata (name, location, description, tags)
    * There is still an internal debate to use the contains method (less restrictive) and the
    * RegExp with matching words (more restrictive and does not support propery Unicode)
    *
-   * @param bookmark
+   * @param codingmark
    * @param searchedTerm
    * @returns {boolean}
    */
-  private bookmarkContainsSearchedTerm(bookmark: Bookmark, searchedTerm: string): boolean {
+  private bookmarkContainsSearchedTerm(codingmark: Codingmark, searchedTerm: string): boolean {
     let result = false;
     const pattern = new RegExp('\\b' + searchedTerm.toLowerCase() + '\\b');
-/*    if (bookmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || bookmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || bookmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || bookmark.tags.indexOf(term.toLowerCase()) !== -1
+/*    if (codingmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || codingmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || codingmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
+      || codingmark.tags.indexOf(term.toLowerCase()) !== -1
     ) {*/
-      if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
-        || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
-        || (bookmark.location.toLowerCase().indexOf(searchedTerm.toLowerCase()) !== -1) // enables search of entire url "/" is not caught in regex as not word character
-        || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
+      if ((codingmark.name && pattern.test(codingmark.name.toLowerCase()))
+        || (codingmark.location && pattern.test(codingmark.location.toLowerCase()))
+        || (codingmark.location.toLowerCase().indexOf(searchedTerm.toLowerCase()) !== -1) // enables search of entire url "/" is not caught in regex as not word character
+        || (codingmark.description && pattern.test(codingmark.description.toLowerCase()))
       ) {
         result = true;
       }
@@ -149,7 +149,7 @@ export class BookmarkFilterService {
       return true;
     } else {
       // if not found already look through the tags also
-      bookmark.tags.forEach(tag => {
+      codingmark.tags.forEach(tag => {
         if (pattern.test(tag.toLowerCase())) {
           result = true;
         }
@@ -159,11 +159,11 @@ export class BookmarkFilterService {
     return result;
   }
 
-  private bookmarkContainsTag(bookmark: Bookmark, tag: string): boolean {
+  private bookmarkContainsTag(codingmark: Codingmark, tag: string): boolean {
     let result = false;
     // const pattern = new RegExp('\\b' + tag.toLowerCase() + '\\b');
     const pattern = new RegExp('\s' + tag.toLowerCase() + '\s');
-    bookmark.tags.forEach(bookmarkTag => {
+    codingmark.tags.forEach(bookmarkTag => {
       // if (bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
        if (bookmarkTag.toLowerCase() === tag.toLowerCase()) {
       // if (pattern.test(bookmarkTag.toLowerCase())) {

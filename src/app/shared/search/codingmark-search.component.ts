@@ -5,20 +5,20 @@ import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {BookmarkFilterService} from '../../core/filter.service';
-import {Bookmark} from '../../core/model/bookmark';
+import {Codingmark} from '../../core/model/codingmark';
 import {List} from 'immutable';
 import {languages} from '../language-options';
-import {PublicBookmarksStore} from '../../public/bookmark/store/public-bookmarks.store';
+import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
 
 @Component({
-    selector: 'app-bookmark-search',
-    templateUrl: './bookmark-search.component.html',
-    styleUrls: [ './bookmark-search.component.scss' ]
+    selector: 'app-codingmark-search',
+    templateUrl: './codingmark-search.component.html',
+    styleUrls: [ './codingmark-search.component.scss' ]
 })
-export class BookmarkSearchComponent implements OnInit, AfterViewInit {
+export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
-  bookmarks: Observable<List<Bookmark>>;
+  codingmarks: Observable<List<Codingmark>>;
 
   @Input()
   query: string;
@@ -26,8 +26,8 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   @Input()
   context: string;
 
-  filteredBookmarks: Observable<Bookmark[]>;
-  private filterBookmarksBySearchTerm: Bookmark[];
+  filteredBookmarks: Observable<Codingmark[]>;
+  private filterBookmarksBySearchTerm: Codingmark[];
 
   term = new FormControl();
   queryText: string;
@@ -39,7 +39,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   languages = languages;
 
-  constructor(private router: Router, private bookmarkStore: PublicBookmarksStore, private bookmarkFilterService: BookmarkFilterService) {}
+  constructor(private router: Router, private bookmarkStore: PublicCodingmarksStore, private bookmarkFilterService: BookmarkFilterService) {}
 
   ngOnInit(): void {
 
@@ -57,24 +57,24 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
           }
 
           this.queryText = term;
-          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.bookmarks);
+          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.codingmarks);
           this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
           if (this.numberOfResultsFiltered > 0 ) {
             this.showNotFound = false;
             return observableOf(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
           } else {
             this.showNotFound = true;
-            return observableOf<Bookmark[]>([]);
+            return observableOf<Codingmark[]>([]);
           }
         } else {
           this.numberOfResultsFiltered = 0;
-          // or the observable of empty bookmarks if no search term
-          return observableOf<Bookmark[]>([]);
+          // or the observable of empty codingmarks if no search term
+          return observableOf<Codingmark[]>([]);
         }
       }),
       catchError(error => {
         console.log(error);
-        return observableOf<Bookmark[]>([]);
+        return observableOf<Codingmark[]>([]);
       }), );
 
 
@@ -93,10 +93,10 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   /**
    *
-   * @param bookmark
+   * @param codingmark
    */
-  gotoDetail(bookmark: Bookmark): void {
-    const link = ['/bookmarks', bookmark._id];
+  gotoCodingmarkDetail(codingmark: Codingmark): void {
+    const link = ['/codingmarks', codingmark._id];
     this.router.navigate(link);
   }
 

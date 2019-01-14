@@ -6,6 +6,11 @@ a {
     color: #4078c0;
 }
 
+.description-chars-counter {
+  float:right;
+  margin-bottom:0.5rem;
+}
+
 //forms - TODO maybe move to own forms.scss file... that is also valid application wide
 .ng-valid[required], .ng-valid.required  {
   border-left: 5px solid #42A948; /* green */

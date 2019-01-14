@@ -3,9 +3,11 @@ import {HighLightPipe} from './highlight.pipe';
 import {HighLightHtmlPipe} from './highlight.no-html-tags.pipe';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
+import {AsyncCodingmarkListComponent} from './async-codingmark-list.component';
 import {TagsValidatorDirective} from './tags-validation.directive';
-import {BookmarkSearchComponent} from './search/bookmark-search.component';
+import {CodingmarkSearchComponent} from './search/codingmark-search.component';
+import {CodingmarkTextComponent} from './codingmark-text.component';
+import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
 
 
 /**
@@ -21,9 +23,11 @@ import {BookmarkSearchComponent} from './search/bookmark-search.component';
   declarations: [
     HighLightPipe,
     HighLightHtmlPipe,
-    AsyncBookmarkListComponent,
+    AsyncCodingmarkListComponent,
+    CodingmarkTextComponent,
     TagsValidatorDirective,
-    BookmarkSearchComponent
+    DescriptionSizeValidatorDirective,
+    CodingmarkSearchComponent
   ],
   exports: [
     CommonModule,
@@ -31,8 +35,10 @@ import {BookmarkSearchComponent} from './search/bookmark-search.component';
     ReactiveFormsModule,
     HighLightPipe,
     HighLightHtmlPipe,
-    AsyncBookmarkListComponent,
-    BookmarkSearchComponent
+    AsyncCodingmarkListComponent,
+    CodingmarkTextComponent,
+    DescriptionSizeValidatorDirective,
+    CodingmarkSearchComponent
   ]
 })
 export class SharedModule { }

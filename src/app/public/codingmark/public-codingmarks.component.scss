@@ -2,13 +2,13 @@
   background-color: #CFD8DC !important;
   color: white;
 }
-.bookmarks {
+.codingmarks {
   margin: 0 0 2em 0;
   list-style-type: none;
   padding: 0;
   width: 15em;
 }
-.bookmarks li {
+.codingmarks li {
   cursor: pointer;
   position: relative;
   left: 0;
@@ -18,20 +18,20 @@
   height: 1.6em;
   border-radius: 4px;
 }
-.bookmarks li.selected:hover {
+.codingmarks li.selected:hover {
   background-color: #BBD8DC !important;
   color: white;
 }
-.bookmarks li:hover {
+.codingmarks li:hover {
   color: #607D8B;
   background-color: #DDD;
   left: .1em;
 }
-.bookmarks .text {
+.codingmarks .text {
   position: relative;
   top: -3px;
 }
-.bookmarks .badge {
+.codingmarks .badge {
   display: inline-block;
   font-size: small;
   color: white;
@@ -52,8 +52,4 @@ button.delete {
   margin-right: .8em;
   background-color: gray !important;
   color:white;
-}
-
-a.personal-tabs {
-  color: #007bff;
 }

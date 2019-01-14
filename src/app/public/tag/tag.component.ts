@@ -3,7 +3,7 @@ import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import {TagService} from './tag.service';
 import {ActivatedRoute} from '@angular/router';
-import {Bookmark} from '../../core/model/bookmark';
+import {Codingmark} from '../../core/model/codingmark';
 import {Observable} from 'rxjs';
 
 @Component({
@@ -13,7 +13,7 @@ import {Observable} from 'rxjs';
 })
 export class TagComponent implements OnInit {
 
-  bookmarksForTag$: Observable<Bookmark[]>;
+  bookmarksForTag$: Observable<Codingmark[]>;
   tag: string;
   queryText: string;
   counter = 10;
