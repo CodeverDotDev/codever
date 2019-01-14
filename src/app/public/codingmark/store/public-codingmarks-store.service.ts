@@ -26,7 +26,7 @@ export class PublicCodingmarksStore {
             );
     }
 
-  getBookmarks(): Observable<List<Codingmark>> {
+  getPublicCodingmarks(): Observable<List<Codingmark>> {
     if (!this._publicCodingmarks) {
       this._publicCodingmarks = new BehaviorSubject(List([]));
       this.loadInitialData();
@@ -36,11 +36,11 @@ export class PublicCodingmarksStore {
 
   /**
    * Method called from PersonalBookmarkStore, when a user adds a new public codingmark.
-   * @param newBookmark
+   * @param codingmark
    */
-  addBookmark(newBookmark: Codingmark): void {
+  addCodingmarkToPublicStore(codingmark: Codingmark): void {
     if (this._publicCodingmarks) {
-      this._publicCodingmarks.next(this._publicCodingmarks.getValue().push(newBookmark));
+      this._publicCodingmarks.next(this._publicCodingmarks.getValue().push(codingmark));
     }
   }
 
@@ -48,7 +48,7 @@ export class PublicCodingmarksStore {
    * Method is called from PersonalBookmarkStore, when the user removes a codingmark from there
    * @param deleted
    */
-  removeFromPublicStore(deleted: Codingmark): void {
+  removeCodingmarkFromPublicStore(deleted: Codingmark): void {
       if (this._publicCodingmarks) {
         const codingmarks: List<Codingmark> = this._publicCodingmarks.getValue();
         const index = codingmarks.findIndex((codingmark) => codingmark._id === deleted._id);
@@ -61,7 +61,7 @@ export class PublicCodingmarksStore {
    *
    * @param updated
    */
-  updateBookmark(updated: Codingmark): void {
+  updateCodingmarkInPublicStore(updated: Codingmark): void {
     if (this._publicCodingmarks) {
       const codingmarks = this._publicCodingmarks.getValue();
       const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark._id === updated._id);

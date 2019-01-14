@@ -87,7 +87,7 @@ export class PersonalCodingmarksStore {
             this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(codingmark)); // insert at the top (index 0)
 
             if (codingmark.shared) {
-              this.publicCodingmarksStore.addBookmark(codingmark);
+              this.publicCodingmarksStore.addCodingmarkToPublicStore(codingmark);
             }
             this.router.navigate(['/personal']);
           },
@@ -109,7 +109,7 @@ export class PersonalCodingmarksStore {
         this._personalCodingmarks.next(listWithoutElement);
 
         if (deleted.shared) {
-          this.publicCodingmarksStore.removeFromPublicStore(deleted);
+          this.publicCodingmarksStore.removeCodingmarkFromPublicStore(deleted);
         }
       }
     );
@@ -126,8 +126,8 @@ export class PersonalCodingmarksStore {
         const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark._id === updated._id);
         this._personalCodingmarks.next(codingmarks.delete(index).unshift(updated)); // move the updated codingmark to the top of the list, to immediately see the results
 
-        if (updated.shared) {
-          this.publicCodingmarksStore.updateBookmark(updated);
+        if (updated.shared){
+          this.publicCodingmarksStore.updateCodingmarkInPublicStore(updated);
         }
       }
     );

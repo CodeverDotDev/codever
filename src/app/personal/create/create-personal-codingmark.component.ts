@@ -13,6 +13,7 @@ import {tagsValidator} from '../../shared/tags-validation.directive';
 import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
 import {PublicCodingmarksService} from '../../public/codingmark/public-codingmarks.service';
 import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
+import {RateCodingmarkRequest, RatingActionType} from '../../core/model/rate-codingmark.request';
 
 @Component({
   selector: 'app-new-personal-codingmark-form',
@@ -183,15 +184,20 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
     this.makePublic = false;
     if ( this.existingPublicCodingmark.starredBy.indexOf(this.userId) === -1) {
      this.existingPublicCodingmark.starredBy.push(this.userId);
-     this.updateCodingmark(this.existingPublicCodingmark);
+     this.rateCodingmark(this.existingPublicCodingmark);
     }
   }
 
-  private updateCodingmark(codingmark: Codingmark) {
-    const obs = this.publicCodingmarksService.updateCodingmark(codingmark);
+  private rateCodingmark(codingmark: Codingmark) {
+    const rateCodingmarkRequest: RateCodingmarkRequest = {
+      ratingUserId: this.userId,
+      action: RatingActionType.STAR,
+      codingmark: codingmark
+    }
+    const obs = this.publicCodingmarksService.rateCodingmark(rateCodingmarkRequest);
     obs.subscribe(
       res => {
-        this.publicCodingmarksStore.updateBookmark(codingmark);
+        this.publicCodingmarksStore.updateCodingmarkInPublicStore(codingmark);
       }
     );
   }

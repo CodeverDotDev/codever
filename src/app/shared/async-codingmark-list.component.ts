@@ -6,6 +6,7 @@ import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store
 import {KeycloakService} from 'keycloak-angular';
 import {PublicCodingmarksStore} from '../public/codingmark/store/public-codingmarks-store.service';
 import {PublicCodingmarksService} from '../public/codingmark/public-codingmarks.service';
+import {RateCodingmarkRequest, RatingActionType} from '../core/model/rate-codingmark.request';
 
 @Component({
   selector: 'app-async-codingmark-list',
@@ -68,7 +69,7 @@ export class AsyncCodingmarkListComponent  implements OnInit {
 
   deleteCodingmark(codingmark: Codingmark): void {
     const obs = this.personalCodingmarksStore.deleteCodingmark(codingmark);
-    const obs2 = this.publicCodingmarksStore.removeFromPublicStore(codingmark);
+    const obs2 = this.publicCodingmarksStore.removeCodingmarkFromPublicStore(codingmark);
   }
 
   starCodingmark(codingmark: Codingmark): void {
@@ -85,7 +86,12 @@ export class AsyncCodingmarkListComponent  implements OnInit {
       } else {
         codingmark.starredBy.push(this.userId);
       }
-      this.updateCodingmark(codingmark);
+      const rateCodingmarkRequest: RateCodingmarkRequest = {
+        ratingUserId: this.userId,
+        action: RatingActionType.STAR,
+        codingmark: codingmark
+      }
+      this.rateCodingmark(rateCodingmarkRequest);
     }
   }
 
@@ -97,7 +103,12 @@ export class AsyncCodingmarkListComponent  implements OnInit {
         const index = codingmark.starredBy.indexOf(this.userId);
         codingmark.starredBy.splice(index, 1);
       }
-      this.updateCodingmark(codingmark);
+      const rateCodingmarkRequest: RateCodingmarkRequest = {
+        ratingUserId: this.userId,
+        action: RatingActionType.UNSTAR,
+        codingmark: codingmark
+      }
+      this.rateCodingmark(rateCodingmarkRequest);
 
     }
   }
@@ -109,14 +120,15 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     }
   }
 
-  private updateCodingmark(codingmark: Codingmark) {
-    if (this.userId === codingmark.userId) {
-      const obs = this.personalCodingmarksStore.updateCodingmark(codingmark);
+  private rateCodingmark(rateCodingmarkRequest: RateCodingmarkRequest) {
+    const isCodingmarkCreatedByRatingUser = this.userId === rateCodingmarkRequest.codingmark.userId;
+    if (isCodingmarkCreatedByRatingUser) {
+      const obs = this.personalCodingmarksStore.updateCodingmark(rateCodingmarkRequest.codingmark);
     } else {
-      const obs = this.publicCodingmarksService.updateCodingmark(codingmark);
+      const obs = this.publicCodingmarksService.rateCodingmark(rateCodingmarkRequest);
       obs.subscribe(
         res => {
-          this.publicCodingmarksStore.updateBookmark(codingmark);
+          this.publicCodingmarksStore.updateCodingmarkInPublicStore(rateCodingmarkRequest.codingmark);
         }
       );
     }
