@@ -4,15 +4,15 @@ import {AboutComponent} from './about/about.component';
 import {TagService} from './tag/tag.service';
 import {TagComponent} from './tag/tag.component';
 import {PublicBookmarksRoutingModule} from './public-routing.module';
-import {PublicBookmarksService} from './bookmark/public-bookmarks.service';
-import {PublicBookmarksComponent} from './bookmark/public-bookmarks.component';
-import {PublicBookmarksStore} from './bookmark/store/public-bookmarks.store';
+import {PublicCodingmarksComponent} from './codingmark/public-codingmarks.component';
+import {PublicCodingmarksStore} from './codingmark/store/public-codingmarks-store.service';
 import {MatTabsModule} from '@angular/material';
+import {PublicCodingmarksService} from './codingmark/public-codingmarks.service';
 
 @NgModule({
   declarations : [
     AboutComponent,
-    PublicBookmarksComponent,
+    PublicCodingmarksComponent,
     TagComponent
   ],
   imports: [
@@ -21,8 +21,8 @@ import {MatTabsModule} from '@angular/material';
     MatTabsModule
   ],
   providers: [
-    PublicBookmarksService,
-    PublicBookmarksStore,
+    PublicCodingmarksService,
+    PublicCodingmarksStore,
     TagService
   ]
 })
