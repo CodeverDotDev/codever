@@ -32,7 +32,27 @@ paths:
             type: array
             items:
               "$ref": "#/definitions/codingmark"
-  "/private/users/{userId}/codingmarks":
+  "/secured/public/codingmarks/{codingmarkId}":
+    patch:
+      description: updates rating of codingmark (a user starred or unstarred the codingmark)
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK when operation successful and updated codingmark in body
+          schema:
+            "$ref": "#/definitions/codingmark"
+        '404':
+          description: NOT_FOUND when codingmark cannot be found
+          schema:
+            "$ref": "#/definitions/myError"
+        '401':
+          description: unauthorized (you need to have a valid token) and the ratingUserId must be the same with the one in the request body
+        '500':
+          description: internal server error, when unknown server error is catched
+          schema:
+            "$ref": "#/definitions/myError"
+  "/personal/users/{userId}/codingmarks":
     get:
       description: list of user's codingmarks
       operationId: getUserCodingmarks
@@ -95,7 +115,7 @@ paths:
         '409':
           description: conflict
 
-  "/private/users/{userId}/codingmarks/{codingmarkId}":
+  "/personal/users/{userId}/codingmarks/{codingmarkId}":
     put:
       description: (full) update existing codingmark of suer
       operationId: updateCodingmark
