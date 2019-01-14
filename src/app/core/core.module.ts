@@ -6,8 +6,8 @@ import {ErrorService} from './error/error.service';
 import {ErrorComponent} from './error/error.component';
 import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
-import {PersonalBookmarksStore} from './store/PersonalBookmarksStore';
-import {PersonalBookmarksService} from './personal-bookmarks.service';
+import {PersonalCodingmarksStore} from './store/personal-codingmarks-store.service';
+import {PersonalCodingmarkService} from './personal-codingmark.service';
 // import {AuthGuard} from '../personal/auth-guard.service';
 
 /**
@@ -33,8 +33,8 @@ import {PersonalBookmarksService} from './personal-bookmarks.service';
     BookmarkFilterService,
     Logger,
     ErrorService,
-    PersonalBookmarksStore,
-    PersonalBookmarksService
+    PersonalCodingmarksStore,
+    PersonalCodingmarkService
   ]
 })
 export class CoreModule {

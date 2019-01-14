@@ -2,7 +2,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {NgModule} from '@angular/core';
 import {TagComponent} from './tag/tag.component';
 import {AboutComponent} from './about/about.component';
-import {PublicBookmarksComponent} from './bookmark/public-bookmarks.component';
+import {PublicCodingmarksComponent} from './codingmark/public-codingmarks.component';
 
 const publicBookmarksRoutes: Routes = [
   {
@@ -20,7 +20,7 @@ const publicBookmarksRoutes: Routes = [
   },
   {
     path: '',
-    component: PublicBookmarksComponent
+    component: PublicCodingmarksComponent
   }
 ];
 @NgModule({

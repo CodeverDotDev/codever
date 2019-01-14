@@ -2,7 +2,7 @@
 
 <img align="left" src="src/assets/codingmarks-logo-md.png">
 
-Collection of (cu)rated coding bookmarks. Create your personal bookmark list, rate and share your hidden gems
+Collection of (cu)rated coding bookmarks. Create your personal codingmark list, rate and share your hidden gems
  so everybody can benefit. The public codingmarks are also published weekly on Github 
  at [https://github.com/Codingpedia/codingmarks](https://github.com/Codingpedia/codingmarks):
  
@@ -22,7 +22,7 @@ The project is developed with the MEAN stack, featuring [MongoDB](https://docs.m
 
 There is a **two-step** setup required for development 
 * **front-end setup** concerning angular/angular-cli setup; this is described on this page
-* **[backend-end setup](https://github.com/Codingpedia/bookmarks-api)** concerning mongodb, keycloak, nodejs
+* **[backend-end setup](https://github.com/Codingpedia/codingmarks-api)** concerning mongodb, keycloak, nodejs
 
 > You need to complete both parts for local development
 

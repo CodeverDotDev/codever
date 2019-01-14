@@ -18,7 +18,7 @@
   </div>
 </div>
 <div class="col-md-8 col-md-offset-2">
-  <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
+  <form [formGroup]="codingmarkForm" novalidate (ngSubmit)="saveCodingmark(codingmarkForm.value)">
     <div class="form-group">
       <label for="location">Location*</label>
       <input type="text" class="form-control" id="location"
@@ -26,11 +26,11 @@
              name="location"
              formControlName="location"
              placeholder="Usually an URL">
-      <div [hidden]="bookmarkForm.get('location').valid || (bookmarkForm.get('location').pristine)"
+      <div [hidden]="codingmarkForm.get('location').valid || (codingmarkForm.get('location').pristine)"
            class="alert alert-danger">
         Location is required
       </div>
-      <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
+      <div [hidden]="!personalCodingmarkPresent" class="alert alert-danger">
         You have already bookmarked this URL.
       </div>
     </div>
@@ -39,8 +39,8 @@
       <input type="text" class="form-control" id="name"
              required
              formControlName="name"
-             placeholder="Name of the bookmark to recognize later">
-      <div [hidden]="bookmarkForm.get('name').valid || (bookmarkForm.get('name').pristine)"
+             placeholder="Name of the codingmark to recognize later">
+      <div [hidden]="codingmarkForm.get('name').valid || (codingmarkForm.get('name').pristine)"
            class="alert alert-danger">
         Name is required
       </div>
@@ -83,8 +83,7 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)"
-           class="alert alert-danger">
+      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)" class="alert alert-danger">
         <div *ngIf="tags.errors.tagsAreRequired">
           Tags are required.
         </div>
@@ -101,7 +100,7 @@
              placeholder='Date when page was published yyyy-MM-dd'>
     </div>
     <div class="form-group">
-      <label for="githubURL">GitHub URL <i class="fa fa-github"></i></label>
+      <label for="githubURL">Source code URL <i class="fa fa-github"></i></label>
       <input type="url"
              class="form-control"
              id="githubURL"
@@ -109,21 +108,31 @@
              placeholder='URL of the post, project on GitHub - e.g. https://github.com/Codingpedia/codingmarks.org'>
     </div>
     <div class="form-group">
-      <label for="description" style="width: 100%">Notes... Support for <a href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown</a></label>
+      <label for="description" style="width: 100%">Description - <a href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown</a> supported</label>
       <textarea class="form-control"
                 id="description"
                 formControlName="description"
-                placeholder="Make some notes to help you later by searching... You can use Markdown for a nicer layout"
+                placeholder="Writing descriptions with keywords can help find your codingmarks more easily through search. You can give an overview of the codingmark and place keywords in the beginning of the description."
                 style="height: 250px">
       </textarea>
+      <div class="description-chars-counter">{{description.value ? description.value.length : 0}} / 1500</div>
+      <div class="clear"></div>
+      <div *ngIf="description.invalid && (description.dirty || description.touched)" class="alert alert-danger">
+        <div *ngIf="description.errors.tooManyLines">
+          Your description has {{description.errors.tooManyLines.value}} lines. Maximum 100 lines are allowed.
+        </div>
+        <div *ngIf="description.errors.tooManyCharacters">
+          Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 1500 characters are allowed.
+        </div>
+      </div>
     </div>
     <div class="form-check">
       <label class="form-check-label">
         <input #publicCodingmark [checked]="makePublic" (click)="onClickMakePublic(publicCodingmark.checked)" class="form-check-input" type="checkbox" value="true" formControlName="shared">
-        <strong> Make this bookmark public so others can benefit from it </strong>
+        <strong> Make this codingmark public so others can benefit</strong>
       </label>
     </div>
-    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid || personalBookmarkPresent">Submit</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!codingmarkForm.valid || personalCodingmarkPresent">Submit</button>
   </form>
 </div>
 
