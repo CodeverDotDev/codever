@@ -35,7 +35,7 @@ export class PublicCodingmarksComponent implements OnInit {
       }
     }
 
-    this.publicCodingmarks$ = this.publicCodingmarksStore.getBookmarks();
+    this.publicCodingmarks$ = this.publicCodingmarksStore.getPublicCodingmarks();
   }
 
   onTagClick(tag: string) {
