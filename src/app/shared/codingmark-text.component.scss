@@ -1,0 +1,30 @@
+//https://stackoverflow.com/questions/16026867/show-more-feature-with-css
+.text {
+  height: 100px;
+  overflow: hidden;
+}
+.show-hide {
+  position: relative;
+}
+.bigger-text-wrapper {
+  margin-bottom: 40px;
+}
+label {
+  position: absolute;
+  top: 100%;
+}
+input {
+  display: none;
+}
+label:after {
+  font-family: FontAwesome;
+  opacity: 0.7;
+  content: "SHOW MORE \f0ab";
+}
+input:checked + label:after {
+  font-family: FontAwesome;
+  content: "SHOW LESS \f0aa";
+}
+input:checked ~ div {
+  height: 100%;
+}

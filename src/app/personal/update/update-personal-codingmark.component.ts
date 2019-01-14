@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {Bookmark} from '../../core/model/bookmark';
+import {Codingmark} from '../../core/model/codingmark';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {PersonalBookmarksStore} from '../../core/store/PersonalBookmarksStore';
+import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
 import {MarkdownService} from '../markdown.service';
 import {MatChipInputEvent} from '@angular/material';
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
@@ -9,15 +9,14 @@ import {languages} from '../../shared/language-options';
 import {allTags} from '../../core/model/all-tags.const.en';
 
 @Component({
-  selector: 'app-update-bookmark',
-  templateUrl: './update-personal-bookmark.component.html',
-  styleUrls: ['./update-personal-bookmark.component.scss']
+  selector: 'app-update-codingmark',
+  templateUrl: './update-personal-codingmark.component.html',
+  styleUrls: ['./update-personal-codingmark.component.scss']
 })
-export class UpdatePersonalBookmarkComponent implements OnInit {
+export class UpdatePersonalCodingmarkComponent implements OnInit {
 
-  bookmark: Bookmark;
+  codingmark: Codingmark;
 
-  visible = true;
   selectable = true;
   removable = true;
   addOnBlur = true;
@@ -32,7 +31,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   currentTag = '';
 
   constructor(
-    private userBookmarkStore: PersonalBookmarksStore,
+    private personalCodingmarksStore: PersonalCodingmarksStore,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private router: Router
@@ -43,34 +42,34 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
       const id = params['id'];
-      this.bookmark = this.userBookmarkStore.getBookmark(id);
+      this.codingmark = this.personalCodingmarksStore.getCodingmarkById(id);
     });
-    this.autocompleteTags = this.userBookmarkStore.getPersonalAutomcompleteTags();
+    this.autocompleteTags = this.personalCodingmarksStore.getPersonalAutomcompleteTags();
   }
 
-  updateBookmark(): void {
-    this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
-    this.bookmark.updatedAt = new Date();
+  updateCodingmark(): void {
+    this.codingmark.descriptionHtml = this.markdownService.toHtml(this.codingmark.description);
+    this.codingmark.updatedAt = new Date();
 
-    const obs = this.userBookmarkStore.updateBookmark(this.bookmark);
+    const obs = this.personalCodingmarksStore.updateCodingmark(this.codingmark);
 
     obs.subscribe(
       res => {
-        this.goToUserBookmarks();
+        this.navigateToPersonalCodingmarks();
       });
   }
 
-  goToUserBookmarks(): void {
+  navigateToPersonalCodingmarks(): void {
     this.router.navigate(['/personal'], { fragment: 'navbar' });
   }
 
-  add(event: MatChipInputEvent): void {
+  addTag(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
     // Add our fruit
     if ((value || '').trim()) {
-      this.bookmark.tags.push( this.currentTag);
+      this.codingmark.tags.push( this.currentTag);
     }
 
     // Reset the input value
@@ -81,11 +80,11 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     }
   }
 
-  remove(tag: any): void {
-    const index = this.bookmark.tags.indexOf(tag);
+  removeTag(tag: any): void {
+    const index = this.codingmark.tags.indexOf(tag);
 
     if (index >= 0) {
-      this.bookmark.tags.splice(index, 1);
+      this.codingmark.tags.splice(index, 1);
     }
   }
 

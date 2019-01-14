@@ -1,0 +1,13 @@
+<div class="show-hide" #codingmarkText>
+  <div class="bigger-text-wrapper" *ngIf="viewHeight > 100 else wholeText">
+    <input id="ch{{i}}}" type="checkbox">
+    <label for="ch{{i}}}"><i class="fa arrow-alt-circle-down"></i> </label>
+    <div class="text" *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></div>
+    <div class="text" *ngIf="codingmark.descriptionHtml" [innerHtml]="codingmark.descriptionHtml | highlightHtml: queryText"></div>
+    <br/>
+  </div>
+  <ng-template #wholeText>
+    <div *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></div>
+    <div *ngIf="codingmark.descriptionHtml" [innerHtml]="codingmark.descriptionHtml | highlightHtml: queryText"></div>
+  </ng-template>
+</div>
