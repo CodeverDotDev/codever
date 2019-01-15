@@ -1,35 +1,29 @@
-//https://stackoverflow.com/questions/16026867/show-more-feature-with-css
-.text {
-  height: 30px;
+.less_text {
+  height: 120px;
   overflow: hidden;
 }
 
-.show {
+.more_text {
   overflow: visible;
 }
 
-.show-hide {
-  position: relative;
+.more-text-wrapper {
+  margin-bottom: 21px;
 }
-.bigger-text-wrapper {
-  margin-bottom: 40px;
-}
-label {
-  position: absolute;
-  top: 100%;
-}
-input {
-  display: none;
-}
-label:after {
-  font-family: FontAwesome;
-  opacity: 0.7;
-  content: "SHOW MORE \f0ab";
-}
-input:checked + label:after {
+.show_less_button:after{
   font-family: FontAwesome;
   content: "SHOW LESS \f0aa";
 }
-input:checked ~ div {
-  height: 100%;
+.show_more_button:after{
+  font-family: FontAwesome;
+  content: "SHOW MORE \f0ab";
+}
+
+.toggle-show-more-button {
+  opacity: 0.55;
+  margin-top: 0.5rem;
+  background-color: white;
+  border: none;
+  font-weight: bolder;
+  box-shadow: 0px 2px 3px 0px #ccc;
 }
