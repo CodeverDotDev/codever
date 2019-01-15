@@ -1,10 +1,8 @@
-<div class="show-hide" #codingmarkText>
-  <div class="bigger-text-wrapper" *ngIf="viewHeight > 100 else wholeText">
-    <input id="ch{{i}}}" type="checkbox">
-    <label for="ch{{i}}}"><i class="fa arrow-alt-circle-down"></i> </label>
-    <div class="text" *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></div>
-    <div class="text" *ngIf="codingmark.descriptionHtml" [innerHtml]="codingmark.descriptionHtml | highlightHtml: queryText"></div>
-    <br/>
+<div #codingmarkText>
+  <div class="more-text-wrapper" *ngIf="viewHeight > 120 else wholeText">
+    <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}" *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></div>
+    <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}" *ngIf="codingmark.descriptionHtml" [innerHtml]="codingmark.descriptionHtml | highlightHtml: queryText"></div>
+    <button (click)="showMoreText = !showMoreText" [ngClass]="{show_less_button: showMoreText, show_more_button: !showMoreText}" class="toggle-show-more-button"></button>
   </div>
   <ng-template #wholeText>
     <div *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></div>

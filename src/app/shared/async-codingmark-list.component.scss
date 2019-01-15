@@ -4,31 +4,10 @@
 .star-span {
   margin-right: 0.3rem;
 }
-
-.text {
-  height: 100px;
-  overflow: hidden;
-}
-.show-hide {
-  position: relative;
-}
-label {
-  position: absolute;
-  top: 100%;
-}
-input {
-  display: none;
-}
-label:after {
-  content: "Show More";
-}
-input:checked + label:after {
-  content: "Show Less";
-}
-input:checked ~ div {
-  height: 100%;
-}
-
 .edit-buttons-wrapper {
   margin-top: 1rem;
+}
+
+.title-content-separator {
+  margin: 0 0 0.5rem 0;
 }
