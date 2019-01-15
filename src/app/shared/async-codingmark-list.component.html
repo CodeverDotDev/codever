@@ -22,7 +22,9 @@
     <div class="card-body show-hide">
     <h5 class="card-title"><a href="{{codingmark.location}}" target="_blank" [innerHtml]="codingmark.name | highlight: queryText" (click)="updateLastAccess(codingmark)"></a></h5>
     <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="codingmark.location | slice:0:150 | highlight: queryText"></span></h6>
-    <app-codingmark-text [codingmark]="codingmark"></app-codingmark-text>
+    <p *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></p>
+    <div *ngIf="codingmark.descriptionHtml" [innerHtml]="codingmark.descriptionHtml | highlightHtml: queryText"></div>
+    <!--<app-codingmark-text [codingmark]="codingmark"></app-codingmark-text>-->
     <div class="edit-buttons-wrapper" *ngIf="codingmark.userId == userId">
       <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(codingmark)"><i class="fa fa-edit"></i> Edit</button>
       <button type="button" class="btn btn-danger btn-sm" (click)="deleteCodingmark(codingmark)"><i class="fa fa-trash-o"></i> Delete</button>
