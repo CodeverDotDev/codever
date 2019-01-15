@@ -1,9 +1,8 @@
-<div class="show-hide" #codingmarkText>
-  <div class="bigger-text-wrapper" *ngIf="viewHeight > 100 else wholeText">
-    <div [ngClass]="{show: shouldShow, text: !shouldShow}" *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></div>
-    <div [ngClass]="{show: shouldShow, text: !shouldShow}" *ngIf="codingmark.descriptionHtml" [innerHtml]="codingmark.descriptionHtml | highlightHtml: queryText"></div>
-    <button (click)="shouldShow = !shouldShow"> Show/Hide </button>
-    <br/>
+<div #codingmarkText>
+  <div class="more-text-wrapper" *ngIf="viewHeight > 120 else wholeText">
+    <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}" *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></div>
+    <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}" *ngIf="codingmark.descriptionHtml" [innerHtml]="codingmark.descriptionHtml | highlightHtml: queryText"></div>
+    <button (click)="showMoreText = !showMoreText" [ngClass]="{show_less_button: showMoreText, show_more_button: !showMoreText}" class="toggle-show-more-button"></button>
   </div>
   <ng-template #wholeText>
     <div *ngIf="!codingmark.descriptionHtml && codingmark.description" class="card-text" [innerHtml]="codingmark.description | highlight: queryText"></div>

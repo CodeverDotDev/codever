@@ -20,7 +20,7 @@ export class CodingmarkTextComponent  implements  AfterViewInit, AfterViewChecke
   codingmark: Codingmark;
 
   show = false; // add one more property
-  public shouldShow = false;
+  public showMoreText = false;
 
   @ViewChild('codingmarkText') elementView: ElementRef;
   public viewHeight: number;
@@ -32,7 +32,7 @@ export class CodingmarkTextComponent  implements  AfterViewInit, AfterViewChecke
   }
 
   ngAfterViewChecked(): void {
-    const show = this.viewHeight > 30;
+    const show = this.viewHeight > 120;
     if (show !== this.show) { // check if it change, tell CD update view
       this.show = show;
       this.changeDetectorRef.detectChanges();
