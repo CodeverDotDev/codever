@@ -1,8 +1,13 @@
 //https://stackoverflow.com/questions/16026867/show-more-feature-with-css
 .text {
-  height: 100px;
+  height: 30px;
   overflow: hidden;
 }
+
+.show {
+  overflow: visible;
+}
+
 .show-hide {
   position: relative;
 }
