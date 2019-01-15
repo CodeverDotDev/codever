@@ -22,6 +22,7 @@
     <div class="card-body show-hide">
     <h5 class="card-title"><a href="{{codingmark.location}}" target="_blank" [innerHtml]="codingmark.name | highlight: queryText" (click)="updateLastAccess(codingmark)"></a></h5>
     <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="codingmark.location | slice:0:150 | highlight: queryText"></span></h6>
+    <hr class="title-content-separator">
     <app-codingmark-text [codingmark]="codingmark"></app-codingmark-text>
     <div class="edit-buttons-wrapper" *ngIf="codingmark.userId == userId">
       <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(codingmark)"><i class="fa fa-edit"></i> Edit</button>
