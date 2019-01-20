@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var apiBasePath = require('./routes/index');
+var version = require('./routes/version');
 var personalCodingmarks = require('./routes/personal-codingmarks');
 var publicCodingmarks = require('./routes/public-codingmarks');
 var securedPublicCodingmarks = require('./routes/secured-public-codingmarks');
@@ -59,6 +60,7 @@ app.use(function(req, res, next) {
 
 
 app.use('/api', apiBasePath);
+app.use('/api/version', version);
 app.use('/api/personal/users', personalCodingmarks);
 app.use('/api/public/codingmarks', publicCodingmarks);
 app.use('/api/secured/public/codingmarks', securedPublicCodingmarks);

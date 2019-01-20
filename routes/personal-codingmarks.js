@@ -5,7 +5,7 @@ var Keycloak = require('keycloak-connect');
 var Bookmark = require('../models/bookmark');
 var MyError = require('../models/error');
 
-var common = require('./common');
+var common = require('../common/config');
 var config = common.config();
 
 var HttpStatus = require('http-status-codes');
