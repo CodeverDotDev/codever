@@ -20,6 +20,10 @@ router.use( keycloak.middleware() );
 
 const MAX_NUMBER_OF_TAGS = 8;
 
+const MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION = 1500;
+
+const MAX_NUMBER_OF_LINES_FOR_DESCRIPTION = 100;
+
 /**
  * CREATE bookmark for user
  */
@@ -30,22 +34,38 @@ router.post('/:userId/codingmarks', keycloak.protect(), async (request, response
     return response.status(HttpStatus.UNAUTHORIZED);
   }
 
-  const bookmark = buildCodingmarkFromRequest(request);
+  const codingmark = buildCodingmarkFromRequest(request);
 
-  const missingRequiredAttributes = !bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0;
+  const missingRequiredAttributes = !codingmark.name || !codingmark.location || !codingmark.tags || codingmark.tags.length === 0;
   if(missingRequiredAttributes) {
     return response
               .status(HttpStatus.BAD_REQUEST)
               .send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
-  if(bookmark.tags.length > MAX_NUMBER_OF_TAGS){
+  if(codingmark.tags.length > MAX_NUMBER_OF_TAGS){
     return response
               .status(HttpStatus.BAD_REQUEST)
               .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
+  const descriptionIsTooLong = codingmark.description.length > MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+  if(descriptionIsTooLong) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed', ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
+  }
+
+  if(codingmark.description){
+    const descriptionHasTooManyLines = codingmark.description.split('\n').length > MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    if(descriptionHasTooManyLines){
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed', ['The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+    }
+  }
+
   try{
-    let newBookmark = await bookmark.save();
+    let newBookmark = await codingmark.save();
 
     response
       .set('Location', `${config.basicApiUrl}private/${request.params.userId}/codingmarks/${newBookmark.id}`)
@@ -135,6 +155,22 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
               .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
+  const descriptionIsTooLong = request.body.description.length > MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+  if(descriptionIsTooLong) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed', ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
+  }
+
+  if(request.body.description){
+    const descriptionHasTooManyLines = request.body.description.split('\n').length > MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    if(descriptionHasTooManyLines){
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed', ['The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+    }
+  }
+
   if(!request.body.descriptionHtml){
     request.body.descriptionHtml = converter.makeHtml(request.body.description);
   }
@@ -157,7 +193,7 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
                 .status(HttpStatus.CONFLICT)
                 .send(new MyError('Duplicate key', [err.message]));
     }
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when updating codingmark for user id ' + request.params.userId + ' and codingmark id '+ request.params.codingmarkId]));
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknown server error when updating codingmark for user id ' + request.params.userId + ' and codingmark id '+ request.params.codingmarkId]));
   }
 });
 
