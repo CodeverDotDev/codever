@@ -10,6 +10,7 @@ describe('API Tests root', function() {
       .get('/api')
       .end(function(err, res) {
         expect(res.statusCode).to.equal(200);
+        expect(res.text).to.equal('API Backend supporting Codingmarks.org - <a href="/api/docs">Swagger Docs</a>');
         done();
       });
   });
