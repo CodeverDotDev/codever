@@ -4,6 +4,7 @@ var cheerio = require('cheerio');
 var router = express.Router();
 var Bookmark = require('../models/bookmark');
 var HttpStatus = require('http-status-codes');
+var MyError = require('../models/error');
 
 /* GET title of bookmark given its url */
 router.get('/scrape', function(req, res, next) {
@@ -36,28 +37,34 @@ router.get('/latest-entries', async (req, res) => {
   {
 
     if(req.query.since) {
-      const toDate = req.query.to ? new Date(parseFloat(req.query.to,0)) : new Date();
-      const bookmarks = await Bookmark.find(
+      const fromDate = new Date(parseFloat(req.query.since, 0));
+      const toDate = req.query.to ? new Date(parseFloat(req.query.to, 0)) : new Date();
+      if(fromDate > toDate) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .send(new MyError('timing query parameters values', ['<Since> param value must be before <to> parameter value']));
+      }
+      const codingmarks = await Bookmark.find(
         {
           'shared':true,
           createdAt: {
-            $gte: new Date(parseFloat(req.query.since,0)),
+            $gte: fromDate,
             $lte: toDate
           }
 
         }).sort({createdAt: 'desc'}).lean().exec();
 
-      res.send(bookmarks);
+      res.send(codingmarks);
     } else {
       const numberOfDaysToLookBack = req.query.days ? req.query.days : 7;
 
-      const bookmarks = await Bookmark.find(
+      const codingmarks = await Bookmark.find(
         {
           'shared':true,
           createdAt: { $gte: new Date((new Date().getTime() - (numberOfDaysToLookBack * 24 * 60 * 60 * 1000))) }
         }).sort({createdAt: 'desc'}).lean().exec();
 
-      res.send(bookmarks);
+      res.send(codingmarks);
     }
 
   }
