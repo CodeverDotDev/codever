@@ -21,7 +21,7 @@ router.patch('/:codingmarkId',  keycloak.protect(), async (request, response) =>
   if(userId !== request.body.ratingUserId) {
     return response.status(HttpStatus.UNAUTHORIZED);
   }
-  const requiredAttributesMissing = !request.body.action;
+  const requiredAttributesMissing = !request.body.action || !request.body.ratingUserId;
   if(requiredAttributesMissing){
     return response
       .status(HttpStatus.BAD_REQUEST)
@@ -39,7 +39,7 @@ router.patch('/:codingmarkId',  keycloak.protect(), async (request, response) =>
           .send(new MyError('Not Found Error', ['Codingmark with codingmark id '+ request.params.codingmarkId + ' not found']));
       } else {
         response
-          .status(200)
+          .status(HttpStatus.OK)
           .send(codingmark);
       }
     } catch (err) {
@@ -56,7 +56,7 @@ router.patch('/:codingmarkId',  keycloak.protect(), async (request, response) =>
           .send(new MyError('Not Found Error', ['Codingmark with codingmark id '+ request.params.codingmarkId + ' not found']));
       } else {
         response
-          .status(200)
+          .status(HttpStatus.OK)
           .send(codingmark);
       }
     } catch (err) {
