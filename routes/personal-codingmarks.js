@@ -31,7 +31,9 @@ router.post('/:userId/codingmarks', keycloak.protect(), async (request, response
 
   let userId = request.kauth.grant.access_token.content.sub;
   if(userId !== request.params.userId) {
-    return response.status(HttpStatus.UNAUTHORIZED);
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
   const codingmark = buildCodingmarkFromRequest(request);
@@ -110,20 +112,22 @@ let buildCodingmarkFromRequest = function (req) {
 /* GET bookmarks for user */
 router.get('/:userId/codingmarks', keycloak.protect(), async (request, response) => {
   try{
-    let bookmarks;
+    let codingmarks;
     let userId = request.kauth.grant.access_token.content.sub;
     if(userId !== request.params.userId) {
-      return response.status(HttpStatus.UNAUTHORIZED);
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
     }
     if(request.query.term){
       var regExpTerm = new RegExp(request.query.term, 'i');
       var regExpSearch=[{name:{$regex:regExpTerm}}, {description:{$regex: regExpTerm }}, {category:{$regex:regExpTerm }}, {tags:{$regex:regExpTerm}}];
-      bookmarks = await Bookmark.find({userId:request.params.userId, '$or':regExpSearch});
+      codingmarks = await Bookmark.find({userId:request.params.userId, '$or':regExpSearch});
     } else {//no filter - all bookmarks
-      bookmarks = await Bookmark.find({userId:request.params.userId});
+      codingmarks = await Bookmark.find({userId:request.params.userId});
     }
 
-    response.send(bookmarks);
+    response.send(codingmarks);
   } catch (err) {
     return response
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -139,7 +143,9 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
 
   let userId = request.kauth.grant.access_token.content.sub;
   if(userId !== request.params.userId) {
-    return response.status(HttpStatus.UNAUTHORIZED);
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
   const requiredAttributesMissing = !request.body.name || !request.body.location || !request.body.tags || request.body.tags.length === 0;
@@ -204,7 +210,9 @@ router.delete('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (r
 
   const userId = req.kauth.grant.access_token.content.sub;
   if(userId !== req.params.userId) {
-    return res.status(HttpStatus.UNAUTHORIZED);
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
   try {
