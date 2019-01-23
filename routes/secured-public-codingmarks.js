@@ -19,7 +19,7 @@ router.patch('/:codingmarkId',  keycloak.protect(), async (request, response) =>
 
   let userId = request.kauth.grant.access_token.content.sub;
   if(userId !== request.body.ratingUserId) {
-    return response.status(HttpStatus.UNAUTHORIZED);
+    return response.status(HttpStatus.UNAUTHORIZED).send(new MyError('Invalid userId', ['The id from the access token must match the one from the request']));
   }
   const requiredAttributesMissing = !request.body.action || !request.body.ratingUserId;
   if(requiredAttributesMissing){

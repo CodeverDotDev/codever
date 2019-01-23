@@ -10,10 +10,12 @@ const config = common.config();
 const superagent = require('superagent');
 
 describe('Secured Public API Tests', function () {
-  const latestEntriesApiBaseUrl = '/api/secured/public/codingmarks';
-  let bearerToken;
 
-  before(function() {
+  let bearerToken;
+  const ratingTestUserId = config.integration_tests.test_user_id;
+  const baseApiUrl = '/api/secured/public/codingmarks/';
+
+  before(function(done) {
     superagent
       .post(config.integration_tests.token_endpoint)
       .send('client_id=' + config.integration_tests.client_id)
@@ -22,33 +24,36 @@ describe('Secured Public API Tests', function () {
       .set('Accept', 'application/json')
       .then(res => {
         bearerToken = 'Bearer ' + res.body.access_token;
+        done();
       });
 
   });
 
   describe('patch codingmark tests', function () {
-    let codingmarkToPatch;
+    let codingmarkUnderTest;
 
-    before(function() {
+    before(function(done) {
       superagent
         .get('http://localhost:3000/api/public/codingmarks')
         .query({location: 'https://www.codingmarks.org'})
         .set('Accept', 'application/json')
         .then(res => {
-            codingmarkToPatch = res.body;
+            codingmarkUnderTest = res.body;
+            done();
         });
 
     });
 
     it('should fail trying to rate with invalid userId', function (done) {
+
       request(app)
-        .patch('/api/secured/public/codingmarks/' + codingmarkToPatch.id)
+        .patch(baseApiUrl + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
-          .send({action: 'UNSTAR'})
-          .send({ratingUserId: 'blablabla'})
+        .send({action: 'UNSTAR'})
+        .send({ratingUserId: 'blablabla'})
         .end(function (err, res) {
+          console.log(res.statusCode);
           expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
-          codingmarkToPatch = res.body;
           done();
         });
     });
@@ -56,12 +61,12 @@ describe('Secured Public API Tests', function () {
 
     it('should fail trying to rate with invalid patching action', function (done) {
       request(app)
-        .patch('/api/secured/public/codingmarks/' + codingmarkToPatch.id)
+        .patch(baseApiUrl + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
         .send({action: 'STARR'})
-        .send({ratingUserId: 'blablabla'})//TODO replace with correct userId
+        .send({ratingUserId: ratingTestUserId})
         .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           done();
         });
     });
@@ -69,10 +74,10 @@ describe('Secured Public API Tests', function () {
     it('should fail trying to rate (STAR) a non-existing codingmark', function (done) {
       const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
-        .patch('/api/secured/public/codingmarks/' + inexistentCodingmarkId)
+        .patch(baseApiUrl + inexistentCodingmarkId)
         .set('Authorization', bearerToken)
         .send({action: 'STAR'})
-        .send({ratingUserId: 'blablabla'})//TODO replace with correct userId
+        .send({ratingUserId: ratingTestUserId})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.NOT_FOUND);
           done();
@@ -82,64 +87,65 @@ describe('Secured Public API Tests', function () {
     it('should fail trying to rate (UNSTAR) a non-existing codingmark', function (done) {
       const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
-        .patch('/api/secured/public/codingmarks/' + inexistentCodingmarkId)
+        .patch(baseApiUrl + inexistentCodingmarkId)
         .set('Authorization', bearerToken)
         .send({action: 'UNSTAR'})
-        .send({ratingUserId: 'blablabla'})//TODO replace with correct userId
+        .send({ratingUserId: ratingTestUserId})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.NOT_FOUND);
           done();
         });
     });
 
-    it('should fail trying to rate with incomlete request attributes - here ratingUserId', function (done) {
+    it('should fail trying to rate with incomplete request attributes - action', function (done) {
       const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
-        .patch('/api/secured/public/codingmarks/' + inexistentCodingmarkId)
+        .patch(baseApiUrl + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
-        .send({action: 'STAR'})
+        .send({ratingUserId: ratingTestUserId})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           done();
         });
     });
 
+
     it('should star codingmark ', function (done) {
-      const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
-        .patch('/api/secured/public/codingmarks/' + inexistentCodingmarkId)
+        .patch(baseApiUrl + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
         .send({action: 'STAR'})
-        .send({ratingUserId: 'blablabla'})//TODO replace with correct userId
+        .send({ratingUserId: ratingTestUserId})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
-          done();
-        });
-    });
-
-    it('should verify codingmark is starred by the user', function (done) {
-      request(app)
-        .get('/api/public/codingmarks' + codingmarkToPatch.id)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.OK);
-          expect(res.body.starredBy).contains
-          done();
+          request(app)
+            .get('/api/public/codingmarks/' + codingmarkUnderTest._id)
+            .end(function (err, res) {
+              expect(res.statusCode).to.equal(HttpStatus.OK);
+              expect(res.body.starredBy).to.be.an('array').that.does.include(ratingTestUserId);
+              done();
+            });
         });
     });
 
     it('should unstar codingmark ', function (done) {
       request(app)
-        .patch('/api/secured/public/codingmarks/' + inexistentCodingmarkId)
+        .patch(baseApiUrl + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
         .send({action: 'UNSTAR'})
-        .send({ratingUserId: 'blablabla'})//TODO replace with correct userId
+        .send({ratingUserId: ratingTestUserId})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
-          done();
+          request(app)
+            .get('/api/public/codingmarks/' + codingmarkUnderTest._id)
+            .end(function (err, res) {
+              expect(res.statusCode).to.equal(HttpStatus.OK);
+              expect(res.body.starredBy).to.be.an('array').that.does.not.include(ratingTestUserId);
+              done();
+            });
         });
     });
 
   });
-
 
 });
