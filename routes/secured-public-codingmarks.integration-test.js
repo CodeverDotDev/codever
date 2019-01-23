@@ -13,7 +13,7 @@ describe('Secured Public API Tests', function () {
 
   let bearerToken;
   const ratingTestUserId = config.integration_tests.test_user_id;
-  const baseApiUrl = '/api/secured/public/codingmarks/';
+  const baseApiUrlUnderTest = '/api/secured/public/codingmarks/';
 
   before(function(done) {
     superagent
@@ -34,7 +34,7 @@ describe('Secured Public API Tests', function () {
 
     before(function(done) {
       superagent
-        .get('http://localhost:3000/api/public/codingmarks')
+        .get(config.basicApiUrl + 'public/codingmarks')
         .query({location: 'https://www.codingmarks.org'})
         .set('Accept', 'application/json')
         .then(res => {
@@ -47,7 +47,7 @@ describe('Secured Public API Tests', function () {
     it('should fail trying to rate with invalid userId', function (done) {
 
       request(app)
-        .patch(baseApiUrl + codingmarkUnderTest._id)
+        .patch(baseApiUrlUnderTest + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
         .send({action: 'UNSTAR'})
         .send({ratingUserId: 'blablabla'})
@@ -61,7 +61,7 @@ describe('Secured Public API Tests', function () {
 
     it('should fail trying to rate with invalid patching action', function (done) {
       request(app)
-        .patch(baseApiUrl + codingmarkUnderTest._id)
+        .patch(baseApiUrlUnderTest + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
         .send({action: 'STARR'})
         .send({ratingUserId: ratingTestUserId})
@@ -74,7 +74,7 @@ describe('Secured Public API Tests', function () {
     it('should fail trying to rate (STAR) a non-existing codingmark', function (done) {
       const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
-        .patch(baseApiUrl + inexistentCodingmarkId)
+        .patch(baseApiUrlUnderTest + inexistentCodingmarkId)
         .set('Authorization', bearerToken)
         .send({action: 'STAR'})
         .send({ratingUserId: ratingTestUserId})
@@ -87,7 +87,7 @@ describe('Secured Public API Tests', function () {
     it('should fail trying to rate (UNSTAR) a non-existing codingmark', function (done) {
       const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
-        .patch(baseApiUrl + inexistentCodingmarkId)
+        .patch(baseApiUrlUnderTest + inexistentCodingmarkId)
         .set('Authorization', bearerToken)
         .send({action: 'UNSTAR'})
         .send({ratingUserId: ratingTestUserId})
@@ -100,7 +100,7 @@ describe('Secured Public API Tests', function () {
     it('should fail trying to rate with incomplete request attributes - action', function (done) {
       const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
-        .patch(baseApiUrl + codingmarkUnderTest._id)
+        .patch(baseApiUrlUnderTest + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
         .send({ratingUserId: ratingTestUserId})
         .end(function (err, res) {
@@ -112,7 +112,7 @@ describe('Secured Public API Tests', function () {
 
     it('should star codingmark ', function (done) {
       request(app)
-        .patch(baseApiUrl + codingmarkUnderTest._id)
+        .patch(baseApiUrlUnderTest + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
         .send({action: 'STAR'})
         .send({ratingUserId: ratingTestUserId})
@@ -130,7 +130,7 @@ describe('Secured Public API Tests', function () {
 
     it('should unstar codingmark ', function (done) {
       request(app)
-        .patch(baseApiUrl + codingmarkUnderTest._id)
+        .patch(baseApiUrlUnderTest + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
         .send({action: 'UNSTAR'})
         .send({ratingUserId: ratingTestUserId})
