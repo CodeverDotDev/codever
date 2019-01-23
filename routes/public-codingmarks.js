@@ -106,7 +106,6 @@ router.get('/latest-entries', async (req, res) => {
 router.get('/:id', function (req, res, next) {
   Bookmark.findById(req.params.id, function (err, bookmark) {
     if (err) {
-      console.log(err);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
     }
     if (!bookmark) {
