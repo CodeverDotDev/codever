@@ -50,7 +50,8 @@ describe('Personal Codingmarks CRUD operations', function () {
 
   });
 
-    it('should fail trying to get codingmarks with false user id', function (done) {
+  describe('invalid user id calls' , function () {
+    it('should fail trying to GET codingmarks with false user id', function (done) {
       request(app)
         .get(baseApiUrlUnderTest + 'false_user_id/codingmarks')
         .set('Authorization', bearerToken)
@@ -60,6 +61,38 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
+    it('should fail trying CREATE codingmark with invalid user id', function (done) {
+      request(app)
+        .post(baseApiUrlUnderTest + 'false_user_id/codingmarks')
+        .set('Authorization', bearerToken)
+        .send(codingmarkExample)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+          done();
+        });
+    });
+
+    it('should fail trying to UPDATE codingmark with invalid user id', function (done) {
+      request(app)
+        .put(baseApiUrlUnderTest + 'false_user_id/codingmarks/1324343')
+        .set('Authorization', bearerToken)
+        .send(codingmarkExample)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+          done();
+        });
+    });
+
+    it('should fail trying to DELETE codingmark with invalid user id', function (done) {
+      request(app)
+        .delete(baseApiUrlUnderTest + 'false_user_id/codingmarks/12343434')
+        .set('Authorization', bearerToken)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+          done();
+        });
+    });
+  });
 
 /*    it('should unstar codingmark ', function (done) {
       request(app)
