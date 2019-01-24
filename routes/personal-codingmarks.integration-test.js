@@ -94,22 +94,103 @@ describe('Personal Codingmarks CRUD operations', function () {
     });
   });
 
-/*    it('should unstar codingmark ', function (done) {
+  describe('invalid codingmark attributes at CREATION' , function () {
+    it('should fail trying to CREATE codingmark without a name', function (done) {
+      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
+      invalidCodingmark.name = '';
       request(app)
-        .patch(baseApiUrlUnderTest + codingmarkUnderTest._id)
+        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
         .set('Authorization', bearerToken)
-        .send({action: 'UNSTAR'})
-        .send({ratingUserId: testUserId})
+        .send(invalidCodingmark)
         .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.OK);
-          request(app)
-            .get('/api/public/codingmarks/' + codingmarkUnderTest._id)
-            .end(function (err, res) {
-              expect(res.statusCode).to.equal(HttpStatus.OK);
-              expect(res.body.starredBy).to.be.an('array').that.does.not.include(testUserId);
-              done();
-            });
+          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(res.body.title).to.equal('Missing required attributes');
+          done();
         });
-    });*/
+    });
+
+    it('should fail trying to CREATE codingmark without a location', function (done) {
+      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
+      invalidCodingmark.location = '';
+      request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .set('Authorization', bearerToken)
+        .send(invalidCodingmark)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(res.body.title).to.equal('Missing required attributes');
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE codingmark without tags', function (done) {
+      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
+      invalidCodingmark.tags = [];
+      request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .set('Authorization', bearerToken)
+        .send(invalidCodingmark)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(res.body.title).to.equal('Missing required attributes');
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE codingmark with too many tags', function (done) {
+      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
+      invalidCodingmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
+      request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .set('Authorization', bearerToken)
+        .send(invalidCodingmark)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(res.body.title).to.equal('Too many tags have been submitted');
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE codingmark with a too big description', function (done) {
+      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
+      const textSnippet = "long text in the making";
+      let longText = textSnippet;
+      for (var i = 0; i < 100; i++) {
+        longText += textSnippet;
+      }
+      invalidCodingmark.description = longText;
+
+      request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .set('Authorization', bearerToken)
+        .send(invalidCodingmark)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(res.body.title).to.contain('The description is too long.');
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE codingmark with a big with too many lines', function (done) {
+      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
+      const line = "oneline\n";
+      let longText = line;
+      for (var i = 0; i < 101; i++) {
+        longText += line;
+      }
+      invalidCodingmark.description = longText;
+
+      request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .set('Authorization', bearerToken)
+        .send(invalidCodingmark)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(res.body.title).to.contain('The description hast too many lines.');
+          done();
+        });
+    });
+
+  });
 
 });
