@@ -165,7 +165,8 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
   if(descriptionIsTooLong) {
     return response
       .status(HttpStatus.BAD_REQUEST)
-      .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed', ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
+      .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed',
+                        ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
   }
 
   if(request.body.description){
@@ -173,7 +174,8 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
     if(descriptionHasTooManyLines){
       return response
         .status(HttpStatus.BAD_REQUEST)
-        .send(new MyError('The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed', ['The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+        .send(new MyError('The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
+                          ['The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
     }
   }
 
@@ -181,9 +183,9 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
     request.body.descriptionHtml = converter.makeHtml(request.body.description);
   }
   try {
-    const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.codingmarkId, userId: request.params.userId}, request.body, {new: true});
+    const codingmark = await Bookmark.findOneAndUpdate({_id: request.params.codingmarkId, userId: request.params.userId}, request.body, {new: true});
 
-    const codingmarkNotFound = !bookmark;
+    const codingmarkNotFound = !codingmark;
     if (codingmarkNotFound) {
       return response
         .status(HttpStatus.NOT_FOUND)
@@ -191,7 +193,7 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
     } else {
       response
         .status(200)
-        .send(bookmark);
+        .send(codingmark);
     }
   } catch (err) {
     if (err.name === 'MongoError' && err.code === 11000) {
@@ -199,34 +201,43 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
                 .status(HttpStatus.CONFLICT)
                 .send(new MyError('Duplicate key', [err.message]));
     }
-    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknown server error when updating codingmark for user id ' + request.params.userId + ' and codingmark id '+ request.params.codingmarkId]));
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown Server Error', ['Unknown server error when updating codingmark for user id ' + request.params.userId + ' and codingmark id '+ request.params.codingmarkId]));
   }
 });
 
 /*
 * DELETE bookmark for user
 */
-router.delete('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (req, res) => {
+router.delete('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (request, response) => {
 
-  const userId = req.kauth.grant.access_token.content.sub;
-  if(userId !== req.params.userId) {
+  const userId = request.kauth.grant.access_token.content.sub;
+  if(userId !== request.params.userId) {
     return response
       .status(HttpStatus.UNAUTHORIZED)
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
   try {
-    const bookmark = await Bookmark.findOneAndRemove({_id: req.params.codingmarkId, userId: req.params.userId});
+    const codingmark = await Bookmark.findOneAndRemove({_id: request.params.codingmarkId, userId: request.params.userId});
 
-    if (!bookmark) {
-      return res.status(HttpStatus.NOT_FOUND).send(new MyError('Not Found Error', ['Bookmark for user id ' + req.params.userId + ' and bookmark id '+ req.params.codingmarkId + ' not found']));
+    if (!codingmark) {
+      return response
+                .status(HttpStatus.NOT_FOUND)
+                .send(new MyError(
+                                  'Not Found Error',
+                                  ['Bookmark for user id ' + request.params.userId + ' and bookmark id '+ request.params.codingmarkId + ' not found']
+                                )
+                );
     } else {
-      res.status(HttpStatus.NO_CONTENT).send('Bookmark successfully deleted');
+      response.status(HttpStatus.NO_CONTENT).send('Codingmark successfully deleted');
     }
   } catch (err) {
-    return res
+    return response
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .send(new MyError('Unknown server error', ['Unknown server error when trying to delete bookmark with id ' + req.params.codingmarkId]));
+            .send(new MyError('Unknown server error',
+                              ['Unknown server error when trying to delete codingmark with id ' + request.params.codingmarkId]));
   }
 });
 
