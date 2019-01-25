@@ -43,8 +43,8 @@ describe('Personal Codingmarks CRUD operations', function () {
       .send('client_secret=' + config.integration_tests.client_secret)
       .send('grant_type=client_credentials')
       .set('Accept', 'application/json')
-      .then(res => {
-        bearerToken = 'Bearer ' + res.body.access_token;
+      .then(response => {
+        bearerToken = 'Bearer ' + response.body.access_token;
         done();
       });
 
@@ -55,8 +55,8 @@ describe('Personal Codingmarks CRUD operations', function () {
       request(app)
         .get(baseApiUrlUnderTest + 'false_user_id/codingmarks')
         .set('Authorization', bearerToken)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
           done();
         });
     });
@@ -66,8 +66,8 @@ describe('Personal Codingmarks CRUD operations', function () {
         .post(baseApiUrlUnderTest + 'false_user_id/codingmarks')
         .set('Authorization', bearerToken)
         .send(codingmarkExample)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
           done();
         });
     });
@@ -77,8 +77,8 @@ describe('Personal Codingmarks CRUD operations', function () {
         .put(baseApiUrlUnderTest + 'false_user_id/codingmarks/1324343')
         .set('Authorization', bearerToken)
         .send(codingmarkExample)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
           done();
         });
     });
@@ -87,8 +87,8 @@ describe('Personal Codingmarks CRUD operations', function () {
       request(app)
         .delete(baseApiUrlUnderTest + 'false_user_id/codingmarks/12343434')
         .set('Authorization', bearerToken)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
           done();
         });
     });
@@ -102,9 +102,9 @@ describe('Personal Codingmarks CRUD operations', function () {
         .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
         .set('Authorization', bearerToken)
         .send(invalidCodingmark)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-          expect(res.body.title).to.equal('Missing required attributes');
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Missing required attributes');
           done();
         });
     });
@@ -116,9 +116,9 @@ describe('Personal Codingmarks CRUD operations', function () {
         .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
         .set('Authorization', bearerToken)
         .send(invalidCodingmark)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-          expect(res.body.title).to.equal('Missing required attributes');
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Missing required attributes');
           done();
         });
     });
@@ -130,9 +130,9 @@ describe('Personal Codingmarks CRUD operations', function () {
         .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
         .set('Authorization', bearerToken)
         .send(invalidCodingmark)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-          expect(res.body.title).to.equal('Missing required attributes');
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Missing required attributes');
           done();
         });
     });
@@ -144,9 +144,9 @@ describe('Personal Codingmarks CRUD operations', function () {
         .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
         .set('Authorization', bearerToken)
         .send(invalidCodingmark)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-          expect(res.body.title).to.equal('Too many tags have been submitted');
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Too many tags have been submitted');
           done();
         });
     });
@@ -164,9 +164,9 @@ describe('Personal Codingmarks CRUD operations', function () {
         .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
         .set('Authorization', bearerToken)
         .send(invalidCodingmark)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-          expect(res.body.title).to.contain('The description is too long.');
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.contain('The description is too long.');
           done();
         });
     });
@@ -184,9 +184,107 @@ describe('Personal Codingmarks CRUD operations', function () {
         .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
         .set('Authorization', bearerToken)
         .send(invalidCodingmark)
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-          expect(res.body.title).to.contain('The description hast too many lines.');
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.contain('The description hast too many lines.');
+          done();
+        });
+    });
+
+  });
+
+  describe('inexistent codingmark id tests' , function () {
+    it('should fail trying to update inexistent codingmark', function (done) {
+      let inexistentCodingmarkId = '507f1f77bcf86cd799439011';
+      request(app)
+        .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${inexistentCodingmarkId}`)
+        .set('Authorization', bearerToken)
+        .send(codingmarkExample)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.NOT_FOUND);
+          expect(response.body.title).to.equal('Not Found Error');
+          done();
+        });
+    });
+    it('should fail trying to delete inexistent codingmark', function (done) {
+      let inexistentCodingmarkId = '507f1f77bcf86cd799439011';
+      request(app)
+        .delete(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${inexistentCodingmarkId}`)
+        .set('Authorization', bearerToken)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.NOT_FOUND);
+          expect(response.body.title).to.equal('Not Found Error');
+          done();
+        });
+    });
+
+  });
+
+  describe('test successful creation, update and deletion of codingmark' , function () {
+
+    let createdCodingmark;
+
+    it('should succeed creating example codingmark', function (done) {
+      request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .set('Authorization', bearerToken)
+        .send(codingmarkExample)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.CREATED);
+          const locationHeaderValue = response.header['location']
+          const isLocationHeaderPresent = response.header['location'] !== undefined;
+          expect(isLocationHeaderPresent).to.be.true;
+
+          //set the id of the codingmarkexample now that it is created
+          const lastSlashIndex = locationHeaderValue.lastIndexOf('/');
+          const codingmarkId = locationHeaderValue.substring(lastSlashIndex + 1);
+
+          request(app)
+            .get(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${codingmarkId}`)
+            .set('Authorization', bearerToken)
+            .end(function (error, response) {
+              if (error) {
+                return done(error);
+              }
+              expect(response.statusCode).to.equal(HttpStatus.OK);
+              createdCodingmark = response.body;
+              console.log(createdCodingmark);
+              expect(createdCodingmark._id).to.equal(codingmarkId);
+              expect(createdCodingmark.name).to.equal(codingmarkExample.name);
+              expect(createdCodingmark.location).to.equal(codingmarkExample.location);
+
+              done();
+            });
+        });
+    });
+
+    it('should fail trying to add codingmark with existent location for same user', function (done) {
+      request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .set('Authorization', bearerToken)
+        .send(codingmarkExample)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.CONFLICT);
+          expect(response.body.title).to.equal('Duplicate key');
+          done();
+        });
+    });
+
+    it('should succeed deleting created codingmark', function (done) {
+      request(app)
+        .delete(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+        .set('Authorization', bearerToken)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
           done();
         });
     });
