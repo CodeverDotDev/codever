@@ -33,3 +33,6 @@ npm-debug.log
 #IntelliJ
 /.idea
 /log/
+
+# Generated test coverage reports
+.nyc_output
