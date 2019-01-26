@@ -15,8 +15,9 @@ describe('Personal Codingmarks CRUD operations', function () {
   const testUserId = config.integration_tests.test_user_id;
   const baseApiUrlUnderTest = '/api/personal/users/';
 
+  const codingmarkExampleTitle = "Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg"
   const codingmarkExample = {
-    "name": "Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg",
+    "name": codingmarkExampleTitle,
     "location": "http://www.codingpedia.org/ama/cleaner-code-in-nodejs-with-async-await-mongoose-calls-example",
     "language": "en",
     "tags": [
@@ -171,7 +172,7 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
-    it('should fail trying to CREATE codingmark with a big with too many lines', function (done) {
+    it('should fail trying to CREATE codingmark with a description with too many lines', function (done) {
       let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
       const line = "oneline\n";
       let longText = line;
@@ -273,6 +274,133 @@ describe('Personal Codingmarks CRUD operations', function () {
           expect(response.statusCode).to.equal(HttpStatus.CONFLICT);
           expect(response.body.title).to.equal('Duplicate key');
           done();
+        });
+    });
+
+    describe('invalid codingmark attributes at UPDATE' , function () {
+      it('should fail trying to UPDATE codingmark without a title', function (done) {
+        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
+        invalidCodingmark.name = '';
+        request(app)
+          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidCodingmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Missing required attributes');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE codingmark without a location', function (done) {
+        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
+        invalidCodingmark.location = '';
+        request(app)
+          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidCodingmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Missing required attributes');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE codingmark without tags', function (done) {
+        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
+        invalidCodingmark.tags = [];
+        request(app)
+          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidCodingmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Missing required attributes');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE codingmark with too many tags', function (done) {
+        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
+        invalidCodingmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
+        request(app)
+          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidCodingmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Too many tags have been submitted');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE codingmark with a too big description', function (done) {
+        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
+        const textSnippet = "long text in the making";
+        let longText = textSnippet;
+        for (var i = 0; i < 100; i++) {
+          longText += textSnippet;
+        }
+        invalidCodingmark.description = longText;
+
+        request(app)
+          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidCodingmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.contain('The description is too long.');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE codingmark with a description with too many lines', function (done) {
+        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
+        const line = "oneline\n";
+        let longText = line;
+        for (var i = 0; i < 101; i++) {
+          longText += line;
+        }
+        invalidCodingmark.description = longText;
+
+        request(app)
+          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidCodingmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.contain('The description hast too many lines.');
+            done();
+          });
+      });
+
+    });
+
+    it('should successfully UPDATE codingmark', function (done) {
+      let updatedCodingmark= JSON.parse(JSON.stringify(createdCodingmark));
+      updatedCodingmark.name += ' rocks';
+
+      request(app)
+        .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${updatedCodingmark._id}`)
+        .set('Authorization', bearerToken)
+        .send(updatedCodingmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          expect(response.body.name).to.equal(codingmarkExampleTitle + ' rocks');
+
+          //make also a read to be sure sure :P
+          request(app)
+            .get(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${updatedCodingmark._id}`)
+            .set('Authorization', bearerToken)
+            .end(function (error, response) {
+              if (error) {
+                return done(error);
+              }
+              expect(response.statusCode).to.equal(HttpStatus.OK);
+              expect(response.body.name).to.equal(codingmarkExampleTitle + ' rocks');
+
+              done();
+            });
         });
     });
 
