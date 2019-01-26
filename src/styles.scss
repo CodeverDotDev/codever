@@ -6,6 +6,9 @@ a {
     color: #4078c0;
 }
 
+.navigation-space-buffer {
+  margin-top: 1rem;
+}
 .description-chars-counter {
   float:right;
   margin-bottom:0.5rem;
@@ -204,7 +207,7 @@ $rotation-angle: 45deg;
 @import '~bootstrap/scss/bootstrap';
 
 //import font-awesome
-@import '~font-awesome/scss/font-awesome.scss';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
 
 // START bootstrap override
 .card {
