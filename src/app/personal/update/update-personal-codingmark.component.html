@@ -1,6 +1,6 @@
-<div class="col-md-8 col-md-offset-2">
+<div class="col-md-8 col-md-offset-2 navigation-space-buffer">
   <div *ngIf="codingmark">
-    <h2>Edit... {{codingmark.name}} </h2>
+    <h3>Edit... {{codingmark.name}} </h3>
     <form #bookmarkForm="ngForm" (ngSubmit)="updateCodingmark(bookmarkForm.value)">
       <div class="form-group">
         <label>Name* </label>
