@@ -79,7 +79,19 @@ $ npm install
 
 # start the server with nodemon, so that changes in the dynamically reflected
 $ DEBUG=codingmarks-api:* nodemon start
+
 ```
+
+### Testing
+
+Run the integration test by issuing the following command.
+
+```bash
+$ npm run integration-tests
+```
+
+> For the tests to run the development environment has to be set up
+
 
 ### Swagger docs
 
