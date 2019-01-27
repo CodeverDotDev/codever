@@ -5,7 +5,7 @@ var Keycloak = require('keycloak-connect');
 var Bookmark = require('../models/bookmark');
 var MyError = require('../models/error');
 
-var common = require('./common');
+var common = require('../common/config');
 var config = common.config();
 
 var HttpStatus = require('http-status-codes');
@@ -19,9 +19,9 @@ router.patch('/:codingmarkId',  keycloak.protect(), async (request, response) =>
 
   let userId = request.kauth.grant.access_token.content.sub;
   if(userId !== request.body.ratingUserId) {
-    return response.status(HttpStatus.UNAUTHORIZED);
+    return response.status(HttpStatus.UNAUTHORIZED).send(new MyError('Invalid userId', ['The id from the access token must match the one from the request']));
   }
-  const requiredAttributesMissing = !request.body.action;
+  const requiredAttributesMissing = !request.body.action || !request.body.ratingUserId;
   if(requiredAttributesMissing){
     return response
       .status(HttpStatus.BAD_REQUEST)
@@ -39,7 +39,7 @@ router.patch('/:codingmarkId',  keycloak.protect(), async (request, response) =>
           .send(new MyError('Not Found Error', ['Codingmark with codingmark id '+ request.params.codingmarkId + ' not found']));
       } else {
         response
-          .status(200)
+          .status(HttpStatus.OK)
           .send(codingmark);
       }
     } catch (err) {
@@ -56,7 +56,7 @@ router.patch('/:codingmarkId',  keycloak.protect(), async (request, response) =>
           .send(new MyError('Not Found Error', ['Codingmark with codingmark id '+ request.params.codingmarkId + ' not found']));
       } else {
         response
-          .status(200)
+          .status(HttpStatus.OK)
           .send(codingmark);
       }
     } catch (err) {
