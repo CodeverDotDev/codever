@@ -1,11 +1,11 @@
 var express = require('express');
-var router = express.Router();
+var personalCodingmarksRouter = express.Router({mergeParams: true});
 var Keycloak = require('keycloak-connect');
 
-var Bookmark = require('../models/bookmark');
-var MyError = require('../models/error');
+var Bookmark = require('../../models/bookmark');
+var MyError = require('../../models/error');
 
-var common = require('../common/config');
+var common = require('../../common/config');
 var config = common.config();
 
 var HttpStatus = require('http-status-codes');
@@ -16,7 +16,7 @@ var showdown = require('showdown'),
 
 //add keycloak middleware
 var keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
-router.use(keycloak.middleware());
+personalCodingmarksRouter.use(keycloak.middleware());
 
 const MAX_NUMBER_OF_TAGS = 8;
 
@@ -27,7 +27,7 @@ const MAX_NUMBER_OF_LINES_FOR_DESCRIPTION = 100;
 /**
  * CREATE bookmark for user
  */
-router.post('/:userId/codingmarks', keycloak.protect(), async (request, response) => {
+personalCodingmarksRouter.post('/', keycloak.protect(), async (request, response) => {
 
   let userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
@@ -110,7 +110,7 @@ let buildCodingmarkFromRequest = function (req) {
 };
 
 /* GET personal codingmarks of the user */
-router.get('/:userId/codingmarks', keycloak.protect(), async (request, response) => {
+personalCodingmarksRouter.get('/', keycloak.protect(), async (request, response) => {
   try {
     let codingmarks;
     let userId = request.kauth.grant.access_token.content.sub;
@@ -136,7 +136,7 @@ router.get('/:userId/codingmarks', keycloak.protect(), async (request, response)
 });
 
 /* GET codingmark of user */
-router.get('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (request, response) => {
+personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
@@ -174,7 +174,7 @@ router.get('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
  * full UPDATE via PUT - that is the whole document is required and will be updated
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
-router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (request, response) => {
+personalCodingmarksRouter.put('/:codingmarkId', keycloak.protect(), async (request, response) => {
 
   let userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
@@ -248,7 +248,7 @@ router.put('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (requ
 /*
 * DELETE bookmark for user
 */
-router.delete('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (request, response) => {
+personalCodingmarksRouter.delete('/:codingmarkId', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
@@ -282,4 +282,4 @@ router.delete('/:userId/codingmarks/:codingmarkId', keycloak.protect(), async (r
   }
 });
 
-module.exports = router;
+module.exports = personalCodingmarksRouter;
