@@ -9,6 +9,8 @@ import {Codingmark} from '../../core/model/codingmark';
 import {List} from 'immutable';
 import {languages} from '../language-options';
 import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
+import {KeycloakService} from 'keycloak-angular';
+import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
 
 @Component({
     selector: 'app-codingmark-search',
@@ -39,9 +41,17 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   languages = languages;
 
-  constructor(private router: Router, private bookmarkStore: PublicCodingmarksStore, private bookmarkFilterService: BookmarkFilterService) {}
+  userIsLoggedIn = false;
+
+  constructor(private router: Router,
+              private bookmarkStore: PublicCodingmarksStore,
+              private bookmarkFilterService: BookmarkFilterService,
+              private keycloakService: KeycloakService) {}
 
   ngOnInit(): void {
+    this.keycloakService.isLoggedIn().then(value => {
+      this.userIsLoggedIn = value;
+    });
 
     this.filteredBookmarks = this.term.valueChanges.pipe(
       debounceTime(1500),
@@ -108,5 +118,9 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
     console.log('onLanguageChange' + newValue);
     this.language = newValue;
     this.term.setValue(this.queryText);
+  }
+
+  onSaveClick() {
+    console.log('Saving search ' + this.queryText);
   }
 }

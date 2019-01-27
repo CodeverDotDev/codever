@@ -2,7 +2,10 @@
   <div class="input-group-prepend">
     <span class="input-group-text" id="basic-addon1"><i class="fa fa-search"></i></span>
   </div>
-  <input type="text" class="form-control" [formControl]="term" placeholder="Search in {{context}} codingmarks... (tag filtering via square brackets: e.g. [angular])">
+  <input type="text" class="form-control" [formControl]="term" placeholder="Search in {{context}} codingmarks... (tags in square brackets: e.g. [angular])">
+  <div *ngIf="userIsLoggedIn" class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" (click)="onSaveClick()">Save search</button>
+  </div>
 </div>
 
 <div id="language-select" class="input-group" readonly>
