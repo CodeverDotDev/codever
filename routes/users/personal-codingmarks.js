@@ -218,10 +218,14 @@ personalCodingmarksRouter.put('/:codingmarkId', keycloak.protect(), async (reque
     request.body.descriptionHtml = converter.makeHtml(request.body.description);
   }
   try {
-    const codingmark = await Bookmark.findOneAndUpdate({
-      _id: request.params.codingmarkId,
-      userId: request.params.userId
-    }, request.body, {new: true});
+    const codingmark = await Bookmark.findOneAndUpdate(
+      {
+        _id: request.params.codingmarkId,
+        userId: request.params.userId
+      },
+      request.body,
+      {new: true}
+    );
 
     const codingmarkNotFound = !codingmark;
     if (codingmarkNotFound) {
