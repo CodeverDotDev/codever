@@ -57,4 +57,79 @@ usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
 });
 
 
+/* UPDATE user details
+* If users data is not present it will be created (upsert=true)
+*
+* */
+usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
+  try {
+
+    let userId = request.kauth.grant.access_token.content.sub;
+
+    const userIdIsInconsistentInPathAndAccessToken = userId !== request.params.userId;
+    if (userIdIsInconsistentInPathAndAccessToken) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const invalidUserIdInRequestBody = !request.body.userId || request.body.userId != userId;
+    if (invalidUserIdInRequestBody) {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('Missing or invalid userId in the request body',
+          ['the userId must be consistent across path, body and access token']));
+    }
+
+    const userData = await User.findOneAndUpdate(
+      {userId: request.params.userId},
+      request.body,
+      {upsert: true, new: true}, // option
+    );
+    response.status(HttpStatus.OK).send(userData);
+
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+
+/*
+* DELETE bookmark for user
+*/
+usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => {
+
+  const userId = request.kauth.grant.access_token.content.sub;
+  if (userId !== request.params.userId) {
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+  }
+
+  try {
+    const userData = await User.findOneAndRemove({
+      userId: request.params.userId
+    });
+
+    if (!userData) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'Not Found Error',
+          ['User Data for user id was not found']
+          )
+        );
+    } else {
+      response.status(HttpStatus.NO_CONTENT).send();
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown server error',
+        ['Unknown server error when trying to delete codingmark with id ' + request.params.codingmarkId]));
+  }
+});
+
 module.exports = usersRouter;
