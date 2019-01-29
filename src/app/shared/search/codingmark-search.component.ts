@@ -1,6 +1,6 @@
 import {Observable, of as observableOf} from 'rxjs';
 
-import {catchError, debounceTime, switchMap} from 'rxjs/operators';
+import {catchError, debounceTime, map, startWith, switchMap} from 'rxjs/operators';
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -11,6 +11,8 @@ import {languages} from '../language-options';
 import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
 import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
+import {UserService} from '../../core/user.service';
+import {Search, UserData} from '../../core/model/user-data';
 
 @Component({
     selector: 'app-codingmark-search',
@@ -43,14 +45,40 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   userIsLoggedIn = false;
 
+  userData: UserData;
+  autocompleteSearches = [];
+  filteredSearches: Observable<any[]>;
+
   constructor(private router: Router,
               private bookmarkStore: PublicCodingmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
-              private keycloakService: KeycloakService) {}
+              private keycloakService: KeycloakService,
+              private userService: UserService) {}
 
   ngOnInit(): void {
     this.keycloakService.isLoggedIn().then(value => {
       this.userIsLoggedIn = value;
+      this.keycloakService.loadUserProfile().then( keycloakProfile => {
+        // this.userId = keycloakProfile.id;
+        this.userService.getUserData(keycloakProfile.id).subscribe( data => {
+          this.userData = data;
+          this.userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
+
+
+/*          this.filteredSearches = this.searchControl.valueChanges.pipe(
+            startWith(null),
+            map((tag: string | null) => {
+              return tag ? this.filter(tag) : this.autocompleteSearches.slice();
+            })
+          );*/
+
+          this.filteredSearches = this.searchControl.valueChanges
+            .pipe(
+              startWith(''),
+              map(search => this._filter(search))
+            );
+        });
+      });
     });
 
     this.filteredBookmarks = this.searchControl.valueChanges.pipe(
@@ -89,6 +117,11 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
 
   }
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.autocompleteSearches.filter(option => option.toLowerCase().includes(filterValue));
+  }
 
   showMoreResults() {
     this.searchControl.setValue(this.queryText); // trigger this.searchControl.valueChanges
@@ -122,5 +155,10 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   onSaveClick() {
     console.log('Saving search ' + this.queryText);
+    const newSearch: Search = {
+        text: this.queryText
+    }
+    this.userData.searches.push(newSearch);
+    this.userService.updateUserData(this.userData);
   }
 }
