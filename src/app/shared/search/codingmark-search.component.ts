@@ -31,7 +31,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   filteredBookmarks: Observable<Codingmark[]>;
   private filterBookmarksBySearchTerm: Codingmark[];
 
-  term = new FormControl();
+  searchControl = new FormControl();
   queryText: string;
   public showNotFound = false;
   public numberOfResultsFiltered: number;
@@ -53,7 +53,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
       this.userIsLoggedIn = value;
     });
 
-    this.filteredBookmarks = this.term.valueChanges.pipe(
+    this.filteredBookmarks = this.searchControl.valueChanges.pipe(
       debounceTime(1500),
       // TODO - next line should be reactived when getting results via HTTP
       // .distinctUntilChanged()   ignore if next search term is same as previous
@@ -91,13 +91,13 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   showMoreResults() {
-    this.term.setValue(this.queryText); // trigger this.term.valueChanges
+    this.searchControl.setValue(this.queryText); // trigger this.searchControl.valueChanges
     this.counter += 10;
   }
 
   ngAfterViewInit(): void {
     if (this.query) {
-      this.term.setValue(this.query);
+      this.searchControl.setValue(this.query);
     }
   }
 
@@ -111,13 +111,13 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   setQueryFromParentComponent(queryFromOutside: string) {
-    this.term.setValue(queryFromOutside);
+    this.searchControl.setValue(queryFromOutside);
   }
 
   onLanguageChange(newValue) {
     console.log('onLanguageChange' + newValue);
     this.language = newValue;
-    this.term.setValue(this.queryText);
+    this.searchControl.setValue(this.queryText);
   }
 
   onSaveClick() {
