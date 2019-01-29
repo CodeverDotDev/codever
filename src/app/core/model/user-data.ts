@@ -4,7 +4,7 @@ export interface UserData {
   searches: Search[];
 }
 
-interface Search {
+export interface Search {
   text: string;
   language?: string;
   createdAt?: Date;

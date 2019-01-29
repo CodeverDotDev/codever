@@ -15,14 +15,14 @@ export class UserService {
     this.usersApiBaseUrl = environment.API_URL + '/personal/users';
   }
 
-  updateUserData(userId: string, userData: UserData): Observable<any> {
+  updateUserData(userData: UserData): Observable<any> {
     return this.httpClient
-      .put(`${this.usersApiBaseUrl}/${userId}`, JSON.stringify(userData));
+      .put(`${this.usersApiBaseUrl}/${userData.userId}`, JSON.stringify(userData));
   }
 
-  getUserData(userId: string): Observable<UserData[]> {
+  getUserData(userId: string): Observable<UserData> {
     return this.httpClient
-      .get<UserData[]>(`${this.usersApiBaseUrl}/${userId}` );
+      .get<UserData>(`${this.usersApiBaseUrl}/${userId}` );
   }
 
 }
