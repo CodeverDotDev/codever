@@ -8,6 +8,7 @@ import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
 import {PersonalCodingmarksStore} from './store/personal-codingmarks-store.service';
 import {PersonalCodingmarkService} from './personal-codingmark.service';
+import {UserService} from './user.service';
 // import {AuthGuard} from '../personal/auth-guard.service';
 
 /**
@@ -34,7 +35,8 @@ import {PersonalCodingmarkService} from './personal-codingmark.service';
     Logger,
     ErrorService,
     PersonalCodingmarksStore,
-    PersonalCodingmarkService
+    PersonalCodingmarkService,
+    UserService
   ]
 })
 export class CoreModule {
