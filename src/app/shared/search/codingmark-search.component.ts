@@ -45,7 +45,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   userIsLoggedIn = false;
 
-  userData: UserData;
+  userData: UserData = { searches: [] };
   autocompleteSearches = [];
   filteredSearches: Observable<any[]>;
 
@@ -60,6 +60,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
       this.userIsLoggedIn = value;
       this.keycloakService.loadUserProfile().then( keycloakProfile => {
         // this.userId = keycloakProfile.id;
+        this.userData.userId = keycloakProfile.id;
         this.userService.getUserData(keycloakProfile.id).subscribe( data => {
           this.userData = data;
           this.userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
@@ -71,18 +72,16 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
               return tag ? this.filter(tag) : this.autocompleteSearches.slice();
             })
           );*/
-
-          this.filteredSearches = this.searchControl.valueChanges
-            .pipe(
-              startWith(''),
-              map(search => this._filter(search))
-            );
-        });
+        },
+          error => {
+          }
+        );
       });
     });
 
-    this.filteredBookmarks = this.searchControl.valueChanges.pipe(
-      debounceTime(1500),
+
+/*    this.filteredBookmarks = this.searchControl.valueChanges.pipe(
+      //debounceTime(1500),
       // TODO - next line should be reactived when getting results via HTTP
       // .distinctUntilChanged()   ignore if next search term is same as previous
       switchMap(term => {
@@ -113,14 +112,21 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
       catchError(error => {
         console.log(error);
         return observableOf<Codingmark[]>([]);
-      }), );
+      }), );*/
 
 
+    this.filteredSearches = this.searchControl.valueChanges
+      .pipe(
+        startWith(null),
+        map((searchText: string | null) => {
+          return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
+        })
+      );
   }
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.autocompleteSearches.filter(option => option.toLowerCase().includes(filterValue));
+    return this.autocompleteSearches.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
   }
 
   showMoreResults() {
@@ -159,6 +165,6 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
         text: this.queryText
     }
     this.userData.searches.push(newSearch);
-    this.userService.updateUserData(this.userData);
+    this.userService.updateUserData(this.userData).subscribe();
   }
 }
