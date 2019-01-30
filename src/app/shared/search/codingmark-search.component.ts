@@ -80,8 +80,8 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
     });
 
 
-/*    this.filteredBookmarks = this.searchControl.valueChanges.pipe(
-      //debounceTime(1500),
+   this.filteredBookmarks = this.searchControl.valueChanges.pipe(
+      debounceTime(1500),
       // TODO - next line should be reactived when getting results via HTTP
       // .distinctUntilChanged()   ignore if next search term is same as previous
       switchMap(term => {
@@ -112,7 +112,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
       catchError(error => {
         console.log(error);
         return observableOf<Codingmark[]>([]);
-      }), );*/
+      }), );
 
 
     this.filteredSearches = this.searchControl.valueChanges
@@ -164,6 +164,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
     const newSearch: Search = {
         text: this.queryText
     }
+    this.autocompleteSearches.push(this.queryText);
     this.userData.searches.push(newSearch);
     this.userService.updateUserData(this.userData).subscribe();
   }
