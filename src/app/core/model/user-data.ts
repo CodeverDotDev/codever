@@ -1,7 +1,7 @@
 export interface UserData {
-  _id: string;
-  userId: string;
-  searches: Search[];
+  _id?: string;
+  userId?: string;
+  searches?: Search[];
 }
 
 export interface Search {
