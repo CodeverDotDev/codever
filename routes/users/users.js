@@ -80,7 +80,8 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
         .send(new MyError('Missing or invalid userId in the request body',
           ['the userId must be consistent across path, body and access token']));
     }
-
+    delete request.body._id;//once we proved it's present we delete it to avoid the following MOngoError by findOneAndUpdate
+    // MongoError: After applying the update to the document {_id: ObjectId('5c513150e13cda73420a9602') , ...}, the (immutable) field '_id' was found to have been altered to _id: "5c513150e13cda73420a9602"
     const userData = await User.findOneAndUpdate(
       {userId: request.params.userId},
       request.body,
