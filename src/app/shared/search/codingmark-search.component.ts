@@ -177,6 +177,12 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
     const updatedSearch: Search  = this.userData.searches.splice(index, 1)[0];
     updatedSearch.lastAccessedAt = new Date();
     this.userData.searches.unshift(updatedSearch);
+
+    const indexInOptions = this.autocompleteSearches.indexOf(selectedValue);
+    this.autocompleteSearches.splice(indexInOptions, 1);
+    this.autocompleteSearches.unshift(selectedValue);
+
+
     this.userService.updateUserData(this.userData).subscribe();
   }
 
