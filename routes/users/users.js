@@ -80,6 +80,14 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
         .send(new MyError('Missing or invalid userId in the request body',
           ['the userId must be consistent across path, body and access token']));
     }
+
+    if(!searchesAreValid(request)){
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('Searches are not valid',
+          ['Searches are not valid - search text is required']));
+    }
+
     delete request.body._id;//once we proved it's present we delete it to avoid the following MOngoError by findOneAndUpdate
     // MongoError: After applying the update to the document {_id: ObjectId('5c513150e13cda73420a9602') , ...}, the (immutable) field '_id' was found to have been altered to _id: "5c513150e13cda73420a9602"
     const userData = await User.findOneAndUpdate(
@@ -95,6 +103,19 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
       .send(err);
   }
 });
+
+function searchesAreValid(request) {
+  const searches = request.body.searches;
+  if(searches && searches.length > 0 ) {
+    for (let i = 0; i < searches.length; i++) {
+      if(!searches[i].text) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
 
 
 /*

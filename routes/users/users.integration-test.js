@@ -66,7 +66,7 @@ describe('Personal Codingmarks CRUD operations', function () {
 
   it('should fail trying to UPDATE user without userId in the body', function (done) {
     let invalidUser = JSON.parse(JSON.stringify(userExample));
-    invalidUser.userId = undefined;
+    delete invalidUser.userId;
     request(app)
       .put(`${baseApiUrlUnderTest}/${testUserId}`)
       .set('Authorization', bearerToken)
@@ -102,6 +102,20 @@ describe('Personal Codingmarks CRUD operations', function () {
         expect(response.statusCode).to.equal(HttpStatus.OK);
         expect(response.body.userId).to.equal(testUserId);
         expect(response.body.searches.length).to.equal(0);
+        done();
+      });
+  });
+
+  it('should fail trying to UPDATE example user with invalid searches', function (done) {
+    let userWithInvalidSearches = JSON.parse(JSON.stringify(userExample));
+    userWithInvalidSearches.searches.push({"text": "", "lastAccessedAt": "2019-01-28T05:47:47.652Z"});
+    request(app)
+      .put(`${baseApiUrlUnderTest}/${testUserId}`)
+      .set('Authorization', bearerToken)
+      .send(userWithInvalidSearches)
+      .end(function (error, response) {
+        expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+        expect(response.body.title).to.equal('Searches are not valid');
         done();
       });
   });
