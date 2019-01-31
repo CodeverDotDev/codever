@@ -169,6 +169,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
     this.userData.searches.push(newSearch);
     this.userService.updateUserData(this.userData).subscribe();
   }
+
   onSelectionChanged(event: MatAutocompleteSelectedEvent) {
     const selectedValue = event.option.value;
     // const index = this.userData.searches.findIndex((search: Search) => search.text.localeCompare(selectedValue));

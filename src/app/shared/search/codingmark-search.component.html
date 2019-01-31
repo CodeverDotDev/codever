@@ -13,7 +13,11 @@
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search">{{search}}</mat-option>
   </mat-autocomplete>
   <div *ngIf="userIsLoggedIn" class="input-group-append">
-    <button class="btn btn-outline-secondary" type="button" (click)="onSaveClick()">Save search</button>
+    <button class="btn btn-outline-secondary"
+            type="button"
+            (click)="onSaveClick()"
+            [disabled]="autocompleteSearches.includes(queryText) || !queryText"
+    >Save search</button>
   </div>
 </div>
 
