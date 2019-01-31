@@ -10,14 +10,14 @@ import {List} from 'immutable';
 import {languages} from '../language-options';
 import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
-import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
 import {UserService} from '../../core/user.service';
 import {Search, UserData} from '../../core/model/user-data';
+import {MatAutocompleteSelectedEvent} from '@angular/material';
 
 @Component({
-    selector: 'app-codingmark-search',
-    templateUrl: './codingmark-search.component.html',
-    styleUrls: [ './codingmark-search.component.scss' ]
+  selector: 'app-codingmark-search',
+  templateUrl: './codingmark-search.component.html',
+  styleUrls: ['./codingmark-search.component.scss']
 })
 export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
@@ -45,7 +45,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   userIsLoggedIn = false;
 
-  userData: UserData = { searches: [] };
+  userData: UserData = {searches: []};
   autocompleteSearches = [];
   filteredSearches: Observable<any[]>;
 
@@ -53,26 +53,24 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
               private bookmarkStore: PublicCodingmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
               private keycloakService: KeycloakService,
-              private userService: UserService) {}
+              private userService: UserService) {
+  }
 
   ngOnInit(): void {
     this.keycloakService.isLoggedIn().then(value => {
       this.userIsLoggedIn = value;
-      this.keycloakService.loadUserProfile().then( keycloakProfile => {
+      this.keycloakService.loadUserProfile().then(keycloakProfile => {
         // this.userId = keycloakProfile.id;
         this.userData.userId = keycloakProfile.id;
-        this.userService.getUserData(keycloakProfile.id).subscribe( data => {
-          this.userData = data;
-          this.userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
-
-
-/*          this.filteredSearches = this.searchControl.valueChanges.pipe(
-            startWith(null),
-            map((tag: string | null) => {
-              return tag ? this.filter(tag) : this.autocompleteSearches.slice();
-            })
-          );*/
-        },
+        this.userService.getUserData(keycloakProfile.id).subscribe(data => {
+            this.userData = data;
+            this.userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
+            this.userData.searches = this.userData.searches.sort((a, b) => {
+              const result: number = a.lastAccessedAt == null ? (b.lastAccessedAt == null ? 0 : 1)
+                : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
+              return result;
+            });
+          },
           error => {
           }
         );
@@ -80,7 +78,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
     });
 
 
-   this.filteredBookmarks = this.searchControl.valueChanges.pipe(
+    this.filteredBookmarks = this.searchControl.valueChanges.pipe(
       debounceTime(1500),
       // TODO - next line should be reactived when getting results via HTTP
       // .distinctUntilChanged()   ignore if next search term is same as previous
@@ -88,7 +86,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
         // this.counter = 0; // we initialise the counter
         if (term) { // switch to new observable each time
 
-          if (this.previousTerm !== term ) {
+          if (this.previousTerm !== term) {
             this.previousTerm = term;
             this.counter = 10;
           }
@@ -96,7 +94,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
           this.queryText = term;
           this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.codingmarks);
           this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
-          if (this.numberOfResultsFiltered > 0 ) {
+          if (this.numberOfResultsFiltered > 0) {
             this.showNotFound = false;
             return observableOf(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
           } else {
@@ -123,6 +121,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
         })
       );
   }
+
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
@@ -160,12 +159,24 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   onSaveClick() {
-    console.log('Saving search ' + this.queryText);
+    const now = new Date();
     const newSearch: Search = {
-        text: this.queryText
+      text: this.queryText,
+      createdAt: now,
+      lastAccessedAt: now
     }
     this.autocompleteSearches.push(this.queryText);
     this.userData.searches.push(newSearch);
     this.userService.updateUserData(this.userData).subscribe();
   }
+  onSelectionChanged(event: MatAutocompleteSelectedEvent) {
+    const selectedValue = event.option.value;
+    // const index = this.userData.searches.findIndex((search: Search) => search.text.localeCompare(selectedValue));
+    const index = this.userData.searches.findIndex((search: Search) => search.text === selectedValue);
+    const updatedSearch: Search  = this.userData.searches.splice(index, 1)[0];
+    updatedSearch.lastAccessedAt = new Date();
+    this.userData.searches.unshift(updatedSearch);
+    this.userService.updateUserData(this.userData).subscribe();
+  }
+
 }
