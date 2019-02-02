@@ -16,7 +16,7 @@ export class UserService {
     this.usersApiBaseUrl = environment.API_URL + '/personal/users';
   }
 
-  updateUserData(userData: UserData): Observable<any> {
+  updateUserData(userData: UserData): Observable<UserData> {
     return this.httpClient
       .put(`${this.usersApiBaseUrl}/${userData.userId}`, JSON.stringify(userData), {headers: this.headers});
   }

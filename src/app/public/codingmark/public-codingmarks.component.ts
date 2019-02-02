@@ -6,6 +6,9 @@ import {ActivatedRoute} from '@angular/router';
 import {CodingmarkSearchComponent} from '../../shared/search/codingmark-search.component';
 import {PublicCodingmarksStore} from './store/public-codingmarks-store.service';
 import {allTags} from '../../core/model/all-tags.const.en';
+import {KeycloakService} from 'keycloak-angular';
+import {UserData} from '../../core/model/user-data';
+import {UserDataStore} from '../../core/user/userdata.store';
 
 
 @Component({
@@ -18,12 +21,15 @@ export class PublicCodingmarksComponent implements OnInit {
   publicCodingmarks$: Observable<List<Codingmark>>;
   tags: string[] = allTags;
   query = '';
+  userData: UserData;
 
   @ViewChild(CodingmarkSearchComponent)
   private searchComponent: CodingmarkSearchComponent;
 
   constructor(private publicCodingmarksStore: PublicCodingmarksStore,
-              private route: ActivatedRoute
+              private route: ActivatedRoute,
+              private keycloakService: KeycloakService,
+              private userDataStore: UserDataStore
               ) { }
 
   ngOnInit(): void {
@@ -36,6 +42,17 @@ export class PublicCodingmarksComponent implements OnInit {
     }
 
     this.publicCodingmarks$ = this.publicCodingmarksStore.getPublicCodingmarks();
+
+    this.keycloakService.isLoggedIn().then(value => {
+      this.keycloakService.loadUserProfile().then(keycloakProfile => {
+        this.userDataStore.getUserData().subscribe(data => {
+            this.userData = data;
+          },
+          error => {
+          }
+        );
+      });
+    });
   }
 
   onTagClick(tag: string) {

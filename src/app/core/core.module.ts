@@ -9,7 +9,8 @@ import {RouterModule} from '@angular/router';
 import {PersonalCodingmarksStore} from './store/personal-codingmarks-store.service';
 import {PersonalCodingmarkService} from './personal-codingmark.service';
 import {UserService} from './user.service';
-// import {AuthGuard} from '../personal/auth-guard.service';
+import {UserDataStore} from './user/userdata.store';
+
 
 /**
  * Gather services and components that are used by several modules, in a single CoreModule, that you import once when
@@ -36,7 +37,8 @@ import {UserService} from './user.service';
     ErrorService,
     PersonalCodingmarksStore,
     PersonalCodingmarkService,
-    UserService
+    UserService,
+    UserDataStore
   ]
 })
 export class CoreModule {
