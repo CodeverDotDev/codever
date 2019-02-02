@@ -10,9 +10,9 @@ import {List} from 'immutable';
 import {languages} from '../language-options';
 import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
-import {UserService} from '../../core/user.service';
 import {Search, UserData} from '../../core/model/user-data';
 import {MatAutocompleteSelectedEvent} from '@angular/material';
+import {UserDataStore} from '../../core/user/userdata.store';
 
 @Component({
   selector: 'app-codingmark-search',
@@ -30,6 +30,8 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   @Input()
   context: string;
 
+  _userData: UserData;
+
   filteredBookmarks: Observable<Codingmark[]>;
   private filterBookmarksBySearchTerm: Codingmark[];
 
@@ -45,38 +47,40 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   userIsLoggedIn = false;
 
-  userData: UserData = {searches: []};
-  autocompleteSearches = [];
+  autocompleteSearches;
   filteredSearches: Observable<any[]>;
 
   constructor(private router: Router,
               private bookmarkStore: PublicCodingmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
               private keycloakService: KeycloakService,
-              private userService: UserService) {
+              private userDataStore: UserDataStore) {
+  }
+
+  @Input()
+  set userData(userData: UserData) {
+    if (userData) {
+      this._userData = userData;
+      console.log('userData', userData);
+      this.autocompleteSearches = [];
+      this._userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
+      this.filteredSearches = this.searchControl.valueChanges
+        .pipe(
+          startWith(null),
+          map((searchText: string | null) => {
+            return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
+          })
+        );
+    }
   }
 
   ngOnInit(): void {
-    this.keycloakService.isLoggedIn().then(value => {
-      this.userIsLoggedIn = value;
-      this.keycloakService.loadUserProfile().then(keycloakProfile => {
-        // this.userId = keycloakProfile.id;
-        this.userData.userId = keycloakProfile.id;
-        this.userService.getUserData(keycloakProfile.id).subscribe(data => {
-            this.userData = data;
-            this.userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
-            this.userData.searches = this.userData.searches.sort((a, b) => {
-              const result: number = a.lastAccessedAt == null ? (b.lastAccessedAt == null ? 0 : 1)
-                : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
-              return result;
-            });
-          },
-          error => {
-          }
-        );
-      });
-    });
 
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
+        this.userIsLoggedIn = true;
+      }
+    });
 
     this.filteredBookmarks = this.searchControl.valueChanges.pipe(
       debounceTime(1500),
@@ -112,20 +116,12 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
         return observableOf<Codingmark[]>([]);
       }), );
 
-
-    this.filteredSearches = this.searchControl.valueChanges
-      .pipe(
-        startWith(null),
-        map((searchText: string | null) => {
-          return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
-        })
-      );
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.autocompleteSearches.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
+    return this.autocompleteSearches.filter(option => option.toLowerCase().includes(filterValue));
   }
 
   showMoreResults() {
@@ -165,25 +161,18 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
       createdAt: now,
       lastAccessedAt: now
     }
-    this.autocompleteSearches.push(this.queryText);
-    this.userData.searches.push(newSearch);
-    this.userService.updateUserData(this.userData).subscribe();
+    this._userData.searches.unshift(newSearch);
+    this.userDataStore.updateUserData(this._userData).subscribe();
   }
 
   onSelectionChanged(event: MatAutocompleteSelectedEvent) {
     const selectedValue = event.option.value;
-    // const index = this.userData.searches.findIndex((search: Search) => search.text.localeCompare(selectedValue));
-    const index = this.userData.searches.findIndex((search: Search) => search.text === selectedValue);
-    const updatedSearch: Search  = this.userData.searches.splice(index, 1)[0];
+    const index = this._userData.searches.findIndex((search: Search) => search.text === selectedValue);
+    const updatedSearch: Search  = this._userData.searches.splice(index, 1)[0];
     updatedSearch.lastAccessedAt = new Date();
-    this.userData.searches.unshift(updatedSearch);
+    this._userData.searches.unshift(updatedSearch);
 
-    const indexInOptions = this.autocompleteSearches.indexOf(selectedValue);
-    this.autocompleteSearches.splice(indexInOptions, 1);
-    this.autocompleteSearches.unshift(selectedValue);
-
-
-    this.userService.updateUserData(this.userData).subscribe();
+    this.userDataStore.updateUserData(this._userData).subscribe();
   }
 
 }

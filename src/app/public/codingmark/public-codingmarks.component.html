@@ -1,6 +1,6 @@
 <div id="public-search-box">
   <div *ngIf="publicCodingmarks$">
-    <app-codingmark-search [codingmarks]="publicCodingmarks$" [query]="query" [context]="'public'"></app-codingmark-search>
+    <app-codingmark-search [codingmarks]="publicCodingmarks$" [query]="query" [context]="'public'" [userData]="userData"></app-codingmark-search>
   </div>
 
   <mat-tab-group>
