@@ -8,7 +8,7 @@
     class="form-control"
     [formControl]="searchControl"
     placeholder="{{context}} codingmarks... (tags in square brackets: e.g. [angular])"
-    [matAutocomplete]="auto" autofocus>
+    [matAutocomplete]="auto">
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search">{{search}}</mat-option>
   </mat-autocomplete>
