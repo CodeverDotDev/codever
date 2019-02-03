@@ -1,10 +1,11 @@
 {
   "name": "codingmarks-api",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "nodemon --inspect ./bin/www"
+    "debug": "nodemon --inspect ./bin/www",
+    "integration-tests": "nyc mocha '**/*.integration-test.js' --exit"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
@@ -21,10 +22,15 @@
     "rotating-file-stream": "^1.3.2",
     "serve-favicon": "^2.5.0",
     "showdown": "^1.6.4",
+    "superagent": "^4.1.0",
     "swagger-ui-express": "^4.0.2",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.7"
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.7",
+    "nyc": "^13.1.0",
+    "supertest": "^3.4.1"
   }
 }
