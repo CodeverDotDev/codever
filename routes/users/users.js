@@ -46,7 +46,7 @@ usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
           )
         );
     } else {
-      response.status(HttpStatus.OK).send(userData);
+      response.status(HttpStatus.OK).json(userData);
     }
 
   } catch (err) {
