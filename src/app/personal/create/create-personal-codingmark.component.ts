@@ -41,7 +41,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
 
   autocompleteTags = [];
 
-  tagCtrl = new FormControl();
+  tagsControl = new FormControl();
 
   filteredTags: Observable<any[]>;
 
@@ -62,7 +62,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
 
     this.autocompleteTags = personalCodingmarksStore.getPersonalAutomcompleteTags()
 
-    this.filteredTags = this.tagCtrl.valueChanges.pipe(
+    this.filteredTags = this.tagsControl.valueChanges.pipe(
       startWith(null),
       map((tag: string | null) => {
         return tag ? this.filter(tag) : this.autocompleteTags.slice();
@@ -119,7 +119,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
       input.value = '';
     }
 
-    this.tagCtrl.setValue(null);
+    this.tagsControl.setValue(null);
     this.tags.markAsDirty();
   }
 
@@ -140,7 +140,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
     const tags = this.codingmarkForm.get('tags') as FormArray;
     tags.push(this.formBuilder.control(event.option.viewValue));
     this.tagInput.nativeElement.value = '';
-    this.tagCtrl.setValue(null);
+    this.tagsControl.setValue(null);
   }
 
   saveCodingmark(model: Codingmark) {

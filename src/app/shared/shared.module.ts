@@ -8,6 +8,7 @@ import {TagsValidatorDirective} from './tags-validation.directive';
 import {CodingmarkSearchComponent} from './search/codingmark-search.component';
 import {CodingmarkTextComponent} from './codingmark-text.component';
 import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
+import {MatAutocompleteModule} from '@angular/material';
 
 
 /**
@@ -19,6 +20,7 @@ import {DescriptionSizeValidatorDirective} from './description-size-validation.d
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    MatAutocompleteModule,
   ],
   declarations: [
     HighLightPipe,
