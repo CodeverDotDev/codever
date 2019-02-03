@@ -61,16 +61,20 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   @Input()
   set userData(userData: UserData) {
     if (userData) {
-      this._userData = userData;
-      this.autocompleteSearches = [];
-      this._userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
-      this.filteredSearches = this.searchControl.valueChanges
-        .pipe(
-          startWith(null),
-          map((searchText: string | null) => {
-            return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
-          })
-        );
+      const emptyUserData = Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
+      if (!emptyUserData) {
+        this._userData = userData;
+        this.autocompleteSearches = [];
+        this._userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
+        this.filteredSearches = this.searchControl.valueChanges
+          .pipe(
+            startWith(null),
+            map((searchText: string | null) => {
+              return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
+            })
+          );
+      }
+
     }
   }
 
@@ -162,11 +166,12 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
       createdAt: now,
       lastAccessedAt: now
     }
-    const userDataNotPresentYet = !this._userData;
-    if (userDataNotPresentYet) {
-      this._userData.userId = this.userId;
-      this._userData.searches = [];
-      this._userData.searches.push(newSearch)
+    const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
+    if (emptyUserData) {
+      this._userData = {
+        userId: this.userId,
+        searches: [newSearch]
+      }
     } else {
       this._userData.searches.unshift(newSearch);
     }
