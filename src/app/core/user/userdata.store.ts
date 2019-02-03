@@ -1,4 +1,4 @@
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
 
 import {Injectable} from '@angular/core';
 import {Logger} from '../logger.service';
@@ -8,11 +8,12 @@ import {Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
 import {UserData} from '../model/user-data';
 import {UserService} from '../user.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
 export class UserDataStore {
 
-  private _userData: BehaviorSubject<UserData> = new BehaviorSubject(undefined);
+  private _userData: ReplaySubject<UserData> = new ReplaySubject(1);
 
   private userId: string;
 
@@ -43,13 +44,12 @@ export class UserDataStore {
 
         this._userData.next(this.userData)
       },
-      error => {
+      (errorResponse: HttpErrorResponse) => {
+        if (errorResponse.status === 404 && errorResponse.error.title === 'User data was not found') {
+          this._userData.next({});
+        }
       }
     );
-  }
-
-  public getUserDataValue(): UserData {
-    return this._userData.getValue();
   }
 
   getUserData(): Observable<UserData> {
