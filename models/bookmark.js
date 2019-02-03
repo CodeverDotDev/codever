@@ -21,4 +21,3 @@ var bookmarkSchema = new Schema({
 });
 
 module.exports = mongoose.model('Bookmark', bookmarkSchema);
-module.exports = mongoose.model('Bookmark', bookmarkSchema);
