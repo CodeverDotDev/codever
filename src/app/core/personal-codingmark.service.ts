@@ -19,25 +19,25 @@ export class PersonalCodingmarkService {
   }
 
   getAllPersonalCodingmarks(userId: String): Observable<Codingmark[]> {
-    return this.httpClient.get<Codingmark[]>(this.personalCodingmarksApiBaseUrl + userId + '/codingmarks').pipe(shareReplay());
+    return this.httpClient.get<Codingmark[]>(this.personalCodingmarksApiBaseUrl + userId + '/codingmarks').pipe(shareReplay(1));
   }
 
   updateCodingmark(codingmark: Codingmark): Observable<any> {
     return this.httpClient
       .put(this.personalCodingmarksApiBaseUrl + codingmark.userId + '/codingmarks/' + codingmark._id, JSON.stringify(codingmark), {headers: this.headers})
-      .pipe(shareReplay());
+      .pipe(shareReplay(1));
   }
 
   deleteCodingmark(codingmark: Codingmark): Observable<any> {
     return this.httpClient
       .delete(this.personalCodingmarksApiBaseUrl + codingmark.userId + '/codingmarks/' + codingmark._id, {headers: this.headers})
-      .pipe(shareReplay());
+      .pipe(shareReplay(1));
   }
 
   createCodingmark(userId: string, codingmark: Codingmark): Observable<any> {
     return this.httpClient
       .post(this.personalCodingmarksApiBaseUrl + userId + '/codingmarks', JSON.stringify(codingmark), {headers: this.headers, observe: 'response'})
-      .pipe(shareReplay());
+      .pipe(shareReplay(1));
   }
 
 }

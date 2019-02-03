@@ -43,9 +43,11 @@ export class AsyncCodingmarkListComponent  implements OnInit {
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
     this.publicCodingmarksService = <PublicCodingmarksService>this.injector.get(PublicCodingmarksService);
 
-    if (this.keycloakService.isLoggedIn()) {
-      this.personalCodingmarksStore = <PersonalCodingmarksStore>this.injector.get(PersonalCodingmarksStore);
-    }
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
+        this.personalCodingmarksStore = <PersonalCodingmarksStore>this.injector.get(PersonalCodingmarksStore);
+      }
+    });
   }
 
   ngOnInit(): void {
