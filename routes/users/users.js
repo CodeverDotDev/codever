@@ -41,8 +41,8 @@ usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
-          'Not Found Error',
-          ['User with the userId ' + request.params.userId + ' was not found']
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
           )
         );
     } else {
