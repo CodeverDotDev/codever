@@ -5,10 +5,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var apiBasePath = require('./routes/index');
-var personalCodingmarks = require('./routes/personal-codingmarks');
-var publicCodingmarks = require('./routes/public-codingmarks');
-var securedPublicCodingmarks = require('./routes/secured-public-codingmarks');
+var apiBasePathRouter = require('./routes/index');
+var versionRouter = require('./routes/version');
+var usersRouter = require('./routes/users/users');
+var publicCodingmarksRouter = require('./routes/public-codingmarks');
+var securedPublicCodingmarksRouter = require('./routes/secured-public-codingmarks');
 
 var fs = require('fs-extra');
 var rfs = require('rotating-file-stream');
@@ -58,10 +59,11 @@ app.use(function(req, res, next) {
 });
 
 
-app.use('/api', apiBasePath);
-app.use('/api/personal/users', personalCodingmarks);
-app.use('/api/public/codingmarks', publicCodingmarks);
-app.use('/api/secured/public/codingmarks', securedPublicCodingmarks);
+app.use('/api', apiBasePathRouter);
+app.use('/api/version', versionRouter);
+app.use('/api/public/codingmarks', publicCodingmarksRouter);
+app.use('/api/secured/public/codingmarks', securedPublicCodingmarksRouter);
+app.use('/api/personal/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
