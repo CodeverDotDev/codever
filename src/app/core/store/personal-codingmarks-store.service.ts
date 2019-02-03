@@ -24,17 +24,17 @@ export class PersonalCodingmarksStore {
   autocompleteTags = publicTags;
 
   constructor(private personalCodingmarkService: PersonalCodingmarkService,
-                private logger: Logger,
-                private router: Router,
-                private errorService: ErrorService,
-                private keycloakService: KeycloakService,
-                private publicCodingmarksStore: PublicCodingmarksStore
-    ) {
-      keycloakService.loadUserProfile().then( keycloakProfile => {
-        this.userId = keycloakProfile.id;
-        this.loadInitialData();
-      });
-    }
+              private logger: Logger,
+              private router: Router,
+              private errorService: ErrorService,
+              private keycloakService: KeycloakService,
+              private publicCodingmarksStore: PublicCodingmarksStore
+  ) {
+    keycloakService.loadUserProfile().then(keycloakProfile => {
+      this.userId = keycloakProfile.id;
+      this.loadInitialData();
+    });
+  }
 
   private loadInitialData() {
     this.personalCodingmarkService.getAllPersonalCodingmarks(this.userId)
@@ -61,7 +61,7 @@ export class PersonalCodingmarksStore {
   }
 
   getPersonalCodingmarks(): Observable<List<Codingmark>> {
-      return this._personalCodingmarks.asObservable();
+    return this._personalCodingmarks.asObservable();
   }
 
   getPersonalAutomcompleteTags(): string[] {
@@ -79,30 +79,30 @@ export class PersonalCodingmarksStore {
       .subscribe(
         res => {
           const headers = res.headers;
-            // get the codingmark id, which lies in the "location" response header
-            const lastSlashIndex = headers.get('location').lastIndexOf('/');
-            const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
-            codingmark._id = newBookmarkId;
-            // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-            this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(codingmark)); // insert at the top (index 0)
+          // get the codingmark id, which lies in the "location" response header
+          const lastSlashIndex = headers.get('location').lastIndexOf('/');
+          const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
+          codingmark._id = newBookmarkId;
+          // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
+          this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(codingmark)); // insert at the top (index 0)
 
-            if (codingmark.shared) {
-              this.publicCodingmarksStore.addCodingmarkToPublicStore(codingmark);
-            }
-            this.router.navigate(['/personal']);
-          },
-          (error: HttpResponse<any>) => {
-            this.errorService.handleError(error.body.json());
-            return observableThrowError(error.body.json());
+          if (codingmark.shared) {
+            this.publicCodingmarksStore.addCodingmarkToPublicStore(codingmark);
           }
-        );
+          this.router.navigate(['/personal']);
+        },
+        (error: HttpResponse<any>) => {
+          this.errorService.handleError(error.body.json());
+          return observableThrowError(error.body.json());
+        }
+      );
   }
 
   deleteCodingmark(deleted: Codingmark): Observable<any> {
     const obs: Observable<any> = this.personalCodingmarkService.deleteCodingmark(deleted);
 
     obs.subscribe(
-      res =>  {
+      res => {
         const codingmarks: List<Codingmark> = this._personalCodingmarks.getValue();
         const index = codingmarks.findIndex((codingmark) => codingmark._id === deleted._id);
         const listWithoutElement = codingmarks.delete(index);
@@ -126,7 +126,7 @@ export class PersonalCodingmarksStore {
         const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark._id === updated._id);
         this._personalCodingmarks.next(codingmarks.delete(index).unshift(updated)); // move the updated codingmark to the top of the list, to immediately see the results
 
-        if (updated.shared){
+        if (updated.shared) {
           this.publicCodingmarksStore.updateCodingmarkInPublicStore(updated);
         }
       }
@@ -145,7 +145,7 @@ export class PersonalCodingmarksStore {
   getCodingmarkByLocation(location: string): Codingmark {
     const codingmarks = this._personalCodingmarks.getValue();
     const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark.location === location);
-    if ( index >= 0 ) {
+    if (index >= 0) {
       return codingmarks.get(index);
     } else {
       return null;
