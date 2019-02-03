@@ -47,7 +47,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   userIsLoggedIn = false;
 
-  autocompleteSearches;
+  autocompleteSearches = [];
   filteredSearches: Observable<any[]>;
 
   constructor(private router: Router,
