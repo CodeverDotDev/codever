@@ -1,10 +1,10 @@
-var app = require('../app');
+var app = require('../../app');
 var chai = require('chai');
 var request = require('supertest');
 var HttpStatus = require('http-status-codes');
 var expect = chai.expect;
 
-const common = require('../common/config');
+const common = require('../../common/config');
 const config = common.config();
 
 const superagent = require('superagent');
