@@ -9,12 +9,12 @@
     cursor: pointer;
 }
 
-#search-box{
-    width: 200px;
-    height: 20px;
+.search-control input:focus {
+  outline-width: 0;
 }
-
 #search-component{
   padding-top: 20px;
+  input:focus {
+    box-shadow: none;
+  }
 }
-

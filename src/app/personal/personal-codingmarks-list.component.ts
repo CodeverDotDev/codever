@@ -6,6 +6,8 @@ import {Observable} from 'rxjs';
 import {List} from 'immutable';
 import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {UserData} from '../core/model/user-data';
+import {UserDataStore} from '../core/user/userdata.store';
 
 @Component({
   selector: 'app-user-codingmarks',
@@ -18,11 +20,13 @@ export class PersonalCodingmarksListComponent implements OnInit {
   lastUpdatedPersonalCodingmarks$: Observable<Codingmark[]>;
   query = '';
   showLastAccessed = true;
+  userData: UserData;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private personalCodingmarksStore: PersonalCodingmarksStore) { }
+    private personalCodingmarksStore: PersonalCodingmarksStore,
+    private userDataStore: UserDataStore) { }
 
   ngOnInit(): void {
     this.query = this.route.snapshot.queryParamMap.get('q');
@@ -42,6 +46,12 @@ export class PersonalCodingmarksListComponent implements OnInit {
           if (a.updatedAt === b.updatedAt) { return 0; }
         }).toArray();
     }));
+    this.userDataStore.getUserData().subscribe(data => {
+        this.userData = data;
+      },
+      error => {
+      }
+    );
   }
 
   goToAddNewPersonalBookmark(): void {
