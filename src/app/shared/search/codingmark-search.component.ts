@@ -62,7 +62,9 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   set userData(userData: UserData) {
     if (userData) {
       const emptyUserData = Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
-      if (!emptyUserData) {
+      if (emptyUserData) {
+        this._userData = userData; // = {}
+      } else {
         this._userData = userData;
         this.autocompleteSearches = [];
         this._userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
@@ -74,7 +76,6 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
             })
           );
       }
-
     }
   }
 
