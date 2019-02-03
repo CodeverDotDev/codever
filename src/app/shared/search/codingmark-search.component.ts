@@ -46,6 +46,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   languages = languages;
 
   userIsLoggedIn = false;
+  userId: string;
 
   autocompleteSearches = [];
   filteredSearches: Observable<any[]>;
@@ -60,26 +61,31 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   @Input()
   set userData(userData: UserData) {
     if (userData) {
-      this._userData = userData;
-      console.log('userData', userData);
-      this.autocompleteSearches = [];
-      this._userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
-      this.filteredSearches = this.searchControl.valueChanges
-        .pipe(
-          startWith(null),
-          map((searchText: string | null) => {
-            return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
-          })
-        );
+      const emptyUserData = Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
+      if (emptyUserData) {
+        this._userData = userData; // = {}
+      } else {
+        this._userData = userData;
+        this.autocompleteSearches = [];
+        this._userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
+        this.filteredSearches = this.searchControl.valueChanges
+          .pipe(
+            startWith(null),
+            map((searchText: string | null) => {
+              return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
+            })
+          );
+      }
     }
   }
 
   ngOnInit(): void {
 
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-      }
+    this.keycloakService.isLoggedIn().then(value => {
+      this.userIsLoggedIn = true;
+      this.keycloakService.loadUserProfile().then(keycloakProfile => {
+        this.userId = keycloakProfile.id;
+      });
     });
 
     this.filteredBookmarks = this.searchControl.valueChanges.pipe(
@@ -161,7 +167,15 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
       createdAt: now,
       lastAccessedAt: now
     }
-    this._userData.searches.unshift(newSearch);
+    const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
+    if (emptyUserData) {
+      this._userData = {
+        userId: this.userId,
+        searches: [newSearch]
+      }
+    } else {
+      this._userData.searches.unshift(newSearch);
+    }
     this.userDataStore.updateUserData(this._userData).subscribe();
   }
 
