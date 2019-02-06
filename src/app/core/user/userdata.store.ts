@@ -25,11 +25,13 @@ export class UserDataStore {
               private errorService: ErrorService,
               private keycloakService: KeycloakService,
   ) {
-    this.keycloakService.isLoggedIn().then(value => {
-      this.keycloakService.loadUserProfile().then(keycloakProfile => {
-        this.userId = keycloakProfile.id;
-        this.loadInitialData(this.userId);
-      });
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
+        this.keycloakService.loadUserProfile().then(keycloakProfile => {
+          this.userId = keycloakProfile.id;
+          this.loadInitialData(this.userId);
+        });
+      }
     });
   }
 
