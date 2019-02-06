@@ -81,11 +81,13 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    this.keycloakService.isLoggedIn().then(value => {
-      this.userIsLoggedIn = true;
-      this.keycloakService.loadUserProfile().then(keycloakProfile => {
-        this.userId = keycloakProfile.id;
-      });
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
+        this.userIsLoggedIn = true;
+        this.keycloakService.loadUserProfile().then(keycloakProfile => {
+          this.userId = keycloakProfile.id;
+        });
+      }
     });
 
     this.filteredBookmarks = this.searchControl.valueChanges.pipe(

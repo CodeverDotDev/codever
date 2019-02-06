@@ -43,15 +43,17 @@ export class PublicCodingmarksComponent implements OnInit {
 
     this.publicCodingmarks$ = this.publicCodingmarksStore.getPublicCodingmarks();
 
-    this.keycloakService.isLoggedIn().then(value => {
-      this.keycloakService.loadUserProfile().then(keycloakProfile => {
-        this.userDataStore.getUserData().subscribe(data => {
-            this.userData = data;
-          },
-          error => {
-          }
-        );
-      });
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
+        this.keycloakService.loadUserProfile().then(keycloakProfile => {
+          this.userDataStore.getUserData().subscribe(data => {
+              this.userData = data;
+            },
+            error => {
+            }
+          );
+        });
+      }
     });
   }
 
