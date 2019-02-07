@@ -51,6 +51,8 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   autocompleteSearches = [];
   filteredSearches: Observable<any[]>;
 
+  isFocusOnSearchControl = false;
+
   constructor(private router: Router,
               private bookmarkStore: PublicCodingmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
@@ -191,4 +193,11 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
     this.userDataStore.updateUserData(this._userData).subscribe();
   }
 
+  focusOnSearchControl() {
+    this.isFocusOnSearchControl = true;
+  }
+
+  unFocusOnSearchControl() {
+    this.isFocusOnSearchControl = false;
+  }
 }

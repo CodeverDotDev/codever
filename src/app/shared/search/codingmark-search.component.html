@@ -1,14 +1,17 @@
 <div id="search-component" class="input-group">
-  <div class="input-group-prepend">
-    <span class="input-group-text" id="basic-addon1"><i class="fa fa-search"></i></span>
+  <div class="input-group-prepend search-prepend">
+    <span class="input-group-text" [class.focused]="isFocusOnSearchControl" id="basic-addon1"><i class="fa fa-search"></i></span>
   </div>
   <input
     matInput
     type="text"
-    class="form-control"
+    class="form-control search-input"
     [formControl]="searchControl"
     placeholder="{{context}} codingmarks... (tags in square brackets: e.g. [angular])"
-    [matAutocomplete]="auto">
+    [matAutocomplete]="auto"
+    (focus)="focusOnSearchControl()"
+    (focusout)="unFocusOnSearchControl()"
+  >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search">{{search}}</mat-option>
   </mat-autocomplete>
