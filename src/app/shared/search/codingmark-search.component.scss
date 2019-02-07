@@ -20,12 +20,7 @@
 }
 
 .focused {
-  background-color:#03a9f4;
-  border-color: #03a9f4;
-}
-
-.search-input:focus + .search-prepend {
-  border:1px solid red;
-  font-weight: bold;
-  background-color:green;
+  background-color:#007bff;
+  border-color: #007bff;
+  color: white;
 }
