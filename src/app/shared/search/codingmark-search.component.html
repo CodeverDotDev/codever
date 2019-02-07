@@ -1,11 +1,11 @@
 <div id="search-component" class="input-group">
-  <div class="input-group-prepend search-prepend">
+  <div class="input-group-prepend">
     <span class="input-group-text" [class.focused]="isFocusOnSearchControl" id="basic-addon1"><i class="fa fa-search"></i></span>
   </div>
   <input
     matInput
     type="text"
-    class="form-control search-input"
+    class="form-control"
     [formControl]="searchControl"
     placeholder="{{context}} codingmarks... (tags in square brackets: e.g. [angular])"
     [matAutocomplete]="auto"
