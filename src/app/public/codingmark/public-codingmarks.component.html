@@ -4,10 +4,16 @@
   </div>
 
   <mat-tab-group>
-    <mat-tab label="Recent">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Recent &nbsp;<i class="fas fa-clock"></i>
+      </ng-template>
       <app-async-codingmark-list [codingmarks]="publicCodingmarks$" [shownSize]="30"></app-async-codingmark-list>
     </mat-tab>
-    <mat-tab label="Tags">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Tags &nbsp;<i class="fas fa-tags"></i>
+      </ng-template>
       <div class="tags-group">
         <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag)" style="cursor: pointer">{{tag}}</span>
         <div class="clear"></div>
