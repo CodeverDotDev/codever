@@ -19,6 +19,9 @@ export class CodingmarkTextComponent  implements  AfterViewInit, AfterViewChecke
   @Input()
   codingmark: Codingmark;
 
+  @Input()
+  queryText: string;
+
   show = false; // add one more property
   public showMoreText = false;
 
