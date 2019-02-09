@@ -53,3 +53,8 @@ button.delete {
   background-color: gray !important;
   color:white;
 }
+
+.tags-label:after {
+  font-family: FontAwesome;
+  content: "SHOW MORE \f02c";
+}
