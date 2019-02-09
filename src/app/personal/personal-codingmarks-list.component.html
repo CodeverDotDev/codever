@@ -4,10 +4,10 @@
 <h3>Personal codingmarks</h3>
 <ul class="nav nav-tabs" style="margin-top: 1em">
   <li class="nav-item">
-    <a class="nav-link personal-tabs" [ngClass]="{active: showLastAccessed}" (click)="toggleLastAccessed()">Last visited</a>
+    <a class="nav-link personal-tabs" [ngClass]="{active: showLastAccessed}" (click)="toggleLastAccessed()">History <i class="fas fa-user-clock"></i></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link personal-tabs" [ngClass]="{active: !showLastAccessed}" (click)="toggleLastModified()">Last modified</a>
+    <a class="nav-link personal-tabs" [ngClass]="{active: !showLastAccessed}" (click)="toggleLastModified()">Last modified <i class="fas fa-user-edit"></i></a>
   </li>
 </ul>
 
