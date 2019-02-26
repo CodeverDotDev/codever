@@ -12,9 +12,9 @@
 </ul>
 
 <div *ngIf="showLastAccessed;else lastModified">
-  <app-async-codingmark-list [codingmarks]="personalCodingmarks$" [shownSize]="10"></app-async-codingmark-list>
+  <app-async-codingmark-list [codingmarks]="personalCodingmarks$" [shownSize]="10" [userData]="userData"></app-async-codingmark-list>
 </div>
 
 <ng-template #lastModified>
-  <app-async-codingmark-list [codingmarks]="lastUpdatedPersonalCodingmarks$" [shownSize]="10"></app-async-codingmark-list>
+  <app-async-codingmark-list [codingmarks]="lastUpdatedPersonalCodingmarks$" [shownSize]="10" [userData]="userData" ]></app-async-codingmark-list>
 </ng-template>

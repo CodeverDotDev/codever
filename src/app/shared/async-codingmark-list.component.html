@@ -25,7 +25,12 @@
           <h5 class="card-title"><a href="{{codingmark.location}}" target="_blank" [innerHtml]="codingmark.name | highlight: queryText" (click)="updateLastAccess(codingmark)"></a></h5>
           <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="codingmark.location | slice:0:150 | highlight: queryText"></span></h6>
         </div>
-        <span class="clock-wrapper" title="Read later"><i class="far fa-clock"></i></span>
+        <div *ngIf="userIsLoggedIn">
+          <span *ngIf="userData && userData.readLater && !userData.readLater.includes(codingmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(codingmark)"><i class="far fa-clock"></i></span>
+          <ng-template #markedAsReadLater>
+            <span class="clock-wrapper" title="Remove from Read later" (click)="removeFromReadLater(codingmark)"><i class="fas fa-clock"></i></span>
+          </ng-template>
+        </div>
       </div>
 
       <hr class="title-content-separator">
