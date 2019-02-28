@@ -2,19 +2,19 @@
 <app-codingmark-search [codingmarks]="personalCodingmarks$" [query]="query" [context]="'Personal'" [userData]="userData"></app-codingmark-search>
 <hr style="margin-top: 0;">
 <h3>Personal codingmarks</h3>
-<ul class="nav nav-tabs" style="margin-top: 1em">
-  <li class="nav-item">
-    <a class="nav-link personal-tabs" [ngClass]="{active: showLastAccessed}" (click)="toggleLastAccessed()">History <i class="fas fa-user-clock"></i></a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link personal-tabs" [ngClass]="{active: !showLastAccessed}" (click)="toggleLastModified()">Last modified <i class="fas fa-user-edit"></i></a>
-  </li>
-</ul>
 
-<div *ngIf="showLastAccessed;else lastModified">
-  <app-async-codingmark-list [codingmarks]="personalCodingmarks$" [shownSize]="10" [userData]="userData"></app-async-codingmark-list>
-</div>
 
-<ng-template #lastModified>
-  <app-async-codingmark-list [codingmarks]="lastUpdatedPersonalCodingmarks$" [shownSize]="10" [userData]="userData" ]></app-async-codingmark-list>
-</ng-template>
+<mat-tab-group>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      History  &nbsp;<i class="fas fa-user-clock"></i>
+    </ng-template>
+    <app-async-codingmark-list [codingmarks]="personalCodingmarks$" [shownSize]="10" [userData]="userData"></app-async-codingmark-list>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Last modified  &nbsp;<i class="fas fa-user-edit"></i>
+    </ng-template>
+    <app-async-codingmark-list [codingmarks]="lastUpdatedPersonalCodingmarks$" [shownSize]="10" [userData]="userData"></app-async-codingmark-list>
+  </mat-tab>
+</mat-tab-group>
