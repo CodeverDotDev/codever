@@ -19,7 +19,6 @@ export class PersonalCodingmarksListComponent implements OnInit {
   personalCodingmarks$: Observable<List<Codingmark>>;
   lastUpdatedPersonalCodingmarks$: Observable<Codingmark[]>;
   query = '';
-  showLastAccessed = true;
   userData: UserData;
 
   constructor(
@@ -58,14 +57,5 @@ export class PersonalCodingmarksListComponent implements OnInit {
     const link = ['./new'];
     this.router.navigate(link, { relativeTo: this.route });
   }
-
-  toggleLastAccessed(): void {
-    this.showLastAccessed = true;
-  }
-
-  toggleLastModified(): void {
-    this.showLastAccessed = false;
-  }
-
 
 }
