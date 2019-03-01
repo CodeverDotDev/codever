@@ -12,7 +12,8 @@ const searchSchema = new Schema({
 var userSchema = new Schema({
     _id: String,
     userId: String, //global userId in the codingmarks context (currently is the Keycloak Id)
-    searches: [searchSchema]
+    searches: [searchSchema],
+    readLater: [String]
 },
 {
   timestamps: true
