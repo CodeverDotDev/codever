@@ -6,8 +6,8 @@
 
 <mat-tab-group>
   <mat-tab>
-    <ng-template mat-tab-label>
-      History  &nbsp;<i class="fas fa-user-clock"></i>
+    <ng-template mat-tab-label >
+      <span class="app-tab-label">History  &nbsp;<i class="fas fa-user-clock"></i></span>
     </ng-template>
     <app-async-codingmark-list [codingmarks]="personalCodingmarks$" [shownSize]="10" [userData]="userData"></app-async-codingmark-list>
   </mat-tab>
@@ -19,7 +19,7 @@
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
-      Read Later  &nbsp;<i class="fas fa-clock"></i>
+      <span class="app-tab-label">Read Later  &nbsp;<i class="fas fa-clock"></i></span>
     </ng-template>
     <app-async-codingmark-list [codingmarks]="laterReads$" [shownSize]="30" [userData]="userData"></app-async-codingmark-list>
   </mat-tab>
