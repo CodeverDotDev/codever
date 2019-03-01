@@ -6,13 +6,13 @@
   <mat-tab-group>
     <mat-tab>
       <ng-template mat-tab-label>
-        Recent &nbsp;<i class="fas fa-clock"></i>
+        <span class="app-tab-label">Recent &nbsp;<i class="fas fa-clock"></i></span>
       </ng-template>
       <app-async-codingmark-list [codingmarks]="publicCodingmarks$" [shownSize]="30" [userData]="userData"></app-async-codingmark-list>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        Tags &nbsp;<i class="fas fa-tags"></i>
+        <span class="app-tab-label">Tags &nbsp;<i class="fas fa-tags"></i></span>
       </ng-template>
       <div class="tags-group">
         <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag)" style="cursor: pointer">{{tag}}</span>
