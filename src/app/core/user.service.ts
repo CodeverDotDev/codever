@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserData} from './model/user-data';
+import {Codingmark} from './model/codingmark';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,11 @@ export class UserService {
   getUserData(userId: string): Observable<UserData> {
     return this.httpClient
       .get<UserData>(`${this.usersApiBaseUrl}/${userId}` );
+  }
+
+  getLaterReads(userId: string): Observable<Codingmark[]> {
+    return this.httpClient
+      .get<Codingmark[]>(`${this.usersApiBaseUrl}/${userId}/later-reads` );
   }
 
 }
