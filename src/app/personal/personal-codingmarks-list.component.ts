@@ -18,7 +18,6 @@ import {UserService} from '../core/user.service';
 export class PersonalCodingmarksListComponent implements OnInit {
 
   personalCodingmarks$: Observable<List<Codingmark>>;
-  lastUpdatedPersonalCodingmarks$: Observable<Codingmark[]>;
   laterReads$: Observable<Codingmark[]>;
   query = '';
   userData: UserData;
@@ -41,13 +40,6 @@ export class PersonalCodingmarksListComponent implements OnInit {
       }
     }
     this.personalCodingmarks$ = this.personalCodingmarksStore.getPersonalCodingmarks();
-    this.lastUpdatedPersonalCodingmarks$ = this.personalCodingmarks$.pipe(map((data) => {
-        return data.sort((a, b) => {
-          if (a.updatedAt < b.updatedAt) { return 1; }
-          if (a.updatedAt > b.updatedAt) { return -1; }
-          if (a.updatedAt === b.updatedAt) { return 0; }
-        }).toArray();
-    }));
     this.userDataStore.getUserData().subscribe(data => {
         this.userData = data;
         this.laterReads$ = this.userService.getLaterReads(this.userData.userId);

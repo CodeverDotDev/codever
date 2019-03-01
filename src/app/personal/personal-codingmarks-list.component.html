@@ -13,12 +13,6 @@
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
-      Last modified  &nbsp;<i class="fas fa-user-edit"></i>
-    </ng-template>
-    <app-async-codingmark-list [codingmarks]="lastUpdatedPersonalCodingmarks$" [shownSize]="10" [userData]="userData"></app-async-codingmark-list>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
       <span class="app-tab-label">Read Later  &nbsp;<i class="fas fa-clock"></i></span>
     </ng-template>
     <app-async-codingmark-list [codingmarks]="laterReads$" [shownSize]="30" [userData]="userData"></app-async-codingmark-list>

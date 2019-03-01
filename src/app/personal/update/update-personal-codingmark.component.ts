@@ -49,7 +49,9 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
 
   updateCodingmark(): void {
     this.codingmark.descriptionHtml = this.markdownService.toHtml(this.codingmark.description);
-    this.codingmark.updatedAt = new Date();
+    const now = new Date();
+    this.codingmark.updatedAt = now;
+    this.codingmark.lastAccessedAt = now;
 
     const obs = this.personalCodingmarksStore.updateCodingmark(this.codingmark);
 
