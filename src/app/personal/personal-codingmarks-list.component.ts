@@ -9,6 +9,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UserData} from '../core/model/user-data';
 import {UserDataStore} from '../core/user/userdata.store';
 import {UserService} from '../core/user.service';
+import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
   selector: 'app-user-codingmarks',
@@ -42,7 +43,7 @@ export class PersonalCodingmarksListComponent implements OnInit {
     this.personalCodingmarks$ = this.personalCodingmarksStore.getPersonalCodingmarks();
     this.userDataStore.getUserData().subscribe(data => {
         this.userData = data;
-        this.laterReads$ = this.userService.getLaterReads(this.userData.userId);
+        //this.laterReads$ = this.userService.getLaterReads(this.userData.userId);
       },
       error => {
       }
@@ -54,4 +55,11 @@ export class PersonalCodingmarksListComponent implements OnInit {
     this.router.navigate(link, { relativeTo: this.route });
   }
 
+  tabSelectionChanged(event: MatTabChangeEvent) {
+
+    if(event.index == 1) {
+      console.log("selected read later");
+      this.laterReads$ = this.userService.getLaterReads(this.userData.userId);
+    }
+  }
 }

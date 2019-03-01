@@ -1,4 +1,4 @@
-import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
+import {Observable, ReplaySubject} from 'rxjs';
 
 import {Injectable} from '@angular/core';
 import {Logger} from '../logger.service';
@@ -9,11 +9,14 @@ import {KeycloakService} from 'keycloak-angular';
 import {UserData} from '../model/user-data';
 import {UserService} from '../user.service';
 import {HttpErrorResponse} from '@angular/common/http';
+import {Codingmark} from '../model/codingmark';
 
 @Injectable()
 export class UserDataStore {
 
   private _userData: ReplaySubject<UserData> = new ReplaySubject(1);
+  private _laterReads: ReplaySubject<Codingmark[]> = new ReplaySubject(1);
+  private laterReadsHasBeenRequested = false;
 
   private userId: string;
 
@@ -70,5 +73,16 @@ export class UserDataStore {
     return obs;
   }
 
+  getLaterReads(): Observable<Codingmark[]> {
+    if (this.laterReadsHasBeenRequested) {
+      return this._laterReads.asObservable();
+    } else {
+      this.laterReadsHasBeenRequested = true;
+      const laterReads$ = this.userService.getLaterReads(this.userData.userId).subscribe(data => {
+        this._laterReads.next(data);
+      });
+      return this._laterReads.asObservable();
+    }
+  }
 }
 
