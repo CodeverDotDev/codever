@@ -5,6 +5,7 @@ const personalCodingmarksRouter = require('./personal-codingmarks');
 var Keycloak = require('keycloak-connect');
 
 const User = require('../../models/user');
+var Bookmark = require('../../models/bookmark');
 var MyError = require('../../models/error');
 
 var common = require('../../common/config');
@@ -50,6 +51,40 @@ usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
     }
 
   } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+/* GET list of codingmarks to be read later for the user */
+usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if (userId !== request.params.userId) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if (!userData) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const codingmarks = await Bookmark.find( {"_id" : { $in: userData.readLater}});
+      response.send(codingmarks);
+    }
+
+  } catch (err) {
+    console.log(err);
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(err);
