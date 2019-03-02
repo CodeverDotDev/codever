@@ -158,11 +158,13 @@ export class AsyncCodingmarkListComponent  implements OnInit {
   addToReadLater(codingmark: Codingmark) {
    this.userData.readLater.push(codingmark._id);
    this.userDataStore.updateUserData(this.userData).subscribe();
+   this.userDataStore.addToLaterReads(codingmark);
   }
 
   removeFromReadLater(codingmark: Codingmark) {
     this.userData.readLater = this.userData.readLater.filter(x => x !== codingmark._id);
     this.userDataStore.updateUserData(this.userData).subscribe();
+    this.userDataStore.removeFromLaterReads(codingmark);
   }
 
 }

@@ -6,6 +6,7 @@ import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserData} from './model/user-data';
 import {Codingmark} from './model/codingmark';
+import {shareReplay} from 'rxjs/operators';
 
 @Injectable()
 export class UserService {
@@ -19,7 +20,8 @@ export class UserService {
 
   updateUserData(userData: UserData): Observable<UserData> {
     return this.httpClient
-      .put(`${this.usersApiBaseUrl}/${userData.userId}`, JSON.stringify(userData), {headers: this.headers});
+      .put(`${this.usersApiBaseUrl}/${userData.userId}`, JSON.stringify(userData), {headers: this.headers})
+      .pipe(shareReplay(1));
   }
 
   getUserData(userId: string): Observable<UserData> {
