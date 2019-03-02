@@ -1,6 +1,7 @@
 // styles in src/style directory are applied to the whole page
 body {
     background: #FFFFFF;
+    overflow: scroll;
 }
 a {
     color: #4078c0;
@@ -61,6 +62,10 @@ ul.tags li:not(:last-child):after {
 .url-under-title {
   font-size: small;
   font-style: italic;
+}
+
+.app-tab-label {
+  font-size: 1.2rem;
 }
 
 //highlight
