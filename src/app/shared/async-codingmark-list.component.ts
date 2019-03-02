@@ -7,6 +7,8 @@ import {KeycloakService} from 'keycloak-angular';
 import {PublicCodingmarksStore} from '../public/codingmark/store/public-codingmarks-store.service';
 import {PublicCodingmarksService} from '../public/codingmark/public-codingmarks.service';
 import {RateCodingmarkRequest, RatingActionType} from '../core/model/rate-codingmark.request';
+import {UserData} from '../core/model/user-data';
+import {UserDataStore} from '../core/user/userdata.store';
 
 @Component({
   selector: 'app-async-codingmark-list',
@@ -27,13 +29,19 @@ export class AsyncCodingmarkListComponent  implements OnInit {
   @Input()
   shownSize: number;
 
+  @Input()
+  userData: UserData;
+
   private router: Router;
   private personalCodingmarksStore: PersonalCodingmarksStore;
+  private userDataStore: UserDataStore;
   private publicCodingmarksStore: PublicCodingmarksStore;
   private publicCodingmarksService: PublicCodingmarksService;
   private keycloakService: KeycloakService;
 
   displayModal = 'none';
+
+  userIsLoggedIn = false;
 
   constructor(
     private injector: Injector,
@@ -45,7 +53,9 @@ export class AsyncCodingmarkListComponent  implements OnInit {
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
+        this.userIsLoggedIn = true;
         this.personalCodingmarksStore = <PersonalCodingmarksStore>this.injector.get(PersonalCodingmarksStore);
+        this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
       }
     });
   }
@@ -144,4 +154,17 @@ export class AsyncCodingmarkListComponent  implements OnInit {
   onCancelClick() {
     this.displayModal = 'none';
   }
+
+  addToReadLater(codingmark: Codingmark) {
+   this.userData.readLater.push(codingmark._id);
+   this.userDataStore.updateUserData(this.userData).subscribe();
+   this.userDataStore.addToLaterReads(codingmark);
+  }
+
+  removeFromReadLater(codingmark: Codingmark) {
+    this.userData.readLater = this.userData.readLater.filter(x => x !== codingmark._id);
+    this.userDataStore.updateUserData(this.userData).subscribe();
+    this.userDataStore.removeFromLaterReads(codingmark);
+  }
+
 }

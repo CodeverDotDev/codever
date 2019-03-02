@@ -11,3 +11,14 @@
 .title-content-separator {
   margin: 0 0 0.5rem 0;
 }
+
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  .clock-wrapper {
+    font-size: 1.4rem;
+    margin-left: 1rem;
+    cursor: pointer;
+  }
+}

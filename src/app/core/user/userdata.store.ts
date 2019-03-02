@@ -9,11 +9,15 @@ import {KeycloakService} from 'keycloak-angular';
 import {UserData} from '../model/user-data';
 import {UserService} from '../user.service';
 import {HttpErrorResponse} from '@angular/common/http';
+import {Codingmark} from '../model/codingmark';
+import {List} from 'immutable';
 
 @Injectable()
 export class UserDataStore {
 
   private _userData: ReplaySubject<UserData> = new ReplaySubject(1);
+  private _laterReads: BehaviorSubject<Codingmark[]> = new BehaviorSubject([]);
+  private laterReadsHasBeenRequested = false;
 
   private userId: string;
 
@@ -70,5 +74,29 @@ export class UserDataStore {
     return obs;
   }
 
+  getLaterReads(): Observable<Codingmark[]> {
+    if (!this.laterReadsHasBeenRequested) {
+      this.laterReadsHasBeenRequested = true;
+      const laterReads$ = this.userService.getLaterReads(this.userData.userId).subscribe(data => {
+        this._laterReads.next(data);
+      });
+    }
+    return this._laterReads.asObservable();
+  }
+
+  addToLaterReads(codingmark: Codingmark) {
+    const laterReads: Codingmark[] = this._laterReads.getValue();
+    laterReads.push(codingmark);
+
+    this._laterReads.next(laterReads); // insert at the top (index 0)
+  }
+
+  removeFromLaterReads(codingmark: Codingmark) {
+    const laterReads: Codingmark[] = this._laterReads.getValue();
+    const index = laterReads.findIndex((laterRead) => codingmark._id === laterRead._id);
+    laterReads.splice(index, 1);
+
+    this._laterReads.next(laterReads);
+  }
 }
 

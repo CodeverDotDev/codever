@@ -10,9 +10,10 @@ import {UpdatePersonalCodingmarkComponent} from './update/update-personal-coding
 import {CreatePersonalCodingmarkComponent} from './create/create-personal-codingmark.component';
 import {
   MatAutocompleteModule, MatChipsModule, MatFormFieldModule, MatIconModule,
-  MatInputModule
+  MatInputModule, MatTabsModule
 } from '@angular/material';
 import {OverlayModule} from '@angular/cdk/overlay';
+import {PublicBookmarksRoutingModule} from '../public/public-routing.module';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import {OverlayModule} from '@angular/cdk/overlay';
     MatInputModule,
     MatIconModule,
     MatAutocompleteModule,
+    MatTabsModule,
     PersonalCodingmarksRoutingModule
   ],
   providers: [
