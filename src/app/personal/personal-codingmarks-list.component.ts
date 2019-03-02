@@ -8,6 +8,8 @@ import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserData} from '../core/model/user-data';
 import {UserDataStore} from '../core/user/userdata.store';
+import {UserService} from '../core/user.service';
+import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
   selector: 'app-user-codingmarks',
@@ -17,16 +19,16 @@ import {UserDataStore} from '../core/user/userdata.store';
 export class PersonalCodingmarksListComponent implements OnInit {
 
   personalCodingmarks$: Observable<List<Codingmark>>;
-  lastUpdatedPersonalCodingmarks$: Observable<Codingmark[]>;
+  laterReads$: Observable<Codingmark[]>;
   query = '';
-  showLastAccessed = true;
   userData: UserData;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private personalCodingmarksStore: PersonalCodingmarksStore,
-    private userDataStore: UserDataStore) { }
+    private userDataStore: UserDataStore,
+    private userService: UserService) { }
 
   ngOnInit(): void {
     this.query = this.route.snapshot.queryParamMap.get('q');
@@ -39,13 +41,6 @@ export class PersonalCodingmarksListComponent implements OnInit {
       }
     }
     this.personalCodingmarks$ = this.personalCodingmarksStore.getPersonalCodingmarks();
-    this.lastUpdatedPersonalCodingmarks$ = this.personalCodingmarks$.pipe(map((data) => {
-        return data.sort((a, b) => {
-          if (a.updatedAt < b.updatedAt) { return 1; }
-          if (a.updatedAt > b.updatedAt) { return -1; }
-          if (a.updatedAt === b.updatedAt) { return 0; }
-        }).toArray();
-    }));
     this.userDataStore.getUserData().subscribe(data => {
         this.userData = data;
       },
@@ -59,13 +54,10 @@ export class PersonalCodingmarksListComponent implements OnInit {
     this.router.navigate(link, { relativeTo: this.route });
   }
 
-  toggleLastAccessed(): void {
-    this.showLastAccessed = true;
+  tabSelectionChanged(event: MatTabChangeEvent) {
+    if (event.index === 1) {
+      console.log('selected read later');
+      this.laterReads$ = this.userDataStore.getLaterReads();
+    }
   }
-
-  toggleLastModified(): void {
-    this.showLastAccessed = false;
-  }
-
-
 }

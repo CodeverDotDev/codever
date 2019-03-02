@@ -156,7 +156,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
       userId: this.userId,
       shared: model.shared,
       starredBy: [],
-      lastAccessedAt: null
+      lastAccessedAt: new Date()
   };
 
     this.personalCodingmarksStore.addCodingmark(this.userId, newCodingmark);
