@@ -43,7 +43,6 @@ export class PersonalCodingmarksListComponent implements OnInit {
     this.personalCodingmarks$ = this.personalCodingmarksStore.getPersonalCodingmarks();
     this.userDataStore.getUserData().subscribe(data => {
         this.userData = data;
-        //this.laterReads$ = this.userService.getLaterReads(this.userData.userId);
       },
       error => {
       }
@@ -56,10 +55,9 @@ export class PersonalCodingmarksListComponent implements OnInit {
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {
-
-    if(event.index == 1) {
-      console.log("selected read later");
-      this.laterReads$ = this.userService.getLaterReads(this.userData.userId);
+    if (event.index === 1) {
+      console.log('selected read later');
+      this.laterReads$ = this.userDataStore.getLaterReads();
     }
   }
 }
