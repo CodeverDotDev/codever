@@ -6,6 +6,6 @@ export const environment = {
   keycloak:  {
     'realm': 'codingpedia',
     'url': 'http://localhost:8380/auth',
-    'clientId': 'codingmarks'
+    'clientId': 'bookmarks'
   }
 };
