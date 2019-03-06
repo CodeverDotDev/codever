@@ -1,4 +1,4 @@
-# API supporting bookmarks.dev, the bookmark manager for developers & co
+# API for www.bookmarks.dev, the bookmark manager for developers & co
 
 This repo contains the back-end API source code of the [www.bookmarks.dev](http://www.bookmarks.dev) website.
  
