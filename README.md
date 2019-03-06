@@ -2,11 +2,11 @@
 
 <img align="left" src="src/assets/bookmarks.dev-logo-md.png">
 
- Create and efficiently manage your dev bookmarks. Rate and share the worthy ones (mark as public) and they will be published on Github 
+ Efficiently manage your dev bookmarks. Rate and share the worthy ones (mark as public) and they will be published on Github 
  at [https://github.com/Codingpedia/bookmarks](https://github.com/Codingpedia/bookmarks)
- 
+  <br/>
  ---
- 
+ <br/>
 ![Codingmarks Context](src/assets/bookmarks-dev-context.png)
 ---
 This repo contains the Angular front-end source code of the [www.bookmarks.dev](http://www.bookmarks.dev) website
