@@ -4,7 +4,7 @@ export const environment = {
   API_URL: 'http://localhost:3000/api',
   HOST: 'http://localhost:4200/',
   keycloak:  {
-    'realm': 'codingpedia',
+    'realm': 'bookmarks',
     'url': 'http://localhost:8380/auth',
     'clientId': 'bookmarks'
   }
