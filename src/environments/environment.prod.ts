@@ -4,7 +4,7 @@ export const environment = {
   API_URL: 'https://www.bookmarks.dev/api',
   HOST: 'https://www.bookmarks.dev/',
   keycloak:  {
-    'realm': 'codingpedia',
+    'realm': 'bookmarks',
     'url': 'https://www.bookmarks.dev/auth',
     'clientId': 'bookmarks'
   }
