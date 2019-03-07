@@ -52,7 +52,12 @@ export class UserDataStore {
       },
       (errorResponse: HttpErrorResponse) => {
         if (errorResponse.status === 404 && errorResponse.error.title === 'User data was not found') {
-          this._userData.next({});
+          const intialUserData: UserData = {
+            userId: userId,
+            searches: [],
+            readLater: []
+          }
+          this._userData.next(intialUserData);
         }
       }
     );
