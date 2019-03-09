@@ -1,4 +1,4 @@
-# Bookmark manager for developers & co
+# Bookmark Manager for Developers & Co
 
 <img align="left" src="src/assets/bookmarks.dev-logo-md.png">
 
