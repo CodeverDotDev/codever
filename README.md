@@ -1,8 +1,8 @@
-# Codingpedia bookmarks, aka #codingmarks
+# API for www.bookmarks.dev, the Bookmark Manager for Developers & Co
 
-This repo contains the back-end API source code of the [codingmarks.org](http://codingmarks.org) website - (cu)rated bookmarks for developers.
+This repo contains the back-end API source code of the [www.bookmarks.dev](http://www.bookmarks.dev) website.
  
-![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
+![Codingmarks Context](docs/bookmarks-dev-context.png)
 
 This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
  [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
@@ -15,7 +15,7 @@ This project is developed with the MEAN stack, featuring [MongoDB](https://docs.
 # Development setup
 
 There is a **two-step** setup required for development 
-* **[front-end setup](https://github.com/Codingpedia/bookmarks)** concerning angular/angular-cli setup
+* **[front-end setup](https://github.com/Codingpedia/bookmarks.dev)** concerning angular/angular-cli setup
 * **backend-end setup** concerning mongodb, keycloak, nodejs;  this is described here
 
 > You need to complete both parts for local development
@@ -25,7 +25,7 @@ There is a **two-step** setup required for development
 ### Prerequisites
 
 What you need to run this app:
-* `node` and `npm` (I recommend to use [NVM](https://github.com/creationix/nvm))
+* `node` and `npm` (we recommend using [NVM](https://github.com/creationix/nvm))
 * Ensure you're running Node at least (`v6.x.x`+) and NPM (`3.x.x`+)
 
 #### MongoDB
@@ -96,7 +96,7 @@ $ npm run integration-tests
 ### Swagger docs
 
 * [local](http://localhost:3000/api/docs)
-* [production](https://www.codingmarks.org/api/docs)
+* [production](https://www.bookmarks.dev/api/docs)
 
 # License
 

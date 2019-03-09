@@ -21,7 +21,7 @@ var showdown = require('showdown'),
 var keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 usersRouter.use(keycloak.middleware());
 
-usersRouter.use('/:userId/codingmarks', personalCodingmarksRouter);
+usersRouter.use('/:userId/bookmarks', personalCodingmarksRouter);
 
 
 /* GET personal codingmarks of the user */
@@ -154,7 +154,7 @@ function searchesAreValid(request) {
 
 
 /*
-* DELETE bookmark for user
+* DELETE user
 */
 usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => {
 
