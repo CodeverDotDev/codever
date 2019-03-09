@@ -8,7 +8,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>This URL is already public on Codingmarks.org. You can save it as private and star it to help it get exposure</p>
+        <p>This URL is already public on Bookmarks.dev. You can save it as private and star it to help it get exposure</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary"(click)="onStarClick()">Star codingmark</button>
@@ -129,7 +129,7 @@
     <div class="form-check" style="margin-bottom: 0.5rem">
       <label class="form-check-label">
         <input #publicCodingmark [checked]="makePublic" (click)="onClickMakePublic(publicCodingmark.checked)" class="form-check-input" type="checkbox" value="true" formControlName="shared">
-        <strong> Make this codingmark public so others can benefit</strong>
+        <strong> Make this bookmark public so others can benefit</strong>
       </label>
     </div>
     <button type="submit" class="btn btn-primary" [disabled]="!codingmarkForm.valid || personalCodingmarkPresent">Submit</button>
