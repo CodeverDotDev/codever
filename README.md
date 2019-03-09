@@ -1,8 +1,8 @@
-# API for www.bookmarks.dev, the bookmark manager for developers & co
+# API for www.bookmarks.dev, the Bookmark Manager for Developers & Co
 
 This repo contains the back-end API source code of the [www.bookmarks.dev](http://www.bookmarks.dev) website.
  
-![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
+![Codingmarks Context](docs/bookmarks-dev-context.png)
 
 This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
  [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
@@ -15,7 +15,7 @@ This project is developed with the MEAN stack, featuring [MongoDB](https://docs.
 # Development setup
 
 There is a **two-step** setup required for development 
-* **[front-end setup](https://github.com/Codingpedia/bookmarks)** concerning angular/angular-cli setup
+* **[front-end setup](https://github.com/Codingpedia/bookmarks.dev)** concerning angular/angular-cli setup
 * **backend-end setup** concerning mongodb, keycloak, nodejs;  this is described here
 
 > You need to complete both parts for local development
