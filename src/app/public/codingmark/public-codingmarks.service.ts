@@ -17,8 +17,8 @@ export class PublicCodingmarksService {
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient) {
-    this.publicCodingmarksApiBaseUrl = environment.API_URL + '/public/codingmarks';
-    this.securedPublicCodingmarksApiBaseUrl = environment.API_URL + '/secured/public/codingmarks';
+    this.publicCodingmarksApiBaseUrl = environment.API_URL + '/public/bookmarks';
+    this.securedPublicCodingmarksApiBaseUrl = environment.API_URL + '/secured/public/bookmarks';
   }
 
   getAllPublicCodingmarks(): Observable<Codingmark[]> {
