@@ -80,7 +80,7 @@ describe('Public API Tests', function () {
     it('should find codingmark by location', function (done) {
       request(app)
         .get(publicCodingmarksApiBaseUrl)
-        .query({location: 'https://www.codingmarks.org'})
+        .query({location: 'https://www.bookmarks.dev'})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
           done();

@@ -35,7 +35,7 @@ describe('Secured Public API Tests', function () {
     before(function(done) {
       superagent
         .get(config.basicApiUrl + 'public/codingmarks')
-        .query({location: 'https://www.codingmarks.org'})
+        .query({location: 'https://www.bookmarks.dev'})
         .set('Accept', 'application/json')
         .then(res => {
             codingmarkUnderTest = res.body;
