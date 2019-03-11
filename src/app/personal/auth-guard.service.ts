@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
 import {KeycloakAuthGuard, KeycloakService} from 'keycloak-angular';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class AuthGuard extends KeycloakAuthGuard {
@@ -11,7 +12,9 @@ export class AuthGuard extends KeycloakAuthGuard {
   isAccessAllowed(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       if (!this.authenticated) {
-        this.keycloakAngular.login();
+        const options: Keycloak.KeycloakLoginOptions = {};
+        options.redirectUri = environment.APP_HOME_URL  + state.url;
+        this.keycloakAngular.login(options);
         return;
       }
 
