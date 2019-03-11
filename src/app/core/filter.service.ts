@@ -15,17 +15,17 @@ export class BookmarkFilterService {
    * the autosearch feature
    *
    * @param query - is a string of search terms; multiple terms are separated via the "+" sign
-   * @param observableListBookmark - the list to be filtered
+   * @param bookmarks$ - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarksBySearchTerm(query: string, language: string, observableListBookmark: Observable<List<Codingmark>>): Codingmark[] {
+  filterBookmarksBySearchTerm(query: string, language: string, bookmarks$: Observable<List<Codingmark>>): Codingmark[] {
 
     const searchedTermsAndTags: [string[], string[]] = this.splitSearchQuery(query);
     const searchedTerms: string[] = searchedTermsAndTags[0];
     const searchedTags: string[] = searchedTermsAndTags[1];
     let result: Codingmark[] = [];
 
-    observableListBookmark.subscribe(
+    bookmarks$.subscribe(
       codingmarks => {
         let filteredBookmarks = codingmarks.toArray(); // we start with all codingmarks
         if (language && language !== 'all') {
