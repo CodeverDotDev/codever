@@ -1,3 +1,4 @@
+<button type="button" class="btn btn-primary" routerLink="/personal" style="margin-top: 1rem"> <i class="fa fa-bookmark"></i> Manage personal bookmarks</button>
 <div id="public-search-box">
   <div *ngIf="publicCodingmarks$">
     <app-codingmark-search [codingmarks]="publicCodingmarks$" [query]="query" [context]="'Public'" [userData]="userData"></app-codingmark-search>
