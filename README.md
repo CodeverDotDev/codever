@@ -1,14 +1,20 @@
-# Codingpedia bookmarks, aka #codingmarks
+# Bookmark Manager for Developers & Co
 
-<img align="left" src="src/assets/codingmarks-logo-md.png">
+<img align="left" src="src/assets/bookmarks.dev-logo-md.png">
 
-Collection of (cu)rated coding bookmarks. Create your personal codingmark list, rate and share your hidden gems
- so everybody can benefit. The public codingmarks are also published weekly on Github 
- at [https://github.com/Codingpedia/codingmarks](https://github.com/Codingpedia/codingmarks):
+Efficiently manage your dev bookmarks. Rate and share the worthy ones (mark as public) and they will be published on Github 
+at [https://github.com/Codingpedia/bookmarks](https://github.com/Codingpedia/bookmarks)
+  
+<br/>
+  
+ ---
  
-![Codingmarks Context](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/codingmarks-context.png)
+ <br/>
+ 
+![Codingmarks Context](src/assets/bookmarks-dev-context.png)
+
 ---
-This repo contains the Angular front-end source code of the [www.codingmarks.org](http://codingmarks.org) website
+This repo contains the Angular front-end source code of the [www.bookmarks.dev](http://www.bookmarks.dev) website
 
 The project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
  [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
@@ -21,14 +27,14 @@ The project is developed with the MEAN stack, featuring [MongoDB](https://docs.m
 # Development setup
 
 There is a **two-step** setup required for development 
-* **front-end setup** concerning angular/angular-cli setup; this is described on this page
-* **[backend-end setup](https://github.com/Codingpedia/codingmarks-api)** concerning mongodb, keycloak, nodejs
+* **front-end setup** concerning angular/angular-cli setup; **this is described on this page**
+* **[backend-end setup](https://github.com/Codingpedia/bookmarks-api)** concerning mongodb, keycloak, nodejs
 
 > You need to complete both parts for local development
 
 ## Front-end
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.1.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli)
 
 ### Development server
 
