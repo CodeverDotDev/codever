@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
-  APP_HOME_URL: 'https://www.codingmarks.org',
-  API_URL: 'https://www.codingmarks.org/api',
-  HOST: 'https://www.codingmarks.org/',
+  APP_HOME_URL: 'https://www.bookmarks.dev',
+  API_URL: 'https://www.bookmarks.dev/api',
+  HOST: 'https://www.bookmarks.dev/',
   keycloak:  {
-    'realm': 'codingpedia',
-    'url': 'https://www.codingmarks.org/auth',
-    'clientId': 'codingmarks'
+    'realm': 'bookmarks',
+    'url': 'https://www.bookmarks.dev/auth',
+    'clientId': 'bookmarks'
   }
 };

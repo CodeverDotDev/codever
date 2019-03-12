@@ -82,6 +82,7 @@ export class AsyncCodingmarkListComponent  implements OnInit {
   deleteCodingmark(codingmark: Codingmark): void {
     const obs = this.personalCodingmarksStore.deleteCodingmark(codingmark);
     const obs2 = this.publicCodingmarksStore.removeCodingmarkFromPublicStore(codingmark);
+    const obs3 = this.userDataStore.removeFromLaterReads(codingmark);
   }
 
   starCodingmark(codingmark: Codingmark): void {
