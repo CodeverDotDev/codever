@@ -161,12 +161,13 @@ export class BookmarkFilterService {
 
   private bookmarkContainsTag(codingmark: Codingmark, tag: string): boolean {
     let result = false;
-    // const pattern = new RegExp('\\b' + tag.toLowerCase() + '\\b');
-    const pattern = new RegExp('\s' + tag.toLowerCase() + '\s');
+
+    const escapedString = this.escapeRegExp(tag.toLowerCase());
+    const pattern = new RegExp('\s' + escapedString + '\s');
     codingmark.tags.forEach(bookmarkTag => {
       // if (bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
-       if (bookmarkTag.toLowerCase() === tag.toLowerCase()) {
-      // if (pattern.test(bookmarkTag.toLowerCase())) {
+      if (bookmarkTag.toLowerCase() === tag.toLowerCase()) {
+        // if (pattern.test(bookmarkTag.toLowerCase())) {
         result = true;
       }
     });
@@ -174,4 +175,7 @@ export class BookmarkFilterService {
     return result;
   }
 
+  private escapeRegExp(str): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  }
 }
