@@ -2,7 +2,7 @@ var express = require('express');
 var personalCodingmarksRouter = express.Router({mergeParams: true});
 var Keycloak = require('keycloak-connect');
 
-var Bookmark = require('../../models/bookmark');
+  var Bookmark = require('../../models/bookmark');
 var MyError = require('../../models/error');
 
 var common = require('../../common/config');
@@ -50,14 +50,14 @@ personalCodingmarksRouter.post('/', keycloak.protect(), async (request, response
       .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
-  const descriptionIsTooLong = codingmark.description.length > MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
-  if (descriptionIsTooLong) {
-    return response
-      .status(HttpStatus.BAD_REQUEST)
-      .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed', ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
-  }
-
   if (codingmark.description) {
+    const descriptionIsTooLong = codingmark.description.length > MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+    if (descriptionIsTooLong) {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed', ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
+    }
+
     const descriptionHasTooManyLines = codingmark.description.split('\n').length > MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
     if (descriptionHasTooManyLines) {
       return response

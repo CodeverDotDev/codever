@@ -2,8 +2,8 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: Codingmarks api
-  description: API supporting the codingmarks.org website
+  title: Bookmarks.dev api
+  description: API supporting the bookmarks.dev website
   contact:
     name: Adrian Matei
     email: ama@codingpedia.org
@@ -20,30 +20,30 @@ paths:
       responses:
         '200':
           description: message with link to Swagger docs
-  "/public/codingmarks":
+  "/public/bookmarks":
     get:
-      description: returns all public (shared) codingmarks
+      description: returns all public (shared) bookmarks
       produces:
         - application/json
       responses:
         '200':
-          description: all public codingmarks
+          description: all public bookmarks
           schema:
             type: array
             items:
-              "$ref": "#/definitions/codingmark"
-  "/secured/public/codingmarks/{codingmarkId}":
+              "$ref": "#/definitions/bookmark"
+  "/secured/public/bookmarks/{bookmarkId}":
     patch:
-      description: updates rating of codingmark (a user starred or unstarred the codingmark)
+      description: updates rating of bookmark (a user starred or unstarred the bookmark)
       produces:
         - application/json
       responses:
         '200':
-          description: OK when operation successful and updated codingmark in body
+          description: OK when operation successful and updated bookmark in body
           schema:
-            "$ref": "#/definitions/codingmark"
+            "$ref": "#/definitions/bookmark"
         '404':
-          description: NOT_FOUND when codingmark cannot be found
+          description: NOT_FOUND when bookmark cannot be found
           schema:
             "$ref": "#/definitions/myError"
         '401':
@@ -52,10 +52,10 @@ paths:
           description: internal server error, when unknown server error is catched
           schema:
             "$ref": "#/definitions/myError"
-  "/personal/users/{userId}/codingmarks":
+  "/personal/users/{userId}/bookmarks":
     get:
-      description: list of user's codingmarks
-      operationId: getUserCodingmarks
+      description: list of user's bookmarks
+      operationId: getUserBookmarks
       produces:
         - application/json
       parameters:
@@ -71,16 +71,16 @@ paths:
           type: string
       responses:
         '200':
-          description: list of user's codingmarks
+          description: list of user's bookmarks
           schema:
             type: array
             items:
-              "$ref": "#/definitions/codingmark"
+              "$ref": "#/definitions/bookmark"
         '401':
           description: unauthorized (you need to have a valid token) and userId must match the subject in token
     post:
-      description: create new codingmark for user
-      operationId: createCodingmark
+      description: create new bookmark for user
+      operationId: createBookmark
       consumes:
         - application/json
       produces:
@@ -101,7 +101,7 @@ paths:
           description: Data that replaces placeholders in the sent emails
           required: true
           schema:
-            "$ref": "#/definitions/codingmark"
+            "$ref": "#/definitions/bookmark"
       responses:
         '201':
           description: Empty response, status is relevant
@@ -109,16 +109,16 @@ paths:
             location:
               schema:
                 type: string
-              description: resource url of the newly created codingmark
+              description: resource url of the newly created bookmark
         '401':
           description: unauthorized (you need to have a valid token) and userId must match the subject in token
         '409':
           description: conflict
 
-  "/personal/users/{userId}/codingmarks/{codingmarkId}":
+  "/personal/users/{userId}/bookmarks/{bookmarkId}":
     put:
-      description: (full) update existing codingmark of suer
-      operationId: updateCodingmark
+      description: (full) update existing bookmark of user
+      operationId: updateBookmark
       consumes:
         - application/json
       produces:
@@ -134,24 +134,24 @@ paths:
           description: keycloak user id
           required: true
           type: string
-        - name: codingmarkId
+        - name: bookmarkId
           in: path
-          description: id of the codingmark
+          description: id of the bookmark
           required: true
           type: string
         - in: body
           name: body
-          description: Complete codingmark to be updated
+          description: Complete bookmark to be updated
           required: true
           schema:
-            "$ref": "#/definitions/codingmark"
+            "$ref": "#/definitions/bookmark"
       responses:
         '200':
-          description: OK when operation successful and updated codingmark in body
+          description: OK when operation successful and updated bookmark in body
           schema:
-            "$ref": "#/definitions/codingmark"
+            "$ref": "#/definitions/bookmark"
         '404':
-          description: NOT_FOUND when codingmark cannot be found for user
+          description: NOT_FOUND when bookmark cannot be found for user
           schema:
             "$ref": "#/definitions/myError"
         '401':
@@ -161,8 +161,8 @@ paths:
           schema:
             "$ref": "#/definitions/myError"
     delete:
-      description: deletes codingmark of user
-      operationId: updateCodingmark
+      description: deletes bookmark of user
+      operationId: updateBookmark
       parameters:
         - name: Authorization
           in: header
@@ -174,16 +174,16 @@ paths:
           description: keycloak user id
           required: true
           type: string
-        - name: codingmarkId
+        - name: bookmarkId
           in: path
-          description: id of the codingmark
+          description: id of the bookmark
           required: true
           type: string
       responses:
         '204':
-          description: OK (No content) when operation successful and codingmark was removed
+          description: OK (No content) when operation successful and bookmark was removed
         '404':
-          description: NOT_FOUND when codingmark cannot be found for user
+          description: NOT_FOUND when bookmark cannot be found for user
           schema:
             "$ref": "#/definitions/myError"
         '401':
@@ -193,7 +193,7 @@ paths:
           schema:
             "$ref": "#/definitions/myError"
 definitions:
-  codingmark:
+  bookmark:
     type: object
     required:
       - name
