@@ -1,4 +1,4 @@
-import {BookmarkFilterService} from "./filter.service";
+import {BookmarkFilterService} from './filter.service';
 
 describe('Filter Service', () => {
   let filterService: BookmarkFilterService;
