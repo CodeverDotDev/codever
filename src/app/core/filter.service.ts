@@ -1,4 +1,3 @@
-
 import {Injectable} from '@angular/core';
 import {Codingmark} from './model/codingmark';
 import {List} from 'immutable';
@@ -8,7 +7,7 @@ import {Observable} from 'rxjs';
 export class BookmarkFilterService {
 
   /**
-   * Filters a list of codingmarks based on the query string.
+   * Filters a list of bookmarks based on the query string.
    *
    * Tags are enclosed in square brackets - e.g [angular]. The filter is now permissive, that is when starting with
    * "[" the filter assumes that the tag is what comes after even though there is no enclosing "]". That is now to support
@@ -26,10 +25,10 @@ export class BookmarkFilterService {
     let result: Codingmark[] = [];
 
     bookmarks$.subscribe(
-      codingmarks => {
-        let filteredBookmarks = codingmarks.toArray(); // we start with all codingmarks
+      bookmarks => {
+        let filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
         if (language && language !== 'all') {
-          filteredBookmarks = filteredBookmarks.filter( x => x.language === language);
+          filteredBookmarks = filteredBookmarks.filter(x => x.language === language);
         }
         searchedTags.forEach(tag => {
           filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag));
@@ -56,7 +55,7 @@ export class BookmarkFilterService {
    * @param query to be parsed
    * @returns a tuple of terms (first element) and tags (second element)
    */
-  public splitSearchQuery(query: string): [string[], string[]]{
+  public splitSearchQuery(query: string): [string[], string[]] {
 
     const result: [string[], string[]] = [[], []];
 
@@ -69,7 +68,7 @@ export class BookmarkFilterService {
     let isInsideTag = false;
 
 
-    for (let i = 0; i < query.length; i++ ) {
+    for (let i = 0; i < query.length; i++) {
       const currentCharacter = query[i];
       if (currentCharacter === ' ') {
         if (!isInsideTag) {
@@ -121,35 +120,33 @@ export class BookmarkFilterService {
   }
 
   /**
-   * Checks if one search term is present in the codingmark's metadata (name, location, description, tags)
-   * There is still an internal debate to use the contains method (less restrictive) and the
-   * RegExp with matching words (more restrictive and does not support propery Unicode)
+   * Checks if one search term is present in the bookmark's metadata (name, location, description, tags)
+   * There is still an internal debate to use the contains(includes) vs word boundary or characters boundary (current)
+   * See if there are performance issues
    *
-   * @param codingmark
+   * @param bookmark
    * @param searchedTerm
    * @returns {boolean}
    */
-  private bookmarkContainsSearchedTerm(codingmark: Codingmark, searchedTerm: string): boolean {
+  private bookmarkContainsSearchedTerm(bookmark: Codingmark, searchedTerm: string): boolean {
     let result = false;
-    const pattern = new RegExp('\\b' + searchedTerm.toLowerCase() + '\\b');
-/*    if (codingmark.name.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || codingmark.location.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || codingmark.description.toLowerCase().indexOf(term.toLowerCase()) !== -1
-      || codingmark.tags.indexOf(term.toLowerCase()) !== -1
-    ) {*/
-      if ((codingmark.name && pattern.test(codingmark.name.toLowerCase()))
-        || (codingmark.location && pattern.test(codingmark.location.toLowerCase()))
-        || (codingmark.location.toLowerCase().indexOf(searchedTerm.toLowerCase()) !== -1) // enables search of entire url "/" is not caught in regex as not word character
-        || (codingmark.description && pattern.test(codingmark.description.toLowerCase()))
-      ) {
-        result = true;
-      }
+    // const escapedSearchPattern = '\\b' + this.escapeRegExp(searchedTerm.toLowerCase()) + '\\b'; word boundary was not enough, especially for special characters which can happen in coding
+    // https://stackoverflow.com/questions/23458872/javascript-regex-word-boundary-b-issue
+    const separatingChars = '\\s\\.,;#\\-\\/_\\[\\]\\(\\)\\*\\+';
+    const escapedSearchPattern = `(^|[${separatingChars}])(${this.escapeRegExp(searchedTerm.toLowerCase())})(?=$|[${separatingChars}])`;
+    const pattern = new RegExp(escapedSearchPattern);
+    if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
+      || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
+      || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
+    ) {
+      result = true;
+    }
 
     if (result) {
       return true;
     } else {
       // if not found already look through the tags also
-      codingmark.tags.forEach(tag => {
+      bookmark.tags.forEach(tag => {
         if (pattern.test(tag.toLowerCase())) {
           result = true;
         }
@@ -159,14 +156,17 @@ export class BookmarkFilterService {
     return result;
   }
 
-  private bookmarkContainsTag(codingmark: Codingmark, tag: string): boolean {
+  /**
+   * It must be an exact match
+   * @param bookmark
+   * @param tag
+   */
+  private bookmarkContainsTag(bookmark: Codingmark, tag: string): boolean {
     let result = false;
-    // const pattern = new RegExp('\\b' + tag.toLowerCase() + '\\b');
-    const pattern = new RegExp('\s' + tag.toLowerCase() + '\s');
-    codingmark.tags.forEach(bookmarkTag => {
-      // if (bookmarkTag.toLowerCase().indexOf(tag.toLowerCase()) !== -1){
-       if (bookmarkTag.toLowerCase() === tag.toLowerCase()) {
-      // if (pattern.test(bookmarkTag.toLowerCase())) {
+
+    const escapedString = this.escapeRegExp(tag.toLowerCase());
+    bookmark.tags.forEach(bookmarkTag => {
+      if (bookmarkTag.toLowerCase() === tag.toLowerCase()) {
         result = true;
       }
     });
@@ -174,4 +174,30 @@ export class BookmarkFilterService {
     return result;
   }
 
+  // TODO considering how often these characters might get used in search maybe is not important to escape them after all
+  private escapeRegExp(str): string {
+    const specials = [
+        // order matters for these
+        '-'
+        , '['
+        , ']'
+        // order doesn't matter for any of these
+        , '/'
+        , '{'
+        , '}'
+        , '('
+        , ')'
+        , '*'
+        , '+'
+        , '?'
+        , '.'
+        , '\\'
+        , '^'
+        , '$'
+        , '|'
+        , '/'
+      ],
+      regex = RegExp('[' + specials.join('\\') + ']', 'g');
+    return str.replace(regex, '\\$&'); // $& means the whole matched string
+  }
 }

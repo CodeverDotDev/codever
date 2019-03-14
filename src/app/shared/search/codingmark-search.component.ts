@@ -145,6 +145,11 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onBookmarkDeleted(deleted: boolean) {
+    if(deleted){
+        this.searchControl.setValue(this.queryText);
+    }
+  }
   /**
    *
    * @param codingmark
@@ -159,7 +164,6 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   onLanguageChange(newValue) {
-    console.log('onLanguageChange' + newValue);
     this.language = newValue;
     this.searchControl.setValue(this.queryText);
   }
