@@ -1,6 +1,6 @@
 {
   "name": "bookmarks-api",
-  "version": "3.0.0-SNAPSHOT",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
