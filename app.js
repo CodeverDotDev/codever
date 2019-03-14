@@ -61,8 +61,8 @@ app.use(function(req, res, next) {
 
 app.use('/api', apiBasePathRouter);
 app.use('/api/version', versionRouter);
-app.use('/api/public/codingmarks', publicCodingmarksRouter);
-app.use('/api/secured/public/codingmarks', securedPublicCodingmarksRouter);
+app.use('/api/public/bookmarks', publicCodingmarksRouter);
+app.use('/api/secured/public/bookmarks', securedPublicCodingmarksRouter);
 app.use('/api/personal/users', usersRouter);
 
 // catch 404 and forward to error handler
