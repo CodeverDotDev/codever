@@ -1,6 +1,6 @@
 {
-  "name": "codingmarks.org",
-  "version": "5.0.1",
+  "name": "bookmarks.dev",
+  "version": "5.0.2",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
