@@ -21,7 +21,8 @@ const publicBookmarksRoutes: Routes = [
   {
     path: '',
     component: PublicCodingmarksComponent
-  }
+  },
+  { path: '**', component: TagComponent }
 ];
 @NgModule({
   imports: [RouterModule.forChild(publicBookmarksRoutes)],

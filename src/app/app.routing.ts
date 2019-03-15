@@ -4,12 +4,12 @@ import {PageNotFoundComponent} from './not-found.component';
 
 const routes: Routes = [
   {
-    path: 'public',
-    loadChildren: 'app/public/public.module#PublicBookmarksModule'
-  },
-    {
     path: 'personal',
     loadChildren: 'app/personal/personal-codingmarks.module#PersonalCodingmarksModule'
+  },
+  {
+    path: 'public',
+    loadChildren: 'app/public/public.module#PublicBookmarksModule'
   },
   {
     path: '',
