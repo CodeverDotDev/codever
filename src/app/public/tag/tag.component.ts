@@ -18,7 +18,6 @@ export class TagComponent implements OnInit {
 
   bookmarksForTag$: Observable<Codingmark[]>;
   tag: string;
-  queryText: string;
   userData: UserData;
   counter = 30;
 
@@ -28,13 +27,18 @@ export class TagComponent implements OnInit {
               private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.route.params.pipe(
-      map(params => params['tag']))
-      .subscribe((tag) => {
-          this.tag = tag;
-          this.queryText = '[' + tag + ']';
-          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(tag);
-      });
+    this.tag = this.route.snapshot.params['tag'];
+    if (this.tag) {
+      this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag);
+    } else if (this.route.snapshot.url.length > 1) {
+      console.log('page not found');
+
+    } else {
+      this.tag = this.route.snapshot.url[0].path;
+      this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag);
+    }
+
+
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.keycloakService.loadUserProfile().then(keycloakProfile => {
