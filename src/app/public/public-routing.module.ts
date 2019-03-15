@@ -1,8 +1,12 @@
-import {RouterModule, Routes} from '@angular/router';
+import { RouterModule, Routes, UrlSegment } from '@angular/router';
 import {NgModule} from '@angular/core';
 import {TagComponent} from './tag/tag.component';
 import {AboutComponent} from './about/about.component';
 import {PublicCodingmarksComponent} from './codingmark/public-codingmarks.component';
+
+export function possibleTag(url: UrlSegment[]) {
+    return url.length === 1 && url[0].path !== 'personal' ? ({consumed: url}) : null;
+}
 
 const publicBookmarksRoutes: Routes = [
   {
@@ -22,7 +26,7 @@ const publicBookmarksRoutes: Routes = [
     path: '',
     component: PublicCodingmarksComponent
   },
-  { path: '**', component: TagComponent }
+  { matcher: possibleTag, component: TagComponent }
 ];
 @NgModule({
   imports: [RouterModule.forChild(publicBookmarksRoutes)],
