@@ -22,7 +22,7 @@ const personalBookmarksRoutes: Routes = [
         component: CreatePersonalCodingmarkComponent
       },
       {
-        path: 'codingmarks/:id',
+        path: 'bookmarks/:id',
         component: UpdatePersonalCodingmarkComponent
       },
       {

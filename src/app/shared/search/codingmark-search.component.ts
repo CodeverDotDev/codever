@@ -146,7 +146,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   onBookmarkDeleted(deleted: boolean) {
-    if(deleted){
+    if (deleted) {
         this.searchControl.setValue(this.queryText);
     }
   }
@@ -155,7 +155,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
    * @param codingmark
    */
   gotoCodingmarkDetail(codingmark: Codingmark): void {
-    const link = ['/codingmarks', codingmark._id];
+    const link = ['/bookmarks', codingmark._id];
     this.router.navigate(link);
   }
 
