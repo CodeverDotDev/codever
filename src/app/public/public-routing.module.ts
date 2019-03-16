@@ -19,6 +19,10 @@ const publicBookmarksRoutes: Routes = [
     component: TagComponent
   },
   {
+    path: 'tags/:tag',
+    component: TagComponent
+  },
+  {
     path: 'about',
     component: AboutComponent
   },
