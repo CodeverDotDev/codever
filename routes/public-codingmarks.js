@@ -25,7 +25,6 @@ router.get('/', async (req, res) => {
       }
       res.send(bookmark);
     } else if (req.query.tag) {//get all bookmarks tagged with "tag"
-      //const bookmarks = await Bookmark.find({ tags: { $regex: new RegExp(req.query.tag, "ig")} }).sort({createdAt: -1});
       const bookmarks = await Bookmark.find({tags: req.query.tag}).sort({createdAt: -1}).lean().exec();
       res.send(bookmarks);
     } else {//no filter - all bookmarks ordered by creation date descending
