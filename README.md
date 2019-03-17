@@ -3,7 +3,7 @@
 <img align="left" src="src/assets/bookmarks.dev-logo-md.png">
 
 Efficiently manage your dev bookmarks. Rate and share the worthy ones (mark as public) and they will be published on Github 
-at [https://github.com/Codingpedia/bookmarks](https://github.com/Codingpedia/bookmarks)
+at [https://github.com/Codingpedia/bookmarks](https://github.com/Codingpedia/bookmarks#readme)
   
 <br/>
   
