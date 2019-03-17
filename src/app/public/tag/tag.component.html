@@ -1,9 +1,10 @@
-<div class="container">
-  <br/>
-  <h2>Latest bookmarks tagged [<em>{{tag}}</em>]</h2>
-  <hr/>
-  <app-async-codingmark-list [codingmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter" [userData]="userData"></app-async-codingmark-list>
-</div>
+
+<button type="button" class="btn btn-primary" routerLink="/personal" style="margin-top: 1rem; float: right"> <i class="fa fa-bookmark"></i> Manage personal bookmarks</button>
+<br/>
+<h2>Latest bookmarks tagged [<em>{{tag}}</em>]</h2>
+<hr/>
+<app-async-codingmark-list [codingmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter" [userData]="userData"></app-async-codingmark-list>
+
 <div *ngIf="(bookmarksForTag$ | async)?.length - counter > 0" >
   <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()" [disabled]="counter>=(bookmarksForTag$ | async)?.length">Show more</button>
   <hr/>
