@@ -78,7 +78,7 @@ export class AsyncCodingmarkListComponent implements OnInit {
      * @param codingmark
      */
     gotoDetail(codingmark: Codingmark): void {
-        const link = ['./personal/codingmarks', codingmark._id];
+        const link = ['./personal/bookmarks', codingmark._id];
         this.router.navigate(link);
     }
 
