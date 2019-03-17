@@ -1,6 +1,6 @@
 {
-  "name": "codingmarks",
-  "short_name": "codingmarks",
+  "name": "Dev Bookmarks",
+  "short_name": "dev bookmarks",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
