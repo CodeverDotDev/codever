@@ -13,7 +13,7 @@ describe('Secured Public API Tests', function () {
 
   let bearerToken;
   const ratingTestUserId = config.integration_tests.test_user_id;
-  const baseApiUrlUnderTest = '/api/secured/public/codingmarks/';
+  const baseApiUrlUnderTest = '/api/secured/public/bookmarks/';
 
   before(function(done) {
     superagent
@@ -29,12 +29,12 @@ describe('Secured Public API Tests', function () {
 
   });
 
-  describe('patch codingmark tests', function () {
+  describe('patch bookmark tests', function () {
     let codingmarkUnderTest;
 
     before(function(done) {
       superagent
-        .get(config.basicApiUrl + 'public/codingmarks')
+        .get(config.basicApiUrl + 'public/bookmarks')
         .query({location: 'https://www.bookmarks.dev'})
         .set('Accept', 'application/json')
         .then(res => {
@@ -71,7 +71,7 @@ describe('Secured Public API Tests', function () {
         });
     });
 
-    it('should fail trying to rate (STAR) a non-existing codingmark', function (done) {
+    it('should fail trying to rate (STAR) a non-existing bookmark', function (done) {
       const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
         .patch(baseApiUrlUnderTest + inexistentCodingmarkId)
@@ -84,7 +84,7 @@ describe('Secured Public API Tests', function () {
         });
     });
 
-    it('should fail trying to rate (UNSTAR) a non-existing codingmark', function (done) {
+    it('should fail trying to rate (UNSTAR) a non-existing bookmark', function (done) {
       const inexistentCodingmarkId = '507f191e810c19729de860aa';
       request(app)
         .patch(baseApiUrlUnderTest + inexistentCodingmarkId)
@@ -110,7 +110,7 @@ describe('Secured Public API Tests', function () {
     });
 
 
-    it('should star codingmark ', function (done) {
+    it('should star bookmark ', function (done) {
       request(app)
         .patch(baseApiUrlUnderTest + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
@@ -119,7 +119,7 @@ describe('Secured Public API Tests', function () {
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
           request(app)
-            .get('/api/public/codingmarks/' + codingmarkUnderTest._id)
+            .get('/api/public/bookmarks/' + codingmarkUnderTest._id)
             .end(function (err, res) {
               expect(res.statusCode).to.equal(HttpStatus.OK);
               expect(res.body.starredBy).to.be.an('array').that.does.include(ratingTestUserId);
@@ -128,7 +128,7 @@ describe('Secured Public API Tests', function () {
         });
     });
 
-    it('should unstar codingmark ', function (done) {
+    it('should unstar bookmark ', function (done) {
       request(app)
         .patch(baseApiUrlUnderTest + codingmarkUnderTest._id)
         .set('Authorization', bearerToken)
@@ -137,7 +137,7 @@ describe('Secured Public API Tests', function () {
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
           request(app)
-            .get('/api/public/codingmarks/' + codingmarkUnderTest._id)
+            .get('/api/public/bookmarks/' + codingmarkUnderTest._id)
             .end(function (err, res) {
               expect(res.statusCode).to.equal(HttpStatus.OK);
               expect(res.body.starredBy).to.be.an('array').that.does.not.include(ratingTestUserId);

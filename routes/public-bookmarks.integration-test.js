@@ -6,10 +6,10 @@ var expect = chai.expect;
 
 describe('Public API Tests', function () {
 
-  describe('get latest codingmarks function tests', function () {
-    const latestEntriesApiBaseUrl = '/api/public/codingmarks/latest-entries';
+  describe('get latest bookmarks function tests', function () {
+    const latestEntriesApiBaseUrl = '/api/public/bookmarks/latest-entries';
 
-    it('should return the latest codingmarks - without query parameters', function (done) {
+    it('should return the latest bookmarks - without query parameters', function (done) {
       request(app)
         .get(latestEntriesApiBaseUrl)
         .end(function (err, res) {
@@ -18,7 +18,7 @@ describe('Public API Tests', function () {
         });
     });
 
-    it('should return the latest codingmarks - "since" parameter', function (done) {
+    it('should return the latest bookmarks - "since" parameter', function (done) {
       let oneMonthBeforeNow = new Date();
       oneMonthBeforeNow.setMonth(oneMonthBeforeNow.getMonth() - 1);
       request(app)
@@ -30,7 +30,7 @@ describe('Public API Tests', function () {
         });
     });
 
-    it('should return the latest codingmarks - "since" and "to" parameter', function (done) {
+    it('should return the latest bookmarks - "since" and "to" parameter', function (done) {
       let sevenDaysBeforeNow = new Date();
       sevenDaysBeforeNow.setDate(sevenDaysBeforeNow.getDate() - 7);
 
@@ -65,10 +65,10 @@ describe('Public API Tests', function () {
     });
   });
 
-  describe('get public codingmarks root endpoint tests', function () {
-    const publicCodingmarksApiBaseUrl = '/api/public/codingmarks';
+  describe('get public bookmarks root endpoint tests', function () {
+    const publicCodingmarksApiBaseUrl = '/api/public/bookmarks';
 
-    it('should return all public codingmarks', function (done) {
+    it('should return all public bookmarks', function (done) {
       request(app)
         .get(publicCodingmarksApiBaseUrl)
         .end(function (err, res) {
@@ -77,7 +77,7 @@ describe('Public API Tests', function () {
         });
     });
 
-    it('should find codingmark by location', function (done) {
+    it('should find bookmark by location', function (done) {
       request(app)
         .get(publicCodingmarksApiBaseUrl)
         .query({location: 'https://www.bookmarks.dev'})
@@ -87,7 +87,7 @@ describe('Public API Tests', function () {
         });
     });
 
-    it('should not find codingmark by location', function (done) {
+    it('should not find bookmark by location', function (done) {
       request(app)
         .get(publicCodingmarksApiBaseUrl)
         .query({location: 'unknown_url'})
@@ -97,7 +97,7 @@ describe('Public API Tests', function () {
         });
     });
 
-    it('should find codingmarks by tag', function (done) {
+    it('should find bookmarks by tag', function (done) {
       request(app)
         .get(publicCodingmarksApiBaseUrl)
         .query({tag: 'java'})

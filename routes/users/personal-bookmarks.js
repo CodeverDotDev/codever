@@ -36,29 +36,29 @@ personalCodingmarksRouter.post('/', keycloak.protect(), async (request, response
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
-  const codingmark = buildCodingmarkFromRequest(request);
+  const bookmark = buildCodingmarkFromRequest(request);
 
-  const missingRequiredAttributes = !codingmark.name || !codingmark.location || !codingmark.tags || codingmark.tags.length === 0;
+  const missingRequiredAttributes = !bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0;
   if (missingRequiredAttributes) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
-  if (codingmark.tags.length > MAX_NUMBER_OF_TAGS) {
+  if (bookmark.tags.length > MAX_NUMBER_OF_TAGS) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
-  if (codingmark.description) {
-    const descriptionIsTooLong = codingmark.description.length > MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+  if (bookmark.description) {
+    const descriptionIsTooLong = bookmark.description.length > MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
     if (descriptionIsTooLong) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed', ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
     }
 
-    const descriptionHasTooManyLines = codingmark.description.split('\n').length > MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    const descriptionHasTooManyLines = bookmark.description.split('\n').length > MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
     if (descriptionHasTooManyLines) {
       return response
         .status(HttpStatus.BAD_REQUEST)
@@ -67,10 +67,10 @@ personalCodingmarksRouter.post('/', keycloak.protect(), async (request, response
   }
 
   try {
-    let newBookmark = await codingmark.save();
+    let newBookmark = await bookmark.save();
 
     response
-      .set('Location', `${config.basicApiUrl}private/${request.params.userId}/codingmarks/${newBookmark.id}`)
+      .set('Location', `${config.basicApiUrl}private/${request.params.userId}/bookmarks/${newBookmark.id}`)
       .status(HttpStatus.CREATED)
       .send({response: 'Bookmark created for userId ' + request.params.userId});
 
@@ -109,10 +109,10 @@ let buildCodingmarkFromRequest = function (req) {
   return bookmark;
 };
 
-/* GET personal codingmarks of the user */
+/* GET personal bookmarks of the user */
 personalCodingmarksRouter.get('/', keycloak.protect(), async (request, response) => {
   try {
-    let codingmarks;
+    let bookmarks;
     let userId = request.kauth.grant.access_token.content.sub;
     if (userId !== request.params.userId) {
       return response
@@ -122,12 +122,12 @@ personalCodingmarksRouter.get('/', keycloak.protect(), async (request, response)
     if (request.query.term) {
       var regExpTerm = new RegExp(request.query.term, 'i');
       var regExpSearch = [{name: {$regex: regExpTerm}}, {description: {$regex: regExpTerm}}, {category: {$regex: regExpTerm}}, {tags: {$regex: regExpTerm}}];
-      codingmarks = await Bookmark.find({userId: request.params.userId, '$or': regExpSearch});
+      bookmarks = await Bookmark.find({userId: request.params.userId, '$or': regExpSearch});
     } else {//no filter - all bookmarks
-      codingmarks = await Bookmark.find({userId: request.params.userId});
+      bookmarks = await Bookmark.find({userId: request.params.userId});
     }
 
-    response.send(codingmarks);
+    response.send(bookmarks);
   } catch (err) {
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -135,7 +135,7 @@ personalCodingmarksRouter.get('/', keycloak.protect(), async (request, response)
   }
 });
 
-/* GET codingmark of user */
+/* GET bookmark of user */
 personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
@@ -146,12 +146,12 @@ personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (reque
   }
 
   try {
-    const codingmark = await Bookmark.findOne({
+    const bookmark = await Bookmark.findOne({
       _id: request.params.codingmarkId,
       userId: request.params.userId
     });
 
-    if (!codingmark) {
+    if (!bookmark) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -160,13 +160,13 @@ personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (reque
           )
         );
     } else {
-      response.status(HttpStatus.OK).send(codingmark);
+      response.status(HttpStatus.OK).send(bookmark);
     }
   } catch (err) {
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete codingmark with id ' + request.params.codingmarkId]));
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.codingmarkId]));
   }
 });
 
@@ -218,7 +218,7 @@ personalCodingmarksRouter.put('/:codingmarkId', keycloak.protect(), async (reque
     request.body.descriptionHtml = converter.makeHtml(request.body.description);
   }
   try {
-    const codingmark = await Bookmark.findOneAndUpdate(
+    const bookmark = await Bookmark.findOneAndUpdate(
       {
         _id: request.params.codingmarkId,
         userId: request.params.userId
@@ -227,15 +227,15 @@ personalCodingmarksRouter.put('/:codingmarkId', keycloak.protect(), async (reque
       {new: true}
     );
 
-    const codingmarkNotFound = !codingmark;
+    const codingmarkNotFound = !bookmark;
     if (codingmarkNotFound) {
       return response
         .status(HttpStatus.NOT_FOUND)
-        .send(new MyError('Not Found Error', ['Codingmark for user id ' + request.params.userId + ' and codingmark id ' + request.params.codingmarkId + ' not found']));
+        .send(new MyError('Not Found Error', ['Codingmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.codingmarkId + ' not found']));
     } else {
       response
         .status(200)
-        .send(codingmark);
+        .send(bookmark);
     }
   } catch (err) {
     if (err.name === 'MongoError' && err.code === 11000) {
@@ -245,7 +245,7 @@ personalCodingmarksRouter.put('/:codingmarkId', keycloak.protect(), async (reque
     }
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(new MyError('Unknown Server Error', ['Unknown server error when updating codingmark for user id ' + request.params.userId + ' and codingmark id ' + request.params.codingmarkId]));
+      .send(new MyError('Unknown Server Error', ['Unknown server error when updating bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.codingmarkId]));
   }
 });
 
@@ -262,12 +262,12 @@ personalCodingmarksRouter.delete('/:codingmarkId', keycloak.protect(), async (re
   }
 
   try {
-    const codingmark = await Bookmark.findOneAndRemove({
+    const bookmark = await Bookmark.findOneAndRemove({
       _id: request.params.codingmarkId,
       userId: request.params.userId
     });
 
-    if (!codingmark) {
+    if (!bookmark) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -282,7 +282,7 @@ personalCodingmarksRouter.delete('/:codingmarkId', keycloak.protect(), async (re
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete codingmark with id ' + request.params.codingmarkId]));
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.codingmarkId]));
   }
 });
 

@@ -8,8 +8,8 @@ var mongoose = require('mongoose');
 var apiBasePathRouter = require('./routes/index');
 var versionRouter = require('./routes/version');
 var usersRouter = require('./routes/users/users');
-var publicCodingmarksRouter = require('./routes/public-codingmarks');
-var securedPublicCodingmarksRouter = require('./routes/secured-public-codingmarks');
+var publicCodingmarksRouter = require('./routes/public-bookmarks');
+var securedPublicCodingmarksRouter = require('./routes/secured-public-bookmarks');
 
 var fs = require('fs-extra');
 var rfs = require('rotating-file-stream');

@@ -8,7 +8,7 @@ var MyError = require('../models/error');
 
 
 /**
- *  Returns the public codingmarks
+ *  Returns the public bookmarks
  *  Currently only the get all (no filter) function is used
  */
 router.get('/', async (req, res) => {
@@ -56,7 +56,7 @@ router.get('/scrape', function (req, res, next) {
 });
 
 /**
- * Returns the codingmarks added recently.
+ * Returns the bookmarks added recently.
  *
  * The since query parameter is a timestamp which specifies the date since we want to look forward to present time.
  * If this parameter is present it has priority. If it is not present, we might specify the number of days to look back via
@@ -73,7 +73,7 @@ router.get('/latest-entries', async (req, res) => {
           .status(HttpStatus.BAD_REQUEST)
           .send(new MyError('timing query parameters values', ['<Since> param value must be before <to> parameter value']));
       }
-      const codingmarks = await Bookmark.find(
+      const bookmarks = await Bookmark.find(
         {
           'shared': true,
           createdAt: {
@@ -83,17 +83,17 @@ router.get('/latest-entries', async (req, res) => {
 
         }).sort({createdAt: 'desc'}).lean().exec();
 
-      res.send(codingmarks);
+      res.send(bookmarks);
     } else {
       const numberOfDaysToLookBack = req.query.days ? req.query.days : 7;
 
-      const codingmarks = await Bookmark.find(
+      const bookmarks = await Bookmark.find(
         {
           'shared': true,
           createdAt: {$gte: new Date((new Date().getTime() - (numberOfDaysToLookBack * 24 * 60 * 60 * 1000)))}
         }).sort({createdAt: 'desc'}).lean().exec();
 
-      res.send(codingmarks);
+      res.send(bookmarks);
     }
 
   } catch (err) {
