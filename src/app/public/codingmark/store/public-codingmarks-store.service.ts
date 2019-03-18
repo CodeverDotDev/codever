@@ -2,13 +2,13 @@
 import {Injectable} from '@angular/core';
 import {Observable, BehaviorSubject} from 'rxjs';
 import {List} from 'immutable';
-import {Codingmark} from '../../../core/model/codingmark';
+import {Bookmark} from '../../../core/model/bookmark';
 import {PublicCodingmarksService} from '../public-codingmarks.service';
 
 @Injectable()
 export class PublicCodingmarksStore {
 
-    private _publicCodingmarks: BehaviorSubject<List<Codingmark>>;
+    private _publicCodingmarks: BehaviorSubject<List<Bookmark>>;
 
     constructor(private publicCodingmarksService: PublicCodingmarksService) {}
 
@@ -19,14 +19,14 @@ export class PublicCodingmarksStore {
         this.publicCodingmarksService.getAllPublicCodingmarks()
             .subscribe(
                 res => {
-                  const codingmarks: Codingmark[] = <Codingmark[]>res;
+                  const codingmarks: Bookmark[] = <Bookmark[]>res;
                   this._publicCodingmarks.next(List(codingmarks));
                 },
                 err => console.log('Error retrieving codingmarks')
             );
     }
 
-  getPublicCodingmarks(): Observable<List<Codingmark>> {
+  getPublicCodingmarks(): Observable<List<Bookmark>> {
     if (!this._publicCodingmarks) {
       this._publicCodingmarks = new BehaviorSubject(List([]));
       this.loadInitialData();
@@ -38,7 +38,7 @@ export class PublicCodingmarksStore {
    * Method called from PersonalBookmarkStore, when a user adds a new public codingmark.
    * @param codingmark
    */
-  addCodingmarkToPublicStore(codingmark: Codingmark): void {
+  addCodingmarkToPublicStore(codingmark: Bookmark): void {
     if (this._publicCodingmarks) {
       this._publicCodingmarks.next(this._publicCodingmarks.getValue().push(codingmark));
     }
@@ -48,9 +48,9 @@ export class PublicCodingmarksStore {
    * Method is called from PersonalBookmarkStore, when the user removes a codingmark from there
    * @param deleted
    */
-  removeCodingmarkFromPublicStore(deleted: Codingmark): void {
+  removeCodingmarkFromPublicStore(deleted: Bookmark): void {
       if (this._publicCodingmarks) {
-        const codingmarks: List<Codingmark> = this._publicCodingmarks.getValue();
+        const codingmarks: List<Bookmark> = this._publicCodingmarks.getValue();
         const index = codingmarks.findIndex((codingmark) => codingmark._id === deleted._id);
         this._publicCodingmarks.next(codingmarks.delete(index));
       }
@@ -61,10 +61,10 @@ export class PublicCodingmarksStore {
    *
    * @param updated
    */
-  updateCodingmarkInPublicStore(updated: Codingmark): void {
+  updateCodingmarkInPublicStore(updated: Bookmark): void {
     if (this._publicCodingmarks) {
       const codingmarks = this._publicCodingmarks.getValue();
-      const index = codingmarks.findIndex((codingmark: Codingmark) => codingmark._id === updated._id);
+      const index = codingmarks.findIndex((codingmark: Bookmark) => codingmark._id === updated._id);
       // let codingmark:codingmark = codingmarks.get(index);
       this._publicCodingmarks.next(codingmarks.set(index, updated));
     }

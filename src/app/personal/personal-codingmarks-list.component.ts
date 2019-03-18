@@ -1,7 +1,7 @@
 
 import {map} from 'rxjs/operators';
 import {Component, OnInit} from '@angular/core';
-import {Codingmark} from '../core/model/codingmark';
+import {Bookmark} from '../core/model/bookmark';
 import {Observable} from 'rxjs';
 import {List} from 'immutable';
 import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
@@ -18,8 +18,8 @@ import {MatTabChangeEvent} from '@angular/material';
 })
 export class PersonalCodingmarksListComponent implements OnInit {
 
-  personalCodingmarks$: Observable<List<Codingmark>>;
-  laterReads$: Observable<Codingmark[]>;
+  personalCodingmarks$: Observable<List<Bookmark>>;
+  laterReads$: Observable<Bookmark[]>;
   query = '';
   userData: UserData;
 

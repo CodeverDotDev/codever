@@ -5,7 +5,7 @@ import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {BookmarkFilterService} from '../../core/filter.service';
-import {Codingmark} from '../../core/model/codingmark';
+import {Bookmark} from '../../core/model/bookmark';
 import {List} from 'immutable';
 import {languages} from '../language-options';
 import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
@@ -22,7 +22,7 @@ import {UserDataStore} from '../../core/user/userdata.store';
 export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
-  codingmarks: Observable<List<Codingmark>>;
+  codingmarks: Observable<List<Bookmark>>;
 
   @Input()
   query: string;
@@ -32,8 +32,8 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   _userData: UserData;
 
-  filteredBookmarks: Observable<Codingmark[]>;
-  private filterBookmarksBySearchTerm: Codingmark[];
+  filteredBookmarks: Observable<Bookmark[]>;
+  private filterBookmarksBySearchTerm: Bookmark[];
 
   searchControl = new FormControl();
   queryText: string;
@@ -113,17 +113,17 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
             return observableOf(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
           } else {
             this.showNotFound = true;
-            return observableOf<Codingmark[]>([]);
+            return observableOf<Bookmark[]>([]);
           }
         } else {
           this.numberOfResultsFiltered = 0;
           // or the observable of empty codingmarks if no search term
-          return observableOf<Codingmark[]>([]);
+          return observableOf<Bookmark[]>([]);
         }
       }),
       catchError(error => {
         console.log(error);
-        return observableOf<Codingmark[]>([]);
+        return observableOf<Bookmark[]>([]);
       }), );
 
   }
@@ -154,7 +154,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
    *
    * @param codingmark
    */
-  gotoCodingmarkDetail(codingmark: Codingmark): void {
+  gotoCodingmarkDetail(codingmark: Bookmark): void {
     const link = ['/bookmarks', codingmark._id];
     this.router.navigate(link);
   }

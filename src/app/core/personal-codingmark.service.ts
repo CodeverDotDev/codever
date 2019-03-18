@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Codingmark} from './model/codingmark';
+import {Bookmark} from './model/bookmark';
 
 import {shareReplay} from 'rxjs/operators';
 
@@ -18,23 +18,23 @@ export class PersonalCodingmarkService {
     this.personalCodingmarksApiBaseUrl = environment.API_URL + '/personal/users/';
   }
 
-  getAllPersonalCodingmarks(userId: String): Observable<Codingmark[]> {
-    return this.httpClient.get<Codingmark[]>(this.personalCodingmarksApiBaseUrl + userId + '/bookmarks').pipe(shareReplay(1));
+  getAllPersonalCodingmarks(userId: String): Observable<Bookmark[]> {
+    return this.httpClient.get<Bookmark[]>(this.personalCodingmarksApiBaseUrl + userId + '/bookmarks').pipe(shareReplay(1));
   }
 
-  updateCodingmark(codingmark: Codingmark): Observable<any> {
+  updateCodingmark(codingmark: Bookmark): Observable<any> {
     return this.httpClient
       .put(this.personalCodingmarksApiBaseUrl + codingmark.userId + '/bookmarks/' + codingmark._id, JSON.stringify(codingmark), {headers: this.headers})
       .pipe(shareReplay(1));
   }
 
-  deleteCodingmark(codingmark: Codingmark): Observable<any> {
+  deleteCodingmark(codingmark: Bookmark): Observable<any> {
     return this.httpClient
       .delete(this.personalCodingmarksApiBaseUrl + codingmark.userId + '/bookmarks/' + codingmark._id, {headers: this.headers})
       .pipe(shareReplay(1));
   }
 
-  createCodingmark(userId: string, codingmark: Codingmark): Observable<any> {
+  createCodingmark(userId: string, codingmark: Bookmark): Observable<any> {
     return this.httpClient
       .post(this.personalCodingmarksApiBaseUrl + userId + '/bookmarks', JSON.stringify(codingmark), {headers: this.headers, observe: 'response'})
       .pipe(shareReplay(1));

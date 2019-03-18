@@ -1,6 +1,6 @@
 import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators';
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Codingmark} from '../../core/model/codingmark';
+import {Bookmark} from '../../core/model/bookmark';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
 import {MarkdownService} from '../markdown.service';
@@ -24,7 +24,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
 
   codingmarkForm: FormGroup;
   userId = null;
-  existingPublicCodingmark: Codingmark;
+  existingPublicCodingmark: Bookmark;
   displayModal = 'none';
   makePublic = false;
   personalCodingmarkPresent = false;
@@ -143,8 +143,8 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
     this.tagsControl.setValue(null);
   }
 
-  saveCodingmark(model: Codingmark) {
-    const newCodingmark: Codingmark = {
+  saveCodingmark(model: Bookmark) {
+    const newCodingmark: Bookmark = {
       name: model.name,
       location: model.location,
       language: model.language,
@@ -188,7 +188,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
     }
   }
 
-  private rateCodingmark(codingmark: Codingmark) {
+  private rateCodingmark(codingmark: Bookmark) {
     const rateCodingmarkRequest: RateCodingmarkRequest = {
       ratingUserId: this.userId,
       action: RatingActionType.STAR,
