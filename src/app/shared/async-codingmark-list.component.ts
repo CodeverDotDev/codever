@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Codingmark } from '../core/model/codingmark';
+import { Bookmark } from '../core/model/bookmark';
 import { Router } from '@angular/router';
 import { PersonalCodingmarksStore } from '../core/store/personal-codingmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
@@ -21,7 +21,7 @@ export class AsyncCodingmarkListComponent implements OnInit {
     userId: string;
 
     @Input()
-    codingmarks: Observable<Codingmark[]>;
+    codingmarks: Observable<Bookmark[]>;
 
     @Input()
     queryText: string;
@@ -77,12 +77,12 @@ export class AsyncCodingmarkListComponent implements OnInit {
      *
      * @param codingmark
      */
-    gotoDetail(codingmark: Codingmark): void {
+    gotoDetail(codingmark: Bookmark): void {
         const link = ['./personal/bookmarks', codingmark._id];
         this.router.navigate(link);
     }
 
-    deleteCodingmark(codingmark: Codingmark): void {
+    deleteCodingmark(codingmark: Bookmark): void {
         const obs = this.personalCodingmarksStore.deleteCodingmark(codingmark);
         obs.subscribe(() => {
             this.bookmarkDeleted.emit(true);
@@ -91,7 +91,7 @@ export class AsyncCodingmarkListComponent implements OnInit {
         });
     }
 
-    starCodingmark(codingmark: Codingmark): void {
+    starCodingmark(codingmark: Bookmark): void {
         this.keycloakService.isLoggedIn().then(isLoggedIn => {
             if (!isLoggedIn) {
                 this.displayModal = 'block';
@@ -113,7 +113,7 @@ export class AsyncCodingmarkListComponent implements OnInit {
         }
     }
 
-    unstarCodingmark(codingmark: Codingmark): void {
+    unstarCodingmark(codingmark: Bookmark): void {
         if (this.userId) {
             if (!codingmark.starredBy) {
                 codingmark.starredBy = [];
@@ -131,7 +131,7 @@ export class AsyncCodingmarkListComponent implements OnInit {
         }
     }
 
-    updateLastAccess(codingmark: Codingmark) {
+    updateLastAccess(codingmark: Bookmark) {
         if (this.userId === codingmark.userId) {
             codingmark.lastAccessedAt = new Date();
             const obs = this.personalCodingmarksStore.updateCodingmark(codingmark);
@@ -160,13 +160,13 @@ export class AsyncCodingmarkListComponent implements OnInit {
         this.displayModal = 'none';
     }
 
-    addToReadLater(codingmark: Codingmark) {
+    addToReadLater(codingmark: Bookmark) {
         this.userData.readLater.push(codingmark._id);
         this.userDataStore.updateUserData(this.userData).subscribe();
         this.userDataStore.addToLaterReads(codingmark);
     }
 
-    removeFromReadLater(codingmark: Codingmark) {
+    removeFromReadLater(codingmark: Bookmark) {
         this.userData.readLater = this.userData.readLater.filter(x => x !== codingmark._id);
         this.userDataStore.updateUserData(this.userData).subscribe();
         this.userDataStore.removeFromLaterReads(codingmark);

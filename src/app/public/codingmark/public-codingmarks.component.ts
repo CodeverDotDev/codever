@@ -1,7 +1,7 @@
 import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs';
 import {List} from 'immutable';
-import {Codingmark} from '../../core/model/codingmark';
+import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute} from '@angular/router';
 import {CodingmarkSearchComponent} from '../../shared/search/codingmark-search.component';
 import {PublicCodingmarksStore} from './store/public-codingmarks-store.service';
@@ -18,7 +18,7 @@ import {UserDataStore} from '../../core/user/userdata.store';
 })
 export class PublicCodingmarksComponent implements OnInit {
 
-  publicCodingmarks$: Observable<List<Codingmark>>;
+  publicCodingmarks$: Observable<List<Bookmark>>;
   tags: string[] = allTags;
   query = '';
   userData: UserData;

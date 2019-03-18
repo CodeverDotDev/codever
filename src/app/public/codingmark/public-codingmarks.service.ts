@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 
 import {Observable} from 'rxjs';
 import {Webpage} from '../../core/model/webpage';
-import {Codingmark} from '../../core/model/codingmark';
+import {Bookmark} from '../../core/model/bookmark';
 
 import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
@@ -21,8 +21,8 @@ export class PublicCodingmarksService {
     this.securedPublicCodingmarksApiBaseUrl = environment.API_URL + '/secured/public/bookmarks';
   }
 
-  getAllPublicCodingmarks(): Observable<Codingmark[]> {
-    return this.httpClient.get<Codingmark[]>(this.publicCodingmarksApiBaseUrl);
+  getAllPublicCodingmarks(): Observable<Bookmark[]> {
+    return this.httpClient.get<Bookmark[]>(this.publicCodingmarksApiBaseUrl);
   }
 
   getScrapingData(url: String): Observable<Webpage> {
@@ -30,11 +30,11 @@ export class PublicCodingmarksService {
       .get<Webpage>(`${this.publicCodingmarksApiBaseUrl}/scrape?url=${url}`);
   }
 
-  getPublicCodingmarkByLocation(url: string): Observable<Codingmark> {
+  getPublicCodingmarkByLocation(url: string): Observable<Bookmark> {
     let params = new HttpParams();
     params = params.append('location', url);
     return this.httpClient
-      .get<Codingmark>(`${this.publicCodingmarksApiBaseUrl}`, {params: params});
+      .get<Bookmark>(`${this.publicCodingmarksApiBaseUrl}`, {params: params});
   }
 
   rateCodingmark(rateCodingmarkRequest: RateCodingmarkRequest): Observable<any> {

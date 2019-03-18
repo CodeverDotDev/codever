@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Codingmark} from '../../core/model/codingmark';
+import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
 import {MarkdownService} from '../markdown.service';
@@ -15,7 +15,7 @@ import {allTags} from '../../core/model/all-tags.const.en';
 })
 export class UpdatePersonalCodingmarkComponent implements OnInit {
 
-  codingmark: Codingmark;
+  codingmark: Bookmark;
 
   selectable = true;
   removable = true;

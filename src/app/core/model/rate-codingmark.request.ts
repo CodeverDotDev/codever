@@ -1,9 +1,9 @@
-import {Codingmark} from './codingmark';
+import {Bookmark} from './bookmark';
 
 export interface RateCodingmarkRequest {
   ratingUserId: string;
   action: RatingActionType;
-  codingmark: Codingmark
+  codingmark: Bookmark
 }
 
 export enum RatingActionType {
