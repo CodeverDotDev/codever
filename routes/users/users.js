@@ -1,6 +1,6 @@
 var express = require('express');
 const usersRouter = express.Router();
-const personalCodingmarksRouter = require('./personal-codingmarks');
+const personalCodingmarksRouter = require('./personal-bookmarks');
 
 var Keycloak = require('keycloak-connect');
 
@@ -24,7 +24,7 @@ usersRouter.use(keycloak.middleware());
 usersRouter.use('/:userId/bookmarks', personalCodingmarksRouter);
 
 
-/* GET personal codingmarks of the user */
+/* GET personal bookmarks of the user */
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
@@ -57,7 +57,7 @@ usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   }
 });
 
-/* GET list of codingmarks to be read later for the user */
+/* GET list of bookmarks to be read later for the user */
 usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
@@ -79,8 +79,8 @@ usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, resp
           )
         );
     } else {
-      const codingmarks = await Bookmark.find( {"_id" : { $in: userData.readLater}});
-      response.send(codingmarks);
+      const bookmarks = await Bookmark.find( {"_id" : { $in: userData.readLater}});
+      response.send(bookmarks);
     }
 
   } catch (err) {
@@ -185,7 +185,7 @@ usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => 
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete codingmark with id ' + request.params.codingmarkId]));
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.codingmarkId]));
   }
 });
 

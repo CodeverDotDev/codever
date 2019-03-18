@@ -12,15 +12,10 @@ This project is developed with the MEAN stack, featuring [MongoDB](https://docs.
 
 ***
 
-# Development setup
 
-There is a **two-step** setup required for development 
-* **[front-end setup](https://github.com/Codingpedia/bookmarks.dev)** concerning angular/angular-cli setup
-* **backend-end setup** concerning mongodb, keycloak, nodejs;  this is described here
+## Development setup
 
-> You need to complete both parts for local development
-
-## Back-end
+You need mongodb, keycloak and nodejs to get the api working
 
 ### Prerequisites
 
@@ -60,16 +55,16 @@ local                  0.000GB
 
 This is the **heaviest** step, we need to set up for development. But by using Keycloak we get lots of things like Single-Sign On, 
 OpenId-Connect Support, social logins, user admin console, that otherwise would take lots of effort to implement by ourselves.
-To make our life easier, I have prepared a wiki page about [Keycloak Setup For Development](https://github.com/Codingpedia/codingmarks-api/wiki/Keycloak-Setup-for-Development).
+To make our life easier, I have prepared a wiki page about [Keycloak Setup For Development](https://github.com/Codingpedia/bookmarks-api/wiki/Keycloak-Setup-for-Development).
 
 ### Installation and develop on local machine
 
 ```bash
 # clone backend repo
-$ git clone https://github.com/Codingpedia/codingmarks-api.git
+$ git clone https://github.com/Codingpedia/bookmarks-api.git
 
 # change directory to the app
-$ cd codingmarks-api
+$ cd bookmarks-api
 
 # use the preconfigured node version
 $ nvm use
@@ -78,7 +73,7 @@ $ nvm use
 $ npm install
 
 # start the server with nodemon, so that changes in the dynamically reflected
-$ DEBUG=codingmarks-api:* nodemon start
+$ DEBUG=bookmarks-api:* nodemon start
 
 ```
 

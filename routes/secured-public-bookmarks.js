@@ -14,7 +14,7 @@ var HttpStatus = require('http-status-codes');
 var keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 router.use(keycloak.middleware());
 
-/* rate the codingmark. */
+/* rate the bookmark. */
 router.patch('/:codingmarkId', keycloak.protect(), async (request, response) => {
 
   let userId = request.kauth.grant.access_token.content.sub;
@@ -30,37 +30,37 @@ router.patch('/:codingmarkId', keycloak.protect(), async (request, response) => 
 
   if (request.body.action === 'STAR') {
     try {
-      const codingmark = await Bookmark.findOneAndUpdate({_id: request.params.codingmarkId}, {$addToSet: {starredBy: request.body.ratingUserId}});
+      const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.codingmarkId}, {$addToSet: {starredBy: request.body.ratingUserId}});
 
-      const codingmarkNotFound = !codingmark;
+      const codingmarkNotFound = !bookmark;
       if (codingmarkNotFound) {
         return response
           .status(HttpStatus.NOT_FOUND)
-          .send(new MyError('Not Found Error', ['Codingmark with codingmark id ' + request.params.codingmarkId + ' not found']));
+          .send(new MyError('Not Found Error', ['Codingmark with bookmark id ' + request.params.codingmarkId + ' not found']));
       } else {
         response
           .status(HttpStatus.OK)
-          .send(codingmark);
+          .send(bookmark);
       }
     } catch (err) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when starring codingmark with id ' + request.params.codingmarkId]));
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when starring bookmark with id ' + request.params.codingmarkId]));
     }
   } else if (request.body.action === 'UNSTAR') {
     try {
-      const codingmark = await Bookmark.findOneAndUpdate({_id: request.params.codingmarkId}, {$pull: {starredBy: request.body.ratingUserId}});
+      const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.codingmarkId}, {$pull: {starredBy: request.body.ratingUserId}});
 
-      const codingmarkNotFound = !codingmark;
+      const codingmarkNotFound = !bookmark;
       if (codingmarkNotFound) {
         return response
           .status(HttpStatus.NOT_FOUND)
-          .send(new MyError('Not Found Error', ['Codingmark with codingmark id ' + request.params.codingmarkId + ' not found']));
+          .send(new MyError('Not Found Error', ['Codingmark with bookmark id ' + request.params.codingmarkId + ' not found']));
       } else {
         response
           .status(HttpStatus.OK)
-          .send(codingmark);
+          .send(bookmark);
       }
     } catch (err) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when unstarring codingmark with id ' + request.params.codingmarkId]));
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when unstarring bookmark with id ' + request.params.codingmarkId]));
     }
   } else {
     return response
