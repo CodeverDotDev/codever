@@ -1,5 +1,5 @@
 var express = require('express');
-var personalCodingmarksRouter = express.Router({mergeParams: true});
+var personalBookmarksRouter = express.Router({mergeParams: true});
 var Keycloak = require('keycloak-connect');
 
   var Bookmark = require('../../models/bookmark');
@@ -16,7 +16,7 @@ var showdown = require('showdown'),
 
 //add keycloak middleware
 var keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
-personalCodingmarksRouter.use(keycloak.middleware());
+personalBookmarksRouter.use(keycloak.middleware());
 
 const MAX_NUMBER_OF_TAGS = 8;
 
@@ -27,7 +27,7 @@ const MAX_NUMBER_OF_LINES_FOR_DESCRIPTION = 100;
 /**
  * CREATE bookmark for user
  */
-personalCodingmarksRouter.post('/', keycloak.protect(), async (request, response) => {
+personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) => {
 
   let userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
@@ -36,7 +36,7 @@ personalCodingmarksRouter.post('/', keycloak.protect(), async (request, response
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
-  const bookmark = buildCodingmarkFromRequest(request);
+  const bookmark = buildBookmarkFromRequest(request);
 
   const missingRequiredAttributes = !bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0;
   if (missingRequiredAttributes) {
@@ -88,7 +88,7 @@ personalCodingmarksRouter.post('/', keycloak.protect(), async (request, response
 
 });
 
-let buildCodingmarkFromRequest = function (req) {
+let buildBookmarkFromRequest = function (req) {
   const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml : converter.makeHtml(req.body.description);
   const bookmark = new Bookmark({
     name: req.body.name,
@@ -110,7 +110,7 @@ let buildCodingmarkFromRequest = function (req) {
 };
 
 /* GET personal bookmarks of the user */
-personalCodingmarksRouter.get('/', keycloak.protect(), async (request, response) => {
+personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
   try {
     let bookmarks;
     let userId = request.kauth.grant.access_token.content.sub;
@@ -136,7 +136,7 @@ personalCodingmarksRouter.get('/', keycloak.protect(), async (request, response)
 });
 
 /* GET bookmark of user */
-personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (request, response) => {
+personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
@@ -147,7 +147,7 @@ personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (reque
 
   try {
     const bookmark = await Bookmark.findOne({
-      _id: request.params.codingmarkId,
+      _id: request.params.bookmarkId,
       userId: request.params.userId
     });
 
@@ -156,7 +156,7 @@ personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (reque
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
           'Not Found Error',
-          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.codingmarkId + ' not found']
+          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']
           )
         );
     } else {
@@ -166,7 +166,7 @@ personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (reque
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete bookmark with id ' + request.params.codingmarkId]));
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
   }
 });
 
@@ -174,7 +174,7 @@ personalCodingmarksRouter.get('/:codingmarkId', keycloak.protect(), async (reque
  * full UPDATE via PUT - that is the whole document is required and will be updated
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
-personalCodingmarksRouter.put('/:codingmarkId', keycloak.protect(), async (request, response) => {
+personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, response) => {
 
   let userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
@@ -220,18 +220,18 @@ personalCodingmarksRouter.put('/:codingmarkId', keycloak.protect(), async (reque
   try {
     const bookmark = await Bookmark.findOneAndUpdate(
       {
-        _id: request.params.codingmarkId,
+        _id: request.params.bookmarkId,
         userId: request.params.userId
       },
       request.body,
       {new: true}
     );
 
-    const codingmarkNotFound = !bookmark;
-    if (codingmarkNotFound) {
+    const bookmarkNotFound = !bookmark;
+    if (bookmarkNotFound) {
       return response
         .status(HttpStatus.NOT_FOUND)
-        .send(new MyError('Not Found Error', ['Codingmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.codingmarkId + ' not found']));
+        .send(new MyError('Not Found Error', ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']));
     } else {
       response
         .status(200)
@@ -245,14 +245,14 @@ personalCodingmarksRouter.put('/:codingmarkId', keycloak.protect(), async (reque
     }
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(new MyError('Unknown Server Error', ['Unknown server error when updating bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.codingmarkId]));
+      .send(new MyError('Unknown Server Error', ['Unknown server error when updating bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId]));
   }
 });
 
 /*
 * DELETE bookmark for user
 */
-personalCodingmarksRouter.delete('/:codingmarkId', keycloak.protect(), async (request, response) => {
+personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
@@ -263,7 +263,7 @@ personalCodingmarksRouter.delete('/:codingmarkId', keycloak.protect(), async (re
 
   try {
     const bookmark = await Bookmark.findOneAndRemove({
-      _id: request.params.codingmarkId,
+      _id: request.params.bookmarkId,
       userId: request.params.userId
     });
 
@@ -272,18 +272,18 @@ personalCodingmarksRouter.delete('/:codingmarkId', keycloak.protect(), async (re
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
           'Not Found Error',
-          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.codingmarkId + ' not found']
+          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']
           )
         );
     } else {
-      response.status(HttpStatus.NO_CONTENT).send('Codingmark successfully deleted');
+      response.status(HttpStatus.NO_CONTENT).send('Bookmark successfully deleted');
     }
   } catch (err) {
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete bookmark with id ' + request.params.codingmarkId]));
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
   }
 });
 
-module.exports = personalCodingmarksRouter;
+module.exports = personalBookmarksRouter;

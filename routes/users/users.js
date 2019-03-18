@@ -1,6 +1,6 @@
 var express = require('express');
 const usersRouter = express.Router();
-const personalCodingmarksRouter = require('./personal-bookmarks');
+const personalBookmarksRouter = require('./personal-bookmarks');
 
 var Keycloak = require('keycloak-connect');
 
@@ -21,7 +21,7 @@ var showdown = require('showdown'),
 var keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 usersRouter.use(keycloak.middleware());
 
-usersRouter.use('/:userId/bookmarks', personalCodingmarksRouter);
+usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
 
 
 /* GET personal bookmarks of the user */
@@ -185,7 +185,7 @@ usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => 
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete bookmark with id ' + request.params.codingmarkId]));
+        ['Unknown server error when trying to delete user with id ' + request.params.userId]));
   }
 });
 
