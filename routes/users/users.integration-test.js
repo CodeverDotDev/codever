@@ -12,7 +12,7 @@ const superagent = require('superagent');
 /**
  * Order of tests is important (example user will be first created/updated to eventually be deleted)
  */
-describe('Personal Codingmarks CRUD operations', function () {
+describe('Personal Bookmarks CRUD operations', function () {
 
   let bearerToken;
   const testUserId = config.integration_tests.test_user_id;

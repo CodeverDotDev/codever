@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.send('API Backend supporting Codingmarks.org - <a href="/api/docs">Swagger Docs</a>');
+  res.send('API Backend supporting Bookmarks.dev - <a href="/api/docs">Swagger Docs</a>');
 });
 
 module.exports = router;

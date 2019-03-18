@@ -2,7 +2,7 @@
 
 This repo contains the back-end API source code of the [www.bookmarks.dev](http://www.bookmarks.dev) website.
  
-![Codingmarks Context](docs/bookmarks-dev-context.png)
+![Bookmarks Context](docs/bookmarks-dev-context.png)
 
 This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
  [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization

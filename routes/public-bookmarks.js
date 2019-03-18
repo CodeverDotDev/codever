@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
     } else if (req.query.location) {
       const bookmark = await Bookmark.findOne({'shared': true, location: req.query.location}).lean().exec();
       if (!bookmark) {
-        return res.status(HttpStatus.NOT_FOUND).send("Codingmark not found");
+        return res.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
       }
       res.send(bookmark);
     } else if (req.query.tag) {//get all bookmarks tagged with "tag"
@@ -108,7 +108,7 @@ router.get('/:id', function (req, res, next) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
     }
     if (!bookmark) {
-      return res.status(HttpStatus.NOT_FOUND).send("Codingmark not found");
+      return res.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
     }
     res.send(bookmark);
   });

@@ -66,11 +66,11 @@ describe('Public API Tests', function () {
   });
 
   describe('get public bookmarks root endpoint tests', function () {
-    const publicCodingmarksApiBaseUrl = '/api/public/bookmarks';
+    const publicBookmarksApiBaseUrl = '/api/public/bookmarks';
 
     it('should return all public bookmarks', function (done) {
       request(app)
-        .get(publicCodingmarksApiBaseUrl)
+        .get(publicBookmarksApiBaseUrl)
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
           done();
@@ -79,7 +79,7 @@ describe('Public API Tests', function () {
 
     it('should find bookmark by location', function (done) {
       request(app)
-        .get(publicCodingmarksApiBaseUrl)
+        .get(publicBookmarksApiBaseUrl)
         .query({location: 'https://www.bookmarks.dev'})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
@@ -89,7 +89,7 @@ describe('Public API Tests', function () {
 
     it('should not find bookmark by location', function (done) {
       request(app)
-        .get(publicCodingmarksApiBaseUrl)
+        .get(publicBookmarksApiBaseUrl)
         .query({location: 'unknown_url'})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.NOT_FOUND);
@@ -99,7 +99,7 @@ describe('Public API Tests', function () {
 
     it('should find bookmarks by tag', function (done) {
       request(app)
-        .get(publicCodingmarksApiBaseUrl)
+        .get(publicBookmarksApiBaseUrl)
         .query({tag: 'java'})
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
