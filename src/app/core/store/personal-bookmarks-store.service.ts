@@ -40,23 +40,23 @@ export class PersonalBookmarksStore {
     this.personalCodingmarkService.getAllPersonalCodingmarks(this.userId)
       .subscribe(
         data => {
-          let codingmarks: Bookmark[] = <Bookmark[]>data;
-          codingmarks = codingmarks.sort((a, b) => {
+          let bookmarks: Bookmark[] = <Bookmark[]>data;
+          bookmarks = bookmarks.sort((a, b) => {
             const result: number = a.lastAccessedAt == null ? (b.lastAccessedAt == null ? 0 : 1)
               : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
             return result;
           });
 
           this.personalTags = new Set();
-          codingmarks.forEach(bookmark => {
+          bookmarks.forEach(bookmark => {
             // allTags.merge(allTags, OrderedSet.fromKeys(bookmark.tags));
             bookmark.tags.forEach(tag => {
               this.personalTags = this.personalTags.add(tag.trim().toLowerCase());
             });
           });
-          this._personalCodingmarks.next(List(codingmarks));
+          this._personalCodingmarks.next(List(bookmarks));
         },
-        err => console.error('Error retrieving codingmarks', err)
+        err => console.error('Error retrieving bookmarks', err)
       );
   }
 
@@ -103,9 +103,9 @@ export class PersonalBookmarksStore {
 
     obs.subscribe(
       res => {
-        const codingmarks: List<Bookmark> = this._personalCodingmarks.getValue();
-        const index = codingmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-        const listWithoutElement = codingmarks.delete(index);
+        const bookmarks: List<Bookmark> = this._personalCodingmarks.getValue();
+        const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+        const listWithoutElement = bookmarks.delete(index);
         this._personalCodingmarks.next(listWithoutElement);
 
         if (deleted.shared) {
@@ -122,9 +122,9 @@ export class PersonalBookmarksStore {
 
     obs.subscribe(
       res => {
-        const codingmarks = this._personalCodingmarks.getValue();
-        const index = codingmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-        this._personalCodingmarks.next(codingmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
+        const bookmarks = this._personalCodingmarks.getValue();
+        const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
+        this._personalCodingmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
           this.publicCodingmarksStore.updateCodingmarkInPublicStore(updated);
@@ -136,17 +136,17 @@ export class PersonalBookmarksStore {
   }
 
   getCodingmarkById(id: string): Bookmark {
-    const codingmarks = this._personalCodingmarks.getValue();
-    const index = codingmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
+    const bookmarks = this._personalCodingmarks.getValue();
+    const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
 
-    return codingmarks.get(index);
+    return bookmarks.get(index);
   }
 
   getCodingmarkByLocation(location: string): Bookmark {
-    const codingmarks = this._personalCodingmarks.getValue();
-    const index = codingmarks.findIndex((bookmark: Bookmark) => bookmark.location === location);
+    const bookmarks = this._personalCodingmarks.getValue();
+    const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark.location === location);
     if (index >= 0) {
-      return codingmarks.get(index);
+      return bookmarks.get(index);
     } else {
       return null;
     }

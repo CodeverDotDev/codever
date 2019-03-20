@@ -21,7 +21,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     userId: string;
 
     @Input()
-    codingmarks: Observable<Bookmark[]>;
+    bookmarks: Observable<Bookmark[]>;
 
     @Input()
     queryText: string;

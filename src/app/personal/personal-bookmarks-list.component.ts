@@ -12,7 +12,7 @@ import {UserService} from '../core/user.service';
 import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
-  selector: 'app-user-codingmarks',
+  selector: 'app-user-bookmarks',
   templateUrl: './personal-bookmarks-list.component.html',
   styleUrls: ['./personal-bookmarks-list.component.scss']
 })

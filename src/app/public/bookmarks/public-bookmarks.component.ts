@@ -12,7 +12,7 @@ import {UserDataStore} from '../../core/user/userdata.store';
 
 
 @Component({
-  selector: 'app-public-codingmarks',
+  selector: 'app-public-bookmarks',
   templateUrl: './public-bookmarks.component.html',
   styleUrls: ['./public-bookmarks.component.scss']
 })

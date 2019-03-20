@@ -22,7 +22,7 @@ import {UserDataStore} from '../../core/user/userdata.store';
 export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
-  codingmarks: Observable<List<Bookmark>>;
+  bookmarks: Observable<List<Bookmark>>;
 
   @Input()
   query: string;
@@ -106,7 +106,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
           }
 
           this.queryText = term;
-          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.codingmarks);
+          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.bookmarks);
           this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
           if (this.numberOfResultsFiltered > 0) {
             this.showNotFound = false;
@@ -117,7 +117,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
           }
         } else {
           this.numberOfResultsFiltered = 0;
-          // or the observable of empty codingmarks if no search term
+          // or the observable of empty bookmarks if no search term
           return observableOf<Bookmark[]>([]);
         }
       }),
