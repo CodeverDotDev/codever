@@ -11,7 +11,7 @@ import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
 
 @Component({
-    selector: 'app-async-codingmark-list',
+    selector: 'app-async-bookmark-list',
     templateUrl: './async-bookmark-list.component.html',
     styleUrls: ['./async-bookmark-list.component.scss']
 })
@@ -75,23 +75,23 @@ export class AsyncBookmarkListComponent implements OnInit {
 
     /**
      *
-     * @param codingmark
+     * @param bookmark
      */
-    gotoDetail(codingmark: Bookmark): void {
-        const link = ['./personal/bookmarks', codingmark._id];
+    gotoDetail(bookmark: Bookmark): void {
+        const link = ['./personal/bookmarks', bookmark._id];
         this.router.navigate(link);
     }
 
-    deleteCodingmark(codingmark: Bookmark): void {
-        const obs = this.personalCodingmarksStore.deleteCodingmark(codingmark);
+    deleteCodingmark(bookmark: Bookmark): void {
+        const obs = this.personalCodingmarksStore.deleteCodingmark(bookmark);
         obs.subscribe(() => {
             this.bookmarkDeleted.emit(true);
-            const obs2 = this.publicCodingmarksStore.removeCodingmarkFromPublicStore(codingmark);
-            const obs3 = this.userDataStore.removeFromLaterReads(codingmark);
+            const obs2 = this.publicCodingmarksStore.removeCodingmarkFromPublicStore(bookmark);
+            const obs3 = this.userDataStore.removeFromLaterReads(bookmark);
         });
     }
 
-    starCodingmark(codingmark: Bookmark): void {
+    starCodingmark(bookmark: Bookmark): void {
         this.keycloakService.isLoggedIn().then(isLoggedIn => {
             if (!isLoggedIn) {
                 this.displayModal = 'block';
@@ -99,54 +99,54 @@ export class AsyncBookmarkListComponent implements OnInit {
         });
 
         if (this.userId) {
-            if (!codingmark.starredBy) {
-                codingmark.starredBy = [];
+            if (!bookmark.starredBy) {
+                bookmark.starredBy = [];
             } else {
-                codingmark.starredBy.push(this.userId);
+                bookmark.starredBy.push(this.userId);
             }
             const rateCodingmarkRequest: RateBookmarkRequest = {
                 ratingUserId: this.userId,
                 action: RatingActionType.STAR,
-                codingmark: codingmark
+                bookmark: bookmark
             }
             this.rateCodingmark(rateCodingmarkRequest);
         }
     }
 
-    unstarCodingmark(codingmark: Bookmark): void {
+    unstarCodingmark(bookmark: Bookmark): void {
         if (this.userId) {
-            if (!codingmark.starredBy) {
-                codingmark.starredBy = [];
+            if (!bookmark.starredBy) {
+                bookmark.starredBy = [];
             } else {
-                const index = codingmark.starredBy.indexOf(this.userId);
-                codingmark.starredBy.splice(index, 1);
+                const index = bookmark.starredBy.indexOf(this.userId);
+                bookmark.starredBy.splice(index, 1);
             }
             const rateCodingmarkRequest: RateBookmarkRequest = {
                 ratingUserId: this.userId,
                 action: RatingActionType.UNSTAR,
-                codingmark: codingmark
+                bookmark: bookmark
             }
             this.rateCodingmark(rateCodingmarkRequest);
 
         }
     }
 
-    updateLastAccess(codingmark: Bookmark) {
-        if (this.userId === codingmark.userId) {
-            codingmark.lastAccessedAt = new Date();
-            const obs = this.personalCodingmarksStore.updateCodingmark(codingmark);
+    updateLastAccess(bookmark: Bookmark) {
+        if (this.userId === bookmark.userId) {
+            bookmark.lastAccessedAt = new Date();
+            const obs = this.personalCodingmarksStore.updateCodingmark(bookmark);
         }
     }
 
     private rateCodingmark(rateCodingmarkRequest: RateBookmarkRequest) {
-        const isCodingmarkCreatedByRatingUser = this.userId === rateCodingmarkRequest.codingmark.userId;
+        const isCodingmarkCreatedByRatingUser = this.userId === rateCodingmarkRequest.bookmark.userId;
         if (isCodingmarkCreatedByRatingUser) {
-            const obs = this.personalCodingmarksStore.updateCodingmark(rateCodingmarkRequest.codingmark);
+            const obs = this.personalCodingmarksStore.updateCodingmark(rateCodingmarkRequest.bookmark);
         } else {
             const obs = this.publicCodingmarksService.rateCodingmark(rateCodingmarkRequest);
             obs.subscribe(
                 res => {
-                    this.publicCodingmarksStore.updateCodingmarkInPublicStore(rateCodingmarkRequest.codingmark);
+                    this.publicCodingmarksStore.updateCodingmarkInPublicStore(rateCodingmarkRequest.bookmark);
                 }
             );
         }
@@ -160,16 +160,16 @@ export class AsyncBookmarkListComponent implements OnInit {
         this.displayModal = 'none';
     }
 
-    addToReadLater(codingmark: Bookmark) {
-        this.userData.readLater.push(codingmark._id);
+    addToReadLater(bookmark: Bookmark) {
+        this.userData.readLater.push(bookmark._id);
         this.userDataStore.updateUserData(this.userData).subscribe();
-        this.userDataStore.addToLaterReads(codingmark);
+        this.userDataStore.addToLaterReads(bookmark);
     }
 
-    removeFromReadLater(codingmark: Bookmark) {
-        this.userData.readLater = this.userData.readLater.filter(x => x !== codingmark._id);
+    removeFromReadLater(bookmark: Bookmark) {
+        this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
         this.userDataStore.updateUserData(this.userData).subscribe();
-        this.userDataStore.removeFromLaterReads(codingmark);
+        this.userDataStore.removeFromLaterReads(bookmark);
     }
 
 }

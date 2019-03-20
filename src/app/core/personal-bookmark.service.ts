@@ -22,21 +22,21 @@ export class PersonalBookmarkService {
     return this.httpClient.get<Bookmark[]>(this.personalCodingmarksApiBaseUrl + userId + '/bookmarks').pipe(shareReplay(1));
   }
 
-  updateCodingmark(codingmark: Bookmark): Observable<any> {
+  updateCodingmark(bookmark: Bookmark): Observable<any> {
     return this.httpClient
-      .put(this.personalCodingmarksApiBaseUrl + codingmark.userId + '/bookmarks/' + codingmark._id, JSON.stringify(codingmark), {headers: this.headers})
+      .put(this.personalCodingmarksApiBaseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
       .pipe(shareReplay(1));
   }
 
-  deleteCodingmark(codingmark: Bookmark): Observable<any> {
+  deleteCodingmark(bookmark: Bookmark): Observable<any> {
     return this.httpClient
-      .delete(this.personalCodingmarksApiBaseUrl + codingmark.userId + '/bookmarks/' + codingmark._id, {headers: this.headers})
+      .delete(this.personalCodingmarksApiBaseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers})
       .pipe(shareReplay(1));
   }
 
-  createCodingmark(userId: string, codingmark: Bookmark): Observable<any> {
+  createCodingmark(userId: string, bookmark: Bookmark): Observable<any> {
     return this.httpClient
-      .post(this.personalCodingmarksApiBaseUrl + userId + '/bookmarks', JSON.stringify(codingmark), {headers: this.headers, observe: 'response'})
+      .post(this.personalCodingmarksApiBaseUrl + userId + '/bookmarks', JSON.stringify(bookmark), {headers: this.headers, observe: 'response'})
       .pipe(shareReplay(1));
   }
 

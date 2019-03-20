@@ -88,16 +88,16 @@ export class UserDataStore {
     return this._laterReads.asObservable();
   }
 
-  addToLaterReads(codingmark: Bookmark) {
+  addToLaterReads(bookmark: Bookmark) {
     const laterReads: Bookmark[] = this._laterReads.getValue();
-    laterReads.push(codingmark);
+    laterReads.push(bookmark);
 
     this._laterReads.next(laterReads); // insert at the top (index 0)
   }
 
-  removeFromLaterReads(codingmark: Bookmark) {
+  removeFromLaterReads(bookmark: Bookmark) {
     const laterReads: Bookmark[] = this._laterReads.getValue();
-    const index = laterReads.findIndex((laterRead) => codingmark._id === laterRead._id);
+    const index = laterReads.findIndex((laterRead) => bookmark._id === laterRead._id);
     laterReads.splice(index, 1);
 
     this._laterReads.next(laterReads);

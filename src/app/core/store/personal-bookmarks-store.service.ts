@@ -48,9 +48,9 @@ export class PersonalBookmarksStore {
           });
 
           this.personalTags = new Set();
-          codingmarks.forEach(codingmark => {
-            // allTags.merge(allTags, OrderedSet.fromKeys(codingmark.tags));
-            codingmark.tags.forEach(tag => {
+          codingmarks.forEach(bookmark => {
+            // allTags.merge(allTags, OrderedSet.fromKeys(bookmark.tags));
+            bookmark.tags.forEach(tag => {
               this.personalTags = this.personalTags.add(tag.trim().toLowerCase());
             });
           });
@@ -73,21 +73,21 @@ export class PersonalBookmarksStore {
     }
   }
 
-  addCodingmark(userId: string, codingmark: Bookmark): void {
+  addCodingmark(userId: string, bookmark: Bookmark): void {
 
-    const obs = this.personalCodingmarkService.createCodingmark(userId, codingmark)
+    const obs = this.personalCodingmarkService.createCodingmark(userId, bookmark)
       .subscribe(
         res => {
           const headers = res.headers;
-          // get the codingmark id, which lies in the "location" response header
+          // get the bookmark id, which lies in the "location" response header
           const lastSlashIndex = headers.get('location').lastIndexOf('/');
           const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
-          codingmark._id = newBookmarkId;
+          bookmark._id = newBookmarkId;
           // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-          this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(codingmark)); // insert at the top (index 0)
+          this._personalCodingmarks.next(this._personalCodingmarks.getValue().unshift(bookmark)); // insert at the top (index 0)
 
-          if (codingmark.shared) {
-            this.publicCodingmarksStore.addCodingmarkToPublicStore(codingmark);
+          if (bookmark.shared) {
+            this.publicCodingmarksStore.addCodingmarkToPublicStore(bookmark);
           }
           this.router.navigate(['/personal']);
         },
@@ -104,7 +104,7 @@ export class PersonalBookmarksStore {
     obs.subscribe(
       res => {
         const codingmarks: List<Bookmark> = this._personalCodingmarks.getValue();
-        const index = codingmarks.findIndex((codingmark) => codingmark._id === deleted._id);
+        const index = codingmarks.findIndex((bookmark) => bookmark._id === deleted._id);
         const listWithoutElement = codingmarks.delete(index);
         this._personalCodingmarks.next(listWithoutElement);
 
@@ -123,8 +123,8 @@ export class PersonalBookmarksStore {
     obs.subscribe(
       res => {
         const codingmarks = this._personalCodingmarks.getValue();
-        const index = codingmarks.findIndex((codingmark: Bookmark) => codingmark._id === updated._id);
-        this._personalCodingmarks.next(codingmarks.delete(index).unshift(updated)); // move the updated codingmark to the top of the list, to immediately see the results
+        const index = codingmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
+        this._personalCodingmarks.next(codingmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
 
         if (updated.shared) {
           this.publicCodingmarksStore.updateCodingmarkInPublicStore(updated);
@@ -137,14 +137,14 @@ export class PersonalBookmarksStore {
 
   getCodingmarkById(id: string): Bookmark {
     const codingmarks = this._personalCodingmarks.getValue();
-    const index = codingmarks.findIndex((codingmark: Bookmark) => codingmark._id === id);
+    const index = codingmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
 
     return codingmarks.get(index);
   }
 
   getCodingmarkByLocation(location: string): Bookmark {
     const codingmarks = this._personalCodingmarks.getValue();
-    const index = codingmarks.findIndex((codingmark: Bookmark) => codingmark.location === location);
+    const index = codingmarks.findIndex((bookmark: Bookmark) => bookmark.location === location);
     if (index >= 0) {
       return codingmarks.get(index);
     } else {

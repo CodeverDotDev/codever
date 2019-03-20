@@ -10,14 +10,14 @@ import {
 import {Bookmark} from '../core/model/bookmark';
 
 @Component({
-  selector: 'app-codingmark-text',
+  selector: 'app-bookmark-text',
   templateUrl: './bookmark-text.component.html',
     styleUrls: [ './bookmark-text.component.scss' ]
 })
 export class BookmarkTextComponent  implements  AfterViewInit, AfterViewChecked {
 
   @Input()
-  codingmark: Bookmark;
+  bookmark: Bookmark;
 
   @Input()
   queryText: string;

@@ -17,45 +17,45 @@
     </div>
   </div>
 </div>
-<div class="codingmarks-list" *ngFor="let codingmark of codingmarks | async; let i=index" >
+<div class="codingmarks-list" *ngFor="let bookmark of codingmarks | async; let i=index" >
   <div *ngIf="i < shownSize" class="card">
     <div class="card-body show-hide">
       <div class="header-wrapper">
         <div class="titles">
-          <h5 class="card-title"><a href="{{codingmark.location}}" target="_blank" [innerHtml]="codingmark.name | highlight: queryText" (click)="updateLastAccess(codingmark)"></a></h5>
-          <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="codingmark.location | slice:0:150 | highlight: queryText"></span></h6>
+          <h5 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText" (click)="updateLastAccess(bookmark)"></a></h5>
+          <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="bookmark.location | slice:0:150 | highlight: queryText"></span></h6>
         </div>
         <div *ngIf="userIsLoggedIn">
-          <span *ngIf="userData && userData.readLater && !userData.readLater.includes(codingmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(codingmark)"><i class="far fa-clock"></i></span>
+          <span *ngIf="userData && userData.readLater && !userData.readLater.includes(bookmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(bookmark)"><i class="far fa-clock"></i></span>
           <ng-template #markedAsReadLater>
-            <span class="clock-wrapper" title="Remove from Read later" (click)="removeFromReadLater(codingmark)"><i class="fas fa-clock"></i></span>
+            <span class="clock-wrapper" title="Remove from Read later" (click)="removeFromReadLater(bookmark)"><i class="fas fa-clock"></i></span>
           </ng-template>
         </div>
       </div>
 
       <hr class="title-content-separator">
-      <app-codingmark-text [codingmark]="codingmark" [queryText]="queryText"></app-codingmark-text>
-      <div class="edit-buttons-wrapper" *ngIf="codingmark.userId == userId">
-        <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(codingmark)"><i class="far fa-edit"></i> Edit</button>
-        <button type="button" class="btn btn-danger btn-sm" (click)="deleteCodingmark(codingmark)"><i class="far fa-trash-alt"></i> Delete</button>
+      <app-bookmark-text [bookmark]="bookmark" [queryText]="queryText"></app-bookmark-text>
+      <div class="edit-buttons-wrapper" *ngIf="bookmark.userId == userId">
+        <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)"><i class="far fa-edit"></i> Edit</button>
+        <button type="button" class="btn btn-danger btn-sm" (click)="deleteCodingmark(bookmark)"><i class="far fa-trash-alt"></i> Delete</button>
       </div>
     </div>
     <div class="card-footer">
       <div class="tags-group">
         <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-            <span *ngIf="codingmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-text star-span" id="btnGroupAddon2" (click)="starCodingmark(codingmark)" style="cursor:pointer">
+            <span *ngIf="bookmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-text star-span" id="btnGroupAddon2" (click)="starCodingmark(bookmark)" style="cursor:pointer">
               <i class="far fa-star"></i>
             </span>
           <ng-template #starred>
-              <span class="input-group-text star-span" id="btnGroupAddon3" (click)="unstarCodingmark(codingmark)" style="cursor:pointer">
+              <span class="input-group-text star-span" id="btnGroupAddon3" (click)="unstarCodingmark(bookmark)" style="cursor:pointer">
                 <i class="fas fa-star"></i>
               </span>
           </ng-template>
-          <span>{{codingmark.starredBy.length}}</span>
+          <span>{{bookmark.starredBy.length}}</span>
         </div>
-        <span *ngIf="codingmark.publishedOn" class="badge  badge-info float-xs-left"><i class="fa fa-calendar-alt"></i> {{codingmark.publishedOn | date:"yyyy-MM-dd"}}</span>
-        <span *ngIf="codingmark.githubURL" class="badge  badge-primary float-xs-left"><a href="{{codingmark.githubURL}}" target="_blank"><i class="fab fa-github"></i> Source code</a></span>
-        <span *ngFor="let tag of codingmark.tags" class="badge badge-secondary float-xs-left" [innerHtml]="tag | highlight: queryText"></span>
+        <span *ngIf="bookmark.publishedOn" class="badge  badge-info float-xs-left"><i class="fa fa-calendar-alt"></i> {{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
+        <span *ngIf="bookmark.githubURL" class="badge  badge-primary float-xs-left"><a href="{{bookmark.githubURL}}" target="_blank"><i class="fab fa-github"></i> Source code</a></span>
+        <span *ngFor="let tag of bookmark.tags" class="badge badge-secondary float-xs-left" [innerHtml]="tag | highlight: queryText"></span>
       </div>
     </div>
   </div>

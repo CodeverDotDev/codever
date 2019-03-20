@@ -1,7 +1,7 @@
 <button type="button" class="btn btn-primary" routerLink="/personal" style="margin-top: 1rem"> <i class="fa fa-bookmark"></i> Manage personal bookmarks</button>
 <div id="public-search-box">
   <div *ngIf="publicCodingmarks$">
-    <app-codingmark-search [codingmarks]="publicCodingmarks$" [query]="query" [context]="'Public'" [userData]="userData"></app-codingmark-search>
+    <app-bookmark-search [codingmarks]="publicCodingmarks$" [query]="query" [context]="'Public'" [userData]="userData"></app-bookmark-search>
   </div>
 
   <mat-tab-group>
@@ -9,7 +9,7 @@
       <ng-template mat-tab-label>
         <span class="app-tab-label">Recent &nbsp;<i class="fas fa-clock"></i></span>
       </ng-template>
-      <app-async-codingmark-list [codingmarks]="publicCodingmarks$" [shownSize]="30" [userData]="userData"></app-async-codingmark-list>
+      <app-async-bookmark-list [codingmarks]="publicCodingmarks$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
