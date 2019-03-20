@@ -1,4 +1,4 @@
-export interface Codingmark {
+export interface Bookmark {
   _id?: string;
   name: string;
   location: string;

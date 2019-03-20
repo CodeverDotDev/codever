@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Codingmark} from './model/codingmark';
+import {Bookmark} from './model/bookmark';
 import {List} from 'immutable';
 import {Observable} from 'rxjs';
 
@@ -17,12 +17,12 @@ export class BookmarkFilterService {
    * @param bookmarks$ - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarksBySearchTerm(query: string, language: string, bookmarks$: Observable<List<Codingmark>>): Codingmark[] {
+  filterBookmarksBySearchTerm(query: string, language: string, bookmarks$: Observable<List<Bookmark>>): Bookmark[] {
 
     const searchedTermsAndTags: [string[], string[]] = this.splitSearchQuery(query);
     const searchedTerms: string[] = searchedTermsAndTags[0];
     const searchedTags: string[] = searchedTermsAndTags[1];
-    let result: Codingmark[] = [];
+    let result: Bookmark[] = [];
 
     bookmarks$.subscribe(
       bookmarks => {
@@ -128,7 +128,7 @@ export class BookmarkFilterService {
    * @param searchedTerm
    * @returns {boolean}
    */
-  private bookmarkContainsSearchedTerm(bookmark: Codingmark, searchedTerm: string): boolean {
+  private bookmarkContainsSearchedTerm(bookmark: Bookmark, searchedTerm: string): boolean {
     let result = false;
     // const escapedSearchPattern = '\\b' + this.escapeRegExp(searchedTerm.toLowerCase()) + '\\b'; word boundary was not enough, especially for special characters which can happen in coding
     // https://stackoverflow.com/questions/23458872/javascript-regex-word-boundary-b-issue
@@ -161,7 +161,7 @@ export class BookmarkFilterService {
    * @param bookmark
    * @param tag
    */
-  private bookmarkContainsTag(bookmark: Codingmark, tag: string): boolean {
+  private bookmarkContainsTag(bookmark: Bookmark, tag: string): boolean {
     let result = false;
 
     const escapedString = this.escapeRegExp(tag.toLowerCase());

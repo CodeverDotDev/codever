@@ -5,24 +5,24 @@ import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {BookmarkFilterService} from '../../core/filter.service';
-import {Codingmark} from '../../core/model/codingmark';
+import {Bookmark} from '../../core/model/bookmark';
 import {List} from 'immutable';
 import {languages} from '../language-options';
-import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
+import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
 import {Search, UserData} from '../../core/model/user-data';
 import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {UserDataStore} from '../../core/user/userdata.store';
 
 @Component({
-  selector: 'app-codingmark-search',
-  templateUrl: './codingmark-search.component.html',
-  styleUrls: ['./codingmark-search.component.scss']
+  selector: 'app-bookmark-search',
+  templateUrl: './bookmark-search.component.html',
+  styleUrls: ['./bookmark-search.component.scss']
 })
-export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
+export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
-  codingmarks: Observable<List<Codingmark>>;
+  bookmarks: Observable<List<Bookmark>>;
 
   @Input()
   query: string;
@@ -32,8 +32,8 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
 
   _userData: UserData;
 
-  filteredBookmarks: Observable<Codingmark[]>;
-  private filterBookmarksBySearchTerm: Codingmark[];
+  filteredBookmarks: Observable<Bookmark[]>;
+  private filterBookmarksBySearchTerm: Bookmark[];
 
   searchControl = new FormControl();
   queryText: string;
@@ -54,7 +54,7 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   isFocusOnSearchControl = false;
 
   constructor(private router: Router,
-              private bookmarkStore: PublicCodingmarksStore,
+              private bookmarkStore: PublicBookmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore) {
@@ -106,24 +106,24 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
           }
 
           this.queryText = term;
-          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.codingmarks);
+          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.bookmarks);
           this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
           if (this.numberOfResultsFiltered > 0) {
             this.showNotFound = false;
             return observableOf(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
           } else {
             this.showNotFound = true;
-            return observableOf<Codingmark[]>([]);
+            return observableOf<Bookmark[]>([]);
           }
         } else {
           this.numberOfResultsFiltered = 0;
-          // or the observable of empty codingmarks if no search term
-          return observableOf<Codingmark[]>([]);
+          // or the observable of empty bookmarks if no search term
+          return observableOf<Bookmark[]>([]);
         }
       }),
       catchError(error => {
         console.log(error);
-        return observableOf<Codingmark[]>([]);
+        return observableOf<Bookmark[]>([]);
       }), );
 
   }
@@ -152,10 +152,10 @@ export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
   }
   /**
    *
-   * @param codingmark
+   * @param bookmark
    */
-  gotoCodingmarkDetail(codingmark: Codingmark): void {
-    const link = ['/bookmarks', codingmark._id];
+  gotoBookmarkDetail(bookmark: Bookmark): void {
+    const link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }
 
