@@ -4,7 +4,7 @@ import {List} from 'immutable';
 import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute} from '@angular/router';
 import {BookmarkSearchComponent} from '../../shared/search/bookmark-search.component';
-import {PublicCodingmarksStore} from './store/public-bookmarks-store.service';
+import {PublicBookmarksStore} from './store/public-bookmarks-store.service';
 import {allTags} from '../../core/model/all-tags.const.en';
 import {KeycloakService} from 'keycloak-angular';
 import {UserData} from '../../core/model/user-data';
@@ -26,7 +26,7 @@ export class PublicBookmarksComponent implements OnInit {
   @ViewChild(BookmarkSearchComponent)
   private searchComponent: BookmarkSearchComponent;
 
-  constructor(private publicCodingmarksStore: PublicCodingmarksStore,
+  constructor(private publicCodingmarksStore: PublicBookmarksStore,
               private route: ActivatedRoute,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore
