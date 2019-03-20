@@ -11,10 +11,10 @@ import {Bookmark} from '../core/model/bookmark';
 
 @Component({
   selector: 'app-codingmark-text',
-  templateUrl: './codingmark-text.component.html',
-    styleUrls: [ './codingmark-text.component.scss' ]
+  templateUrl: './bookmark-text.component.html',
+    styleUrls: [ './bookmark-text.component.scss' ]
 })
-export class CodingmarkTextComponent  implements  AfterViewInit, AfterViewChecked {
+export class BookmarkTextComponent  implements  AfterViewInit, AfterViewChecked {
 
   @Input()
   codingmark: Bookmark;

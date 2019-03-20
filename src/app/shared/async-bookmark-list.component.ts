@@ -2,20 +2,20 @@ import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angul
 import { Observable } from 'rxjs';
 import { Bookmark } from '../core/model/bookmark';
 import { Router } from '@angular/router';
-import { PersonalCodingmarksStore } from '../core/store/personal-codingmarks-store.service';
+import { PersonalBookmarksStore } from '../core/store/personal-bookmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
-import { PublicCodingmarksStore } from '../public/codingmark/store/public-codingmarks-store.service';
-import { PublicCodingmarksService } from '../public/codingmark/public-codingmarks.service';
-import { RateCodingmarkRequest, RatingActionType } from '../core/model/rate-codingmark.request';
+import { PublicCodingmarksStore } from '../public/codingmark/store/public-bookmarks-store.service';
+import { PublicBookmarksService } from '../public/codingmark/public-bookmarks.service';
+import { RateBookmarkRequest, RatingActionType } from '../core/model/rate-bookmark.request';
 import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
 
 @Component({
     selector: 'app-async-codingmark-list',
-    templateUrl: './async-codingmark-list.component.html',
-    styleUrls: ['./async-codingmark-list.component.scss']
+    templateUrl: './async-bookmark-list.component.html',
+    styleUrls: ['./async-bookmark-list.component.scss']
 })
-export class AsyncCodingmarkListComponent implements OnInit {
+export class AsyncBookmarkListComponent implements OnInit {
 
     @Input()
     userId: string;
@@ -36,10 +36,10 @@ export class AsyncCodingmarkListComponent implements OnInit {
     bookmarkDeleted = new EventEmitter<boolean>();
 
     private router: Router;
-    private personalCodingmarksStore: PersonalCodingmarksStore;
+    private personalCodingmarksStore: PersonalBookmarksStore;
     private userDataStore: UserDataStore;
     private publicCodingmarksStore: PublicCodingmarksStore;
-    private publicCodingmarksService: PublicCodingmarksService;
+    private publicCodingmarksService: PublicBookmarksService;
     private keycloakService: KeycloakService;
 
     displayModal = 'none';
@@ -52,12 +52,12 @@ export class AsyncCodingmarkListComponent implements OnInit {
         this.router = <Router>this.injector.get(Router);
         this.publicCodingmarksStore = <PublicCodingmarksStore>this.injector.get(PublicCodingmarksStore);
         this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
-        this.publicCodingmarksService = <PublicCodingmarksService>this.injector.get(PublicCodingmarksService);
+        this.publicCodingmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
 
         this.keycloakService.isLoggedIn().then(isLoggedIn => {
             if (isLoggedIn) {
                 this.userIsLoggedIn = true;
-                this.personalCodingmarksStore = <PersonalCodingmarksStore>this.injector.get(PersonalCodingmarksStore);
+                this.personalCodingmarksStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
                 this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
             }
         });
@@ -104,7 +104,7 @@ export class AsyncCodingmarkListComponent implements OnInit {
             } else {
                 codingmark.starredBy.push(this.userId);
             }
-            const rateCodingmarkRequest: RateCodingmarkRequest = {
+            const rateCodingmarkRequest: RateBookmarkRequest = {
                 ratingUserId: this.userId,
                 action: RatingActionType.STAR,
                 codingmark: codingmark
@@ -121,7 +121,7 @@ export class AsyncCodingmarkListComponent implements OnInit {
                 const index = codingmark.starredBy.indexOf(this.userId);
                 codingmark.starredBy.splice(index, 1);
             }
-            const rateCodingmarkRequest: RateCodingmarkRequest = {
+            const rateCodingmarkRequest: RateBookmarkRequest = {
                 ratingUserId: this.userId,
                 action: RatingActionType.UNSTAR,
                 codingmark: codingmark
@@ -138,7 +138,7 @@ export class AsyncCodingmarkListComponent implements OnInit {
         }
     }
 
-    private rateCodingmark(rateCodingmarkRequest: RateCodingmarkRequest) {
+    private rateCodingmark(rateCodingmarkRequest: RateBookmarkRequest) {
         const isCodingmarkCreatedByRatingUser = this.userId === rateCodingmarkRequest.codingmark.userId;
         if (isCodingmarkCreatedByRatingUser) {
             const obs = this.personalCodingmarksStore.updateCodingmark(rateCodingmarkRequest.codingmark);

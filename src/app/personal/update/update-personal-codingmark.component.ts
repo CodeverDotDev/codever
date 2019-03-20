@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
+import {PersonalBookmarksStore} from '../../core/store/personal-bookmarks-store.service';
 import {MarkdownService} from '../markdown.service';
 import {MatChipInputEvent} from '@angular/material';
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
@@ -31,7 +31,7 @@ export class UpdatePersonalCodingmarkComponent implements OnInit {
   currentTag = '';
 
   constructor(
-    private personalCodingmarksStore: PersonalCodingmarksStore,
+    private personalCodingmarksStore: PersonalBookmarksStore,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private router: Router

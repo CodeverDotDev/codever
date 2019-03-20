@@ -1,6 +1,6 @@
 import {Bookmark} from './bookmark';
 
-export interface RateCodingmarkRequest {
+export interface RateBookmarkRequest {
   ratingUserId: string;
   action: RatingActionType;
   codingmark: Bookmark

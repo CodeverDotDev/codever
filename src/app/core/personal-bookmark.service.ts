@@ -9,7 +9,7 @@ import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Injectable()
-export class PersonalCodingmarkService {
+export class PersonalBookmarkService {
 
   private personalCodingmarksApiBaseUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});

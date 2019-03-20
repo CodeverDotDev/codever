@@ -2,7 +2,7 @@ import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Bookmark} from '../../core/model/bookmark';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {PersonalCodingmarksStore} from '../../core/store/personal-codingmarks-store.service';
+import {PersonalBookmarksStore} from '../../core/store/personal-bookmarks-store.service';
 import {MarkdownService} from '../markdown.service';
 import {KeycloakService} from 'keycloak-angular';
 import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
@@ -10,17 +10,17 @@ import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material
 import {Observable} from 'rxjs';
 import {languages} from '../../shared/language-options';
 import {tagsValidator} from '../../shared/tags-validation.directive';
-import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
-import {PublicCodingmarksService} from '../../public/codingmark/public-codingmarks.service';
+import {PublicCodingmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
+import {PublicBookmarksService} from '../../public/codingmark/public-bookmarks.service';
 import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
-import {RateCodingmarkRequest, RatingActionType} from '../../core/model/rate-codingmark.request';
+import {RateBookmarkRequest, RatingActionType} from '../../core/model/rate-bookmark.request';
 
 @Component({
   selector: 'app-new-personal-codingmark-form',
-  templateUrl: './create-personal-codingmark.component.html',
-  styleUrls: ['./create-personal-codingmark.component.scss']
+  templateUrl: './create-personal-bookmark.component.html',
+  styleUrls: ['./create-personal-bookmark.component.scss']
 })
-export class CreatePersonalCodingmarkComponent implements OnInit {
+export class CreatePersonalBookmarkComponent implements OnInit {
 
   codingmarkForm: FormGroup;
   userId = null;
@@ -48,10 +48,10 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
   @ViewChild('tagInput') tagInput: ElementRef;
 
   constructor(
-    private personalCodingmarksStore: PersonalCodingmarksStore,
+    private personalCodingmarksStore: PersonalBookmarksStore,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
-    private publicCodingmarksService: PublicCodingmarksService,
+    private publicCodingmarksService: PublicBookmarksService,
     private markdownServce: MarkdownService,
     private publicCodingmarksStore: PublicCodingmarksStore
   ) {
@@ -189,7 +189,7 @@ export class CreatePersonalCodingmarkComponent implements OnInit {
   }
 
   private rateCodingmark(codingmark: Bookmark) {
-    const rateCodingmarkRequest: RateCodingmarkRequest = {
+    const rateCodingmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
       action: RatingActionType.STAR,
       codingmark: codingmark

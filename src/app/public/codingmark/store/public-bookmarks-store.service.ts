@@ -3,14 +3,14 @@ import {Injectable} from '@angular/core';
 import {Observable, BehaviorSubject} from 'rxjs';
 import {List} from 'immutable';
 import {Bookmark} from '../../../core/model/bookmark';
-import {PublicCodingmarksService} from '../public-codingmarks.service';
+import {PublicBookmarksService} from '../public-bookmarks.service';
 
 @Injectable()
 export class PublicCodingmarksStore {
 
     private _publicCodingmarks: BehaviorSubject<List<Bookmark>>;
 
-    constructor(private publicCodingmarksService: PublicCodingmarksService) {}
+    constructor(private publicCodingmarksService: PublicBookmarksService) {}
 
   /**
    * The initial data is loaded either when the home page is requested (directly or via search parameters)
