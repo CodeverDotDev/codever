@@ -3,7 +3,7 @@ import {PersonalBookmarksListComponent} from './personal-bookmarks-list.componen
 import {NgModule} from '@angular/core';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {AuthGuard} from './auth-guard.service';
-import {UpdatePersonalCodingmarkComponent} from './update/update-personal-codingmark.component';
+import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
 import {CreatePersonalBookmarkComponent} from './create/create-personal-bookmark.component';
 
 const personalBookmarksRoutes: Routes = [
@@ -23,7 +23,7 @@ const personalBookmarksRoutes: Routes = [
       },
       {
         path: 'bookmarks/:id',
-        component: UpdatePersonalCodingmarkComponent
+        component: UpdatePersonalBookmarkComponent
       },
       {
         path: '',
