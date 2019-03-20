@@ -6,7 +6,7 @@ import {Bookmark} from '../../../core/model/bookmark';
 import {PublicBookmarksService} from '../public-bookmarks.service';
 
 @Injectable()
-export class PublicCodingmarksStore {
+export class PublicBookmarksStore {
 
     private _publicCodingmarks: BehaviorSubject<List<Bookmark>>;
 

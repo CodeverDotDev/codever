@@ -9,7 +9,7 @@ import {PersonalBookmarkService} from '../personal-bookmark.service';
 import {Router} from '@angular/router';
 
 import {KeycloakService} from 'keycloak-angular';
-import {PublicCodingmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
+import {PublicBookmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
 import {publicTags} from '../model/all-tags.const.en';
 import {HttpResponse} from '@angular/common/http';
 
@@ -28,7 +28,7 @@ export class PersonalBookmarksStore {
               private router: Router,
               private errorService: ErrorService,
               private keycloakService: KeycloakService,
-              private publicCodingmarksStore: PublicCodingmarksStore
+              private publicCodingmarksStore: PublicBookmarksStore
   ) {
     keycloakService.loadUserProfile().then(keycloakProfile => {
       this.userId = keycloakProfile.id;

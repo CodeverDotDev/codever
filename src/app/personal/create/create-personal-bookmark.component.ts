@@ -10,7 +10,7 @@ import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material
 import {Observable} from 'rxjs';
 import {languages} from '../../shared/language-options';
 import {tagsValidator} from '../../shared/tags-validation.directive';
-import {PublicCodingmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
+import {PublicBookmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
 import {PublicBookmarksService} from '../../public/codingmark/public-bookmarks.service';
 import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
 import {RateBookmarkRequest, RatingActionType} from '../../core/model/rate-bookmark.request';
@@ -53,7 +53,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private keycloakService: KeycloakService,
     private publicCodingmarksService: PublicBookmarksService,
     private markdownServce: MarkdownService,
-    private publicCodingmarksStore: PublicCodingmarksStore
+    private publicCodingmarksStore: PublicBookmarksStore
   ) {
 
     keycloakService.loadUserProfile().then( keycloakProfile => {

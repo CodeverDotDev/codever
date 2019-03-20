@@ -4,7 +4,7 @@ import { Bookmark } from '../core/model/bookmark';
 import { Router } from '@angular/router';
 import { PersonalBookmarksStore } from '../core/store/personal-bookmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
-import { PublicCodingmarksStore } from '../public/codingmark/store/public-bookmarks-store.service';
+import { PublicBookmarksStore } from '../public/codingmark/store/public-bookmarks-store.service';
 import { PublicBookmarksService } from '../public/codingmark/public-bookmarks.service';
 import { RateBookmarkRequest, RatingActionType } from '../core/model/rate-bookmark.request';
 import { UserData } from '../core/model/user-data';
@@ -38,7 +38,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     private router: Router;
     private personalCodingmarksStore: PersonalBookmarksStore;
     private userDataStore: UserDataStore;
-    private publicCodingmarksStore: PublicCodingmarksStore;
+    private publicCodingmarksStore: PublicBookmarksStore;
     private publicCodingmarksService: PublicBookmarksService;
     private keycloakService: KeycloakService;
 
@@ -50,7 +50,7 @@ export class AsyncBookmarkListComponent implements OnInit {
         private injector: Injector,
     ) {
         this.router = <Router>this.injector.get(Router);
-        this.publicCodingmarksStore = <PublicCodingmarksStore>this.injector.get(PublicCodingmarksStore);
+        this.publicCodingmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
         this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
         this.publicCodingmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
 

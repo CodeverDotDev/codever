@@ -5,7 +5,7 @@ import {TagService} from './tag/tag.service';
 import {TagComponent} from './tag/tag.component';
 import {PublicBookmarksRoutingModule} from './public-routing.module';
 import {PublicBookmarksComponent} from './codingmark/public-bookmarks.component';
-import {PublicCodingmarksStore} from './codingmark/store/public-bookmarks-store.service';
+import {PublicBookmarksStore} from './codingmark/store/public-bookmarks-store.service';
 import {MatTabsModule} from '@angular/material';
 import {PublicBookmarksService} from './codingmark/public-bookmarks.service';
 
@@ -22,7 +22,7 @@ import {PublicBookmarksService} from './codingmark/public-bookmarks.service';
   ],
   providers: [
     PublicBookmarksService,
-    PublicCodingmarksStore,
+    PublicBookmarksStore,
     TagService
   ]
 })
