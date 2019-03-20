@@ -8,7 +8,7 @@ import {BookmarkFilterService} from '../../core/filter.service';
 import {Bookmark} from '../../core/model/bookmark';
 import {List} from 'immutable';
 import {languages} from '../language-options';
-import {PublicBookmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
+import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
 import {Search, UserData} from '../../core/model/user-data';
 import {MatAutocompleteSelectedEvent} from '@angular/material';

@@ -9,7 +9,7 @@ import {PersonalBookmarkService} from '../personal-bookmark.service';
 import {Router} from '@angular/router';
 
 import {KeycloakService} from 'keycloak-angular';
-import {PublicBookmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
+import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
 import {publicTags} from '../model/all-tags.const.en';
 import {HttpResponse} from '@angular/common/http';
 
