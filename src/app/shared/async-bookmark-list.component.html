@@ -8,7 +8,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>You need to login to be able to star codingmarks.</p>
+        <p>You need to login to be able to star bookmarks.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="onLoginClick()">Login</button>
@@ -17,7 +17,7 @@
     </div>
   </div>
 </div>
-<div class="codingmarks-list" *ngFor="let bookmark of codingmarks | async; let i=index" >
+<div class="bookmarks-list" *ngFor="let bookmark of bookmarks | async; let i=index" >
   <div *ngIf="i < shownSize" class="card">
     <div class="card-body show-hide">
       <div class="header-wrapper">

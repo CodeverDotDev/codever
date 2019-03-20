@@ -34,7 +34,7 @@
 <div class="clear" style="margin-bottom: 1rem"></div>
 
 <div *ngIf="showNotFound" class="alert alert-info" role="alert">
-  No codingmarks found. Please try a different search
+  No bookmarks found. Please try a different search
 </div>
 
 <div *ngIf="numberOfResultsFiltered > 0" class="alert alert-success" role="alert">
@@ -42,7 +42,7 @@
 </div>
 
 
-<app-async-bookmark-list [codingmarks]="filteredBookmarks" [queryText]="queryText"
+<app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="queryText"
                            [shownSize]="counter" [userData]="_userData" (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
 <div *ngIf="numberOfResultsFiltered > 0">
   <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()"

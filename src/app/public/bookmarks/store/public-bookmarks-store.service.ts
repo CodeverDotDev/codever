@@ -19,10 +19,10 @@ export class PublicBookmarksStore {
         this.publicCodingmarksService.getAllPublicCodingmarks()
             .subscribe(
                 res => {
-                  const codingmarks: Bookmark[] = <Bookmark[]>res;
-                  this._publicCodingmarks.next(List(codingmarks));
+                  const bookmarks: Bookmark[] = <Bookmark[]>res;
+                  this._publicCodingmarks.next(List(bookmarks));
                 },
-                err => console.log('Error retrieving codingmarks')
+                err => console.log('Error retrieving bookmarks')
             );
     }
 
@@ -50,9 +50,9 @@ export class PublicBookmarksStore {
    */
   removeCodingmarkFromPublicStore(deleted: Bookmark): void {
       if (this._publicCodingmarks) {
-        const codingmarks: List<Bookmark> = this._publicCodingmarks.getValue();
-        const index = codingmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-        this._publicCodingmarks.next(codingmarks.delete(index));
+        const bookmarks: List<Bookmark> = this._publicCodingmarks.getValue();
+        const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+        this._publicCodingmarks.next(bookmarks.delete(index));
       }
   }
 
@@ -63,10 +63,10 @@ export class PublicBookmarksStore {
    */
   updateCodingmarkInPublicStore(updated: Bookmark): void {
     if (this._publicCodingmarks) {
-      const codingmarks = this._publicCodingmarks.getValue();
-      const index = codingmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-      // let bookmark:bookmark = codingmarks.get(index);
-      this._publicCodingmarks.next(codingmarks.set(index, updated));
+      const bookmarks = this._publicCodingmarks.getValue();
+      const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
+      // let bookmark:bookmark = bookmarks.get(index);
+      this._publicCodingmarks.next(bookmarks.set(index, updated));
     }
   }
 
