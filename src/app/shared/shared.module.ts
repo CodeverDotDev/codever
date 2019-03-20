@@ -3,10 +3,10 @@ import {HighLightPipe} from './highlight.pipe';
 import {HighLightHtmlPipe} from './highlight.no-html-tags.pipe';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AsyncCodingmarkListComponent} from './async-codingmark-list.component';
+import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
 import {TagsValidatorDirective} from './tags-validation.directive';
-import {CodingmarkSearchComponent} from './search/codingmark-search.component';
-import {CodingmarkTextComponent} from './codingmark-text.component';
+import {BookmarkSearchComponent} from './search/bookmark-search.component';
+import {BookmarkTextComponent} from './bookmark-text.component';
 import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
 import {MatAutocompleteModule} from '@angular/material';
 
@@ -25,11 +25,11 @@ import {MatAutocompleteModule} from '@angular/material';
   declarations: [
     HighLightPipe,
     HighLightHtmlPipe,
-    AsyncCodingmarkListComponent,
-    CodingmarkTextComponent,
+    AsyncBookmarkListComponent,
+    BookmarkTextComponent,
     TagsValidatorDirective,
     DescriptionSizeValidatorDirective,
-    CodingmarkSearchComponent
+    BookmarkSearchComponent
   ],
   exports: [
     CommonModule,
@@ -37,10 +37,10 @@ import {MatAutocompleteModule} from '@angular/material';
     ReactiveFormsModule,
     HighLightPipe,
     HighLightHtmlPipe,
-    AsyncCodingmarkListComponent,
-    CodingmarkTextComponent,
+    AsyncBookmarkListComponent,
+    BookmarkTextComponent,
     DescriptionSizeValidatorDirective,
-    CodingmarkSearchComponent
+    BookmarkSearchComponent
   ]
 })
 export class SharedModule { }

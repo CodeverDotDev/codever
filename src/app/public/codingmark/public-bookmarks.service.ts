@@ -7,10 +7,10 @@ import {Bookmark} from '../../core/model/bookmark';
 import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {shareReplay} from 'rxjs/operators';
-import {RateCodingmarkRequest} from '../../core/model/rate-codingmark.request';
+import {RateBookmarkRequest} from '../../core/model/rate-bookmark.request';
 
 @Injectable()
-export class PublicCodingmarksService {
+export class PublicBookmarksService {
 
   private publicCodingmarksApiBaseUrl = '';  // URL to web api
   private securedPublicCodingmarksApiBaseUrl = '';  // URL to web api
@@ -37,7 +37,7 @@ export class PublicCodingmarksService {
       .get<Bookmark>(`${this.publicCodingmarksApiBaseUrl}`, {params: params});
   }
 
-  rateCodingmark(rateCodingmarkRequest: RateCodingmarkRequest): Observable<any> {
+  rateCodingmark(rateCodingmarkRequest: RateBookmarkRequest): Observable<any> {
     return this.httpClient
       .patch(`${this.securedPublicCodingmarksApiBaseUrl}/${rateCodingmarkRequest.codingmark._id}`, JSON.stringify(rateCodingmarkRequest),
             {headers: this.headers})

@@ -4,7 +4,7 @@ import {Component, OnInit} from '@angular/core';
 import {Bookmark} from '../core/model/bookmark';
 import {Observable} from 'rxjs';
 import {List} from 'immutable';
-import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
+import {PersonalBookmarksStore} from '../core/store/personal-bookmarks-store.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserData} from '../core/model/user-data';
 import {UserDataStore} from '../core/user/userdata.store';
@@ -13,10 +13,10 @@ import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
   selector: 'app-user-codingmarks',
-  templateUrl: './personal-codingmarks-list.component.html',
-  styleUrls: ['./personal-codingmarks-list.component.scss']
+  templateUrl: './personal-bookmarks-list.component.html',
+  styleUrls: ['./personal-bookmarks-list.component.scss']
 })
-export class PersonalCodingmarksListComponent implements OnInit {
+export class PersonalBookmarksListComponent implements OnInit {
 
   personalCodingmarks$: Observable<List<Bookmark>>;
   laterReads$: Observable<Bookmark[]>;
@@ -26,7 +26,7 @@ export class PersonalCodingmarksListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private personalCodingmarksStore: PersonalCodingmarksStore,
+    private personalCodingmarksStore: PersonalBookmarksStore,
     private userDataStore: UserDataStore,
     private userService: UserService) { }
 

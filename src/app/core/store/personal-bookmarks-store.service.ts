@@ -5,16 +5,16 @@ import {List} from 'immutable';
 import {Bookmark} from '../model/bookmark';
 import {Logger} from '../logger.service';
 import {ErrorService} from '../error/error.service';
-import {PersonalCodingmarkService} from '../personal-codingmark.service';
+import {PersonalBookmarkService} from '../personal-bookmark.service';
 import {Router} from '@angular/router';
 
 import {KeycloakService} from 'keycloak-angular';
-import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
+import {PublicCodingmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
 import {publicTags} from '../model/all-tags.const.en';
 import {HttpResponse} from '@angular/common/http';
 
 @Injectable()
-export class PersonalCodingmarksStore {
+export class PersonalBookmarksStore {
 
   private _personalCodingmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
 
@@ -23,7 +23,7 @@ export class PersonalCodingmarksStore {
   private personalTags: Set<string>;
   autocompleteTags = publicTags;
 
-  constructor(private personalCodingmarkService: PersonalCodingmarkService,
+  constructor(private personalCodingmarkService: PersonalBookmarkService,
               private logger: Logger,
               private router: Router,
               private errorService: ErrorService,

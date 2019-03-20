@@ -1,13 +1,13 @@
 import {NgModule} from '@angular/core';
-import {PersonalCodingmarksListComponent} from './personal-codingmarks-list.component';
-import {PersonalCodingmarksRoutingModule} from './personal-codingmarks-routing.module';
-import {PersonalCodingmarksComponent} from './personal-codingmarks.component';
+import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
+import {PersonalBookmarksRoutingModule} from './personal-bookmarks-routing.module';
+import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {SharedModule} from '../shared/shared.module';
 import {MarkdownService} from './markdown.service';
 import {AuthGuard} from './auth-guard.service';
 import {RouterModule} from '@angular/router';
 import {UpdatePersonalCodingmarkComponent} from './update/update-personal-codingmark.component';
-import {CreatePersonalCodingmarkComponent} from './create/create-personal-codingmark.component';
+import {CreatePersonalBookmarkComponent} from './create/create-personal-bookmark.component';
 import {
   MatAutocompleteModule, MatChipsModule, MatFormFieldModule, MatIconModule,
   MatInputModule, MatTabsModule
@@ -18,10 +18,10 @@ import {PublicBookmarksRoutingModule} from '../public/public-routing.module';
 
 @NgModule({
   declarations : [
-    PersonalCodingmarksListComponent,
-    CreatePersonalCodingmarkComponent,
+    PersonalBookmarksListComponent,
+    CreatePersonalBookmarkComponent,
     UpdatePersonalCodingmarkComponent,
-    PersonalCodingmarksComponent
+    PersonalBookmarksComponent
   ],
   imports: [
     SharedModule,
@@ -33,11 +33,11 @@ import {PublicBookmarksRoutingModule} from '../public/public-routing.module';
     MatIconModule,
     MatAutocompleteModule,
     MatTabsModule,
-    PersonalCodingmarksRoutingModule
+    PersonalBookmarksRoutingModule
   ],
   providers: [
     MarkdownService,
     AuthGuard
   ]
 })
-export class PersonalCodingmarksModule {}
+export class PersonalBookmarksModule {}

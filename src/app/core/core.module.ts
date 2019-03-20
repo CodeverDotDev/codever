@@ -6,8 +6,8 @@ import {ErrorService} from './error/error.service';
 import {ErrorComponent} from './error/error.component';
 import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
-import {PersonalCodingmarksStore} from './store/personal-codingmarks-store.service';
-import {PersonalCodingmarkService} from './personal-codingmark.service';
+import {PersonalBookmarksStore} from './store/personal-bookmarks-store.service';
+import {PersonalBookmarkService} from './personal-bookmark.service';
 import {UserService} from './user.service';
 import {UserDataStore} from './user/userdata.store';
 
@@ -35,8 +35,8 @@ import {UserDataStore} from './user/userdata.store';
     BookmarkFilterService,
     Logger,
     ErrorService,
-    PersonalCodingmarksStore,
-    PersonalCodingmarkService,
+    PersonalBookmarksStore,
+    PersonalBookmarkService,
     UserService,
     UserDataStore
   ]

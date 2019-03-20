@@ -8,7 +8,7 @@ import {BookmarkFilterService} from '../../core/filter.service';
 import {Bookmark} from '../../core/model/bookmark';
 import {List} from 'immutable';
 import {languages} from '../language-options';
-import {PublicCodingmarksStore} from '../../public/codingmark/store/public-codingmarks-store.service';
+import {PublicCodingmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
 import {Search, UserData} from '../../core/model/user-data';
 import {MatAutocompleteSelectedEvent} from '@angular/material';
@@ -16,10 +16,10 @@ import {UserDataStore} from '../../core/user/userdata.store';
 
 @Component({
   selector: 'app-codingmark-search',
-  templateUrl: './codingmark-search.component.html',
-  styleUrls: ['./codingmark-search.component.scss']
+  templateUrl: './bookmark-search.component.html',
+  styleUrls: ['./bookmark-search.component.scss']
 })
-export class CodingmarkSearchComponent implements OnInit, AfterViewInit {
+export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
   codingmarks: Observable<List<Bookmark>>;

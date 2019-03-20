@@ -3,8 +3,8 @@ import {Observable} from 'rxjs';
 import {List} from 'immutable';
 import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute} from '@angular/router';
-import {CodingmarkSearchComponent} from '../../shared/search/codingmark-search.component';
-import {PublicCodingmarksStore} from './store/public-codingmarks-store.service';
+import {BookmarkSearchComponent} from '../../shared/search/bookmark-search.component';
+import {PublicCodingmarksStore} from './store/public-bookmarks-store.service';
 import {allTags} from '../../core/model/all-tags.const.en';
 import {KeycloakService} from 'keycloak-angular';
 import {UserData} from '../../core/model/user-data';
@@ -13,18 +13,18 @@ import {UserDataStore} from '../../core/user/userdata.store';
 
 @Component({
   selector: 'app-public-codingmarks',
-  templateUrl: './public-codingmarks.component.html',
-  styleUrls: ['./public-codingmarks.component.scss']
+  templateUrl: './public-bookmarks.component.html',
+  styleUrls: ['./public-bookmarks.component.scss']
 })
-export class PublicCodingmarksComponent implements OnInit {
+export class PublicBookmarksComponent implements OnInit {
 
   publicCodingmarks$: Observable<List<Bookmark>>;
   tags: string[] = allTags;
   query = '';
   userData: UserData;
 
-  @ViewChild(CodingmarkSearchComponent)
-  private searchComponent: CodingmarkSearchComponent;
+  @ViewChild(BookmarkSearchComponent)
+  private searchComponent: BookmarkSearchComponent;
 
   constructor(private publicCodingmarksStore: PublicCodingmarksStore,
               private route: ActivatedRoute,
