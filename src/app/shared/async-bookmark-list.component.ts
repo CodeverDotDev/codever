@@ -36,10 +36,10 @@ export class AsyncBookmarkListComponent implements OnInit {
     bookmarkDeleted = new EventEmitter<boolean>();
 
     private router: Router;
-    private personalCodingmarksStore: PersonalBookmarksStore;
+    private personalBookmarksStore: PersonalBookmarksStore;
     private userDataStore: UserDataStore;
-    private publicCodingmarksStore: PublicBookmarksStore;
-    private publicCodingmarksService: PublicBookmarksService;
+    private publicBookmarksStore: PublicBookmarksStore;
+    private publicBookmarksService: PublicBookmarksService;
     private keycloakService: KeycloakService;
 
     displayModal = 'none';
@@ -50,14 +50,14 @@ export class AsyncBookmarkListComponent implements OnInit {
         private injector: Injector,
     ) {
         this.router = <Router>this.injector.get(Router);
-        this.publicCodingmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
+        this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
         this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
-        this.publicCodingmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
+        this.publicBookmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
 
         this.keycloakService.isLoggedIn().then(isLoggedIn => {
             if (isLoggedIn) {
                 this.userIsLoggedIn = true;
-                this.personalCodingmarksStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
+                this.personalBookmarksStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
                 this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
             }
         });
@@ -82,16 +82,16 @@ export class AsyncBookmarkListComponent implements OnInit {
         this.router.navigate(link);
     }
 
-    deleteCodingmark(bookmark: Bookmark): void {
-        const obs = this.personalCodingmarksStore.deleteCodingmark(bookmark);
+    deleteBookmark(bookmark: Bookmark): void {
+        const obs = this.personalBookmarksStore.deleteBookmark(bookmark);
         obs.subscribe(() => {
             this.bookmarkDeleted.emit(true);
-            const obs2 = this.publicCodingmarksStore.removeCodingmarkFromPublicStore(bookmark);
+            const obs2 = this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
             const obs3 = this.userDataStore.removeFromLaterReads(bookmark);
         });
     }
 
-    starCodingmark(bookmark: Bookmark): void {
+    starBookmark(bookmark: Bookmark): void {
         this.keycloakService.isLoggedIn().then(isLoggedIn => {
             if (!isLoggedIn) {
                 this.displayModal = 'block';
@@ -104,16 +104,16 @@ export class AsyncBookmarkListComponent implements OnInit {
             } else {
                 bookmark.starredBy.push(this.userId);
             }
-            const rateCodingmarkRequest: RateBookmarkRequest = {
+            const rateBookmarkRequest: RateBookmarkRequest = {
                 ratingUserId: this.userId,
                 action: RatingActionType.STAR,
                 bookmark: bookmark
             }
-            this.rateCodingmark(rateCodingmarkRequest);
+            this.rateBookmark(rateBookmarkRequest);
         }
     }
 
-    unstarCodingmark(bookmark: Bookmark): void {
+    unstarBookmark(bookmark: Bookmark): void {
         if (this.userId) {
             if (!bookmark.starredBy) {
                 bookmark.starredBy = [];
@@ -121,12 +121,12 @@ export class AsyncBookmarkListComponent implements OnInit {
                 const index = bookmark.starredBy.indexOf(this.userId);
                 bookmark.starredBy.splice(index, 1);
             }
-            const rateCodingmarkRequest: RateBookmarkRequest = {
+            const rateBookmarkRequest: RateBookmarkRequest = {
                 ratingUserId: this.userId,
                 action: RatingActionType.UNSTAR,
                 bookmark: bookmark
             }
-            this.rateCodingmark(rateCodingmarkRequest);
+            this.rateBookmark(rateBookmarkRequest);
 
         }
     }
@@ -134,19 +134,19 @@ export class AsyncBookmarkListComponent implements OnInit {
     updateLastAccess(bookmark: Bookmark) {
         if (this.userId === bookmark.userId) {
             bookmark.lastAccessedAt = new Date();
-            const obs = this.personalCodingmarksStore.updateCodingmark(bookmark);
+            const obs = this.personalBookmarksStore.updateBookmark(bookmark);
         }
     }
 
-    private rateCodingmark(rateCodingmarkRequest: RateBookmarkRequest) {
-        const isCodingmarkCreatedByRatingUser = this.userId === rateCodingmarkRequest.bookmark.userId;
-        if (isCodingmarkCreatedByRatingUser) {
-            const obs = this.personalCodingmarksStore.updateCodingmark(rateCodingmarkRequest.bookmark);
+    private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
+        const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
+        if (isBookmarkCreatedByRatingUser) {
+            const obs = this.personalBookmarksStore.updateBookmark(rateBookmarkRequest.bookmark);
         } else {
-            const obs = this.publicCodingmarksService.rateCodingmark(rateCodingmarkRequest);
+            const obs = this.publicBookmarksService.rateBookmark(rateBookmarkRequest);
             obs.subscribe(
                 res => {
-                    this.publicCodingmarksStore.updateCodingmarkInPublicStore(rateCodingmarkRequest.bookmark);
+                    this.publicBookmarksStore.updateBookmarkInPublicStore(rateBookmarkRequest.bookmark);
                 }
             );
         }

@@ -154,7 +154,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
    *
    * @param bookmark
    */
-  gotoCodingmarkDetail(bookmark: Bookmark): void {
+  gotoBookmarkDetail(bookmark: Bookmark): void {
     const link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }

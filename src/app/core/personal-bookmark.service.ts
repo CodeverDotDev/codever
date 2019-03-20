@@ -11,32 +11,32 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 @Injectable()
 export class PersonalBookmarkService {
 
-  private personalCodingmarksApiBaseUrl = '';  // URL to web api
+  private personalBookmarksApiBaseUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient) {
-    this.personalCodingmarksApiBaseUrl = environment.API_URL + '/personal/users/';
+    this.personalBookmarksApiBaseUrl = environment.API_URL + '/personal/users/';
   }
 
-  getAllPersonalCodingmarks(userId: String): Observable<Bookmark[]> {
-    return this.httpClient.get<Bookmark[]>(this.personalCodingmarksApiBaseUrl + userId + '/bookmarks').pipe(shareReplay(1));
+  getAllPersonalBookmarks(userId: String): Observable<Bookmark[]> {
+    return this.httpClient.get<Bookmark[]>(this.personalBookmarksApiBaseUrl + userId + '/bookmarks').pipe(shareReplay(1));
   }
 
-  updateCodingmark(bookmark: Bookmark): Observable<any> {
+  updateBookmark(bookmark: Bookmark): Observable<any> {
     return this.httpClient
-      .put(this.personalCodingmarksApiBaseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
+      .put(this.personalBookmarksApiBaseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, JSON.stringify(bookmark), {headers: this.headers})
       .pipe(shareReplay(1));
   }
 
-  deleteCodingmark(bookmark: Bookmark): Observable<any> {
+  deleteBookmark(bookmark: Bookmark): Observable<any> {
     return this.httpClient
-      .delete(this.personalCodingmarksApiBaseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers})
+      .delete(this.personalBookmarksApiBaseUrl + bookmark.userId + '/bookmarks/' + bookmark._id, {headers: this.headers})
       .pipe(shareReplay(1));
   }
 
-  createCodingmark(userId: string, bookmark: Bookmark): Observable<any> {
+  createBookmark(userId: string, bookmark: Bookmark): Observable<any> {
     return this.httpClient
-      .post(this.personalCodingmarksApiBaseUrl + userId + '/bookmarks', JSON.stringify(bookmark), {headers: this.headers, observe: 'response'})
+      .post(this.personalBookmarksApiBaseUrl + userId + '/bookmarks', JSON.stringify(bookmark), {headers: this.headers, observe: 'response'})
       .pipe(shareReplay(1));
   }
 

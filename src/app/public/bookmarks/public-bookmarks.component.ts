@@ -18,7 +18,7 @@ import {UserDataStore} from '../../core/user/userdata.store';
 })
 export class PublicBookmarksComponent implements OnInit {
 
-  publicCodingmarks$: Observable<List<Bookmark>>;
+  publicBookmarks$: Observable<List<Bookmark>>;
   tags: string[] = allTags;
   query = '';
   userData: UserData;
@@ -26,7 +26,7 @@ export class PublicBookmarksComponent implements OnInit {
   @ViewChild(BookmarkSearchComponent)
   private searchComponent: BookmarkSearchComponent;
 
-  constructor(private publicCodingmarksStore: PublicBookmarksStore,
+  constructor(private publicBookmarksStore: PublicBookmarksStore,
               private route: ActivatedRoute,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore
@@ -41,7 +41,7 @@ export class PublicBookmarksComponent implements OnInit {
       }
     }
 
-    this.publicCodingmarks$ = this.publicCodingmarksStore.getPublicCodingmarks();
+    this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {

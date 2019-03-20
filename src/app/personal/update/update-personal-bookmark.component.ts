@@ -31,7 +31,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   currentTag = '';
 
   constructor(
-    private personalCodingmarksStore: PersonalBookmarksStore,
+    private personalBookmarksStore: PersonalBookmarksStore,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private router: Router
@@ -42,26 +42,26 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
       const id = params['id'];
-      this.bookmark = this.personalCodingmarksStore.getCodingmarkById(id);
+      this.bookmark = this.personalBookmarksStore.getBookmarkById(id);
     });
-    this.autocompleteTags = this.personalCodingmarksStore.getPersonalAutomcompleteTags();
+    this.autocompleteTags = this.personalBookmarksStore.getPersonalAutomcompleteTags();
   }
 
-  updateCodingmark(): void {
+  updateBookmark(): void {
     this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
     const now = new Date();
     this.bookmark.updatedAt = now;
     this.bookmark.lastAccessedAt = now;
 
-    const obs = this.personalCodingmarksStore.updateCodingmark(this.bookmark);
+    const obs = this.personalBookmarksStore.updateBookmark(this.bookmark);
 
     obs.subscribe(
       res => {
-        this.navigateToPersonalCodingmarks();
+        this.navigateToPersonalBookmarks();
       });
   }
 
-  navigateToPersonalCodingmarks(): void {
+  navigateToPersonalBookmarks(): void {
     this.router.navigate(['/personal'], { fragment: 'navbar' });
   }
 
