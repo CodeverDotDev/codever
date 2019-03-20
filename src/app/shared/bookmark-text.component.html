@@ -1,4 +1,4 @@
-<div #codingmarkText>
+<div #bookmarkText>
   <div class="more-text-wrapper" *ngIf="viewHeight > 120 else wholeText">
     <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}" *ngIf="!bookmark.descriptionHtml && bookmark.description" class="card-text" [innerHtml]="bookmark.description | highlight: queryText"></div>
     <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}" *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: queryText"></div>

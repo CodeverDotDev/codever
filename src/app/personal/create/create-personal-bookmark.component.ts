@@ -22,12 +22,12 @@ import {RateBookmarkRequest, RatingActionType} from '../../core/model/rate-bookm
 })
 export class CreatePersonalBookmarkComponent implements OnInit {
 
-  codingmarkForm: FormGroup;
+  bookmarkForm: FormGroup;
   userId = null;
-  existingPublicCodingmark: Bookmark;
+  existingPublicBookmark: Bookmark;
   displayModal = 'none';
   makePublic = false;
-  personalCodingmarkPresent = false;
+  personalBookmarkPresent = false;
 
   // chips
   selectable = true;
@@ -48,19 +48,19 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   @ViewChild('tagInput') tagInput: ElementRef;
 
   constructor(
-    private personalCodingmarksStore: PersonalBookmarksStore,
+    private personalBookmarksStore: PersonalBookmarksStore,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
-    private publicCodingmarksService: PublicBookmarksService,
+    private publicBookmarksService: PublicBookmarksService,
     private markdownServce: MarkdownService,
-    private publicCodingmarksStore: PublicBookmarksStore
+    private publicBookmarksStore: PublicBookmarksStore
   ) {
 
     keycloakService.loadUserProfile().then( keycloakProfile => {
       this.userId = keycloakProfile.id;
     });
 
-    this.autocompleteTags = personalCodingmarksStore.getPersonalAutomcompleteTags()
+    this.autocompleteTags = personalBookmarksStore.getPersonalAutomcompleteTags()
 
     this.filteredTags = this.tagsControl.valueChanges.pipe(
       startWith(null),
@@ -75,7 +75,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   }
 
   buildForm(): void {
-    this.codingmarkForm = this.formBuilder.group({
+    this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
@@ -86,18 +86,18 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       language: 'en'
     });
 
-    this.codingmarkForm.get('location').valueChanges.pipe(
+    this.bookmarkForm.get('location').valueChanges.pipe(
       debounceTime(400),
       distinctUntilChanged(), )
       .subscribe(location => {
-        if (this.personalCodingmarksStore.getCodingmarkByLocation(location)) {
-          this.personalCodingmarkPresent = true;
+        if (this.personalBookmarksStore.getBookmarkByLocation(location)) {
+          this.personalBookmarkPresent = true;
         } else {
-          this.personalCodingmarkPresent = false;
-          this.publicCodingmarksService.getScrapingData(location).subscribe(response => {
+          this.personalBookmarkPresent = false;
+          this.publicBookmarksService.getScrapingData(location).subscribe(response => {
             if (response) {
-              this.codingmarkForm.get('name').patchValue(response.title, {emitEvent : false});
-              this.codingmarkForm.get('description').patchValue(response.metaDescription, {emitEvent : false});
+              this.bookmarkForm.get('name').patchValue(response.title, {emitEvent : false});
+              this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent : false});
             }
           });
         }
@@ -110,7 +110,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
     // Add our tag
     if ((value || '').trim()) {
-      const tags = this.codingmarkForm.get('tags') as FormArray;
+      const tags = this.bookmarkForm.get('tags') as FormArray;
       tags.push(this.formBuilder.control(value.trim()));
     }
 
@@ -124,7 +124,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   }
 
   remove(index: number): void {
-    const tags = this.codingmarkForm.get('tags') as FormArray;
+    const tags = this.bookmarkForm.get('tags') as FormArray;
 
     if (index >= 0) {
       tags.removeAt(index);
@@ -137,14 +137,14 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    const tags = this.codingmarkForm.get('tags') as FormArray;
+    const tags = this.bookmarkForm.get('tags') as FormArray;
     tags.push(this.formBuilder.control(event.option.viewValue));
     this.tagInput.nativeElement.value = '';
     this.tagsControl.setValue(null);
   }
 
-  saveCodingmark(model: Bookmark) {
-    const newCodingmark: Bookmark = {
+  saveBookmark(model: Bookmark) {
+    const newBookmark: Bookmark = {
       name: model.name,
       location: model.location,
       language: model.language,
@@ -159,19 +159,19 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       lastAccessedAt: new Date()
   };
 
-    this.personalCodingmarksStore.addCodingmark(this.userId, newCodingmark);
+    this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
   }
 
   onClickMakePublic(checkboxValue) {
     if (checkboxValue) {
       this.makePublic = true;
-      const location: string = this.codingmarkForm.controls['location'].value;
-      this.publicCodingmarksService.getPublicCodingmarkByLocation(location).subscribe(response => {
+      const location: string = this.bookmarkForm.controls['location'].value;
+      this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(response => {
         if (response) {
           console.log(response);
           this.displayModal = 'block';
-          this.existingPublicCodingmark = response;
-          this.codingmarkForm.patchValue({
+          this.existingPublicBookmark = response;
+          this.bookmarkForm.patchValue({
             shared: false
           });
         }
@@ -182,22 +182,22 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   onStarClick() {
     this.displayModal = 'none';
     this.makePublic = false;
-    if ( this.existingPublicCodingmark.starredBy.indexOf(this.userId) === -1) {
-     this.existingPublicCodingmark.starredBy.push(this.userId);
-     this.rateCodingmark(this.existingPublicCodingmark);
+    if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
+     this.existingPublicBookmark.starredBy.push(this.userId);
+     this.rateBookmark(this.existingPublicBookmark);
     }
   }
 
-  private rateCodingmark(bookmark: Bookmark) {
-    const rateCodingmarkRequest: RateBookmarkRequest = {
+  private rateBookmark(bookmark: Bookmark) {
+    const rateBookmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
       action: RatingActionType.STAR,
       bookmark: bookmark
     }
-    const obs = this.publicCodingmarksService.rateCodingmark(rateCodingmarkRequest);
+    const obs = this.publicBookmarksService.rateBookmark(rateBookmarkRequest);
     obs.subscribe(
       res => {
-        this.publicCodingmarksStore.updateCodingmarkInPublicStore(bookmark);
+        this.publicBookmarksStore.updateBookmarkInPublicStore(bookmark);
       }
     );
   }
@@ -207,9 +207,9 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     this.makePublic = false;
   }
 
-  get tags() { return <FormArray>this.codingmarkForm.get('tags'); }
+  get tags() { return <FormArray>this.bookmarkForm.get('tags'); }
 
-  get description() { return this.codingmarkForm.get('description'); }
+  get description() { return this.bookmarkForm.get('description'); }
 }
 
 

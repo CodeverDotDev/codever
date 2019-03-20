@@ -1,5 +1,5 @@
 <button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()" style="margin-top: 1rem"> <i class="fa fa-plus"></i> Add new bookmark</button>
-<app-bookmark-search [bookmarks]="personalCodingmarks$" [query]="query" [context]="'Personal'" [userData]="userData"></app-bookmark-search>
+<app-bookmark-search [bookmarks]="personalBookmarks$" [query]="query" [context]="'Personal'" [userData]="userData"></app-bookmark-search>
 <hr style="margin-top: 0;">
 <h3>Personal bookmarks</h3>
 
@@ -9,7 +9,7 @@
     <ng-template mat-tab-label >
       <span class="app-tab-label">History  &nbsp;<i class="fas fa-user-clock"></i></span>
     </ng-template>
-    <app-async-bookmark-list [bookmarks]="personalCodingmarks$" [shownSize]="10" [userData]="userData"></app-async-bookmark-list>
+    <app-async-bookmark-list [bookmarks]="personalBookmarks$" [shownSize]="10" [userData]="userData"></app-async-bookmark-list>
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>

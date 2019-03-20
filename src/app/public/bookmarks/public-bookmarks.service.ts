@@ -12,34 +12,34 @@ import {RateBookmarkRequest} from '../../core/model/rate-bookmark.request';
 @Injectable()
 export class PublicBookmarksService {
 
-  private publicCodingmarksApiBaseUrl = '';  // URL to web api
-  private securedPublicCodingmarksApiBaseUrl = '';  // URL to web api
+  private publicBookmarksApiBaseUrl = '';  // URL to web api
+  private securedPublicBookmarksApiBaseUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient) {
-    this.publicCodingmarksApiBaseUrl = environment.API_URL + '/public/bookmarks';
-    this.securedPublicCodingmarksApiBaseUrl = environment.API_URL + '/secured/public/bookmarks';
+    this.publicBookmarksApiBaseUrl = environment.API_URL + '/public/bookmarks';
+    this.securedPublicBookmarksApiBaseUrl = environment.API_URL + '/secured/public/bookmarks';
   }
 
-  getAllPublicCodingmarks(): Observable<Bookmark[]> {
-    return this.httpClient.get<Bookmark[]>(this.publicCodingmarksApiBaseUrl);
+  getAllPublicBookmarks(): Observable<Bookmark[]> {
+    return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl);
   }
 
   getScrapingData(url: String): Observable<Webpage> {
     return this.httpClient
-      .get<Webpage>(`${this.publicCodingmarksApiBaseUrl}/scrape?url=${url}`);
+      .get<Webpage>(`${this.publicBookmarksApiBaseUrl}/scrape?url=${url}`);
   }
 
-  getPublicCodingmarkByLocation(url: string): Observable<Bookmark> {
+  getPublicBookmarkByLocation(url: string): Observable<Bookmark> {
     let params = new HttpParams();
     params = params.append('location', url);
     return this.httpClient
-      .get<Bookmark>(`${this.publicCodingmarksApiBaseUrl}`, {params: params});
+      .get<Bookmark>(`${this.publicBookmarksApiBaseUrl}`, {params: params});
   }
 
-  rateCodingmark(rateCodingmarkRequest: RateBookmarkRequest): Observable<any> {
+  rateBookmark(rateBookmarkRequest: RateBookmarkRequest): Observable<any> {
     return this.httpClient
-      .patch(`${this.securedPublicCodingmarksApiBaseUrl}/${rateCodingmarkRequest.bookmark._id}`, JSON.stringify(rateCodingmarkRequest),
+      .patch(`${this.securedPublicBookmarksApiBaseUrl}/${rateBookmarkRequest.bookmark._id}`, JSON.stringify(rateBookmarkRequest),
             {headers: this.headers})
       .pipe(shareReplay());
   }
