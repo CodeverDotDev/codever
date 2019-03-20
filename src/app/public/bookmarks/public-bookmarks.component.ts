@@ -1,10 +1,10 @@
 import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs';
 import {List} from 'immutable';
-import {Codingmark} from '../../core/model/codingmark';
+import {Bookmark} from '../../core/model/bookmark';
 import {ActivatedRoute} from '@angular/router';
-import {CodingmarkSearchComponent} from '../../shared/search/codingmark-search.component';
-import {PublicCodingmarksStore} from './store/public-codingmarks-store.service';
+import {BookmarkSearchComponent} from '../../shared/search/bookmark-search.component';
+import {PublicBookmarksStore} from './store/public-bookmarks-store.service';
 import {allTags} from '../../core/model/all-tags.const.en';
 import {KeycloakService} from 'keycloak-angular';
 import {UserData} from '../../core/model/user-data';
@@ -12,21 +12,21 @@ import {UserDataStore} from '../../core/user/userdata.store';
 
 
 @Component({
-  selector: 'app-public-codingmarks',
-  templateUrl: './public-codingmarks.component.html',
-  styleUrls: ['./public-codingmarks.component.scss']
+  selector: 'app-public-bookmarks',
+  templateUrl: './public-bookmarks.component.html',
+  styleUrls: ['./public-bookmarks.component.scss']
 })
-export class PublicCodingmarksComponent implements OnInit {
+export class PublicBookmarksComponent implements OnInit {
 
-  publicCodingmarks$: Observable<List<Codingmark>>;
+  publicBookmarks$: Observable<List<Bookmark>>;
   tags: string[] = allTags;
   query = '';
   userData: UserData;
 
-  @ViewChild(CodingmarkSearchComponent)
-  private searchComponent: CodingmarkSearchComponent;
+  @ViewChild(BookmarkSearchComponent)
+  private searchComponent: BookmarkSearchComponent;
 
-  constructor(private publicCodingmarksStore: PublicCodingmarksStore,
+  constructor(private publicBookmarksStore: PublicBookmarksStore,
               private route: ActivatedRoute,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore
@@ -41,7 +41,7 @@ export class PublicCodingmarksComponent implements OnInit {
       }
     }
 
-    this.publicCodingmarks$ = this.publicCodingmarksStore.getPublicCodingmarks();
+    this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {

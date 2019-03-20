@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TagService } from './tag.service';
 import { ActivatedRoute } from '@angular/router';
-import { Codingmark } from '../../core/model/codingmark';
+import { Bookmark } from '../../core/model/bookmark';
 import { Observable } from 'rxjs';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { KeycloakService } from 'keycloak-angular';
@@ -14,7 +14,7 @@ import { UserData } from '../../core/model/user-data';
 })
 export class TagComponent implements OnInit {
 
-    bookmarksForTag$: Observable<Codingmark[]>;
+    bookmarksForTag$: Observable<Bookmark[]>;
     tag: string;
     userData: UserData;
     counter = 30;

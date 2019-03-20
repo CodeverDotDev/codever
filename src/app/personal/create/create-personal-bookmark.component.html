@@ -11,14 +11,14 @@
         <p>This URL is already public on Bookmarks.dev. You can save it as private and star it to help it get exposure</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary"(click)="onStarClick()">Star codingmark</button>
+        <button type="button" class="btn btn-primary"(click)="onStarClick()">Star bookmark</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onCancelClick()">Cancel</button>
       </div>
     </div>
   </div>
 </div>
 <div class="col-md-8 col-md-offset-2 navigation-space-buffer">
-  <form [formGroup]="codingmarkForm" novalidate (ngSubmit)="saveCodingmark(codingmarkForm.value)">
+  <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
     <div class="form-group">
       <label for="location">Location*</label>
       <input type="text" class="form-control" id="location"
@@ -26,11 +26,11 @@
              name="location"
              formControlName="location"
              placeholder="Usually an URL">
-      <div [hidden]="codingmarkForm.get('location').valid || (codingmarkForm.get('location').pristine)"
+      <div [hidden]="bookmarkForm.get('location').valid || (bookmarkForm.get('location').pristine)"
            class="alert alert-danger">
         Location is required
       </div>
-      <div [hidden]="!personalCodingmarkPresent" class="alert alert-danger">
+      <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
         You have already bookmarked this URL.
       </div>
     </div>
@@ -39,8 +39,8 @@
       <input type="text" class="form-control" id="name"
              required
              formControlName="name"
-             placeholder="Name of the codingmark to recognize later">
-      <div [hidden]="codingmarkForm.get('name').valid || (codingmarkForm.get('name').pristine)"
+             placeholder="Name of the bookmark to recognize later">
+      <div [hidden]="bookmarkForm.get('name').valid || (bookmarkForm.get('name').pristine)"
            class="alert alert-danger">
         Name is required
       </div>
@@ -104,14 +104,14 @@
              class="form-control"
              id="githubURL"
              formControlName="githubURL"
-             placeholder='URL of the post, project on GitHub - e.g. https://github.com/Codingpedia/codingmarks.org'>
+             placeholder='URL of the post, project on GitHub - e.g. https://github.com/Codingpedia/bookmarks.org'>
     </div>
     <div class="form-group">
       <label for="description" style="width: 100%">Description - <i class="fab fa-markdown"></i> <a class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is supported</a></label>
       <textarea class="form-control"
                 id="description"
                 formControlName="description"
-                placeholder="Writing descriptions with keywords can help find your codingmarks more easily through search. You can give an overview of the codingmark and place keywords in the beginning of the description."
+                placeholder="Writing descriptions with keywords can help find your bookmarks more easily through search. You can give an overview of the bookmark and place keywords in the beginning of the description."
                 style="height: 250px">
       </textarea>
       <div class="description-chars-counter">{{description.value ? description.value.length : 0}} / 1500</div>
@@ -127,11 +127,11 @@
     </div>
     <div class="form-check" style="margin-bottom: 0.5rem">
       <label class="form-check-label">
-        <input #publicCodingmark [checked]="makePublic" (click)="onClickMakePublic(publicCodingmark.checked)" class="form-check-input" type="checkbox" value="true" formControlName="shared">
+        <input #publicBookmark [checked]="makePublic" (click)="onClickMakePublic(publicBookmark.checked)" class="form-check-input" type="checkbox" value="true" formControlName="shared">
         <strong> Make this bookmark public so others can benefit</strong>
       </label>
     </div>
-    <button type="submit" class="btn btn-primary" [disabled]="!codingmarkForm.valid || personalCodingmarkPresent">Submit</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid || personalBookmarkPresent">Submit</button>
   </form>
 </div>
 
