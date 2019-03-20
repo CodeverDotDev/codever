@@ -2,7 +2,7 @@ import { RouterModule, Routes, UrlSegment } from '@angular/router';
 import {NgModule} from '@angular/core';
 import {TagComponent} from './tag/tag.component';
 import {AboutComponent} from './about/about.component';
-import {PublicBookmarksComponent} from './codingmark/public-bookmarks.component';
+import {PublicBookmarksComponent} from './bookmarks/public-bookmarks.component';
 
 export function tagMatcher(url: UrlSegment[]) {
     return url.length === 1 && url[0].path !== 'personal' ? ({consumed: url}) : null;

@@ -10,8 +10,8 @@ import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material
 import {Observable} from 'rxjs';
 import {languages} from '../../shared/language-options';
 import {tagsValidator} from '../../shared/tags-validation.directive';
-import {PublicBookmarksStore} from '../../public/codingmark/store/public-bookmarks-store.service';
-import {PublicBookmarksService} from '../../public/codingmark/public-bookmarks.service';
+import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
+import {PublicBookmarksService} from '../../public/bookmarks/public-bookmarks.service';
 import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
 import {RateBookmarkRequest, RatingActionType} from '../../core/model/rate-bookmark.request';
 
