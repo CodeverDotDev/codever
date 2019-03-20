@@ -6,7 +6,7 @@ import {SharedModule} from '../shared/shared.module';
 import {MarkdownService} from './markdown.service';
 import {AuthGuard} from './auth-guard.service';
 import {RouterModule} from '@angular/router';
-import {UpdatePersonalCodingmarkComponent} from './update/update-personal-codingmark.component';
+import {UpdatePersonalBookmarkComponent} from './update/update-personal-bookmark.component';
 import {CreatePersonalBookmarkComponent} from './create/create-personal-bookmark.component';
 import {
   MatAutocompleteModule, MatChipsModule, MatFormFieldModule, MatIconModule,
@@ -20,7 +20,7 @@ import {PublicBookmarksRoutingModule} from '../public/public-routing.module';
   declarations : [
     PersonalBookmarksListComponent,
     CreatePersonalBookmarkComponent,
-    UpdatePersonalCodingmarkComponent,
+    UpdatePersonalBookmarkComponent,
     PersonalBookmarksComponent
   ],
   imports: [

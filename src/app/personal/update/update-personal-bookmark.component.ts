@@ -10,10 +10,10 @@ import {allTags} from '../../core/model/all-tags.const.en';
 
 @Component({
   selector: 'app-update-codingmark',
-  templateUrl: './update-personal-codingmark.component.html',
-  styleUrls: ['./update-personal-codingmark.component.scss']
+  templateUrl: './update-personal-bookmark.component.html',
+  styleUrls: ['./update-personal-bookmark.component.scss']
 })
-export class UpdatePersonalCodingmarkComponent implements OnInit {
+export class UpdatePersonalBookmarkComponent implements OnInit {
 
   codingmark: Bookmark;
 
