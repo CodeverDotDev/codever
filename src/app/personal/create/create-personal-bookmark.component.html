@@ -11,7 +11,7 @@
         <p>This URL is already public on Bookmarks.dev. You can save it as private and star it to help it get exposure</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary"(click)="onStarClick()">Star codingmark</button>
+        <button type="button" class="btn btn-primary"(click)="onStarClick()">Star bookmark</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onCancelClick()">Cancel</button>
       </div>
     </div>
@@ -39,7 +39,7 @@
       <input type="text" class="form-control" id="name"
              required
              formControlName="name"
-             placeholder="Name of the codingmark to recognize later">
+             placeholder="Name of the bookmark to recognize later">
       <div [hidden]="codingmarkForm.get('name').valid || (codingmarkForm.get('name').pristine)"
            class="alert alert-danger">
         Name is required
@@ -111,7 +111,7 @@
       <textarea class="form-control"
                 id="description"
                 formControlName="description"
-                placeholder="Writing descriptions with keywords can help find your codingmarks more easily through search. You can give an overview of the codingmark and place keywords in the beginning of the description."
+                placeholder="Writing descriptions with keywords can help find your codingmarks more easily through search. You can give an overview of the bookmark and place keywords in the beginning of the description."
                 style="height: 250px">
       </textarea>
       <div class="description-chars-counter">{{description.value ? description.value.length : 0}} / 1500</div>

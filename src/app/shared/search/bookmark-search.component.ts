@@ -15,7 +15,7 @@ import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {UserDataStore} from '../../core/user/userdata.store';
 
 @Component({
-  selector: 'app-codingmark-search',
+  selector: 'app-bookmark-search',
   templateUrl: './bookmark-search.component.html',
   styleUrls: ['./bookmark-search.component.scss']
 })
@@ -152,10 +152,10 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   }
   /**
    *
-   * @param codingmark
+   * @param bookmark
    */
-  gotoCodingmarkDetail(codingmark: Bookmark): void {
-    const link = ['/bookmarks', codingmark._id];
+  gotoCodingmarkDetail(bookmark: Bookmark): void {
+    const link = ['/bookmarks', bookmark._id];
     this.router.navigate(link);
   }
 

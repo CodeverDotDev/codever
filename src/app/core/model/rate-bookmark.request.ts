@@ -3,7 +3,7 @@ import {Bookmark} from './bookmark';
 export interface RateBookmarkRequest {
   ratingUserId: string;
   action: RatingActionType;
-  codingmark: Bookmark
+  bookmark: Bookmark
 }
 
 export enum RatingActionType {

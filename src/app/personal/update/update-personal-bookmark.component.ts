@@ -9,13 +9,13 @@ import {languages} from '../../shared/language-options';
 import {allTags} from '../../core/model/all-tags.const.en';
 
 @Component({
-  selector: 'app-update-codingmark',
+  selector: 'app-update-bookmark',
   templateUrl: './update-personal-bookmark.component.html',
   styleUrls: ['./update-personal-bookmark.component.scss']
 })
 export class UpdatePersonalBookmarkComponent implements OnInit {
 
-  codingmark: Bookmark;
+  bookmark: Bookmark;
 
   selectable = true;
   removable = true;
@@ -42,18 +42,18 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.forEach((params: Params) => {
       const id = params['id'];
-      this.codingmark = this.personalCodingmarksStore.getCodingmarkById(id);
+      this.bookmark = this.personalCodingmarksStore.getCodingmarkById(id);
     });
     this.autocompleteTags = this.personalCodingmarksStore.getPersonalAutomcompleteTags();
   }
 
   updateCodingmark(): void {
-    this.codingmark.descriptionHtml = this.markdownService.toHtml(this.codingmark.description);
+    this.bookmark.descriptionHtml = this.markdownService.toHtml(this.bookmark.description);
     const now = new Date();
-    this.codingmark.updatedAt = now;
-    this.codingmark.lastAccessedAt = now;
+    this.bookmark.updatedAt = now;
+    this.bookmark.lastAccessedAt = now;
 
-    const obs = this.personalCodingmarksStore.updateCodingmark(this.codingmark);
+    const obs = this.personalCodingmarksStore.updateCodingmark(this.bookmark);
 
     obs.subscribe(
       res => {
@@ -71,7 +71,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
     // Add our fruit
     if ((value || '').trim()) {
-      this.codingmark.tags.push( this.currentTag);
+      this.bookmark.tags.push( this.currentTag);
     }
 
     // Reset the input value
@@ -83,10 +83,10 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   }
 
   removeTag(tag: any): void {
-    const index = this.codingmark.tags.indexOf(tag);
+    const index = this.bookmark.tags.indexOf(tag);
 
     if (index >= 0) {
-      this.codingmark.tags.splice(index, 1);
+      this.bookmark.tags.splice(index, 1);
     }
   }
 

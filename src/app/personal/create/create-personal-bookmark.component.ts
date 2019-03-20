@@ -16,7 +16,7 @@ import {descriptionSizeValidator} from '../../shared/description-size-validation
 import {RateBookmarkRequest, RatingActionType} from '../../core/model/rate-bookmark.request';
 
 @Component({
-  selector: 'app-new-personal-codingmark-form',
+  selector: 'app-new-personal-bookmark-form',
   templateUrl: './create-personal-bookmark.component.html',
   styleUrls: ['./create-personal-bookmark.component.scss']
 })
@@ -188,16 +188,16 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     }
   }
 
-  private rateCodingmark(codingmark: Bookmark) {
+  private rateCodingmark(bookmark: Bookmark) {
     const rateCodingmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
       action: RatingActionType.STAR,
-      codingmark: codingmark
+      bookmark: bookmark
     }
     const obs = this.publicCodingmarksService.rateCodingmark(rateCodingmarkRequest);
     obs.subscribe(
       res => {
-        this.publicCodingmarksStore.updateCodingmarkInPublicStore(codingmark);
+        this.publicCodingmarksStore.updateCodingmarkInPublicStore(bookmark);
       }
     );
   }

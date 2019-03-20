@@ -39,7 +39,7 @@ export class PublicBookmarksService {
 
   rateCodingmark(rateCodingmarkRequest: RateBookmarkRequest): Observable<any> {
     return this.httpClient
-      .patch(`${this.securedPublicCodingmarksApiBaseUrl}/${rateCodingmarkRequest.codingmark._id}`, JSON.stringify(rateCodingmarkRequest),
+      .patch(`${this.securedPublicCodingmarksApiBaseUrl}/${rateCodingmarkRequest.bookmark._id}`, JSON.stringify(rateCodingmarkRequest),
             {headers: this.headers})
       .pipe(shareReplay());
   }
