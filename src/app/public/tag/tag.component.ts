@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { TagService } from './tag.service';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, ParamMap} from '@angular/router';
 import { Bookmark } from '../../core/model/bookmark';
 import { Observable } from 'rxjs';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
     selector: 'app-tag',
@@ -27,12 +28,17 @@ export class TagComponent implements OnInit {
 
     ngOnInit() {
         this.tag = this.route.snapshot.params['tag'];
-        if (this.tag) {
+      this.route.paramMap.subscribe(
+        params => {
+          this.tag = params.get('tag');
+          if (this.tag) {
             this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag);
-        } else {
+          } else {
             this.tag = this.route.snapshot.url[0].path;
             this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag);
-        }
+          }
+        });
+
 
         this.keycloakService.isLoggedIn().then(isLoggedIn => {
             if (isLoggedIn) {
