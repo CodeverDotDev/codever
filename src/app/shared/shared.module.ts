@@ -9,6 +9,7 @@ import {BookmarkSearchComponent} from './search/bookmark-search.component';
 import {BookmarkTextComponent} from './bookmark-text.component';
 import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
 import {MatAutocompleteModule} from '@angular/material';
+import {RouterModule} from '@angular/router';
 
 
 /**
@@ -21,6 +22,7 @@ import {MatAutocompleteModule} from '@angular/material';
     FormsModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
+    RouterModule
   ],
   declarations: [
     HighLightPipe,
