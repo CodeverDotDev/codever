@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserData} from './model/user-data';
-import {Codingmark} from './model/codingmark';
+import {Bookmark} from './model/bookmark';
 import {shareReplay} from 'rxjs/operators';
 
 @Injectable()
@@ -29,9 +29,9 @@ export class UserService {
       .get<UserData>(`${this.usersApiBaseUrl}/${userId}` );
   }
 
-  getLaterReads(userId: string): Observable<Codingmark[]> {
+  getLaterReads(userId: string): Observable<Bookmark[]> {
     return this.httpClient
-      .get<Codingmark[]>(`${this.usersApiBaseUrl}/${userId}/later-reads` );
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/later-reads` );
   }
 
 }

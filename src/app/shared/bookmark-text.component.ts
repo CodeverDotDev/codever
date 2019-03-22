@@ -7,17 +7,17 @@ import {
   Input,
   ViewChild
 } from '@angular/core';
-import {Codingmark} from '../core/model/codingmark';
+import {Bookmark} from '../core/model/bookmark';
 
 @Component({
-  selector: 'app-codingmark-text',
-  templateUrl: './codingmark-text.component.html',
-    styleUrls: [ './codingmark-text.component.scss' ]
+  selector: 'app-bookmark-text',
+  templateUrl: './bookmark-text.component.html',
+    styleUrls: [ './bookmark-text.component.scss' ]
 })
-export class CodingmarkTextComponent  implements  AfterViewInit, AfterViewChecked {
+export class BookmarkTextComponent  implements  AfterViewInit, AfterViewChecked {
 
   @Input()
-  codingmark: Codingmark;
+  bookmark: Bookmark;
 
   @Input()
   queryText: string;
@@ -25,7 +25,7 @@ export class CodingmarkTextComponent  implements  AfterViewInit, AfterViewChecke
   show = false; // add one more property
   public showMoreText = false;
 
-  @ViewChild('codingmarkText') elementView: ElementRef;
+  @ViewChild('bookmarkText') elementView: ElementRef;
   public viewHeight: number;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
