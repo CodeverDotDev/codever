@@ -5,4 +5,4 @@ import {Component} from '@angular/core';
     <router-outlet></router-outlet>
   `
 })
-export class PersonalCodingmarksComponent { }
+export class PersonalBookmarksComponent { }

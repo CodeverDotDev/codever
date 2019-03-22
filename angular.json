@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "codingmarks": {
+    "bookmarks": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "codingmarks:build"
+            "browserTarget": "bookmarks:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "codingmarks:build:production"
+              "browserTarget": "bookmarks:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "codingmarks:build"
+            "browserTarget": "bookmarks:build"
           }
         },
         "test": {
@@ -94,7 +94,7 @@
         }
       }
     },
-    "codingmarks-e2e": {
+    "bookmarks-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -103,7 +103,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "codingmarks:serve"
+            "devServerTarget": "bookmarks:serve"
           }
         },
         "lint": {
@@ -118,7 +118,7 @@
       }
     }
   },
-  "defaultProject": "codingmarks",
+  "defaultProject": "bookmarks",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

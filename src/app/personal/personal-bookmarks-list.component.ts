@@ -1,10 +1,10 @@
 
 import {map} from 'rxjs/operators';
 import {Component, OnInit} from '@angular/core';
-import {Codingmark} from '../core/model/codingmark';
+import {Bookmark} from '../core/model/bookmark';
 import {Observable} from 'rxjs';
 import {List} from 'immutable';
-import {PersonalCodingmarksStore} from '../core/store/personal-codingmarks-store.service';
+import {PersonalBookmarksStore} from '../core/store/personal-bookmarks-store.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserData} from '../core/model/user-data';
 import {UserDataStore} from '../core/user/userdata.store';
@@ -12,21 +12,21 @@ import {UserService} from '../core/user.service';
 import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
-  selector: 'app-user-codingmarks',
-  templateUrl: './personal-codingmarks-list.component.html',
-  styleUrls: ['./personal-codingmarks-list.component.scss']
+  selector: 'app-user-bookmarks',
+  templateUrl: './personal-bookmarks-list.component.html',
+  styleUrls: ['./personal-bookmarks-list.component.scss']
 })
-export class PersonalCodingmarksListComponent implements OnInit {
+export class PersonalBookmarksListComponent implements OnInit {
 
-  personalCodingmarks$: Observable<List<Codingmark>>;
-  laterReads$: Observable<Codingmark[]>;
+  personalBookmarks$: Observable<List<Bookmark>>;
+  laterReads$: Observable<Bookmark[]>;
   query = '';
   userData: UserData;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private personalCodingmarksStore: PersonalCodingmarksStore,
+    private personalBookmarksStore: PersonalBookmarksStore,
     private userDataStore: UserDataStore,
     private userService: UserService) { }
 
@@ -40,7 +40,7 @@ export class PersonalCodingmarksListComponent implements OnInit {
         this.query = this.query.replace(/\+/g,  ' ');
       }
     }
-    this.personalCodingmarks$ = this.personalCodingmarksStore.getPersonalCodingmarks();
+    this.personalBookmarks$ = this.personalBookmarksStore.getPersonalBookmarks();
     this.userDataStore.getUserData().subscribe(data => {
         this.userData = data;
       },

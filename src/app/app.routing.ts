@@ -5,7 +5,7 @@ import {PageNotFoundComponent} from './not-found.component';
 const routes: Routes = [
   {
     path: 'personal',
-    loadChildren: 'app/personal/personal-codingmarks.module#PersonalCodingmarksModule'
+    loadChildren: 'app/personal/personal-bookmarks.module#PersonalBookmarksModule'
   },
   {
     path: 'public',

@@ -11,7 +11,7 @@ at [https://github.com/Codingpedia/bookmarks](https://github.com/Codingpedia/boo
  
  <br/>
  
-![Codingmarks Context](src/assets/bookmarks-dev-context.png)
+![Bookmarks Context](src/assets/bookmarks-dev-context.png)
 
 ---
 This repo contains the Angular front-end source code of the [www.bookmarks.dev](http://www.bookmarks.dev) website
