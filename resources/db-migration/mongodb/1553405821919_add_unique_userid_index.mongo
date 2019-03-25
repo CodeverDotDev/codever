@@ -1,0 +1,5 @@
+
+> db.users.createIndex({userId:1}, {unique: true})
+
+-- show indexes (verify is present)
+> db.users.getIndexes()
