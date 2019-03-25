@@ -195,7 +195,6 @@ export class BookmarkFilterService {
         , '^'
         , '$'
         , '|'
-        , '/'
       ],
       regex = RegExp('[' + specials.join('\\') + ']', 'g');
     return str.replace(regex, '\\$&'); // $& means the whole matched string
