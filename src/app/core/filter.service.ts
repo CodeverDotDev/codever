@@ -17,7 +17,7 @@ export class BookmarkFilterService {
    * @param bookmarks$ - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarksBySearchTerm(query: string, language: string, bookmarks$: Observable<List<Bookmark>>): Bookmark[] {
+  filterBookmarks$BySearchTerm(query: string, language: string, bookmarks$: Observable<any>): Bookmark[] {
 
     const searchedTermsAndTags: [string[], string[]] = this.splitSearchQuery(query);
     const searchedTerms: string[] = searchedTermsAndTags[0];
@@ -25,8 +25,15 @@ export class BookmarkFilterService {
     let result: Bookmark[] = [];
 
     bookmarks$.subscribe(
+
       bookmarks => {
-        let filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
+        let filteredBookmarks;
+        if (bookmarks instanceof List) {
+          filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
+        } else {
+          filteredBookmarks = bookmarks;
+        }
+
         if (language && language !== 'all') {
           filteredBookmarks = filteredBookmarks.filter(x => x.language === language);
         }
@@ -45,6 +52,29 @@ export class BookmarkFilterService {
     );
 
     return result;
+  }
+
+  filterBookmarksBySearchTerm(query: string, language: string, bookmarks: Bookmark[]): Bookmark[] {
+
+    const searchedTermsAndTags: [string[], string[]] = this.splitSearchQuery(query);
+    const searchedTerms: string[] = searchedTermsAndTags[0];
+    const searchedTags: string[] = searchedTermsAndTags[1];
+
+
+    let filteredBookmarks;
+    filteredBookmarks = bookmarks;
+
+    if (language && language !== 'all') {
+      filteredBookmarks = filteredBookmarks.filter(x => x.language === language);
+    }
+    searchedTags.forEach(tag => {
+      filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag));
+    });
+    searchedTerms.forEach(term => {
+      filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsSearchedTerm(x, term.trim()));
+    });
+
+    return filteredBookmarks;
   }
 
   /**

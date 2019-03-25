@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs';
+import {Observable, of as observableOf} from 'rxjs';
 
 import {map, startWith} from 'rxjs/operators';
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
@@ -38,7 +38,6 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   public showNotFound = false;
   public numberOfResultsFiltered: number;
   counter = 10;
-  previousTerm: string;
   language = 'all';
 
   languages = languages;
@@ -81,7 +80,6 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
@@ -90,7 +88,6 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
         });
       }
     });
-
   }
 
   private _filter(value: string): string[] {
@@ -107,6 +104,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (this.query) {
       this.searchControl.setValue(this.query);
+      this.filterBookmarks(this.query);
     }
   }
 
@@ -126,6 +124,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   setQueryFromParentComponent(queryFromOutside: string) {
     this.searchControl.setValue(queryFromOutside);
+    this.filterBookmarks(queryFromOutside);
   }
 
   onLanguageChange(newValue) {
@@ -160,6 +159,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();
+    this.filterBookmarks(selectedValue);
   }
 
   focusOnSearchControl() {
@@ -171,6 +171,18 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   filterBookmarks(query: string) {
-    this.filteredBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(query)
+    this.queryText = query;
+    const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query);
+    filteredPublicBookmarks.subscribe(bookmarks => {
+      this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(query, this.language, bookmarks);
+      this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
+      if (this.numberOfResultsFiltered > 0) {
+        this.showNotFound = false;
+        this.filteredBookmarks = observableOf(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
+      } else {
+        this.showNotFound = true;
+        this.filteredBookmarks =  observableOf<Bookmark[]>([]);
+      }
+    });
   }
 }

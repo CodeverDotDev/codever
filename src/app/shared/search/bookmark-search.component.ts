@@ -106,7 +106,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
           }
 
           this.queryText = term;
-          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(term, this.language, this.bookmarks);
+          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarks$BySearchTerm(term, this.language, this.bookmarks);
           this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
           if (this.numberOfResultsFiltered > 0) {
             this.showNotFound = false;
