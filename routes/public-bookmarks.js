@@ -5,7 +5,9 @@ var router = express.Router();
 var Bookmark = require('../models/bookmark');
 var HttpStatus = require('http-status-codes');
 var MyError = require('../models/error');
+const escapeStringRegexp = require('escape-string-regexp');
 
+const MAX_NUMBER_RETURNED_RESULTS = 100;
 
 /**
  *  Returns the public bookmarks
@@ -18,6 +20,37 @@ router.get('/', async (req, res) => {
       var regExpSearch = [{name: {$regex: regExpTerm}}, {description: {$regex: regExpTerm}}, {category: {$regex: regExpTerm}}, {tags: {$regex: regExpTerm}}];
       const bookmarks = await Bookmark.find({'$or': regExpSearch})
       res.send(bookmarks);
+    } else if (req.query.query) {
+      //split in text and tags
+      const searchedTermsAndTags = splitSearchQuery(req.query.query);
+      const words = searchedTermsAndTags[0];
+      const tags = searchedTermsAndTags[1];
+      let bookmarks = [];
+      if(words.length > 0 && tags.length > 0) {
+        bookmarks = await Bookmark.find({
+          $and: [
+            {
+              tags:
+                {
+                  $all: tags
+                }
+            },
+            {
+              $text:
+                {
+                  $search: words.join(' ')
+                }
+            }
+          ]
+        }).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
+      } else if (words.length > 0) {
+        const termsJoined = words.join(' ');
+        const termsQuery = escapeStringRegexp(termsJoined);
+        bookmarks = await Bookmark.find( { $text: { $search: termsQuery } } ).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
+      } else {
+        bookmarks = await Bookmark.find({tags: { $all: tags } }).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
+      }
+      res.send(bookmarks);
     } else if (req.query.location) {
       const bookmark = await Bookmark.findOne({'shared': true, location: req.query.location}).lean().exec();
       if (!bookmark) {
@@ -25,7 +58,7 @@ router.get('/', async (req, res) => {
       }
       res.send(bookmark);
     } else if (req.query.tag) {//get all bookmarks tagged with "tag"
-      const bookmarks = await Bookmark.find({tags: req.query.tag}).sort({createdAt: -1}).lean().exec();
+      const bookmarks = await Bookmark.find({tags: req.query.tag}).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
       res.send(bookmarks);
     } else {//no filter - all bookmarks ordered by creation date descending
       const bookmarks = await Bookmark.find({'shared': true}).sort({createdAt: -1}).lean().exec();
@@ -36,6 +69,42 @@ router.get('/', async (req, res) => {
   }
 
 });
+
+function escapeUrlForMongoSearch(str) {
+  const specials = [
+      // order matters for these
+       '['
+      , ']'
+      // order doesn't matter for any of these
+      , '{'
+      , '}'
+      , '('
+      , ')'
+      , '*'
+      , '+'
+      , '?'
+      , '.'
+      , '\\'
+      , '^'
+      , '$'
+      , '|'
+      , ':'
+      , '/'
+    ],
+    regex = RegExp('[' + specials.join('\\') + ']', 'g');
+  return str.replace(regex, '\\$&'); // $& means the whole matched string
+}
+
+//https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
+function validURL(str) {
+  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return !!pattern.test(str);
+}
 
 /* GET title of bookmark given its url */
 router.get('/scrape', function (req, res, next) {
@@ -149,5 +218,69 @@ router.get('/advanced-search', function (req, res, next) {
   }
 
 });
+
+function splitSearchQuery(query) {
+
+  const result = [[], []];
+
+  const terms = [];
+  let term = '';
+  const tags = [];
+  let tag = '';
+
+  let isInsideTerm = false;
+  let isInsideTag = false;
+
+
+  for (let i = 0; i < query.length; i++) {
+    const currentCharacter = query[i];
+    if (currentCharacter === ' ') {
+      if (!isInsideTag) {
+        if (!isInsideTerm) {
+          continue;
+        } else {
+          terms.push(term);
+          isInsideTerm = false;
+          term = '';
+        }
+      } else {
+        tag += ' ';
+      }
+    } else if (currentCharacter === '[') {
+      if (isInsideTag) {
+        tags.push(tag.trim());
+        tag = '';
+      } else {
+        isInsideTag = true;
+      }
+    } else if (currentCharacter === ']') {
+      if (isInsideTag) {
+        isInsideTag = false;
+        tags.push(tag.trim());
+        tag = '';
+      }
+    } else {
+      if (isInsideTag) {
+        tag += currentCharacter;
+      } else {
+        isInsideTerm = true;
+        term += currentCharacter;
+      }
+    }
+  }
+
+  if (tag.length > 0) {
+    tags.push(tag.trim());
+  }
+
+  if (term.length > 0) {
+    terms.push(term);
+  }
+
+  result[0] = terms;
+  result[1] = tags;
+
+  return result;
+}
 
 module.exports = router;
