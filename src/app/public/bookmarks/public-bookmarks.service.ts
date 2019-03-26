@@ -26,8 +26,10 @@ export class PublicBookmarksService {
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl);
   }
 
-  getFilteredPublicBookmarks(query: string): Observable<Bookmark[]> {
-    const params = new HttpParams().set('query', query);
+  getFilteredPublicBookmarks(query: string, limit: number): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('limit', limit.toString());
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
 
@@ -46,7 +48,7 @@ export class PublicBookmarksService {
   rateBookmark(rateBookmarkRequest: RateBookmarkRequest): Observable<any> {
     return this.httpClient
       .patch(`${this.securedPublicBookmarksApiBaseUrl}/${rateBookmarkRequest.bookmark._id}`, JSON.stringify(rateBookmarkRequest),
-            {headers: this.headers})
+        {headers: this.headers})
       .pipe(shareReplay());
   }
 
