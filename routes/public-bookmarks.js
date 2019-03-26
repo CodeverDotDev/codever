@@ -11,7 +11,6 @@ const MAX_NUMBER_RETURNED_RESULTS = 100;
 
 /**
  *  Returns the public bookmarks
- *  Currently only the get all (no filter) function is used
  */
 router.get('/', async (req, res) => {
   try {
@@ -22,34 +21,50 @@ router.get('/', async (req, res) => {
       res.send(bookmarks);
     } else if (req.query.query) {
       //split in text and tags
+
+      const limit = parseInt(req.query.limit);
       const searchedTermsAndTags = splitSearchQuery(req.query.query);
-      const words = searchedTermsAndTags[0];
-      const tags = searchedTermsAndTags[1];
+      const searchedTerms = searchedTermsAndTags[0];
+      const searchedTags = searchedTermsAndTags[1];
       let bookmarks = [];
-      if(words.length > 0 && tags.length > 0) {
+      if (searchedTerms.length > 0 && searchedTags.length > 0) {
         bookmarks = await Bookmark.find({
           $and: [
             {
               tags:
                 {
-                  $all: tags
+                  $all: searchedTags
                 }
             },
             {
               $text:
                 {
-                  $search: words.join(' ')
+                  $search: searchedTerms.join(' ')
                 }
             }
           ]
-        }).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
-      } else if (words.length > 0) {
-        const termsJoined = words.join(' ');
+        }).sort({createdAt: -1}).lean().exec();
+        if(searchedTerms.length > 1) {
+          searchedTerms.forEach(term => {
+            bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
+          });
+        }
+        bookmarks = bookmarks.slice(0, limit);
+      } else if (searchedTerms.length > 0) {
+        const termsJoined = searchedTerms.join(' ');
         const termsQuery = escapeStringRegexp(termsJoined);
-        bookmarks = await Bookmark.find( { $text: { $search: termsQuery } } ).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
+        bookmarks = await Bookmark.find({$text: {$search: termsQuery}}).sort({createdAt: -1}).lean().exec();
+        //double check if multiple words it must contain both terms (capability not supported by mongo text index, it finds both)
+        if ( searchedTerms.length > 1){
+          searchedTerms.forEach(term => {
+            bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
+          });
+        }
+        bookmarks = bookmarks.slice(0, limit);
       } else {
-        bookmarks = await Bookmark.find({tags: { $all: tags } }).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
+        bookmarks = await Bookmark.find({tags: {$all: searchedTags}}).sort({createdAt: -1}).limit(limit).lean().exec();
       }
+
       res.send(bookmarks);
     } else if (req.query.location) {
       const bookmark = await Bookmark.findOne({'shared': true, location: req.query.location}).lean().exec();
@@ -61,7 +76,10 @@ router.get('/', async (req, res) => {
       const bookmarks = await Bookmark.find({tags: req.query.tag}).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
       res.send(bookmarks);
     } else {//no filter - all bookmarks ordered by creation date descending
-      const bookmarks = await Bookmark.find({'shared': true}).sort({createdAt: -1}).lean().exec();
+      const bookmarks = await Bookmark.find({'shared': true})
+        .sort({createdAt: -1})
+        .limit(MAX_NUMBER_RETURNED_RESULTS)
+        .lean().exec();
       res.send(bookmarks);
     }
   } catch (err) {
@@ -70,12 +88,43 @@ router.get('/', async (req, res) => {
 
 });
 
-function escapeUrlForMongoSearch(str) {
+function bookmarkContainsSearchedTerm(bookmark, searchedTerm) {
+  let result = false;
+  // const escapedSearchPattern = '\\b' + this.escapeRegExp(searchedTerm.toLowerCase()) + '\\b'; word boundary was not enough, especially for special characters which can happen in coding
+  // https://stackoverflow.com/questions/23458872/javascript-regex-word-boundary-b-issue
+  const separatingChars = '\\s\\.,;#\\-\\/_\\[\\]\\(\\)\\*\\+';
+  const escapedSearchPattern = `(^|[${separatingChars}])(${escapeRegExp(searchedTerm.toLowerCase())})(?=$|[${separatingChars}])`;
+  const pattern = new RegExp(escapedSearchPattern);
+  if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
+    || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
+    || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
+    || (bookmark.githubURL && pattern.test(bookmark.githubURL.toLowerCase()))
+  ) {
+    result = true;
+  }
+
+  if (result) {
+    return true;
+  } else {
+    // if not found already look through the tags also
+    bookmark.tags.forEach(tag => {
+      if (pattern.test(tag.toLowerCase())) {
+        result = true;
+      }
+    });
+  }
+
+  return result;
+}
+
+function escapeRegExp(str) {
   const specials = [
       // order matters for these
-       '['
+      '-'
+      , '['
       , ']'
       // order doesn't matter for any of these
+      , '/'
       , '{'
       , '}'
       , '('
@@ -88,22 +137,9 @@ function escapeUrlForMongoSearch(str) {
       , '^'
       , '$'
       , '|'
-      , ':'
-      , '/'
     ],
     regex = RegExp('[' + specials.join('\\') + ']', 'g');
   return str.replace(regex, '\\$&'); // $& means the whole matched string
-}
-
-//https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
-function validURL(str) {
-  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-  return !!pattern.test(str);
 }
 
 /* GET title of bookmark given its url */
