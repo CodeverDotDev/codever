@@ -44,6 +44,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   userIsLoggedIn = false;
   userId: string;
+  previousTerm: string;
 
   autocompleteSearches = [];
   filteredSearches: Observable<any[]>;
@@ -99,6 +100,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   showMoreResults() {
     this.searchControl.setValue(this.queryText); // trigger this.searchControl.valueChanges
     this.counter += 10;
+    this.filterBookmarks(this.queryText);
   }
 
   ngAfterViewInit(): void {
@@ -171,8 +173,12 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   filterBookmarks(query: string) {
+    if (this.previousTerm !== query) {
+      this.previousTerm = query;
+      this.counter = 10;
+    }
     this.queryText = query;
-    const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query);
+    const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query, this.counter);
     filteredPublicBookmarks.subscribe(bookmarks => {
       this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(query, this.language, bookmarks);
       this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
