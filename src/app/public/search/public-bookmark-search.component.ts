@@ -31,7 +31,6 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   _userData: UserData;
 
   filteredBookmarks: Observable<Bookmark[]>;
-  private filterBookmarksBySearchTerm: Bookmark[];
 
   searchControl = new FormControl();
   queryText: string;
@@ -180,11 +179,10 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.queryText = query;
     const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query, this.counter);
     filteredPublicBookmarks.subscribe(bookmarks => {
-      this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarksBySearchTerm(query, this.language, bookmarks);
-      this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
+      this.numberOfResultsFiltered = bookmarks.length;
       if (this.numberOfResultsFiltered > 0) {
         this.showNotFound = false;
-        this.filteredBookmarks = observableOf(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
+        this.filteredBookmarks = observableOf(bookmarks.slice(0, this.counter));
       } else {
         this.showNotFound = true;
         this.filteredBookmarks =  observableOf<Bookmark[]>([]);

@@ -8,7 +8,6 @@ import {environment} from 'environments/environment';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {shareReplay} from 'rxjs/operators';
 import {RateBookmarkRequest} from '../../core/model/rate-bookmark.request';
-import {List} from 'immutable';
 
 @Injectable()
 export class PublicBookmarksService {

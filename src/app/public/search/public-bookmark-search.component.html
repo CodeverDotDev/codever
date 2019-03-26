@@ -1,6 +1,6 @@
 <div id="search-component" class="input-group">
   <div class="input-group-prepend">
-    <span class="input-group-text" [class.focused]="isFocusOnSearchControl" id="basic-addon1"><i class="fa fa-search"></i></span>
+    <span class="input-group-text" [class.focused]="isFocusOnSearchControl" id="basic-addon1" (click)="filterBookmarks(publicSearchBox.value)"><i class="fa fa-search"></i></span>
   </div>
   <input
     #publicSearchBox
@@ -38,11 +38,6 @@
 <div *ngIf="showNotFound" class="alert alert-info" role="alert">
   No bookmarks found for "<strong>{{queryText}}</strong>". Please try a different search
 </div>
-
-<!--<div *ngIf="numberOfResultsFiltered > 0" class="alert alert-success" role="alert">
-  {{numberOfResultsFiltered}} results found <span *ngIf="numberOfResultsFiltered > 50"> - please consider refining your search</span>
-</div>-->
-
 
 <app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="queryText"
                            [shownSize]="counter" [userData]="_userData" (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
