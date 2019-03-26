@@ -23,6 +23,7 @@ export class PublicBookmarksComponent implements OnInit {
   tags: string[] = allTags;
   query = '';
   userData: UserData;
+  counter = 20;
 
   @ViewChild(PublicBookmarkSearchComponent)
   private searchComponent: PublicBookmarkSearchComponent;
@@ -61,5 +62,9 @@ export class PublicBookmarksComponent implements OnInit {
   onTagClick(tag: string) {
     this.searchComponent.setQueryFromParentComponent('[' + tag + ']');
     this.searchComponent.language = 'all';
+  }
+
+  showMoreResults() {
+    this.counter += 20;
   }
 }
