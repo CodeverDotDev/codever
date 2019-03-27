@@ -8,8 +8,8 @@ var mongoose = require('mongoose');
 var apiBasePathRouter = require('./routes/index');
 var versionRouter = require('./routes/version');
 var usersRouter = require('./routes/users/users');
-var publicCodingmarksRouter = require('./routes/public-codingmarks');
-var securedPublicCodingmarksRouter = require('./routes/secured-public-codingmarks');
+var publicBookmarksRouter = require('./routes/public-bookmarks');
+var securedPublicBookmarksRouter = require('./routes/secured-public-bookmarks');
 
 var fs = require('fs-extra');
 var rfs = require('rotating-file-stream');
@@ -61,8 +61,8 @@ app.use(function(req, res, next) {
 
 app.use('/api', apiBasePathRouter);
 app.use('/api/version', versionRouter);
-app.use('/api/public/bookmarks', publicCodingmarksRouter);
-app.use('/api/secured/public/bookmarks', securedPublicCodingmarksRouter);
+app.use('/api/public/bookmarks', publicBookmarksRouter);
+app.use('/api/secured/public/bookmarks', securedPublicBookmarksRouter);
 app.use('/api/personal/users', usersRouter);
 
 // catch 404 and forward to error handler

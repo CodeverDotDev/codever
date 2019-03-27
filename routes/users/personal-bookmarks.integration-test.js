@@ -9,15 +9,15 @@ const config = common.config();
 
 const superagent = require('superagent');
 
-describe('Personal Codingmarks CRUD operations', function () {
+describe('Personal Bookmarks CRUD operations', function () {
 
   let bearerToken;
   const testUserId = config.integration_tests.test_user_id;
   const baseApiUrlUnderTest = '/api/personal/users/';
 
-  const codingmarkExampleTitle = "Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg"
-  const codingmarkExample = {
-    "name": codingmarkExampleTitle,
+  const bookmarkExampleTitle = "Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg"
+  const bookmarkExample = {
+    "name": bookmarkExampleTitle,
     "location": "http://www.codingpedia.org/ama/cleaner-code-in-nodejs-with-async-await-mongoose-calls-example",
     "language": "en",
     "tags": [
@@ -27,7 +27,7 @@ describe('Personal Codingmarks CRUD operations', function () {
       "mongodb"
     ],
     "publishedOn": "2017-11-05",
-    "githubURL": "https://github.com/Codingpedia/codingmarks-api",
+    "githubURL": "https://github.com/Codingpedia/bookmarks-api",
     "description": "Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs",
     "descriptionHtml": "<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>",
     "userId": "33d22b0e-9474-46b3-9da4-b1fb5d273abc",
@@ -52,9 +52,9 @@ describe('Personal Codingmarks CRUD operations', function () {
   });
 
   describe('invalid user id calls' , function () {
-    it('should fail trying to GET codingmarks with false user id', function (done) {
+    it('should fail trying to GET bookmarks with false user id', function (done) {
       request(app)
-        .get(baseApiUrlUnderTest + 'false_user_id/codingmarks')
+        .get(baseApiUrlUnderTest + 'false_user_id/bookmarks')
         .set('Authorization', bearerToken)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
@@ -62,31 +62,31 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
-    it('should fail trying CREATE codingmark with invalid user id', function (done) {
+    it('should fail trying CREATE bookmark with invalid user id', function (done) {
       request(app)
-        .post(baseApiUrlUnderTest + 'false_user_id/codingmarks')
+        .post(baseApiUrlUnderTest + 'false_user_id/bookmarks')
         .set('Authorization', bearerToken)
-        .send(codingmarkExample)
+        .send(bookmarkExample)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
           done();
         });
     });
 
-    it('should fail trying to UPDATE codingmark with invalid user id', function (done) {
+    it('should fail trying to UPDATE bookmark with invalid user id', function (done) {
       request(app)
-        .put(baseApiUrlUnderTest + 'false_user_id/codingmarks/1324343')
+        .put(baseApiUrlUnderTest + 'false_user_id/bookmarks/1324343')
         .set('Authorization', bearerToken)
-        .send(codingmarkExample)
+        .send(bookmarkExample)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
           done();
         });
     });
 
-    it('should fail trying to DELETE codingmark with invalid user id', function (done) {
+    it('should fail trying to DELETE bookmark with invalid user id', function (done) {
       request(app)
-        .delete(baseApiUrlUnderTest + 'false_user_id/codingmarks/12343434')
+        .delete(baseApiUrlUnderTest + 'false_user_id/bookmarks/12343434')
         .set('Authorization', bearerToken)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
@@ -95,14 +95,14 @@ describe('Personal Codingmarks CRUD operations', function () {
     });
   });
 
-  describe('invalid codingmark attributes at CREATION' , function () {
-    it('should fail trying to CREATE codingmark without a name', function (done) {
-      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
-      invalidCodingmark.name = '';
+  describe('invalid bookmark attributes at CREATION' , function () {
+    it('should fail trying to CREATE bookmark without a name', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.name = '';
       request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
         .set('Authorization', bearerToken)
-        .send(invalidCodingmark)
+        .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           expect(response.body.title).to.equal('Missing required attributes');
@@ -110,13 +110,13 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
-    it('should fail trying to CREATE codingmark without a location', function (done) {
-      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
-      invalidCodingmark.location = '';
+    it('should fail trying to CREATE bookmark without a location', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.location = '';
       request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
         .set('Authorization', bearerToken)
-        .send(invalidCodingmark)
+        .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           expect(response.body.title).to.equal('Missing required attributes');
@@ -124,13 +124,13 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
-    it('should fail trying to CREATE codingmark without tags', function (done) {
-      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
-      invalidCodingmark.tags = [];
+    it('should fail trying to CREATE bookmark without tags', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.tags = [];
       request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
         .set('Authorization', bearerToken)
-        .send(invalidCodingmark)
+        .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           expect(response.body.title).to.equal('Missing required attributes');
@@ -138,13 +138,13 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
-    it('should fail trying to CREATE codingmark with too many tags', function (done) {
-      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
-      invalidCodingmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
+    it('should fail trying to CREATE bookmark with too many tags', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
       request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
         .set('Authorization', bearerToken)
-        .send(invalidCodingmark)
+        .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           expect(response.body.title).to.equal('Too many tags have been submitted');
@@ -152,19 +152,19 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
-    it('should fail trying to CREATE codingmark with a too big description', function (done) {
-      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
+    it('should fail trying to CREATE bookmark with a too big description', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const textSnippet = "long text in the making";
       let longText = textSnippet;
       for (var i = 0; i < 100; i++) {
         longText += textSnippet;
       }
-      invalidCodingmark.description = longText;
+      invalidBookmark.description = longText;
 
       request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
         .set('Authorization', bearerToken)
-        .send(invalidCodingmark)
+        .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           expect(response.body.title).to.contain('The description is too long.');
@@ -172,19 +172,19 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
-    it('should fail trying to CREATE codingmark with a description with too many lines', function (done) {
-      let invalidCodingmark = JSON.parse(JSON.stringify(codingmarkExample));
+    it('should fail trying to CREATE bookmark with a description with too many lines', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const line = "oneline\n";
       let longText = line;
       for (var i = 0; i < 101; i++) {
         longText += line;
       }
-      invalidCodingmark.description = longText;
+      invalidBookmark.description = longText;
 
       request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
         .set('Authorization', bearerToken)
-        .send(invalidCodingmark)
+        .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           expect(response.body.title).to.contain('The description hast too many lines.');
@@ -194,23 +194,23 @@ describe('Personal Codingmarks CRUD operations', function () {
 
   });
 
-  describe('inexistent codingmark id tests' , function () {
-    it('should fail trying to update inexistent codingmark', function (done) {
-      let inexistentCodingmarkId = '507f1f77bcf86cd799439011';
+  describe('inexistent bookmark id tests' , function () {
+    it('should fail trying to update inexistent bookmark', function (done) {
+      let inexistentBookmarkId = '507f1f77bcf86cd799439011';
       request(app)
-        .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${inexistentCodingmarkId}`)
+        .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${inexistentBookmarkId}`)
         .set('Authorization', bearerToken)
-        .send(codingmarkExample)
+        .send(bookmarkExample)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.NOT_FOUND);
           expect(response.body.title).to.equal('Not Found Error');
           done();
         });
     });
-    it('should fail trying to delete inexistent codingmark', function (done) {
-      let inexistentCodingmarkId = '507f1f77bcf86cd799439011';
+    it('should fail trying to delete inexistent bookmark', function (done) {
+      let inexistentBookmarkId = '507f1f77bcf86cd799439011';
       request(app)
-        .delete(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${inexistentCodingmarkId}`)
+        .delete(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${inexistentBookmarkId}`)
         .set('Authorization', bearerToken)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.NOT_FOUND);
@@ -221,15 +221,15 @@ describe('Personal Codingmarks CRUD operations', function () {
 
   });
 
-  describe('test successful creation, update and deletion of codingmark' , function () {
+  describe('test successful creation, update and deletion of bookmark' , function () {
 
-    let createdCodingmark;
+    let createdBookmark;
 
-    it('should succeed creating example codingmark', function (done) {
+    it('should succeed creating example bookmark', function (done) {
       request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
         .set('Authorization', bearerToken)
-        .send(codingmarkExample)
+        .send(bookmarkExample)
         .end(function (error, response) {
           if (error) {
             return done(error);
@@ -239,34 +239,34 @@ describe('Personal Codingmarks CRUD operations', function () {
           const isLocationHeaderPresent = response.header['location'] !== undefined;
           expect(isLocationHeaderPresent).to.be.true;
 
-          //set the id of the codingmarkexample now that it is created
+          //set the id of the bookmarkexample now that it is created
           const lastSlashIndex = locationHeaderValue.lastIndexOf('/');
-          const codingmarkId = locationHeaderValue.substring(lastSlashIndex + 1);
+          const bookmarkId = locationHeaderValue.substring(lastSlashIndex + 1);
 
           request(app)
-            .get(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${codingmarkId}`)
+            .get(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${bookmarkId}`)
             .set('Authorization', bearerToken)
             .end(function (error, response) {
               if (error) {
                 return done(error);
               }
               expect(response.statusCode).to.equal(HttpStatus.OK);
-              createdCodingmark = response.body;
-              console.log(createdCodingmark);
-              expect(createdCodingmark._id).to.equal(codingmarkId);
-              expect(createdCodingmark.name).to.equal(codingmarkExample.name);
-              expect(createdCodingmark.location).to.equal(codingmarkExample.location);
+              createdBookmark = response.body;
+              console.log(createdBookmark);
+              expect(createdBookmark._id).to.equal(bookmarkId);
+              expect(createdBookmark.name).to.equal(bookmarkExample.name);
+              expect(createdBookmark.location).to.equal(bookmarkExample.location);
 
               done();
             });
         });
     });
 
-    it('should fail trying to add codingmark with existent location for same user', function (done) {
+    it('should fail trying to add bookmark with existent location for same user', function (done) {
       request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/codingmarks`)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
         .set('Authorization', bearerToken)
-        .send(codingmarkExample)
+        .send(bookmarkExample)
         .end(function (error, response) {
           if (error) {
             return done(error);
@@ -277,14 +277,14 @@ describe('Personal Codingmarks CRUD operations', function () {
         });
     });
 
-    describe('invalid codingmark attributes at UPDATE' , function () {
-      it('should fail trying to UPDATE codingmark without a title', function (done) {
-        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
-        invalidCodingmark.name = '';
+    describe('invalid bookmark attributes at UPDATE' , function () {
+      it('should fail trying to UPDATE bookmark without a title', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.name = '';
         request(app)
-          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${createdBookmark._id}`)
           .set('Authorization', bearerToken)
-          .send(invalidCodingmark)
+          .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
             expect(response.body.title).to.equal('Missing required attributes');
@@ -292,13 +292,13 @@ describe('Personal Codingmarks CRUD operations', function () {
           });
       });
 
-      it('should fail trying to UPDATE codingmark without a location', function (done) {
-        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
-        invalidCodingmark.location = '';
+      it('should fail trying to UPDATE bookmark without a location', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.location = '';
         request(app)
-          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${createdBookmark._id}`)
           .set('Authorization', bearerToken)
-          .send(invalidCodingmark)
+          .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
             expect(response.body.title).to.equal('Missing required attributes');
@@ -306,13 +306,13 @@ describe('Personal Codingmarks CRUD operations', function () {
           });
       });
 
-      it('should fail trying to UPDATE codingmark without tags', function (done) {
-        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
-        invalidCodingmark.tags = [];
+      it('should fail trying to UPDATE bookmark without tags', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.tags = [];
         request(app)
-          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${createdBookmark._id}`)
           .set('Authorization', bearerToken)
-          .send(invalidCodingmark)
+          .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
             expect(response.body.title).to.equal('Missing required attributes');
@@ -320,13 +320,13 @@ describe('Personal Codingmarks CRUD operations', function () {
           });
       });
 
-      it('should fail trying to UPDATE codingmark with too many tags', function (done) {
-        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
-        invalidCodingmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
+      it('should fail trying to UPDATE bookmark with too many tags', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
         request(app)
-          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${createdBookmark._id}`)
           .set('Authorization', bearerToken)
-          .send(invalidCodingmark)
+          .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
             expect(response.body.title).to.equal('Too many tags have been submitted');
@@ -334,19 +334,19 @@ describe('Personal Codingmarks CRUD operations', function () {
           });
       });
 
-      it('should fail trying to UPDATE codingmark with a too big description', function (done) {
-        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
+      it('should fail trying to UPDATE bookmark with a too big description', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
         const textSnippet = "long text in the making";
         let longText = textSnippet;
         for (var i = 0; i < 100; i++) {
           longText += textSnippet;
         }
-        invalidCodingmark.description = longText;
+        invalidBookmark.description = longText;
 
         request(app)
-          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${createdBookmark._id}`)
           .set('Authorization', bearerToken)
-          .send(invalidCodingmark)
+          .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
             expect(response.body.title).to.contain('The description is too long.');
@@ -354,19 +354,19 @@ describe('Personal Codingmarks CRUD operations', function () {
           });
       });
 
-      it('should fail trying to UPDATE codingmark with a description with too many lines', function (done) {
-        let invalidCodingmark = JSON.parse(JSON.stringify(createdCodingmark));
+      it('should fail trying to UPDATE bookmark with a description with too many lines', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
         const line = "oneline\n";
         let longText = line;
         for (var i = 0; i < 101; i++) {
           longText += line;
         }
-        invalidCodingmark.description = longText;
+        invalidBookmark.description = longText;
 
         request(app)
-          .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+          .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${createdBookmark._id}`)
           .set('Authorization', bearerToken)
-          .send(invalidCodingmark)
+          .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
             expect(response.body.title).to.contain('The description hast too many lines.');
@@ -376,37 +376,37 @@ describe('Personal Codingmarks CRUD operations', function () {
 
     });
 
-    it('should successfully UPDATE codingmark', function (done) {
-      let updatedCodingmark= JSON.parse(JSON.stringify(createdCodingmark));
-      updatedCodingmark.name += ' rocks';
+    it('should successfully UPDATE bookmark', function (done) {
+      let updatedBookmark= JSON.parse(JSON.stringify(createdBookmark));
+      updatedBookmark.name += ' rocks';
 
       request(app)
-        .put(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${updatedCodingmark._id}`)
+        .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${updatedBookmark._id}`)
         .set('Authorization', bearerToken)
-        .send(updatedCodingmark)
+        .send(updatedBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
-          expect(response.body.name).to.equal(codingmarkExampleTitle + ' rocks');
+          expect(response.body.name).to.equal(bookmarkExampleTitle + ' rocks');
 
           //make also a read to be sure sure :P
           request(app)
-            .get(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${updatedCodingmark._id}`)
+            .get(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${updatedBookmark._id}`)
             .set('Authorization', bearerToken)
             .end(function (error, response) {
               if (error) {
                 return done(error);
               }
               expect(response.statusCode).to.equal(HttpStatus.OK);
-              expect(response.body.name).to.equal(codingmarkExampleTitle + ' rocks');
+              expect(response.body.name).to.equal(bookmarkExampleTitle + ' rocks');
 
               done();
             });
         });
     });
 
-    it('should succeed deleting created codingmark', function (done) {
+    it('should succeed deleting created bookmark', function (done) {
       request(app)
-        .delete(`${baseApiUrlUnderTest}${testUserId}/codingmarks/${createdCodingmark._id}`)
+        .delete(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${createdBookmark._id}`)
         .set('Authorization', bearerToken)
         .end(function (error, response) {
           if (error) {
