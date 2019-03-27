@@ -52,7 +52,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
     private publicBookmarksService: PublicBookmarksService,
-    private markdownServce: MarkdownService,
+    private markdownService: MarkdownService,
     private publicBookmarksStore: PublicBookmarksStore
   ) {
 
@@ -152,7 +152,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       publishedOn: model.publishedOn,
       githubURL: model.githubURL,
       description: model.description,
-      descriptionHtml: this.markdownServce.toHtml(model.description),
+      descriptionHtml: this.markdownService.toHtml(model.description),
       userId: this.userId,
       shared: model.shared,
       starredBy: [],

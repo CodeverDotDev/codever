@@ -1,28 +1,26 @@
 import {Observable, of as observableOf} from 'rxjs';
 
-import {catchError, debounceTime, map, startWith, switchMap} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {BookmarkFilterService} from '../../core/filter.service';
 import {Bookmark} from '../../core/model/bookmark';
-import {List} from 'immutable';
-import {languages} from '../language-options';
 import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
 import {KeycloakService} from 'keycloak-angular';
 import {Search, UserData} from '../../core/model/user-data';
 import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {UserDataStore} from '../../core/user/userdata.store';
+import {PublicBookmarksService} from '../bookmarks/public-bookmarks.service';
+
+import {languages} from '../../shared/language-options';
 
 @Component({
-  selector: 'app-bookmark-search',
-  templateUrl: './bookmark-search.component.html',
-  styleUrls: ['./bookmark-search.component.scss']
+  selector: 'app-public-bookmark-search',
+  templateUrl: './public-bookmark-search.component.html',
+  styleUrls: ['./public-bookmark-search.component.scss']
 })
-export class BookmarkSearchComponent implements OnInit, AfterViewInit {
-
-  @Input()
-  bookmarks: Observable<List<Bookmark>>;
+export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
   query: string;
@@ -33,20 +31,19 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   _userData: UserData;
 
   filteredBookmarks: Observable<Bookmark[]>;
-  private filterBookmarksBySearchTerm: Bookmark[];
 
   searchControl = new FormControl();
   queryText: string;
   public showNotFound = false;
   public numberOfResultsFiltered: number;
   counter = 10;
-  previousTerm: string;
   language = 'all';
 
   languages = languages;
 
   userIsLoggedIn = false;
   userId: string;
+  previousTerm: string;
 
   autocompleteSearches = [];
   filteredSearches: Observable<any[]>;
@@ -56,6 +53,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   constructor(private router: Router,
               private bookmarkStore: PublicBookmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
+              private publicBookmarksService: PublicBookmarksService,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore) {
   }
@@ -82,7 +80,6 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
@@ -91,41 +88,6 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
         });
       }
     });
-
-    this.filteredBookmarks = this.searchControl.valueChanges.pipe(
-      debounceTime(1500),
-      // TODO - next line should be reactived when getting results via HTTP
-      // .distinctUntilChanged()   ignore if next search term is same as previous
-      switchMap(term => {
-        // this.counter = 0; // we initialise the counter
-        if (term) { // switch to new observable each time
-
-          if (this.previousTerm !== term) {
-            this.previousTerm = term;
-            this.counter = 10;
-          }
-
-          this.queryText = term;
-          this.filterBookmarksBySearchTerm = this.bookmarkFilterService.filterBookmarks$BySearchTerm(term, this.language, this.bookmarks);
-          this.numberOfResultsFiltered = this.filterBookmarksBySearchTerm.length;
-          if (this.numberOfResultsFiltered > 0) {
-            this.showNotFound = false;
-            return observableOf(this.filterBookmarksBySearchTerm.slice(0, this.counter)); // get the first 10 results
-          } else {
-            this.showNotFound = true;
-            return observableOf<Bookmark[]>([]);
-          }
-        } else {
-          this.numberOfResultsFiltered = 0;
-          // or the observable of empty bookmarks if no search term
-          return observableOf<Bookmark[]>([]);
-        }
-      }),
-      catchError(error => {
-        console.log(error);
-        return observableOf<Bookmark[]>([]);
-      }), );
-
   }
 
   private _filter(value: string): string[] {
@@ -137,11 +99,13 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   showMoreResults() {
     this.searchControl.setValue(this.queryText); // trigger this.searchControl.valueChanges
     this.counter += 10;
+    this.filterBookmarks(this.queryText);
   }
 
   ngAfterViewInit(): void {
     if (this.query) {
       this.searchControl.setValue(this.query);
+      this.filterBookmarks(this.query);
     }
   }
 
@@ -161,6 +125,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   setQueryFromParentComponent(queryFromOutside: string) {
     this.searchControl.setValue(queryFromOutside);
+    this.filterBookmarks(queryFromOutside);
   }
 
   onLanguageChange(newValue) {
@@ -195,6 +160,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();
+    this.filterBookmarks(selectedValue);
   }
 
   focusOnSearchControl() {
@@ -203,5 +169,24 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   unFocusOnSearchControl() {
     this.isFocusOnSearchControl = false;
+  }
+
+  filterBookmarks(query: string) {
+    if (this.previousTerm !== query) {
+      this.previousTerm = query;
+      this.counter = 10;
+    }
+    this.queryText = query;
+    const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query, this.counter);
+    filteredPublicBookmarks.subscribe(bookmarks => {
+      this.numberOfResultsFiltered = bookmarks.length;
+      if (this.numberOfResultsFiltered > 0) {
+        this.showNotFound = false;
+        this.filteredBookmarks = observableOf(bookmarks.slice(0, this.counter));
+      } else {
+        this.showNotFound = true;
+        this.filteredBookmarks =  observableOf<Bookmark[]>([]);
+      }
+    });
   }
 }
