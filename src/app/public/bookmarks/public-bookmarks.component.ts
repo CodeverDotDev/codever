@@ -9,6 +9,7 @@ import {allTags} from '../../core/model/all-tags.const.en';
 import {KeycloakService} from 'keycloak-angular';
 import {UserData} from '../../core/model/user-data';
 import {UserDataStore} from '../../core/user/userdata.store';
+import {PublicBookmarkSearchComponent} from '../search/public-bookmark-search.component';
 
 
 @Component({
@@ -22,9 +23,10 @@ export class PublicBookmarksComponent implements OnInit {
   tags: string[] = allTags;
   query = '';
   userData: UserData;
+  counter = 20;
 
-  @ViewChild(BookmarkSearchComponent)
-  private searchComponent: BookmarkSearchComponent;
+  @ViewChild(PublicBookmarkSearchComponent)
+  private searchComponent: PublicBookmarkSearchComponent;
 
   constructor(private publicBookmarksStore: PublicBookmarksStore,
               private route: ActivatedRoute,
@@ -60,5 +62,9 @@ export class PublicBookmarksComponent implements OnInit {
   onTagClick(tag: string) {
     this.searchComponent.setQueryFromParentComponent('[' + tag + ']');
     this.searchComponent.language = 'all';
+  }
+
+  showMoreResults() {
+    this.counter += 20;
   }
 }

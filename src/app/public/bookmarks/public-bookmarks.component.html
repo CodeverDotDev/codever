@@ -1,15 +1,18 @@
 <button type="button" class="btn btn-primary" routerLink="/personal" style="margin-top: 1rem"> <i class="fa fa-bookmark"></i> Manage personal bookmarks</button>
 <div id="public-search-box">
-  <div *ngIf="publicBookmarks$">
-    <app-bookmark-search [bookmarks]="publicBookmarks$" [query]="query" [context]="'Public'" [userData]="userData"></app-bookmark-search>
-  </div>
+
+  <app-public-bookmark-search [query]="query" [context]="'Public'" [userData]="userData"></app-public-bookmark-search>
 
   <mat-tab-group>
     <mat-tab>
       <ng-template mat-tab-label>
         <span class="app-tab-label">Recent &nbsp;<i class="fas fa-clock"></i></span>
       </ng-template>
-      <app-async-bookmark-list [bookmarks]="publicBookmarks$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
+      <app-async-bookmark-list [bookmarks]="publicBookmarks$" [shownSize]="counter" [userData]="userData"></app-async-bookmark-list>
+      <div *ngIf="(publicBookmarks$ | async)?.size - counter > 0" >
+        <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()" [disabled]="counter >= (publicBookmarks$ | async)?.length">Show more</button>
+        <hr/>
+      </div>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
