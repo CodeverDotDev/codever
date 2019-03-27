@@ -1,6 +1,6 @@
 import {Observable, of as observableOf} from 'rxjs';
 
-import {map, startWith} from 'rxjs/operators';
+import {catchError, debounceTime, map, startWith, switchMap} from 'rxjs/operators';
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -33,7 +33,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   filteredBookmarks: Observable<Bookmark[]>;
 
   searchControl = new FormControl();
-  queryText: string;
+  searchText: string;
   public showNotFound = false;
   public numberOfResultsFiltered: number;
   counter = 10;
@@ -88,6 +88,11 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
         });
       }
     });
+
+    this.searchControl.valueChanges.subscribe( val => {
+      this.searchText = val;
+      });
+
   }
 
   private _filter(value: string): string[] {
@@ -97,23 +102,24 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   showMoreResults() {
-    this.searchControl.setValue(this.queryText); // trigger this.searchControl.valueChanges
+    this.searchControl.setValue(this.searchText); // trigger this.searchControl.valueChanges
     this.counter += 10;
-    this.filterBookmarks(this.queryText);
+    this.filterBookmarks(this.searchText, this.language);
   }
 
   ngAfterViewInit(): void {
     if (this.query) {
       this.searchControl.setValue(this.query);
-      this.filterBookmarks(this.query);
+      this.filterBookmarks(this.query, this.language);
     }
   }
 
   onBookmarkDeleted(deleted: boolean) {
     if (deleted) {
-        this.searchControl.setValue(this.queryText);
+        this.searchControl.setValue(this.searchText);
     }
   }
+
   /**
    *
    * @param bookmark
@@ -125,18 +131,18 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   setQueryFromParentComponent(queryFromOutside: string) {
     this.searchControl.setValue(queryFromOutside);
-    this.filterBookmarks(queryFromOutside);
+    this.filterBookmarks(queryFromOutside, this.language);
   }
 
   onLanguageChange(newValue) {
     this.language = newValue;
-    this.searchControl.setValue(this.queryText);
+    this.filterBookmarks(this.searchText, this.language);
   }
 
   onSaveClick() {
     const now = new Date();
     const newSearch: Search = {
-      text: this.queryText,
+      text: this.searchText,
       createdAt: now,
       lastAccessedAt: now
     }
@@ -160,7 +166,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();
-    this.filterBookmarks(selectedValue);
+    this.filterBookmarks(selectedValue, this.language);
   }
 
   focusOnSearchControl() {
@@ -171,13 +177,13 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.isFocusOnSearchControl = false;
   }
 
-  filterBookmarks(query: string) {
+  filterBookmarks(query: string, lang: string) {
     if (this.previousTerm !== query) {
       this.previousTerm = query;
       this.counter = 10;
     }
-    this.queryText = query;
-    const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query, this.counter);
+    this.searchText = query;
+    const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query, lang, this.counter);
     filteredPublicBookmarks.subscribe(bookmarks => {
       this.numberOfResultsFiltered = bookmarks.length;
       if (this.numberOfResultsFiltered > 0) {

@@ -1,6 +1,6 @@
 <div id="search-component" class="input-group">
   <div class="input-group-prepend">
-    <span class="input-group-text" [class.focused]="isFocusOnSearchControl" id="basic-addon1" (click)="filterBookmarks(publicSearchBox.value)"><i class="fa fa-search"></i></span>
+    <span class="input-group-text" [class.focused]="isFocusOnSearchControl" id="basic-addon1" (click)="filterBookmarks(publicSearchBox.value, language)"><i class="fa fa-search"></i></span>
   </div>
   <input
     #publicSearchBox
@@ -12,7 +12,7 @@
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
-    (keyup.enter)="filterBookmarks(publicSearchBox.value)"
+    (keyup.enter)="filterBookmarks(publicSearchBox.value, language)"
   >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search">{{search}}</mat-option>
@@ -21,7 +21,7 @@
     <button class="btn btn-outline-secondary"
             type="button"
             (click)="onSaveClick()"
-            [disabled]="autocompleteSearches.includes(queryText) || !queryText"
+            [disabled]="autocompleteSearches.includes(searchText) || !searchText"
     >Save search</button>
   </div>
 </div>
@@ -36,16 +36,19 @@
 <div class="clear" style="margin-bottom: 1rem"></div>
 
 <div *ngIf="showNotFound" class="alert alert-info" role="alert">
-  No bookmarks found for "<strong>{{queryText}}</strong>". Please try a different search
+  No bookmarks found for "<strong>{{searchText}}</strong>". Please try a different search
 </div>
 
-<app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="queryText"
+<div *ngIf="searchText && searchText.trim() !== ''">
+  <app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="searchText"
                            [shownSize]="counter" [userData]="_userData" (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
-<div *ngIf="numberOfResultsFiltered > 0">
-  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()"
-          [disabled]="counter > numberOfResultsFiltered">Show more
-  </button>
-  <hr/>
+  <div *ngIf="numberOfResultsFiltered > 0">
+    <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()"
+            [disabled]="counter > numberOfResultsFiltered">Show more
+    </button>
+    <hr/>
+  </div>
 </div>
+
 
 
