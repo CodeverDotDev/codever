@@ -1,0 +1,38 @@
+
+> db.bookmarks.createIndex( { "$**": "text" }, { name:"full_text_search", default_language: "none", "language_override": "none" } )
+
+-- show indexes (verify is present)
+> db.bookmarks.getIndexes()
+
+db.bookmarks.find( { $text: { $search: "java" } } )
+db.bookmarks.find( { $text: { $search: "java AND c++" } } )
+db.bookmarks.find( { $text: { $search: "\"java\" \"wiki\"" } } ).count()
+db.bookmarks.find( { $text: { $search: "\"javaa\" javaascript" } } ).count()
+db.bookmarks.find( { $text: { $search: "\"wiki\"" } } ).count()
+
+db.bookmarks.find( { $text: { $search: "https://www.quora.com/What-is-cool-about-JavaScript" } } ).pretty()
+--too many results
+
+db.bookmarks.find( { $text: { $search: "\"https://www.quora.com/What-is-cool-about-JavaScript\"" } } ).pretty()
+//no results
+
+db.bookmarks.find( { $text: { $search: "\"https://www\.quora\.com/What-is-cool-about-JavaScript\"" } } ).pretty()
+--hangs
+
+db.bookmarks.find( { $text: { $search: "\"https\:\/\/www\.quora\.com/What-is-cool-about-JavaScript\"" } } ).pretty()
+db.bookmarks.find( { $text: { $search: "\"https\:\/\/www\.quora\.com\/What-is-cool-about-JavaScript\"" } } ).pretty()
+db.bookmarks.find( { $text: { $search: "\"https\:\/\/www\.quora\.com\/What-is-cool-about-JavaScript\"" } } ).pretty()
+-- works
+
+
+db.bookmarks.find({
+$and:[{
+    $text: {
+        $search: "java"
+    }},{
+    tags: {
+        $all: ["java"]}
+    }]}
+).count();
+
+
