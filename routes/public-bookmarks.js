@@ -43,8 +43,12 @@ router.get('/', async (req, res) => {
                 }
             }
           ]
-        }).sort({createdAt: -1}).lean().exec();
-        if(searchedTerms.length > 1) {
+        }
+          )
+          .sort({createdAt: -1})
+          .lean()
+          .exec();
+        if (searchedTerms.length > 1) {
           searchedTerms.forEach(term => {
             bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
           });
@@ -53,9 +57,20 @@ router.get('/', async (req, res) => {
       } else if (searchedTerms.length > 0) {
         const termsJoined = searchedTerms.join(' ');
         const termsQuery = escapeStringRegexp(termsJoined);
-        bookmarks = await Bookmark.find({$text: {$search: termsQuery}}).sort({createdAt: -1}).lean().exec();
+        bookmarks = await Bookmark.find(
+          {
+            $text: {$search: termsQuery},
+          },
+          {
+            score: {$meta: "textScore"}
+          }
+        )
+        //.sort({createdAt: -1}) let's give it a try with text score
+          .sort({score: {$meta: "textScore"}})
+          .lean()
+          .exec();
         //double check if multiple words it must contain both terms (capability not supported by mongo text index, it finds both)
-        if ( searchedTerms.length > 1){
+        if (searchedTerms.length > 1) {
           searchedTerms.forEach(term => {
             bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
           });
