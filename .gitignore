@@ -36,3 +36,6 @@ npm-debug.log
 
 # Generated test coverage reports
 .nyc_output
+
+#env configuration
+env.json

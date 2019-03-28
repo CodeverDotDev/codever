@@ -1,24 +1,24 @@
-var express = require('express');
+const express = require('express');
 const usersRouter = express.Router();
 const personalBookmarksRouter = require('./personal-bookmarks');
 
-var Keycloak = require('keycloak-connect');
+const Keycloak = require('keycloak-connect');
 
 const User = require('../../models/user');
-var Bookmark = require('../../models/bookmark');
-var MyError = require('../../models/error');
+const Bookmark = require('../../models/bookmark');
+const MyError = require('../../models/error');
 
-var common = require('../../common/config');
-var config = common.config();
+const common = require('../../common/config');
+const config = common.config();
 
-var HttpStatus = require('http-status-codes');
+const HttpStatus = require('http-status-codes');
 
 //showdown converter - https://github.com/showdownjs/showdown
-var showdown = require('showdown'),
+const showdown = require('showdown'),
   converter = new showdown.Converter();
 
 //add keycloak middleware
-var keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
+const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 usersRouter.use(keycloak.middleware());
 
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
