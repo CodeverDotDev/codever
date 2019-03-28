@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
         return res.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
       }
       res.send(bookmark);
-    } else {//no filter - all bookmarks ordered by creation date descending
+    } else {//no filter - latest bookmarks added to the platform
       const bookmarks = await Bookmark.find({'shared': true})
         .sort({createdAt: -1})
         .limit(MAX_NUMBER_RETURNED_RESULTS)
