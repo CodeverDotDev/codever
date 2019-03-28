@@ -33,7 +33,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   filteredBookmarks: Observable<Bookmark[]>;
 
   searchControl = new FormControl();
-  queryText: string;
+  searchText: string;
   public showNotFound = false;
   public numberOfResultsFiltered: number;
   counter = 10;
@@ -49,6 +49,8 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   filteredSearches: Observable<any[]>;
 
   isFocusOnSearchControl = false;
+
+  showSearchResults = true;
 
   constructor(private router: Router,
               private bookmarkStore: PublicBookmarksStore,
@@ -88,6 +90,14 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
         });
       }
     });
+
+    this.searchControl.valueChanges.subscribe(val => {
+      this.searchText = val;
+      if (val.trim() === '') {
+        this.showSearchResults = false;
+      }
+    });
+
   }
 
   private _filter(value: string): string[] {
@@ -97,23 +107,23 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   showMoreResults() {
-    this.searchControl.setValue(this.queryText); // trigger this.searchControl.valueChanges
     this.counter += 10;
-    this.filterBookmarks(this.queryText);
+    this.filterBookmarks(this.searchText, this.language);
   }
 
   ngAfterViewInit(): void {
     if (this.query) {
       this.searchControl.setValue(this.query);
-      this.filterBookmarks(this.query);
+      this.filterBookmarks(this.query, this.language);
     }
   }
 
   onBookmarkDeleted(deleted: boolean) {
     if (deleted) {
-        this.searchControl.setValue(this.queryText);
+      this.searchControl.setValue(this.searchText);
     }
   }
+
   /**
    *
    * @param bookmark
@@ -125,18 +135,18 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   setQueryFromParentComponent(queryFromOutside: string) {
     this.searchControl.setValue(queryFromOutside);
-    this.filterBookmarks(queryFromOutside);
+    this.filterBookmarks(queryFromOutside, this.language);
   }
 
   onLanguageChange(newValue) {
     this.language = newValue;
-    this.searchControl.setValue(this.queryText);
+    this.filterBookmarks(this.searchText, this.language);
   }
 
   onSaveClick() {
     const now = new Date();
     const newSearch: Search = {
-      text: this.queryText,
+      text: this.searchText,
       createdAt: now,
       lastAccessedAt: now
     }
@@ -155,12 +165,12 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   onSelectionChanged(event: MatAutocompleteSelectedEvent) {
     const selectedValue = event.option.value;
     const index = this._userData.searches.findIndex((search: Search) => search.text === selectedValue);
-    const updatedSearch: Search  = this._userData.searches.splice(index, 1)[0];
+    const updatedSearch: Search = this._userData.searches.splice(index, 1)[0];
     updatedSearch.lastAccessedAt = new Date();
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();
-    this.filterBookmarks(selectedValue);
+    this.filterBookmarks(selectedValue, this.language);
   }
 
   focusOnSearchControl() {
@@ -171,22 +181,26 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.isFocusOnSearchControl = false;
   }
 
-  filterBookmarks(query: string) {
-    if (this.previousTerm !== query) {
-      this.previousTerm = query;
-      this.counter = 10;
-    }
-    this.queryText = query;
-    const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query, this.counter);
-    filteredPublicBookmarks.subscribe(bookmarks => {
-      this.numberOfResultsFiltered = bookmarks.length;
-      if (this.numberOfResultsFiltered > 0) {
-        this.showNotFound = false;
-        this.filteredBookmarks = observableOf(bookmarks.slice(0, this.counter));
-      } else {
-        this.showNotFound = true;
-        this.filteredBookmarks =  observableOf<Bookmark[]>([]);
+  filterBookmarks(query: string, lang: string) {
+    if (query.trim() !== '') {
+      if (this.previousTerm !== query) {
+        this.previousTerm = query;
+        this.counter = 10;
       }
-    });
+      this.searchText = query;
+      const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query, lang, this.counter);
+      filteredPublicBookmarks.subscribe(bookmarks => {
+        this.numberOfResultsFiltered = bookmarks.length;
+        if (this.numberOfResultsFiltered > 0) {
+          this.showNotFound = false;
+          this.showSearchResults = true;
+          this.filteredBookmarks = observableOf(bookmarks.slice(0, this.counter));
+        } else {
+          this.showNotFound = true;
+          this.filteredBookmarks = observableOf<Bookmark[]>([]);
+        }
+      });
+    }
+
   }
 }

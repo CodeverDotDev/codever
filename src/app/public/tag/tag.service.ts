@@ -17,7 +17,7 @@ export class TagService {
   }
 
   getBookmarksForTag(tag: string): Observable<Bookmark[]> {
-      return this.httpClient.get<Bookmark[]>(`${this.bookmarksUrl}?tag=${tag}`)
+      return this.httpClient.get<Bookmark[]>(`${this.bookmarksUrl}tagged/${tag}`)
                             .pipe(shareReplay(1));
   };
 

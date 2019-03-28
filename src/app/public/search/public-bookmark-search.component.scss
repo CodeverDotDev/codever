@@ -12,7 +12,8 @@
 .search-control input:focus {
   outline-width: 0;
 }
-#search-component{
+
+.search-component{
   padding-top: 20px;
   input:focus {
     box-shadow: none;
@@ -23,4 +24,5 @@
   background-color:#007bff;
   border-color: #007bff;
   color: white;
+  cursor: pointer;
 }

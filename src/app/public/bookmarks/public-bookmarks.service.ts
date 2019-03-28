@@ -25,9 +25,10 @@ export class PublicBookmarksService {
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl);
   }
 
-  getFilteredPublicBookmarks(query: string, limit: number): Observable<Bookmark[]> {
+  getFilteredPublicBookmarks(query: string, lang: string, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('query', query)
+      .set('lang', lang)
       .set('limit', limit.toString());
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
