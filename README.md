@@ -93,6 +93,13 @@ $ npm run integration-tests
 * [local](http://localhost:3000/api/docs)
 * [production](https://www.bookmarks.dev/api/docs)
 
+## Note
+
+- `env.json` is not commit but needs to be delivered at build time 
+
 # License
 
 [MIT](/LICENSE)
+
+
+
