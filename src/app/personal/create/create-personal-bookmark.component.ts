@@ -168,7 +168,6 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       const location: string = this.bookmarkForm.controls['location'].value;
       this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(response => {
         if (response) {
-          console.log(response);
           this.displayModal = 'block';
           this.existingPublicBookmark = response;
           this.bookmarkForm.patchValue({
