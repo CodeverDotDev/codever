@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
       let bookmarks = [];
       const lang = req.query.lang;
       if (searchedTerms.length > 0 && searchedTags.length > 0) {
-        bookmarks = await getBookmarksForTagsAndTerms(bookmarks, searchedTags, searchedTerms);
+        bookmarks = await getBookmarksForTagsAndTerms(bookmarks, searchedTags, searchedTerms, limit);
       } else if (searchedTerms.length > 0) {
         bookmarks = await getBookmarksForSearchedTerms(searchedTerms, bookmarks, limit);
       } else {
@@ -55,34 +55,33 @@ router.get('/', async (req, res) => {
   }
 });
 
-let getBookmarksForTagsAndTerms = async function (bookmarks, searchedTags, searchedTerms) {
-  bookmarks = await Bookmark.find({
-      $and: [
+let getBookmarksForTagsAndTerms = async function (bookmarks, searchedTags, searchedTerms, limit) {
+  bookmarks = await Bookmark.find(
+    {
+      shared: true,
+      tags:
         {
-          tags:
-            {
-              $all: searchedTags
-            }
+          $all: searchedTags
         },
+      $text:
         {
-          $text:
-            {
-              $search: searchedTerms.join(' ')
-            }
+          $search: searchedTerms.join(' ')
         }
-      ]
+    },
+    {
+      score: {$meta: "textScore"}
     }
   )
-    .sort({createdAt: -1})
+    //.sort({createdAt: -1})
+    .sort({score: {$meta: "textScore"}})
     .lean()
     .exec();
-  if (searchedTerms.length > 1) {
-    searchedTerms.forEach(term => {
-      bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
-    });
-  }
 
+  for (const term of searchedTerms) {
+    bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
+  }
   bookmarks = bookmarks.slice(0, limit);
+
   return bookmarks;
 };
 
@@ -98,15 +97,14 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, bookmarks, lim
       score: {$meta: "textScore"}
     }
   )
-    .sort({createdAt: -1}) //let's give it a try with text score
-    //.sort({score: {$meta: "textScore"}})
+  //.sort({createdAt: -1}) //let's give it a try with text score
+    .sort({score: {$meta: "textScore"}})
     .lean()
     .exec();
 
-  searchedTerms.forEach(term => {
+  for (const term of searchedTerms) {
     bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
-  });
-
+  }
   bookmarks = bookmarks.slice(0, limit);
 
   return bookmarks;
