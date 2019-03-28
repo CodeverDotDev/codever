@@ -1,26 +1,27 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-var apiBasePathRouter = require('./routes/index');
-var versionRouter = require('./routes/version');
-var usersRouter = require('./routes/users/users');
-var publicBookmarksRouter = require('./routes/public-bookmarks');
-var securedPublicBookmarksRouter = require('./routes/secured-public-bookmarks');
+const apiBasePathRouter = require('./routes/index');
+const versionRouter = require('./routes/version');
+const usersRouter = require('./routes/users/users');
+const adminRouter = require('./routes/admin/admin');
+const publicBookmarksRouter = require('./routes/public-bookmarks');
+const securedPublicBookmarksRouter = require('./routes/secured-public-bookmarks');
 
-var fs = require('fs-extra');
-var rfs = require('rotating-file-stream');
+const fs = require('fs-extra');
+const rfs = require('rotating-file-stream');
 
-var HttpStatus = require('http-status-codes');
+const HttpStatus = require('http-status-codes');
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./docs/swagger.yaml');
 
-var app = express();
+const app = express();
 
 mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
 
@@ -64,10 +65,11 @@ app.use('/api/version', versionRouter);
 app.use('/api/public/bookmarks', publicBookmarksRouter);
 app.use('/api/secured/public/bookmarks', securedPublicBookmarksRouter);
 app.use('/api/personal/users', usersRouter);
+app.use('/api/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = HttpStatus.NOT_FOUND;
   next(err);
 });

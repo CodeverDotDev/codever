@@ -14,83 +14,36 @@ const MAX_NUMBER_RETURNED_RESULTS = 100;
  */
 router.get('/', async (req, res) => {
   try {
-    if (req.query.term) {
-      var regExpTerm = new RegExp(req.query.term, 'i');
-      var regExpSearch = [{name: {$regex: regExpTerm}}, {description: {$regex: regExpTerm}}, {category: {$regex: regExpTerm}}, {tags: {$regex: regExpTerm}}];
-      const bookmarks = await Bookmark.find({'$or': regExpSearch})
-      res.send(bookmarks);
-    } else if (req.query.query) {
+    if (req.query.query) {
       //split in text and tags
-
       const limit = parseInt(req.query.limit);
       const searchedTermsAndTags = splitSearchQuery(req.query.query);
       const searchedTerms = searchedTermsAndTags[0];
       const searchedTags = searchedTermsAndTags[1];
       let bookmarks = [];
+      const lang = req.query.lang;
       if (searchedTerms.length > 0 && searchedTags.length > 0) {
-        bookmarks = await Bookmark.find({
-          $and: [
-            {
-              tags:
-                {
-                  $all: searchedTags
-                }
-            },
-            {
-              $text:
-                {
-                  $search: searchedTerms.join(' ')
-                }
-            }
-          ]
-        }
-          )
-          .sort({createdAt: -1})
-          .lean()
-          .exec();
-        if (searchedTerms.length > 1) {
-          searchedTerms.forEach(term => {
-            bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
-          });
-        }
-        bookmarks = bookmarks.slice(0, limit);
+        bookmarks = await getBookmarksForTagsAndTerms(bookmarks, searchedTags, searchedTerms, limit);
       } else if (searchedTerms.length > 0) {
-        const termsJoined = searchedTerms.join(' ');
-        const termsQuery = escapeStringRegexp(termsJoined);
-        bookmarks = await Bookmark.find(
-          {
-            $text: {$search: termsQuery},
-          },
-          {
-            score: {$meta: "textScore"}
-          }
-        )
-        //.sort({createdAt: -1}) let's give it a try with text score
-          .sort({score: {$meta: "textScore"}})
-          .lean()
-          .exec();
-        //double check if multiple words it must contain both terms (capability not supported by mongo text index, it finds both)
-        if (searchedTerms.length > 1) {
-          searchedTerms.forEach(term => {
-            bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
-          });
-        }
-        bookmarks = bookmarks.slice(0, limit);
+        bookmarks = await getBookmarksForSearchedTerms(searchedTerms, bookmarks, limit);
       } else {
-        bookmarks = await Bookmark.find({tags: {$all: searchedTags}}).sort({createdAt: -1}).limit(limit).lean().exec();
+        bookmarks = await getBookmarksforSearchedTags(bookmarks, searchedTags, limit);
+      }
+      if (lang && lang !== 'all') {
+        bookmarks = bookmarks.filter(x => x.language === lang);
       }
 
       res.send(bookmarks);
     } else if (req.query.location) {
-      const bookmark = await Bookmark.findOne({'shared': true, location: req.query.location}).lean().exec();
+      const bookmark = await Bookmark.findOne({
+        'shared': true,
+        location: req.query.location
+      }).lean().exec();
       if (!bookmark) {
         return res.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
       }
       res.send(bookmark);
-    } else if (req.query.tag) {//get all bookmarks tagged with "tag"
-      const bookmarks = await Bookmark.find({tags: req.query.tag}).sort({createdAt: -1}).limit(MAX_NUMBER_RETURNED_RESULTS).lean().exec();
-      res.send(bookmarks);
-    } else {//no filter - all bookmarks ordered by creation date descending
+    } else {//no filter - latest bookmarks added to the platform
       const bookmarks = await Bookmark.find({'shared': true})
         .sort({createdAt: -1})
         .limit(MAX_NUMBER_RETURNED_RESULTS)
@@ -100,8 +53,80 @@ router.get('/', async (req, res) => {
   } catch (err) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
   }
-
 });
+
+let getBookmarksForTagsAndTerms = async function (bookmarks, searchedTags, searchedTerms, limit) {
+  bookmarks = await Bookmark.find(
+    {
+      shared: true,
+      tags:
+        {
+          $all: searchedTags
+        },
+      $text:
+        {
+          $search: searchedTerms.join(' ')
+        }
+    },
+    {
+      score: {$meta: "textScore"}
+    }
+  )
+    //.sort({createdAt: -1})
+    .sort({score: {$meta: "textScore"}})
+    .lean()
+    .exec();
+
+  for (const term of searchedTerms) {
+    bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
+  }
+  bookmarks = bookmarks.slice(0, limit);
+
+  return bookmarks;
+};
+
+let getBookmarksForSearchedTerms = async function (searchedTerms, bookmarks, limit) {
+  const termsJoined = searchedTerms.join(' ');
+  const termsQuery = escapeStringRegexp(termsJoined);
+  bookmarks = await Bookmark.find(
+    {
+      shared: true,
+      $text: {$search: termsQuery},
+    },
+    {
+      score: {$meta: "textScore"}
+    }
+  )
+  //.sort({createdAt: -1}) //let's give it a try with text score
+    .sort({score: {$meta: "textScore"}})
+    .lean()
+    .exec();
+
+  for (const term of searchedTerms) {
+    bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
+  }
+  bookmarks = bookmarks.slice(0, limit);
+
+  return bookmarks;
+};
+
+let getBookmarksforSearchedTags = async function (bookmarks, searchedTags, limit) {
+  console.log('searchedTags', searchedTags);
+  bookmarks = await Bookmark.find(
+    {
+      shared: true,
+      tags:
+        {
+          $all: searchedTags
+        },
+    }
+  )
+    .sort({createdAt: -1})
+    .limit(limit)
+    .lean()
+    .exec();
+  return bookmarks;
+};
 
 function bookmarkContainsSearchedTerm(bookmark, searchedTerm) {
   let result = false;
@@ -156,6 +181,24 @@ function escapeRegExp(str) {
     regex = RegExp('[' + specials.join('\\') + ']', 'g');
   return str.replace(regex, '\\$&'); // $& means the whole matched string
 }
+
+router.get('/tagged/:tag', async (req, res) => {
+  try {
+    const bookmarks = await Bookmark.find({
+      shared: true,
+      tags: req.params.tag
+    })
+      .sort({createdAt: -1})
+      .limit(MAX_NUMBER_RETURNED_RESULTS)
+      .lean()
+      .exec();
+
+    res.send(bookmarks);
+
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+  }
+});
 
 /* GET title of bookmark given its url */
 router.get('/scrape', function (req, res, next) {

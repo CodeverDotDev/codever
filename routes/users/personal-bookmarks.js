@@ -1,17 +1,17 @@
-var express = require('express');
-var personalBookmarksRouter = express.Router({mergeParams: true});
-var Keycloak = require('keycloak-connect');
+const express = require('express');
+const personalBookmarksRouter = express.Router({mergeParams: true});
+const Keycloak = require('keycloak-connect');
 
-  var Bookmark = require('../../models/bookmark');
-var MyError = require('../../models/error');
+const Bookmark = require('../../models/bookmark');
+const MyError = require('../../models/error');
 
-var common = require('../../common/config');
-var config = common.config();
+const common = require('../../common/config');
+const config = common.config();
 
-var HttpStatus = require('http-status-codes');
+const HttpStatus = require('http-status-codes');
 
 //showdown converter - https://github.com/showdownjs/showdown
-var showdown = require('showdown'),
+const showdown = require('showdown'),
   converter = new showdown.Converter();
 
 //add keycloak middleware
