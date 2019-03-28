@@ -59,6 +59,8 @@ To make our life easier, I have prepared a wiki page about [Keycloak Setup For D
 
 ### Installation and develop on local machine
 
+> Create an `env.json` file based on the the `env.example.json` example
+
 ```bash
 # clone backend repo
 $ git clone https://github.com/Codingpedia/bookmarks-api.git
