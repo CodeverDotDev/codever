@@ -51,6 +51,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   isFocusOnSearchControl = false;
 
   showSearchResults = true;
+  hover = false;
 
   constructor(private router: Router,
               private bookmarkStore: PublicBookmarksStore,
