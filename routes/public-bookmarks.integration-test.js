@@ -1,8 +1,8 @@
-var app = require('../app');
-var chai = require('chai');
-var request = require('supertest');
-var HttpStatus = require('http-status-codes');
-var expect = chai.expect;
+const app = require('../app');
+const chai = require('chai');
+const request = require('supertest');
+const HttpStatus = require('http-status-codes');
+const expect = chai.expect;
 
 const common = require('../common/config');
 const config = common.config();
@@ -82,16 +82,6 @@ describe('Public API Tests', function () {
         });
     });
 
-    it('should find bookmark by location', function (done) {
-      request(app)
-        .get(publicBookmarksApiBaseUrl)
-        .query({location: 'https://www.bookmarks.dev'})
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.OK);
-          done();
-        });
-    });
-
     it('should not find bookmark by location', function (done) {
       request(app)
         .get(publicBookmarksApiBaseUrl)
@@ -101,18 +91,6 @@ describe('Public API Tests', function () {
           done();
         });
     });
-
-    it('should find bookmarks by tag', function (done) {
-      request(app)
-        .get(publicBookmarksApiBaseUrl)
-        .query({tag: 'java'})
-        .end(function (err, res) {
-          expect(res.statusCode).to.equal(HttpStatus.OK);
-          done();
-        });
-    });
-
-
   });
 
   describe('Test search functionality', function () {
@@ -124,9 +102,10 @@ describe('Public API Tests', function () {
 
     let createdBookmarkId;
 
-    const verySpecialTitle = "very special title very-special-title";
+    const verySpecialTitle = "very special title very-special-java-title";
     const verySpecialLocation = "http://www.very-special-url.com";
     const verySpecialTag = "very-special-tag";
+    const verySpecialSourceCodeUrl = "https://very-special-github-url.com";
     const bookmarkExample = {
       "name": verySpecialTitle,
       "location": verySpecialLocation,
@@ -138,7 +117,7 @@ describe('Public API Tests', function () {
         "mongodb"
       ],
       "publishedOn": "2017-11-05",
-      "githubURL": "https://very-special-github-url.com",
+      "githubURL": verySpecialSourceCodeUrl,
       "description": "This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark",
       "descriptionHtml": "<p>This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark</p>",
       "userId": testUserId,
@@ -183,6 +162,16 @@ describe('Public API Tests', function () {
         });
     });
 
+    it('should find bookmark by location query param', function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .query({location: verySpecialLocation})
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.OK);
+          done();
+        });
+    });
+
     it('should find bookmark tagged with very-special-tag', function (done) {
       request(app)
         .get(baseApiUnderTestUrl + 'tagged/' + verySpecialTag)
@@ -196,10 +185,85 @@ describe('Public API Tests', function () {
         });
     });
 
-    it('should find bookmark with with very-special-tag in query param', function (done) {
+    it('should find bookmark with with very-special-tag in query param as word', function (done) {
       request(app)
         .get(baseApiUnderTestUrl)
         .query({query: "very-special-tag"})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it('should find bookmark with with very-special-tag in query param as tag', function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .query({query: `[${verySpecialTag}]`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it('should find bookmark with with very-special-tag in query param as tag and word', function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .query({query: `${verySpecialTag} [${verySpecialTag}]`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it(`should find bookmark with special title - ${verySpecialTitle} `, function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .query({query: `${verySpecialTitle}`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it(`should find bookmark with special source code url title - ${verySpecialSourceCodeUrl} `, function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .query({query: `${verySpecialSourceCodeUrl}`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it(`should find bookmark with special location - ${verySpecialLocation} `, function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .query({query: `${verySpecialLocation}`})
         .query({limit: 10})
         .end(function (err, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
