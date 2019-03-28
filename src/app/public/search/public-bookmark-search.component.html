@@ -1,6 +1,13 @@
-<div id="search-component" class="input-group">
+<div class="input-group search-component">
   <div class="input-group-prepend">
-    <span class="input-group-text" [class.focused]="isFocusOnSearchControl" id="basic-addon1" (click)="filterBookmarks(publicSearchBox.value, language)"><i class="fa fa-search"></i></span>
+    <span class="input-group-text"
+          (mouseover)="hover=true"
+          (mouseleave)="hover=false"
+          [class.focused]="(isFocusOnSearchControl || hover) && searchText"
+          id="basic-addon1"
+          (click)="filterBookmarks(publicSearchBox.value, language)">
+      <i class="fa fa-search"></i>
+    </span>
   </div>
   <input
     #publicSearchBox
@@ -39,7 +46,8 @@
   No bookmarks found for "<strong>{{searchText}}</strong>". Please try a different search
 </div>
 
-<div *ngIf="searchText && searchText.trim() !== ''">
+
+<div *ngIf="showSearchResults">
   <app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="searchText"
                            [shownSize]="counter" [userData]="_userData" (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
   <div *ngIf="numberOfResultsFiltered > 0">
