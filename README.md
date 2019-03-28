@@ -59,7 +59,7 @@ To make our life easier, I have prepared a wiki page about [Keycloak Setup For D
 
 ### Installation and develop on local machine
 
-> Create an `env.json` file based on the the `env.example.json` example
+> Create an `env.json` file based on the the `env.example.json` example. You don't need to configure the _production_ part.
 
 ```bash
 # clone backend repo
