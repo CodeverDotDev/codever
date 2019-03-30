@@ -94,6 +94,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
     this.searchControl.valueChanges.subscribe(val => {
       this.searchText = val;
+      this.showNotFound = false;
       if (val.trim() === '') {
         this.showSearchResults = false;
       }
