@@ -1,6 +1,6 @@
 import {Observable, of as observableOf} from 'rxjs';
 
-import {catchError, debounceTime, map, startWith, switchMap} from 'rxjs/operators';
+import {catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap} from 'rxjs/operators';
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -94,10 +94,8 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
     this.filteredBookmarks = this.searchControl.valueChanges.pipe(
       debounceTime(1500),
-      // TODO - next line should be reactived when getting results via HTTP
-      // .distinctUntilChanged()   ignore if next search term is same as previous
+      distinctUntilChanged(), //  ignore if next search term is same as previous
       switchMap(term => {
-        // this.counter = 0; // we initialise the counter
         if (term) { // switch to new observable each time
 
           if (this.previousTerm !== term) {
@@ -147,9 +145,10 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
 
   onBookmarkDeleted(deleted: boolean) {
     if (deleted) {
-        this.searchControl.setValue(this.queryText);
+      this.searchControl.setValue(this.queryText);
     }
   }
+
   /**
    *
    * @param bookmark
@@ -190,7 +189,7 @@ export class BookmarkSearchComponent implements OnInit, AfterViewInit {
   onSelectionChanged(event: MatAutocompleteSelectedEvent) {
     const selectedValue = event.option.value;
     const index = this._userData.searches.findIndex((search: Search) => search.text === selectedValue);
-    const updatedSearch: Search  = this._userData.searches.splice(index, 1)[0];
+    const updatedSearch: Search = this._userData.searches.splice(index, 1)[0];
     updatedSearch.lastAccessedAt = new Date();
     this._userData.searches.unshift(updatedSearch);
 
