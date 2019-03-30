@@ -50,7 +50,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   isFocusOnSearchControl = false;
 
-  showSearchResults = true;
+  showSearchResults = false;
   hover = false;
 
   constructor(private router: Router,
