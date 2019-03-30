@@ -6,7 +6,7 @@ import {AppRoutingModule} from './app.routing';
 import {SharedModule} from './shared/shared.module';
 import {CoreModule} from './core/core.module';
 import {PublicBookmarksModule} from './public/public.module';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {initializer} from './app-init';
 import {RouterModule} from '@angular/router';
@@ -17,6 +17,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment';
+import {LoaderInterceptorService} from './core/loader/loader-interceptor.service';
+import {LoaderComponent} from './shared/loader/loader.component';
 
 @NgModule({
   exports: [
@@ -50,11 +52,18 @@ import {environment} from '../environments/environment';
       useValue: {
         separatorKeyCodes: [ENTER, COMMA]
       }
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoaderInterceptorService,
+      multi: true
     }
+
   ],
   declarations: [
     AppComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    LoaderComponent
   ],
   bootstrap: [AppComponent]
 })
