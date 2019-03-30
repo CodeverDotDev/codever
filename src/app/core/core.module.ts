@@ -10,6 +10,7 @@ import {PersonalBookmarksStore} from './store/personal-bookmarks-store.service';
 import {PersonalBookmarkService} from './personal-bookmark.service';
 import {UserService} from './user.service';
 import {UserDataStore} from './user/userdata.store';
+import {LoaderService} from './loader/loader.service';
 
 
 /**
@@ -38,7 +39,8 @@ import {UserDataStore} from './user/userdata.store';
     PersonalBookmarksStore,
     PersonalBookmarkService,
     UserService,
-    UserDataStore
+    UserDataStore,
+    LoaderService
   ]
 })
 export class CoreModule {
