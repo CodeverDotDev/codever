@@ -8,7 +8,7 @@ import {TagsValidatorDirective} from './tags-validation.directive';
 import {BookmarkSearchComponent} from './search/bookmark-search.component';
 import {BookmarkTextComponent} from './bookmark-text.component';
 import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
-import {MatAutocompleteModule} from '@angular/material';
+import {MatAutocompleteModule, MatProgressSpinner, MatProgressSpinnerModule} from '@angular/material';
 import {RouterModule} from '@angular/router';
 
 
@@ -22,6 +22,7 @@ import {RouterModule} from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
     RouterModule
   ],
   declarations: [
@@ -42,7 +43,8 @@ import {RouterModule} from '@angular/router';
     AsyncBookmarkListComponent,
     BookmarkTextComponent,
     DescriptionSizeValidatorDirective,
-    BookmarkSearchComponent
+    BookmarkSearchComponent,
+    MatProgressSpinnerModule
   ]
 })
 export class SharedModule { }
