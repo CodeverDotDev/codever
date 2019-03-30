@@ -8,7 +8,7 @@ import {TagsValidatorDirective} from './tags-validation.directive';
 import {BookmarkSearchComponent} from './search/bookmark-search.component';
 import {BookmarkTextComponent} from './bookmark-text.component';
 import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
-import {MatAutocompleteModule, MatProgressSpinner, MatProgressSpinnerModule} from '@angular/material';
+import {MatAutocompleteModule, MatProgressSpinnerModule} from '@angular/material';
 import {RouterModule} from '@angular/router';
 
 
