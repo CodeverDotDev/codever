@@ -1,50 +1,31 @@
-import { Injectable, Injector } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import {finalize, tap} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {finalize} from 'rxjs/operators';
 import {LoaderService} from './loader.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LoaderInterceptorService implements HttpInterceptor {
+
+  private _inProgressCount = 0; // counter for multiple http requests
 
   constructor(private loaderService: LoaderService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.loaderService.show();
-    return next.handle(req).pipe(
-      finalize(() => this.loaderService.hide())
-    );
-  }
-
-/*  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-    this.showLoader();
-    console.log("showing loader... my ass");
-
-    return next.handle(req).pipe(tap((event: HttpEvent<any>) => {
-      if (event instanceof HttpResponse) {
-        console.log("ending loader... my ass");
-        this.onEnd();
-      }
-    },
-      (err: any) => {
-        this.onEnd();
-      }));
-
-  }*/
-
-  private onEnd(): void {
-    this.hideLoader();
-  }
-
-  private showLoader(): void {
-    this.loaderService.show();
-  }
-
-  private hideLoader(): void {
-    this.loaderService.hide();
+    if (req.method === 'GET') {
+      this._inProgressCount++;
+      this.loaderService.show();
+      return next.handle(req).pipe(
+        finalize(() => {
+          this._inProgressCount--;
+          if (this._inProgressCount === 0) {
+            this.loaderService.hide()
+          }
+        })
+      );
+    } else {
+      return next.handle(req);
+    }
   }
 
 }
