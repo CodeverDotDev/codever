@@ -109,7 +109,7 @@
                   #description="ngModel"
         >
         </textarea>
-        <div class="description-chars-counter">{{bookmark.description.length}} / 1500</div>
+        <div class="description-chars-counter">{{bookmark.description ? bookmark.description.length: 0}} / 1500</div>
         <div class="clear"></div>
         <div *ngIf="description.invalid && (description.dirty || description.touched)" class="alert alert-danger">
           <div *ngIf="description.errors.tooManyLines">
