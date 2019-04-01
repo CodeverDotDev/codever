@@ -1,7 +1,10 @@
-<button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()" style="margin-top: 1rem"> <i class="fa fa-plus"></i> Add new bookmark</button>
 <app-bookmark-search [bookmarks]="personalBookmarks$" [query]="query" [context]="'Personal'" [userData]="userData"></app-bookmark-search>
 <hr style="margin-top: 0;">
-<h3>Personal bookmarks</h3>
+<div class="personal-list-header">
+  <h3>Personal bookmarks</h3>
+  <button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()"> <i class="fa fa-plus"></i> Add new bookmark</button>
+</div>
+
 
 
 <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)">
