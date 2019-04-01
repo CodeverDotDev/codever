@@ -2,6 +2,24 @@
   <div *ngIf="bookmark">
     <h3>Edit... {{bookmark.name}} </h3>
     <form #bookmarkForm="ngForm" (ngSubmit)="updateBookmark(bookmarkForm.value)">
+
+      <div class="form-group">
+        <label>Location* </label>
+        <input class="form-control" type="text"
+               name="location"
+               [(ngModel)]="bookmark.location"
+               placeholder="location"
+               required
+               #location="ngModel"
+        />
+        <div *ngIf="location.invalid && (location.dirty || location.touched)"
+             class="alert alert-danger">
+          <div *ngIf="location.errors.required">
+            Location is required.
+          </div>
+
+        </div>
+      </div>
       <div class="form-group">
         <label>Name* </label>
         <input class="form-control form-control-lg" type="text"
@@ -16,23 +34,6 @@
 
           <div *ngIf="name.errors.required">
             Name is required.
-          </div>
-
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Location* </label>
-        <input class="form-control" type="text"
-               name="location"
-               [(ngModel)]="bookmark.location"
-               placeholder="location"
-               required
-               #location="ngModel"
-        />
-        <div *ngIf="location.invalid && (location.dirty || location.touched)"
-             class="alert alert-danger">
-          <div *ngIf="location.errors.required">
-            Location is required.
           </div>
 
         </div>
