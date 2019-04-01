@@ -62,3 +62,10 @@ a.personal-tabs {
   margin: 2rem 0;
   font-size: 1.2rem;
 }
+.personal-list-header {
+  display: flex;
+  justify-content: space-between;
+  > button {
+    font-size: 1.1rem;
+  }
+}
