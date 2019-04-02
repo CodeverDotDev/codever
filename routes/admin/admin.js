@@ -25,9 +25,9 @@ adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (reque
   try {
     let bookmarks;
     if(request.query.public === 'true') {
-      bookmarks = await Bookmark.find({shared: true});
+      bookmarks = await Bookmark.find({shared: true}).sort({createdAt: -1}).lean().exec();
     } else {
-      bookmarks = await Bookmark.find({});
+      bookmarks = await Bookmark.find({}).sort({createdAt: -1}).lean().exec();
     }
 
     response.send(bookmarks);
