@@ -87,4 +87,67 @@ describe('Admin API Tests', function () {
     });
 
   });
+
+  describe('get latest bookmarks function tests', function () {
+    const latestEntriesApiBaseUrl = '/api/admin/bookmarks/latest-entries';
+
+    it('should return the latest bookmarks - without query parameters', function (done) {
+      request(app)
+        .get(latestEntriesApiBaseUrl)
+        .set('Authorization', bearerToken)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.OK);
+          done();
+        });
+    });
+
+    it('should return the latest bookmarks - "since" parameter', function (done) {
+      let oneMonthBeforeNow = new Date();
+      oneMonthBeforeNow.setMonth(oneMonthBeforeNow.getMonth() - 1);
+      request(app)
+        .get(latestEntriesApiBaseUrl)
+        .query({since: oneMonthBeforeNow.getTime()})
+        .set('Authorization', bearerToken)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.OK);
+          done();
+        });
+    });
+
+    it('should return the latest bookmarks - "since" and "to" parameter', function (done) {
+      let sevenDaysBeforeNow = new Date();
+      sevenDaysBeforeNow.setDate(sevenDaysBeforeNow.getDate() - 7);
+
+      let twoDaysBeforeNow = new Date();
+      twoDaysBeforeNow.setDate(twoDaysBeforeNow.getDate() - 7);
+
+      request(app)
+        .get(latestEntriesApiBaseUrl)
+        .query({since: sevenDaysBeforeNow.getTime()})
+        .query({to: twoDaysBeforeNow.getTime()})
+        .set('Authorization', bearerToken)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.OK);
+          done();
+        });
+    });
+
+    it('should return bad request - invalid "since" and "to" parameter', function (done) {
+      let sevenDaysBeforeNow = new Date();
+      sevenDaysBeforeNow.setDate(sevenDaysBeforeNow.getDate() - 7);
+
+      let twoDaysBeforeNow = new Date();
+      twoDaysBeforeNow.setDate(twoDaysBeforeNow.getDate() - 2);
+
+      request(app)
+        .get(latestEntriesApiBaseUrl)
+        .query({since: twoDaysBeforeNow.getTime()})
+        .query({to: sevenDaysBeforeNow.getTime()})
+        .set('Authorization', bearerToken)
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          done();
+        });
+    });
+  });
 });
