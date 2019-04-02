@@ -38,4 +38,50 @@ adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (reque
   }
 });
 
+/**
+ * Returns the bookmarks added recently.
+ *
+ * The since query parameter is a timestamp which specifies the date since we want to look forward to present time.
+ * If this parameter is present it has priority. If it is not present, we might specify the number of days to look back via
+ * the query parameter numberOfDays. If not present it defaults to 7 days, last week.
+ *
+ */
+adminRouter.get('/bookmarks/latest-entries', keycloak.protect('realm:ROLE_ADMIN'), async (req, res) => {
+  try {
+    if (req.query.since) {
+      const fromDate = new Date(parseFloat(req.query.since, 0));
+      const toDate = req.query.to ? new Date(parseFloat(req.query.to, 0)) : new Date();
+      if (fromDate > toDate) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .send(new MyError('timing query parameters values', ['<Since> param value must be before <to> parameter value']));
+      }
+      const bookmarks = await Bookmark.find(
+        {
+          'shared': true,
+          createdAt: {
+            $gte: fromDate,
+            $lte: toDate
+          }
+
+        }).sort({createdAt: 'desc'}).lean().exec();
+
+      res.send(bookmarks);
+    } else {
+      const numberOfDaysToLookBack = req.query.days ? req.query.days : 7;
+
+      const bookmarks = await Bookmark.find(
+        {
+          'shared': true,
+          createdAt: {$gte: new Date((new Date().getTime() - (numberOfDaysToLookBack * 24 * 60 * 60 * 1000)))}
+        }).sort({createdAt: 'desc'}).lean().exec();
+
+      res.send(bookmarks);
+    }
+
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+  }
+});
+
 module.exports = adminRouter;
