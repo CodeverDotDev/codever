@@ -148,6 +148,78 @@ adminRouter.post('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (requ
 });
 
 
+/**
+ * full UPDATE via PUT - that is the whole document is required and will be updated
+ * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
+ */
+adminRouter.put('/bookmarks/:bookmarkId', keycloak.protect(keycloak.protect('realm:ROLE_ADMIN')), async (request, response) => {
+
+  const requiredAttributesMissing = !request.body.userId ||  !request.body.name || !request.body.location || !request.body.tags || request.body.tags.length === 0;
+  if (requiredAttributesMissing) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Missing required attributes', ['Missing required attributes']));
+  }
+
+  if (request.body.tags.length > constants.MAX_NUMBER_OF_TAGS) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
+  }
+
+  const descriptionIsTooLong = request.body.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+  if (descriptionIsTooLong) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed',
+        ['The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
+  }
+
+  if (request.body.description) {
+    const descriptionHasTooManyLines = request.body.description.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    if (descriptionHasTooManyLines) {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
+          ['The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+    }
+  }
+
+  if (!request.body.descriptionHtml) {
+    request.body.descriptionHtml = converter.makeHtml(request.body.description);
+  }
+  try {
+    const bookmark = await Bookmark.findOneAndUpdate(
+      {
+        _id: request.params.bookmarkId
+      },
+      request.body,
+      {new: true}
+    );
+
+    const bookmarkNotFound = !bookmark;
+    if (bookmarkNotFound) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError('Not Found Error', ['Bookmark with bookmark id ' + request.params.bookmarkId + ' not found']));
+    } else {
+      response
+        .status(200)
+        .send(bookmark);
+    }
+  } catch (err) {
+    if (err.name === 'MongoError' && err.code === 11000) {
+      return response
+        .status(HttpStatus.CONFLICT)
+        .send(new MyError('Duplicate key', [err.message]));
+    }
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown Server Error', ['Unknown server error when updating bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId]));
+  }
+});
+
+
 /*
 * DELETE bookmarks
 * either by providing the location (for example to clean up spam)
