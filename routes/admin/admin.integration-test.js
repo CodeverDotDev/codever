@@ -144,6 +144,20 @@ describe('Admin API Tests', function () {
         });
     });
 
+    it('should fail trying to CREATE bookmark without a userId', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.userId = '';
+      request(app)
+        .post(`${baseApiUnderTestUrl}`)
+        .set('Authorization', bearerToken)
+        .send(invalidBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Missing required attributes');
+          done();
+        });
+    });
+
     it('should fail trying to CREATE bookmark without a location', function (done) {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       invalidBookmark.location = '';
