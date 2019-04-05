@@ -6,7 +6,7 @@ const expect = chai.expect;
 
 const common = require('../../common/config');
 const config = common.config();
-
+const testData = require('../../common/test-data');
 const superagent = require('superagent');
 
 describe('Admin API Tests', function () {
@@ -17,29 +17,7 @@ describe('Admin API Tests', function () {
 
   let createdBookmarkId;
 
-  const verySpecialTitle = "very special title very-special-java-title";
-  const verySpecialLocation = "http://www.very-special-url.com";
-  const verySpecialTag = "very-special-tag";
-  const verySpecialSourceCodeUrl = "https://very-special-github-url.com";
-  const bookmarkExample = {
-    "name": verySpecialTitle,
-    "location": verySpecialLocation,
-    "language": "en",
-    "tags": [
-      verySpecialTag,
-      "async-await",
-      "mongoose",
-      "mongodb"
-    ],
-    "publishedOn": "2017-11-05",
-    "githubURL": verySpecialSourceCodeUrl,
-    "description": "This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark",
-    "descriptionHtml": "<p>This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark</p>",
-    "userId": adminClientId,
-    "shared": true,
-    "starredBy": [],
-    "lastAccessedAt": null
-  }
+  let bookmarkExample = testData.bookmarkExample;
 
 
   before(function (done) {
@@ -149,5 +127,105 @@ describe('Admin API Tests', function () {
           done();
         });
     });
+  });
+
+  describe('invalid bookmark attributes at CREATION' , function () {
+    it('should fail trying to CREATE bookmark without a name', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.name = '';
+      request(app)
+        .post(`${baseApiUnderTestUrl}`)
+        .set('Authorization', bearerToken)
+        .send(invalidBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Missing required attributes');
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE bookmark without a location', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.location = '';
+      request(app)
+        .post(`${baseApiUnderTestUrl}`)
+        .set('Authorization', bearerToken)
+        .send(invalidBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Missing required attributes');
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE bookmark without tags', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.tags = [];
+      request(app)
+        .post(`${baseApiUnderTestUrl}`)
+        .set('Authorization', bearerToken)
+        .send(invalidBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Missing required attributes');
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE bookmark with too many tags', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
+      request(app)
+        .post(`${baseApiUnderTestUrl}`)
+        .set('Authorization', bearerToken)
+        .send(invalidBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('Too many tags have been submitted');
+
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE bookmark with a too big description', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      const textSnippet = "long text in the making";
+      let longText = textSnippet;
+      for (var i = 0; i < 100; i++) {
+        longText += textSnippet;
+      }
+      invalidBookmark.description = longText;
+
+      request(app)
+        .post(`${baseApiUnderTestUrl}`)
+        .set('Authorization', bearerToken)
+        .send(invalidBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.contain('The description is too long.');
+          done();
+        });
+    });
+
+    it('should fail trying to CREATE bookmark with a description with too many lines', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      const line = "oneline\n";
+      let longText = line;
+      for (var i = 0; i < 101; i++) {
+        longText += line;
+      }
+      invalidBookmark.description = longText;
+
+      request(app)
+        .post(`${baseApiUnderTestUrl}`)
+        .set('Authorization', bearerToken)
+        .send(invalidBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.contain('The description hast too many lines.');
+          done();
+        });
+    });
+
   });
 });
