@@ -3,10 +3,13 @@ const personalBookmarksRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
 const Bookmark = require('../../models/bookmark');
+const bookmarkHelper = require('../../common/bookmark-helper');
 const MyError = require('../../models/error');
 
 const common = require('../../common/config');
 const config = common.config();
+
+const constants = require('../../common/constants');
 
 const HttpStatus = require('http-status-codes');
 
@@ -17,12 +20,6 @@ const showdown = require('showdown'),
 //add keycloak middleware
 var keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 personalBookmarksRouter.use(keycloak.middleware());
-
-const MAX_NUMBER_OF_TAGS = 8;
-
-const MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION = 1500;
-
-const MAX_NUMBER_OF_LINES_FOR_DESCRIPTION = 100;
 
 /**
  * CREATE bookmark for user
@@ -36,7 +33,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
-  const bookmark = buildBookmarkFromRequest(request);
+  const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
 
   const missingRequiredAttributes = !bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0;
   if (missingRequiredAttributes) {
@@ -44,25 +41,27 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
-  if (bookmark.tags.length > MAX_NUMBER_OF_TAGS) {
+  if (bookmark.tags.length > constants.MAX_NUMBER_OF_TAGS) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
   if (bookmark.description) {
-    const descriptionIsTooLong = bookmark.description.length > MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+    const descriptionIsTooLong = bookmark.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
     if (descriptionIsTooLong) {
       return response
         .status(HttpStatus.BAD_REQUEST)
-        .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed', ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
+        .send(new MyError('The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed',
+          ['The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
     }
 
-    const descriptionHasTooManyLines = bookmark.description.split('\n').length > MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    const descriptionHasTooManyLines = bookmark.description.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
     if (descriptionHasTooManyLines) {
       return response
         .status(HttpStatus.BAD_REQUEST)
-        .send(new MyError('The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed', ['The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+        .send(new MyError('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
+          ['The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
     }
   }
 
@@ -88,26 +87,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 
 });
 
-let buildBookmarkFromRequest = function (req) {
-  const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml : converter.makeHtml(req.body.description);
-  const bookmark = new Bookmark({
-    name: req.body.name,
-    location: req.body.location,
-    language: req.body.language,
-    description: req.body.description,
-    descriptionHtml: descriptionHtml,
-    category: req.body.category,
-    tags: req.body.tags,
-    publishedOn: req.body.publishedOn,
-    githubURL: req.body.githubURL,
-    userId: req.params.userId,
-    shared: req.body.shared,
-    starredBy: req.body.starredBy,
-    lastAccessedAt: req.body.lastAccessedAt
-  });
 
-  return bookmark;
-};
 
 /* GET personal bookmarks of the user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
@@ -190,27 +170,27 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
       .send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
 
-  if (request.body.tags.length > MAX_NUMBER_OF_TAGS) {
+  if (request.body.tags.length > constants.MAX_NUMBER_OF_TAGS) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
-  const descriptionIsTooLong = request.body.description.length > MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+  const descriptionIsTooLong = request.body.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
   if (descriptionIsTooLong) {
     return response
       .status(HttpStatus.BAD_REQUEST)
-      .send(new MyError('The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed',
-        ['The description is too long. Only ' + MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
+      .send(new MyError('The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed',
+        ['The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
   }
 
   if (request.body.description) {
-    const descriptionHasTooManyLines = request.body.description.split('\n').length > MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    const descriptionHasTooManyLines = request.body.description.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
     if (descriptionHasTooManyLines) {
       return response
         .status(HttpStatus.BAD_REQUEST)
-        .send(new MyError('The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
-          ['The description hast too many lines. Only ' + MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+        .send(new MyError('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
+          ['The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
     }
   }
 

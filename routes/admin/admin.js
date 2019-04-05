@@ -4,10 +4,12 @@ const adminRouter = express.Router();
 const Keycloak = require('keycloak-connect');
 
 const Bookmark = require('../../models/bookmark');
+const bookmarkHelper = require('../../common/bookmark-helper');
 const MyError = require('../../models/error');
 
 const common = require('../../common/config');
 const config = common.config();
+const constants = require('../../common/constants');
 
 const HttpStatus = require('http-status-codes');
 
@@ -37,6 +39,8 @@ adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (reque
       .send(err);
   }
 });
+
+
 
 /**
  * Returns the bookmarks added recently.
@@ -81,6 +85,123 @@ adminRouter.get('/bookmarks/latest-entries', keycloak.protect('realm:ROLE_ADMIN'
 
   } catch (err) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+  }
+});
+
+/**
+ * create bookmark
+ */
+adminRouter.post('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
+
+  const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
+
+  const missingRequiredAttributes = !bookmark.userId ||!bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0;
+  if (missingRequiredAttributes) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Missing required attributes', ['Missing required attributes']));
+  }
+  if (bookmark.tags.length > constants.MAX_NUMBER_OF_TAGS) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
+  }
+
+  if (bookmark.description) {
+    const descriptionIsTooLong = bookmark.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+    if (descriptionIsTooLong) {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed',
+          ['The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
+    }
+
+    const descriptionHasTooManyLines = bookmark.description.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    if (descriptionHasTooManyLines) {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
+          ['The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+    }
+  }
+
+  try {
+    let newBookmark = await bookmark.save();
+
+    response
+      .set('Location', `${config.basicApiUrl}private/${request.params.userId}/bookmarks/${newBookmark.id}`)
+      .status(HttpStatus.CREATED)
+      .send({response: 'Bookmark created for userId ' + request.params.userId});
+
+  } catch (err) {
+    const duplicateKeyinMongoDb = err.name === 'MongoError' && err.code === 11000;
+    if (duplicateKeyinMongoDb) {
+      return response
+        .status(HttpStatus.CONFLICT)
+        .send(new MyError('Duplicate key', [err.message]));
+    }
+    response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+
+});
+
+
+/*
+* DELETE bookmarks
+* either by providing the location (for example to clean up spam)
+* or userId (deletes all bookmarks submitted by the user)
+*/
+adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
+  try {
+    if (req.query.location) {
+      await Bookmark.deleteMany({
+        location: request.params.location
+      });
+    } else if (req.query.userId) {
+      await Bookmark.deleteMany({
+        location: request.params.location
+      });
+    } else {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('You can either delete bookmarks by location or userId', ['You can either delete bookmarks by location or userId']));
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown server error',
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
+  }
+});
+
+
+/*
+* DELETE bookmark for by bookmarkId
+*/
+adminRouter.delete('/bookmarks/:bookmarkId', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
+  try {
+    const bookmark = await Bookmark.findOneAndRemove({
+      _id: request.params.bookmarkId,
+    });
+
+    if (!bookmark) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'Not Found Error',
+          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']
+          )
+        );
+    } else {
+      response.status(HttpStatus.NO_CONTENT).send('Bookmark successfully deleted');
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown server error',
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
   }
 });
 
