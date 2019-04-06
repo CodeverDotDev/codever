@@ -242,4 +242,217 @@ describe('Admin API Tests', function () {
     });
 
   });
+
+  describe('test successful creation, update and deletion of bookmark' , function () {
+
+    let createdBookmark;
+
+    it('should succeed creating example bookmark', function (done) {
+      request(app)
+        .post(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .send(bookmarkExample)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.CREATED);
+          const locationHeaderValue = response.header['location']
+          const isLocationHeaderPresent = response.header['location'] !== undefined;
+          expect(isLocationHeaderPresent).to.be.true;
+
+          //set the id of the bookmarkexample now that it is created
+          const lastSlashIndex = locationHeaderValue.lastIndexOf('/');
+          const bookmarkId = locationHeaderValue.substring(lastSlashIndex + 1);
+
+          request(app)
+            .get(`${baseApiUnderTestUrl}${bookmarkId}`)
+            .set('Authorization', bearerToken)
+            .end(function (error, response) {
+              if (error) {
+                return done(error);
+              }
+              expect(response.statusCode).to.equal(HttpStatus.OK);
+              createdBookmark = response.body;
+              console.log(createdBookmark);
+              expect(createdBookmark._id).to.equal(bookmarkId);
+              expect(createdBookmark.name).to.equal(bookmarkExample.name);
+              expect(createdBookmark.location).to.equal(bookmarkExample.location);
+
+              done();
+            });
+        });
+    });
+
+    it('should fail trying to add bookmark with existent location for same user', function (done) {
+      request(app)
+        .post(`${baseApiUnderTestUrl}`)
+        .set('Authorization', bearerToken)
+        .send(bookmarkExample)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.CONFLICT);
+          expect(response.body.title).to.equal('Duplicate key');
+          done();
+        });
+    });
+
+    describe('invalid bookmark attributes at UPDATE' , function () {
+      it('should fail trying to UPDATE bookmark without a title', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.name = '';
+        request(app)
+          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidBookmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Missing required attributes');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE bookmark without a location', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.location = '';
+        request(app)
+          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidBookmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Missing required attributes');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE bookmark without userId', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.userId = '';
+        request(app)
+          .put(`${baseApiUnderTestUrl}/bookmarks/${createdBookmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidBookmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Missing required attributes');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE bookmark without tags', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.tags = [];
+        request(app)
+          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidBookmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Missing required attributes');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE bookmark with too many tags', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
+        request(app)
+          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidBookmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('Too many tags have been submitted');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE bookmark with a too big description', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        const textSnippet = "long text in the making";
+        let longText = textSnippet;
+        for (var i = 0; i < 100; i++) {
+          longText += textSnippet;
+        }
+        invalidBookmark.description = longText;
+
+        request(app)
+          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidBookmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.contain('The description is too long.');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE bookmark with a description with too many lines', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        const line = "oneline\n";
+        let longText = line;
+        for (var i = 0; i < 101; i++) {
+          longText += line;
+        }
+        invalidBookmark.description = longText;
+
+        request(app)
+          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidBookmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.contain('The description hast too many lines.');
+            done();
+          });
+      });
+
+    });
+
+    it('should successfully UPDATE bookmark', function (done) {
+      let updatedBookmark= JSON.parse(JSON.stringify(createdBookmark));
+      updatedBookmark.name += ' rocks';
+
+      request(app)
+        .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+        .set('Authorization', bearerToken)
+        .send(updatedBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          expect(response.body.name).to.equal(bookmarkExample.name + ' rocks');
+
+          //make also a read to be sure sure :P
+          request(app)
+            .get(`${baseApiUnderTestUrl}${updatedBookmark._id}`)
+            .set('Authorization', bearerToken)
+            .end(function (error, response) {
+              if (error) {
+                return done(error);
+              }
+              expect(response.statusCode).to.equal(HttpStatus.OK);
+              expect(response.body.name).to.equal(bookmarkExample.name  + ' rocks');
+
+              done();
+            });
+        });
+    });
+
+    it('should succeed deleting created bookmark', function (done) {
+      request(app)
+        .delete(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+        .set('Authorization', bearerToken)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+          done();
+        });
+    });
+
+  });
+
 });
