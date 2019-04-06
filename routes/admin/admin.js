@@ -40,7 +40,33 @@ adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (reque
   }
 });
 
+/* GET bookmark by id */
+adminRouter.get('/bookmarks/:bookmarkId', keycloak.protect(), async (request, response) => {
 
+  try {
+    const bookmark = await Bookmark.findOne({
+      _id: request.params.bookmarkId,
+      userId: request.body.userId
+    });
+
+    if (!bookmark) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'Not Found Error',
+          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']
+          )
+        );
+    } else {
+      response.status(HttpStatus.OK).send(bookmark);
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown server error',
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
+  }
+});
 
 /**
  * Returns the bookmarks added recently.
@@ -229,11 +255,11 @@ adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (re
   try {
     if (req.query.location) {
       await Bookmark.deleteMany({
-        location: request.params.location
+        location: req.query.location
       });
     } else if (req.query.userId) {
       await Bookmark.deleteMany({
-        location: request.params.location
+        location: req.query.userId
       });
     } else {
       return response
