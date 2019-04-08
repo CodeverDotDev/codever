@@ -67,7 +67,7 @@ describe('Admin API Tests', function () {
   });
 
   describe('get latest bookmarks function tests', function () {
-    const latestEntriesApiBaseUrl = '/api/admin/bookmarks/latest-entries';
+    const latestEntriesApiBaseUrl =  baseApiUnderTestUrl + 'latest-entries';
 
     it('should return the latest bookmarks - without query parameters', function (done) {
       request(app)
