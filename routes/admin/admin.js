@@ -21,53 +21,6 @@ const showdown = require('showdown'),
 const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 adminRouter.use(keycloak.middleware());
 
-
-/* GET all bookmarks */
-adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
-  try {
-    let bookmarks;
-    if(request.query.public === 'true') {
-      bookmarks = await Bookmark.find({shared: true}).sort({createdAt: -1}).lean().exec();
-    } else {
-      bookmarks = await Bookmark.find({}).sort({createdAt: -1}).lean().exec();
-    }
-
-    response.send(bookmarks);
-  } catch (err) {
-    return response
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(err);
-  }
-});
-
-/* GET bookmark by id */
-adminRouter.get('/bookmarks/:bookmarkId', keycloak.protect(), async (request, response) => {
-
-  try {
-    const bookmark = await Bookmark.findOne({
-      _id: request.params.bookmarkId,
-      userId: request.body.userId
-    });
-
-    if (!bookmark) {
-      return response
-        .status(HttpStatus.NOT_FOUND)
-        .send(new MyError(
-          'Not Found Error',
-          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']
-          )
-        );
-    } else {
-      response.status(HttpStatus.OK).send(bookmark);
-    }
-  } catch (err) {
-    return response
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
-  }
-});
-
 /**
  * Returns the bookmarks added recently.
  *
@@ -111,6 +64,51 @@ adminRouter.get('/bookmarks/latest-entries', keycloak.protect('realm:ROLE_ADMIN'
 
   } catch (err) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+  }
+});
+
+/* GET all bookmarks */
+adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
+  try {
+    let bookmarks;
+    if(request.query.public === 'true') {
+      bookmarks = await Bookmark.find({shared: true}).sort({createdAt: -1}).lean().exec();
+    } else {
+      bookmarks = await Bookmark.find({}).sort({createdAt: -1}).lean().exec();
+    }
+
+    response.send(bookmarks);
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+/* GET bookmark by id */
+adminRouter.get('/bookmarks/:bookmarkId', keycloak.protect(), async (request, response) => {
+
+  try {
+    const bookmark = await Bookmark.findOne({
+      _id: request.params.bookmarkId
+    });
+
+    if (!bookmark) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'Not Found Error',
+          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']
+          )
+        );
+    } else {
+      response.status(HttpStatus.OK).send(bookmark);
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown server error',
+        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
   }
 });
 
@@ -245,36 +243,6 @@ adminRouter.put('/bookmarks/:bookmarkId', keycloak.protect(keycloak.protect('rea
   }
 });
 
-
-/*
-* DELETE bookmarks
-* either by providing the location (for example to clean up spam)
-* or userId (deletes all bookmarks submitted by the user)
-*/
-adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
-  try {
-    if (req.query.location) {
-      await Bookmark.deleteMany({
-        location: req.query.location
-      });
-    } else if (req.query.userId) {
-      await Bookmark.deleteMany({
-        location: req.query.userId
-      });
-    } else {
-      return response
-        .status(HttpStatus.BAD_REQUEST)
-        .send(new MyError('You can either delete bookmarks by location or userId', ['You can either delete bookmarks by location or userId']));
-    }
-  } catch (err) {
-    return response
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
-  }
-});
-
-
 /*
 * DELETE bookmark for by bookmarkId
 */
@@ -302,5 +270,34 @@ adminRouter.delete('/bookmarks/:bookmarkId', keycloak.protect('realm:ROLE_ADMIN'
         ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
   }
 });
+
+/*
+* DELETE bookmarks
+* either by providing the location (for example to clean up spam)
+* or userId (deletes all bookmarks submitted by the user)
+*/
+adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
+  try {
+    if (req.query.location) {
+      await Bookmark.deleteMany({
+        location: req.query.location
+      });
+    } else if (req.query.userId) {
+      await Bookmark.deleteMany({
+        location: req.query.userId
+      });
+    } else {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('You can either delete bookmarks by location or userId', ['You can either delete bookmarks by location or userId']));
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown server error',
+        ['Unknown server error when trying to delete bookmarks']));
+  }
+});
+
 
 module.exports = adminRouter;
