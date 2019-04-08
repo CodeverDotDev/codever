@@ -176,7 +176,7 @@ adminRouter.post('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (requ
  * full UPDATE via PUT - that is the whole document is required and will be updated
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
-adminRouter.put('/bookmarks/:bookmarkId', keycloak.protect(keycloak.protect('realm:ROLE_ADMIN')), async (request, response) => {
+adminRouter.put('/bookmarks/:bookmarkId', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
 
   const requiredAttributesMissing = !request.body.userId ||  !request.body.name || !request.body.location || !request.body.tags || request.body.tags.length === 0;
   if (requiredAttributesMissing) {

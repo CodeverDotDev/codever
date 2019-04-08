@@ -284,6 +284,7 @@ describe('Admin API Tests', function () {
         });
     });
 
+
     it('should fail trying to add bookmark with existent location for same user', function (done) {
       request(app)
         .post(`${baseApiUnderTestUrl}`)
@@ -299,6 +300,7 @@ describe('Admin API Tests', function () {
         });
     });
 
+
     describe('invalid bookmark attributes at UPDATE' , function () {
       it('should fail trying to UPDATE bookmark without a title', function (done) {
         let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
@@ -313,6 +315,8 @@ describe('Admin API Tests', function () {
             done();
           });
       });
+
+
 
       it('should fail trying to UPDATE bookmark without a location', function (done) {
         let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
@@ -332,7 +336,7 @@ describe('Admin API Tests', function () {
         let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
         invalidBookmark.userId = '';
         request(app)
-          .put(`${baseApiUnderTestUrl}/bookmarks/${createdBookmark._id}`)
+          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
           .set('Authorization', bearerToken)
           .send(invalidBookmark)
           .end(function (error, response) {
@@ -409,8 +413,8 @@ describe('Admin API Tests', function () {
             done();
           });
       });
+  });
 
-    });
 
     it('should successfully UPDATE bookmark', function (done) {
       let updatedBookmark= JSON.parse(JSON.stringify(createdBookmark));
@@ -453,6 +457,8 @@ describe('Admin API Tests', function () {
         });
     });
 
+
   });
+
 
 });
