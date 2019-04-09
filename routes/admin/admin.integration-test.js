@@ -492,6 +492,63 @@ describe('Admin API Tests', function () {
         });
     });
 
+    it('should succeed creating example bookmark and deleting it by location', function (done) {
+      request(app)
+        .post(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .send(bookmarkExample)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.CREATED);
+          const locationHeaderValue = response.header['location']
+          const isLocationHeaderPresent = response.header['location'] !== undefined;
+          expect(isLocationHeaderPresent).to.be.true;
+
+          request(app)
+            .delete(`${baseApiUnderTestUrl}`)
+            .query({location: bookmarkExample.location})
+            .set('Authorization', bearerToken)
+            .end(function (error, response) {
+              if (error) {
+                return done(error);
+              }
+              expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+
+              done();
+            });
+        });
+    });
+
+    it('should succeed creating example bookmark and deleting it by userId', function (done) {
+      request(app)
+        .post(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .send(bookmarkExample)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.CREATED);
+          const locationHeaderValue = response.header['location']
+          const isLocationHeaderPresent = response.header['location'] !== undefined;
+          expect(isLocationHeaderPresent).to.be.true;
+
+          request(app)
+            .delete(`${baseApiUnderTestUrl}`)
+            .query({userId: bookmarkExample.userId})
+            .set('Authorization', bearerToken)
+            .end(function (error, response) {
+              if (error) {
+                return done(error);
+              }
+              expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+
+              done();
+            });
+        });
+    });
 
   });
 
