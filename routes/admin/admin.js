@@ -21,6 +21,31 @@ const showdown = require('showdown'),
 const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 adminRouter.use(keycloak.middleware());
 
+
+/* GET all bookmarks */
+adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
+  try {
+    let bookmarks;
+    let filter = {};
+    if(request.query.public === 'true') {
+      filter.shared = true;
+    }
+    if (request.query.location) {
+      filter.location = request.query.location;
+    }
+    if (request.query.userId) {
+      filter.userId = request.query.userId;
+    }
+    bookmarks = await Bookmark.find(filter).sort({createdAt: -1}).lean().exec();
+
+    response.send(bookmarks);
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
 /**
  * Returns the bookmarks added recently.
  *
@@ -64,24 +89,6 @@ adminRouter.get('/bookmarks/latest-entries', keycloak.protect('realm:ROLE_ADMIN'
 
   } catch (err) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
-  }
-});
-
-/* GET all bookmarks */
-adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
-  try {
-    let bookmarks;
-    if(request.query.public === 'true') {
-      bookmarks = await Bookmark.find({shared: true}).sort({createdAt: -1}).lean().exec();
-    } else {
-      bookmarks = await Bookmark.find({}).sort({createdAt: -1}).lean().exec();
-    }
-
-    response.send(bookmarks);
-  } catch (err) {
-    return response
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(err);
   }
 });
 

@@ -284,6 +284,41 @@ describe('Admin API Tests', function () {
         });
     });
 
+    it('should find created bookmark by location', function (done){
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .query({location: createdBookmark.location})
+        .set('Authorization', bearerToken)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          expect(response.body.length).to.equal(1);
+          const responseBookmark = response.body[0];
+          expect(responseBookmark.location).to.equal(createdBookmark.location);
+
+          done();
+        });
+    });
+
+    it('should find created bookmark by userId', function (done){
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .query({userId: createdBookmark.userId})
+        .set('Authorization', bearerToken)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          expect(response.body.length).to.equal(1);
+          const responseBookmark = response.body[0];
+          expect(responseBookmark.location).to.equal(createdBookmark.location);
+
+          done();
+        });
+    });
 
     it('should fail trying to add bookmark with existent location for same user', function (done) {
       request(app)
