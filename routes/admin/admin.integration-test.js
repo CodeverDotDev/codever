@@ -12,10 +12,7 @@ const superagent = require('superagent');
 describe('Admin API Tests', function () {
 
   let bearerToken;
-  const adminClientId = config.integration_tests.admin.client_id;
   const baseApiUnderTestUrl = '/api/admin/bookmarks/';
-
-  let createdBookmarkId;
 
   let bookmarkExample = testData.bookmarkExample;
 
@@ -548,6 +545,36 @@ describe('Admin API Tests', function () {
               done();
             });
         });
+    });
+
+    it('should succeed trying to delete non-existent bookmark', function (done) {
+        request(app)
+          .delete(`${baseApiUnderTestUrl}`)
+          .query({location: bookmarkExample.location})
+          .set('Authorization', bearerToken)
+          .end(function (error, response) {
+            if (error) {
+              return done(error);
+            }
+            expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+
+            done();
+          });
+    });
+
+    it('should succeed trying to delete non-existent bookmark', function (done) {
+        request(app)
+          .delete(`${baseApiUnderTestUrl}`)
+          .query({userId: bookmarkExample.userId})
+          .set('Authorization', bearerToken)
+          .end(function (error, response) {
+            if (error) {
+              return done(error);
+            }
+            expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+
+            done();
+          });
     });
 
   });
