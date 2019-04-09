@@ -285,19 +285,22 @@ adminRouter.delete('/bookmarks/:bookmarkId', keycloak.protect('realm:ROLE_ADMIN'
 */
 adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
   try {
-    if (req.query.location) {
-      await Bookmark.deleteMany({
-        location: req.query.location
-      });
-    } else if (req.query.userId) {
-      await Bookmark.deleteMany({
-        location: req.query.userId
-      });
-    } else {
+    let filter = {};
+    if (request.query.location) {
+      filter.location = request.query.location;
+    }
+    if (request.query.userId) {
+      filter.userId = request.query.userId;
+    }
+    if(filter === {}){
       return response
         .status(HttpStatus.BAD_REQUEST)
-        .send(new MyError('You can either delete bookmarks by location or userId', ['You can either delete bookmarks by location or userId']));
+        .send(new MyError('You can either delete bookmarks by location or userId - at least one of them mandatory',
+          ['You can either delete bookmarks by location or userId - at least one of them mandatory']));
     }
+
+    const responseDeletion = await Bookmark.deleteMany(filter);
+    response.status(HttpStatus.NO_CONTENT).send('Bookmarks successfully deleted');
   } catch (err) {
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
