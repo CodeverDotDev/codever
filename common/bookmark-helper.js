@@ -1,3 +1,7 @@
+//showdown converter - https://github.com/showdownjs/showdown
+const showdown = require('showdown'),
+  converter = new showdown.Converter();
+
 const Bookmark = require('../models/bookmark');
 
 module.exports = {
