@@ -3,7 +3,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Login is required</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"  (click)="onCancelClick()">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"  (click)="onLoginCancelClick()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -11,8 +11,8 @@
         <p>You need to login to be able to star bookmarks.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="onLoginClick()">Login</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onCancelClick()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="onLoginConfirmClick()">Login</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onLoginCancelClick()">Cancel</button>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@
     <div class="card-body show-hide">
       <div class="header-wrapper">
         <div class="titles">
-          <h5 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText" (click)="updateLastAccess(bookmark)"></a></h5>
+          <h5 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText" (click)="onBookmarkLinkClick(bookmark)"></a></h5>
           <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="bookmark.location | slice:0:150 | highlight: queryText"></span></h6>
         </div>
         <div *ngIf="userIsLoggedIn">
@@ -43,7 +43,7 @@
     <div class="card-footer">
       <div class="tags-group">
         <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-            <span *ngIf="bookmark.starredBy.indexOf(userId) == -1 else starred" class="input-group-text star-span" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
+            <span *ngIf="userData.stars.indexOf(userId) == -1 else starred" class="input-group-text star-span" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
               <i class="far fa-star"></i>
             </span>
           <ng-template #starred>
@@ -51,7 +51,7 @@
                 <i class="fas fa-star"></i>
               </span>
           </ng-template>
-          <span>{{bookmark.starredBy.length}}</span>
+          <span>{{bookmark.stars}}</span>
         </div>
         <span *ngIf="bookmark.publishedOn" class="badge  badge-info float-xs-left"><i class="fa fa-calendar-alt"></i> {{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
         <span *ngIf="bookmark.githubURL" class="badge  badge-primary float-xs-left"><a href="{{bookmark.githubURL}}" target="_blank"><i class="fab fa-github"></i> Source code</a></span>
