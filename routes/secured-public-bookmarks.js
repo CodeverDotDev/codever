@@ -30,7 +30,7 @@ router.patch('/:bookmarkId', keycloak.protect(), async (request, response) => {
 
   if (request.body.action === 'STAR') {
     try {
-      const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$addToSet: {starredBy: request.body.ratingUserId}});
+      const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$set: {stars: stars.length + 1}});
 
       const bookmarkNotFound = !bookmark;
       if (bookmarkNotFound) {
@@ -47,7 +47,7 @@ router.patch('/:bookmarkId', keycloak.protect(), async (request, response) => {
     }
   } else if (request.body.action === 'UNSTAR') {
     try {
-      const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$pull: {starredBy: request.body.ratingUserId}});
+      const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId},  {$set: {stars: stars.length - 1}});
 
       const bookmarkNotFound = !bookmark;
       if (bookmarkNotFound) {
