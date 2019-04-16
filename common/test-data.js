@@ -19,6 +19,7 @@ module.exports = {
     "userId": config.integration_tests.test_user_id,
     "shared": true,
     "starredBy": [],
+    "stars": 0,
     "lastAccessedAt": null
   }
 }

@@ -21,7 +21,8 @@ module.exports = {
       userId: req.body.userId || req.params.userId,
       shared: req.body.shared,
       starredBy: req.body.starredBy,
-      lastAccessedAt: req.body.lastAccessedAt
+      lastAccessedAt: req.body.lastAccessedAt,
+      stars: req.body.stars
     });
 
     return bookmark;
