@@ -107,11 +107,8 @@ export class AsyncBookmarkListComponent implements OnInit {
     });
 
     if (this.userId) {
-      if (!bookmark.starredBy) {
-        bookmark.starredBy = [];
-      } else {
-        bookmark.starredBy.push(this.userId);
-      }
+      bookmark.stars++;
+      this.userData.stars.unshift(bookmark._id);
       const rateBookmarkRequest: RateBookmarkRequest = {
         ratingUserId: this.userId,
         action: RatingActionType.STAR,
@@ -123,12 +120,8 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   unstarBookmark(bookmark: Bookmark): void {
     if (this.userId) {
-      if (!bookmark.starredBy) {
-        bookmark.starredBy = [];
-      } else {
-        const index = bookmark.starredBy.indexOf(this.userId);
-        bookmark.starredBy.splice(index, 1);
-      }
+      bookmark.stars--;
+      this.userData.stars.splice( this.userData.stars.indexOf(bookmark._id), 1 );
       const rateBookmarkRequest: RateBookmarkRequest = {
         ratingUserId: this.userId,
         action: RatingActionType.UNSTAR,
@@ -139,14 +132,8 @@ export class AsyncBookmarkListComponent implements OnInit {
     }
   }
 
-  updateLastAccess(bookmark: Bookmark) {
-    if (this.userId === bookmark.userId) {
-      bookmark.lastAccessedAt = new Date();
-      const obs = this.personalBookmarksStore.updateBookmark(bookmark);
-    }
-  }
-
   private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
+    this.userDataStore.updateUserData(this.userData);
     const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
     if (isBookmarkCreatedByRatingUser) {
       const obs = this.personalBookmarksStore.updateBookmark(rateBookmarkRequest.bookmark);
@@ -160,11 +147,18 @@ export class AsyncBookmarkListComponent implements OnInit {
     }
   }
 
-  onLoginClick() {
+  onBookmarkLinkClick(bookmark: Bookmark) {
+    if (this.userId === bookmark.userId) {
+      bookmark.lastAccessedAt = new Date();
+      const obs = this.personalBookmarksStore.updateBookmark(bookmark);
+    }
+  }
+
+  onLoginConfirmClick() {
     this.keycloakService.login();
   }
 
-  onCancelClick() {
+  onLoginCancelClick() {
     this.displayModal = 'none';
   }
 
