@@ -5,8 +5,6 @@
   <button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()"> <i class="fa fa-plus"></i> Add new bookmark</button>
 </div>
 
-
-
 <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)">
   <mat-tab>
     <ng-template mat-tab-label >
@@ -19,5 +17,11 @@
       <span class="app-tab-label">Read Later  &nbsp;<i class="fas fa-clock"></i></span>
     </ng-template>
     <app-async-bookmark-list [bookmarks]="laterReads$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label">Stars  &nbsp;<i class="fas fa-star"></i></span>
+    </ng-template>
+    <app-async-bookmark-list [bookmarks]="starredBookmarks$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
   </mat-tab>
 </mat-tab-group>

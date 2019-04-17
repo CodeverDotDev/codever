@@ -15,8 +15,12 @@ import {Bookmark} from '../model/bookmark';
 export class UserDataStore {
 
   private _userData: ReplaySubject<UserData> = new ReplaySubject(1);
+
   private _laterReads: BehaviorSubject<Bookmark[]> = new BehaviorSubject([]);
   private laterReadsHasBeenRequested = false;
+
+  private _stars: BehaviorSubject<Bookmark[]> = new BehaviorSubject([]);
+  private starredBookmarksHasBeenRequested = false;
 
   private userId: string;
 
@@ -102,5 +106,32 @@ export class UserDataStore {
 
     this._laterReads.next(laterReads);
   }
+
+  getStarredBookmarks(): Observable<Bookmark[]> {
+    if (!this.starredBookmarksHasBeenRequested) {
+      this.starredBookmarksHasBeenRequested = true;
+      const starredBookmarks$ = this.userService.getStarredBookmarks(this.userData.userId).subscribe(data => {
+        this._stars.next(data);
+      });
+    }
+    return this._stars.asObservable();
+  }
+
+  addToStarredBookmarks(bookmark: Bookmark) {
+    const starredBookmarks: Bookmark[] = this._stars.getValue();
+    starredBookmarks.unshift(bookmark);
+
+    this._stars.next(starredBookmarks); // insert at the top (index 0)
+  }
+
+  removeFromStarredBookmarks(bookmark: Bookmark) {
+    const starredBookmarks: Bookmark[] = this._stars.getValue();
+    const index = starredBookmarks.findIndex((starredBookmark) => bookmark._id === starredBookmark._id);
+    starredBookmarks.splice(index, 1);
+
+    this._stars.next(starredBookmarks);
+  }
+
+
 }
 
