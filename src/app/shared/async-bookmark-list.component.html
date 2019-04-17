@@ -8,7 +8,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>You need to login to be able to star bookmarks.</p>
+        <p>You need to be logged in to be able to star bookmarks.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="onLoginConfirmClick()">Login</button>
@@ -43,12 +43,12 @@
     <div class="card-footer">
       <div class="tags-group">
         <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-            <span *ngIf="userData.stars.indexOf(userId) == -1 else starred" class="input-group-text star-span" id="btnGroupAddon2" (click)="starBookmark(bookmark)" style="cursor:pointer">
-              <i class="far fa-star"></i>
+            <span *ngIf="userIsLoggedIn && userData && userData.stars.indexOf(bookmark._id) !== -1 else emptyStar" class="input-group-text star-span" id="btnGroupAddon2" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
+              <i class="fas fa-star"></i>
             </span>
-          <ng-template #starred>
-              <span class="input-group-text star-span" id="btnGroupAddon3" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
-                <i class="fas fa-star"></i>
+          <ng-template #emptyStar>
+              <span class="input-group-text star-span" id="btnGroupAddon3" (click)="starBookmark(bookmark)" style="cursor:pointer">
+                <i class="far fa-star"></i>
               </span>
           </ng-template>
           <span>{{bookmark.stars}}</span>
