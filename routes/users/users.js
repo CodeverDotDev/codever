@@ -128,7 +128,7 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
     const userData = await User.findOneAndUpdate(
       {userId: request.params.userId},
       request.body,
-      {upsert: true, new: true}, // option
+      {upsert: true, new: true}, // options
     );
     response.status(HttpStatus.OK).send(userData);
 
