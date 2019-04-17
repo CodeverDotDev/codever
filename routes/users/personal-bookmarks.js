@@ -197,6 +197,7 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
   if (!request.body.descriptionHtml) {
     request.body.descriptionHtml = converter.makeHtml(request.body.description);
   }
+
   try {
     const bookmark = await Bookmark.findOneAndUpdate(
       {

@@ -13,7 +13,8 @@ var userSchema = new Schema({
     _id: String,
     userId: String, //global userId in the bookmarks context (currently is the Keycloak Id)
     searches: [searchSchema],
-    readLater: [String]
+    readLater: [String],
+    stars: [String] //ids of bookmarks starred by user
 },
 {
   timestamps: true
