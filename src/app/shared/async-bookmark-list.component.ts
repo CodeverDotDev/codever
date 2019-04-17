@@ -96,6 +96,7 @@ export class AsyncBookmarkListComponent implements OnInit {
       this.bookmarkDeleted.emit(true);
       const obs2 = this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
       const obs3 = this.userDataStore.removeFromLaterReads(bookmark);
+      const obs4 = this.userDataStore.removeFromStarredBookmarks(bookmark);
     });
   }
 
