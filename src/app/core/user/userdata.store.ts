@@ -102,9 +102,10 @@ export class UserDataStore {
   removeFromLaterReads(bookmark: Bookmark) {
     const laterReads: Bookmark[] = this._laterReads.getValue();
     const index = laterReads.findIndex((laterRead) => bookmark._id === laterRead._id);
-    laterReads.splice(index, 1);
-
-    this._laterReads.next(laterReads);
+    if (index !== -1) {
+      laterReads.splice(index, 1);
+      this._laterReads.next(laterReads);
+    }
   }
 
   getStarredBookmarks(): Observable<Bookmark[]> {
@@ -127,9 +128,10 @@ export class UserDataStore {
   removeFromStarredBookmarks(bookmark: Bookmark) {
     const starredBookmarks: Bookmark[] = this._stars.getValue();
     const index = starredBookmarks.findIndex((starredBookmark) => bookmark._id === starredBookmark._id);
-    starredBookmarks.splice(index, 1);
-
-    this._stars.next(starredBookmarks);
+    if (index !== -1) {
+      starredBookmarks.splice(index, 1);
+      this._stars.next(starredBookmarks);
+    }
   }
 
 
