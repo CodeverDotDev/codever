@@ -98,7 +98,6 @@ describe('Secured Public API Tests', function () {
     });
 
     it('should fail trying to rate with incomplete request attributes - action', function (done) {
-      const inexistentBookmarkId = '507f191e810c19729de860aa';
       request(app)
         .patch(baseApiUrlUnderTest + bookmarkUnderTest._id)
         .set('Authorization', bearerToken)
@@ -122,7 +121,7 @@ describe('Secured Public API Tests', function () {
             .get('/api/public/bookmarks/' + bookmarkUnderTest._id)
             .end(function (err, res) {
               expect(res.statusCode).to.equal(HttpStatus.OK);
-              expect(res.body.starredBy).to.be.an('array').that.does.include(ratingTestUserId);
+              expect(res.body.stars).to.equal(1);
               done();
             });
         });
@@ -140,7 +139,7 @@ describe('Secured Public API Tests', function () {
             .get('/api/public/bookmarks/' + bookmarkUnderTest._id)
             .end(function (err, res) {
               expect(res.statusCode).to.equal(HttpStatus.OK);
-              expect(res.body.starredBy).to.be.an('array').that.does.not.include(ratingTestUserId);
+              expect(res.body.stars).to.equal(0);
               done();
             });
         });
