@@ -34,4 +34,9 @@ export class UserService {
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/later-reads` );
   }
 
+  getStarredBookmarks(userId: string): Observable<Bookmark[]> {
+    return this.httpClient
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/stars` );
+  }
+
 }

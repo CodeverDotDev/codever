@@ -1,14 +1,14 @@
-import {Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Bookmark} from '../core/model/bookmark';
-import {Router} from '@angular/router';
-import {PersonalBookmarksStore} from '../core/store/personal-bookmarks-store.service';
-import {KeycloakService} from 'keycloak-angular';
-import {PublicBookmarksStore} from '../public/bookmarks/store/public-bookmarks-store.service';
-import {PublicBookmarksService} from '../public/bookmarks/public-bookmarks.service';
-import {RateBookmarkRequest, RatingActionType} from '../core/model/rate-bookmark.request';
-import {UserData} from '../core/model/user-data';
-import {UserDataStore} from '../core/user/userdata.store';
+import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Bookmark } from '../core/model/bookmark';
+import { Router } from '@angular/router';
+import { PersonalBookmarksStore } from '../core/store/personal-bookmarks-store.service';
+import { KeycloakService } from 'keycloak-angular';
+import { PublicBookmarksStore } from '../public/bookmarks/store/public-bookmarks-store.service';
+import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
+import { RateBookmarkRequest, RatingActionType } from '../core/model/rate-bookmark.request';
+import { UserData } from '../core/model/user-data';
+import { UserDataStore } from '../core/user/userdata.store';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -127,24 +127,30 @@ export class AsyncBookmarkListComponent implements OnInit {
         action: RatingActionType.UNSTAR,
         bookmark: bookmark
       }
-      this.rateBookmark(rateBookmarkRequest);
 
+      this.rateBookmark(rateBookmarkRequest);
     }
   }
 
   private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
-    this.userDataStore.updateUserData(this.userData);
-    const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
-    if (isBookmarkCreatedByRatingUser) {
-      const obs = this.personalBookmarksStore.updateBookmark(rateBookmarkRequest.bookmark);
-    } else {
-      const obs = this.publicBookmarksService.rateBookmark(rateBookmarkRequest);
-      obs.subscribe(
-        res => {
-          this.publicBookmarksStore.updateBookmarkInPublicStore(rateBookmarkRequest.bookmark);
-        }
-      );
-    }
+    this.userDataStore.updateUserData(this.userData).subscribe(() => {
+      const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
+      if ( rateBookmarkRequest.action === RatingActionType.STAR ) {
+        this.userDataStore.addToStarredBookmarks(rateBookmarkRequest.bookmark);
+      } else {
+        this.userDataStore.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
+      }
+      if (isBookmarkCreatedByRatingUser) {
+        const obs = this.personalBookmarksStore.updateBookmark(rateBookmarkRequest.bookmark);
+      } else {
+        const obs = this.publicBookmarksService.rateBookmark(rateBookmarkRequest);
+        obs.subscribe(
+          res => {
+            this.publicBookmarksStore.updateBookmarkInPublicStore(rateBookmarkRequest.bookmark);
+          }
+        );
+      }
+    });
   }
 
   onBookmarkLinkClick(bookmark: Bookmark) {
@@ -164,14 +170,16 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   addToReadLater(bookmark: Bookmark) {
     this.userData.readLater.push(bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe();
-    this.userDataStore.addToLaterReads(bookmark);
+    this.userDataStore.updateUserData(this.userData).subscribe(() => {
+      this.userDataStore.addToLaterReads(bookmark);
+    } );
   }
 
   removeFromReadLater(bookmark: Bookmark) {
     this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe();
-    this.userDataStore.removeFromLaterReads(bookmark);
+    this.userDataStore.updateUserData(this.userData).subscribe( () => {
+      this.userDataStore.removeFromLaterReads(bookmark);
+    });
   }
 
 }
