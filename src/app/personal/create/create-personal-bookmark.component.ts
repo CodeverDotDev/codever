@@ -156,7 +156,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       userId: this.userId,
       shared: model.shared,
       starredBy: [],
-      lastAccessedAt: new Date()
+      lastAccessedAt: new Date(),
+      stars: 0
   };
 
     this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
