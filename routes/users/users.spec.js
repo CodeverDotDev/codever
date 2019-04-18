@@ -18,6 +18,8 @@ describe('User Data tests', function () {
   const testUserId = config.integration_tests.test_user_id;
   const baseApiUrlUnderTest = '/api/personal/users';
 
+  const starredBookmarkId = "bookmarkid-3443";
+
   const searchTextExample= 'nodejs rocks';
   const userExample = {
     "userId": config.integration_tests.test_user_id,
@@ -136,7 +138,6 @@ describe('User Data tests', function () {
 
   it('should successfully UPDATE example user new starred bookmark', function (done) {
     let userExampleWithStars = JSON.parse(JSON.stringify(userExample));
-    const starredBookmarkId = "bookmarkid-3443";
     userExampleWithStars.stars = [starredBookmarkId];
 
     request(app)
@@ -161,11 +162,11 @@ describe('User Data tests', function () {
         expect(response.body.userId).to.equal(testUserId);
         expect(response.body.searches).to.have.lengthOf(1);
         expect(response.body.searches[0].text).to.equal(searchTextExample);
+        expect(response.body.stars[0]).to.equal(starredBookmarkId);
 
         done();
       });
   });
-
 
   it('should succeed to DELETE the new created user', function (done) {
     request(app)

@@ -45,7 +45,6 @@ describe('Secured Public API Tests', function () {
     });
 
     it('should fail trying to rate with invalid userId', function (done) {
-
       request(app)
         .patch(baseApiUrlUnderTest + bookmarkUnderTest._id)
         .set('Authorization', bearerToken)

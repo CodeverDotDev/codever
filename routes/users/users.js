@@ -84,7 +84,39 @@ usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, resp
     }
 
   } catch (err) {
-    console.log(err);
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+/* GET list of starred bookmarks by the user */
+usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if (userId !== request.params.userId) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if (!userData) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find( {"_id" : { $in: userData.stars}});
+      response.send(bookmarks);
+    }
+
+  } catch (err) {
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(err);

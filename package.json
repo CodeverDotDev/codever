@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "debug": "nodemon --inspect ./bin/www",
-    "integration-tests": "nyc mocha '**/*.integration-test.js' --exit"
+    "integration-tests": "nyc mocha '**/*.spec.js' --exit"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

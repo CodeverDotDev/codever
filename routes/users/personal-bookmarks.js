@@ -3,6 +3,7 @@ const personalBookmarksRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
 const Bookmark = require('../../models/bookmark');
+const User = require('../../models/user');
 const bookmarkHelper = require('../../common/bookmark-helper');
 const MyError = require('../../models/error');
 
@@ -242,9 +243,10 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
+  const bookmarkId = request.params.bookmarkId;
   try {
     const bookmark = await Bookmark.findOneAndRemove({
-      _id: request.params.bookmarkId,
+      _id: bookmarkId,
       userId: request.params.userId
     });
 
@@ -253,17 +255,23 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
           'Not Found Error',
-          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']
+          ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + bookmarkId + ' not found']
           )
         );
     } else {
-      response.status(HttpStatus.NO_CONTENT).send('Bookmark successfully deleted');
+      await User.update(
+        { },
+        { $pull: { readLater:  bookmarkId , stars: bookmarkId } },
+        { multi: true }
+      );
+
+      response.status(HttpStatus.NO_CONTENT).send();
     }
   } catch (err) {
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(new MyError('Unknown server error',
-        ['Unknown server error when trying to delete bookmark with id ' + request.params.bookmarkId]));
+        ['Unknown server error when trying to delete bookmark with id ' + bookmarkId]));
   }
 });
 
