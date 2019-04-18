@@ -37,7 +37,7 @@
       <app-bookmark-text [bookmark]="bookmark" [queryText]="queryText"></app-bookmark-text>
       <div class="edit-buttons-wrapper" *ngIf="bookmark.userId == userId">
         <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)"><i class="far fa-edit"></i> Edit</button>
-        <button type="button" class="btn btn-danger btn-sm" (click)="deleteBookmark(bookmark)"><i class="far fa-trash-alt"></i> Delete</button>
+        <button type="button" class="btn btn-danger btn-sm" (click)="openDeleteDialog(bookmark)"><i class="far fa-trash-alt"></i> Delete</button>
       </div>
     </div>
     <div class="card-footer">

@@ -9,6 +9,8 @@ import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.ser
 import { RateBookmarkRequest, RatingActionType } from '../core/model/rate-bookmark.request';
 import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -56,6 +58,7 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   constructor(
     private injector: Injector,
+    private deleteDialog: MatDialog,
   ) {
     this.router = <Router>this.injector.get(Router);
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
@@ -90,16 +93,6 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.router.navigate(link);
   }
 
-  deleteBookmark(bookmark: Bookmark): void {
-    const obs = this.personalBookmarksStore.deleteBookmark(bookmark);
-    obs.subscribe(() => {
-      this.bookmarkDeleted.emit(true);
-      const obs2 = this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-      const obs3 = this.userDataStore.removeFromLaterReads(bookmark);
-      const obs4 = this.userDataStore.removeFromStarredBookmarks(bookmark);
-    });
-  }
-
   starBookmark(bookmark: Bookmark): void {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (!isLoggedIn) {
@@ -122,7 +115,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   unstarBookmark(bookmark: Bookmark): void {
     if (this.userId) {
       bookmark.stars--;
-      this.userData.stars.splice( this.userData.stars.indexOf(bookmark._id), 1 );
+      this.userData.stars.splice(this.userData.stars.indexOf(bookmark._id), 1);
       const rateBookmarkRequest: RateBookmarkRequest = {
         ratingUserId: this.userId,
         action: RatingActionType.UNSTAR,
@@ -136,7 +129,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
     this.userDataStore.updateUserData(this.userData).subscribe(() => {
       const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
-      if ( rateBookmarkRequest.action === RatingActionType.STAR ) {
+      if (rateBookmarkRequest.action === RatingActionType.STAR) {
         this.userDataStore.addToStarredBookmarks(rateBookmarkRequest.bookmark);
       } else {
         this.userDataStore.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
@@ -173,13 +166,45 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.userData.readLater.push(bookmark._id);
     this.userDataStore.updateUserData(this.userData).subscribe(() => {
       this.userDataStore.addToLaterReads(bookmark);
-    } );
+    });
   }
 
   removeFromReadLater(bookmark: Bookmark) {
     this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe( () => {
+    this.userDataStore.updateUserData(this.userData).subscribe(() => {
       this.userDataStore.removeFromLaterReads(bookmark);
+    });
+  }
+
+  openDeleteDialog(bookmark: Bookmark) {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      bookmark: bookmark,
+      userData: this.userData
+    };
+
+    const dialogRef = this.deleteDialog.open(DeleteBookmarkDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(
+      data => {
+        console.log('Dialog output:', data);
+        if (data === 'DELETE_CONFIRMED') {
+          this.deleteBookmark(bookmark);
+        }
+      }
+    );
+  }
+
+  deleteBookmark(bookmark: Bookmark): void {
+    const obs = this.personalBookmarksStore.deleteBookmark(bookmark);
+    obs.subscribe(() => {
+      this.bookmarkDeleted.emit(true);
+      const obs2 = this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+      const obs3 = this.userDataStore.removeFromLaterReads(bookmark);
+      const obs4 = this.userDataStore.removeFromStarredBookmarks(bookmark);
     });
   }
 
