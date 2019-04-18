@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Delete Bookmark</h2>
+
+<hr>
+
+<mat-dialog-content>
+  Are you sure you want to delete the following bookmark?
+  <p><strong>{{bookmark.name}}</strong></p>
+
+  <div *ngIf="showWarning" class="alert alert-warning" role="alert">
+    Please take into consideration that other people have starred this bookmark!
+  </div>
+</mat-dialog-content>
+
+<hr>
+
+<mat-dialog-actions class="app-dialog-actions">
+  <button type="button" class="btn btn-danger btn-sm" (click)="delete()"><i class="far fa-trash-alt"></i> Delete
+  </button>
+  <button type="button" class="btn btn-primary btn-sm" (click)="close()">Cancel</button>
+</mat-dialog-actions>

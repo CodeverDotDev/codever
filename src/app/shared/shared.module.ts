@@ -8,8 +8,9 @@ import {TagsValidatorDirective} from './tags-validation.directive';
 import {BookmarkSearchComponent} from './search/bookmark-search.component';
 import {BookmarkTextComponent} from './bookmark-text.component';
 import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
-import {MatAutocompleteModule, MatProgressSpinnerModule} from '@angular/material';
+import { MatAutocompleteModule, MatDialogModule, MatProgressSpinnerModule } from '@angular/material';
 import {RouterModule} from '@angular/router';
+import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 
 
 /**
@@ -23,6 +24,7 @@ import {RouterModule} from '@angular/router';
     ReactiveFormsModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
     RouterModule
   ],
   declarations: [
@@ -32,7 +34,8 @@ import {RouterModule} from '@angular/router';
     BookmarkTextComponent,
     TagsValidatorDirective,
     DescriptionSizeValidatorDirective,
-    BookmarkSearchComponent
+    BookmarkSearchComponent,
+    DeleteBookmarkDialogComponent
   ],
   exports: [
     CommonModule,
@@ -45,6 +48,9 @@ import {RouterModule} from '@angular/router';
     DescriptionSizeValidatorDirective,
     BookmarkSearchComponent,
     MatProgressSpinnerModule
+  ],
+  entryComponents: [
+    DeleteBookmarkDialogComponent
   ]
 })
 export class SharedModule { }
