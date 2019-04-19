@@ -123,6 +123,46 @@ usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) 
   }
 });
 
+/* GET list of bookmarks for the user's watchedTags */
+usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if (userId !== request.params.userId) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if (!userData) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find( {
+        shared: true,
+        tags : { $elemMatch: {$in: userData.watchedTags}}
+      })
+        .sort({createdAt: -1})
+        .limit(100)
+        .lean()
+        .exec();;
+      //
+      response.send(bookmarks);
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
 
 /* UPDATE user details
 * If users data is not present it will be created (upsert=true)
