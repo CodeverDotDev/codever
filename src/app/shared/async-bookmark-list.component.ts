@@ -100,7 +100,7 @@ export class AsyncBookmarkListComponent implements OnInit {
       }
     });
 
-    if (this.userId) {
+    if (this.userId) {// TODO verify why is this condition necessary
       bookmark.stars++;
       this.userData.stars.unshift(bookmark._id);
       const rateBookmarkRequest: RateBookmarkRequest = {
