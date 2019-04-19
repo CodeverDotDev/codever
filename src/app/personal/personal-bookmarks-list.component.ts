@@ -17,7 +17,7 @@ import { MatTabChangeEvent } from '@angular/material';
 })
 export class PersonalBookmarksListComponent implements OnInit {
 
-  personalBookmarks$: Observable<List<Bookmark>>;
+  personalAndStarredBookmarks$: Observable<List<Bookmark>>;
   laterReads$: Observable<Bookmark[]>;
   starredBookmarks$: Observable<Bookmark[]>;
   query = '';
@@ -41,7 +41,7 @@ export class PersonalBookmarksListComponent implements OnInit {
         this.query = this.query.replace(/\+/g, ' ');
       }
     }
-    this.personalBookmarks$ = this.personalBookmarksStore.getPersonalBookmarks();
+    this.personalAndStarredBookmarks$ = this.personalBookmarksStore.getPersonalBookmarks();
     this.userDataStore.getUserData().subscribe(data => {
         this.userData = data;
       },
