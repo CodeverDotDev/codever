@@ -20,6 +20,8 @@ export class PersonalBookmarksListComponent implements OnInit {
   personalAndStarredBookmarks$: Observable<List<Bookmark>>;
   laterReads$: Observable<Bookmark[]>;
   starredBookmarks$: Observable<Bookmark[]>;
+  bookmarksForWatchedTags$: Observable<Bookmark[]>;
+
   query = '';
   userData: UserData;
 
@@ -60,6 +62,8 @@ export class PersonalBookmarksListComponent implements OnInit {
       this.laterReads$ = this.userDataStore.getLaterReads();
     } else if (event.index === 2) {
       this.starredBookmarks$ = this.userDataStore.getStarredBookmarks();
+    } else if (event.index === 3) {
+      this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags();
     }
   }
 }

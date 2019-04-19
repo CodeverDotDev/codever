@@ -24,4 +24,14 @@
     </ng-template>
     <app-async-bookmark-list [bookmarks]="starredBookmarks$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
   </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label">Watched tags  &nbsp;<i class="fas fa-eye"></i></span>
+    </ng-template>
+    <div *ngIf="userData" class="personal-followed-tags">
+      <a *ngFor="let tag of userData.watchedTags" [routerLink]="['/tagged', tag]" class="badge badge-secondary" target="_blank">{{tag}}</a>
+      <div class="clear"></div>
+    </div>
+    <app-async-bookmark-list [bookmarks]="bookmarksForWatchedTags$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
+  </mat-tab>
 </mat-tab-group>
