@@ -14,7 +14,7 @@ const MAX_NUMBER_RETURNED_RESULTS = 100;
  */
 router.get('/', async (req, res) => {
   try {
-    if (req.query.query) {
+    if ( req.query.query ) {
       //split in text and tags
       const limit = parseInt(req.query.limit);
       const searchedTermsAndTags = splitSearchQuery(req.query.query);
@@ -22,24 +22,24 @@ router.get('/', async (req, res) => {
       const searchedTags = searchedTermsAndTags[1];
       let bookmarks = [];
       const lang = req.query.lang;
-      if (searchedTerms.length > 0 && searchedTags.length > 0) {
+      if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
         bookmarks = await getBookmarksForTagsAndTerms(bookmarks, searchedTags, searchedTerms, limit);
-      } else if (searchedTerms.length > 0) {
+      } else if ( searchedTerms.length > 0 ) {
         bookmarks = await getBookmarksForSearchedTerms(searchedTerms, bookmarks, limit);
       } else {
         bookmarks = await getBookmarksforSearchedTags(bookmarks, searchedTags, limit);
       }
-      if (lang && lang !== 'all') {
+      if ( lang && lang !== 'all' ) {
         bookmarks = bookmarks.filter(x => x.language === lang);
       }
 
       res.send(bookmarks);
-    } else if (req.query.location) {
+    } else if ( req.query.location ) {
       const bookmark = await Bookmark.findOne({
         'shared': true,
         location: req.query.location
       }).lean().exec();
-      if (!bookmark) {
+      if ( !bookmark ) {
         return res.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
       }
       res.send(bookmark);
@@ -72,12 +72,12 @@ let getBookmarksForTagsAndTerms = async function (bookmarks, searchedTags, searc
       score: {$meta: "textScore"}
     }
   )
-    //.sort({createdAt: -1})
+  //.sort({createdAt: -1})
     .sort({score: {$meta: "textScore"}})
     .lean()
     .exec();
 
-  for (const term of searchedTerms) {
+  for ( const term of searchedTerms ) {
     bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
   }
   bookmarks = bookmarks.slice(0, limit);
@@ -102,7 +102,7 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, bookmarks, lim
     .lean()
     .exec();
 
-  for (const term of searchedTerms) {
+  for ( const term of searchedTerms ) {
     bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
   }
   bookmarks = bookmarks.slice(0, limit);
@@ -135,7 +135,7 @@ function bookmarkContainsSearchedTerm(bookmark, searchedTerm) {
   const separatingChars = '\\s\\.,;#\\-\\/_\\[\\]\\(\\)\\*\\+';
   const escapedSearchPattern = `(^|[${separatingChars}])(${escapeRegExp(searchedTerm.toLowerCase())})(?=$|[${separatingChars}])`;
   const pattern = new RegExp(escapedSearchPattern);
-  if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
+  if ( (bookmark.name && pattern.test(bookmark.name.toLowerCase()))
     || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
     || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
     || (bookmark.githubURL && pattern.test(bookmark.githubURL.toLowerCase()))
@@ -143,12 +143,12 @@ function bookmarkContainsSearchedTerm(bookmark, searchedTerm) {
     result = true;
   }
 
-  if (result) {
+  if ( result ) {
     return true;
   } else {
     // if not found already look through the tags also
     bookmark.tags.forEach(tag => {
-      if (pattern.test(tag.toLowerCase())) {
+      if ( pattern.test(tag.toLowerCase()) ) {
         result = true;
       }
     });
@@ -184,14 +184,17 @@ function escapeRegExp(str) {
 
 router.get('/tagged/:tag', async (req, res) => {
   try {
+    const orderByFilter = req.query.orderBy === 'STARS' ? {stars: -1} : {createdAt: -1};
+
     const bookmarks = await Bookmark.find({
       shared: true,
       tags: req.params.tag
     })
-      .sort({createdAt: -1})
+      .sort(orderByFilter)
       .limit(MAX_NUMBER_RETURNED_RESULTS)
       .lean()
       .exec();
+
 
     res.send(bookmarks);
 
@@ -202,9 +205,9 @@ router.get('/tagged/:tag', async (req, res) => {
 
 /* GET title of bookmark given its url */
 router.get('/scrape', function (req, res, next) {
-  if (req.query.url) {
+  if ( req.query.url ) {
     request(req.query.url, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
+      if ( !error && response.statusCode == 200 ) {
         const $ = cheerio.load(body);
         const webpageTitle = $("title").text();
         const metaDescription = $('meta[name=description]').attr("content");
@@ -221,10 +224,10 @@ router.get('/scrape', function (req, res, next) {
 /* GET bookmark by id. */
 router.get('/:id', function (req, res, next) {
   Bookmark.findById(req.params.id, function (err, bookmark) {
-    if (err) {
+    if ( err ) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
     }
-    if (!bookmark) {
+    if ( !bookmark ) {
       return res.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
     }
     res.send(bookmark);
@@ -236,29 +239,29 @@ router.get('/:id', function (req, res, next) {
 /* TODO - maybe implement later advancedSearch */
 router.get('/advanced-search', function (req, res, next) {
   var regexSearch = [];
-  if (req.query.name) {
+  if ( req.query.name ) {
     var regExpName = new RegExp(req.query.category, 'i');
     regexSearch.push({'name': {$regex: regExpName}});
     regexSearch.push({'description': {$regex: regExpName}});
   }
-  if (req.query.category) {
+  if ( req.query.category ) {
     var regExpCategory = new RegExp(req.query.category, 'i');
     regexSearch.push({'category': {$regex: regExpCategory}});
   }
-  if (req.query.tag) {
+  if ( req.query.tag ) {
     var regExpTag = new RegExp(req.query.tag, 'i');
     regexSearch.push({'tags': {$regex: regExpTag}});
   }
-  if (regexSearch.length > 0) {
+  if ( regexSearch.length > 0 ) {
     Bookmark.find().or(regexSearch, function (err, bookmarks) {
-      if (err) {
+      if ( err ) {
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
       }
       res.send(bookmarks);
     });
   } else {//no filter - all bookmarks
     Bookmark.find({}, function (err, bookmarks) {
-      if (err) {
+      if ( err ) {
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
       }
       res.send(bookmarks);
@@ -280,11 +283,11 @@ function splitSearchQuery(query) {
   let isInsideTag = false;
 
 
-  for (let i = 0; i < query.length; i++) {
+  for ( let i = 0; i < query.length; i++ ) {
     const currentCharacter = query[i];
-    if (currentCharacter === ' ') {
-      if (!isInsideTag) {
-        if (!isInsideTerm) {
+    if ( currentCharacter === ' ' ) {
+      if ( !isInsideTag ) {
+        if ( !isInsideTerm ) {
           continue;
         } else {
           terms.push(term);
@@ -294,21 +297,21 @@ function splitSearchQuery(query) {
       } else {
         tag += ' ';
       }
-    } else if (currentCharacter === '[') {
-      if (isInsideTag) {
+    } else if ( currentCharacter === '[' ) {
+      if ( isInsideTag ) {
         tags.push(tag.trim());
         tag = '';
       } else {
         isInsideTag = true;
       }
-    } else if (currentCharacter === ']') {
-      if (isInsideTag) {
+    } else if ( currentCharacter === ']' ) {
+      if ( isInsideTag ) {
         isInsideTag = false;
         tags.push(tag.trim());
         tag = '';
       }
     } else {
-      if (isInsideTag) {
+      if ( isInsideTag ) {
         tag += currentCharacter;
       } else {
         isInsideTerm = true;
@@ -317,11 +320,11 @@ function splitSearchQuery(query) {
     }
   }
 
-  if (tag.length > 0) {
+  if ( tag.length > 0 ) {
     tags.push(tag.trim());
   }
 
-  if (term.length > 0) {
+  if ( term.length > 0 ) {
     terms.push(term);
   }
 
