@@ -22,6 +22,10 @@ export class UserDataStore {
   private _stars: BehaviorSubject<Bookmark[]> = new BehaviorSubject([]);
   private starredBookmarksHasBeenRequested = false;
 
+  private _watchedTags: BehaviorSubject<Bookmark[]> = new BehaviorSubject([]);
+  private bookmarksForWatchedTagsHasBeenRequested = false;
+  private forceReloadOfBookmarksForWatchedTags = false;
+
   private userId: string;
 
   userData: UserData = {searches: []};
@@ -135,5 +139,19 @@ export class UserDataStore {
   }
 
 
+  getBookmarksForWatchedTags(): Observable<Bookmark[]> {
+    if (!this.bookmarksForWatchedTagsHasBeenRequested || this.forceReloadOfBookmarksForWatchedTags) {
+      this.bookmarksForWatchedTagsHasBeenRequested = true;
+      this.forceReloadOfBookmarksForWatchedTags = false;
+      const starredBookmarks$ = this.userService.getBookmarksForWatchedTags(this.userData.userId).subscribe(data => {
+        this._watchedTags.next(data);
+      });
+    }
+    return this._watchedTags.asObservable();
+  }
+
+  public forceReloadBookmarksForWatchedTags(): void {
+    this.forceReloadOfBookmarksForWatchedTags = true;
+  }
 }
 

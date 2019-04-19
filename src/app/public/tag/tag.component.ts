@@ -67,4 +67,20 @@ export class TagComponent implements OnInit {
     this.orderBy = 'STARS';
     this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy);
   }
+
+  watchTag() {
+    this.userData.watchedTags.push(this.tag);
+    this.userDataStore.updateUserData(this.userData);
+    this.userDataStore.forceReloadBookmarksForWatchedTags();
+  }
+
+  unwatchTag() {
+    const index = this.userData.watchedTags.indexOf(this.tag);
+    if (index > -1) {
+      this.userData.watchedTags.splice(index, 1);
+      this.userDataStore.updateUserData(this.userData);
+      this.userDataStore.forceReloadBookmarksForWatchedTags();
+    }
+  }
+
 }
