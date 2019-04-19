@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {Observable} from 'rxjs';
-import {Bookmark} from '../../core/model/bookmark';
+import { Observable } from 'rxjs';
+import { Bookmark } from '../../core/model/bookmark';
 
 import { environment } from 'environments/environment';
-import {HttpClient} from '@angular/common/http';
-import {shareReplay} from 'rxjs/operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable()
 export class TagService {
@@ -16,9 +16,10 @@ export class TagService {
     this.bookmarksUrl = environment.API_URL + '/public/bookmarks/';
   }
 
-  getBookmarksForTag(tag: string): Observable<Bookmark[]> {
-      return this.httpClient.get<Bookmark[]>(`${this.bookmarksUrl}tagged/${tag}`)
-                            .pipe(shareReplay(1));
+  getBookmarksForTag(tag: string, orderBy: string): Observable<Bookmark[]> {
+    const params = new HttpParams().set('orderBy', orderBy);
+    return this.httpClient.get<Bookmark[]>(`${this.bookmarksUrl}tagged/${tag}`, {params: params})
+      .pipe(shareReplay(1));
   };
 
 }

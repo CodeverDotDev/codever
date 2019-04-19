@@ -1,5 +1,22 @@
 <br/>
-<h2>Latest bookmarks tagged [<em>{{tag}}</em>]</h2>
+<div class="tagged_header_wrapper">
+  <h2>Bookmarks tagged [<em>{{tag}}</em>]</h2>
+  <div class="btn-group" role="group" aria-label="Basic example">
+    <button type="button" class="btn"
+            [ngClass]="{'btn-secondary': orderBy === 'LATEST', 'btn-outline-secondary': orderBy !== 'LATEST'}"
+            [disabled]="orderBy === 'LATEST'"
+            (click)="getLatestForTag()">
+
+      Latest
+    </button>
+    <button type="button" class="btn"
+            [ngClass]="{'btn-secondary': orderBy === 'STARS', 'btn-outline-secondary': orderBy !== 'STARS'}"
+            [disabled]="orderBy === 'STARS'"
+            (click)="getByStars()">
+      Stars
+    </button>
+  </div>
+</div>
 <hr/>
 <app-async-bookmark-list [bookmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter" [userData]="userData"></app-async-bookmark-list>
 
