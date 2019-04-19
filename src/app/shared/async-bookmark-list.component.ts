@@ -131,8 +131,10 @@ export class AsyncBookmarkListComponent implements OnInit {
       const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
       if (rateBookmarkRequest.action === RatingActionType.STAR) {
         this.userDataStore.addToStarredBookmarks(rateBookmarkRequest.bookmark);
+        this.personalBookmarksStore.addToPersonalBookmarksStore(rateBookmarkRequest.bookmark);
       } else {
         this.userDataStore.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
+        this.personalBookmarksStore.removeBookmarkFromPersonalBookmarksStore(rateBookmarkRequest.bookmark);
       }
       if (isBookmarkCreatedByRatingUser) {
         const obs = this.personalBookmarksStore.updateBookmark(rateBookmarkRequest.bookmark);
