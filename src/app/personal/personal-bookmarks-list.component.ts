@@ -7,7 +7,7 @@ import { PersonalBookmarksStore } from '../core/store/personal-bookmarks-store.s
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
-import { UserService } from '../core/user.service';
+import { UserDataService } from '../core/user-data.service';
 import { MatTabChangeEvent } from '@angular/material';
 import { WatchedTagsComponent } from '../shared/watched-tags/watched-tags.component';
 
@@ -32,8 +32,7 @@ export class PersonalBookmarksListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private personalBookmarksStore: PersonalBookmarksStore,
-    private userDataStore: UserDataStore,
-    private userService: UserService) {
+    private userDataStore: UserDataStore) {
   }
 
   ngOnInit(): void {

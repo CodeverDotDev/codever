@@ -11,21 +11,30 @@
       <span class="app-tab-label">History  &nbsp;<i class="fas fa-user-clock"></i></span>
     </ng-template>
     <app-async-bookmark-list [bookmarks]="personalAndStarredBookmarks$" [shownSize]="10" [userData]="userData"></app-async-bookmark-list>
-    <div *ngIf="(personalAndStarredBookmarks$ | async)?.size == 0" class="no-personal-bookmarks-message">
-      <a routerLink="/personal/new"><strong>Add your first bookmark</strong></a> and start managing your dev bookmarks efficiently. If you think it's worth sharing,
-      give a litte love &hearts; and make it <strong>public</strong>.
+    <div *ngIf="(personalAndStarredBookmarks$ | async)?.size == 0" class="missing-category-bookmarks-message  alert alert-info">
+      <p><a routerLink="/personal/new"><strong>Add your first bookmark</strong></a> and start managing your dev bookmarks efficiently. If you think it's worth sharing,
+      give a litte love &hearts; and make it <strong>public</strong>.</p>
+      <p>Here you have a <strong>personal list</strong> of bookmarks you recently added, updated, visited or starred.</p>
     </div>
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
       <span class="app-tab-label">Read Later  &nbsp;<i class="fas fa-clock"></i></span>
     </ng-template>
+    <div *ngIf="userData && userData.readLater.length === 0"  class="missing-category-bookmarks-message alert alert-info">
+      Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i class="fas fa-clock"></i>
+      on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
+    </div>
     <app-async-bookmark-list [bookmarks]="laterReads$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
       <span class="app-tab-label">Stars  &nbsp;<i class="fas fa-star"></i></span>
     </ng-template>
+    <div *ngIf="userData && userData.stars.length === 0"  class="missing-category-bookmarks-message alert alert-info">
+      Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it. It will also be used in your <strong>personal</strong> search
+      and be listed here with other starred bookmarks.
+    </div>
     <app-async-bookmark-list [bookmarks]="starredBookmarks$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
   </mat-tab>
   <mat-tab>
