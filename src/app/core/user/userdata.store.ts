@@ -59,12 +59,14 @@ export class UserDataStore {
       },
       (errorResponse: HttpErrorResponse) => {
         if (errorResponse.status === 404 && errorResponse.error.title === 'User data was not found') {
-          const intialUserData: UserData = {
+          const initialUserData: UserData = {
             userId: userId,
             searches: [],
-            readLater: []
+            readLater: [],
+            stars: [],
+            watchedTags: []
           }
-          this._userData.next(intialUserData);
+          this._userData.next(initialUserData);
         }
       }
     );
