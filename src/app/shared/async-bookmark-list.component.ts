@@ -42,8 +42,6 @@ export class AsyncBookmarkListComponent implements OnInit {
   private publicBookmarksService: PublicBookmarksService;
   private keycloakService: KeycloakService;
 
-  displayModal = 'none';
-
   userIsLoggedIn = false;
 
   private _shownSize = 0;
@@ -105,7 +103,7 @@ export class AsyncBookmarkListComponent implements OnInit {
         message: 'You need to be logged in to star public bookmarks'
       };
 
-      const dialogRef = this.deleteDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     }
 
     if (this.userId) {// TODO verify why is this condition necessary

@@ -4,7 +4,7 @@
   <div *ngIf="userData && userData.watchedTags.includes(tag)">
     <button type="button" class="btn btn-outline-danger" (click)="unwatchTag()"> <i class="fas fa-eye-slash"></i> Unwatch tag</button>
   </div>
-  <div *ngIf="userData && !userData.watchedTags.includes(tag)">
+  <div *ngIf="!userIsLoggedIn || (userData && !userData.watchedTags.includes(tag))">
     <button type="button" class="btn btn-outline-primary" (click)="watchTag()"> <i class="fas fa-eye"></i> Watch tag</button>
   </div>
 </div>

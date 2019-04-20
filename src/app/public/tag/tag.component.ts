@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
 
 @Component({
   selector: 'app-tag',
@@ -18,12 +20,16 @@ export class TagComponent implements OnInit {
   tag: string;
   userData: UserData;
   counter = 30;
-  orderBy = 'LATEST'; // default is oder by latest/newest
+  orderBy = 'LATEST'; // TODO move to enum orderBy values
+  private userIsLoggedIn = false;
+
+  // default is oder by latest/newest
 
   constructor(private tagService: TagService,
               private userDataStore: UserDataStore,
               private keycloakService: KeycloakService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private loginDialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -42,6 +48,7 @@ export class TagComponent implements OnInit {
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
+        this.userIsLoggedIn = true;
         this.keycloakService.loadUserProfile().then(keycloakProfile => {
           this.userDataStore.getUserData().subscribe(data => {
               this.userData = data;
@@ -69,9 +76,21 @@ export class TagComponent implements OnInit {
   }
 
   watchTag() {
-    this.userData.watchedTags.push(this.tag);
-    this.userDataStore.updateUserData(this.userData);
-    this.userDataStore.forceReloadBookmarksForWatchedTags();
+    if (!this.userIsLoggedIn) {
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+          message: 'You need to be logged in to follow tags'
+        };
+
+        this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      this.userData.watchedTags.push(this.tag);
+      this.userDataStore.updateUserData(this.userData);
+      this.userDataStore.forceReloadBookmarksForWatchedTags();
+    }
   }
 
   unwatchTag() {
