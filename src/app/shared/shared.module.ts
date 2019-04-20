@@ -1,16 +1,17 @@
-import {NgModule} from '@angular/core';
-import {HighLightPipe} from './highlight.pipe';
-import {HighLightHtmlPipe} from './highlight.no-html-tags.pipe';
-import {CommonModule} from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
-import {TagsValidatorDirective} from './tags-validation.directive';
-import {BookmarkSearchComponent} from './search/bookmark-search.component';
-import {BookmarkTextComponent} from './bookmark-text.component';
-import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
+import { NgModule } from '@angular/core';
+import { HighLightPipe } from './highlight.pipe';
+import { HighLightHtmlPipe } from './highlight.no-html-tags.pipe';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AsyncBookmarkListComponent } from './async-bookmark-list.component';
+import { TagsValidatorDirective } from './tags-validation.directive';
+import { BookmarkSearchComponent } from './search/bookmark-search.component';
+import { BookmarkTextComponent } from './bookmark-text.component';
+import { DescriptionSizeValidatorDirective } from './description-size-validation.directive';
 import { MatAutocompleteModule, MatDialogModule, MatProgressSpinnerModule } from '@angular/material';
-import {RouterModule} from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
+import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
 
 
 /**
@@ -35,7 +36,8 @@ import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-b
     TagsValidatorDirective,
     DescriptionSizeValidatorDirective,
     BookmarkSearchComponent,
-    DeleteBookmarkDialogComponent
+    DeleteBookmarkDialogComponent,
+    LoginRequiredDialogComponent
   ],
   exports: [
     CommonModule,
@@ -50,7 +52,8 @@ import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-b
     MatProgressSpinnerModule
   ],
   entryComponents: [
-    DeleteBookmarkDialogComponent
+    DeleteBookmarkDialogComponent,
+    LoginRequiredDialogComponent
   ]
 })
 export class SharedModule { }

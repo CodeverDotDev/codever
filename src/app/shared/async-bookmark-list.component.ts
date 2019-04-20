@@ -11,6 +11,7 @@ import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
+import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -59,6 +60,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   constructor(
     private injector: Injector,
     private deleteDialog: MatDialog,
+    private loginDialog: MatDialog,
   ) {
     this.router = <Router>this.injector.get(Router);
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
@@ -94,11 +96,17 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   starBookmark(bookmark: Bookmark): void {
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (!isLoggedIn) {
-        this.displayModal = 'block';
-      }
-    });
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to star public bookmarks'
+      };
+
+      const dialogRef = this.deleteDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    }
 
     if (this.userId) {// TODO verify why is this condition necessary
       bookmark.stars++;
@@ -154,14 +162,6 @@ export class AsyncBookmarkListComponent implements OnInit {
       bookmark.lastAccessedAt = new Date();
       const obs = this.personalBookmarksStore.updateBookmark(bookmark);
     }
-  }
-
-  onLoginConfirmClick() {
-    this.keycloakService.login();
-  }
-
-  onLoginCancelClick() {
-    this.displayModal = 'none';
   }
 
   addToReadLater(bookmark: Bookmark) {
