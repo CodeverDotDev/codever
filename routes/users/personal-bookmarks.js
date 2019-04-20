@@ -99,33 +99,22 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
     }
-    if ( request.query.term ) {
-      var regExpTerm = new RegExp(request.query.term, 'i');
-      var regExpSearch = [{name: {$regex: regExpTerm}}, {description: {$regex: regExpTerm}}, {category: {$regex: regExpTerm}}, {tags: {$regex: regExpTerm}}];
-      bookmarks = await Bookmark.find({userId: request.params.userId, '$or': regExpSearch});
-    } else {//no filter - all bookmarks
-      const userData = await User.findOne({
-        userId: request.params.userId
-      });
 
-      if ( !userData ) {
-        return response
-          .status(HttpStatus.NOT_FOUND)
-          .send(new MyError(
-            'User data was not found',
-            ['User data of the user with the userId ' + request.params.userId + ' was not found']
-            )
-          );
-      } else {
-        bookmarks = await Bookmark.find(
-          {
-            $or: [
-              {userId: request.params.userId},
-              {"_id": {$in: userData.stars}}
-            ]
-          }
-        );
-      }
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+
+    if ( !userData ) {
+      bookmarks = await Bookmark.find({userId: request.params.userId});
+    } else {
+      bookmarks = await Bookmark.find(
+        {
+          $or: [
+            {userId: request.params.userId},
+            {"_id": {$in: userData.stars}}
+          ]
+        }
+      );
     }
 
     response.send(bookmarks);
