@@ -1,5 +1,5 @@
 import { map } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Bookmark } from '../core/model/bookmark';
 import { Observable } from 'rxjs';
 import { List } from 'immutable';
@@ -9,6 +9,7 @@ import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
 import { UserService } from '../core/user.service';
 import { MatTabChangeEvent } from '@angular/material';
+import { WatchedTagsComponent } from '../shared/watched-tags/watched-tags.component';
 
 @Component({
   selector: 'app-user-bookmarks',
@@ -17,10 +18,12 @@ import { MatTabChangeEvent } from '@angular/material';
 })
 export class PersonalBookmarksListComponent implements OnInit {
 
+  @ViewChild(WatchedTagsComponent)
+  private watchedTagsComponent: WatchedTagsComponent;
+
   personalAndStarredBookmarks$: Observable<List<Bookmark>>;
   laterReads$: Observable<Bookmark[]>;
   starredBookmarks$: Observable<Bookmark[]>;
-  bookmarksForWatchedTags$: Observable<Bookmark[]>;
 
   query = '';
   userData: UserData;
@@ -63,7 +66,7 @@ export class PersonalBookmarksListComponent implements OnInit {
     } else if (event.index === 2) {
       this.starredBookmarks$ = this.userDataStore.getStarredBookmarks();
     } else if (event.index === 3) {
-      this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags();
+      this.watchedTagsComponent.loadBookmarksForWatchedTags();
     }
   }
 }
