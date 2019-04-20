@@ -1,0 +1,8 @@
+
+<div *ngIf="userData" class="personal-followed-tags">
+  <a *ngFor="let tag of userData.watchedTags" [routerLink]="['/tagged', tag]" class="badge badge-secondary"
+     target="_blank">{{tag}}</a>
+  <div class="clear"></div>
+</div>
+<app-async-bookmark-list [bookmarks]="bookmarksForWatchedTags$" [shownSize]="50"
+                         [userData]="userData"></app-async-bookmark-list>
