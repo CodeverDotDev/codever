@@ -1,15 +1,15 @@
-import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 
-import {Injectable} from '@angular/core';
-import {Logger} from '../logger.service';
-import {ErrorService} from '../error/error.service';
-import {Router} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { Logger } from '../logger.service';
+import { ErrorService } from '../error/error.service';
+import { Router } from '@angular/router';
 
-import {KeycloakService} from 'keycloak-angular';
-import {UserData} from '../model/user-data';
-import {UserService} from '../user.service';
-import {HttpErrorResponse} from '@angular/common/http';
-import {Bookmark} from '../model/bookmark';
+import { KeycloakService } from 'keycloak-angular';
+import { UserData } from '../model/user-data';
+import { UserDataService } from '../user-data.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Bookmark } from '../model/bookmark';
 
 @Injectable()
 export class UserDataStore {
@@ -30,7 +30,7 @@ export class UserDataStore {
 
   userData: UserData = {searches: []};
 
-  constructor(private userService: UserService,
+  constructor(private userService: UserDataService,
               private logger: Logger,
               private router: Router,
               private errorService: ErrorService,
@@ -66,7 +66,10 @@ export class UserDataStore {
             stars: [],
             watchedTags: []
           }
-          this._userData.next(initialUserData);
+
+          this.userService.createInitialUserData(initialUserData).subscribe(() =>
+            this._userData.next(initialUserData)
+          );
         }
       }
     );
@@ -91,7 +94,7 @@ export class UserDataStore {
   getLaterReads(): Observable<Bookmark[]> {
     if (!this.laterReadsHasBeenRequested) {
       this.laterReadsHasBeenRequested = true;
-      const laterReads$ = this.userService.getLaterReads(this.userData.userId).subscribe(data => {
+      const laterReads$ = this.userService.getLaterReads(this.userId).subscribe(data => {
         this._laterReads.next(data);
       });
     }
@@ -117,7 +120,7 @@ export class UserDataStore {
   getStarredBookmarks(): Observable<Bookmark[]> {
     if (!this.starredBookmarksHasBeenRequested) {
       this.starredBookmarksHasBeenRequested = true;
-      const starredBookmarks$ = this.userService.getStarredBookmarks(this.userData.userId).subscribe(data => {
+      const starredBookmarks$ = this.userService.getStarredBookmarks(this.userId).subscribe(data => {
         this._stars.next(data);
       });
     }
@@ -145,7 +148,7 @@ export class UserDataStore {
     if (!this.bookmarksForWatchedTagsHasBeenRequested || this.forceReloadOfBookmarksForWatchedTags) {
       this.bookmarksForWatchedTagsHasBeenRequested = true;
       this.forceReloadOfBookmarksForWatchedTags = false;
-      const starredBookmarks$ = this.userService.getBookmarksForWatchedTags(this.userData.userId).subscribe(data => {
+      const starredBookmarks$ = this.userService.getBookmarksForWatchedTags(this.userId).subscribe(data => {
         this._watchedTags.next(data);
       });
     }

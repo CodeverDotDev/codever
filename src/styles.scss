@@ -82,6 +82,11 @@ ul.tags li:not(:last-child):after {
   }
 }
 
+.missing-category-bookmarks-message {
+  margin: 2rem 0;
+  font-size: 1.2rem;
+}
+
 // START Github fork ribbon
 /* Left will inherit from right (so we don't need to duplicate code) */
 .github-fork-ribbon {
