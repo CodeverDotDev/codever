@@ -55,11 +55,6 @@ export class PersonalBookmarksListComponent implements OnInit {
     );
   }
 
-  goToAddNewPersonalBookmark(): void {
-    const link = ['./new'];
-    this.router.navigate(link, {relativeTo: this.route});
-  }
-
   tabSelectionChanged(event: MatTabChangeEvent) {
     if (event.index === 1) {
       this.laterReads$ = this.userDataStore.getLaterReads();

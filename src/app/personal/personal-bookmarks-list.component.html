@@ -2,7 +2,7 @@
 <hr style="margin-top: 0;">
 <div class="personal-list-header">
   <h3>Personal bookmarks</h3>
-  <button type="button" class="btn btn-primary" (click)="goToAddNewPersonalBookmark()"> <i class="fa fa-plus"></i> Add new bookmark</button>
+  <button type="button" class="btn btn-primary" routerLink="/personal/new"> <i class="fa fa-plus"></i> Add new bookmark</button>
 </div>
 
 <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)">
@@ -11,6 +11,10 @@
       <span class="app-tab-label">History  &nbsp;<i class="fas fa-user-clock"></i></span>
     </ng-template>
     <app-async-bookmark-list [bookmarks]="personalAndStarredBookmarks$" [shownSize]="10" [userData]="userData"></app-async-bookmark-list>
+    <div *ngIf="(personalAndStarredBookmarks$ | async)?.size == 0" class="no-personal-bookmarks-message">
+      <a routerLink="/personal/new"><strong>Add your first bookmark</strong></a> and start managing your dev bookmarks efficiently. If you think it's worth sharing,
+      give a litte love &hearts; and make it <strong>public</strong>.
+    </div>
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
