@@ -12,11 +12,13 @@ const superagent = require('superagent');
 /**
  * Order of tests is important (example user will be first created/updated to eventually be deleted)
  */
-describe('Personal Bookmarks CRUD operations', function () {
+describe('User Data tests', function () {
 
   let bearerToken;
   const testUserId = config.integration_tests.test_user_id;
   const baseApiUrlUnderTest = '/api/personal/users';
+
+  const starredBookmarkId = "bookmarkid-3443";
 
   const searchTextExample= 'nodejs rocks';
   const userExample = {
@@ -134,6 +136,23 @@ describe('Personal Bookmarks CRUD operations', function () {
       });
   });
 
+  it('should successfully UPDATE example user new starred bookmark', function (done) {
+    let userExampleWithStars = JSON.parse(JSON.stringify(userExample));
+    userExampleWithStars.stars = [starredBookmarkId];
+
+    request(app)
+      .put(`${baseApiUrlUnderTest}/${testUserId}`)
+      .set('Authorization', bearerToken)
+      .send(userExampleWithStars)
+      .end(function (error, response) {
+        expect(response.statusCode).to.equal(HttpStatus.OK);
+        expect(response.body.userId).to.equal(testUserId);
+        expect(response.body.stars).to.have.lengthOf(1);
+        expect(response.body.stars[0]).to.equal(starredBookmarkId);
+        done();
+      });
+  });
+
   it('should now successfully READ created/updated user', function (done) {
     request(app)
       .get(`${baseApiUrlUnderTest}/${testUserId}`)
@@ -143,11 +162,11 @@ describe('Personal Bookmarks CRUD operations', function () {
         expect(response.body.userId).to.equal(testUserId);
         expect(response.body.searches).to.have.lengthOf(1);
         expect(response.body.searches[0].text).to.equal(searchTextExample);
+        expect(response.body.stars[0]).to.equal(starredBookmarkId);
 
         done();
       });
   });
-
 
   it('should succeed to DELETE the new created user', function (done) {
     request(app)
