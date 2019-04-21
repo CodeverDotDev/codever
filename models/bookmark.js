@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var bookmarkSchema = new Schema({
+const bookmarkSchema = new Schema({
     name: {type:String, required: true},
     location: {type:String, required: true},
     description: String,
@@ -14,7 +14,8 @@ var bookmarkSchema = new Schema({
     shared: Boolean,
     language: String,
     starredBy: [String],
-    lastAccessedAt: Date
+    lastAccessedAt: Date,
+    stars: Number
 },
 {
   timestamps: true
