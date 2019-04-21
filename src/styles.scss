@@ -76,10 +76,15 @@ ul.tags li:not(:last-child):after {
 .star-group{
   display:inline-flex; width: 4rem; height: 1.4rem;
   vertical-align: middle;
-  margin-right: 0.5rem;
+  margin-right: 0.7rem;
   input:nth-child(2) {
     width: 1.8rem;
   }
+}
+
+.missing-category-bookmarks-message {
+  margin: 2rem 0;
+  font-size: 1.2rem;
 }
 
 // START Github fork ribbon

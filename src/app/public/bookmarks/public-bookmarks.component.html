@@ -2,25 +2,36 @@
 
   <app-public-bookmark-search [query]="query" [context]="'Public'" [userData]="userData"></app-public-bookmark-search>
 
-  <mat-tab-group>
+  <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)">
     <mat-tab>
       <ng-template mat-tab-label>
         <span class="app-tab-label">Recent &nbsp;<i class="fas fa-clock"></i></span>
       </ng-template>
-      <app-async-bookmark-list [bookmarks]="publicBookmarks$" [shownSize]="counter" [userData]="userData"></app-async-bookmark-list>
-      <div *ngIf="(publicBookmarks$ | async)?.size - counter > 0" >
-        <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()" [disabled]="counter >= (publicBookmarks$ | async)?.length">Show more</button>
+      <app-async-bookmark-list [bookmarks]="publicBookmarks$" [shownSize]="counter"
+                               [userData]="userData"></app-async-bookmark-list>
+      <div *ngIf="(publicBookmarks$ | async)?.size - counter > 0">
+        <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()"
+                [disabled]="counter >= (publicBookmarks$ | async)?.length">Show more
+        </button>
         <hr/>
       </div>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">Tags &nbsp;<i class="fas fa-tags"></i></span>
+        <span class="app-tab-label">Public tags &nbsp;<i class="fas fa-tags"></i></span>
       </ng-template>
       <div class="tags-group">
-        <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag)" style="cursor: pointer">{{tag}}</span>
+        <span *ngFor="let tag of tags" class="badge badge-secondary float-xs-left" (click)="onTagClick(tag)"
+              style="cursor: pointer">{{tag}}</span>
         <div class="clear"></div>
       </div>
     </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Watched tags  &nbsp;<i class="fas fa-eye"></i></span>
+      </ng-template>
+      <app-watched-tags [userData]="userData"></app-watched-tags>
+    </mat-tab>
+
   </mat-tab-group>
 </div>

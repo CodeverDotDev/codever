@@ -1,15 +1,18 @@
-import {NgModule} from '@angular/core';
-import {HighLightPipe} from './highlight.pipe';
-import {HighLightHtmlPipe} from './highlight.no-html-tags.pipe';
-import {CommonModule} from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AsyncBookmarkListComponent} from './async-bookmark-list.component';
-import {TagsValidatorDirective} from './tags-validation.directive';
-import {BookmarkSearchComponent} from './search/bookmark-search.component';
-import {BookmarkTextComponent} from './bookmark-text.component';
-import {DescriptionSizeValidatorDirective} from './description-size-validation.directive';
-import {MatAutocompleteModule, MatProgressSpinnerModule} from '@angular/material';
-import {RouterModule} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { HighLightPipe } from './highlight.pipe';
+import { HighLightHtmlPipe } from './highlight.no-html-tags.pipe';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AsyncBookmarkListComponent } from './async-bookmark-list.component';
+import { TagsValidatorDirective } from './tags-validation.directive';
+import { BookmarkSearchComponent } from './search/bookmark-search.component';
+import { BookmarkTextComponent } from './bookmark-text.component';
+import { DescriptionSizeValidatorDirective } from './description-size-validation.directive';
+import { MatAutocompleteModule, MatDialogModule, MatProgressSpinnerModule } from '@angular/material';
+import { RouterModule } from '@angular/router';
+import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
+import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
+import { WatchedTagsComponent } from './watched-tags/watched-tags.component';
 
 
 /**
@@ -23,6 +26,7 @@ import {RouterModule} from '@angular/router';
     ReactiveFormsModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
     RouterModule
   ],
   declarations: [
@@ -32,7 +36,10 @@ import {RouterModule} from '@angular/router';
     BookmarkTextComponent,
     TagsValidatorDirective,
     DescriptionSizeValidatorDirective,
-    BookmarkSearchComponent
+    BookmarkSearchComponent,
+    DeleteBookmarkDialogComponent,
+    LoginRequiredDialogComponent,
+    WatchedTagsComponent
   ],
   exports: [
     CommonModule,
@@ -44,7 +51,12 @@ import {RouterModule} from '@angular/router';
     BookmarkTextComponent,
     DescriptionSizeValidatorDirective,
     BookmarkSearchComponent,
+    WatchedTagsComponent,
     MatProgressSpinnerModule
+  ],
+  entryComponents: [
+    DeleteBookmarkDialogComponent,
+    LoginRequiredDialogComponent
   ]
 })
 export class SharedModule { }

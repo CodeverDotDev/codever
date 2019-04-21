@@ -1,15 +1,16 @@
-import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
-import {Observable} from 'rxjs';
-import {List} from 'immutable';
-import {Bookmark} from '../../core/model/bookmark';
-import {ActivatedRoute} from '@angular/router';
-import {BookmarkSearchComponent} from '../../shared/search/bookmark-search.component';
-import {PublicBookmarksStore} from './store/public-bookmarks-store.service';
-import {allTags} from '../../core/model/all-tags.const.en';
-import {KeycloakService} from 'keycloak-angular';
-import {UserData} from '../../core/model/user-data';
-import {UserDataStore} from '../../core/user/userdata.store';
-import {PublicBookmarkSearchComponent} from '../search/public-bookmark-search.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
+import { List } from 'immutable';
+import { Bookmark } from '../../core/model/bookmark';
+import { ActivatedRoute } from '@angular/router';
+import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
+import { allTags } from '../../core/model/all-tags.const.en';
+import { KeycloakService } from 'keycloak-angular';
+import { UserData } from '../../core/model/user-data';
+import { UserDataStore } from '../../core/user/userdata.store';
+import { PublicBookmarkSearchComponent } from '../search/public-bookmark-search.component';
+import { MatTabChangeEvent } from '@angular/material';
+import { WatchedTagsComponent } from '../../shared/watched-tags/watched-tags.component';
 
 
 @Component({
@@ -27,6 +28,9 @@ export class PublicBookmarksComponent implements OnInit {
 
   @ViewChild(PublicBookmarkSearchComponent)
   private searchComponent: PublicBookmarkSearchComponent;
+
+  @ViewChild(WatchedTagsComponent)
+  private watchedTagsComponent: WatchedTagsComponent;
 
   constructor(private publicBookmarksStore: PublicBookmarksStore,
               private route: ActivatedRoute,
@@ -66,5 +70,11 @@ export class PublicBookmarksComponent implements OnInit {
 
   showMoreResults() {
     this.counter += 20;
+  }
+
+  tabSelectionChanged(event: MatTabChangeEvent) {
+    if (event.index === 2) {
+      this.watchedTagsComponent.loadBookmarksForWatchedTags();
+    }
   }
 }
