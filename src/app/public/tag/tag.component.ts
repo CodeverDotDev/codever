@@ -21,7 +21,7 @@ export class TagComponent implements OnInit {
   userData: UserData;
   counter = 30;
   orderBy = 'LATEST'; // TODO move to enum orderBy values
-  private userIsLoggedIn = false;
+  userIsLoggedIn = false;
 
   // default is oder by latest/newest
 
