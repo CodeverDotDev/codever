@@ -13,8 +13,8 @@
     <app-async-bookmark-list [bookmarks]="personalAndStarredBookmarks$" [shownSize]="10" [userData]="userData"></app-async-bookmark-list>
     <div *ngIf="(personalAndStarredBookmarks$ | async)?.size == 0" class="missing-category-bookmarks-message  alert alert-info">
       <p><a routerLink="/personal/new"><strong>Add your first bookmark</strong></a> and start managing your dev bookmarks efficiently. If you think it's worth sharing,
-      give a litte love &hearts; and make it <strong>public</strong>.</p>
-      <p>Here you have a <strong>personal list</strong> of bookmarks you recently added, updated, visited or starred.</p>
+      give some love &hearts; and make it <strong>public</strong>.</p>
+      <p>In <strong>History</strong> you see <strong>personal list</strong> of bookmarks you recently added, updated, visited or starred.</p>
     </div>
   </mat-tab>
   <mat-tab>
