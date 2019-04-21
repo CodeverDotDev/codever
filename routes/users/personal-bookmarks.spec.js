@@ -1,13 +1,17 @@
-var app = require('../../app');
-var chai = require('chai');
-var request = require('supertest');
-var HttpStatus = require('http-status-codes');
-var expect = chai.expect;
+const app = require('../../app');
+const chai = require('chai');
+const request = require('supertest');
+const HttpStatus = require('http-status-codes');
+const expect = chai.expect;
+
+const Bookmark = require('../../models/bookmark');
 
 const common = require('../../common/config');
 const config = common.config();
 
 const superagent = require('superagent');
+
+const testData = require('../../common/test-data');
 
 describe('Personal Bookmarks CRUD operations', function () {
 
@@ -15,26 +19,7 @@ describe('Personal Bookmarks CRUD operations', function () {
   const testUserId = config.integration_tests.test_user_id;
   const baseApiUrlUnderTest = '/api/personal/users/';
 
-  const bookmarkExampleTitle = "Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg"
-  const bookmarkExample = {
-    "name": bookmarkExampleTitle,
-    "location": "http://www.codingpedia.org/ama/cleaner-code-in-nodejs-with-async-await-mongoose-calls-example",
-    "language": "en",
-    "tags": [
-      "nodejs",
-      "async-await",
-      "mongoose",
-      "mongodb"
-    ],
-    "publishedOn": "2017-11-05",
-    "githubURL": "https://github.com/Codingpedia/bookmarks-api",
-    "description": "Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs",
-    "descriptionHtml": "<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>",
-    "userId": "33d22b0e-9474-46b3-9da4-b1fb5d273abc",
-    "shared": true,
-    "starredBy": [],
-    "lastAccessedAt": null
-  }
+  let bookmarkExample = testData.bookmarkExample;
 
   before(function(done) {
 
@@ -48,6 +33,7 @@ describe('Personal Bookmarks CRUD operations', function () {
         bearerToken = 'Bearer ' + response.body.access_token;
         done();
       });
+
 
   });
 
@@ -386,7 +372,7 @@ describe('Personal Bookmarks CRUD operations', function () {
         .send(updatedBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
-          expect(response.body.name).to.equal(bookmarkExampleTitle + ' rocks');
+          expect(response.body.name).to.equal(bookmarkExample.name + ' rocks');
 
           //make also a read to be sure sure :P
           request(app)
@@ -397,7 +383,7 @@ describe('Personal Bookmarks CRUD operations', function () {
                 return done(error);
               }
               expect(response.statusCode).to.equal(HttpStatus.OK);
-              expect(response.body.name).to.equal(bookmarkExampleTitle + ' rocks');
+              expect(response.body.name).to.equal(bookmarkExample.name  + ' rocks');
 
               done();
             });

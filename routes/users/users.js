@@ -84,13 +84,135 @@ usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, resp
     }
 
   } catch (err) {
-    console.log(err);
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(err);
   }
 });
 
+/* GET list of starred bookmarks by the user */
+usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if (userId !== request.params.userId) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if (!userData) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find( {"_id" : { $in: userData.stars}});
+      response.send(bookmarks);
+    }
+
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+/* GET list of bookmarks for the user's watchedTags */
+usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if (userId !== request.params.userId) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if (!userData) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find( {
+        shared: true,
+        tags : { $elemMatch: {$in: userData.watchedTags}}
+      })
+        .sort({createdAt: -1})
+        .limit(100)
+        .lean()
+        .exec();;
+      //
+      response.send(bookmarks);
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+
+/*
+* create user details
+* */
+usersRouter.post('/:userId', keycloak.protect(), async (request, response) => {
+  try {
+
+    let userId = request.kauth.grant.access_token.content.sub;
+
+    const userIdIsInconsistentInPathAndAccessToken = userId !== request.params.userId;
+    if (userIdIsInconsistentInPathAndAccessToken) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const invalidUserIdInRequestBody = !request.body.userId || request.body.userId != userId;
+    if (invalidUserIdInRequestBody) {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('Missing or invalid userId in the request body',
+          ['the userId must be consistent across path, body and access token']));
+    }
+
+    if(!searchesAreValid(request)){
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('Searches are not valid',
+          ['Searches are not valid - search text is required']));
+    }
+
+
+    const userData = new User({
+      userId: request.params.userId,
+      searches: request.body.searches,
+      readLater: request.body.readLater,
+      stars: request.body.stars,
+      watchedTags: request.body.watchedTags
+    });
+
+    const newUserData = await userData.save();
+
+    response.status(HttpStatus.CREATED).send(newUserData);
+
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
 
 /* UPDATE user details
 * If users data is not present it will be created (upsert=true)
@@ -128,7 +250,7 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
     const userData = await User.findOneAndUpdate(
       {userId: request.params.userId},
       request.body,
-      {upsert: true, new: true}, // option
+      {upsert: true, new: true}, // options
     );
     response.status(HttpStatus.OK).send(userData);
 
