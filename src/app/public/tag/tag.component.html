@@ -1,9 +1,36 @@
 <br/>
-<h2>Latest bookmarks tagged [<em>{{tag}}</em>]</h2>
+<div class="tagged_header_wrapper">
+  <h2>Bookmarks tagged [<em>{{tag}}</em>]</h2>
+  <div *ngIf="userData && userData.watchedTags.includes(tag)">
+    <button type="button" class="btn btn-outline-danger" (click)="unwatchTag()"> <i class="fas fa-eye-slash"></i> Unwatch tag</button>
+  </div>
+  <div *ngIf="!userIsLoggedIn || (userData && !userData.watchedTags.includes(tag))">
+    <button type="button" class="btn btn-outline-primary" (click)="watchTag()"> <i class="fas fa-eye"></i> Watch tag</button>
+  </div>
+</div>
 <hr/>
-<app-async-bookmark-list [bookmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter" [userData]="userData"></app-async-bookmark-list>
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button" class="btn"
+          [ngClass]="{'btn-secondary': orderBy === 'LATEST', 'btn-outline-secondary': orderBy !== 'LATEST'}"
+          [disabled]="orderBy === 'LATEST'"
+          (click)="getLatestForTag()">
 
-<div *ngIf="(bookmarksForTag$ | async)?.length - counter > 0" >
-  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()" [disabled]="counter>=(bookmarksForTag$ | async)?.length">Show more</button>
+    Latest
+  </button>
+  <button type="button" class="btn"
+          [ngClass]="{'btn-secondary': orderBy === 'STARS', 'btn-outline-secondary': orderBy !== 'STARS'}"
+          [disabled]="orderBy === 'STARS'"
+          (click)="getByStars()">
+    Stars
+  </button>
+</div>
+
+<app-async-bookmark-list [bookmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter"
+                         [userData]="userData"></app-async-bookmark-list>
+
+<div *ngIf="(bookmarksForTag$ | async)?.length - counter > 0">
+  <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()"
+          [disabled]="counter>=(bookmarksForTag$ | async)?.length">Show more
+  </button>
   <hr/>
 </div>

@@ -8,7 +8,7 @@ import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
 import {PersonalBookmarksStore} from './store/personal-bookmarks-store.service';
 import {PersonalBookmarkService} from './personal-bookmark.service';
-import {UserService} from './user.service';
+import {UserDataService} from './user-data.service';
 import {UserDataStore} from './user/userdata.store';
 import {LoaderService} from './loader/loader.service';
 
@@ -38,7 +38,7 @@ import {LoaderService} from './loader/loader.service';
     ErrorService,
     PersonalBookmarksStore,
     PersonalBookmarkService,
-    UserService,
+    UserDataService,
     UserDataStore,
     LoaderService
   ]
