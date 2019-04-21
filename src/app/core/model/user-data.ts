@@ -3,6 +3,8 @@ export interface UserData {
   userId?: string;
   searches?: Search[];
   readLater?: string[]; // ids of bookmarks to read later
+  stars?: string[]; // ids of bookmarks the user starred
+  watchedTags?: string[];
 }
 
 export interface Search {

@@ -9,13 +9,19 @@ import {Bookmark} from './model/bookmark';
 import {shareReplay} from 'rxjs/operators';
 
 @Injectable()
-export class UserService {
+export class UserDataService {
 
   private usersApiBaseUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient) {
     this.usersApiBaseUrl = environment.API_URL + '/personal/users';
+  }
+
+  createInitialUserData(userData: UserData): Observable<UserData> {
+    return this.httpClient
+      .post(`${this.usersApiBaseUrl}/${userData.userId}`, JSON.stringify(userData), {headers: this.headers})
+      .pipe(shareReplay(1));
   }
 
   updateUserData(userData: UserData): Observable<UserData> {
@@ -32,6 +38,16 @@ export class UserService {
   getLaterReads(userId: string): Observable<Bookmark[]> {
     return this.httpClient
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/later-reads` );
+  }
+
+  getStarredBookmarks(userId: string): Observable<Bookmark[]> {
+    return this.httpClient
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/stars` );
+  }
+
+  getBookmarksForWatchedTags(userId: string): Observable<Bookmark[]> {
+    return this.httpClient
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/watched-tags` );
   }
 
 }

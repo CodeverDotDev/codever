@@ -1,15 +1,15 @@
-
-import {map} from 'rxjs/operators';
-import {Component, OnInit} from '@angular/core';
-import {Bookmark} from '../core/model/bookmark';
-import {Observable} from 'rxjs';
-import {List} from 'immutable';
-import {PersonalBookmarksStore} from '../core/store/personal-bookmarks-store.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UserData} from '../core/model/user-data';
-import {UserDataStore} from '../core/user/userdata.store';
-import {UserService} from '../core/user.service';
-import {MatTabChangeEvent} from '@angular/material';
+import { map } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Bookmark } from '../core/model/bookmark';
+import { Observable } from 'rxjs';
+import { List } from 'immutable';
+import { PersonalBookmarksStore } from '../core/store/personal-bookmarks-store.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserData } from '../core/model/user-data';
+import { UserDataStore } from '../core/user/userdata.store';
+import { UserDataService } from '../core/user-data.service';
+import { MatTabChangeEvent } from '@angular/material';
+import { WatchedTagsComponent } from '../shared/watched-tags/watched-tags.component';
 
 @Component({
   selector: 'app-user-bookmarks',
@@ -18,8 +18,13 @@ import {MatTabChangeEvent} from '@angular/material';
 })
 export class PersonalBookmarksListComponent implements OnInit {
 
-  personalBookmarks$: Observable<List<Bookmark>>;
+  @ViewChild(WatchedTagsComponent)
+  private watchedTagsComponent: WatchedTagsComponent;
+
+  personalAndStarredBookmarks$: Observable<List<Bookmark>>;
   laterReads$: Observable<Bookmark[]>;
+  starredBookmarks$: Observable<Bookmark[]>;
+
   query = '';
   userData: UserData;
 
@@ -27,20 +32,20 @@ export class PersonalBookmarksListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private personalBookmarksStore: PersonalBookmarksStore,
-    private userDataStore: UserDataStore,
-    private userService: UserService) { }
+    private userDataStore: UserDataStore) {
+  }
 
   ngOnInit(): void {
     this.query = this.route.snapshot.queryParamMap.get('q');
     if (this.query) {
-      this.query = this.query.replace(/\+/g,  ' ');
+      this.query = this.query.replace(/\+/g, ' ');
     } else {
       this.query = this.route.snapshot.queryParamMap.get('search');
       if (this.query) {
-        this.query = this.query.replace(/\+/g,  ' ');
+        this.query = this.query.replace(/\+/g, ' ');
       }
     }
-    this.personalBookmarks$ = this.personalBookmarksStore.getPersonalBookmarks();
+    this.personalAndStarredBookmarks$ = this.personalBookmarksStore.getPersonalBookmarks();
     this.userDataStore.getUserData().subscribe(data => {
         this.userData = data;
       },
@@ -49,15 +54,13 @@ export class PersonalBookmarksListComponent implements OnInit {
     );
   }
 
-  goToAddNewPersonalBookmark(): void {
-    const link = ['./new'];
-    this.router.navigate(link, { relativeTo: this.route });
-  }
-
   tabSelectionChanged(event: MatTabChangeEvent) {
     if (event.index === 1) {
-      console.log('selected read later');
       this.laterReads$ = this.userDataStore.getLaterReads();
+    } else if (event.index === 2) {
+      this.starredBookmarks$ = this.userDataStore.getStarredBookmarks();
+    } else if (event.index === 3) {
+      this.watchedTagsComponent.loadBookmarksForWatchedTags();
     }
   }
 }
