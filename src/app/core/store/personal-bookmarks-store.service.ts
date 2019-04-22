@@ -16,7 +16,7 @@ import { HttpResponse } from '@angular/common/http';
 @Injectable()
 export class PersonalBookmarksStore {
 
-  private _personalBookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(List([]));
+  private _personalBookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(null);
 
   private userId: String;
 
