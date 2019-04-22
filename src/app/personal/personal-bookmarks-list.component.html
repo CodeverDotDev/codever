@@ -21,7 +21,7 @@
     <ng-template mat-tab-label>
       <span class="app-tab-label">Read Later  &nbsp;<i class="fas fa-clock"></i></span>
     </ng-template>
-    <div *ngIf="userData && userData.readLater.length === 0"  class="missing-category-bookmarks-message alert alert-info">
+    <div *ngIf="userData?.readLater.length === 0"  class="missing-category-bookmarks-message alert alert-info">
       Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i class="fas fa-clock"></i>
       on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
     </div>
@@ -31,7 +31,7 @@
     <ng-template mat-tab-label>
       <span class="app-tab-label">Stars  &nbsp;<i class="fas fa-star"></i></span>
     </ng-template>
-    <div *ngIf="userData && userData.stars.length === 0"  class="missing-category-bookmarks-message alert alert-info">
+    <div *ngIf="userData?.stars.length === 0"  class="missing-category-bookmarks-message alert alert-info">
       Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it. It will also be used in your <strong>personal</strong> search
       and be listed here with other starred bookmarks.
     </div>
