@@ -1,4 +1,4 @@
-<div *ngIf="userData && userData.watchedTags.length === 0"  class="missing-category-bookmarks-message alert alert-info">
+<div *ngIf="userData?.watchedTags.length === 0"  class="missing-category-bookmarks-message alert alert-info">
   You have the possibility to watch <strong>public</strong> tags, by clicking the  <button type="button" class="btn btn-outline-primary" routerLink="/tagged/python"> <i class="fas fa-eye"></i> Watch tag</button> button
   on the tag's page. This way you will see here and on the home page the latest entries for the tags you watch.
 </div>
