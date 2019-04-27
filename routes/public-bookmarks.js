@@ -15,24 +15,11 @@ const MAX_NUMBER_RETURNED_RESULTS = 100;
  */
 router.get('/', async (req, res) => {
   try {
-    if ( req.query.query ) {
-      //split in text and tags
-      const limit = parseInt(req.query.limit);
-      const searchedTermsAndTags = bookmarksSearchService.splitSearchQuery(req.query.query);
-      const searchedTerms = searchedTermsAndTags[0];
-      const searchedTags = searchedTermsAndTags[1];
-      let bookmarks = [];
-      const lang = req.query.lang;
-      if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-        bookmarks = await bookmarksSearchService.getBookmarksForTagsAndTerms(bookmarks, searchedTags, searchedTerms, limit);
-      } else if ( searchedTerms.length > 0 ) {
-        bookmarks = await bookmarksSearchService.getBookmarksForSearchedTerms(searchedTerms, bookmarks, limit);
-      } else {
-        bookmarks = await bookmarksSearchService.getBookmarksForSearchedTags(bookmarks, searchedTags, limit);
-      }
-      if ( lang && lang !== 'all' ) {
-        bookmarks = bookmarks.filter(x => x.language === lang);
-      }
+    const query = req.query.query;
+    const limit = parseInt(req.query.limit);
+    const lang = req.query.lang;
+    if ( query ) {
+      const bookmarks = await bookmarksSearchService.findBookmarks(query, limit, lang);
 
       res.send(bookmarks);
     } else if ( req.query.location ) {
