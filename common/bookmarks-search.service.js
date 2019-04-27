@@ -4,8 +4,9 @@ const showdown = require('showdown'),
 
 const Bookmark = require('../models/bookmark');
 const escapeStringRegexp = require('escape-string-regexp');
+const constants = require('./constants');
 
-let findBookmarks = async function(query, limit, lang) {
+let findBookmarks = async function (query, limit, lang, domain, userId) {
   //split in text and tags
   const searchedTermsAndTags = splitSearchQuery(query);
   const searchedTerms = searchedTermsAndTags[0];
@@ -13,11 +14,11 @@ let findBookmarks = async function(query, limit, lang) {
   let bookmarks = [];
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit);
+    bookmarks = await getBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit, domain, userId);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getBookmarksForSearchedTerms(searchedTerms, limit);
+    bookmarks = await getBookmarksForSearchedTerms(searchedTerms, limit, domain, userId);
   } else {
-    bookmarks = await getBookmarksForSearchedTags(searchedTags, limit);
+    bookmarks = await getBookmarksForSearchedTags(searchedTags, limit, domain, userId);
   }
   if ( lang && lang !== 'all' ) {
     bookmarks = bookmarks.filter(x => x.language === lang);
@@ -26,7 +27,7 @@ let findBookmarks = async function(query, limit, lang) {
   return bookmarks;
 }
 
-let splitSearchQuery =  function(query) {
+let splitSearchQuery = function (query) {
 
   const result = [[], []];
 
@@ -90,19 +91,27 @@ let splitSearchQuery =  function(query) {
   return result;
 }
 
-let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit) {
+let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, domain, userId) {
+  let filter = {
+    tags:
+      {
+        $all: searchedTags
+      },
+    $text:
+      {
+        $search: searchedTerms.join(' ')
+      }
+  }
+  if ( domain === constants.DOMAIN_PUBLIC ) {
+    filter.shared = true;
+  }
+
+  if ( domain === constants.DOMAIN_PERSONAL ) {
+    filter.userId = userId;
+  }
+
   let bookmarks = await Bookmark.find(
-    {
-      shared: true,
-      tags:
-        {
-          $all: searchedTags
-        },
-      $text:
-        {
-          $search: searchedTerms.join(' ')
-        }
-    },
+    filter,
     {
       score: {$meta: "textScore"}
     }
@@ -120,14 +129,23 @@ let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, l
   return bookmarks;
 }
 
-let getBookmarksForSearchedTerms = async function (searchedTerms, limit) {
+let getBookmarksForSearchedTerms = async function (searchedTerms, limit, domain, userId) {
+
   const termsJoined = searchedTerms.join(' ');
   const termsQuery = escapeStringRegexp(termsJoined);
+  let filter = {
+    $text: {$search: termsQuery}
+  }
+  if ( domain === constants.DOMAIN_PUBLIC ) {
+    filter.shared = true;
+  }
+
+  if ( domain === constants.DOMAIN_PERSONAL ) {
+    filter.userId = userId;
+  }
+
   let bookmarks = await Bookmark.find(
-    {
-      shared: true,
-      $text: {$search: termsQuery},
-    },
+    filter,
     {
       score: {$meta: "textScore"}
     }
@@ -145,16 +163,22 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, limit) {
   return bookmarks;
 }
 
-let getBookmarksForSearchedTags = async function (searchedTags, limit) {
-  let bookmarks = await Bookmark.find(
-    {
-      shared: true,
-      tags:
-        {
-          $all: searchedTags
-        },
-    }
-  )
+let getBookmarksForSearchedTags = async function (searchedTags, limit, domain, userId) {
+  let filter = {
+    tags:
+      {
+        $all: searchedTags
+      }
+  }
+  if ( domain === constants.DOMAIN_PUBLIC ) {
+    filter.shared = true;
+  }
+
+  if ( domain === constants.DOMAIN_PERSONAL ) {
+    filter.userId = userId;
+  }
+
+  let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})
     .limit(limit)
     .lean()
@@ -163,7 +187,7 @@ let getBookmarksForSearchedTags = async function (searchedTags, limit) {
   return bookmarks;
 }
 
-let bookmarkContainsSearchedTerm = function(bookmark, searchedTerm) {
+let bookmarkContainsSearchedTerm = function (bookmark, searchedTerm) {
   let result = false;
   // const escapedSearchPattern = '\\b' + this.escapeRegExp(searchedTerm.toLowerCase()) + '\\b'; word boundary was not enough, especially for special characters which can happen in coding
   // https://stackoverflow.com/questions/23458872/javascript-regex-word-boundary-b-issue

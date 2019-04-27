@@ -91,7 +91,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 });
 
 
-/* GET personal and starred bookmarks of the user */
+/*/!* GET personal and starred bookmarks of the user *!/
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
   try {
     let bookmarks;
@@ -125,10 +125,10 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(err);
   }
-});
+});*/
 
 /* GET bookmark of user */
-personalBookmarksRouter.get('/filter', keycloak.protect(), async (request, response) => {
+personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
   if ( userId !== request.params.userId ) {
@@ -138,30 +138,33 @@ personalBookmarksRouter.get('/filter', keycloak.protect(), async (request, respo
   }
 
   try {
-    if ( req.query.query ) {
-      //split in text and tags
-      const limit = parseInt(req.query.limit);
-      const searchedTermsAndTags = bookmarksSearchService.splitSearchQuery(req.query.query);
-      const searchedTerms = searchedTermsAndTags[0];
-      const searchedTags = searchedTermsAndTags[1];
-      let bookmarks = [];
-      const lang = req.query.lang;
-      if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-        bookmarks = await bookmarksSearchService.getBookmarksForTagsAndTerms(bookmarks, searchedTags, searchedTerms, limit);
-      } else if ( searchedTerms.length > 0 ) {
-        bookmarks = await bookmarksSearchService.getBookmarksForSearchedTerms(searchedTerms, bookmarks, limit);
+    const query = request.query.query;
+    const limit = parseInt(request.query.limit);
+    const lang = request.query.lang;
+
+    if ( query ) {
+      const bookmarks = await bookmarksSearchService.findBookmarks(query, limit, lang, constants.DOMAIN_PERSONAL, userId);
+
+      response.send(bookmarks);
+    } else {//no filter - latest bookmarks added to the platform
+      const userData = await User.findOne({
+        userId: request.params.userId
+      });
+
+      if ( !userData ) {
+        bookmarks = await Bookmark.find({userId: request.params.userId});
       } else {
-        bookmarks = await bookmarksSearchService.getBookmarksForSearchedTags(bookmarks, searchedTags, limit);
-      }
-      if ( lang && lang !== 'all' ) {
-        bookmarks = bookmarks.filter(x => x.language === lang);
+        bookmarks = await Bookmark.find(
+          {
+            $or: [
+              {userId: request.params.userId},
+              {"_id": {$in: userData.stars}}
+            ]
+          }
+        );
       }
 
-      res.send(bookmarks);
-    } else {//no filter - latest bookmarks added to the platform
-      return response
-        .status(HttpStatus.BAD_REQUEST)
-        .send(new MyError('A query parameter is mandatory ', ['A query parameter is mandatory ']));
+      response.send(bookmarks);
     }
   } catch (err) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);

@@ -5,6 +5,7 @@ var router = express.Router();
 var Bookmark = require('../models/bookmark');
 var HttpStatus = require('http-status-codes');
 var MyError = require('../models/error');
+const constants = require('../common/constants');
 
 const bookmarksSearchService = require('../common/bookmarks-search.service');
 
@@ -19,7 +20,7 @@ router.get('/', async (req, res) => {
     const limit = parseInt(req.query.limit);
     const lang = req.query.lang;
     if ( query ) {
-      const bookmarks = await bookmarksSearchService.findBookmarks(query, limit, lang);
+      const bookmarks = await bookmarksSearchService.findBookmarks(query, limit, lang, constants.DOMAIN_PUBLIC, null);
 
       res.send(bookmarks);
     } else if ( req.query.location ) {
@@ -56,9 +57,7 @@ router.get('/tagged/:tag', async (req, res) => {
       .lean()
       .exec();
 
-
     res.send(bookmarks);
-
   } catch (err) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
   }
