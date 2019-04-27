@@ -6,7 +6,7 @@ import {shareReplay} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 
 import {environment} from 'environments/environment';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class PersonalBookmarkService {
@@ -20,6 +20,14 @@ export class PersonalBookmarkService {
 
   getAllPersonalBookmarks(userId: String): Observable<Bookmark[]> {
     return this.httpClient.get<Bookmark[]>(this.personalBookmarksApiBaseUrl + userId + '/bookmarks').pipe(shareReplay(1));
+  }
+
+  getFilteredPersonalBookmarks(query: string, lang: string, limit: number, userId: string): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('lang', lang)
+      .set('limit', limit.toString());
+    return this.httpClient.get<Bookmark[]>(this.personalBookmarksApiBaseUrl + userId + '/bookmarks', {params: params});
   }
 
   updateBookmark(bookmark: Bookmark): Observable<any> {
