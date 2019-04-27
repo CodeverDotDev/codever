@@ -5,7 +5,9 @@ const Keycloak = require('keycloak-connect');
 const Bookmark = require('../../models/bookmark');
 const User = require('../../models/user');
 const bookmarkHelper = require('../../common/bookmark-helper');
+const bookmarksSearchService = require('../../common/bookmarks-search.service');
 const MyError = require('../../models/error');
+const escapeStringRegexp = require('escape-string-regexp');
 
 const common = require('../../common/config');
 const config = common.config();
@@ -89,7 +91,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 });
 
 
-/* GET personal bookmarks of the user */
+/* GET personal and starred bookmarks of the user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
   try {
     let bookmarks;
@@ -124,6 +126,48 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
       .send(err);
   }
 });
+
+/* GET bookmark of user */
+personalBookmarksRouter.get('/filter', keycloak.protect(), async (request, response) => {
+
+  const userId = request.kauth.grant.access_token.content.sub;
+  if ( userId !== request.params.userId ) {
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+  }
+
+  try {
+    if ( req.query.query ) {
+      //split in text and tags
+      const limit = parseInt(req.query.limit);
+      const searchedTermsAndTags = bookmarksSearchService.splitSearchQuery(req.query.query);
+      const searchedTerms = searchedTermsAndTags[0];
+      const searchedTags = searchedTermsAndTags[1];
+      let bookmarks = [];
+      const lang = req.query.lang;
+      if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
+        bookmarks = await bookmarksSearchService.getBookmarksForTagsAndTerms(bookmarks, searchedTags, searchedTerms, limit);
+      } else if ( searchedTerms.length > 0 ) {
+        bookmarks = await bookmarksSearchService.getBookmarksForSearchedTerms(searchedTerms, bookmarks, limit);
+      } else {
+        bookmarks = await bookmarksSearchService.getBookmarksForSearchedTags(bookmarks, searchedTags, limit);
+      }
+      if ( lang && lang !== 'all' ) {
+        bookmarks = bookmarks.filter(x => x.language === lang);
+      }
+
+      res.send(bookmarks);
+    } else {//no filter - latest bookmarks added to the platform
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('A query parameter is mandatory ', ['A query parameter is mandatory ']));
+    }
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+  }
+});
+
 
 /* GET bookmark of user */
 personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, response) => {
