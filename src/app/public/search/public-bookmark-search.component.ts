@@ -14,6 +14,7 @@ import {UserDataStore} from '../../core/user/userdata.store';
 import {PublicBookmarksService} from '../bookmarks/public-bookmarks.service';
 
 import {languages} from '../../shared/language-options';
+import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
 
 @Component({
   selector: 'app-public-bookmark-search',
@@ -37,7 +38,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   public showNotFound = false;
   public numberOfResultsFiltered: number;
   counter = 10;
-  language = 'all';
+  domain = 'all';
 
   languages = languages;
 
@@ -53,10 +54,12 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   showSearchResults = false;
   hover = false;
 
+
   constructor(private router: Router,
               private bookmarkStore: PublicBookmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
               private publicBookmarksService: PublicBookmarksService,
+              private personalBookmarksService: PersonalBookmarkService,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore) {
   }
@@ -110,13 +113,13 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   showMoreResults() {
     this.counter += 10;
-    this.filterBookmarks(this.searchText, this.language);
+    this.filterBookmarks(this.searchText, this.domain);
   }
 
   ngAfterViewInit(): void {
     if (this.query) {
       this.searchControl.setValue(this.query);
-      this.filterBookmarks(this.query, this.language);
+      this.filterBookmarks(this.query, this.domain);
     }
   }
 
@@ -137,12 +140,12 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   setQueryFromParentComponent(queryFromOutside: string) {
     this.searchControl.setValue(queryFromOutside);
-    this.filterBookmarks(queryFromOutside, this.language);
+    this.filterBookmarks(queryFromOutside, this.domain);
   }
 
-  onLanguageChange(newValue) {
-    this.language = newValue;
-    this.filterBookmarks(this.searchText, this.language);
+  onDomainChange(newValue) {
+    this.domain = newValue;
+    this.filterBookmarks(this.searchText, this.domain);
   }
 
   onSaveClick() {
@@ -172,7 +175,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();
-    this.filterBookmarks(selectedValue, this.language);
+    this.filterBookmarks(selectedValue, this.domain);
   }
 
   focusOnSearchControl() {
@@ -190,7 +193,12 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
         this.counter = 10;
       }
       this.searchText = query;
-      const filteredPublicBookmarks: Observable<Bookmark[]> = this.publicBookmarksService.getFilteredPublicBookmarks(query, lang, this.counter);
+      let filteredPublicBookmarks: Observable<Bookmark[]>;
+      if (this.domain === 'public') {
+        filteredPublicBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(query, 'all', this.counter);
+      } else {
+        filteredPublicBookmarks = this.personalBookmarksService.getFilteredPersonalBookmarks(query, 'all', this.counter, this.userId);
+      }
       filteredPublicBookmarks.subscribe(bookmarks => {
         this.numberOfResultsFiltered = bookmarks.length;
         if (this.numberOfResultsFiltered > 0) {
