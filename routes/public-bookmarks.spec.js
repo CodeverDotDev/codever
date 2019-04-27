@@ -142,7 +142,7 @@ describe('Public API Tests', function () {
         });
     });
 
-    it('should find bookmark with with very-special-tag in query param as tag', function (done) {
+    it('should find bookmark with with very-special-tag in query param only as tag', function (done) {
       request(app)
         .get(baseApiUnderTestUrl)
         .query({query: `[${verySpecialTag}]`})

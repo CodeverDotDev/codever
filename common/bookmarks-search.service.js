@@ -5,6 +5,27 @@ const showdown = require('showdown'),
 const Bookmark = require('../models/bookmark');
 const escapeStringRegexp = require('escape-string-regexp');
 
+let findBookmarks = async function(query, limit, lang) {
+  //split in text and tags
+  const searchedTermsAndTags = splitSearchQuery(query);
+  const searchedTerms = searchedTermsAndTags[0];
+  const searchedTags = searchedTermsAndTags[1];
+  let bookmarks = [];
+
+  if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
+    bookmarks = await getBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit);
+  } else if ( searchedTerms.length > 0 ) {
+    bookmarks = await getBookmarksForSearchedTerms(searchedTerms, limit);
+  } else {
+    bookmarks = await getBookmarksForSearchedTags(searchedTags, limit);
+  }
+  if ( lang && lang !== 'all' ) {
+    bookmarks = bookmarks.filter(x => x.language === lang);
+  }
+
+  return bookmarks;
+}
+
 let splitSearchQuery =  function(query) {
 
   const result = [[], []];
@@ -69,8 +90,8 @@ let splitSearchQuery =  function(query) {
   return result;
 }
 
-let getBookmarksForTagsAndTerms = async function (bookmarks, searchedTags, searchedTerms, limit) {
-  bookmarks = await Bookmark.find(
+let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit) {
+  let bookmarks = await Bookmark.find(
     {
       shared: true,
       tags:
@@ -99,10 +120,10 @@ let getBookmarksForTagsAndTerms = async function (bookmarks, searchedTags, searc
   return bookmarks;
 }
 
-let getBookmarksForSearchedTerms = async function (searchedTerms, bookmarks, limit) {
+let getBookmarksForSearchedTerms = async function (searchedTerms, limit) {
   const termsJoined = searchedTerms.join(' ');
   const termsQuery = escapeStringRegexp(termsJoined);
-  bookmarks = await Bookmark.find(
+  let bookmarks = await Bookmark.find(
     {
       shared: true,
       $text: {$search: termsQuery},
@@ -124,9 +145,8 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, bookmarks, lim
   return bookmarks;
 }
 
-let getBookmarksForSearchedTags = async function (bookmarks, searchedTags, limit) {
-  console.log('searchedTags', searchedTags);
-  bookmarks = await Bookmark.find(
+let getBookmarksForSearchedTags = async function (searchedTags, limit) {
+  let bookmarks = await Bookmark.find(
     {
       shared: true,
       tags:
@@ -139,6 +159,7 @@ let getBookmarksForSearchedTags = async function (bookmarks, searchedTags, limit
     .limit(limit)
     .lean()
     .exec();
+
   return bookmarks;
 }
 
@@ -222,9 +243,5 @@ function escapeRegExp(str) {
 }
 
 module.exports = {
-  splitSearchQuery: splitSearchQuery,
-  bookmarkContainsSearchedTerm: bookmarkContainsSearchedTerm,
-  getBookmarksForTagsAndTerms: getBookmarksForTagsAndTerms,
-  getBookmarksForSearchedTerms: getBookmarksForSearchedTerms,
-  getBookmarksForSearchedTags: getBookmarksForSearchedTags
+  findBookmarks: findBookmarks
 }
