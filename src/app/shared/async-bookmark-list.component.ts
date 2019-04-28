@@ -163,11 +163,6 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   addToPinned(bookmark: Bookmark) {
-    const pinnedData: PinnedData = {
-      bookmarkId: bookmark._id,
-      pinnedAt: new Date()
-    }
-
     this.userData.pinned.unshift(bookmark._id);
     this.userDataStore.updateUserData(this.userData).subscribe(() => {
       this.userDataStore.addToPinnedBookmarks(bookmark);
