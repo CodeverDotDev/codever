@@ -6,7 +6,7 @@
           <h5 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText" (click)="onBookmarkLinkClick(bookmark)"></a></h5>
           <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="bookmark.location | slice:0:150 | highlight: queryText"></span></h6>
         </div>
-        <div *ngIf="userIsLoggedIn" style="display: flex">
+        <div style="display: flex">
           <span *ngIf="!userData?.pinned?.includes(bookmark._id) else markedAsPinned" class="clock-wrapper" title="Pin bookmark" (click)="addToPinned(bookmark)"><i class="fas fa-thumbtack fa-rotate-90"></i></span>
           <ng-template #markedAsPinned>
             <span class="clock-wrapper" title="Unpin bookmark" (click)="removeFromPinned(bookmark)"><i class="fas fa-thumbtack"></i></span>

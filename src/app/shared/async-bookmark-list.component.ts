@@ -104,17 +104,17 @@ export class AsyncBookmarkListComponent implements OnInit {
       };
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    }
-
-    if (this.userId) {// TODO verify why is this condition necessary
-      bookmark.stars++;
-      this.userData.stars.unshift(bookmark._id);
-      const rateBookmarkRequest: RateBookmarkRequest = {
-        ratingUserId: this.userId,
-        action: RatingActionType.STAR,
-        bookmark: bookmark
+    } else {
+      if (this.userId) {// TODO verify why is this condition necessary
+        bookmark.stars++;
+        this.userData.stars.unshift(bookmark._id);
+        const rateBookmarkRequest: RateBookmarkRequest = {
+          ratingUserId: this.userId,
+          action: RatingActionType.STAR,
+          bookmark: bookmark
+        }
+        this.rateBookmark(rateBookmarkRequest);
       }
-      this.rateBookmark(rateBookmarkRequest);
     }
   }
 
@@ -163,10 +163,23 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   addToPinned(bookmark: Bookmark) {
-    this.userData.pinned.unshift(bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe(() => {
-      this.userDataStore.addToPinnedBookmarks(bookmark);
-    });
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to pin bookmarks'
+      };
+
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      this.userData.pinned.unshift(bookmark._id);
+      this.userDataStore.updateUserData(this.userData).subscribe(() => {
+        this.userDataStore.addToPinnedBookmarks(bookmark);
+      });
+    }
+
   }
 
   removeFromPinned(bookmark: Bookmark) {
@@ -177,10 +190,22 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   addToReadLater(bookmark: Bookmark) {
-    this.userData.readLater.push(bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe(() => {
-      this.userDataStore.addToLaterReads(bookmark);
-    });
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged to add bookmarks to "Read Later"'
+      };
+
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      this.userData.readLater.push(bookmark._id);
+      this.userDataStore.updateUserData(this.userData).subscribe(() => {
+        this.userDataStore.addToLaterReads(bookmark);
+      });
+    }
   }
 
   removeFromReadLater(bookmark: Bookmark) {
