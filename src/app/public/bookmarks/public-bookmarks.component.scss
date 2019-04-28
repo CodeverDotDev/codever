@@ -58,3 +58,12 @@ button.delete {
   font-family: FontAwesome;
   content: "SHOW MORE \f02c";
 }
+
+.personal-followed-tags {
+  font-size: 1.3rem;
+  margin-top: 0.8rem;
+  a {
+    margin-right: 0.5rem;
+    padding: 0.3rem;
+  }
+}

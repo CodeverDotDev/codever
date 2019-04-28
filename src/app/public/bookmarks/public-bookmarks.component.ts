@@ -11,6 +11,7 @@ import { UserDataStore } from '../../core/user/userdata.store';
 import { PublicBookmarkSearchComponent } from '../search/public-bookmark-search.component';
 import { MatTabChangeEvent } from '@angular/material';
 import { WatchedTagsComponent } from '../../shared/watched-tags/watched-tags.component';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -29,18 +30,19 @@ export class PublicBookmarksComponent implements OnInit {
   @ViewChild(PublicBookmarkSearchComponent)
   private searchComponent: PublicBookmarkSearchComponent;
 
-  @ViewChild(WatchedTagsComponent)
-  private watchedTagsComponent: WatchedTagsComponent;
-
   pinned$: Observable<Bookmark[]>;
   laterReads$: Observable<Bookmark[]>;
   starredBookmarks$: Observable<Bookmark[]>;
+  bookmarksForWatchedTags$: Observable<Bookmark[]>;
+
+  userIsLoggedIn = false;
 
   constructor(private publicBookmarksStore: PublicBookmarksStore,
               private route: ActivatedRoute,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore
-              ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.query = this.route.snapshot.queryParamMap.get('search');
@@ -57,6 +59,7 @@ export class PublicBookmarksComponent implements OnInit {
       if (isLoggedIn) {
         this.keycloakService.loadUserProfile().then(keycloakProfile => {
           this.userDataStore.getUserData().subscribe(data => {
+              this.userIsLoggedIn = true;
               this.userData = data;
             },
             error => {
@@ -72,14 +75,23 @@ export class PublicBookmarksComponent implements OnInit {
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {
-    if (event.index === 1) {
-      this.pinned$ = this.userDataStore.getPinnedBookmarks();
-    } else if (event.index === 2) {
-      this.laterReads$ = this.userDataStore.getLaterReads();
-    } else if (event.index === 3) {
-      this.starredBookmarks$ = this.userDataStore.getStarredBookmarks();
-    } else if (event.index === 4) {
-      this.watchedTagsComponent.loadBookmarksForWatchedTags();
+    if (this.userIsLoggedIn) {
+      if (event.index === 1) {
+        this.pinned$ = this.userDataStore.getPinnedBookmarks();
+      } else if (event.index === 2) {
+        this.laterReads$ = this.userDataStore.getLaterReads();
+      } else if (event.index === 3) {
+        this.starredBookmarks$ = this.userDataStore.getStarredBookmarks();
+      } else if (event.index === 4) {
+        this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags();
+      }
     }
+
+  }
+
+  login() {
+    const options: Keycloak.KeycloakLoginOptions = {};
+    options.redirectUri = environment.APP_HOME_URL;
+    this.keycloakService.login(options).then(() => this.userIsLoggedIn = true);
   }
 }
