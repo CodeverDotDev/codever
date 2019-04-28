@@ -5,7 +5,7 @@
   <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)">
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">Recent &nbsp;<i class="fas fa-clock"></i></span>
+        <span class="app-tab-label">Community &nbsp;<i class="fas fa-share-alt"></i></span>
       </ng-template>
       <app-async-bookmark-list [bookmarks]="publicBookmarks$" [shownSize]="counter"
                                [userData]="userData"></app-async-bookmark-list>
@@ -15,6 +15,36 @@
         </button>
         <hr/>
       </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Pinned  &nbsp;<i class="fas fa-thumbtack"></i></span>
+      </ng-template>
+      <div *ngIf="userData?.pinned.length === 0"  class="missing-category-bookmarks-message alert alert-info">
+        Got a bookmark you know you are going to use it a lot in the coming future? Just pin it <i class="fas fa-thumbtack"></i>
+        and it will appear hear at the top of the <strong>Pinned</strong> list.
+      </div>
+      <app-async-bookmark-list [bookmarks]="pinned$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Read Later  &nbsp;<i class="fas fa-clock"></i></span>
+      </ng-template>
+      <div *ngIf="userData?.readLater.length === 0"  class="missing-category-bookmarks-message alert alert-info">
+        Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i class="fas fa-clock"></i>
+        on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
+      </div>
+      <app-async-bookmark-list [bookmarks]="laterReads$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Starred  &nbsp;<i class="fas fa-star"></i></span>
+      </ng-template>
+      <div *ngIf="userData?.stars.length === 0"  class="missing-category-bookmarks-message alert alert-info">
+        Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it. It will also be used in your <strong>personal</strong> search
+        and be listed here with other starred bookmarks.
+      </div>
+      <app-async-bookmark-list [bookmarks]="starredBookmarks$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>

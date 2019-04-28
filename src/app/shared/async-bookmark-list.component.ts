@@ -7,7 +7,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { PublicBookmarksStore } from '../public/bookmarks/store/public-bookmarks-store.service';
 import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
 import { RateBookmarkRequest, RatingActionType } from '../core/model/rate-bookmark.request';
-import { UserData } from '../core/model/user-data';
+import { PinnedData, UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
@@ -160,6 +160,25 @@ export class AsyncBookmarkListComponent implements OnInit {
       bookmark.lastAccessedAt = new Date();
       const obs = this.personalBookmarksStore.updateBookmark(bookmark);
     }
+  }
+
+  addToPinned(bookmark: Bookmark) {
+    const pinnedData: PinnedData = {
+      bookmarkId: bookmark._id,
+      pinnedAt: new Date()
+    }
+
+    this.userData.pinned.unshift(bookmark._id);
+    this.userDataStore.updateUserData(this.userData).subscribe(() => {
+      this.userDataStore.addToPinnedBookmarks(bookmark);
+    });
+  }
+
+  removeFromPinned(bookmark: Bookmark) {
+    this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
+    this.userDataStore.updateUserData(this.userData).subscribe(() => {
+      this.userDataStore.removeFromPinnedBookmarks(bookmark);
+    });
   }
 
   addToReadLater(bookmark: Bookmark) {
