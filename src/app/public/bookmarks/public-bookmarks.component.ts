@@ -32,6 +32,10 @@ export class PublicBookmarksComponent implements OnInit {
   @ViewChild(WatchedTagsComponent)
   private watchedTagsComponent: WatchedTagsComponent;
 
+  pinned$: Observable<Bookmark[]>;
+  laterReads$: Observable<Bookmark[]>;
+  starredBookmarks$: Observable<Bookmark[]>;
+
   constructor(private publicBookmarksStore: PublicBookmarksStore,
               private route: ActivatedRoute,
               private keycloakService: KeycloakService,
@@ -68,7 +72,13 @@ export class PublicBookmarksComponent implements OnInit {
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {
-    if (event.index === 2) {
+    if (event.index === 1) {
+      this.pinned$ = this.userDataStore.getPinnedBookmarks();
+    } else if (event.index === 2) {
+      this.laterReads$ = this.userDataStore.getLaterReads();
+    } else if (event.index === 3) {
+      this.starredBookmarks$ = this.userDataStore.getStarredBookmarks();
+    } else if (event.index === 4) {
       this.watchedTagsComponent.loadBookmarksForWatchedTags();
     }
   }

@@ -22,6 +22,9 @@ export class UserDataStore {
   private _stars: BehaviorSubject<Bookmark[]> = new BehaviorSubject([]);
   private starredBookmarksHasBeenRequested = false;
 
+  private _pinned: BehaviorSubject<Bookmark[]> = new BehaviorSubject([]);
+  private pinnedBookmarksHasBeenRequested = false;
+
   private _watchedTags: BehaviorSubject<Bookmark[]> = new BehaviorSubject([]);
   private bookmarksForWatchedTagsHasBeenRequested = false;
   private forceReloadOfBookmarksForWatchedTags = false;
@@ -140,6 +143,32 @@ export class UserDataStore {
     if (index !== -1) {
       starredBookmarks.splice(index, 1);
       this._stars.next(starredBookmarks);
+    }
+  }
+
+  getPinnedBookmarks(): Observable<Bookmark[]> {
+    if (!this.pinnedBookmarksHasBeenRequested) {
+      this.pinnedBookmarksHasBeenRequested = true;
+      const pinnedBookmarks$ = this.userService.getPinnedBookmarks(this.userId).subscribe(data => {
+        this._pinned.next(data);
+      });
+    }
+    return this._pinned.asObservable();
+  }
+
+  addToPinnedBookmarks(bookmark: Bookmark) {
+    const pinnedBookmarks: Bookmark[] = this._pinned.getValue();
+    pinnedBookmarks.unshift(bookmark);
+
+    this._pinned.next(pinnedBookmarks); // insert at the top (index 0)
+  }
+
+  removeFromPinnedBookmarks(bookmark: Bookmark) {
+    const pinnedBookmarks: Bookmark[] = this._pinned.getValue();
+    const index = pinnedBookmarks.findIndex((pinnedBookmark) => bookmark._id === pinnedBookmark._id);
+    if (index !== -1) {
+      pinnedBookmarks.splice(index, 1);
+      this._pinned.next(pinnedBookmarks);
     }
   }
 

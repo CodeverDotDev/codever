@@ -5,6 +5,7 @@ export interface UserData {
   readLater?: string[]; // ids of bookmarks to read later
   stars?: string[]; // ids of bookmarks the user starred
   watchedTags?: string[];
+  pinned?: string[]; // ids of pinned bookmarks
 }
 
 export interface Search {
@@ -12,4 +13,9 @@ export interface Search {
   language?: string;
   createdAt?: Date;
   lastAccessedAt?: Date;
+}
+
+export interface PinnedData {
+  bookmarkId: string;
+  pinnedAt: Date;
 }
