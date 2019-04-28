@@ -22,7 +22,7 @@
       </ng-template>
       <div *ngIf="userData?.pinned.length === 0"  class="missing-category-bookmarks-message alert alert-info">
         Got a bookmark you know you are going to use it a lot in the coming future? Just pin it <i class="fas fa-thumbtack"></i>
-        and it will appear hear at the top of the <strong>Pinned</strong> list.
+        and it will appear in the <strong>Pinned</strong> list.
       </div>
       <app-async-bookmark-list [bookmarks]="pinned$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
     </mat-tab>
