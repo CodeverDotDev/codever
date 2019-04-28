@@ -163,6 +163,40 @@ usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, res
   }
 });
 
+/* GET list of user's pinned bookmarks */
+usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if (userId !== request.params.userId) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if (!userData) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find( {"_id" : { $in: userData.pinned}});
+
+      response.send(bookmarks);
+    }
+
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
 
 /*
 * create user details
@@ -200,7 +234,8 @@ usersRouter.post('/:userId', keycloak.protect(), async (request, response) => {
       searches: request.body.searches,
       readLater: request.body.readLater,
       stars: request.body.stars,
-      watchedTags: request.body.watchedTags
+      watchedTags: request.body.watchedTags,
+      pinned: request.body.pinned
     });
 
     const newUserData = await userData.save();
