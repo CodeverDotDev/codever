@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 
 import { KeycloakService } from 'keycloak-angular';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
-import { publicTags } from '../model/all-tags.const.en';
 import { HttpResponse } from '@angular/common/http';
 
 @Injectable()
@@ -18,10 +17,9 @@ export class PersonalBookmarksStore {
 
   private _personalBookmarks: BehaviorSubject<List<Bookmark>> = new BehaviorSubject(null);
 
-  private userId: String;
+  private userId: string;
 
   private personalTags: Set<string>;
-  autocompleteTags = publicTags;
 
   constructor(private personalBookmarkService: PersonalBookmarkService,
               private logger: Logger,
@@ -64,13 +62,8 @@ export class PersonalBookmarksStore {
     return this._personalBookmarks.asObservable();
   }
 
-  getPersonalAutomcompleteTags(): string[] {
-    if (this.personalTags) {
-      this.personalTags.forEach(e => this.autocompleteTags.add(e));
-      return Array.from(this.autocompleteTags).sort();
-    } else {
-      return [];
-    }
+  getPersonalAutomcompleteTags(): Observable<string[]> {
+    return this.personalBookmarkService.getTagsOfUser(this.userId);
   }
 
   addBookmark(userId: string, bookmark: Bookmark): void {
@@ -97,7 +90,6 @@ export class PersonalBookmarksStore {
         }
       );
   }
-
 
 
   deleteBookmark(deleted: Bookmark): Observable<any> {
@@ -161,14 +153,8 @@ export class PersonalBookmarksStore {
     return bookmarks.get(index);
   }
 
-  getBookmarkByLocation(location: string): Bookmark {
-    const bookmarks = this._personalBookmarks.getValue();
-    const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark.location === location);
-    if (index >= 0) {
-      return bookmarks.get(index);
-    } else {
-      return null;
-    }
+  getPersonalBookmarkByLocation(location: string): Observable<HttpResponse<Bookmark>> {
+    return this.personalBookmarkService.getPersonalBookmarkByLocation(this.userId, location);
   }
 
 }
