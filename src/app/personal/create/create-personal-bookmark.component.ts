@@ -1,19 +1,20 @@
-import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Bookmark} from '../../core/model/bookmark';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {PersonalBookmarksStore} from '../../core/store/personal-bookmarks-store.service';
-import {MarkdownService} from '../markdown.service';
-import {KeycloakService} from 'keycloak-angular';
-import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
-import {Observable} from 'rxjs';
-import {languages} from '../../shared/language-options';
-import {tagsValidator} from '../../shared/tags-validation.directive';
-import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
-import {PublicBookmarksService} from '../../public/bookmarks/public-bookmarks.service';
-import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
-import {RateBookmarkRequest, RatingActionType} from '../../core/model/rate-bookmark.request';
+import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Bookmark } from '../../core/model/bookmark';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { PersonalBookmarksStore } from '../../core/store/personal-bookmarks-store.service';
+import { MarkdownService } from '../markdown.service';
+import { KeycloakService } from 'keycloak-angular';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
+import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
+import { Observable } from 'rxjs';
+import { languages } from '../../shared/language-options';
+import { tagsValidator } from '../../shared/tags-validation.directive';
+import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
+import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
+import { descriptionSizeValidator } from '../../shared/description-size-validation.directive';
+import { RateBookmarkRequest, RatingActionType } from '../../core/model/rate-bookmark.request';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -56,18 +57,19 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private publicBookmarksStore: PublicBookmarksStore
   ) {
 
-    keycloakService.loadUserProfile().then( keycloakProfile => {
+    keycloakService.loadUserProfile().then(keycloakProfile => {
       this.userId = keycloakProfile.id;
+      personalBookmarksStore.getPersonalAutomcompleteTags().subscribe(tags => {
+        this.autocompleteTags = tags.sort();
+
+        this.filteredTags = this.tagsControl.valueChanges.pipe(
+          startWith(null),
+          map((tag: string | null) => {
+            return tag ? this.filter(tag) : this.autocompleteTags.slice();
+          })
+        );
+      });
     });
-
-    this.autocompleteTags = personalBookmarksStore.getPersonalAutomcompleteTags()
-
-    this.filteredTags = this.tagsControl.valueChanges.pipe(
-      startWith(null),
-      map((tag: string | null) => {
-        return tag ? this.filter(tag) : this.autocompleteTags.slice();
-      })
-    );
   }
 
   ngOnInit(): void {
@@ -90,17 +92,25 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       debounceTime(400),
       distinctUntilChanged(), )
       .subscribe(location => {
-        if (this.personalBookmarksStore.getBookmarkByLocation(location)) {
-          this.personalBookmarkPresent = true;
-        } else {
-          this.personalBookmarkPresent = false;
-          this.publicBookmarksService.getScrapingData(location).subscribe(response => {
-            if (response) {
-              this.bookmarkForm.get('name').patchValue(response.title, {emitEvent : false});
-              this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent : false});
+        this.personalBookmarksStore.getPersonalBookmarkByLocation(location).subscribe(httpResponse => {
+          if (httpResponse.status === 200) {
+            this.personalBookmarkPresent = true;
+          } else {
+            this.personalBookmarkPresent = false;
+            this.publicBookmarksService.getScrapingData(location).subscribe(response => {
+              if (response) {
+                this.bookmarkForm.get('name').patchValue(response.title, {emitEvent: false});
+                this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent: false});
+              }
+            });
+          }
+        },
+          (errorResponse: HttpErrorResponse) => {
+            if (errorResponse.status === 404) {
+              this.personalBookmarkPresent = false;
             }
           });
-        }
+
       });
   }
 
@@ -158,7 +168,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       starredBy: [],
       lastAccessedAt: new Date(),
       stars: 0
-  };
+    };
 
     this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
   }
@@ -182,9 +192,9 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   onStarClick() {
     this.displayModal = 'none';
     this.makePublic = false;
-    if ( this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
-     this.existingPublicBookmark.starredBy.push(this.userId);
-     this.rateBookmark(this.existingPublicBookmark);
+    if (this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
+      this.existingPublicBookmark.starredBy.push(this.userId);
+      this.rateBookmark(this.existingPublicBookmark);
     }
   }
 
@@ -207,9 +217,13 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     this.makePublic = false;
   }
 
-  get tags() { return <FormArray>this.bookmarkForm.get('tags'); }
+  get tags() {
+    return <FormArray>this.bookmarkForm.get('tags');
+  }
 
-  get description() { return this.bookmarkForm.get('description'); }
+  get description() {
+    return this.bookmarkForm.get('description');
+  }
 }
 
 

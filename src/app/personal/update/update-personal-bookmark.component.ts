@@ -44,7 +44,10 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
       const id = params['id'];
       this.bookmark = this.personalBookmarksStore.getBookmarkById(id);
     });
-    this.autocompleteTags = this.personalBookmarksStore.getPersonalAutomcompleteTags();
+    this.personalBookmarksStore.getPersonalAutomcompleteTags().subscribe(tags => {
+      this.autocompleteTags = tags.sort();
+      this.tdTags = this.autocompleteTags;
+    });
   }
 
   updateBookmark(): void {
