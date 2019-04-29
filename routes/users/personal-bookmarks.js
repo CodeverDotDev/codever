@@ -145,27 +145,48 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
     if ( query ) {
       const bookmarks = await bookmarksSearchService.findBookmarks(query, limit, lang, constants.DOMAIN_PERSONAL, userId);
 
-      response.send(bookmarks);
-    } else {//no filter - latest bookmarks added to the platform
-      const userData = await User.findOne({
-        userId: request.params.userId
-      });
-
-      if ( !userData ) {
-        bookmarks = await Bookmark.find({userId: request.params.userId});
-      } else {
-        bookmarks = await Bookmark.find(
-          {
-            $or: [
-              {userId: request.params.userId},
-              {"_id": {$in: userData.stars}}
-            ]
-          }
-        );
+      return response.send(bookmarks);
+    } else if ( request.query.location ) {
+      const bookmark = await Bookmark.findOne({
+        userId: request.params.userId,
+        location: request.query.location
+      }).lean().exec();
+      if ( !bookmark ) {
+        return response.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
       }
+      return response.send(bookmark);
+    } else {//no filter - latest bookmarks added to the platform
+      bookmarks = await Bookmark.find({userId: request.params.userId})
+        .sort({lastAccessedAt: -1})
+        .limit(100);
 
-      response.send(bookmarks);
+      return response.send(bookmarks);
     }
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+  }
+});
+
+/* GET tags used by user */
+personalBookmarksRouter.get('/tags', keycloak.protect(), async (request, response) => {
+
+  const userId = request.kauth.grant.access_token.content.sub;
+  if ( userId !== request.params.userId ) {
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+  }
+
+  try {
+    const tags = await Bookmark.distinct("tags",
+      {
+        $or: [
+          {userId: request.params.userId},
+          {shared: true}
+        ]
+      }); // sort does not work with distinct in mongoose - https://mongoosejs.com/docs/api.html#query_Query-sort
+
+    response.send(tags);
   } catch (err) {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
   }
