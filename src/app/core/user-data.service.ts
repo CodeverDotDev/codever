@@ -50,6 +50,11 @@ export class UserDataService {
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/pinned` );
   }
 
+  getLastVisitedBookmarks(userId: string): Observable<Bookmark[]> {
+    return this.httpClient
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/last-visited` );
+  }
+
   getBookmarksForWatchedTags(userId: string): Observable<Bookmark[]> {
     return this.httpClient
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/watched-tags` );

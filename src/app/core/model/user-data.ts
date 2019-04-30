@@ -6,6 +6,7 @@ export interface UserData {
   stars?: string[]; // ids of bookmarks the user starred
   watchedTags?: string[];
   pinned?: string[]; // ids of pinned bookmarks
+  lastVisited?: string[]; // ids of last visited bookmarks, order is important
 }
 
 export interface Search {
@@ -13,9 +14,4 @@ export interface Search {
   language?: string;
   createdAt?: Date;
   lastAccessedAt?: Date;
-}
-
-export interface PinnedData {
-  bookmarkId: string;
-  pinnedAt: Date;
 }
