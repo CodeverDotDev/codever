@@ -18,18 +18,44 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
+        <span class="app-tab-label">History  &nbsp;<i class="fas fa-history"></i></span>
+      </ng-template>
+      <div *ngIf="!userIsLoggedIn; else isLoggedInLastVisited"
+           class="missing-category-bookmarks-message alert alert-info">
+        <p>In <strong>History</strong> you have a list of your last visited bookmarks.
+        </p>
+        You need to
+        <button type="button" class="btn btn-primary btn-sm" (click)="login()">Login / Register</button>
+        to access this functionality.
+      </div>
+      <ng-template #isLoggedInLastVisited>
+        <div *ngIf="userData?.lastVisited.length === 0" class="missing-category-bookmarks-message alert alert-info">
+          <p>
+            In <strong>History</strong> you have a list of your last visited bookmarks.
+          </p>
+        </div>
+        <app-async-bookmark-list [bookmarks]="history$" [shownSize]="30"
+                                 [userData]="userData"></app-async-bookmark-list>
+      </ng-template>
+
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
         <span class="app-tab-label">Pinned  &nbsp;<i class="fas fa-thumbtack"></i></span>
       </ng-template>
       <div *ngIf="!userIsLoggedIn; else isLoggedInToPin" class="missing-category-bookmarks-message alert alert-info">
-        Got a bookmark you know you are going to use it a lot in the coming future? Just pin it <i
-        class="fas fa-thumbtack"></i>
-        and it will appear in the <strong>Pinned</strong> list. You need to
+        <p>
+          Got a bookmark you are using frequently? Just pin it <i
+          class="fas fa-thumbtack"></i>
+          and it will appear in the <strong>Pinned</strong> list.
+        </p>
+        You need to
         <button type="button" class="btn btn-primary btn-sm" (click)="login()">Login / Register</button>
         to access this functionality.
       </div>
       <ng-template #isLoggedInToPin>
         <div *ngIf="userData?.pinned.length === 0" class="missing-category-bookmarks-message alert alert-info">
-          Got a bookmark you know you are going to use it a lot in the coming future? Just pin it <i
+          Got a bookmark you are using frequently? Just pin it <i
           class="fas fa-thumbtack"></i>
           and it will appear in the <strong>Pinned</strong> list.
         </div>
@@ -43,9 +69,12 @@
       </ng-template>
       <div *ngIf="!userIsLoggedIn; else isLoggedInToReadLater"
            class="missing-category-bookmarks-message alert alert-info">
-        Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
-        class="fas fa-clock"></i>
-        on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list. You need to
+        <p>
+          Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
+          class="fas fa-clock"></i>
+          on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
+        </p>
+        You need to
         <button type="button" class="btn btn-primary btn-sm" (click)="login()">Login / Register</button>
         to access this functionality.
       </div>
@@ -65,8 +94,11 @@
       </ng-template>
       <div *ngIf="!userIsLoggedIn; else isLoggedInToStar"
            class="missing-category-bookmarks-message alert alert-info">
-        Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it
-        and be listed here with other starred bookmarks. You need to
+        <p>
+          Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it
+          and be listed here with other starred bookmarks.
+        </p>
+        You need to
         <button type="button" class="btn btn-primary btn-sm" (click)="login()">Login / Register</button>
         to access this functionality.
       </div>
@@ -86,20 +118,24 @@
       </ng-template>
       <div *ngIf="!userIsLoggedIn; else isLoggedInToWatchTags"
            class="missing-category-bookmarks-message alert alert-info">
-        You have the possibility to watch <strong>public</strong> tags, by clicking the
-        <button type="button" class="btn btn-outline-primary btn-sm" routerLink="/tagged/python"><i class="fas fa-eye"></i>
-          Watch tag
-        </button>
-        button
-        on the tag's page. Then you will see here the latest entries for the tags you watch. You
-        need to
+        <p>
+          You have the possibility to watch <strong>public</strong> tags, by clicking the
+          <button type="button" class="btn btn-outline-primary btn-sm" routerLink="/tagged/python"><i
+            class="fas fa-eye"></i>
+            Watch tag
+          </button>
+          button
+          on the tag's page. Then you will see here the latest entries for the tags you watch.
+        </p>
+        You need to
         <button type="button" class="btn btn-primary btn-sm" (click)="login()">Login / Register</button>
         to access this functionality.
       </div>
       <ng-template #isLoggedInToWatchTags>
         <div *ngIf="userData?.watchedTags.length === 0" class="missing-category-bookmarks-message alert alert-info">
           You have the possibility to watch <strong>public</strong> tags, by clicking the
-          <button type="button" class="btn btn-outline-primary btn-sm" routerLink="/tagged/python"><i class="fas fa-eye"></i>
+          <button type="button" class="btn btn-outline-primary btn-sm" routerLink="/tagged/python"><i
+            class="fas fa-eye"></i>
             Watch tag
           </button>
           button
