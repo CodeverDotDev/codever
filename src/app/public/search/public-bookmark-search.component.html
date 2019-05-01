@@ -5,7 +5,7 @@
           (mouseleave)="hover=false"
           [class.focused]="(isFocusOnSearchControl || hover) && searchText"
           id="basic-addon1"
-          (click)="filterBookmarks(publicSearchBox.value, domain)">
+          (click)="filterBookmarks(publicSearchBox.value, searchDomain)">
       <i class="fa fa-search"></i>
     </span>
   </div>
@@ -19,7 +19,7 @@
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
-    (keyup.enter)="filterBookmarks(publicSearchBox.value, domain)"
+    (keyup.enter)="filterBookmarks(publicSearchBox.value, searchDomain)"
   >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search">{{search}}</mat-option>
@@ -33,17 +33,21 @@
   </div>
 </div>
 
-<div id="language-select" class="input-group" readonly>
-  <select class="form-control form-control-sm" [ngModel]="domain" (ngModelChange)="onDomainChange($event)">
-    <option value=public selected="selected">public</option>
-    <option value=personal selected="selected">personal</option>
-  </select>
-</div>
+<mat-form-field class="search-domain-select">
+  <mat-label>Search domain</mat-label>
+  <mat-select [ngModel]="searchDomain" (ngModelChange)="onDomainChange($event)">
+    <mat-option *ngFor="let searchDomain of searchDomains" [value]="searchDomain.value" >
+      {{searchDomain.viewValue}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
 <div class="clear" style="margin-bottom: 1rem"></div>
 
 <div *ngIf="showNotFound" class="alert alert-info" role="alert">
-  No bookmarks found for "<strong>{{searchText}}</strong>". Please try a different search
+  No <strong>{{searchDomain}}</strong> bookmarks found for "<em>{{searchText}}</em>".
+  Please try a different search or look in <span *ngIf="searchDomain === 'personal'; else oppositeSearchDomain"> <span><strong>public</strong> bookmarks</span></span>
+  <ng-template #oppositeSearchDomain><span><strong>personal</strong> bookmarks</span></ng-template>
 </div>
 
 
