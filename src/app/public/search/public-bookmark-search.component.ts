@@ -27,7 +27,7 @@ export interface SearchDomain {
 export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
-  query: string;
+  q: string;
 
   @Input()
   context: string;
@@ -128,9 +128,9 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.query) {
-      this.searchControl.setValue(this.query);
-      this.searchBookmarks(this.query, this.searchDomain);
+    if (this.q) {
+      this.searchControl.setValue(this.q);
+      this.searchBookmarks(this.q, this.searchDomain);
     }
   }
 
