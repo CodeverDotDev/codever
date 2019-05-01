@@ -1,20 +1,23 @@
-import {Observable, of as observableOf} from 'rxjs';
+import { Observable, of as observableOf } from 'rxjs';
 
-import {map, startWith} from 'rxjs/operators';
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {Router} from '@angular/router';
-import {BookmarkFilterService} from '../../core/filter.service';
-import {Bookmark} from '../../core/model/bookmark';
-import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
-import {KeycloakService} from 'keycloak-angular';
-import {Search, UserData} from '../../core/model/user-data';
-import {MatAutocompleteSelectedEvent} from '@angular/material';
-import {UserDataStore} from '../../core/user/userdata.store';
-import {PublicBookmarksService} from '../bookmarks/public-bookmarks.service';
-
-import {languages} from '../../shared/language-options';
+import { map, startWith } from 'rxjs/operators';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { BookmarkFilterService } from '../../core/filter.service';
+import { Bookmark } from '../../core/model/bookmark';
+import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
+import { KeycloakService } from 'keycloak-angular';
+import { Search, UserData } from '../../core/model/user-data';
+import { MatAutocompleteSelectedEvent } from '@angular/material';
+import { UserDataStore } from '../../core/user/userdata.store';
+import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
 import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
+
+export interface SearchDomain {
+  value: string;
+  viewValue: string;
+}
 
 @Component({
   selector: 'app-public-bookmark-search',
@@ -38,9 +41,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   public showNotFound = false;
   public numberOfResultsFiltered: number;
   counter = 10;
-  domain = 'all';
 
-  languages = languages;
 
   userIsLoggedIn = false;
   userId: string;
@@ -53,6 +54,13 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   showSearchResults = false;
   hover = false;
+
+  searchDomain = 'public';
+
+  searchDomains: SearchDomain[] = [
+    {value: 'personal', viewValue: 'Personal bookmarks'},
+    {value: 'public', viewValue: 'Public bookmarks'}
+  ];
 
 
   constructor(private router: Router,
@@ -88,10 +96,13 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
+        this.searchDomain = 'personal';
         this.userIsLoggedIn = true;
         this.keycloakService.loadUserProfile().then(keycloakProfile => {
           this.userId = keycloakProfile.id;
         });
+      } else {
+        this.searchDomain = 'public';
       }
     });
 
@@ -113,13 +124,13 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   showMoreResults() {
     this.counter += 10;
-    this.filterBookmarks(this.searchText, this.domain);
+    this.filterBookmarks(this.searchText, this.searchDomain);
   }
 
   ngAfterViewInit(): void {
     if (this.query) {
       this.searchControl.setValue(this.query);
-      this.filterBookmarks(this.query, this.domain);
+      this.filterBookmarks(this.query, this.searchDomain);
     }
   }
 
@@ -140,12 +151,12 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   setQueryFromParentComponent(queryFromOutside: string) {
     this.searchControl.setValue(queryFromOutside);
-    this.filterBookmarks(queryFromOutside, this.domain);
+    this.filterBookmarks(queryFromOutside, this.searchDomain);
   }
 
   onDomainChange(newValue) {
-    this.domain = newValue;
-    this.filterBookmarks(this.searchText, this.domain);
+    this.searchDomain = newValue;
+    this.filterBookmarks(this.searchText, this.searchDomain);
   }
 
   onSaveClick() {
@@ -153,7 +164,8 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     const newSearch: Search = {
       text: this.searchText,
       createdAt: now,
-      lastAccessedAt: now
+      lastAccessedAt: now,
+      searchDomain: this.searchDomain
     }
     const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
     if (emptyUserData) {
@@ -175,7 +187,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();
-    this.filterBookmarks(selectedValue, this.domain);
+    this.filterBookmarks(selectedValue, this.searchDomain);
   }
 
   focusOnSearchControl() {
@@ -194,7 +206,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
       }
       this.searchText = query;
       let filteredPublicBookmarks: Observable<Bookmark[]>;
-      if (this.domain === 'public') {
+      if (this.searchDomain === 'public') {
         filteredPublicBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(query, 'all', this.counter);
       } else {
         filteredPublicBookmarks = this.personalBookmarksService.getFilteredPersonalBookmarks(query, 'all', this.counter, this.userId);
