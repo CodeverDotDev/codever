@@ -16,11 +16,11 @@ const MAX_NUMBER_RETURNED_RESULTS = 100;
  */
 router.get('/', async (req, res) => {
   try {
-    const query = req.query.query;
+    const searchText = req.query.q;
     const limit = parseInt(req.query.limit);
     const lang = req.query.lang;
-    if ( query ) {
-      const bookmarks = await bookmarksSearchService.findBookmarks(query, limit, lang, constants.DOMAIN_PUBLIC, null);
+    if ( searchText ) {
+      const bookmarks = await bookmarksSearchService.findBookmarks(searchText, limit, lang, constants.DOMAIN_PUBLIC, null);
 
       res.send(bookmarks);
     } else if ( req.query.location ) {

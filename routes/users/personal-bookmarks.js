@@ -138,12 +138,12 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
   }
 
   try {
-    const query = request.query.query;
+    const searchText = request.query.q;
     const limit = parseInt(request.query.limit);
     const lang = request.query.lang;
 
-    if ( query ) {
-      const bookmarks = await bookmarksSearchService.findBookmarks(query, limit, lang, constants.DOMAIN_PERSONAL, userId);
+    if ( searchText ) {
+      const bookmarks = await bookmarksSearchService.findBookmarks(searchText, limit, lang, constants.DOMAIN_PERSONAL, userId);
 
       return response.send(bookmarks);
     } else if ( request.query.location ) {
@@ -338,7 +338,7 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
     } else {
       await User.update(
         {},
-        {$pull: {readLater: bookmarkId, stars: bookmarkId}},
+        {$pull: {readLater: bookmarkId, stars: bookmarkId, pinned: bookmarkId, history: bookmarkId}},
         {multi: true}
       );
 

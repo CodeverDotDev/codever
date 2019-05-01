@@ -197,6 +197,40 @@ usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response)
   }
 });
 
+/* GET list of user's last visited bookmarks */
+usersRouter.get('/:userId/history', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if (userId !== request.params.userId) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if (!userData) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find( {"_id" : { $in: userData.history}});
+
+      response.send(bookmarks);
+    }
+
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
 
 /*
 * create user details
@@ -235,7 +269,8 @@ usersRouter.post('/:userId', keycloak.protect(), async (request, response) => {
       readLater: request.body.readLater,
       stars: request.body.stars,
       watchedTags: request.body.watchedTags,
-      pinned: request.body.pinned
+      pinned: request.body.pinned,
+      pinned: request.body.history
     });
 
     const newUserData = await userData.save();
@@ -278,6 +313,10 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('Searches are not valid',
           ['Searches are not valid - search text is required']));
+    }
+
+    if(request.body.history.length > 30) {
+      request.body.history = request.body.history.slice(0, 30);
     }
 
     delete request.body._id;//once we proved it's present we delete it to avoid the following MOngoError by findOneAndUpdate
