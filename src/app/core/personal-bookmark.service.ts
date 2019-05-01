@@ -26,9 +26,9 @@ export class PersonalBookmarkService {
     return this.httpClient.get<string[]>(this.personalBookmarksApiBaseUrl + userId + '/bookmarks/tags').pipe(shareReplay(1));
   }
 
-  getFilteredPersonalBookmarks(query: string, lang: string, limit: number, userId: string): Observable<Bookmark[]> {
+  getFilteredPersonalBookmarks(searchText: string, lang: string, limit: number, userId: string): Observable<Bookmark[]> {
     const params = new HttpParams()
-      .set('query', query)
+      .set('q', searchText)
       .set('lang', lang)
       .set('limit', limit.toString());
     return this.httpClient.get<Bookmark[]>(this.personalBookmarksApiBaseUrl + userId + '/bookmarks', {params: params});
