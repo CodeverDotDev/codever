@@ -37,7 +37,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   filteredBookmarks: Observable<Bookmark[]>;
 
   searchControl = new FormControl();
-  searchText: string;
+  searchText: string; // holds the value in the search box
   public showNotFound = false;
   public numberOfResultsFiltered: number;
   counter = 10;
@@ -124,13 +124,13 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   showMoreResults() {
     this.counter += 10;
-    this.filterBookmarks(this.searchText, this.searchDomain);
+    this.searchBookmarks(this.searchText, this.searchDomain);
   }
 
   ngAfterViewInit(): void {
     if (this.query) {
       this.searchControl.setValue(this.query);
-      this.filterBookmarks(this.query, this.searchDomain);
+      this.searchBookmarks(this.query, this.searchDomain);
     }
   }
 
@@ -151,12 +151,14 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   setQueryFromParentComponent(queryFromOutside: string) {
     this.searchControl.setValue(queryFromOutside);
-    this.filterBookmarks(queryFromOutside, this.searchDomain);
+    this.searchBookmarks(queryFromOutside, this.searchDomain);
   }
 
   onDomainChange(newValue) {
     this.searchDomain = newValue;
-    this.filterBookmarks(this.searchText, this.searchDomain);
+    if (this.searchText && this.searchText !== '') {
+      this.searchBookmarks(this.searchText, this.searchDomain);
+    }
   }
 
   onSaveClick() {
@@ -187,7 +189,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();
-    this.filterBookmarks(selectedValue, this.searchDomain);
+    this.searchBookmarks(selectedValue, this.searchDomain);
   }
 
   focusOnSearchControl() {
@@ -198,7 +200,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.isFocusOnSearchControl = false;
   }
 
-  filterBookmarks(query: string, lang: string) {
+  searchBookmarks(query: string, lang: string) {
     if (query.trim() !== '') {
       if (this.previousTerm !== query) {
         this.previousTerm = query;
