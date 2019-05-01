@@ -3,7 +3,7 @@ import { Observable, of as observableOf } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BookmarkFilterService } from '../../core/filter.service';
 import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
@@ -64,6 +64,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
 
   constructor(private router: Router,
+              private route: ActivatedRoute,
               private bookmarkStore: PublicBookmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
               private publicBookmarksService: PublicBookmarksService,
@@ -200,18 +201,17 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.isFocusOnSearchControl = false;
   }
 
-  searchBookmarks(query: string, lang: string) {
-    if (query.trim() !== '') {
-      if (this.previousTerm !== query) {
-        this.previousTerm = query;
+  searchBookmarks(searchText: string, lang: string) {
+    if (searchText.trim() !== '') {
+      if (this.previousTerm !== searchText) {
+        this.previousTerm = searchText;
         this.counter = 10;
       }
-      this.searchText = query;
       let filteredPublicBookmarks: Observable<Bookmark[]>;
       if (this.searchDomain === 'public') {
-        filteredPublicBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(query, 'all', this.counter);
+        filteredPublicBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, 'all', this.counter);
       } else {
-        filteredPublicBookmarks = this.personalBookmarksService.getFilteredPersonalBookmarks(query, 'all', this.counter, this.userId);
+        filteredPublicBookmarks = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, 'all', this.counter, this.userId);
       }
       filteredPublicBookmarks.subscribe(bookmarks => {
         this.numberOfResultsFiltered = bookmarks.length;
