@@ -29,7 +29,7 @@
         to access this functionality.
       </div>
       <ng-template #isLoggedInLastVisited>
-        <div *ngIf="userData?.lastVisited.length === 0" class="missing-category-bookmarks-message alert alert-info">
+        <div *ngIf="userData?.history.length === 0" class="missing-category-bookmarks-message alert alert-info">
           <p>
             In <strong>History</strong> you have a list of your last visited bookmarks.
           </p>
