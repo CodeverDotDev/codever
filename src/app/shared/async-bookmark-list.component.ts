@@ -157,7 +157,7 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   onBookmarkLinkClick(bookmark: Bookmark) {
     if (this.userIsLoggedIn) {
-      this.userData.lastVisited.unshift(bookmark._id);
+      this.userData.history.unshift(bookmark._id);
       this.userDataStore.updateUserData(this.userData).subscribe(() => {
         this.userDataStore.addToHistory(bookmark);
       });
