@@ -29,7 +29,7 @@
         to access this functionality.
       </div>
       <ng-template #isLoggedInLastVisited>
-        <div *ngIf="userData?.history.length === 0" class="missing-category-bookmarks-message alert alert-info">
+        <div *ngIf="(history$ | async)?.length === 0" class="missing-category-bookmarks-message alert alert-info">
           <p>
             In <strong>History</strong> you have a list of your last visited bookmarks.
           </p>
@@ -45,7 +45,7 @@
       </ng-template>
       <div *ngIf="!userIsLoggedIn; else isLoggedInToPin" class="missing-category-bookmarks-message alert alert-info">
         <p>
-          Got a bookmark you are using frequently? Just pin it <i
+          Got some bookmarks you will use a lot today? Just pin it <i
           class="fas fa-thumbtack"></i>
           and it will appear in the <strong>Pinned</strong> list.
         </p>
@@ -54,8 +54,8 @@
         to access this functionality.
       </div>
       <ng-template #isLoggedInToPin>
-        <div *ngIf="userData?.pinned.length === 0" class="missing-category-bookmarks-message alert alert-info">
-          Got a bookmark you are using frequently? Just pin it <i
+        <div *ngIf="(pinned$ | async)?.length === 0" class="missing-category-bookmarks-message alert alert-info">
+          Got some bookmarks you will use a lot today? Just pin it <i
           class="fas fa-thumbtack"></i>
           and it will appear in the <strong>Pinned</strong> list.
         </div>
@@ -79,7 +79,7 @@
         to access this functionality.
       </div>
       <ng-template #isLoggedInToReadLater>
-        <div *ngIf="userData?.readLater.length === 0" class="missing-category-bookmarks-message alert alert-info">
+        <div *ngIf="(laterReads$ | async)?.length === 0" class="missing-category-bookmarks-message alert alert-info">
           Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
           class="fas fa-clock"></i>
           on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
@@ -103,7 +103,7 @@
         to access this functionality.
       </div>
       <ng-template #isLoggedInToStar>
-        <div *ngIf="userData?.stars.length === 0" class="missing-category-bookmarks-message alert alert-info">
+        <div *ngIf="(starredBookmarks$ | async)?.length === 0" class="missing-category-bookmarks-message alert alert-info">
           Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it
           and be listed here with other starred bookmarks.
         </div>
