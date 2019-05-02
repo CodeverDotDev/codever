@@ -13,6 +13,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
 import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
+import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 
 export interface SearchDomain {
   value: string;
@@ -25,9 +26,6 @@ export interface SearchDomain {
   styleUrls: ['./public-bookmark-search.component.scss']
 })
 export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
-
-  @Input()
-  q: string;
 
   @Input()
   context: string;
@@ -62,7 +60,6 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     {value: 'public', viewValue: 'Public bookmarks'}
   ];
 
-
   constructor(private router: Router,
               private route: ActivatedRoute,
               private bookmarkStore: PublicBookmarksStore,
@@ -70,6 +67,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
               private publicBookmarksService: PublicBookmarksService,
               private personalBookmarksService: PersonalBookmarkService,
               private keycloakService: KeycloakService,
+              private keycloakServiceWrapper: KeycloakServiceWrapper,
               private userDataStore: UserDataStore) {
   }
 
@@ -95,18 +93,43 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.verifyUserIsLoggedIn();
+    this.initSearchBoxFromQueryParameters();
+    this.watchSearchBoxValueChanges();
+  }
+
+
+  private initSearchBoxFromQueryParameters() {
+    this.searchText = this.route.snapshot.queryParamMap.get('q');
+    this.searchDomain = this.route.snapshot.queryParamMap.get('sd');
+  }
+
+  private verifyUserIsLoggedIn() {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.searchDomain = 'personal';
         this.userIsLoggedIn = true;
         this.keycloakService.loadUserProfile().then(keycloakProfile => {
           this.userId = keycloakProfile.id;
+          if (this.searchText) {
+            this.searchText = this.searchText.replace(/\+/g, ' ');
+            this.searchBookmarks(this.searchText);
+          }
         });
+        if (!this.searchDomain) {
+          this.searchDomain = 'personal';
+        }
       } else {
-        this.searchDomain = 'public';
+        if (this.searchDomain === 'personal') {
+          this.keycloakServiceWrapper.login();
+        }
+        if (!this.searchDomain) {
+          this.searchDomain = 'public';
+        }
       }
     });
+  }
 
+  private watchSearchBoxValueChanges() {
     this.searchControl.valueChanges.subscribe(val => {
       this.searchText = val;
       this.showNotFound = false;
@@ -114,8 +137,8 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
         this.showSearchResults = false;
       }
     });
-
   }
+
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
@@ -125,13 +148,13 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
 
   showMoreResults() {
     this.counter += 10;
-    this.searchBookmarks(this.searchText, this.searchDomain);
+    this.searchBookmarks(this.searchText);
   }
 
   ngAfterViewInit(): void {
-    if (this.q) {
-      this.searchControl.setValue(this.q);
-      this.searchBookmarks(this.q, this.searchDomain);
+    if (this.searchText) {
+      this.searchControl.setValue(this.searchText);
+      this.searchBookmarks(this.searchText);
     }
   }
 
@@ -150,15 +173,10 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.router.navigate(link);
   }
 
-  setQueryFromParentComponent(queryFromOutside: string) {
-    this.searchControl.setValue(queryFromOutside);
-    this.searchBookmarks(queryFromOutside, this.searchDomain);
-  }
-
   onDomainChange(newValue) {
     this.searchDomain = newValue;
     if (this.searchText && this.searchText !== '') {
-      this.searchBookmarks(this.searchText, this.searchDomain);
+      this.searchBookmarks(this.searchText);
     }
   }
 
@@ -190,7 +208,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();
-    this.searchBookmarks(selectedValue, this.searchDomain);
+    this.searchBookmarks(selectedValue);
   }
 
   focusOnSearchControl() {
@@ -201,17 +219,18 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.isFocusOnSearchControl = false;
   }
 
-  searchBookmarks(searchText: string, lang: string) {
+  searchBookmarks(searchText: string) {
     if (searchText.trim() !== '') {
+      this.syncQueryParamsWithSearchBox();
       if (this.previousTerm !== searchText) {
         this.previousTerm = searchText;
         this.counter = 10;
       }
       let filteredPublicBookmarks: Observable<Bookmark[]>;
-      if (this.searchDomain === 'public') {
-        filteredPublicBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, 'all', this.counter);
+      if (this.searchDomain === 'personal') {
+        filteredPublicBookmarks = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, this.counter, this.userId);
       } else {
-        filteredPublicBookmarks = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, 'all', this.counter, this.userId);
+        filteredPublicBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, this.counter);
       }
       filteredPublicBookmarks.subscribe(bookmarks => {
         this.numberOfResultsFiltered = bookmarks.length;
@@ -226,5 +245,14 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
       });
     }
 
+  }
+
+  private syncQueryParamsWithSearchBox() {
+    this.router.navigate(['.'],
+      {
+        relativeTo: this.route,
+        queryParams: {q: this.searchText, sd: this.searchDomain}
+      }
+    );
   }
 }

@@ -5,7 +5,7 @@
           (mouseleave)="hover=false"
           [class.focused]="(isFocusOnSearchControl || hover) && searchText"
           id="basic-addon1"
-          (click)="searchBookmarks(publicSearchBox.value, searchDomain)">
+          (click)="searchBookmarks(publicSearchBox.value)">
       <i class="fa fa-search"></i>
     </span>
   </div>
@@ -19,7 +19,7 @@
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
-    (keyup.enter)="searchBookmarks(publicSearchBox.value, searchDomain)"
+    (keyup.enter)="searchBookmarks(publicSearchBox.value)"
   >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search">{{search}}</mat-option>

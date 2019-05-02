@@ -22,7 +22,6 @@ export class PublicBookmarksComponent implements OnInit {
 
   publicBookmarks$: Observable<List<Bookmark>>;
   tags: string[] = allTags;
-  q = '';
   userData: UserData;
   counter = 20;
 
@@ -45,13 +44,6 @@ export class PublicBookmarksComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.q = this.route.snapshot.queryParamMap.get('search');
-    if (!this.q) {
-      this.q = this.route.snapshot.queryParamMap.get('q');
-      if (this.q) {
-        this.q = this.q.replace(/\+/g, ' ');
-      }
-    }
 
     this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
 
