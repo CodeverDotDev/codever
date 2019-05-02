@@ -1,16 +1,17 @@
-import {NgModule, Optional, SkipSelf} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {BookmarkFilterService} from './filter.service';
-import {Logger} from './logger.service';
-import {ErrorService} from './error/error.service';
-import {ErrorComponent} from './error/error.component';
-import {NavigationComponent} from './navigation/navigation.component';
-import {RouterModule} from '@angular/router';
-import {PersonalBookmarksStore} from './store/personal-bookmarks-store.service';
-import {PersonalBookmarkService} from './personal-bookmark.service';
-import {UserDataService} from './user-data.service';
-import {UserDataStore} from './user/userdata.store';
-import {LoaderService} from './loader/loader.service';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BookmarkFilterService } from './filter.service';
+import { Logger } from './logger.service';
+import { ErrorService } from './error/error.service';
+import { ErrorComponent } from './error/error.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { RouterModule } from '@angular/router';
+import { PersonalBookmarksStore } from './store/personal-bookmarks-store.service';
+import { PersonalBookmarkService } from './personal-bookmark.service';
+import { UserDataService } from './user-data.service';
+import { UserDataStore } from './user/userdata.store';
+import { LoaderService } from './loader/loader.service';
+import { KeycloakServiceWrapper } from './keycloak-service-wrapper.service';
 
 
 /**
@@ -40,7 +41,8 @@ import {LoaderService} from './loader/loader.service';
     PersonalBookmarkService,
     UserDataService,
     UserDataStore,
-    LoaderService
+    LoaderService,
+    KeycloakServiceWrapper
   ]
 })
 export class CoreModule {
