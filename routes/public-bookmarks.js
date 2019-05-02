@@ -18,9 +18,8 @@ router.get('/', async (req, res) => {
   try {
     const searchText = req.query.q;
     const limit = parseInt(req.query.limit);
-    const lang = req.query.lang;
     if ( searchText ) {
-      const bookmarks = await bookmarksSearchService.findBookmarks(searchText, limit, lang, constants.DOMAIN_PUBLIC, null);
+      const bookmarks = await bookmarksSearchService.findBookmarks(searchText, limit, constants.DOMAIN_PUBLIC, null);
 
       res.send(bookmarks);
     } else if ( req.query.location ) {

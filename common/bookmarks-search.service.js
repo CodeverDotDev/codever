@@ -6,7 +6,7 @@ const Bookmark = require('../models/bookmark');
 const escapeStringRegexp = require('escape-string-regexp');
 const constants = require('./constants');
 
-let findBookmarks = async function (query, limit, lang, domain, userId) {
+let findBookmarks = async function (query, limit, domain, userId) {
   //split in text and tags
   const searchedTermsAndTags = splitSearchQuery(query);
   const searchedTerms = searchedTermsAndTags[0];
@@ -19,9 +19,6 @@ let findBookmarks = async function (query, limit, lang, domain, userId) {
     bookmarks = await getBookmarksForSearchedTerms(searchedTerms, limit, domain, userId);
   } else {
     bookmarks = await getBookmarksForSearchedTags(searchedTags, limit, domain, userId);
-  }
-  if ( lang && lang !== 'all' ) {
-    bookmarks = bookmarks.filter(x => x.language === lang);
   }
 
   return bookmarks;
