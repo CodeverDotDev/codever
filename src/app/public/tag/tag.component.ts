@@ -88,8 +88,10 @@ export class TagComponent implements OnInit {
         this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userData.watchedTags.push(this.tag);
-      this.userDataStore.updateUserData(this.userData);
-      this.userDataStore.forceReloadBookmarksForWatchedTags();
+      this.userDataStore.updateUserData(this.userData).subscribe(() => {
+        this.userDataStore.forceReloadBookmarksForWatchedTags();
+      });
+
     }
   }
 
@@ -97,8 +99,9 @@ export class TagComponent implements OnInit {
     const index = this.userData.watchedTags.indexOf(this.tag);
     if (index > -1) {
       this.userData.watchedTags.splice(index, 1);
-      this.userDataStore.updateUserData(this.userData);
-      this.userDataStore.forceReloadBookmarksForWatchedTags();
+      this.userDataStore.updateUserData(this.userData).subscribe( () => {
+        this.userDataStore.forceReloadBookmarksForWatchedTags();
+      });
     }
   }
 

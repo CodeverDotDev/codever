@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { HttpResponse } from '@angular/common/http';
+import { UserDataStore } from '../user/userdata.store';
 
 @Injectable()
 export class PersonalBookmarksStore {
@@ -22,6 +23,7 @@ export class PersonalBookmarksStore {
   private personalTags: Set<string>;
 
   constructor(private personalBookmarkService: PersonalBookmarkService,
+              private userDataStore: UserDataStore,
               private logger: Logger,
               private router: Router,
               private errorService: ErrorService,
@@ -82,7 +84,8 @@ export class PersonalBookmarksStore {
           if (bookmark.shared) {
             this.publicBookmarksStore.addBookmarkToPublicStore(bookmark);
           }
-          this.router.navigate(['/personal']);
+          this.userDataStore.addToHistory(bookmark);
+          this.router.navigate(['/']);
         },
         (error: HttpResponse<any>) => {
           this.errorService.handleError(error.body.json());

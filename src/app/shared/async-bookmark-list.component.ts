@@ -157,10 +157,7 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   onBookmarkLinkClick(bookmark: Bookmark) {
     if (this.userIsLoggedIn) {
-      this.userData.history.unshift(bookmark._id);
-      this.userDataStore.updateUserData(this.userData).subscribe(() => {
-        this.userDataStore.addToHistory(bookmark);
-      });
+      this.userDataStore.addToHistory(bookmark);
     }
   }
 
@@ -185,10 +182,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   removeFromPinned(bookmark: Bookmark) {
-    this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe(() => {
-      this.userDataStore.removeFromPinnedBookmarks(bookmark);
-    });
+    this.userDataStore.removeFromPinnedBookmarks(bookmark);
   }
 
   addToReadLater(bookmark: Bookmark) {
@@ -211,10 +205,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   removeFromReadLater(bookmark: Bookmark) {
-    this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe(() => {
-      this.userDataStore.removeFromLaterReads(bookmark);
-    });
+    this.userDataStore.removeFromLaterReads(bookmark);
   }
 
   openDeleteDialog(bookmark: Bookmark) {
@@ -243,9 +234,8 @@ export class AsyncBookmarkListComponent implements OnInit {
     const obs = this.personalBookmarksStore.deleteBookmark(bookmark);
     obs.subscribe(() => {
       this.bookmarkDeleted.emit(true);
-      const obs2 = this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-      const obs3 = this.userDataStore.removeFromLaterReads(bookmark);
-      const obs4 = this.userDataStore.removeFromStarredBookmarks(bookmark);
+      this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+      this.userDataStore.removeFromCategoriesAtDeletion(bookmark);
     });
   }
 
