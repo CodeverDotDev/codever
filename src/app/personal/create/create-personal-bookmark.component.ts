@@ -96,22 +96,26 @@ export class CreatePersonalBookmarkComponent implements OnInit {
           if (httpResponse.status === 200) {
             this.personalBookmarkPresent = true;
           } else {
-            this.personalBookmarkPresent = false;
-            this.publicBookmarksService.getScrapingData(location).subscribe(response => {
-              if (response) {
-                this.bookmarkForm.get('name').patchValue(response.title, {emitEvent: false});
-                this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent: false});
-              }
-            });
+            this.getScrapeData(location);
           }
         },
           (errorResponse: HttpErrorResponse) => {
             if (errorResponse.status === 404) {
-              this.personalBookmarkPresent = false;
+              this.getScrapeData(location);
             }
           });
 
       });
+  }
+
+  private getScrapeData(location) {
+    this.personalBookmarkPresent = false;
+    this.publicBookmarksService.getScrapingData(location).subscribe(response => {
+      if (response) {
+        this.bookmarkForm.get('name').patchValue(response.title, {emitEvent: false});
+        this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent: false});
+      }
+    });
   }
 
   add(event: MatChipInputEvent): void {
