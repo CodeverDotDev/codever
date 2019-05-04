@@ -201,13 +201,22 @@ export class UserDataStore {
   }
 
   addToHistory(bookmark: Bookmark) {
+    this.removeFromUserDataHistoryIfPresent(bookmark);
     this.userData.history.unshift(bookmark._id);
     this.updateUserData(this.userData).subscribe(() => {
-      const lastVisitedBookmarks: Bookmark[] = this._history.getValue();
+      let lastVisitedBookmarks: Bookmark[] = this._history.getValue();
+      lastVisitedBookmarks = lastVisitedBookmarks.filter(item => item._id !== bookmark._id);
       lastVisitedBookmarks.unshift(bookmark);
 
       this._history.next(lastVisitedBookmarks); // insert at the top (index 0)
     });
+  }
+
+  private removeFromUserDataHistoryIfPresent(bookmark: Bookmark) {
+    const index = this.userData.history.indexOf(bookmark._id);
+    if (index !== -1) {
+      this.userData.history.splice(index, 1);
+    }
   }
 
   removeFromCategoriesAtDeletion(bookmark: Bookmark) {
@@ -229,7 +238,6 @@ export class UserDataStore {
     });
 
   }
-
 
 
   getBookmarksForWatchedTags(): Observable<Bookmark[]> {
