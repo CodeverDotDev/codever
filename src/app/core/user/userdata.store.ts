@@ -168,10 +168,13 @@ export class UserDataStore {
   }
 
   addToPinnedBookmarks(bookmark: Bookmark) {
-    const pinnedBookmarks: Bookmark[] = this._pinned.getValue();
-    pinnedBookmarks.unshift(bookmark);
+    this.userData.pinned.unshift(bookmark._id);
+    this.updateUserData(this.userData).subscribe(() => {
+      const pinnedBookmarks: Bookmark[] = this._pinned.getValue();
+      pinnedBookmarks.unshift(bookmark);
 
-    this._pinned.next(pinnedBookmarks); // insert at the top (index 0)
+      this._pinned.next(pinnedBookmarks); // insert at the top (index 0)
+    });
   }
 
   removeFromPinnedBookmarks(bookmark: Bookmark) {

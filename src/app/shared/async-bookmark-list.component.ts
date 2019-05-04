@@ -173,10 +173,7 @@ export class AsyncBookmarkListComponent implements OnInit {
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userData.pinned.unshift(bookmark._id);
-      this.userDataStore.updateUserData(this.userData).subscribe(() => {
-        this.userDataStore.addToPinnedBookmarks(bookmark);
-      });
+      this.userDataStore.addToPinnedBookmarks(bookmark);
     }
 
   }
