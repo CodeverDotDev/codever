@@ -1,30 +1,30 @@
-
-import {Injectable} from '@angular/core';
-import {Observable, BehaviorSubject} from 'rxjs';
-import {List} from 'immutable';
-import {Bookmark} from '../../../core/model/bookmark';
-import {PublicBookmarksService} from '../public-bookmarks.service';
+import { Injectable } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { List } from 'immutable';
+import { Bookmark } from '../../../core/model/bookmark';
+import { PublicBookmarksService } from '../public-bookmarks.service';
 
 @Injectable()
 export class PublicBookmarksStore {
 
-    private _publicBookmarks: BehaviorSubject<List<Bookmark>>;
+  private _publicBookmarks: BehaviorSubject<List<Bookmark>>;
 
-    constructor(private publicBookmarksService: PublicBookmarksService) {}
+  constructor(private publicBookmarksService: PublicBookmarksService) {
+  }
 
   /**
    * The initial data is loaded either when the home page is requested (directly or via search parameters)
    */
   private loadInitialData() {
-        this.publicBookmarksService.getAllPublicBookmarks()
-            .subscribe(
-                res => {
-                  const bookmarks: Bookmark[] = <Bookmark[]>res;
-                  this._publicBookmarks.next(List(bookmarks));
-                },
-                err => console.log('Error retrieving bookmarks')
-            );
-    }
+    this.publicBookmarksService.getAllPublicBookmarks()
+      .subscribe(
+        res => {
+          const bookmarks: Bookmark[] = <Bookmark[]>res;
+          this._publicBookmarks.next(List(bookmarks));
+        },
+        err => console.log('Error retrieving bookmarks')
+      );
+  }
 
   getPublicBookmarks(): Observable<List<Bookmark>> {
     if (!this._publicBookmarks) {
@@ -40,7 +40,7 @@ export class PublicBookmarksStore {
    */
   addBookmarkToPublicStore(bookmark: Bookmark): void {
     if (this._publicBookmarks) {
-      this._publicBookmarks.next(this._publicBookmarks.getValue().push(bookmark));
+      this._publicBookmarks.next(this._publicBookmarks.getValue().unshift(bookmark));
     }
   }
 
@@ -49,11 +49,11 @@ export class PublicBookmarksStore {
    * @param deleted
    */
   removeBookmarkFromPublicStore(deleted: Bookmark): void {
-      if (this._publicBookmarks) {
-        const bookmarks: List<Bookmark> = this._publicBookmarks.getValue();
-        const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-        this._publicBookmarks.next(bookmarks.delete(index));
-      }
+    if (this._publicBookmarks) {
+      const bookmarks: List<Bookmark> = this._publicBookmarks.getValue();
+      const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+      this._publicBookmarks.next(bookmarks.delete(index));
+    }
   }
 
   /**
