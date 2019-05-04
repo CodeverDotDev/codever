@@ -186,8 +186,12 @@ usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response)
         );
     } else {
       const bookmarks = await Bookmark.find( {"_id" : { $in: userData.pinned}});
+      //we need to order the bookmarks to correspond the one in the userData.history array
+      const orderedBookmarksAsInPinned = userData.pinned.map(bookmarkId => {
+        return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+      });
 
-      response.send(bookmarks);
+      response.send(orderedBookmarksAsInPinned);
     }
 
   } catch (err) {
@@ -221,7 +225,12 @@ usersRouter.get('/:userId/history', keycloak.protect(), async (request, response
     } else {
       const bookmarks = await Bookmark.find( {"_id" : { $in: userData.history}});
 
-      response.send(bookmarks);
+      //we need to order the bookmarks to correspond the one in the userData.history array
+      const orderedBookmarksAsInHistory = userData.history.map(bookmarkId => {
+        return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+      });
+
+      response.send(orderedBookmarksAsInHistory);
     }
 
   } catch (err) {
@@ -315,8 +324,13 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
           ['Searches are not valid - search text is required']));
     }
 
+    //hold only 30 bookmarks in history or pinned
     if(request.body.history.length > 30) {
-      request.body.history = request.body.history.slice(0, 30);
+      request.body.history = request.body.history.slice(0, 3);
+    }
+
+    if(request.body.pinned.length > 30) {
+      request.body.pinned = request.body.pinned.slice(0, 3);
     }
 
     delete request.body._id;//once we proved it's present we delete it to avoid the following MOngoError by findOneAndUpdate
