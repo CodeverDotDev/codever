@@ -16,3 +16,4 @@ export interface Search {
   lastAccessedAt?: Date;
   searchDomain?: string; // personal or public at the moment
 }
+
