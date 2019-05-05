@@ -68,36 +68,6 @@ export class PersonalBookmarksStore {
     return this.personalBookmarkService.getTagsOfUser(this.userId);
   }
 
-  addBookmark(userId: string, bookmark: Bookmark): void {
-
-    const obs = this.personalBookmarkService.createBookmark(userId, bookmark)
-      .subscribe(
-        res => {
-          const headers = res.headers;
-          // get the bookmark id, which lies in the "location" response header
-          const lastSlashIndex = headers.get('location').lastIndexOf('/');
-          const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
-          bookmark._id = newBookmarkId;
-          // this._bookmarks.next(this._bookmarks.getValue().push(newBookmark));
-          this._personalBookmarks.next(this._personalBookmarks.getValue().unshift(bookmark)); // insert at the top (index 0)
-
-          if (bookmark.shared) {
-            this.publicBookmarksStore.addBookmarkToPublicStore(bookmark);
-          }
-          this.userDataStore.addToHistory(bookmark);
-          this.router.navigate(
-            ['/'],
-            {
-              queryParams: {tab: 'history'}
-            });
-        },
-        (error: HttpResponse<any>) => {
-          this.errorService.handleError(error.body.json());
-          return observableThrowError(error.body.json());
-        }
-      );
-  }
-
 
   deleteBookmark(deleted: Bookmark): Observable<any> {
     const obs: Observable<any> = this.personalBookmarkService.deleteBookmark(deleted);
