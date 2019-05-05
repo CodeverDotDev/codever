@@ -137,19 +137,16 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
     this.userDataStore.updateUserData(this.userData).subscribe(() => {
-      const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
       if (rateBookmarkRequest.action === RatingActionType.STAR) {
         this.userDataStore.addToStarredBookmarks(rateBookmarkRequest.bookmark);
-        this.personalBookmarksStore.addToPersonalBookmarksStore(rateBookmarkRequest.bookmark);
       } else {
         this.userDataStore.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
-        this.personalBookmarksStore.removeBookmarkFromPersonalBookmarksStore(rateBookmarkRequest.bookmark);
       }
+      const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
       if (isBookmarkCreatedByRatingUser) {
-        const obs = this.personalBookmarksStore.updateBookmark(rateBookmarkRequest.bookmark);
+        this.personalBookmarksService.updateBookmark(rateBookmarkRequest.bookmark);
       } else {
-        const obs = this.publicBookmarksService.rateBookmark(rateBookmarkRequest);
-        obs.subscribe(
+        this.publicBookmarksService.rateBookmark(rateBookmarkRequest).subscribe(
           res => {
             this.publicBookmarksStore.updateBookmarkInPublicStore(rateBookmarkRequest.bookmark);
           }

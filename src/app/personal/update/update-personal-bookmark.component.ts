@@ -7,6 +7,7 @@ import { MatChipInputEvent } from '@angular/material';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { languages } from '../../shared/language-options';
 import { allTags } from '../../core/model/all-tags.const.en';
+import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -32,6 +33,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
   constructor(
     private personalBookmarksStore: PersonalBookmarksStore,
+    private personalBookmarksService: PersonalBookmarkService,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private router: Router
@@ -56,7 +58,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     this.bookmark.updatedAt = now;
     this.bookmark.lastAccessedAt = now;
 
-    const obs = this.personalBookmarksStore.updateBookmark(this.bookmark).subscribe( () => {
+    const obs = this.personalBookmarksService.updateBookmark(this.bookmark).subscribe( () => {
         this.navigateToHomePage();
     });
   }

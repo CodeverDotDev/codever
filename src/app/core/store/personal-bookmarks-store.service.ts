@@ -85,25 +85,6 @@ export class PersonalBookmarksStore {
     }
   }
 
-  updateBookmark(updated: Bookmark): Observable<any> {
-    const obs: Observable<any> = this.personalBookmarkService.updateBookmark(updated);
-
-    obs.subscribe(
-      res => {
-        const bookmarks = this._personalBookmarks.getValue();
-        const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-        this._personalBookmarks.next(bookmarks.delete(index).unshift(updated)); // move the updated bookmark to the top of the list, to immediately see the results
-
-        if (updated.shared) {
-          this.publicBookmarksStore.updateBookmarkInPublicStore(updated);
-        }
-        this.userDataStore.addToHistory(updated);
-      }
-    );
-
-    return obs;
-  }
-
   getBookmarkById(id: string): Bookmark {
     const bookmarks = this._personalBookmarks.getValue();
     const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
