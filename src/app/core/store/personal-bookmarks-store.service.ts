@@ -68,26 +68,6 @@ export class PersonalBookmarksStore {
     return this.personalBookmarkService.getTagsOfUser(this.userId);
   }
 
-
-  deleteBookmark(deleted: Bookmark): Observable<any> {
-    const obs: Observable<any> = this.personalBookmarkService.deleteBookmark(deleted);
-
-    obs.subscribe(
-      res => {
-        const bookmarks: List<Bookmark> = this._personalBookmarks.getValue();
-        const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-        const listWithoutElement = bookmarks.delete(index);
-        this._personalBookmarks.next(listWithoutElement);
-
-        if (deleted.shared) {
-          this.publicBookmarksStore.removeBookmarkFromPublicStore(deleted);
-        }
-      }
-    );
-
-    return obs;
-  }
-
   addToPersonalBookmarksStore(starred: Bookmark): void {
     const bookmarks: List<Bookmark> = this._personalBookmarks.getValue();
     const index = bookmarks.findIndex((bookmark) => bookmark._id === starred._id);
