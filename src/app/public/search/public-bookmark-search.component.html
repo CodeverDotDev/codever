@@ -15,19 +15,19 @@
     type="text"
     class="form-control"
     [formControl]="searchControl"
-    placeholder="{{context}} bookmarks... (tags in square brackets: e.g. [angular])"
+    placeholder="{{searchDomain | titlecase}} bookmarks... (tags in square brackets: e.g. [angular])"
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
     (keyup.enter)="searchBookmarks(publicSearchBox.value)"
   >
-  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteSelectionChanged($event)">
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search">{{search}}</mat-option>
   </mat-autocomplete>
   <div *ngIf="userIsLoggedIn" class="input-group-append">
     <button class="btn btn-outline-secondary"
             type="button"
-            (click)="onSaveClick()"
+            (click)="onSaveSearchClick()"
             [disabled]="autocompleteSearches.includes(searchText) || !searchText"
     >Save search</button>
   </div>
@@ -35,7 +35,7 @@
 
 <mat-form-field class="search-domain-select">
   <mat-label>Search domain</mat-label>
-  <mat-select [ngModel]="searchDomain" (ngModelChange)="onDomainChange($event)">
+  <mat-select [ngModel]="searchDomain" (ngModelChange)="onSearchDomainChange($event)">
     <mat-option *ngFor="let searchDomain of searchDomains" [value]="searchDomain.value" >
       {{searchDomain.viewValue}}
     </mat-option>
@@ -55,7 +55,7 @@
   <app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="searchText"
                            [shownSize]="counter" [userData]="_userData" (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
   <div *ngIf="numberOfResultsFiltered > 0">
-    <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()"
+    <button type="button" class="btn btn-primary btn-lg btn-block" (click)="onShowMoreResults()"
             [disabled]="counter > numberOfResultsFiltered">Show more
     </button>
     <hr/>

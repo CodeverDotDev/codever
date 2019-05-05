@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {Bookmark} from '../../core/model/bookmark';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {PersonalBookmarksStore} from '../../core/store/personal-bookmarks-store.service';
-import {MarkdownService} from '../markdown.service';
-import {MatChipInputEvent} from '@angular/material';
-import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
-import {languages} from '../../shared/language-options';
-import {allTags} from '../../core/model/all-tags.const.en';
+import { Component, OnInit } from '@angular/core';
+import { Bookmark } from '../../core/model/bookmark';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { PersonalBookmarksStore } from '../../core/store/personal-bookmarks-store.service';
+import { MarkdownService } from '../markdown.service';
+import { MatChipInputEvent } from '@angular/material';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
+import { languages } from '../../shared/language-options';
+import { allTags } from '../../core/model/all-tags.const.en';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -56,16 +56,18 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     this.bookmark.updatedAt = now;
     this.bookmark.lastAccessedAt = now;
 
-    const obs = this.personalBookmarksStore.updateBookmark(this.bookmark);
-
-    obs.subscribe(
-      res => {
-        this.navigateToPersonalBookmarks();
-      });
+    const obs = this.personalBookmarksStore.updateBookmark(this.bookmark).subscribe( () => {
+        this.navigateToHomePage();
+    });
   }
 
-  navigateToPersonalBookmarks(): void {
-    this.router.navigate(['/personal'], { fragment: 'navbar' });
+  navigateToHomePage(): void {
+    this.router.navigate(
+      ['/'],
+      {
+        queryParams: {tab: 'history'}
+      }
+    );
   }
 
   addTag(event: MatChipInputEvent): void {
@@ -74,7 +76,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
     // Add our fruit
     if ((value || '').trim()) {
-      this.bookmark.tags.push( this.currentTag);
+      this.bookmark.tags.push(this.currentTag);
     }
 
     // Reset the input value

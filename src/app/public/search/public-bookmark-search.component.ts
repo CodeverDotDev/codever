@@ -1,7 +1,7 @@
 import { Observable, of as observableOf } from 'rxjs';
 
 import { map, startWith } from 'rxjs/operators';
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookmarkFilterService } from '../../core/filter.service';
@@ -25,7 +25,7 @@ export interface SearchDomain {
   templateUrl: './public-bookmark-search.component.html',
   styleUrls: ['./public-bookmark-search.component.scss']
 })
-export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
+export class PublicBookmarkSearchComponent implements OnInit {
 
   @Input()
   context: string;
@@ -92,41 +92,52 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngOnInit(): void {
-    this.verifyUserIsLoggedIn();
-    this.initSearchBoxFromQueryParameters();
-    this.watchSearchBoxValueChanges();
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.autocompleteSearches.filter(option => option.toLowerCase().includes(filterValue));
   }
 
-
-  private initSearchBoxFromQueryParameters() {
+  ngOnInit(): void {
     this.searchText = this.route.snapshot.queryParamMap.get('q');
     this.searchDomain = this.route.snapshot.queryParamMap.get('sd');
-  }
 
-  private verifyUserIsLoggedIn() {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.keycloakService.loadUserProfile().then(keycloakProfile => {
           this.userId = keycloakProfile.id;
-          if (this.searchText) {
-            this.searchText = this.searchText.replace(/\+/g, ' ');
+
+          if (!this.searchDomain) {
+            if (!this.searchText) {
+              this.searchDomain = 'personal'; // without q param we are preparing to look in personal bookmarks
+            } else {
+              this.searchDomain = 'public';
+            }
+          } else if (this.searchText) {
+            this.searchControl.setValue(this.searchText);
             this.searchBookmarks(this.searchText);
           }
         });
-        if (!this.searchDomain) {
-          this.searchDomain = 'personal';
-        }
       } else {
-        if (this.searchDomain === 'personal') {
-          this.keycloakServiceWrapper.login();
+        switch (this.searchDomain) {
+          case 'personal': {
+            this.keycloakServiceWrapper.login();
+            break;
+          }
+          default: {
+            this.searchDomain = 'public';
+            break;
+          }
         }
-        if (!this.searchDomain) {
-          this.searchDomain = 'public';
+        if (this.searchText) {
+          this.searchControl.setValue(this.searchText);
+          this.searchBookmarks(this.searchText);
         }
       }
     });
+
+    this.watchSearchBoxValueChanges();
   }
 
   private watchSearchBoxValueChanges() {
@@ -139,23 +150,9 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     });
   }
 
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.autocompleteSearches.filter(option => option.toLowerCase().includes(filterValue));
-  }
-
-  showMoreResults() {
+  onShowMoreResults() {
     this.counter += 10;
     this.searchBookmarks(this.searchText);
-  }
-
-  ngAfterViewInit(): void {
-    if (this.searchText) {
-      this.searchControl.setValue(this.searchText);
-      this.searchBookmarks(this.searchText);
-    }
   }
 
   onBookmarkDeleted(deleted: boolean) {
@@ -173,14 +170,14 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.router.navigate(link);
   }
 
-  onDomainChange(newValue) {
+  onSearchDomainChange(newValue) {
     this.searchDomain = newValue;
     if (this.searchText && this.searchText !== '') {
       this.searchBookmarks(this.searchText);
     }
   }
 
-  onSaveClick() {
+  onSaveSearchClick() {
     const now = new Date();
     const newSearch: Search = {
       text: this.searchText,
@@ -200,7 +197,7 @@ export class PublicBookmarkSearchComponent implements OnInit, AfterViewInit {
     this.userDataStore.updateUserData(this._userData).subscribe();
   }
 
-  onSelectionChanged(event: MatAutocompleteSelectedEvent) {
+  onAutocompleteSelectionChanged(event: MatAutocompleteSelectedEvent) {
     const selectedValue = event.option.value;
     const index = this._userData.searches.findIndex((search: Search) => search.text === selectedValue);
     const updatedSearch: Search = this._userData.searches.splice(index, 1)[0];

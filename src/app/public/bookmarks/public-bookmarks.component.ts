@@ -35,6 +35,9 @@ export class PublicBookmarksComponent implements OnInit {
   bookmarksForWatchedTags$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
+  userIsLoggedInPromise: Promise<boolean>;
+
+  selectedIndex: number;
 
   constructor(private publicBookmarksStore: PublicBookmarksStore,
               private route: ActivatedRoute,
@@ -44,22 +47,93 @@ export class PublicBookmarksComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
-
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+    const selectedTab = this.route.snapshot.queryParamMap.get('tab');
+    this.userIsLoggedInPromise = this.keycloakService.isLoggedIn();
+    this.userIsLoggedInPromise.then(isLoggedIn => {
       if (isLoggedIn) {
         this.keycloakService.loadUserProfile().then(keycloakProfile => {
+          this.userIsLoggedIn = true;
           this.userDataStore.getUserData().subscribe(data => {
-              this.userIsLoggedIn = true;
               this.userData = data;
+              this.selectTabWhenLoggedIn(selectedTab);
             },
             error => {
             }
           );
         });
+      } else {
+        this.selectedTabWhenNotLoggedIn(selectedTab);
       }
     });
+
+  }
+
+  private selectTabWhenLoggedIn(selectedTab) {
+    switch (selectedTab) {
+      case 'history': {
+
+        this.selectedIndex = 1;
+        this.history$ = this.userDataStore.getHistory();
+        break;
+      }
+      case 'pinned': {
+        this.selectedIndex = 2;
+        this.pinned$ = this.userDataStore.getPinnedBookmarks();
+        break;
+      }
+      case 'read-later': {
+        this.selectedIndex = 3;
+        this.laterReads$ = this.userDataStore.getLaterReads();
+        break;
+      }
+      case 'starred': {
+        this.selectedIndex = 4;
+        this.starredBookmarks$ = this.userDataStore.getStarredBookmarks();
+        break;
+      }
+      case 'watched-tags': {
+        this.selectedIndex = 5;
+        this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags();
+        break;
+      }
+      default: {
+        this.selectedIndex = 0;
+        this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
+      }
+    }
+  }
+
+  private selectedTabWhenNotLoggedIn(selectedTab) {
+    switch (selectedTab) {
+      case 'history': {
+        this.selectedIndex = 1;
+        break;
+      }
+      case 'pinned': {
+        this.selectedIndex = 2;
+        this.pinned$ = this.userDataStore.getPinnedBookmarks();
+        break;
+      }
+      case 'read-later': {
+        this.selectedIndex = 3;
+        this.laterReads$ = this.userDataStore.getLaterReads();
+        break;
+      }
+      case 'starred': {
+        this.selectedIndex = 4;
+        this.starredBookmarks$ = this.userDataStore.getStarredBookmarks();
+        break;
+      }
+      case 'watched-tags': {
+        this.selectedIndex = 5;
+        this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags();
+        break;
+      }
+      default: {
+        this.selectedIndex = 0;
+        this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
+      }
+    }
   }
 
   showMoreResults() {
@@ -68,7 +142,9 @@ export class PublicBookmarksComponent implements OnInit {
 
   tabSelectionChanged(event: MatTabChangeEvent) {
     if (this.userIsLoggedIn) {
-      if (event.index === 1) {
+      if (event.index === 0) {
+        this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
+      } else if (event.index === 1) {
         this.history$ = this.userDataStore.getHistory();
       } else if (event.index === 2) {
         this.pinned$ = this.userDataStore.getPinnedBookmarks();
@@ -80,12 +156,11 @@ export class PublicBookmarksComponent implements OnInit {
         this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags();
       }
     }
-
   }
 
-  login() {
+  login(selectedTab: string) {
     const options: Keycloak.KeycloakLoginOptions = {};
-    options.redirectUri = environment.APP_HOME_URL;
-    this.keycloakService.login(options).then(() => this.userIsLoggedIn = true);
+    options.redirectUri = `${environment.APP_HOME_URL}?tab=${selectedTab}`;
+    this.keycloakService.login(options);
   }
 }

@@ -85,7 +85,11 @@ export class PersonalBookmarksStore {
             this.publicBookmarksStore.addBookmarkToPublicStore(bookmark);
           }
           this.userDataStore.addToHistory(bookmark);
-          this.router.navigate(['/']);
+          this.router.navigate(
+            ['/'],
+            {
+              queryParams: {tab: 'history'}
+            });
         },
         (error: HttpResponse<any>) => {
           this.errorService.handleError(error.body.json());
@@ -143,6 +147,7 @@ export class PersonalBookmarksStore {
         if (updated.shared) {
           this.publicBookmarksStore.updateBookmarkInPublicStore(updated);
         }
+        this.userDataStore.addToHistory(updated);
       }
     );
 

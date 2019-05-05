@@ -1,4 +1,3 @@
-import { map } from 'rxjs/operators';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Bookmark } from '../core/model/bookmark';
 import { Observable } from 'rxjs';
@@ -7,7 +6,6 @@ import { PersonalBookmarksStore } from '../core/store/personal-bookmarks-store.s
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
-import { UserDataService } from '../core/user-data.service';
 import { MatTabChangeEvent } from '@angular/material';
 import { WatchedTagsComponent } from '../shared/watched-tags/watched-tags.component';
 
