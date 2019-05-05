@@ -1,7 +1,5 @@
 <div id="public-search-box">
 
-  <button type="button" class="btn btn-primary" routerLink="/personal/new" style="float:right; margin-top: 0.5rem"> <i class="fa fa-plus"></i> Add new bookmark</button>
-
   <app-public-bookmark-search [context]="'Public'" [userData]="userData"></app-public-bookmark-search>
 
   <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)" [selectedIndex]="selectedIndex">
