@@ -12,6 +12,7 @@ import { UserDataStore } from '../core/user/userdata.store';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
+import { PersonalBookmarkService } from '../core/personal-bookmark.service';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -40,6 +41,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   private userDataStore: UserDataStore;
   private publicBookmarksStore: PublicBookmarksStore;
   private publicBookmarksService: PublicBookmarksService;
+  private personalBookmarksService: PersonalBookmarkService;
   private keycloakService: KeycloakService;
 
   userIsLoggedIn = false;
@@ -64,6 +66,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
     this.publicBookmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
+    this.personalBookmarksService = <PersonalBookmarkService>this.injector.get(PersonalBookmarkService);
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
@@ -228,8 +231,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   deleteBookmark(bookmark: Bookmark): void {
-    const obs = this.personalBookmarksStore.deleteBookmark(bookmark);
-    obs.subscribe(() => {
+    this.personalBookmarksService.deleteBookmark(bookmark).subscribe( () => {
       this.bookmarkDeleted.emit(true);
       this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
       this.userDataStore.removeFromCategoriesAtDeletion(bookmark);
