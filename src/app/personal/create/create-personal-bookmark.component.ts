@@ -7,14 +7,19 @@ import { MarkdownService } from '../markdown.service';
 import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Observable, throwError as observableThrowError } from 'rxjs';
 import { languages } from '../../shared/language-options';
 import { tagsValidator } from '../../shared/tags-validation.directive';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
 import { descriptionSizeValidator } from '../../shared/description-size-validation.directive';
 import { RateBookmarkRequest, RatingActionType } from '../../core/model/rate-bookmark.request';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
+import { UserDataStore } from '../../core/user/userdata.store';
+import { Logger } from '../../core/logger.service';
+import { Router } from '@angular/router';
+import { ErrorService } from '../../core/error/error.service';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -54,7 +59,12 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private keycloakService: KeycloakService,
     private publicBookmarksService: PublicBookmarksService,
     private markdownService: MarkdownService,
-    private publicBookmarksStore: PublicBookmarksStore
+    private publicBookmarksStore: PublicBookmarksStore,
+    private personalBookmarksService: PersonalBookmarkService,
+    private userDataStore: UserDataStore,
+    private logger: Logger,
+    private router: Router,
+    private errorService: ErrorService
   ) {
 
     keycloakService.loadUserProfile().then(keycloakProfile => {
@@ -157,24 +167,47 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     this.tagsControl.setValue(null);
   }
 
-  saveBookmark(model: Bookmark) {
+  saveBookmark(bookmark: Bookmark) {
     const newBookmark: Bookmark = {
-      name: model.name,
-      location: model.location,
-      language: model.language,
-      tags: model.tags,
-      publishedOn: model.publishedOn,
-      githubURL: model.githubURL,
-      description: model.description,
-      descriptionHtml: this.markdownService.toHtml(model.description),
+      name: bookmark.name,
+      location: bookmark.location,
+      language: bookmark.language,
+      tags: bookmark.tags,
+      publishedOn: bookmark.publishedOn,
+      githubURL: bookmark.githubURL,
+      description: bookmark.description,
+      descriptionHtml: this.markdownService.toHtml(bookmark.description),
       userId: this.userId,
-      shared: model.shared,
+      shared: bookmark.shared,
       starredBy: [],
       lastAccessedAt: new Date(),
       stars: 0
     };
 
-    this.personalBookmarksStore.addBookmark(this.userId, newBookmark);
+    this.personalBookmarksService.createBookmark(this.userId, newBookmark)
+      .subscribe(
+        res => {
+          const headers = res.headers;
+          // get the bookmark id, which lies in the "location" response header
+          const lastSlashIndex = headers.get('location').lastIndexOf('/');
+          const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
+          newBookmark._id = newBookmarkId;
+
+          if (bookmark.shared) {
+            this.publicBookmarksStore.addBookmarkToPublicStore(newBookmark);
+          }
+          this.userDataStore.addToHistory(newBookmark);
+          this.router.navigate(
+            ['/'],
+            {
+              queryParams: {tab: 'history'}
+            });
+        },
+        (error: HttpResponse<any>) => {
+          this.errorService.handleError(error.body.json());
+          return observableThrowError(error.body.json());
+        }
+      );
   }
 
   onClickMakePublic(checkboxValue) {
