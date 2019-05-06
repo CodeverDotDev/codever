@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, throwError as observableThrowError } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 import { List } from 'immutable';
@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 
 import { KeycloakService } from 'keycloak-angular';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
-import { HttpResponse } from '@angular/common/http';
 import { UserDataStore } from '../user/userdata.store';
 
 @Injectable()
@@ -66,23 +65,6 @@ export class PersonalBookmarksStore {
 
   getPersonalAutomcompleteTags(): Observable<string[]> {
     return this.personalBookmarkService.getTagsOfUser(this.userId);
-  }
-
-  addToPersonalBookmarksStore(starred: Bookmark): void {
-    const bookmarks: List<Bookmark> = this._personalBookmarks.getValue();
-    const index = bookmarks.findIndex((bookmark) => bookmark._id === starred._id);
-    if (index === -1) {
-      this._personalBookmarks.next(this._personalBookmarks.getValue().unshift(starred)); // insert at the top (index 0)
-    }
-  }
-
-  removeBookmarkFromPersonalBookmarksStore(unstarred: Bookmark): void {
-    const bookmarks: List<Bookmark> = this._personalBookmarks.getValue();
-    const index = bookmarks.findIndex((bookmark) => bookmark._id === unstarred._id && bookmark.userId !== this.userId);
-    if (index !== -1) {
-      const listWithoutElement = bookmarks.delete(index);
-      this._personalBookmarks.next(listWithoutElement);
-    }
   }
 
 }
