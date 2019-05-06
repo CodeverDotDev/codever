@@ -85,12 +85,5 @@ export class PersonalBookmarksStore {
     }
   }
 
-  getBookmarkById(id: string): Bookmark {
-    const bookmarks = this._personalBookmarks.getValue();
-    const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === id);
-
-    return bookmarks.get(index);
-  }
-
 }
 

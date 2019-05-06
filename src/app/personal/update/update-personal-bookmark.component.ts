@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Params, Router } from '@angular/router';
 import { PersonalBookmarksStore } from '../../core/store/personal-bookmarks-store.service';
 import { MarkdownService } from '../markdown.service';
 import { MatChipInputEvent } from '@angular/material';
@@ -8,6 +8,8 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { languages } from '../../shared/language-options';
 import { allTags } from '../../core/model/all-tags.const.en';
 import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -42,10 +44,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.forEach((params: Params) => {
-      const id = params['id'];
-      this.bookmark = this.personalBookmarksStore.getBookmarkById(id);
-    });
+    this.bookmark = window.history.state.bookmark;
     this.personalBookmarksStore.getPersonalAutomcompleteTags().subscribe(tags => {
       this.autocompleteTags = tags.sort();
       this.tdTags = this.autocompleteTags;
@@ -58,8 +57,8 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     this.bookmark.updatedAt = now;
     this.bookmark.lastAccessedAt = now;
 
-    const obs = this.personalBookmarksService.updateBookmark(this.bookmark).subscribe( () => {
-        this.navigateToHomePage();
+    const obs = this.personalBookmarksService.updateBookmark(this.bookmark).subscribe(() => {
+      this.navigateToHomePage();
     });
   }
 
