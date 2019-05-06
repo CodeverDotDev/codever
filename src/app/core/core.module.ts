@@ -7,7 +7,7 @@ import { ErrorComponent } from './error/error.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { RouterModule } from '@angular/router';
 import { PersonalBookmarksStore } from './store/personal-bookmarks-store.service';
-import { PersonalBookmarkService } from './personal-bookmark.service';
+import { PersonalBookmarksService } from './personal-bookmarks.service';
 import { UserDataService } from './user-data.service';
 import { UserDataStore } from './user/userdata.store';
 import { LoaderService } from './loader/loader.service';
@@ -38,7 +38,7 @@ import { KeycloakServiceWrapper } from './keycloak-service-wrapper.service';
     Logger,
     ErrorService,
     PersonalBookmarksStore,
-    PersonalBookmarkService,
+    PersonalBookmarksService,
     UserDataService,
     UserDataStore,
     LoaderService,

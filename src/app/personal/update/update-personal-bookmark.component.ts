@@ -6,7 +6,7 @@ import { MatChipInputEvent } from '@angular/material';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { languages } from '../../shared/language-options';
 import { allTags } from '../../core/model/all-tags.const.en';
-import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
+import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakService } from 'keycloak-angular';
 
 @Component({
@@ -32,7 +32,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   currentTag = '';
 
   constructor(
-    private personalBookmarksService: PersonalBookmarkService,
+    private personalBookmarksService: PersonalBookmarksService,
     private keycloakService: KeycloakService,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,

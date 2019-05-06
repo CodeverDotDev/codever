@@ -12,7 +12,7 @@ import { UserDataStore } from '../core/user/userdata.store';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
-import { PersonalBookmarkService } from '../core/personal-bookmark.service';
+import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
 import { UserDataService } from '../core/user-data.service';
 
 @Component({
@@ -42,7 +42,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   private userDataStore: UserDataStore;
   private publicBookmarksStore: PublicBookmarksStore;
   private publicBookmarksService: PublicBookmarksService;
-  private personalBookmarksService: PersonalBookmarkService;
+  private personalBookmarksService: PersonalBookmarksService;
   private keycloakService: KeycloakService;
   private userDataService: UserDataService;
 
@@ -68,7 +68,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
     this.publicBookmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
-    this.personalBookmarksService = <PersonalBookmarkService>this.injector.get(PersonalBookmarkService);
+    this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
     this.userDataService = <UserDataService>this.injector.get(UserDataService);
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
