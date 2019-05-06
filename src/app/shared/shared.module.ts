@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AsyncBookmarkListComponent } from './async-bookmark-list.component';
 import { TagsValidatorDirective } from './tags-validation.directive';
-import { BookmarkSearchComponent } from './search/bookmark-search.component';
 import { BookmarkTextComponent } from './bookmark-text.component';
 import { DescriptionSizeValidatorDirective } from './description-size-validation.directive';
 import { MatAutocompleteModule, MatDialogModule, MatProgressSpinnerModule } from '@angular/material';
@@ -35,7 +34,6 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
     BookmarkTextComponent,
     TagsValidatorDirective,
     DescriptionSizeValidatorDirective,
-    BookmarkSearchComponent,
     DeleteBookmarkDialogComponent,
     LoginRequiredDialogComponent,
   ],
@@ -48,7 +46,6 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
     AsyncBookmarkListComponent,
     BookmarkTextComponent,
     DescriptionSizeValidatorDirective,
-    BookmarkSearchComponent,
     MatProgressSpinnerModule
   ],
   entryComponents: [
