@@ -71,7 +71,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
     keycloakService.loadUserProfile().then(keycloakProfile => {
       this.userId = keycloakProfile.id;
-      personalBookmarksStore.getPersonalAutomcompleteTags().subscribe(tags => {
+      personalBookmarksService.getTagsOfUser(this.userId).subscribe(tags => {
         this.autocompleteTags = tags.sort();
 
         this.filteredTags = this.tagsControl.valueChanges.pipe(
