@@ -12,11 +12,6 @@ const personalBookmarksRoutes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'search',
-        redirectTo: '',
-        pathMatch: 'full'
-      },
-      {
         path: 'new',
         component: CreatePersonalBookmarkComponent
       },
