@@ -15,10 +15,10 @@ import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-public-bookmarks',
-  templateUrl: './public-bookmarks.component.html',
-  styleUrls: ['./public-bookmarks.component.scss']
+  templateUrl: './homepage.component.html',
+  styleUrls: ['./homepage.component.scss']
 })
-export class PublicBookmarksComponent implements OnInit {
+export class HomepageComponent implements OnInit {
 
   publicBookmarks$: Observable<List<Bookmark>>;
   tags: string[] = allTags;
