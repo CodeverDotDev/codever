@@ -101,10 +101,10 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     });
 
     this.bookmarkForm.get('location').valueChanges.pipe(
-      debounceTime(400),
+      debounceTime(1000),
       distinctUntilChanged(), )
       .subscribe(location => {
-        this.personalBookmarksStore.getPersonalBookmarkByLocation(location).subscribe(httpResponse => {
+        this.personalBookmarksService.getPersonalBookmarkByLocation(this.userId, location).subscribe(httpResponse => {
           if (httpResponse.status === 200) {
             this.personalBookmarkPresent = true;
           } else {
