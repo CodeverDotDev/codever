@@ -92,9 +92,5 @@ export class PersonalBookmarksStore {
     return bookmarks.get(index);
   }
 
-  getPersonalBookmarkByLocation(location: string): Observable<HttpResponse<Bookmark>> {
-    return this.personalBookmarkService.getPersonalBookmarkByLocation(this.userId, location);
-  }
-
 }
 
