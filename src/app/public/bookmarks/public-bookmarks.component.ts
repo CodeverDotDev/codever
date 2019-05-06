@@ -98,7 +98,7 @@ export class PublicBookmarksComponent implements OnInit {
       }
       default: {
         this.selectedIndex = 0;
-        this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
+        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks();
       }
     }
   }
@@ -131,7 +131,7 @@ export class PublicBookmarksComponent implements OnInit {
       }
       default: {
         this.selectedIndex = 0;
-        this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
+        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks();
       }
     }
   }
@@ -143,7 +143,7 @@ export class PublicBookmarksComponent implements OnInit {
   tabSelectionChanged(event: MatTabChangeEvent) {
     if (this.userIsLoggedIn) {
       if (event.index === 0) {
-        this.publicBookmarks$ = this.publicBookmarksStore.getPublicBookmarks();
+        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks();
       } else if (event.index === 1) {
         this.history$ = this.userDataStore.getHistory();
       } else if (event.index === 2) {
