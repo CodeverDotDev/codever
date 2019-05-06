@@ -4,7 +4,7 @@ import { AboutComponent } from './about/about.component';
 import { TagService } from './tag/tag.service';
 import { TagComponent } from './tag/tag.component';
 import { PublicBookmarksRoutingModule } from './public-routing.module';
-import { PublicBookmarksComponent } from './bookmarks/public-bookmarks.component';
+import { HomepageComponent } from './bookmarks/homepage.component';
 import { PublicBookmarksStore } from './bookmarks/store/public-bookmarks-store.service';
 import { MatAutocompleteModule, MatSelectModule, MatTabsModule } from '@angular/material';
 import { PublicBookmarksService } from './bookmarks/public-bookmarks.service';
@@ -13,7 +13,7 @@ import { BookmarksSearchComponent } from './search/bookmarks-search.component';
 @NgModule({
   declarations : [
     AboutComponent,
-    PublicBookmarksComponent,
+    HomepageComponent,
     BookmarksSearchComponent,
     TagComponent
   ],
