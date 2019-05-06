@@ -5,7 +5,7 @@ import { List } from 'immutable';
 import { Bookmark } from '../model/bookmark';
 import { Logger } from '../logger.service';
 import { ErrorService } from '../error/error.service';
-import { PersonalBookmarkService } from '../personal-bookmark.service';
+import { PersonalBookmarksService } from '../personal-bookmarks.service';
 import { Router } from '@angular/router';
 
 import { KeycloakService } from 'keycloak-angular';
@@ -21,13 +21,12 @@ export class PersonalBookmarksStore {
 
   private personalTags: Set<string>;
 
-  constructor(private personalBookmarkService: PersonalBookmarkService,
+  constructor(private personalBookmarkService: PersonalBookmarksService,
               private userDataStore: UserDataStore,
               private logger: Logger,
               private router: Router,
               private errorService: ErrorService,
               private keycloakService: KeycloakService,
-              private publicBookmarksStore: PublicBookmarksStore
   ) {
     keycloakService.loadUserProfile().then(keycloakProfile => {
       this.userId = keycloakProfile.id;

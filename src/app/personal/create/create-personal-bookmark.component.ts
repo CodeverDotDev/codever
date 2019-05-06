@@ -15,7 +15,7 @@ import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.
 import { descriptionSizeValidator } from '../../shared/description-size-validation.directive';
 import { RateBookmarkRequest, RatingActionType } from '../../core/model/rate-bookmark.request';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
+import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { Logger } from '../../core/logger.service';
 import { Router } from '@angular/router';
@@ -62,7 +62,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private userDataService: UserDataService,
     private markdownService: MarkdownService,
     private publicBookmarksStore: PublicBookmarksStore,
-    private personalBookmarksService: PersonalBookmarkService,
+    private personalBookmarksService: PersonalBookmarksService,
     private userDataStore: UserDataStore,
     private logger: Logger,
     private router: Router,

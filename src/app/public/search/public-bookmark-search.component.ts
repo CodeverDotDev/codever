@@ -12,7 +12,7 @@ import { Search, UserData } from '../../core/model/user-data';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
-import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
+import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 
 export interface SearchDomain {
@@ -65,7 +65,7 @@ export class PublicBookmarkSearchComponent implements OnInit {
               private bookmarkStore: PublicBookmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
               private publicBookmarksService: PublicBookmarksService,
-              private personalBookmarksService: PersonalBookmarkService,
+              private personalBookmarksService: PersonalBookmarksService,
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,
               private userDataStore: UserDataStore) {
