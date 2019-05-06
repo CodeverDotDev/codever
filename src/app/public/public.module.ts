@@ -8,13 +8,13 @@ import { PublicBookmarksComponent } from './bookmarks/public-bookmarks.component
 import { PublicBookmarksStore } from './bookmarks/store/public-bookmarks-store.service';
 import { MatAutocompleteModule, MatSelectModule, MatTabsModule } from '@angular/material';
 import { PublicBookmarksService } from './bookmarks/public-bookmarks.service';
-import { PublicBookmarkSearchComponent } from './search/public-bookmark-search.component';
+import { BookmarksSearchComponent } from './search/bookmarks-search.component';
 
 @NgModule({
   declarations : [
     AboutComponent,
     PublicBookmarksComponent,
-    PublicBookmarkSearchComponent,
+    BookmarksSearchComponent,
     TagComponent
   ],
   imports: [
