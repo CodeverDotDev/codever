@@ -96,7 +96,7 @@ export class AsyncBookmarkListComponent implements OnInit {
    */
   gotoDetail(bookmark: Bookmark): void {
     const link = ['./personal/bookmarks', bookmark._id];
-    this.router.navigate(link);
+    this.router.navigate(link, {state: {bookmark: bookmark}});
   }
 
   starBookmark(bookmark: Bookmark): void {
