@@ -231,7 +231,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.personalBookmarksService.deleteBookmark(bookmark).subscribe( () => {
       this.bookmarkDeleted.emit(true);
       this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-      this.userDataStore.removeFromCategoriesAtDeletion(bookmark);
+      this.userDataStore.removeFromStoresAtDeletion(bookmark);
     });
   }
 

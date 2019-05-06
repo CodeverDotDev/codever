@@ -236,7 +236,7 @@ export class UserDataStore {
     }
   }
 
-  removeFromCategoriesAtDeletion(bookmark: Bookmark) {
+  removeFromStoresAtDeletion(bookmark: Bookmark) {
     this.userData.history = this.userData.history.filter(x => x !== bookmark._id);
     this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
     this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
