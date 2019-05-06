@@ -22,10 +22,10 @@ export interface SearchDomain {
 
 @Component({
   selector: 'app-public-bookmark-search',
-  templateUrl: './public-bookmark-search.component.html',
-  styleUrls: ['./public-bookmark-search.component.scss']
+  templateUrl: './bookmarks-search.component.html',
+  styleUrls: ['./bookmark-search.component.scss']
 })
-export class PublicBookmarkSearchComponent implements OnInit {
+export class BookmarksSearchComponent implements OnInit {
 
   @Input()
   context: string;
