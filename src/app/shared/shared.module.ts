@@ -12,7 +12,6 @@ import { MatAutocompleteModule, MatDialogModule, MatProgressSpinnerModule } from
 import { RouterModule } from '@angular/router';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
-import { WatchedTagsComponent } from './watched-tags/watched-tags.component';
 
 
 /**
@@ -39,7 +38,6 @@ import { WatchedTagsComponent } from './watched-tags/watched-tags.component';
     BookmarkSearchComponent,
     DeleteBookmarkDialogComponent,
     LoginRequiredDialogComponent,
-    WatchedTagsComponent
   ],
   exports: [
     CommonModule,
@@ -51,7 +49,6 @@ import { WatchedTagsComponent } from './watched-tags/watched-tags.component';
     BookmarkTextComponent,
     DescriptionSizeValidatorDirective,
     BookmarkSearchComponent,
-    WatchedTagsComponent,
     MatProgressSpinnerModule
   ],
   entryComponents: [
