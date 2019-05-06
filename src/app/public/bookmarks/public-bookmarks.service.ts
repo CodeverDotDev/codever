@@ -18,7 +18,7 @@ export class PublicBookmarksService {
     this.securedPublicBookmarksApiBaseUrl = environment.API_URL + '/secured/public/bookmarks';
   }
 
-  getAllPublicBookmarks(): Observable<Bookmark[]> {
+  getRecentPublicBookmarks(): Observable<Bookmark[]> {
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl);
   }
 

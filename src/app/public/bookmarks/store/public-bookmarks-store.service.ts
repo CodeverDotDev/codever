@@ -16,7 +16,7 @@ export class PublicBookmarksStore {
    * The initial data is loaded either when the home page is requested (directly or via search parameters)
    */
   private loadInitialData() {
-    this.publicBookmarksService.getAllPublicBookmarks()
+    this.publicBookmarksService.getRecentPublicBookmarks()
       .subscribe(
         res => {
           const bookmarks: Bookmark[] = <Bookmark[]>res;
@@ -26,7 +26,7 @@ export class PublicBookmarksStore {
       );
   }
 
-  getPublicBookmarks(): Observable<List<Bookmark>> {
+  getRecentPublicBookmarks(): Observable<List<Bookmark>> {
     if (!this._publicBookmarks) {
       this._publicBookmarks = new BehaviorSubject(List([]));
       this.loadInitialData();
@@ -65,7 +65,6 @@ export class PublicBookmarksStore {
     if (this._publicBookmarks) {
       const bookmarks = this._publicBookmarks.getValue();
       const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
-      // let bookmark:bookmark = bookmarks.get(index);
       this._publicBookmarks.next(bookmarks.set(index, updated));
     }
   }
