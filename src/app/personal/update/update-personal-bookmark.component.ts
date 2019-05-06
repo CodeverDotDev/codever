@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
-import { ActivatedRoute, NavigationStart, Params, Router } from '@angular/router';
-import { PersonalBookmarksStore } from '../../core/store/personal-bookmarks-store.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MarkdownService } from '../markdown.service';
 import { MatChipInputEvent } from '@angular/material';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { languages } from '../../shared/language-options';
 import { allTags } from '../../core/model/all-tags.const.en';
 import { PersonalBookmarkService } from '../../core/personal-bookmark.service';
-import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -34,8 +32,8 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   currentTag = '';
 
   constructor(
-    private personalBookmarksStore: PersonalBookmarksStore,
     private personalBookmarksService: PersonalBookmarkService,
+    private keycloakService: KeycloakService,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
     private router: Router
@@ -45,9 +43,11 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
   ngOnInit(): void {
     this.bookmark = window.history.state.bookmark;
-    this.personalBookmarksStore.getPersonalAutomcompleteTags().subscribe(tags => {
-      this.autocompleteTags = tags.sort();
-      this.tdTags = this.autocompleteTags;
+    this.keycloakService.loadUserProfile().then(keycloakProfile => {
+      this.personalBookmarksService.getTagsOfUser(keycloakProfile.id).subscribe(tags => {
+        this.autocompleteTags = tags.sort();
+        this.tdTags = this.autocompleteTags;
+      });
     });
   }
 

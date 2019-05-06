@@ -62,10 +62,5 @@ export class PersonalBookmarksStore {
   getPersonalBookmarks(): Observable<List<Bookmark>> {
     return this._personalBookmarks.asObservable();
   }
-
-  getPersonalAutomcompleteTags(): Observable<string[]> {
-    return this.personalBookmarkService.getTagsOfUser(this.userId);
-  }
-
 }
 
