@@ -62,7 +62,6 @@ app.use(function(req, res, next) {
 app.use('/api', apiBasePathRouter);
 app.use('/api/version', versionRouter);
 app.use('/api/public/bookmarks', publicBookmarksRouter);
-app.use('/api/secured/public/bookmarks', securedPublicBookmarksRouter);
 app.use('/api/personal/users', usersRouter);
 app.use('/api/admin', adminRouter);
 
