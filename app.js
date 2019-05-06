@@ -10,7 +10,6 @@ const versionRouter = require('./routes/version');
 const usersRouter = require('./routes/users/users');
 const adminRouter = require('./routes/admin/admin');
 const publicBookmarksRouter = require('./routes/public-bookmarks');
-const securedPublicBookmarksRouter = require('./routes/secured-public-bookmarks');
 
 const fs = require('fs-extra');
 const rfs = require('rotating-file-stream');
