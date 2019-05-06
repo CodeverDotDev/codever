@@ -21,7 +21,7 @@ export interface SearchDomain {
 }
 
 @Component({
-  selector: 'app-public-bookmark-search',
+  selector: 'app-bookmark-search',
   templateUrl: './bookmarks-search.component.html',
   styleUrls: ['./bookmark-search.component.scss']
 })
