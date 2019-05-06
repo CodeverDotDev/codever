@@ -146,23 +146,22 @@ export class UserDataStore {
   }
 
   addToStarredBookmarks(bookmark: Bookmark) {
-    const starredBookmarks: Bookmark[] = this._stars.getValue();
     if (this.starredBookmarksHaveBeenLoaded) {
+      const starredBookmarks: Bookmark[] = this._stars.getValue();
       starredBookmarks.unshift(bookmark);
       this._stars.next(starredBookmarks);
     }
   }
 
   removeFromStarredBookmarks(bookmark: Bookmark) {
-    const starredBookmarks: Bookmark[] = this._stars.getValue();
     if (this.starredBookmarksHaveBeenLoaded) {
+      const starredBookmarks: Bookmark[] = this._stars.getValue();
       const index = starredBookmarks.findIndex((starredBookmark) => bookmark._id === starredBookmark._id);
       if (index !== -1) {
         starredBookmarks.splice(index, 1);
         this._stars.next(starredBookmarks);
       }
     }
-
   }
 
   getPinnedBookmarks(): Observable<Bookmark[]> {

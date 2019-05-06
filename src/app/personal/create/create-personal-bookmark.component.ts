@@ -20,6 +20,7 @@ import { UserDataStore } from '../../core/user/userdata.store';
 import { Logger } from '../../core/logger.service';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../core/error/error.service';
+import { UserDataService } from '../../core/user-data.service';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -58,6 +59,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
     private publicBookmarksService: PublicBookmarksService,
+    private userDataService: UserDataService,
     private markdownService: MarkdownService,
     private publicBookmarksStore: PublicBookmarksStore,
     private personalBookmarksService: PersonalBookmarkService,
@@ -241,7 +243,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       action: RatingActionType.STAR,
       bookmark: bookmark
     }
-    const obs = this.publicBookmarksService.rateBookmark(rateBookmarkRequest);
+    const obs = this.userDataService.rateBookmark(rateBookmarkRequest);
     obs.subscribe(
       res => {
         this.publicBookmarksStore.updateBookmarkInPublicStore(bookmark);

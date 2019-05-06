@@ -13,6 +13,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
 import { PersonalBookmarkService } from '../core/personal-bookmark.service';
+import { UserDataService } from '../core/user-data.service';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -43,6 +44,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   private publicBookmarksService: PublicBookmarksService;
   private personalBookmarksService: PersonalBookmarkService;
   private keycloakService: KeycloakService;
+  private userDataService: UserDataService;
 
   userIsLoggedIn = false;
 
@@ -67,6 +69,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
     this.publicBookmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
     this.personalBookmarksService = <PersonalBookmarkService>this.injector.get(PersonalBookmarkService);
+    this.userDataService = <UserDataService>this.injector.get(UserDataService);
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
@@ -108,21 +111,18 @@ export class AsyncBookmarkListComponent implements OnInit {
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      if (this.userId) {// TODO verify why is this condition necessary
-        bookmark.stars++;
-        this.userData.stars.unshift(bookmark._id);
-        const rateBookmarkRequest: RateBookmarkRequest = {
-          ratingUserId: this.userId,
-          action: RatingActionType.STAR,
-          bookmark: bookmark
-        }
-        this.rateBookmark(rateBookmarkRequest);
+      bookmark.stars++;
+      this.userData.stars.unshift(bookmark._id);
+      const rateBookmarkRequest: RateBookmarkRequest = {
+        ratingUserId: this.userId,
+        action: RatingActionType.STAR,
+        bookmark: bookmark
       }
+      this.rateBookmark(rateBookmarkRequest);
     }
   }
 
   unstarBookmark(bookmark: Bookmark): void {
-    if (this.userId) {
       bookmark.stars--;
       this.userData.stars.splice(this.userData.stars.indexOf(bookmark._id), 1);
       const rateBookmarkRequest: RateBookmarkRequest = {
@@ -132,25 +132,14 @@ export class AsyncBookmarkListComponent implements OnInit {
       }
 
       this.rateBookmark(rateBookmarkRequest);
-    }
   }
 
   private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
-    this.userDataStore.updateUserData(this.userData).subscribe(() => {
+    this.userDataService.rateBookmark(rateBookmarkRequest).subscribe(() => {
       if (rateBookmarkRequest.action === RatingActionType.STAR) {
         this.userDataStore.addToStarredBookmarks(rateBookmarkRequest.bookmark);
       } else {
         this.userDataStore.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
-      }
-      const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
-      if (isBookmarkCreatedByRatingUser) {
-        this.personalBookmarksService.updateBookmark(rateBookmarkRequest.bookmark);
-      } else {
-        this.publicBookmarksService.rateBookmark(rateBookmarkRequest).subscribe(
-          res => {
-            this.publicBookmarksStore.updateBookmarkInPublicStore(rateBookmarkRequest.bookmark);
-          }
-        );
       }
     });
   }
@@ -228,7 +217,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   deleteBookmark(bookmark: Bookmark): void {
-    this.personalBookmarksService.deleteBookmark(bookmark).subscribe( () => {
+    this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
       this.bookmarkDeleted.emit(true);
       this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
       this.userDataStore.removeFromStoresAtDeletion(bookmark);
