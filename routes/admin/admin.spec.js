@@ -240,7 +240,7 @@ describe('Admin API Tests', function () {
 
   });
 
-  describe('test successful creation, update and deletion of bookmark' , function () {
+  describe('admin - test successful creation, update and deletion of bookmark' , function () {
 
     let createdBookmark;
 

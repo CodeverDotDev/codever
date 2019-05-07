@@ -13,7 +13,7 @@ const superagent = require('superagent');
 
 const testData = require('../../common/test-data');
 
-describe('Personal Bookmarks CRUD operations', function () {
+describe('Personal Bookmarks tests', function () {
 
   let bearerToken;
   const testUserId = config.integration_tests.test_user_id;
@@ -399,6 +399,172 @@ describe('Personal Bookmarks CRUD operations', function () {
             return done(error);
           }
           expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+          done();
+        });
+    });
+
+  });
+
+  describe('Personal bookmarks - test search functionality', function () {
+
+    const testUserId = config.integration_tests.test_user_id;
+    const baseApiUnderTestUrl = '/api/personal/users/' + testUserId + '/bookmarks/';
+
+    let createdBookmarkId;
+
+    const verySpecialTitle = "very special title very-special-java-title";
+    const verySpecialLocation = "http://www.very-special-url.com";
+    const verySpecialTag = "very-special-tag";
+    const verySpecialSourceCodeUrl = "https://very-special-github-url.com";
+    const bookmarkExample = {
+      "name": verySpecialTitle,
+      "location": verySpecialLocation,
+      "language": "en",
+      "tags": [
+        verySpecialTag,
+        "async-await",
+        "mongoose",
+        "mongodb"
+      ],
+      "publishedOn": "2017-11-05",
+      "githubURL": verySpecialSourceCodeUrl,
+      "description": "This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark",
+      "descriptionHtml": "<p>This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark</p>",
+      "userId": testUserId,
+      "shared": true,
+      "starredBy": [],
+      "stars": 0,
+      "lastAccessedAt": null
+    }
+
+    it('should succeed creating example bookmark', function (done) {
+      request(app)
+        .post(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .send(bookmarkExample)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.CREATED);
+          const locationHeaderValue = response.header['location']
+          const isLocationHeaderPresent = response.header['location'] !== undefined;
+          expect(isLocationHeaderPresent).to.be.true;
+
+          //set the id of the bookmarkexample now that it is created
+          const lastSlashIndex = locationHeaderValue.lastIndexOf('/');
+          createdBookmarkId = locationHeaderValue.substring(lastSlashIndex + 1);
+
+          done();
+        });
+    });
+
+    it('should find bookmark with with very-special-tag in query param as word', function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .query({query: "very-special-tag"})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it('should find bookmark with with very-special-tag in query param only as tag', function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .query({query: `[${verySpecialTag}]`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it('should find bookmark with with very-special-tag in query param as tag and word', function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .query({query: `${verySpecialTag} [${verySpecialTag}]`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it(`should find bookmark with special title - ${verySpecialTitle} `, function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .query({query: `${verySpecialTitle}`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it(`should find bookmark with special source code url title - ${verySpecialSourceCodeUrl} `, function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .query({query: `${verySpecialSourceCodeUrl}`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it(`should find bookmark with special location - ${verySpecialLocation} `, function (done) {
+      request(app)
+        .get(baseApiUnderTestUrl)
+        .set('Authorization', bearerToken)
+        .query({query: `${verySpecialLocation}`})
+        .query({limit: 10})
+        .end(function (err, response) {
+          expect(response.statusCode).to.equal(HttpStatus.OK);
+          const filteredBookmarks = response.body;
+          const foundBookmark = filteredBookmarks[0];
+          expect(filteredBookmarks.length).to.equal(1);
+          expect(foundBookmark.name).to.equal(verySpecialTitle);
+          done();
+        });
+    });
+
+    it('should succeed deleting created bookmark', function (done) {
+      request(app)
+        .delete(`${baseApiUnderTestUrl}/${createdBookmarkId}`)
+        .set('Authorization', bearerToken)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+
           done();
         });
     });

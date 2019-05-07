@@ -28,7 +28,7 @@ usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
-    if (userId !== request.params.userId) {
+    if ( userId !== request.params.userId ) {
       return response
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -38,7 +38,7 @@ usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
       userId: request.params.userId
     });
 
-    if (!userData) {
+    if ( !userData ) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -61,7 +61,7 @@ usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
 usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
-    if (userId !== request.params.userId) {
+    if ( userId !== request.params.userId ) {
       return response
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -70,7 +70,7 @@ usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, resp
     const userData = await User.findOne({
       userId: request.params.userId
     });
-    if (!userData) {
+    if ( !userData ) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -79,7 +79,7 @@ usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, resp
           )
         );
     } else {
-      const bookmarks = await Bookmark.find( {"_id" : { $in: userData.readLater}});
+      const bookmarks = await Bookmark.find({"_id": {$in: userData.readLater}});
       response.send(bookmarks);
     }
 
@@ -94,7 +94,7 @@ usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, resp
 usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
-    if (userId !== request.params.userId) {
+    if ( userId !== request.params.userId ) {
       return response
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -103,7 +103,7 @@ usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) 
     const userData = await User.findOne({
       userId: request.params.userId
     });
-    if (!userData) {
+    if ( !userData ) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -112,7 +112,7 @@ usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) 
           )
         );
     } else {
-      const bookmarks = await Bookmark.find( {"_id" : { $in: userData.stars}});
+      const bookmarks = await Bookmark.find({"_id": {$in: userData.stars}});
       response.send(bookmarks);
     }
 
@@ -127,7 +127,7 @@ usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) 
 usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
-    if (userId !== request.params.userId) {
+    if ( userId !== request.params.userId ) {
       return response
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -136,7 +136,7 @@ usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, res
     const userData = await User.findOne({
       userId: request.params.userId
     });
-    if (!userData) {
+    if ( !userData ) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -145,17 +145,95 @@ usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, res
           )
         );
     } else {
-      const bookmarks = await Bookmark.find( {
+      const bookmarks = await Bookmark.find({
         shared: true,
-        tags : { $elemMatch: {$in: userData.watchedTags}}
+        tags: {$elemMatch: {$in: userData.watchedTags}}
       })
         .sort({createdAt: -1})
         .limit(100)
         .lean()
-        .exec();;
+        .exec();
+      ;
       //
       response.send(bookmarks);
     }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+/* GET list of user's pinned bookmarks */
+usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if ( userId !== request.params.userId ) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if ( !userData ) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find({"_id": {$in: userData.pinned}});
+      //we need to order the bookmarks to correspond the one in the userData.history array
+      const orderedBookmarksAsInPinned = userData.pinned.map(bookmarkId => {
+        return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+      });
+
+      response.send(orderedBookmarksAsInPinned);
+    }
+
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+/* GET list of user's last visited bookmarks */
+usersRouter.get('/:userId/history', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if ( userId !== request.params.userId ) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if ( !userData ) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find({"_id": {$in: userData.history}});
+
+      //we need to order the bookmarks to correspond the one in the userData.history array
+      const orderedBookmarksAsInHistory = userData.history.map(bookmarkId => {
+        return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+      });
+
+      response.send(orderedBookmarksAsInHistory);
+    }
+
   } catch (err) {
     return response
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -173,21 +251,21 @@ usersRouter.post('/:userId', keycloak.protect(), async (request, response) => {
     let userId = request.kauth.grant.access_token.content.sub;
 
     const userIdIsInconsistentInPathAndAccessToken = userId !== request.params.userId;
-    if (userIdIsInconsistentInPathAndAccessToken) {
+    if ( userIdIsInconsistentInPathAndAccessToken ) {
       return response
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
     }
 
     const invalidUserIdInRequestBody = !request.body.userId || request.body.userId != userId;
-    if (invalidUserIdInRequestBody) {
+    if ( invalidUserIdInRequestBody ) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('Missing or invalid userId in the request body',
           ['the userId must be consistent across path, body and access token']));
     }
 
-    if(!searchesAreValid(request)){
+    if ( !searchesAreValid(request) ) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('Searches are not valid',
@@ -200,7 +278,9 @@ usersRouter.post('/:userId', keycloak.protect(), async (request, response) => {
       searches: request.body.searches,
       readLater: request.body.readLater,
       stars: request.body.stars,
-      watchedTags: request.body.watchedTags
+      watchedTags: request.body.watchedTags,
+      pinned: request.body.pinned,
+      pinned: request.body.history
     });
 
     const newUserData = await userData.save();
@@ -224,25 +304,34 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
     let userId = request.kauth.grant.access_token.content.sub;
 
     const userIdIsInconsistentInPathAndAccessToken = userId !== request.params.userId;
-    if (userIdIsInconsistentInPathAndAccessToken) {
+    if ( userIdIsInconsistentInPathAndAccessToken ) {
       return response
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
     }
 
     const invalidUserIdInRequestBody = !request.body.userId || request.body.userId != userId;
-    if (invalidUserIdInRequestBody) {
+    if ( invalidUserIdInRequestBody ) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('Missing or invalid userId in the request body',
           ['the userId must be consistent across path, body and access token']));
     }
 
-    if(!searchesAreValid(request)){
+    if ( !searchesAreValid(request) ) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('Searches are not valid',
           ['Searches are not valid - search text is required']));
+    }
+
+    //hold only 30 bookmarks in history or pinned
+    if ( request.body.history.length > 30 ) {
+      request.body.history = request.body.history.slice(0, 3);
+    }
+
+    if ( request.body.pinned.length > 30 ) {
+      request.body.pinned = request.body.pinned.slice(0, 3);
     }
 
     delete request.body._id;//once we proved it's present we delete it to avoid the following MOngoError by findOneAndUpdate
@@ -263,9 +352,9 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
 
 function searchesAreValid(request) {
   const searches = request.body.searches;
-  if(searches && searches.length > 0 ) {
-    for (let i = 0; i < searches.length; i++) {
-      if(!searches[i].text) {
+  if ( searches && searches.length > 0 ) {
+    for ( let i = 0; i < searches.length; i++ ) {
+      if ( !searches[i].text ) {
         return false;
       }
     }
@@ -281,7 +370,7 @@ function searchesAreValid(request) {
 usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
-  if (userId !== request.params.userId) {
+  if ( userId !== request.params.userId ) {
     return response
       .status(HttpStatus.UNAUTHORIZED)
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -292,7 +381,7 @@ usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => 
       userId: request.params.userId
     });
 
-    if (!userData) {
+    if ( !userData ) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -302,6 +391,114 @@ usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => 
         );
     } else {
       response.status(HttpStatus.NO_CONTENT).send();
+    }
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(new MyError('Unknown server error',
+        ['Unknown server error when trying to delete user with id ' + request.params.userId]));
+  }
+});
+
+/*
+* rate bookmark
+*/
+usersRouter.patch('/:userId/bookmarks/stars/:bookmarkId', keycloak.protect(), async (request, response) => {
+
+  const userId = request.kauth.grant.access_token.content.sub;
+  if ( userId !== request.params.userId ) {
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+  }
+
+  if ( userId !== request.body.ratingUserId ) {
+    return response.status(HttpStatus.UNAUTHORIZED).send(new MyError('Invalid userId', ['The id from the access token must match the one from the request']));
+  }
+  const requiredAttributesMissing = !request.body.action || !request.body.ratingUserId;
+  if ( requiredAttributesMissing ) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('Missing required attributes', ['Missing required attributes']));
+  }
+
+  try {
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+
+    if ( !userData ) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'Not Found Error',
+          ['User Data for user id was not found']
+          )
+        );
+    } else {
+      if ( request.body.action === 'STAR' ) {
+        try {
+          if (userData.stars.includes(request.params.bookmarkId)) {
+            return response
+              .status(HttpStatus.BAD_REQUEST)
+              .send(new MyError('You already starred this bookmark', ['You already starred this bookmark']));
+          } else {
+
+            await User.update(
+              {userId: request.params.userId},
+              {$push: {stars: request.params.bookmarkId}}
+            );
+
+            const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$inc: {stars: 1}});
+
+            const bookmarkNotFound = !bookmark;
+            if ( bookmarkNotFound ) {
+              return response
+                .status(HttpStatus.NOT_FOUND)
+                .send(new MyError('Not Found Error', ['Bookmark with bookmark id ' + request.params.bookmarkId + ' not found']));
+            } else {
+              response
+                .status(HttpStatus.OK)
+                .send(bookmark);
+            }
+          }
+
+        } catch (err) {
+          return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when starring bookmark with id ' + request.params.bookmarkId]));
+        }
+      } else if ( request.body.action === 'UNSTAR' ) {
+        try {
+          if (!userData.stars.includes(request.params.bookmarkId)) {
+            return response
+              .status(HttpStatus.BAD_REQUEST)
+              .send(new MyError('You did not star this bookmark', ['You did not star this bookmark']));
+          } else {
+
+            await User.update(
+              {userId: request.params.userId},
+              {$pull: {stars: request.params.bookmarkId}}
+            );
+
+            const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$inc: {stars: -1}});
+            const bookmarkNotFound = !bookmark;
+            if ( bookmarkNotFound ) {
+              return response
+                .status(HttpStatus.NOT_FOUND)
+                .send(new MyError('Not Found Error', ['Bookmark with bookmark id ' + request.params.bookmarkId + ' not found']));
+            } else {
+              response
+                .status(HttpStatus.OK)
+                .send(bookmark);
+            }
+          }
+        } catch (err) {
+          return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when unstarring bookmark with id ' + request.params.bookmarkId]));
+        }
+      } else {
+        return response
+          .status(HttpStatus.BAD_REQUEST)
+          .send(new MyError('Rating action should be either STAR or UNSTAR', ['Rating action should be either STAR or UNSTAR']));
+      }
     }
   } catch (err) {
     return response

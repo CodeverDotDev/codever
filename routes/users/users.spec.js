@@ -28,7 +28,12 @@ describe('User Data tests', function () {
         "text": searchTextExample,
         "lastAccessedAt": "2019-01-28T05:47:47.652Z"
       }
-    ]
+    ],
+    "readLater": [],
+    "stars": [],
+    "watchedTags": [],
+    "pinned": [],
+    "history": []
   }
 
   before(function (done) {
