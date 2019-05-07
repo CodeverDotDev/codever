@@ -5,7 +5,9 @@ const Keycloak = require('keycloak-connect');
 const Bookmark = require('../../models/bookmark');
 const User = require('../../models/user');
 const bookmarkHelper = require('../../common/bookmark-helper');
+const bookmarksSearchService = require('../../common/bookmarks-search.service');
 const MyError = require('../../models/error');
+const escapeStringRegexp = require('escape-string-regexp');
 
 const common = require('../../common/config');
 const config = common.config();
@@ -89,7 +91,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 });
 
 
-/* GET personal bookmarks of the user */
+/*/!* GET personal and starred bookmarks of the user *!/
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
   try {
     let bookmarks;
@@ -123,7 +125,72 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send(err);
   }
+});*/
+
+/* GET bookmark of user */
+personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
+
+  const userId = request.kauth.grant.access_token.content.sub;
+  if ( userId !== request.params.userId ) {
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+  }
+
+  try {
+    const searchText = request.query.q;
+    const limit = parseInt(request.query.limit);
+
+    if ( searchText ) {
+      const bookmarks = await bookmarksSearchService.findBookmarks(searchText, limit, constants.DOMAIN_PERSONAL, userId);
+
+      return response.send(bookmarks);
+    } else if ( request.query.location ) {
+      const bookmark = await Bookmark.findOne({
+        userId: request.params.userId,
+        location: request.query.location
+      }).lean().exec();
+      if ( !bookmark ) {
+        return response.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
+      }
+      return response.send(bookmark);
+    } else {//no filter - latest bookmarks added to the platform
+      bookmarks = await Bookmark.find({userId: request.params.userId})
+        .sort({lastAccessedAt: -1})
+        .limit(100);
+
+      return response.send(bookmarks);
+    }
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+  }
 });
+
+/* GET tags used by user */
+personalBookmarksRouter.get('/tags', keycloak.protect(), async (request, response) => {
+
+  const userId = request.kauth.grant.access_token.content.sub;
+  if ( userId !== request.params.userId ) {
+    return response
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+  }
+
+  try {
+    const tags = await Bookmark.distinct("tags",
+      {
+        $or: [
+          {userId: request.params.userId},
+          {shared: true}
+        ]
+      }); // sort does not work with distinct in mongoose - https://mongoosejs.com/docs/api.html#query_Query-sort
+
+    response.send(tags);
+  } catch (err) {
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+  }
+});
+
 
 /* GET bookmark of user */
 personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, response) => {
@@ -270,7 +337,7 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
     } else {
       await User.update(
         {},
-        {$pull: {readLater: bookmarkId, stars: bookmarkId}},
+        {$pull: {readLater: bookmarkId, stars: bookmarkId, pinned: bookmarkId, history: bookmarkId}},
         {multi: true}
       );
 

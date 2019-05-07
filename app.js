@@ -10,7 +10,6 @@ const versionRouter = require('./routes/version');
 const usersRouter = require('./routes/users/users');
 const adminRouter = require('./routes/admin/admin');
 const publicBookmarksRouter = require('./routes/public-bookmarks');
-const securedPublicBookmarksRouter = require('./routes/secured-public-bookmarks');
 
 const fs = require('fs-extra');
 const rfs = require('rotating-file-stream');
@@ -63,7 +62,6 @@ app.use(function(req, res, next) {
 app.use('/api', apiBasePathRouter);
 app.use('/api/version', versionRouter);
 app.use('/api/public/bookmarks', publicBookmarksRouter);
-app.use('/api/secured/public/bookmarks', securedPublicBookmarksRouter);
 app.use('/api/personal/users', usersRouter);
 app.use('/api/admin', adminRouter);
 
