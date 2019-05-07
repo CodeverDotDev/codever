@@ -54,16 +54,16 @@ button.delete {
   color:white;
 }
 
-a.personal-tabs {
-  color: #007bff;
+.tags-label:after {
+  font-family: FontAwesome;
+  content: "SHOW MORE \f02c";
 }
 
-.personal-list-header {
-  display: flex;
-  margin-bottom: 0.8rem;
-  justify-content: space-between;
-  > button {
-    font-size: 1.1rem;
+.personal-followed-tags {
+  font-size: 1.3rem;
+  margin-top: 0.8rem;
+  a {
+    margin-right: 0.5rem;
+    padding: 0.3rem;
   }
 }
-

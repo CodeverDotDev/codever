@@ -1,0 +1,39 @@
+iam
+  new user registration
+    email received
+      on link click redirected to the homepage
+        - verify all the tabs have appropiate message (suggesting no bookmark has been pinned, marked for later read or starred)
+  create new bookmark
+    - mark as pinned, read later und starred
+      - should appear under all three named sections
+  logout
+    - redirect to home page (community selected)
+
+  password reset function
+
+homepage
+  user NOT logged in
+    - verify the tabs (except "community") have the appropiate meesage with login suggestion
+  pinned
+    pin bookmark
+      - should appear in the pinned tab
+    unpin bookmark
+      - should dissapear from the pinned tab
+    pin more bookmarks
+      - verify the order - should be last first
+  later reads
+    mark for read later
+      - should appear in the read later tab
+    unmark for read later bookmark
+      - should dissapear from read later tab
+    mark more bookmarks for later reads
+      - verify order - latest down the pipe
+  star bookmark
+    - number of stars increases by one for the bookmark (star is filled)
+    - should appear in starred section
+  unstar bookmark
+    - number of stars decreases by one (star is now unfilled)
+    - should not appear in starred section
+
+notes
+  - always test with inspection tools to check for red

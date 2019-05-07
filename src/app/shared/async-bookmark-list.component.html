@@ -6,8 +6,12 @@
           <h5 class="card-title"><a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText" (click)="onBookmarkLinkClick(bookmark)"></a></h5>
           <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="bookmark.location | slice:0:150 | highlight: queryText"></span></h6>
         </div>
-        <div *ngIf="userIsLoggedIn">
-          <span *ngIf="userData && userData.readLater && !userData.readLater.includes(bookmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(bookmark)"><i class="far fa-clock"></i></span>
+        <div style="display: flex">
+          <span *ngIf="!userData?.pinned?.includes(bookmark._id) else markedAsPinned" class="clock-wrapper" title="Pin bookmark" (click)="addToPinned(bookmark)"><i class="fas fa-thumbtack"></i></span>
+          <ng-template #markedAsPinned>
+            <span class="clock-wrapper" title="Unpin bookmark" (click)="removeFromPinned(bookmark)"><i class="fas fa-thumbtack fa-rotate-90"></i></span>
+          </ng-template>
+          <span *ngIf="!userData?.readLater?.includes(bookmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(bookmark)"><i class="far fa-clock"></i></span>
           <ng-template #markedAsReadLater>
             <span class="clock-wrapper" title="Remove from Read later" (click)="removeFromReadLater(bookmark)"><i class="fas fa-clock"></i></span>
           </ng-template>
@@ -24,7 +28,7 @@
     <div class="card-footer">
       <div class="tags-group">
         <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-            <span *ngIf="userIsLoggedIn && userData && userData.stars.indexOf(bookmark._id) !== -1 else emptyStar" class="input-group-text star-span" id="btnGroupAddon2" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
+            <span *ngIf="userIsLoggedIn && userData?.stars?.indexOf(bookmark._id) !== -1 else emptyStar" class="input-group-text star-span" id="btnGroupAddon2" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
               <i class="fas fa-star"></i>
             </span>
           <ng-template #emptyStar>
