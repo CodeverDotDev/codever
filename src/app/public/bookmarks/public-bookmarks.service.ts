@@ -1,34 +1,30 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {Observable} from 'rxjs';
-import {Webpage} from '../../core/model/webpage';
-import {Bookmark} from '../../core/model/bookmark';
+import { Observable } from 'rxjs';
+import { Webpage } from '../../core/model/webpage';
+import { Bookmark } from '../../core/model/bookmark';
 
-import {environment} from 'environments/environment';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {shareReplay} from 'rxjs/operators';
-import {RateBookmarkRequest} from '../../core/model/rate-bookmark.request';
+import { environment } from 'environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class PublicBookmarksService {
 
   private publicBookmarksApiBaseUrl = '';  // URL to web api
   private securedPublicBookmarksApiBaseUrl = '';  // URL to web api
-  private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient) {
     this.publicBookmarksApiBaseUrl = environment.API_URL + '/public/bookmarks';
     this.securedPublicBookmarksApiBaseUrl = environment.API_URL + '/secured/public/bookmarks';
   }
 
-  getAllPublicBookmarks(): Observable<Bookmark[]> {
+  getRecentPublicBookmarks(): Observable<Bookmark[]> {
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl);
   }
 
-  getFilteredPublicBookmarks(query: string, lang: string, limit: number): Observable<Bookmark[]> {
+  getFilteredPublicBookmarks(searchText: string, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
-      .set('query', query)
-      .set('lang', lang)
+      .set('q', searchText)
       .set('limit', limit.toString());
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
@@ -43,13 +39,6 @@ export class PublicBookmarksService {
     params = params.append('location', url);
     return this.httpClient
       .get<Bookmark>(`${this.publicBookmarksApiBaseUrl}`, {params: params});
-  }
-
-  rateBookmark(rateBookmarkRequest: RateBookmarkRequest): Observable<any> {
-    return this.httpClient
-      .patch(`${this.securedPublicBookmarksApiBaseUrl}/${rateBookmarkRequest.bookmark._id}`, JSON.stringify(rateBookmarkRequest),
-        {headers: this.headers})
-      .pipe(shareReplay());
   }
 
 }

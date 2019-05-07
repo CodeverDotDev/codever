@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { PersonalBookmarksListComponent } from './personal-bookmarks-list.component';
 import { PersonalBookmarksRoutingModule } from './personal-bookmarks-routing.module';
 import { PersonalBookmarksComponent } from './personal-bookmarks.component';
 import { SharedModule } from '../shared/shared.module';
@@ -21,7 +20,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations : [
-    PersonalBookmarksListComponent,
     CreatePersonalBookmarkComponent,
     UpdatePersonalBookmarkComponent,
     PersonalBookmarksComponent

@@ -12,6 +12,8 @@ import { UserDataStore } from '../core/user/userdata.store';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
+import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
+import { UserDataService } from '../core/user-data.service';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -40,7 +42,9 @@ export class AsyncBookmarkListComponent implements OnInit {
   private userDataStore: UserDataStore;
   private publicBookmarksStore: PublicBookmarksStore;
   private publicBookmarksService: PublicBookmarksService;
+  private personalBookmarksService: PersonalBookmarksService;
   private keycloakService: KeycloakService;
+  private userDataService: UserDataService;
 
   userIsLoggedIn = false;
 
@@ -64,6 +68,8 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
     this.publicBookmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
+    this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
+    this.userDataService = <UserDataService>this.injector.get(UserDataService);
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
@@ -90,7 +96,7 @@ export class AsyncBookmarkListComponent implements OnInit {
    */
   gotoDetail(bookmark: Bookmark): void {
     const link = ['./personal/bookmarks', bookmark._id];
-    this.router.navigate(link);
+    this.router.navigate(link, {state: {bookmark: bookmark}});
   }
 
   starBookmark(bookmark: Bookmark): void {
@@ -104,9 +110,7 @@ export class AsyncBookmarkListComponent implements OnInit {
       };
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    }
-
-    if (this.userId) {// TODO verify why is this condition necessary
+    } else {
       bookmark.stars++;
       this.userData.stars.unshift(bookmark._id);
       const rateBookmarkRequest: RateBookmarkRequest = {
@@ -119,7 +123,6 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   unstarBookmark(bookmark: Bookmark): void {
-    if (this.userId) {
       bookmark.stars--;
       this.userData.stars.splice(this.userData.stars.indexOf(bookmark._id), 1);
       const rateBookmarkRequest: RateBookmarkRequest = {
@@ -129,51 +132,66 @@ export class AsyncBookmarkListComponent implements OnInit {
       }
 
       this.rateBookmark(rateBookmarkRequest);
-    }
   }
 
   private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
-    this.userDataStore.updateUserData(this.userData).subscribe(() => {
-      const isBookmarkCreatedByRatingUser = this.userId === rateBookmarkRequest.bookmark.userId;
+    this.userDataService.rateBookmark(rateBookmarkRequest).subscribe(() => {
       if (rateBookmarkRequest.action === RatingActionType.STAR) {
         this.userDataStore.addToStarredBookmarks(rateBookmarkRequest.bookmark);
-        this.personalBookmarksStore.addToPersonalBookmarksStore(rateBookmarkRequest.bookmark);
       } else {
         this.userDataStore.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
-        this.personalBookmarksStore.removeBookmarkFromPersonalBookmarksStore(rateBookmarkRequest.bookmark);
-      }
-      if (isBookmarkCreatedByRatingUser) {
-        const obs = this.personalBookmarksStore.updateBookmark(rateBookmarkRequest.bookmark);
-      } else {
-        const obs = this.publicBookmarksService.rateBookmark(rateBookmarkRequest);
-        obs.subscribe(
-          res => {
-            this.publicBookmarksStore.updateBookmarkInPublicStore(rateBookmarkRequest.bookmark);
-          }
-        );
       }
     });
   }
 
   onBookmarkLinkClick(bookmark: Bookmark) {
-    if (this.userId === bookmark.userId) {
-      bookmark.lastAccessedAt = new Date();
-      const obs = this.personalBookmarksStore.updateBookmark(bookmark);
+    if (this.userIsLoggedIn) {
+      this.userDataStore.addToHistory(bookmark);
     }
   }
 
+  addToPinned(bookmark: Bookmark) {
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to pin bookmarks'
+      };
+
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      this.userDataStore.addToPinnedBookmarks(bookmark);
+    }
+
+  }
+
+  removeFromPinned(bookmark: Bookmark) {
+    this.userDataStore.removeFromPinnedBookmarks(bookmark);
+  }
+
   addToReadLater(bookmark: Bookmark) {
-    this.userData.readLater.push(bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe(() => {
-      this.userDataStore.addToLaterReads(bookmark);
-    });
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged to add bookmarks to "Read Later"'
+      };
+
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      this.userData.readLater.push(bookmark._id);
+      this.userDataStore.updateUserData(this.userData).subscribe(() => {
+        this.userDataStore.addToLaterReads(bookmark);
+      });
+    }
   }
 
   removeFromReadLater(bookmark: Bookmark) {
-    this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
-    this.userDataStore.updateUserData(this.userData).subscribe(() => {
-      this.userDataStore.removeFromLaterReads(bookmark);
-    });
+    this.userDataStore.removeFromLaterReads(bookmark);
   }
 
   openDeleteDialog(bookmark: Bookmark) {
@@ -199,12 +217,10 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   deleteBookmark(bookmark: Bookmark): void {
-    const obs = this.personalBookmarksStore.deleteBookmark(bookmark);
-    obs.subscribe(() => {
+    this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
       this.bookmarkDeleted.emit(true);
-      const obs2 = this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-      const obs3 = this.userDataStore.removeFromLaterReads(bookmark);
-      const obs4 = this.userDataStore.removeFromStarredBookmarks(bookmark);
+      this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+      this.userDataStore.removeFromStoresAtDeletion(bookmark);
     });
   }
 
