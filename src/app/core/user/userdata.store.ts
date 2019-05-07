@@ -70,11 +70,15 @@ export class UserDataStore {
             searches: [],
             readLater: [],
             stars: [],
-            watchedTags: []
+            watchedTags: [],
+            pinned: [],
+            history: []
           }
 
-          this.userService.createInitialUserData(initialUserData).subscribe(() =>
-            this._userData.next(initialUserData)
+          this.userService.createInitialUserData(initialUserData).subscribe((data) => {
+              this.userData = data;
+              this._userData.next(data);
+            }
           );
         }
       }
