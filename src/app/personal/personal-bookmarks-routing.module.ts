@@ -1,5 +1,4 @@
 import {RouterModule, Routes} from '@angular/router';
-import {PersonalBookmarksListComponent} from './personal-bookmarks-list.component';
 import {NgModule} from '@angular/core';
 import {PersonalBookmarksComponent} from './personal-bookmarks.component';
 import {AuthGuard} from './auth-guard.service';
@@ -13,21 +12,12 @@ const personalBookmarksRoutes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'search',
-        redirectTo: '',
-        pathMatch: 'full'
-      },
-      {
         path: 'new',
         component: CreatePersonalBookmarkComponent
       },
       {
         path: 'bookmarks/:id',
         component: UpdatePersonalBookmarkComponent
-      },
-      {
-        path: '',
-        component: PersonalBookmarksListComponent
       }
     ]
   }

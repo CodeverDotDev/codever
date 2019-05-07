@@ -17,7 +17,7 @@ export class BookmarkFilterService {
    * @param bookmarks$ - the list to be filtered
    * @returns {any} - the filtered list
    */
-  filterBookmarks$BySearchTerm(query: string, language: string, bookmarks$: Observable<any>): Bookmark[] {
+  /*filterBookmarks$BySearchTerm(query: string, language: string, bookmarks$: Observable<any>): Bookmark[] {
 
     const searchedTermsAndTags: [string[], string[]] = this.splitSearchQuery(query);
     const searchedTerms: string[] = searchedTermsAndTags[0];
@@ -53,6 +53,7 @@ export class BookmarkFilterService {
 
     return result;
   }
+*/
 
   /**
    * It will parse the search query and returns the search terms and tags to filter.
