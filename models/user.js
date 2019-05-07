@@ -14,7 +14,9 @@ var userSchema = new Schema({
     searches: [searchSchema],
     readLater: [String],
     stars: [String], //ids of bookmarks starred by user
-    watchedTags: [String]
+    watchedTags: [String],
+    pinned: [String],
+    history: [String]
 },
 {
   timestamps: true
