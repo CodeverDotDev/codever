@@ -24,3 +24,7 @@ db.users.update({userId : "55d49696-c07d-4b31-929c-29f7c8f1a10a"},
     }
   }
 );
+
+
+//delete user by user id
+db.users.remove({userId: "8daef41c-14d6-4baa-8601-d18b4aeea248"});
