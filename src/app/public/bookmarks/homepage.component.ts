@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { List } from 'immutable';
 import { Bookmark } from '../../core/model/bookmark';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
 import { allTags } from '../../core/model/all-tags.const.en';
 import { KeycloakService } from 'keycloak-angular';
@@ -40,6 +40,7 @@ export class HomepageComponent implements OnInit {
   selectedIndex: number;
 
   constructor(private publicBookmarksStore: PublicBookmarksStore,
+              private router: Router,
               private route: ActivatedRoute,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore
@@ -141,6 +142,7 @@ export class HomepageComponent implements OnInit {
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {
+    this.selectedIndex = event.index;
     if (this.userIsLoggedIn) {
       if (event.index === 0) {
         this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks();
@@ -156,11 +158,47 @@ export class HomepageComponent implements OnInit {
         this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags();
       }
     }
+
+    this.router.navigate(['.'],
+      {
+        relativeTo: this.route,
+        queryParams: {tab: this.getTabFromIndex(this.selectedIndex)},
+        queryParamsHandling: 'merge'
+      }
+    );
   }
 
   login(selectedTab: string) {
     const options: Keycloak.KeycloakLoginOptions = {};
     options.redirectUri = `${environment.APP_HOME_URL}?tab=${selectedTab}`;
     this.keycloakService.login(options);
+  }
+
+  private getTabFromIndex(selectedIndex: number) {
+    switch (selectedIndex) {
+      case 1: {
+        return 'history'
+        break;
+      }
+      case 2: {
+        return 'pinned';
+        break;
+      }
+      case 3 : {
+        return 'read-later'
+        break;
+      }
+      case 4 : {
+        return 'starred'
+        break;
+      }
+      case 5 : {
+        return 'watched-tags';
+        break;
+      }
+      default: {
+        return 'community';
+      }
+    }
   }
 }

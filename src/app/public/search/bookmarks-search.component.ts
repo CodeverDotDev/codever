@@ -147,6 +147,8 @@ export class BookmarksSearchComponent implements OnInit {
       if (val.trim() === '') {
         this.showSearchResults = false;
       }
+
+      this.syncQueryParamsWithSearchBox();
     });
   }
 
@@ -172,6 +174,7 @@ export class BookmarksSearchComponent implements OnInit {
 
   onSearchDomainChange(newValue) {
     this.searchDomain = newValue;
+    this.syncQueryParamsWithSearchBox();
     if (this.searchText && this.searchText !== '') {
       this.searchBookmarks(this.searchText);
     }
@@ -218,7 +221,6 @@ export class BookmarksSearchComponent implements OnInit {
 
   searchBookmarks(searchText: string) {
     if (searchText.trim() !== '') {
-      this.syncQueryParamsWithSearchBox();
       if (this.previousTerm !== searchText) {
         this.previousTerm = searchText;
         this.counter = 10;
@@ -245,11 +247,24 @@ export class BookmarksSearchComponent implements OnInit {
   }
 
   private syncQueryParamsWithSearchBox() {
-    this.router.navigate(['.'],
-      {
-        relativeTo: this.route,
-        queryParams: {q: this.searchText, sd: this.searchDomain}
-      }
-    );
+    if (this.searchText) {
+      this.router.navigate(['.'],
+        {
+          relativeTo: this.route,
+          queryParams: {q: this.searchText, sd: this.searchDomain},
+          queryParamsHandling: 'merge'
+        }
+      );
+
+    } else {
+      this.router.navigate(['.'],
+        {
+          relativeTo: this.route,
+          queryParams: {q: null, sd: null},
+          queryParamsHandling: 'merge'
+        }
+      );
+    }
   }
+
 }
