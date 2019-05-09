@@ -29,14 +29,15 @@
             type="button"
             (click)="onSaveSearchClick()"
             [disabled]="autocompleteSearches.includes(searchText) || !searchText"
-    >Save search</button>
+    >Save search
+    </button>
   </div>
 </div>
 
 <mat-form-field class="search-domain-select">
   <mat-label>Search domain</mat-label>
   <mat-select [ngModel]="searchDomain" (ngModelChange)="onSearchDomainChange($event)">
-    <mat-option *ngFor="let searchDomain of searchDomains" [value]="searchDomain.value" >
+    <mat-option *ngFor="let searchDomain of searchDomains" [value]="searchDomain.value">
       {{searchDomain.viewValue}}
     </mat-option>
   </mat-select>
@@ -46,14 +47,23 @@
 
 <div *ngIf="showNotFound" class="alert alert-info" role="alert">
   No <strong>{{searchDomain}}</strong> bookmarks found for "<em>{{searchText}}</em>".
-  Please try a different search or look in <span *ngIf="searchDomain === 'personal'; else oppositeSearchDomain"> <span><strong>public</strong> bookmarks</span></span>
-  <ng-template #oppositeSearchDomain><span><strong>personal</strong> bookmarks</span></ng-template>
+  Please try a different search or
+  <button *ngIf="searchDomain === 'personal'; else oppositeSearchDomain" type="button" class="btn btn-outline-primary btn-sm" (click)="onSearchDomainChange('public')">
+    <i class="fa fa-search"></i> public bookmarks
+  </button>
+  <ng-template #oppositeSearchDomain>
+    <button type="button" class="btn btn-outline-primary btn-sm" (click)="onSearchDomainChange('personal')">
+      <i class="fa fa-search"></i> personal bookmarks
+    </button>
+
+  </ng-template>
 </div>
 
 
 <div *ngIf="showSearchResults">
   <app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="searchText"
-                           [shownSize]="counter" [userData]="_userData" (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
+                           [shownSize]="counter" [userData]="_userData"
+                           (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
   <div *ngIf="numberOfResultsFiltered > 0">
     <button type="button" class="btn btn-primary btn-lg btn-block" (click)="onShowMoreResults()"
             [disabled]="counter > numberOfResultsFiltered">Show more
