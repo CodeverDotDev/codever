@@ -8,6 +8,7 @@ import { languages } from '../../shared/language-options';
 import { allTags } from '../../core/model/all-tags.const.en';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakService } from 'keycloak-angular';
+import { UserDataStore } from '../../core/user/userdata.store';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -33,6 +34,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
   constructor(
     private personalBookmarksService: PersonalBookmarksService,
+    private userDataStore: UserDataStore,
     private keycloakService: KeycloakService,
     private markdownService: MarkdownService,
     private route: ActivatedRoute,
@@ -57,7 +59,8 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     this.bookmark.updatedAt = now;
     this.bookmark.lastAccessedAt = now;
 
-    const obs = this.personalBookmarksService.updateBookmark(this.bookmark).subscribe(() => {
+    const obs = this.personalBookmarksService.updateBookmark(this.bookmark).subscribe((updatedBookmark) => {
+      this.userDataStore.addToHistory(updatedBookmark);
       this.navigateToHomePage();
     });
   }
