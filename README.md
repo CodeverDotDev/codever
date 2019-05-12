@@ -3,7 +3,7 @@
 <img align="left" src="src/assets/bookmarks.dev-logo-md.png">
 
 Efficiently manage your dev bookmarks. Rate and share the worthy ones (mark as public) and they will be published on Github 
-at [https://github.com/Codingpedia/bookmarks](https://github.com/Codingpedia/bookmarks#readme)
+at [https://github.com/CodepediaOrg/bookmarks](https://github.com/CodepediaOrg/bookmarks#readme)
   
 <br/>
   
@@ -28,7 +28,7 @@ The project is developed with the MEAN stack, featuring [MongoDB](https://docs.m
 
 There is a **two-step** setup required for development 
 * **front-end setup** concerning angular/angular-cli setup; **this is described on this page**
-* **[backend-end setup](https://github.com/Codingpedia/bookmarks-api)** concerning mongodb, keycloak, nodejs
+* **[backend-end setup](https://github.com/CodepediaOrg/bookmarks-api)** concerning mongodb, keycloak, nodejs
 
 > You need to complete both parts for local development
 
