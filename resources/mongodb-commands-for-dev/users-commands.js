@@ -12,6 +12,15 @@ db.users.update({},
   {multi:true}
 );
 
+
+//remove a tag from all bookmarks
+db.bookmarks.update(
+  { },
+  { $pull: { tags: "awesome" } },
+  { multi: true }
+);
+
+
 //reset array for specific user
 db.users.update({userId : "55d49696-c07d-4b31-929c-29f7c8f1a10a"},
   {
