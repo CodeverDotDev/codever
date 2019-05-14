@@ -156,6 +156,19 @@ adminRouter.post('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (requ
     }
   }
 
+  if ( bookmark.shared ) {
+    const existingBookmark = await Bookmark.findOne({
+      shared: true,
+      location: bookmark.location
+    });
+    if( existingBookmark ) {
+      return response
+        .status(HttpStatus.CONFLICT)
+        .send(new MyError('A public bookmark with this location is already present',
+          ['A public bookmark with this location is already present']));
+    }
+  }
+
   try {
     let newBookmark = await bookmark.save();
 

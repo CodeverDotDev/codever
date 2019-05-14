@@ -258,7 +258,7 @@ describe('Personal Bookmarks tests', function () {
             return done(error);
           }
           expect(response.statusCode).to.equal(HttpStatus.CONFLICT);
-          expect(response.body.title).to.equal('Duplicate key');
+          expect(response.body.title).to.equal('A public bookmark with this location is already present');
           done();
         });
     });
