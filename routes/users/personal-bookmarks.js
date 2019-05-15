@@ -38,6 +38,12 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 
   const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
 
+  if ( bookmark.userId !== userId ) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('The userId of the bookmark does not match the userId parameter', ['The userId of the bookmark does not match the userId parameter']));
+  }
+
   const missingRequiredAttributes = !bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0;
   if ( missingRequiredAttributes ) {
     return response
@@ -65,6 +71,19 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
           ['The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+    }
+  }
+
+  if ( bookmark.shared ) {
+    const existingBookmark = await Bookmark.findOne({
+      shared: true,
+      location: bookmark.location
+    }).lean().exec();
+    if( existingBookmark ) {
+      return response
+        .status(HttpStatus.CONFLICT)
+        .send(new MyError('A public bookmark with this location is already present',
+          ['A public bookmark with this location is already present']));
     }
   }
 
@@ -240,6 +259,12 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
   }
 
+  if ( request.body.userId !== userId ) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('The userId of the bookmark does not match the userId parameter', ['The userId of the bookmark does not match the userId parameter']));
+  }
+
   const requiredAttributesMissing = !request.body.name || !request.body.location || !request.body.tags || request.body.tags.length === 0;
   if ( requiredAttributesMissing ) {
     return response
@@ -268,6 +293,19 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
           ['The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
+    }
+  }
+  if ( request.body.shared ) {
+    const existingBookmark = await Bookmark.findOne({
+      shared: true,
+      location: request.body.location,
+      userId: { $ne: request.params.userId}
+    }).lean().exec();
+    if( existingBookmark ) {
+      return response
+        .status(HttpStatus.CONFLICT)
+        .send(new MyError('A public bookmark with this location is already present',
+          ['A public bookmark with this location is already present']));
     }
   }
 
