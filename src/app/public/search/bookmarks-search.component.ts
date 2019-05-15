@@ -113,6 +113,8 @@ export class BookmarksSearchComponent implements OnInit {
               this.searchDomain = 'personal'; // without q param we are preparing to look in personal bookmarks
             } else {
               this.searchDomain = 'public';
+              this.searchControl.setValue(this.searchText);
+              this.searchBookmarks(this.searchText);
             }
           } else if (this.searchText) {
             this.searchControl.setValue(this.searchText);
