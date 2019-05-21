@@ -1,26 +1,28 @@
 // styles in src/style directory are applied to the whole page
 body {
-    background: #FFFFFF;
-    overflow: scroll;
+  background: #FFFFFF;
+  overflow: scroll;
 }
+
 a {
-    color: #4078c0;
+  color: #4078c0;
 }
 
 .navigation-space-buffer {
   margin-top: 1rem;
 }
+
 .description-chars-counter {
-  float:right;
-  margin-bottom:0.5rem;
+  float: right;
+  margin-bottom: 0.5rem;
 }
 
 //forms - TODO maybe move to own forms.scss file... that is also valid application wide
-.ng-valid[required], .ng-valid.required  {
+.ng-valid[required], .ng-valid.required {
   border-left: 5px solid #42A948; /* green */
 }
 
-.ng-invalid:not(form)  {
+.ng-invalid:not(form) {
   border-left: 5px solid #a94442; /* red */
 }
 
@@ -33,7 +35,7 @@ ul.tags {
 }
 
 ul.tags li {
-  display:inline
+  display: inline
 }
 
 ul.tags li:not(:last-child):after {
@@ -43,6 +45,7 @@ ul.tags li:not(:last-child):after {
 .tags-group {
   padding: 0.3rem 0 0.3rem 0;
   margin-bottom: 0.3rem;
+
   a {
     color: #FFFFFF;
   }
@@ -73,10 +76,14 @@ ul.tags li:not(:last-child):after {
   background: yellow;
   color: black;
 }
-.star-group{
-  display:inline-flex; width: 4rem; height: 1.4rem;
+
+.star-group {
+  display: inline-flex;
+  width: 4rem;
+  height: 1.4rem;
   vertical-align: middle;
   margin-right: 0.7rem;
+
   input:nth-child(2) {
     width: 1.8rem;
   }
@@ -87,42 +94,32 @@ ul.tags li:not(:last-child):after {
   font-size: 1.2rem;
 }
 
-// START Github fork ribbon
-/* Left will inherit from right (so we don't need to duplicate code) */
-.github-fork-ribbon {
-  /* The right and left classes determine the side we attach our banner to */
-  position: absolute;
-  /* Add a bit of padding to give some substance outside the "stitching" */
-  padding: 2px 0;
-  /* Set the base colour */
-  background-color: #a00;
-  /* Set a gradient: transparent black at the top to almost-transparent black at the bottom */
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
-  /* Add a drop shadow */
-  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
-  /* Set the font */
-  font: 700 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
-  z-index: 9999;
-  pointer-events: auto;
-  a {
-    /* Set the text properties */
-    color: #fff;
-    text-decoration: none;
-    text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    /* Set the geometry. If you fiddle with these you'll also need
-       to tweak the top and right values in .github-fork-ribbon. */
-    width: 200px;
-    line-height: 20px;
-    /* Set the layout properties */
-    display: inline-block;
+
+
+@media (min-width: 1500px) {
+  .github-link-sm {
+    display: none;
+  }
+
+  // START Github fork ribbon
+  /* Left will inherit from right (so we don't need to duplicate code) */
+  .github-fork-ribbon {
+    /* The right and left classes determine the side we attach our banner to */
+    position: absolute;
+    /* Add a bit of padding to give some substance outside the "stitching" */
     padding: 2px 0;
-    /* Add "stitching" effect */
-    border-width: 1px 0;
-    border-style: dotted;
-    border-color: #fff;
-    border-color: rgba(255, 255, 255, 0.7);
-    &:hover {
+    /* Set the base colour */
+    background-color: #a00;
+    /* Set a gradient: transparent black at the top to almost-transparent black at the bottom */
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+    /* Add a drop shadow */
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+    /* Set the font */
+    font: 700 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    z-index: 9999;
+    pointer-events: auto;
+
+    a {
       /* Set the text properties */
       color: #fff;
       text-decoration: none;
@@ -140,75 +137,97 @@ ul.tags li:not(:last-child):after {
       border-style: dotted;
       border-color: #fff;
       border-color: rgba(255, 255, 255, 0.7);
+
+      &:hover {
+        /* Set the text properties */
+        color: #fff;
+        text-decoration: none;
+        text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        /* Set the geometry. If you fiddle with these you'll also need
+           to tweak the top and right values in .github-fork-ribbon. */
+        width: 200px;
+        line-height: 20px;
+        /* Set the layout properties */
+        display: inline-block;
+        padding: 2px 0;
+        /* Add "stitching" effect */
+        border-width: 1px 0;
+        border-style: dotted;
+        border-color: #fff;
+        border-color: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+  .github-fork-ribbon-wrapper {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    z-index: 9999; //should really be on top of everything
+    pointer-events: none;
+    /*
+    @include until-mq(1100px){
+      display: none;
+    }
+    */
+    &.fixed {
+      position: fixed;
+    }
+
+    &.left {
+      left: 0;
+    }
+
+    &.right {
+      right: 0;
+    }
+
+    &.left-bottom {
+      position: fixed;
+      top: inherit;
+      bottom: 0;
+      left: 0;
+    }
+
+    &.right-bottom {
+      position: fixed;
+      top: inherit;
+      bottom: 0;
+      right: 0;
+    }
+  }
+
+  $rotation-angle: 45deg;
+  .github-fork-ribbon-wrapper {
+    &.right .github-fork-ribbon {
+      top: 42px;
+      right: -43px;
+      transform: rotate($rotation-angle);
+    }
+
+    &.left .github-fork-ribbon {
+      top: 42px;
+      left: -43px;
+      transform: rotate(-$rotation-angle);
+    }
+
+    &.left-bottom .github-fork-ribbon {
+      top: 80px;
+      left: -43px;
+      transform: rotate($rotation-angle);
+    }
+
+    &.right-bottom .github-fork-ribbon {
+      top: 80px;
+      right: -43px;
+      transform: rotate(-$rotation-angle);
     }
   }
 }
 
-.github-fork-ribbon-wrapper {
-  width: 150px;
-  height: 150px;
-  position: absolute;
-  overflow: hidden;
-  top: 0;
-  z-index: 9999; //should really be on top of everything
-  pointer-events: none;
-  /*
-  @include until-mq(1100px){
-    display: none;
-  }
-  */
-  &.fixed {
-    position: fixed;
-  }
-  &.left {
-    left: 0;
-  }
-  &.right {
-    right: 0;
-  }
-  &.left-bottom {
-    position: fixed;
-    top: inherit;
-    bottom: 0;
-    left: 0;
-  }
-  &.right-bottom {
-    position: fixed;
-    top: inherit;
-    bottom: 0;
-    right: 0;
-  }
-}
 
-$rotation-angle: 45deg;
-.github-fork-ribbon-wrapper {
-  &.right .github-fork-ribbon {
-    top: 42px;
-    right: -43px;
-    transform: rotate($rotation-angle);
-  }
-  &.left .github-fork-ribbon {
-    top: 42px;
-    left: -43px;
-    transform: rotate(-$rotation-angle);
-  }
-  &.left-bottom .github-fork-ribbon {
-    top: 80px;
-    left: -43px;
-    transform: rotate($rotation-angle);
-  }
-  &.right-bottom .github-fork-ribbon {
-    top: 80px;
-    right: -43px;
-    transform: rotate(-$rotation-angle);
-  }
-}
-
-#language-select{
-  width:20%;
-  float: right;
-  margin-top: 5px;
-}
 // END Github fork ribbon
 
 
@@ -223,6 +242,7 @@ $rotation-angle: 45deg;
 .card {
   margin-bottom: 0.5rem;
 }
+
 .card-body {
   padding: 0.8rem;
 }
@@ -234,9 +254,11 @@ $rotation-angle: 45deg;
 .badge {
   padding: 0.25rem;
 }
+
 .btn-sm {
   margin-right: 0.5rem;
 }
+
 // END bootstrap override
 
 label {
