@@ -46,6 +46,28 @@ adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (reque
   }
 });
 
+
+adminRouter.get('/tags', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
+  try {
+    const tags = await Bookmark.aggregate(
+      [
+        {$match: {shared: true}},
+        {$project: {"tags": 1}},
+        {$unwind: "$tags"},
+        {$group: {"_id": "$tags", "count": {"$sum": 1}}},
+        {$sort: {count: -1}}
+      ]
+    );
+
+    response.send(tags);
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+
 /**
  * Returns the bookmarks added recently.
  *
