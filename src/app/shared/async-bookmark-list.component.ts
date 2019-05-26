@@ -14,6 +14,7 @@ import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-b
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
 import { UserDataService } from '../core/user-data.service';
+import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -224,4 +225,23 @@ export class AsyncBookmarkListComponent implements OnInit {
     });
   }
 
+  shareBookmark(bookmark: Bookmark) {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.minWidth = 480;
+    dialogConfig.data = {
+      bookmark: bookmark,
+    };
+
+    const dialogRef = this.deleteDialog.open(SocialShareDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(
+      data => {
+        if (data === 'DELETE_CONFIRMED') {
+        }
+      }
+    );
+  }
 }
