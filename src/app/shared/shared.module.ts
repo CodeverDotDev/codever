@@ -11,6 +11,8 @@ import { MatAutocompleteModule, MatDialogModule, MatProgressSpinnerModule } from
 import { RouterModule } from '@angular/router';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
+import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
+import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 
 
 /**
@@ -19,6 +21,7 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
  */
 @NgModule({
   imports:      [
+    SocialButtonsModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -35,6 +38,7 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
     TagsValidatorDirective,
     DescriptionSizeValidatorDirective,
     DeleteBookmarkDialogComponent,
+    SocialShareDialogComponent,
     LoginRequiredDialogComponent,
   ],
   exports: [
@@ -50,7 +54,8 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
   ],
   entryComponents: [
     DeleteBookmarkDialogComponent,
-    LoginRequiredDialogComponent
+    LoginRequiredDialogComponent,
+    SocialShareDialogComponent
   ]
 })
 export class SharedModule { }

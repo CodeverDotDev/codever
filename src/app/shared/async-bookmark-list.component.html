@@ -43,7 +43,7 @@
         <a *ngFor="let tag of bookmark.tags" [routerLink]="['/tagged', tag]">
           <span class="badge badge-secondary float-xs-left" [innerHtml]="tag | highlight: queryText"></span>
         </a>
-
+        <span class="badge badge-light float-xl-right share-action" title="Share" (click)="shareBookmark(bookmark)"><i class="fas fa-share"></i> SHARE</span>
       </div>
     </div>
   </div>

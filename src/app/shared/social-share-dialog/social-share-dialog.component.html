@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Share Bookmark</h2>
+
+<hr>
+
+<mat-dialog-content>
+ <tweet
+   [url]="bookmark.location"
+   [text]="bookmark.name | slice:0:140"
+   [hashTags]="tagsStr"
+   (click)="onShareButtonClick()">
+ </tweet>
+</mat-dialog-content>
+
+<hr>
+
+<mat-dialog-actions class="app-dialog-actions" align="end">
+  <button type="button" class="btn btn-primary btn-sm" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>
