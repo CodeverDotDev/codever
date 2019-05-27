@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { TweetComponent } from './tweet.component';
+import { FbShareComponent } from './fb-share.component';
 
 @NgModule({
   declarations: [
-    TweetComponent
+    TweetComponent,
+    FbShareComponent
   ],
   exports: [
-    TweetComponent
+    TweetComponent,
+    FbShareComponent
   ]
 })
 export class SocialButtonsModule {}
