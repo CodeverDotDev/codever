@@ -22,7 +22,7 @@ export class FbShareComponent implements AfterViewInit {
     if (!window['fbAsyncInit']) {
       window['fbAsyncInit'] = function () {
         window['FB'].init({
-          appId: 'your-app-id',
+          appId: '1092807280906923', // bookmarks.dev
           autoLogAppEvents: true,
           xfbml: true,
           version: 'v3.0'

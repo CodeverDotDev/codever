@@ -231,7 +231,7 @@ export class AsyncBookmarkListComponent implements OnInit {
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.minWidth = 480;
+    dialogConfig.minWidth = 380;
     dialogConfig.data = {
       bookmark: bookmark,
     };
