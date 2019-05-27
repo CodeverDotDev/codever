@@ -10,6 +10,7 @@ import { AfterViewInit, Component, Input } from '@angular/core';
     <div class="fb-share-button"
          [attr.data-href]="url"
          data-layout="button_count"
+         data-size="large"
          data-share="true">
     </div>`
 })
