@@ -3,12 +3,23 @@
 <hr>
 
 <mat-dialog-content>
- <tweet
-   [url]="bookmark.location"
-   [text]="bookmark.name | slice:0:140"
-   [hashTags]="tagsStr"
-   (click)="onShareButtonClick()">
- </tweet>
+  <div class="share-buttons-wrapper">
+    <div class="row">
+      <div class="col">
+        <tweet
+          [url]="bookmark.location"
+          [text]="bookmark.name | slice:0:140"
+          [hashTags]="tagsStr"
+          (click)="onShareButtonClick()">
+        </tweet>
+      </div>
+      <div class="col">
+        <fb-share [url]="bookmark.location"></fb-share>
+      </div>
+    </div>
+  </div>
+
+
 </mat-dialog-content>
 
 <hr>
