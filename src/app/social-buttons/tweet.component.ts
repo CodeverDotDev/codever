@@ -5,7 +5,7 @@ import { Component, ElementRef, AfterViewInit, Input } from '@angular/core';
   template: `<a class="twitter-share-button"
                 href="https://twitter.com/intent/tweet"
 
-                [attr.data-size]="small"
+                [attr.data-size]="'large'"
                 [attr.data-text]="text"
                 [attr.data-url]="url"
                 [attr.data-hashtags]="hashTags"
