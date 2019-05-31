@@ -19,6 +19,7 @@ import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment';
 import {LoaderInterceptorService} from './core/loader/loader-interceptor.service';
 import {LoaderComponent} from './shared/loader/loader.component';
+import { SocialButtonsModule } from './social-buttons/social-buttons.module';
 
 @NgModule({
   exports: [
@@ -35,6 +36,7 @@ import {LoaderComponent} from './shared/loader/loader.component';
     CoreModule,
     KeycloakAngularModule,
     PublicBookmarksModule,
+    SocialButtonsModule,
     OverlayModule,
     // routing module
     AppRoutingModule,
