@@ -94,7 +94,11 @@ ul.tags li:not(:last-child):after {
   font-size: 1.2rem;
 }
 
-
+@media (max-width: 1499px) {
+  .github-fork-ribbon {
+    display: none;
+  }
+}
 
 @media (min-width: 1500px) {
   .github-link-sm {
