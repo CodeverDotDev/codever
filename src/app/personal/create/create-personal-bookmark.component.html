@@ -97,6 +97,9 @@
         <div *ngIf="tags.errors.tooManyTags">
           You can add maximum 8 tags.
         </div>
+        <div *ngIf="tags.errors.blockedTags">
+          The tag <strong>{{tags.errors.blockedTags.value}}</strong> is blocked. Please use others.
+        </div>
       </div>
     </div>
 

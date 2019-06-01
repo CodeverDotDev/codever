@@ -7,8 +7,40 @@ import {
 /** At least one tag is required with a maximum of 8 */
 export const tagsValidator: ValidatorFn = (control: FormArray): ValidationErrors | null => {
   const maxNumberOfTags = 8;
-  const validationResponse = control.length === 0 ? {'tagsAreRequired': true} : control.length > maxNumberOfTags ? {'tooManyTags': true} : null;
-  return validationResponse;
+  const validationResponse: ValidationErrors = {};
+  let invalid = false;
+  if (control.length === 0) {
+    validationResponse['tagsAreRequired'] = true;
+    invalid = true;
+  }
+
+  if (control.length > maxNumberOfTags) {
+    validationResponse['tooManyTags'] = true;
+    invalid = true;
+  }
+
+
+  const values: string[] = control.getRawValue();
+  let blockedTags = '';
+  for (let i = 0; i < values.length; i++) {
+    if (values[i].startsWith('awesome')) {
+      blockedTags = blockedTags.concat(' ' + values[i]);
+      invalid = true;
+      break;
+    }
+  }
+
+  if (blockedTags) {
+    validationResponse['blockedTags'] = {value: blockedTags};
+    invalid = true;
+  }
+
+  if (invalid) {
+    return validationResponse
+  } else {
+    return null;
+  }
+
 };
 
 @Directive({
@@ -20,3 +52,7 @@ export class TagsValidatorDirective implements Validator {
     return tagsValidator(control);
   }
 }
+
+/*export const blockedTags = [
+  'awesome'
+];*/
