@@ -138,6 +138,20 @@ describe('Personal Bookmarks tests', function () {
         });
     });
 
+    it('should fail trying to CREATE bookmark with blocked tags', function (done) {
+      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
+      invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'awesome', 'awesome-java'];
+      request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
+        .set('Authorization', bearerToken)
+        .send(invalidBookmark)
+        .end(function (error, response) {
+          expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+          expect(response.body.title).to.equal('The following tags are blocked: awesome awesome-java');
+          done();
+        });
+    });
+
     it('should fail trying to CREATE bookmark with a too big description', function (done) {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const textSnippet = "long text in the making";
@@ -316,6 +330,20 @@ describe('Personal Bookmarks tests', function () {
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
             expect(response.body.title).to.equal('Too many tags have been submitted');
+            done();
+          });
+      });
+
+      it('should fail trying to UPDATE bookmark with blocked tags', function (done) {
+        let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
+        invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'awesome', 'awesome-java'];
+        request(app)
+          .put(`${baseApiUrlUnderTest}${testUserId}/bookmarks/${createdBookmark._id}`)
+          .set('Authorization', bearerToken)
+          .send(invalidBookmark)
+          .end(function (error, response) {
+            expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+            expect(response.body.title).to.equal('The following tags are blocked: awesome awesome-java');
             done();
           });
       });
