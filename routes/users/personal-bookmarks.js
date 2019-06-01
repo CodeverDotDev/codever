@@ -56,6 +56,20 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
       .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
+  let blockedTags = '';
+  for (let i = 0; i < bookmark.tags.length; i++){
+    const tag = bookmark.tags[i];
+    if(tag.startsWith('awesome')) {
+      blockedTags = blockedTags.concat(' ' + tag);
+    }
+  }
+
+  if (blockedTags) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('The following tags are blocked:' + blockedTags, ['The following tags are blocked:' + blockedTags]));
+  }
+
   if ( bookmark.description ) {
     const descriptionIsTooLong = bookmark.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
     if ( descriptionIsTooLong ) {
@@ -276,6 +290,19 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
+  }
+
+  let blockedTags = '';
+  for (let i = 0; i < request.body.tags.length; i++){
+    const tag = request.body.tags[i];
+    if(tag.startsWith('awesome')) {
+      blockedTags = blockedTags.concat(' ' + tag);
+    }
+  }
+  if (blockedTags) {
+    return response
+      .status(HttpStatus.BAD_REQUEST)
+      .send(new MyError('The following tags are blocked:' + blockedTags, ['The following tags are blocked:' + blockedTags]));
   }
 
   const descriptionIsTooLong = request.body.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;

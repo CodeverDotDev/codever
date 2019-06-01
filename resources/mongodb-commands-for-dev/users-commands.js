@@ -12,11 +12,12 @@ db.users.update({},
   {multi:true}
 );
 
+{{description.errors.tooManyCharacters.value}}
 
-//remove a tag from all bookmarks
+//remove a tag from all public bookmarks
 db.bookmarks.update(
-  { },
-  { $pull: { tags: "awesome" } },
+  { shared: true},
+  { $pull: { tags: "algoritmos" } },
   { multi: true }
 );
 
