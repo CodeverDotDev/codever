@@ -2,16 +2,17 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Login is required</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"  (click)="onCancelClick()">
+        <h5 class="modal-title">Bookmark already public</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCancelClick()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>This URL is already public on Bookmarks.dev. You can save it as private and star it to help it get exposure</p>
+        <p>This URL is already public on Bookmarks.dev. You can save it as private and star it to help it get
+          exposure</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary"(click)="onStarClick()">Star bookmark</button>
+        <button type="button" class="btn btn-primary" (click)="onStarClick()">Star bookmark</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onCancelClick()">Cancel</button>
       </div>
     </div>
@@ -34,7 +35,7 @@
         You have already bookmarked this URL.
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group form-group-distanced">
       <label for="name">Title*</label>
       <input type="text" class="form-control" id="name"
              required
@@ -45,7 +46,14 @@
         Name is required
       </div>
     </div>
-      <div class="form-group">
+    <div class="form-check" style="margin-bottom: 1.5rem; margin-top: 1rem">
+      <label class="form-check-label">
+        <input #publicBookmark [checked]="makePublic" (click)="onClickMakePublic(publicBookmark.checked)"
+               class="form-check-input" type="checkbox" value="true" formControlName="shared">
+        <strong> Public</strong> - pls favor <a href="https://github.com/CodepediaOrg/bookmarks/blob/master/tags/public-tags-simple.json" target="_blank">recommended tags</a> (<em>spam will not be tolerated</em>)
+      </label>
+    </div>
+    <div class="form-group form-group-distanced">
       <label for="language">Language*</label>
       <select class="form-control form-control-sm"
               id="language"
@@ -56,8 +64,8 @@
       </select>
     </div>
 
-    <div id="tags">
-      <mat-form-field  class="full-width">
+    <div id="tags" class="form-group-distanced">
+      <mat-form-field class="full-width">
         <mat-chip-list #chipList>
           <mat-chip *ngFor="let tag of tags.controls; let i = index;" [selectable]="selectable"
                     [removable]="removable" (removed)="remove(i)">
@@ -89,16 +97,19 @@
         <div *ngIf="tags.errors.tooManyTags">
           You can add maximum 8 tags.
         </div>
+        <div *ngIf="tags.errors.blockedTags">
+          The tag <strong>{{tags.errors.blockedTags.value}}</strong> is blocked. Please use others.
+        </div>
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group form-group-distanced">
       <label for="publishedOn">Published on <i class="far fa-calendar-alt"></i></label>
       <input type="date" class="form-control" id="publishedOn"
              formControlName="publishedOn"
              placeholder='Date when page was published yyyy-MM-dd'>
     </div>
-    <div class="form-group">
+    <div class="form-group form-group-distanced">
       <label for="githubURL">Source code URL <i class="fab fa-github"></i></label>
       <input type="url"
              class="form-control"
@@ -107,7 +118,9 @@
              placeholder='URL of the post, project on GitHub - e.g. https://github.com/CodepediaOrg/bookmarks'>
     </div>
     <div class="form-group">
-      <label for="description" style="width: 100%">Description - <i class="fab fa-markdown"></i> <a class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is supported</a></label>
+      <label for="description" style="width: 100%">Description - <i class="fab fa-markdown"></i> <a
+        class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
+        supported</a></label>
       <textarea class="form-control"
                 id="description"
                 formControlName="description"
@@ -121,17 +134,13 @@
           Your description has {{description.errors.tooManyLines.value}} lines. Maximum 100 lines are allowed.
         </div>
         <div *ngIf="description.errors.tooManyCharacters">
-          Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 1500 characters are allowed.
+          Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 1500 characters are
+          allowed.
         </div>
       </div>
     </div>
-    <div class="form-check" style="margin-bottom: 0.5rem">
-      <label class="form-check-label">
-        <input #publicBookmark [checked]="makePublic" (click)="onClickMakePublic(publicBookmark.checked)" class="form-check-input" type="checkbox" value="true" formControlName="shared">
-        <strong> Make this bookmark public so others can benefit</strong>
-      </label>
-    </div>
-    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid || personalBookmarkPresent">Submit</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid || personalBookmarkPresent">Submit
+    </button>
   </form>
 </div>
 
