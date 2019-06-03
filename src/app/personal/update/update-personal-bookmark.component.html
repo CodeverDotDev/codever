@@ -39,14 +39,20 @@
         </div>
       </div>
       <div class="form-group">
+        <label for="shared" id="shared_label">
+          <input type="checkbox" id="shared" name="shared" [(ngModel)]="bookmark.shared">
+          <strong> Make Public</strong> - pls favor <a href="https://github.com/CodepediaOrg/bookmarks/blob/master/tags/public-tags-simple.json" target="_blank">recommended tags</a> (<em>spam will not be tolerated</em>)
+        </label>
+      </div>
+      <div class="form-group">
         <label for="language">Language*</label>
         <select class="form-control form-control-sm"
                 id="language"
                 name="language"
                 [(ngModel)]="bookmark.language"
                 style="width:20%;">
-            <option *ngFor="let lang of languages" [value]="lang.code">{{lang.name}}</option>
-         </select>
+          <option *ngFor="let lang of languages" [value]="lang.code">{{lang.name}}</option>
+        </select>
       </div>
 
       <label for="tags">Tags*</label>
@@ -98,7 +104,9 @@
                placeholder='URL of the post, project on GitHub - e.g. https://github.com/CodepediaOrg/bookmarks'>
       </div>
       <div class="form-group">
-        <label for="description" style="width: 100%">Description - <i class="fab fa-markdown"></i> <a class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is supported</a></label>
+        <label for="description" style="width: 100%">Description - <i class="fab fa-markdown"></i> <a
+          class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
+          supported</a></label>
         <textarea class="form-control"
                   id="description"
                   name="description"
@@ -109,22 +117,17 @@
                   #description="ngModel"
         >
         </textarea>
-        <div class="description-chars-counter">{{bookmark.description ? bookmark.description.length: 0}} / 1500</div>
+        <div class="description-chars-counter">{{bookmark.description ? bookmark.description.length : 0}} / 1500</div>
         <div class="clear"></div>
         <div *ngIf="description.invalid && (description.dirty || description.touched)" class="alert alert-danger">
           <div *ngIf="description.errors.tooManyLines">
             Your description has {{description.errors.tooManyLines.value}} lines. Maximum 100 lines are allowed.
           </div>
           <div *ngIf="description.errors.tooManyCharacters">
-            Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 1500 characters are allowed.
+            Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 1500 characters are
+            allowed.
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="shared" id="shared_label">
-          <input type="checkbox" id="shared" name="shared" [(ngModel)]="bookmark.shared">
-          <strong> Make this bookmark public so others can benefit</strong>
-        </label>
       </div>
       <button type="submit" class="btn btn-primary" [disabled]="bookmarkForm.invalid">Save</button>
     </form>
