@@ -14,6 +14,7 @@ export class NavigationComponent implements OnInit {
 
   isLoggedIn: boolean;
   userDetails: KeycloakProfile;
+  environment = environment;
 
   ngOnInit() {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {

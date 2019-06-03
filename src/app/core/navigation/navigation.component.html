@@ -31,10 +31,13 @@
          aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-user"></i>
       </a>
-      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="{{environment.keycloak.url}}/realms/bookmarks/account/" target="_blank">Account <i class="fas fa-user-shield"></i></a>
+        <div class="dropdown-divider"></div>
         <span class="dropdown-item-text">
           {{userDetails.firstName}} {{userDetails.lastName}}</span>
         <span class="navbar-text dropdown-item-text">{{userDetails.email}}</span>
+
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#" (click)="logout()">Sign out</a>
       </div>
