@@ -6,12 +6,13 @@ import { ErrorService } from './error/error.service';
 import { ErrorComponent } from './error/error.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { RouterModule } from '@angular/router';
-import { PersonalBookmarksStore } from './store/personal-bookmarks-store.service';
 import { PersonalBookmarksService } from './personal-bookmarks.service';
 import { UserDataService } from './user-data.service';
 import { UserDataStore } from './user/userdata.store';
 import { LoaderService } from './loader/loader.service';
 import { KeycloakServiceWrapper } from './keycloak-service-wrapper.service';
+import { UserInfoService } from './user/user-info.service';
+import { UserInfoStore } from './user/user-info.store';
 
 
 /**
@@ -37,10 +38,11 @@ import { KeycloakServiceWrapper } from './keycloak-service-wrapper.service';
     BookmarkFilterService,
     Logger,
     ErrorService,
-    PersonalBookmarksStore,
     PersonalBookmarksService,
     UserDataService,
     UserDataStore,
+    UserInfoService,
+    UserInfoStore,
     LoaderService,
     KeycloakServiceWrapper
   ]

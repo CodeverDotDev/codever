@@ -19,7 +19,7 @@ export class DeleteBookmarkDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) data
   ) {
     this.bookmark = data.bookmark;
-    this.showWarning = this.bookmark.stars > 1 || (this.bookmark.stars === 1 && !data.userData.stars.includes(this.bookmark._id));
+    this.showWarning = this.bookmark.stars > 1 || (this.bookmark.stars === 1 && !data.userData$.stars.includes(this.bookmark._id));
   }
 
   ngOnInit() {

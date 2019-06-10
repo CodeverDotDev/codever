@@ -4,6 +4,9 @@ import { KeycloakService } from 'keycloak-angular';
 import { environment } from '../../../environments/environment';
 import { KeycloakServiceWrapper } from '../keycloak-service-wrapper.service';
 import { KeycloakProfile } from 'keycloak-js';
+import { UserInfoOidc } from '../model/user-info.oidc';
+import { UserInfoStore } from '../user/user-info.store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-navigation',
@@ -13,15 +16,13 @@ import { KeycloakProfile } from 'keycloak-js';
 export class NavigationComponent implements OnInit {
 
   isLoggedIn: boolean;
-  userDetails: KeycloakProfile;
+  userInfo$: Observable<UserInfoOidc>;
   environment = environment;
 
   ngOnInit() {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.keycloakService.loadUserProfile().then(data => {
-          this.userDetails = data;
-        });
+        this.userInfo$ = this.userInfoStore.getUserInfo$();
         this.isLoggedIn = true;
       } else {
         this.isLoggedIn = false;
@@ -29,7 +30,9 @@ export class NavigationComponent implements OnInit {
     });
   }
 
-  constructor(private keycloakService: KeycloakService, private keycloakServiceWrapper: KeycloakServiceWrapper) {
+  constructor(private keycloakService: KeycloakService,
+              private userInfoStore: UserInfoStore,
+              private keycloakServiceWrapper: KeycloakServiceWrapper) {
   }
 
   logout() {

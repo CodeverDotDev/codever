@@ -50,7 +50,7 @@ export class TagComponent implements OnInit {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.keycloakService.loadUserProfile().then(keycloakProfile => {
-          this.userDataStore.getUserData().subscribe(data => {
+          this.userDataStore.getUserData$().subscribe(data => {
               this.userData = data;
             },
             error => {
