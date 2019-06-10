@@ -10,8 +10,12 @@ import { UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
+import { UserInfoService } from './user-info.service';
+import { UserInfoStore } from './user-info.store';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserDataStore {
 
   private _userData: ReplaySubject<UserData> = new ReplaySubject(1);
@@ -41,11 +45,14 @@ export class UserDataStore {
               private router: Router,
               private errorService: ErrorService,
               private keycloakService: KeycloakService,
+              private userInfoService: UserInfoService,
+              private userInfoStore: UserInfoStore,
   ) {
+
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.keycloakService.loadUserProfile().then(keycloakProfile => {
-          this.userId = keycloakProfile.id;
+        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+          this.userId = userInfo.sub;
           this.loadInitialData(this.userId);
         });
       }
@@ -85,7 +92,7 @@ export class UserDataStore {
     );
   }
 
-  getUserData(): Observable<UserData> {
+  getUserData$(): Observable<UserData> {
     return this._userData.asObservable();
   }
 
@@ -127,7 +134,6 @@ export class UserDataStore {
     });
   }
 
-
   private publishReadLaterAfterDeletion(bookmark: Bookmark) {
     if (this.laterReadsHaveBeenLoaded) {
       const laterReads: Bookmark[] = this._laterReads.getValue();
@@ -141,7 +147,7 @@ export class UserDataStore {
 
   getStarredBookmarks(): Observable<Bookmark[]> {
     if (!this.starredBookmarksHaveBeenLoaded) {
-      const starredBookmarks$ = this.userService.getStarredBookmarks(this.userId).subscribe(data => {
+      this.userService.getStarredBookmarks(this.userId).subscribe(data => {
         this.starredBookmarksHaveBeenLoaded = true;
         this._stars.next(data);
       });
@@ -150,20 +156,33 @@ export class UserDataStore {
   }
 
   addToStarredBookmarks(bookmark: Bookmark) {
-    if (this.starredBookmarksHaveBeenLoaded) {
-      const starredBookmarks: Bookmark[] = this._stars.getValue();
-      starredBookmarks.unshift(bookmark);
-      this._stars.next(starredBookmarks);
-    }
+    this.userData.stars.unshift(bookmark._id);
+    this.updateUserData(this.userData).subscribe(() => {
+      if (this.starredBookmarksHaveBeenLoaded) {
+        const starredBookmarks: Bookmark[] = this._stars.getValue();
+        starredBookmarks.unshift(bookmark);
+        this._stars.next(starredBookmarks);
+      }
+    });
   }
 
   removeFromStarredBookmarks(bookmark: Bookmark) {
+    this.userData.stars = this.userData.stars.filter(x => x !== bookmark._id);
+    this.updateUserData(this.userData).subscribe( () => {
+      this.publishStarredBookmarksAfterDeletion(bookmark);
+    });
+
+  }
+
+  private publishStarredBookmarksAfterDeletion(bookmark: Bookmark) {
     if (this.starredBookmarksHaveBeenLoaded) {
-      const starredBookmarks: Bookmark[] = this._stars.getValue();
-      const index = starredBookmarks.findIndex((starredBookmark) => bookmark._id === starredBookmark._id);
-      if (index !== -1) {
-        starredBookmarks.splice(index, 1);
-        this._stars.next(starredBookmarks);
+      if (this.starredBookmarksHaveBeenLoaded) {
+        const starredBookmarks: Bookmark[] = this._stars.getValue();
+        const index = starredBookmarks.findIndex((starredBookmark) => bookmark._id === starredBookmark._id);
+        if (index !== -1) {
+          starredBookmarks.splice(index, 1);
+          this._stars.next(starredBookmarks);
+        }
       }
     }
   }
@@ -248,7 +267,7 @@ export class UserDataStore {
       this.publishHistoryAfterDeletion(bookmark);
       this.publishedPinnedAfterDeletion(bookmark);
       this.publishReadLaterAfterDeletion(bookmark);
-      this.removeFromStarredBookmarks(bookmark);
+      this.publishStarredBookmarksAfterDeletion(bookmark);
     });
 
   }

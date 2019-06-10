@@ -2,7 +2,6 @@ import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angul
 import { Observable } from 'rxjs';
 import { Bookmark } from '../core/model/bookmark';
 import { Router } from '@angular/router';
-import { PersonalBookmarksStore } from '../core/store/personal-bookmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
 import { PublicBookmarksStore } from '../public/bookmarks/store/public-bookmarks-store.service';
 import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
@@ -15,6 +14,7 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
 import { UserDataService } from '../core/user-data.service';
 import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
+import { UserInfoStore } from '../core/user/user-info.store';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -39,13 +39,13 @@ export class AsyncBookmarkListComponent implements OnInit {
   bookmarkDeleted = new EventEmitter<boolean>();
 
   private router: Router;
-  private personalBookmarksStore: PersonalBookmarksStore;
   private userDataStore: UserDataStore;
   private publicBookmarksStore: PublicBookmarksStore;
   private publicBookmarksService: PublicBookmarksService;
   private personalBookmarksService: PersonalBookmarksService;
   private keycloakService: KeycloakService;
   private userDataService: UserDataService;
+  private userInfoStore: UserInfoStore;
 
   userIsLoggedIn = false;
 
@@ -71,11 +71,11 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.publicBookmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
     this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
     this.userDataService = <UserDataService>this.injector.get(UserDataService);
+    this.userInfoStore = <UserInfoStore>this.injector.get(UserInfoStore);
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.personalBookmarksStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
         this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
       }
     });
@@ -84,8 +84,8 @@ export class AsyncBookmarkListComponent implements OnInit {
   ngOnInit(): void {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.keycloakService.loadUserProfile().then(keycloakProfile => {
-          this.userId = keycloakProfile.id;
+        this.userInfoStore.getUserInfo$().subscribe( userInfo => {
+          this.userId = userInfo.sub;
         });
       }
     });

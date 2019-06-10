@@ -33,32 +33,38 @@ export class UserDataService {
 
   getUserData(userId: string): Observable<UserData> {
     return this.httpClient
-      .get<UserData>(`${this.usersApiBaseUrl}/${userId}`);
+      .get<UserData>(`${this.usersApiBaseUrl}/${userId}`)
+      .pipe(shareReplay());
   }
 
   getLaterReads(userId: string): Observable<Bookmark[]> {
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/later-reads`);
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/later-reads`)
+      .pipe(shareReplay());
   }
 
   getStarredBookmarks(userId: string): Observable<Bookmark[]> {
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/stars`);
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/stars`)
+      .pipe(shareReplay());
   }
 
   getPinnedBookmarks(userId: string): Observable<Bookmark[]> {
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/pinned`);
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/pinned`)
+      .pipe(shareReplay());
   }
 
   getLastVisitedBookmarks(userId: string): Observable<Bookmark[]> {
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`);
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`)
+      .pipe(shareReplay());
   }
 
   getBookmarksForWatchedTags(userId: string): Observable<Bookmark[]> {
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/watched-tags`);
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/watched-tags`)
+      .pipe(shareReplay());
   }
 
 

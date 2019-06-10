@@ -22,7 +22,7 @@ export class HomepageComponent implements OnInit {
 
   publicBookmarks$: Observable<List<Bookmark>>;
   tags: string[] = allTags;
-  userData: UserData;
+  userData$: UserData;
   counter = 20;
 
   @ViewChild(BookmarksSearchComponent)
@@ -35,7 +35,7 @@ export class HomepageComponent implements OnInit {
   bookmarksForWatchedTags$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
-  userIsLoggedInPromise: Promise<boolean>;
+  userIsLoggedIn$: Promise<boolean>;
 
   selectedIndex: number;
 
@@ -49,19 +49,17 @@ export class HomepageComponent implements OnInit {
 
   ngOnInit(): void {
     const selectedTab = this.route.snapshot.queryParamMap.get('tab');
-    this.userIsLoggedInPromise = this.keycloakService.isLoggedIn();
-    this.userIsLoggedInPromise.then(isLoggedIn => {
+    this.userIsLoggedIn$ = this.keycloakService.isLoggedIn();
+    this.userIsLoggedIn$.then(isLoggedIn => {
       if (isLoggedIn) {
-        this.keycloakService.loadUserProfile().then(keycloakProfile => {
-          this.userIsLoggedIn = true;
-          this.userDataStore.getUserData().subscribe(data => {
-              this.userData = data;
-              this.selectTabWhenLoggedIn(selectedTab);
-            },
-            error => {
-            }
-          );
-        });
+        this.userIsLoggedIn = true;
+        this.userDataStore.getUserData$().subscribe(data => {
+            this.userData$ = data;
+            this.selectTabWhenLoggedIn(selectedTab);
+          },
+          error => {
+          }
+        );
       } else {
         this.selectedTabWhenNotLoggedIn(selectedTab);
       }
@@ -72,7 +70,6 @@ export class HomepageComponent implements OnInit {
   private selectTabWhenLoggedIn(selectedTab) {
     switch (selectedTab) {
       case 'history': {
-
         this.selectedIndex = 1;
         this.history$ = this.userDataStore.getHistory();
         break;
