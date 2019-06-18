@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { ErrorService } from '../../core/error/error.service';
 import { UserDataService } from '../../core/user-data.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
+import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -62,18 +63,17 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private markdownService: MarkdownService,
     private publicBookmarksStore: PublicBookmarksStore,
     private personalBookmarksService: PersonalBookmarksService,
+    private suggestedTagsStore: SuggestedTagsStore,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private logger: Logger,
     private router: Router,
     private errorService: ErrorService
   ) {
-
-    // keycloakService.loadUserProfile().then(keycloakProfile => {
       this.userInfoStore.getUserInfo$().subscribe(userInfo => {
         this.userId = userInfo.sub;
 
-        personalBookmarksService.getTagsOfUser(this.userId).subscribe(tags => {
+        this.suggestedTagsStore.getSuggestedTags$(this.userId).subscribe(tags => {
           this.autocompleteTags = tags.sort();
 
           this.filteredTags = this.tagsControl.valueChanges.pipe(

@@ -35,8 +35,8 @@ export class NavigationComponent implements OnInit {
               private keycloakServiceWrapper: KeycloakServiceWrapper) {
   }
 
-  logout() {
-    this.keycloakService.logout(environment.APP_HOME_URL);
+  async logout() {
+    await this.keycloakService.logout(environment.APP_HOME_URL);
   }
 
   login() {

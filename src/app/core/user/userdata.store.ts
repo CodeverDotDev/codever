@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Logger } from '../logger.service';
 import { ErrorService } from '../error/error.service';
-import { Router } from '@angular/router';
 
 import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../model/user-data';
@@ -12,12 +11,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
 import { UserInfoService } from './user-info.service';
 import { UserInfoStore } from './user-info.store';
+import { RateBookmarkRequest, RatingActionType } from '../model/rate-bookmark.request';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserDataStore {
 
+  private loadInitilDataCalled = false;
   private _userData: ReplaySubject<UserData> = new ReplaySubject(1);
 
   private _laterReads: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
@@ -42,7 +43,6 @@ export class UserDataStore {
 
   constructor(private userService: UserDataService,
               private logger: Logger,
-              private router: Router,
               private errorService: ErrorService,
               private keycloakService: KeycloakService,
               private userInfoService: UserInfoService,
@@ -60,6 +60,8 @@ export class UserDataStore {
   }
 
   public loadInitialData(userId: string) {
+    this.userId = userId;
+    this.loadInitilDataCalled = true;
     this.userService.getUserData(userId).subscribe(data => {
         this.userData = data;
         this.userData.searches = this.userData.searches.sort((a, b) => {
@@ -67,7 +69,6 @@ export class UserDataStore {
             : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
           return result;
         });
-
         this._userData.next(this.userData)
       },
       (errorResponse: HttpErrorResponse) => {
@@ -93,6 +94,9 @@ export class UserDataStore {
   }
 
   getUserData$(): Observable<UserData> {
+    if ( !this.loadInitilDataCalled ) {
+      this.loadInitialData(this.userId);
+    }
     return this._userData.asObservable();
   }
 
@@ -108,7 +112,7 @@ export class UserDataStore {
     return obs;
   }
 
-  getLaterReads(): Observable<Bookmark[]> {
+  getLaterReads$(): Observable<Bookmark[]> {
     if (!this.laterReadsHaveBeenLoaded) {
       this.userService.getLaterReads(this.userId).subscribe(data => {
         this.laterReadsHaveBeenLoaded = true;
@@ -119,12 +123,14 @@ export class UserDataStore {
   }
 
   addToLaterReads(bookmark: Bookmark) {
-    if (this.laterReadsHaveBeenLoaded) {
-      const laterReads: Bookmark[] = this._laterReads.getValue();
-      laterReads.push(bookmark);
-      this._laterReads.next(laterReads); // insert at the top (index 0)
-    }
-
+    this.userData.readLater.push(bookmark._id);
+    this.updateUserData(this.userData).subscribe(() => {
+      if (this.laterReadsHaveBeenLoaded) {
+        const laterReads: Bookmark[] = this._laterReads.getValue();
+        laterReads.push(bookmark);
+        this._laterReads.next(laterReads); // insert at the top (index 0)
+      }
+    });
   }
 
   removeFromLaterReads(bookmark: Bookmark) {
@@ -145,7 +151,7 @@ export class UserDataStore {
     }
   }
 
-  getStarredBookmarks(): Observable<Bookmark[]> {
+  getStarredBookmarks$(): Observable<Bookmark[]> {
     if (!this.starredBookmarksHaveBeenLoaded) {
       this.userService.getStarredBookmarks(this.userId).subscribe(data => {
         this.starredBookmarksHaveBeenLoaded = true;
@@ -187,7 +193,7 @@ export class UserDataStore {
     }
   }
 
-  getPinnedBookmarks(): Observable<Bookmark[]> {
+  getPinnedBookmarks$(): Observable<Bookmark[]> {
     if (!this.pinnedBookmarksHaveBeenLoaded) {
       this.userService.getPinnedBookmarks(this.userId).subscribe(data => {
         this.pinnedBookmarksHaveBeenLoaded = true;
@@ -227,7 +233,7 @@ export class UserDataStore {
     }
   }
 
-  getHistory(): Observable<Bookmark[]> {
+  getHistory$(): Observable<Bookmark[]> {
     if (!this.historyHasBeenLoaded) {
       this.userService.getLastVisitedBookmarks(this.userId).subscribe(data => {
         this.historyHasBeenLoaded = true;
@@ -284,7 +290,7 @@ export class UserDataStore {
 
   }
 
-  getBookmarksForWatchedTags(): Observable<Bookmark[]> {
+  getBookmarksForWatchedTags$(): Observable<Bookmark[]> {
     if (!this.bookmarksForWatchedTagsHaveBeenLoaded || this.forceReloadOfBookmarksForWatchedTags) {
       this.bookmarksForWatchedTagsHaveBeenLoaded = true;
       this.forceReloadOfBookmarksForWatchedTags = false;
@@ -298,5 +304,61 @@ export class UserDataStore {
   public forceReloadBookmarksForWatchedTags(): void {
     this.forceReloadOfBookmarksForWatchedTags = true;
   }
+
+  starBookmark(bookmark: Bookmark) {
+    bookmark.stars++;
+    this.userData.stars.unshift(bookmark._id);
+    const rateBookmarkRequest: RateBookmarkRequest = {
+      ratingUserId: this.userId,
+      action: RatingActionType.STAR,
+      bookmark: bookmark
+    }
+    this.rateBookmark(rateBookmarkRequest);
+  }
+
+  unstarBookmark(bookmark: Bookmark) {
+    bookmark.stars--;
+    this.userData.stars.splice(this.userData.stars.indexOf(bookmark._id), 1);
+    const rateBookmarkRequest: RateBookmarkRequest = {
+      ratingUserId: this.userId,
+      action: RatingActionType.UNSTAR,
+      bookmark: bookmark
+    }
+
+    this.rateBookmark(rateBookmarkRequest);
+  }
+
+  private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
+    this.userService.rateBookmark(rateBookmarkRequest).subscribe(() => {
+      if (rateBookmarkRequest.action === RatingActionType.STAR) {
+        this.addToStarredBookmarks(rateBookmarkRequest.bookmark);
+      } else {
+        this.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
+      }
+    });
+  }
+
+  watchTag(tag: string) {
+    this.userData.watchedTags.push(tag);
+    this.updateUserData(this.userData).subscribe(() => {
+      this.forceReloadBookmarksForWatchedTags();
+    });
+  }
+
+  unwatchTag(tag: string) {
+    const index = this.userData.watchedTags.indexOf(tag);
+    if (index > -1) {
+      this.userData.watchedTags.splice(index, 1);
+      this.updateUserData(this.userData).subscribe( () => {
+        this.forceReloadBookmarksForWatchedTags();
+      });
+    }
+  }
+
+  resetUserDataStore() {
+    this.loadInitilDataCalled = false;
+    this._userData.next(null);
+  }
+
 }
 
