@@ -13,6 +13,7 @@ import { LoaderService } from './loader/loader.service';
 import { KeycloakServiceWrapper } from './keycloak-service-wrapper.service';
 import { UserInfoService } from './user/user-info.service';
 import { UserInfoStore } from './user/user-info.store';
+import { SuggestedTagsStore } from './user/suggested-tags.store';
 
 
 /**
@@ -43,6 +44,7 @@ import { UserInfoStore } from './user/user-info.store';
     UserDataStore,
     UserInfoService,
     UserInfoStore,
+    SuggestedTagsStore,
     LoaderService,
     KeycloakServiceWrapper
   ]

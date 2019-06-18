@@ -9,6 +9,9 @@ import { allTags } from '../../core/model/all-tags.const.en';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakService } from 'keycloak-angular';
 import { UserDataStore } from '../../core/user/userdata.store';
+import { UserInfo } from 'os';
+import { UserInfoStore } from '../../core/user/user-info.store';
+import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -37,6 +40,8 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
     private userDataStore: UserDataStore,
     private keycloakService: KeycloakService,
     private markdownService: MarkdownService,
+    private userInfoStore: UserInfoStore,
+    private suggestedTagsStore: SuggestedTagsStore,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -45,8 +50,8 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
   ngOnInit(): void {
     this.bookmark = window.history.state.bookmark;
-    this.keycloakService.loadUserProfile().then(keycloakProfile => {
-      this.personalBookmarksService.getTagsOfUser(keycloakProfile.id).subscribe(tags => {
+    this.userInfoStore.getUserInfo$().subscribe( userInfo => {
+      this.suggestedTagsStore.getSuggestedTags$(userInfo.sub).subscribe(tags => {
         this.autocompleteTags = tags.sort();
         this.tdTags = this.autocompleteTags;
       });

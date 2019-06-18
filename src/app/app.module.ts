@@ -21,6 +21,7 @@ import {LoaderInterceptorService} from './core/loader/loader-interceptor.service
 import {LoaderComponent} from './shared/loader/loader.component';
 import { SocialButtonsModule } from './social-buttons/social-buttons.module';
 import { UserInfoStore } from './core/user/user-info.store';
+import { UserDataStore } from './core/user/userdata.store';
 
 @NgModule({
   exports: [
@@ -48,7 +49,7 @@ import { UserInfoStore } from './core/user/user-info.store';
       provide: APP_INITIALIZER,
       useFactory: initializer,
       multi: true,
-      deps: [KeycloakService, UserInfoStore]
+      deps: [KeycloakService, UserInfoStore, UserDataStore]
     },
     {
       provide: MAT_CHIPS_DEFAULT_OPTIONS,
