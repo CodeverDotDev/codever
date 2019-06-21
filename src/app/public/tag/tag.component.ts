@@ -8,6 +8,8 @@ import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
+import { UserInfo } from 'os';
+import { UserInfoStore } from '../../core/user/user-info.store';
 
 @Component({
   selector: 'app-tag',
@@ -27,6 +29,7 @@ export class TagComponent implements OnInit {
 
   constructor(private tagService: TagService,
               private userDataStore: UserDataStore,
+              private userInfoStore: UserInfoStore,
               private keycloakService: KeycloakService,
               private route: ActivatedRoute,
               private loginDialog: MatDialog) {
@@ -49,7 +52,9 @@ export class TagComponent implements OnInit {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userData$ = this.userDataStore.getUserData$();
+        this.userInfoStore.getUserInfo$().subscribe( userInfo => {
+          this.userData$ = this.userDataStore.getUserData$();
+        });
       }
     });
   }
