@@ -62,7 +62,7 @@
 
 <div *ngIf="showSearchResults">
   <app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="searchText"
-                           [shownSize]="counter" [userData]="_userData"
+                           [shownSize]="counter" [userData$]="userData$"
                            (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
   <div *ngIf="numberOfResultsFiltered > 0">
     <button type="button" class="btn btn-primary btn-lg btn-block" (click)="onShowMoreResults()"

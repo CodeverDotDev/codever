@@ -6,7 +6,7 @@
   Are you sure you want to delete the following bookmark?
   <p><strong>{{bookmark.name}}</strong></p>
 
-  <div *ngIf="showWarning" class="alert alert-warning" role="alert">
+  <div *ngIf="this.bookmark.stars > 1 || (this.bookmark.stars === 1 && !(userData$ | async).stars.includes(this.bookmark._id))" class="alert alert-warning" role="alert">
     Please take into consideration that other people have starred this bookmark!
   </div>
 </mat-dialog-content>

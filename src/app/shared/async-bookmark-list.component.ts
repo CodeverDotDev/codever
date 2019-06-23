@@ -2,19 +2,16 @@ import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angul
 import { Observable } from 'rxjs';
 import { Bookmark } from '../core/model/bookmark';
 import { Router } from '@angular/router';
-import { PersonalBookmarksStore } from '../core/store/personal-bookmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
 import { PublicBookmarksStore } from '../public/bookmarks/store/public-bookmarks-store.service';
-import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
-import { RateBookmarkRequest, RatingActionType } from '../core/model/rate-bookmark.request';
 import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
-import { UserDataService } from '../core/user-data.service';
 import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
+import { UserInfoStore } from '../core/user/user-info.store';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -33,19 +30,17 @@ export class AsyncBookmarkListComponent implements OnInit {
   queryText: string;
 
   @Input()
-  userData: UserData;
+  userData$: Observable<UserData>;
 
   @Output()
   bookmarkDeleted = new EventEmitter<boolean>();
 
   private router: Router;
-  private personalBookmarksStore: PersonalBookmarksStore;
   private userDataStore: UserDataStore;
   private publicBookmarksStore: PublicBookmarksStore;
-  private publicBookmarksService: PublicBookmarksService;
   private personalBookmarksService: PersonalBookmarksService;
   private keycloakService: KeycloakService;
-  private userDataService: UserDataService;
+  private userInfoStore: UserInfoStore;
 
   userIsLoggedIn = false;
 
@@ -68,25 +63,17 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.router = <Router>this.injector.get(Router);
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
-    this.publicBookmarksService = <PublicBookmarksService>this.injector.get(PublicBookmarksService);
     this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
-    this.userDataService = <UserDataService>this.injector.get(UserDataService);
+    this.userInfoStore = <UserInfoStore>this.injector.get(UserInfoStore);
+    this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
 
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.personalBookmarksStore = <PersonalBookmarksStore>this.injector.get(PersonalBookmarksStore);
-        this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
-      }
-    });
+
   }
 
   ngOnInit(): void {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.keycloakService.loadUserProfile().then(keycloakProfile => {
-          this.userId = keycloakProfile.id;
-        });
+        this.userIsLoggedIn = true;
       }
     });
   }
@@ -112,38 +99,14 @@ export class AsyncBookmarkListComponent implements OnInit {
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      bookmark.stars++;
-      this.userData.stars.unshift(bookmark._id);
-      const rateBookmarkRequest: RateBookmarkRequest = {
-        ratingUserId: this.userId,
-        action: RatingActionType.STAR,
-        bookmark: bookmark
-      }
-      this.rateBookmark(rateBookmarkRequest);
+      this.userDataStore.starBookmark(bookmark);
     }
   }
 
   unstarBookmark(bookmark: Bookmark): void {
-      bookmark.stars--;
-      this.userData.stars.splice(this.userData.stars.indexOf(bookmark._id), 1);
-      const rateBookmarkRequest: RateBookmarkRequest = {
-        ratingUserId: this.userId,
-        action: RatingActionType.UNSTAR,
-        bookmark: bookmark
-      }
-
-      this.rateBookmark(rateBookmarkRequest);
+    this.userDataStore.unstarBookmark(bookmark);
   }
 
-  private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
-    this.userDataService.rateBookmark(rateBookmarkRequest).subscribe(() => {
-      if (rateBookmarkRequest.action === RatingActionType.STAR) {
-        this.userDataStore.addToStarredBookmarks(rateBookmarkRequest.bookmark);
-      } else {
-        this.userDataStore.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
-      }
-    });
-  }
 
   onBookmarkLinkClick(bookmark: Bookmark) {
     if (this.userIsLoggedIn) {
@@ -184,10 +147,7 @@ export class AsyncBookmarkListComponent implements OnInit {
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userData.readLater.push(bookmark._id);
-      this.userDataStore.updateUserData(this.userData).subscribe(() => {
-        this.userDataStore.addToLaterReads(bookmark);
-      });
+      this.userDataStore.addToLaterReads(bookmark);
     }
   }
 
@@ -203,7 +163,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
       bookmark: bookmark,
-      userData: this.userData
+      userData$: this.userData$
     };
 
     const dialogRef = this.deleteDialog.open(DeleteBookmarkDialogComponent, dialogConfig);
