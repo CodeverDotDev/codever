@@ -2,7 +2,6 @@ import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operato
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PersonalBookmarksStore } from '../../core/store/personal-bookmarks-store.service';
 import { MarkdownService } from '../markdown.service';
 import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
@@ -21,6 +20,8 @@ import { Logger } from '../../core/logger.service';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../core/error/error.service';
 import { UserDataService } from '../../core/user-data.service';
+import { UserInfoStore } from '../../core/user/user-info.store';
+import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -55,7 +56,6 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   @ViewChild('tagInput') tagInput: ElementRef;
 
   constructor(
-    private personalBookmarksStore: PersonalBookmarksStore,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
     private publicBookmarksService: PublicBookmarksService,
@@ -63,25 +63,27 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private markdownService: MarkdownService,
     private publicBookmarksStore: PublicBookmarksStore,
     private personalBookmarksService: PersonalBookmarksService,
+    private suggestedTagsStore: SuggestedTagsStore,
+    private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private logger: Logger,
     private router: Router,
     private errorService: ErrorService
   ) {
+      this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+        this.userId = userInfo.sub;
 
-    keycloakService.loadUserProfile().then(keycloakProfile => {
-      this.userId = keycloakProfile.id;
-      personalBookmarksService.getTagsOfUser(this.userId).subscribe(tags => {
-        this.autocompleteTags = tags.sort();
+        this.suggestedTagsStore.getSuggestedTags$(this.userId).subscribe(tags => {
+          this.autocompleteTags = tags.sort();
 
-        this.filteredTags = this.tagsControl.valueChanges.pipe(
-          startWith(null),
-          map((tag: string | null) => {
-            return tag ? this.filter(tag) : this.autocompleteTags.slice();
-          })
-        );
+          this.filteredTags = this.tagsControl.valueChanges.pipe(
+            startWith(null),
+            map((tag: string | null) => {
+              return tag ? this.filter(tag) : this.autocompleteTags.slice();
+            })
+          );
+        });
       });
-    });
   }
 
   ngOnInit(): void {

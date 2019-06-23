@@ -26,7 +26,7 @@ export class PublicBookmarksStore {
       );
   }
 
-  getRecentPublicBookmarks(): Observable<List<Bookmark>> {
+  getRecentPublicBookmarks$(): Observable<List<Bookmark>> {
     if (!this._publicBookmarks) {
       this._publicBookmarks = new BehaviorSubject(List([]));
       this.loadInitialData();

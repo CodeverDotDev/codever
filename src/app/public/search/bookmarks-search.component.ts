@@ -1,4 +1,4 @@
-import { Observable, of as observableOf } from 'rxjs';
+import { Observable, of, of as observableOf } from 'rxjs';
 
 import { map, startWith } from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
@@ -14,6 +14,7 @@ import { UserDataStore } from '../../core/user/userdata.store';
 import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
+import { UserInfoStore } from '../../core/user/user-info.store';
 
 export interface SearchDomain {
   value: string;
@@ -68,28 +69,38 @@ export class BookmarksSearchComponent implements OnInit {
               private personalBookmarksService: PersonalBookmarksService,
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,
-              private userDataStore: UserDataStore) {
+              private userDataStore: UserDataStore,
+              private userInfoStore: UserInfoStore) {
   }
 
   @Input()
-  set userData(userData: UserData) {
-    if (userData) {
-      const emptyUserData = Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
-      if (emptyUserData) {
-        this._userData = userData; // = {}
-      } else {
-        this._userData = userData;
-        this.autocompleteSearches = [];
-        this._userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
-        this.filteredSearches = this.searchControl.valueChanges
-          .pipe(
-            startWith(null),
-            map((searchText: string | null) => {
-              return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
-            })
-          );
-      }
+  set userData$(userData$: Observable<UserData>) {
+    if (userData$) {
+      userData$
+        .subscribe(userData => {
+          this.userId = userData.userId;
+          const emptyUserData = Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
+          if (emptyUserData) {
+            this._userData = userData; // = {}
+          } else {
+            this._userData = userData;
+            this.autocompleteSearches = [];
+            this._userData.searches.forEach(search => this.autocompleteSearches.push(search.text));
+            this.filteredSearches = this.searchControl.valueChanges
+              .pipe(
+                startWith(null),
+                map((searchText: string | null) => {
+                  return searchText ? this._filter(searchText) : this.autocompleteSearches.slice();
+                })
+              );
+          }
+        });
     }
+
+  }
+
+  get userData$() {
+    return of(this._userData);
   }
 
   private _filter(value: string): string[] {
@@ -105,8 +116,8 @@ export class BookmarksSearchComponent implements OnInit {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.keycloakService.loadUserProfile().then(keycloakProfile => {
-          this.userId = keycloakProfile.id;
+        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+          this.userId = userInfo.sub;
 
           if (!this.searchDomain) {
             if (!this.searchText) {
@@ -228,7 +239,7 @@ export class BookmarksSearchComponent implements OnInit {
         this.counter = 10;
       }
       let filteredPublicBookmarks: Observable<Bookmark[]>;
-      if (this.searchDomain === 'personal') {
+      if (this.searchDomain === 'personal' && this.userId) {
         filteredPublicBookmarks = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, this.counter, this.userId);
       } else {
         filteredPublicBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, this.counter);
