@@ -18,13 +18,6 @@ export class PersonalBookmarksService {
     this.personalBookmarksApiBaseUrl = environment.API_URL + '/personal/users/';
   }
 
-  getBookmarkById(userId: String, bookmarkId: String): Observable<Bookmark> {
-    return this.httpClient.get<Bookmark>(this.personalBookmarksApiBaseUrl + userId + '/bookmarks/' + bookmarkId).pipe(shareReplay(1));
-  }
-  getAllPersonalBookmarks(userId: String): Observable<Bookmark[]> {
-    return this.httpClient.get<Bookmark[]>(this.personalBookmarksApiBaseUrl + userId + '/bookmarks').pipe(shareReplay(1));
-  }
-
   getTagsOfUser(userId: String): Observable<string[]> {
     return this.httpClient.get<string[]>(this.personalBookmarksApiBaseUrl + userId + '/bookmarks/tags').pipe(shareReplay(1));
   }
