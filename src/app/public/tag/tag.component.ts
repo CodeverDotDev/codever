@@ -8,6 +8,8 @@ import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
+import { UserInfo } from 'os';
+import { UserInfoStore } from '../../core/user/user-info.store';
 
 @Component({
   selector: 'app-tag',
@@ -18,7 +20,7 @@ export class TagComponent implements OnInit {
 
   bookmarksForTag$: Observable<Bookmark[]>;
   tag: string;
-  userData: UserData;
+  userData$: Observable<UserData>;
   counter = 30;
   orderBy = 'LATEST'; // TODO move to enum orderBy values
   userIsLoggedIn = false;
@@ -27,6 +29,7 @@ export class TagComponent implements OnInit {
 
   constructor(private tagService: TagService,
               private userDataStore: UserDataStore,
+              private userInfoStore: UserInfoStore,
               private keycloakService: KeycloakService,
               private route: ActivatedRoute,
               private loginDialog: MatDialog) {
@@ -49,13 +52,8 @@ export class TagComponent implements OnInit {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.keycloakService.loadUserProfile().then(keycloakProfile => {
-          this.userDataStore.getUserData().subscribe(data => {
-              this.userData = data;
-            },
-            error => {
-            }
-          );
+        this.userInfoStore.getUserInfo$().subscribe( userInfo => {
+          this.userData$ = this.userDataStore.getUserData$();
         });
       }
     });
@@ -77,32 +75,22 @@ export class TagComponent implements OnInit {
 
   watchTag() {
     if (!this.userIsLoggedIn) {
-        const dialogConfig = new MatDialogConfig();
+      const dialogConfig = new MatDialogConfig();
 
-        dialogConfig.disableClose = true;
-        dialogConfig.autoFocus = true;
-        dialogConfig.data = {
-          message: 'You need to be logged in to follow tags'
-        };
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to follow tags'
+      };
 
-        this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userData.watchedTags.push(this.tag);
-      this.userDataStore.updateUserData(this.userData).subscribe(() => {
-        this.userDataStore.forceReloadBookmarksForWatchedTags();
-      });
-
+      this.userDataStore.watchTag(this.tag);
     }
   }
 
   unwatchTag() {
-    const index = this.userData.watchedTags.indexOf(this.tag);
-    if (index > -1) {
-      this.userData.watchedTags.splice(index, 1);
-      this.userDataStore.updateUserData(this.userData).subscribe( () => {
-        this.userDataStore.forceReloadBookmarksForWatchedTags();
-      });
-    }
+    this.userDataStore.unwatchTag(this.tag);
   }
 
 }

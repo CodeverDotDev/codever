@@ -1,6 +1,6 @@
 <div id="public-search-box">
 
-  <app-bookmark-search [context]="'Public'" [userData]="userData"></app-bookmark-search>
+  <app-bookmark-search [context]="'Public'" [userData$]="userData$"></app-bookmark-search>
 
   <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)" [selectedIndex]="selectedIndex">
     <mat-tab>
@@ -8,7 +8,7 @@
         <span class="app-tab-label">Community &nbsp;<i class="fas fa-share-alt"></i></span>
       </ng-template>
       <app-async-bookmark-list [bookmarks]="publicBookmarks$" [shownSize]="counter"
-                               [userData]="userData"></app-async-bookmark-list>
+                               [userData$]="userData$"></app-async-bookmark-list>
       <div *ngIf="(publicBookmarks$ | async)?.size - counter > 0">
         <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()"
                 [disabled]="counter >= (publicBookmarks$ | async)?.length">Show more
@@ -20,7 +20,7 @@
       <ng-template mat-tab-label>
         <span class="app-tab-label">History  &nbsp;<i class="fas fa-history"></i></span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedInPromise | async); else isLoggedInLastVisited"
+      <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInLastVisited"
            class="missing-category-bookmarks-message alert alert-info">
         <p>In <strong>History</strong> you have a list of your last visited, created or updated bookmarks.
         </p>
@@ -35,7 +35,7 @@
           </p>
         </div>
           <app-async-bookmark-list [bookmarks]="history$" [shownSize]="30"
-                                   [userData]="userData"></app-async-bookmark-list>
+                                   [userData$]="userData$"></app-async-bookmark-list>
 
       </ng-template>
 
@@ -44,7 +44,7 @@
       <ng-template mat-tab-label>
         <span class="app-tab-label">Pinned  &nbsp;<i class="fas fa-thumbtack"></i></span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedInPromise | async); else isLoggedInToPin" class="missing-category-bookmarks-message alert alert-info">
+      <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToPin" class="missing-category-bookmarks-message alert alert-info">
         <p>
           Got some bookmarks you will use a lot today? Just pin them <i
           class="fas fa-thumbtack"></i>
@@ -60,7 +60,7 @@
           class="fas fa-thumbtack"></i>
           and it will appear in the <strong>Pinned</strong> list.
         </div>
-        <app-async-bookmark-list [bookmarks]="pinned$" [shownSize]="30" [userData]="userData"></app-async-bookmark-list>
+        <app-async-bookmark-list [bookmarks]="pinned$" [shownSize]="30" [userData$]="userData$"></app-async-bookmark-list>
       </ng-template>
 
     </mat-tab>
@@ -68,7 +68,7 @@
       <ng-template mat-tab-label>
         <span class="app-tab-label">Read Later  &nbsp;<i class="fas fa-clock"></i></span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedInPromise | async); else isLoggedInToReadLater"
+      <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToReadLater"
            class="missing-category-bookmarks-message alert alert-info">
         <p>
           Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
@@ -86,14 +86,14 @@
           on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
         </div>
         <app-async-bookmark-list [bookmarks]="laterReads$" [shownSize]="30"
-                                 [userData]="userData"></app-async-bookmark-list>
+                                 [userData$]="userData$"></app-async-bookmark-list>
       </ng-template>
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
         <span class="app-tab-label">Starred  &nbsp;<i class="fas fa-star"></i></span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedInPromise | async); else isLoggedInToStar"
+      <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToStar"
            class="missing-category-bookmarks-message alert alert-info">
         <p>
           Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it
@@ -109,7 +109,7 @@
           and be listed here with other starred bookmarks.
         </div>
         <app-async-bookmark-list [bookmarks]="starredBookmarks$" [shownSize]="30"
-                                 [userData]="userData"></app-async-bookmark-list>
+                                 [userData$]="userData$"></app-async-bookmark-list>
       </ng-template>
 
     </mat-tab>
@@ -117,7 +117,7 @@
       <ng-template mat-tab-label>
         <span class="app-tab-label">Watched tags  &nbsp;<i class="fas fa-eye"></i></span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedInPromise | async); else isLoggedInToWatchTags"
+      <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToWatchTags"
            class="missing-category-bookmarks-message alert alert-info">
         <p>
           You have the possibility to watch <strong>public</strong> tags, by clicking the
@@ -133,7 +133,7 @@
         to access this functionality.
       </div>
       <ng-template #isLoggedInToWatchTags>
-        <div *ngIf="userData?.watchedTags.length === 0" class="missing-category-bookmarks-message alert alert-info">
+        <div *ngIf="(userData$ | async)?.watchedTags.length === 0" class="missing-category-bookmarks-message alert alert-info">
           You have the possibility to watch <strong>public</strong> tags, by clicking the
           <button type="button" class="btn btn-outline-primary btn-sm" routerLink="/tagged/python"><i
             class="fas fa-eye"></i>
@@ -142,13 +142,14 @@
           button
           on the tag's page. Then you will see here the latest entries for the tags you watch.
         </div>
-        <div *ngIf="userData" class="personal-followed-tags">
-          <a *ngFor="let tag of userData.watchedTags.sort()" [routerLink]="['/tagged', tag]" class="badge badge-secondary"
-             target="_blank">{{tag}}</a>
+        <div *ngIf="(userData$ | async)" class="personal-followed-tags">
+          <a *ngFor="let tag of (userData$ | async).watchedTags.sort()" [routerLink]="['/tagged', tag]" class="badge badge-secondary">
+            {{tag}}
+          </a>
           <div class="clear"></div>
         </div>
         <app-async-bookmark-list [bookmarks]="bookmarksForWatchedTags$" [shownSize]="50"
-                                 [userData]="userData"></app-async-bookmark-list>
+                                 [userData$]="userData$"></app-async-bookmark-list>
       </ng-template>
     </mat-tab>
 

@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { UserData } from '../../core/model/user-data';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-delete-bookmark-dialog',
@@ -11,15 +12,14 @@ import { UserData } from '../../core/model/user-data';
 export class DeleteBookmarkDialogComponent implements OnInit {
 
   bookmark: Bookmark;
-  userData: UserData;
-  showWarning = false;
+  userData$: Observable<UserData>;
 
   constructor(
     private dialogRef: MatDialogRef<DeleteBookmarkDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data
   ) {
     this.bookmark = data.bookmark;
-    this.showWarning = this.bookmark.stars > 1 || (this.bookmark.stars === 1 && !data.userData.stars.includes(this.bookmark._id));
+    this.userData$ = data.userData;
   }
 
   ngOnInit() {
