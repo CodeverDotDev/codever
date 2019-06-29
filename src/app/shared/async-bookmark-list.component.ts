@@ -66,8 +66,6 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
     this.userInfoStore = <UserInfoStore>this.injector.get(UserInfoStore);
     this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
-
-
   }
 
   ngOnInit(): void {
@@ -142,7 +140,7 @@ export class AsyncBookmarkListComponent implements OnInit {
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
       dialogConfig.data = {
-        message: 'You need to be logged to add bookmarks to "Read Later"'
+        message: 'You need to be logged in to add bookmarks to "Read Later"'
       };
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
@@ -153,6 +151,26 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   removeFromReadLater(bookmark: Bookmark) {
     this.userDataStore.removeFromLaterReads(bookmark);
+  }
+
+  addToFavorites(bookmark: Bookmark) {
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to add bookmarks to "Favorites"'
+      };
+
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      this.userDataStore.addToFavoriteBookmarks(bookmark);
+    }
+  }
+
+  removeFromFavorites(bookmark: Bookmark) {
+    this.userDataStore.removeFromFavoriteBookmarks(bookmark);
   }
 
   openDeleteDialog(bookmark: Bookmark) {

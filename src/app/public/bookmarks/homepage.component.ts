@@ -31,8 +31,8 @@ export class HomepageComponent implements OnInit {
 
   history$: Observable<Bookmark[]>;
   pinned$: Observable<Bookmark[]>;
+  favorites$: Observable<Bookmark[]>;
   laterReads$: Observable<Bookmark[]>;
-  starredBookmarks$: Observable<Bookmark[]>;
   bookmarksForWatchedTags$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
@@ -81,7 +81,7 @@ export class HomepageComponent implements OnInit {
         this.selectedIndex = 3;
         break;
       }
-      case 'starred': {
+      case 'favorites': {
         this.selectedIndex = 4;
         break;
       }
@@ -110,7 +110,7 @@ export class HomepageComponent implements OnInit {
         this.selectedIndex = 3;
         break;
       }
-      case 'starred': {
+      case 'favorites': {
         this.selectedIndex = 4;
         break;
       }
@@ -141,7 +141,7 @@ export class HomepageComponent implements OnInit {
       } else if (event.index === 3) {
         this.laterReads$ = this.userDataStore.getLaterReads$();
       } else if (event.index === 4) {
-        this.starredBookmarks$ = this.userDataStore.getStarredBookmarks$();
+        this.favorites$ = this.userDataStore.getFavoriteBookmarks$();
       } else if (event.index === 5) {
         this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags$();
       }
@@ -177,7 +177,7 @@ export class HomepageComponent implements OnInit {
         break;
       }
       case 4 : {
-        return 'starred'
+        return 'favorites'
         break;
       }
       case 5 : {

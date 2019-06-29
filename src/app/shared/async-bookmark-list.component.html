@@ -10,11 +10,21 @@
           <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="bookmark.location | slice:0:150 | highlight: queryText"></span></h6>
         </div>
         <div style="display: flex">
-          <span *ngIf="!(userData$ | async)?.pinned?.includes(bookmark._id) else markedAsPinned" class="clock-wrapper" title="Pin bookmark" (click)="addToPinned(bookmark)"><i class="fas fa-thumbtack"></i></span>
+          <span *ngIf="!(userData$ | async)?.favorites?.includes(bookmark._id) else markedAsFavorite" class="clock-wrapper" title="Add to Favorites" (click)="addToFavorites(bookmark)">
+            <i class="far fa-star"></i>
+          </span>
+          <ng-template #markedAsFavorite>
+            <span class="clock-wrapper" title="Remove from Favorites" (click)="removeFromFavorites(bookmark)"><i class="fas fa-star"></i></span>
+          </ng-template>
+          <span *ngIf="!(userData$ | async)?.pinned?.includes(bookmark._id) else markedAsPinned" class="clock-wrapper" title="Pin bookmark" (click)="addToPinned(bookmark)">
+            <i class="fas fa-thumbtack"></i>
+          </span>
           <ng-template #markedAsPinned>
             <span class="clock-wrapper" title="Unpin bookmark" (click)="removeFromPinned(bookmark)"><i class="fas fa-thumbtack fa-rotate-90"></i></span>
           </ng-template>
-          <span *ngIf="!(userData$ | async)?.readLater?.includes(bookmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(bookmark)"><i class="far fa-clock"></i></span>
+          <span *ngIf="!(userData$ | async)?.readLater?.includes(bookmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(bookmark)">
+            <i class="far fa-clock"></i>
+          </span>
           <ng-template #markedAsReadLater>
             <span class="clock-wrapper" title="Remove from Read later" (click)="removeFromReadLater(bookmark)"><i class="fas fa-clock"></i></span>
           </ng-template>

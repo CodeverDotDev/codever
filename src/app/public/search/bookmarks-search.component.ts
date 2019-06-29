@@ -57,7 +57,7 @@ export class BookmarksSearchComponent implements OnInit {
   searchDomain = 'public';
 
   searchDomains: SearchDomain[] = [
-    {value: 'personal', viewValue: 'Personal bookmarks'},
+    {value: 'personal', viewValue: 'Personal & Favorites'},
     {value: 'public', viewValue: 'Public bookmarks'}
   ];
 

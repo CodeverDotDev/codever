@@ -91,24 +91,24 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">Starred  &nbsp;<i class="fas fa-star"></i></span>
+        <span class="app-tab-label">Favorites  &nbsp;<i class="fas fa-star"></i></span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToStar"
+      <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToFavorite"
            class="missing-category-bookmarks-message alert alert-info">
         <p>
-          Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it
-          and be listed here with other starred bookmarks.
+          Found a public bookmark you might use - add it to Favorites <i class="fas fa-star"></i> and it will be used
+          in your personal searches.
         </p>
         You need to
-        <button type="button" class="btn btn-primary btn-sm" (click)="login('starred')">Login / Register</button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="login('favorites')">Login / Register</button>
         to access this functionality.
       </div>
-      <ng-template #isLoggedInToStar>
-        <div *ngIf="(starredBookmarks$ | async)?.length === 0" class="missing-category-bookmarks-message alert alert-info">
-          Found a public bookmark you like - give it <i class="fas fa-star"></i> a star to promote it
-          and be listed here with other starred bookmarks.
+      <ng-template #isLoggedInToFavorite>
+        <div *ngIf="(favorites$ | async)?.length === 0" class="missing-category-bookmarks-message alert alert-info">
+          Found a public bookmark you might use - add it to Favorites <i class="fas fa-star"></i> and it will be used
+          in your personal searches.
         </div>
-        <app-async-bookmark-list [bookmarks]="starredBookmarks$" [shownSize]="30"
+        <app-async-bookmark-list [bookmarks]="favorites$" [shownSize]="30"
                                  [userData$]="userData$"></app-async-bookmark-list>
       </ng-template>
 
