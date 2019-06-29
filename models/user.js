@@ -16,6 +16,7 @@ var userSchema = new Schema({
     stars: [String], //ids of bookmarks starred by user
     watchedTags: [String],
     pinned: [String],
+    favorites: [String],
     history: [String]
 },
 {

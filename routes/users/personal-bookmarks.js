@@ -57,14 +57,14 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
   }
 
   let blockedTags = '';
-  for (let i = 0; i < bookmark.tags.length; i++){
+  for ( let i = 0; i < bookmark.tags.length; i++ ) {
     const tag = bookmark.tags[i];
-    if(tag.startsWith('awesome')) {
+    if ( tag.startsWith('awesome') ) {
       blockedTags = blockedTags.concat(' ' + tag);
     }
   }
 
-  if (blockedTags) {
+  if ( blockedTags ) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('The following tags are blocked:' + blockedTags, ['The following tags are blocked:' + blockedTags]));
@@ -93,7 +93,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
       shared: true,
       location: bookmark.location
     }).lean().exec();
-    if( existingBookmark ) {
+    if ( existingBookmark ) {
       return response
         .status(HttpStatus.CONFLICT)
         .send(new MyError('A public bookmark with this location is already present',
@@ -293,13 +293,13 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
   }
 
   let blockedTags = '';
-  for (let i = 0; i < request.body.tags.length; i++){
+  for ( let i = 0; i < request.body.tags.length; i++ ) {
     const tag = request.body.tags[i];
-    if(tag.startsWith('awesome')) {
+    if ( tag.startsWith('awesome') ) {
       blockedTags = blockedTags.concat(' ' + tag);
     }
   }
-  if (blockedTags) {
+  if ( blockedTags ) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('The following tags are blocked:' + blockedTags, ['The following tags are blocked:' + blockedTags]));
@@ -326,9 +326,9 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
     const existingBookmark = await Bookmark.findOne({
       shared: true,
       location: request.body.location,
-      userId: { $ne: request.params.userId}
+      userId: {$ne: request.params.userId}
     }).lean().exec();
-    if( existingBookmark ) {
+    if ( existingBookmark ) {
       return response
         .status(HttpStatus.CONFLICT)
         .send(new MyError('A public bookmark with this location is already present',
@@ -402,7 +402,15 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
     } else {
       await User.update(
         {},
-        {$pull: {readLater: bookmarkId, stars: bookmarkId, pinned: bookmarkId, history: bookmarkId}},
+        {
+          $pull: {
+            readLater: bookmarkId,
+            stars: bookmarkId,
+            pinned: bookmarkId,
+            history: bookmarkId,
+            favorites: bookmarkId
+          }
+        },
         {multi: true}
       );
 
