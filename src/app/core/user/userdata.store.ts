@@ -30,6 +30,9 @@ export class UserDataStore {
   private _pinned: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private pinnedBookmarksHaveBeenLoaded = false;
 
+  private _favorites: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
+  private favoriteBookmarksHaveBeenLoaded = false;
+
   private _history: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private historyHasBeenLoaded = false;
 
@@ -80,6 +83,7 @@ export class UserDataStore {
             stars: [],
             watchedTags: [],
             pinned: [],
+            favorites: [],
             history: []
           }
 
@@ -233,6 +237,46 @@ export class UserDataStore {
     }
   }
 
+  getFavoriteBookmarks$(): Observable<Bookmark[]> {
+    if (!this.favoriteBookmarksHaveBeenLoaded) {
+      this.userService.getFavoriteBookmarks(this.userId).subscribe(data => {
+        this.favoriteBookmarksHaveBeenLoaded = true;
+        this._favorites.next(data);
+      });
+    }
+    return this._favorites.asObservable();
+  }
+
+  addToFavoriteBookmarks(bookmark: Bookmark) {
+    this.userData.favorites.unshift(bookmark._id);
+    this.updateUserData(this.userData).subscribe(() => {
+      if (this.favoriteBookmarksHaveBeenLoaded) {
+        const favoritesBookmarks: Bookmark[] = this._favorites.getValue();
+        favoritesBookmarks.unshift(bookmark);
+
+        this._favorites.next(favoritesBookmarks); // insert at the top (index 0)
+      }
+    });
+  }
+
+  removeFromFavoriteBookmarks(bookmark: Bookmark) {
+    this.userData.favorites = this.userData.favorites.filter(x => x !== bookmark._id);
+    this.updateUserData(this.userData).subscribe(() => {
+      this.publishedFavoritesAfterDeletion(bookmark);
+    });
+  }
+
+  private publishedFavoritesAfterDeletion(bookmark: Bookmark) {
+    if (this.favoriteBookmarksHaveBeenLoaded) {
+      const favoritesBookmarks: Bookmark[] = this._favorites.getValue();
+      const index = favoritesBookmarks.findIndex((favoriteBookmark) => bookmark._id === favoriteBookmark._id);
+      if (index !== -1) {
+        favoritesBookmarks.splice(index, 1);
+        this._favorites.next(favoritesBookmarks);
+      }
+    }
+  }
+
   getHistory$(): Observable<Bookmark[]> {
     if (!this.historyHasBeenLoaded) {
       this.userService.getLastVisitedBookmarks(this.userId).subscribe(data => {
@@ -267,11 +311,13 @@ export class UserDataStore {
   removeFromStoresAtDeletion(bookmark: Bookmark) {
     this.userData.history = this.userData.history.filter(x => x !== bookmark._id);
     this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
+    this.userData.favorites = this.userData.favorites.filter(x => x !== bookmark._id);
     this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
     this.userData.stars = this.userData.stars.filter(x => x !== bookmark._id);
     this.updateUserData(this.userData).subscribe(() => {
       this.publishHistoryAfterDeletion(bookmark);
       this.publishedPinnedAfterDeletion(bookmark);
+      this.publishedFavoritesAfterDeletion(bookmark);
       this.publishReadLaterAfterDeletion(bookmark);
       this.publishStarredBookmarksAfterDeletion(bookmark);
     });

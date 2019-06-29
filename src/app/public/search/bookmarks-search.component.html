@@ -35,7 +35,7 @@
 </div>
 
 <mat-form-field class="search-domain-select">
-  <mat-label>Search domain</mat-label>
+  <mat-label>Search in</mat-label>
   <mat-select [ngModel]="searchDomain" (ngModelChange)="onSearchDomainChange($event)">
     <mat-option *ngFor="let searchDomain of searchDomains" [value]="searchDomain.value">
       {{searchDomain.viewValue}}

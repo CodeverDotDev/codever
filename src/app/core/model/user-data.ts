@@ -4,6 +4,7 @@ export interface UserData {
   searches?: Search[];
   readLater?: string[]; // ids of bookmarks to read later
   stars?: string[]; // ids of bookmarks the user starred
+  favorites?: string[]; // ids of bookmarks marked as favorite
   watchedTags?: string[];
   pinned?: string[]; // ids of pinned bookmarks
   history?: string[]; // ids of last visited bookmarks, order is important

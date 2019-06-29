@@ -55,6 +55,12 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
+  getFavoriteBookmarks(userId: string): Observable<Bookmark[]> {
+    return this.httpClient
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/favorites`)
+      .pipe(shareReplay(1));
+  }
+
   getLastVisitedBookmarks(userId: string): Observable<Bookmark[]> {
     return this.httpClient
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`)
