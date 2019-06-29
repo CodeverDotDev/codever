@@ -24,7 +24,7 @@ usersRouter.use(keycloak.middleware());
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
 
 
-/* GET personal bookmarks of the user */
+/* GET personal bookmarks of the users */
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
@@ -153,7 +153,6 @@ usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, res
         .limit(100)
         .lean()
         .exec();
-      ;
       //
       response.send(bookmarks);
     }
@@ -193,6 +192,44 @@ usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response)
       });
 
       response.send(orderedBookmarksAsInPinned);
+    }
+
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+/* GET list of user's favorite bookmarks */
+usersRouter.get('/:userId/favorites', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if ( userId !== request.params.userId ) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if ( !userData ) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find({"_id": {$in: userData.favorites}});
+      //we need to order the bookmarks to correspond the one in the userData.history array
+      const orderedBookmarksAsInFavorites = userData.favorites.map(bookmarkId => {
+        return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+      });
+
+      response.send(orderedBookmarksAsInFavorites);
     }
 
   } catch (err) {
@@ -280,7 +317,8 @@ usersRouter.post('/:userId', keycloak.protect(), async (request, response) => {
       stars: request.body.stars,
       watchedTags: request.body.watchedTags,
       pinned: request.body.pinned,
-      pinned: request.body.history
+      favorites: request.body.favorites,
+      history: request.body.history
     });
 
     const newUserData = await userData.save();
