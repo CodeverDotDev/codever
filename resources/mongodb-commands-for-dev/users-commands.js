@@ -5,7 +5,7 @@ db.users.update({},
       pinned: [],
       history: [],
       watchedTags: [],
-      stars: [],
+      likes: [],
       readLater: []
     }
   },
@@ -29,7 +29,7 @@ db.users.update({userId : "55d49696-c07d-4b31-929c-29f7c8f1a10a"},
       pinned: [],
       history: [],
       watchedTags: [],
-      stars: [],
+      likes: [],
       readLater: []
     }
   }

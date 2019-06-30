@@ -123,43 +123,6 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 
 });
 
-
-/*/!* GET personal and starred bookmarks of the user *!/
-personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
-  try {
-    let bookmarks;
-    let userId = request.kauth.grant.access_token.content.sub;
-    if ( userId !== request.params.userId ) {
-      return response
-        .status(HttpStatus.UNAUTHORIZED)
-        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
-    }
-
-    const userData = await User.findOne({
-      userId: request.params.userId
-    });
-
-    if ( !userData ) {
-      bookmarks = await Bookmark.find({userId: request.params.userId});
-    } else {
-      bookmarks = await Bookmark.find(
-        {
-          $or: [
-            {userId: request.params.userId},
-            {"_id": {$in: userData.stars}}
-          ]
-        }
-      );
-    }
-
-    response.send(bookmarks);
-  } catch (err) {
-    return response
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(err);
-  }
-});*/
-
 /* GET bookmark of user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
 
@@ -405,7 +368,7 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
         {
           $pull: {
             readLater: bookmarkId,
-            stars: bookmarkId,
+            likes: bookmarkId,
             pinned: bookmarkId,
             history: bookmarkId,
             favorites: bookmarkId
