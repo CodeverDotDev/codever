@@ -41,16 +41,16 @@
     <div class="card-footer">
       <div class="tags-group">
         <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-            <span *ngIf="userIsLoggedIn && (userData$ | async)?.stars?.indexOf(bookmark._id) !== -1 else emptyStar"
-                  class="input-group-text star-span" id="btnGroupAddon2" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
-              <i class="fas fa-star"></i>
+            <span *ngIf="userIsLoggedIn && (userData$ | async)?.likes?.indexOf(bookmark._id) !== -1 else emptyStar"
+                  title="UnLike" class="star-span" (click)="unLikeBookmark(bookmark)" style="cursor:pointer">
+              <i class="fas fa-thumbs-up fa-lg"></i>
             </span>
           <ng-template #emptyStar>
-              <span class="input-group-text star-span" id="btnGroupAddon3" (click)="starBookmark(bookmark)" style="cursor:pointer">
-                <i class="far fa-star"></i>
+              <span class="star-span" title="Like" (click)="likeBookmark(bookmark)" style="cursor:pointer">
+                <i class="far fa-thumbs-up fa-lg"></i>
               </span>
           </ng-template>
-          <span>{{bookmark.stars}}</span>
+          <span>{{bookmark.likes}}</span>
         </div>
         <span *ngIf="bookmark.publishedOn" class="badge  badge-info float-xs-left"><i class="fa fa-calendar-alt"></i> {{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
         <span *ngIf="bookmark.githubURL" class="badge  badge-primary float-xs-left">
