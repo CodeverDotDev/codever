@@ -7,6 +7,6 @@ export interface RateBookmarkRequest {
 }
 
 export enum RatingActionType {
-  STAR = 'STAR',
-  UNSTAR = 'UNSTAR'
+  LIKE = 'LIKE',
+  UNLIKE = 'UNLIKE'
 }

@@ -85,24 +85,24 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.router.navigate(link, {state: {bookmark: bookmark}});
   }
 
-  starBookmark(bookmark: Bookmark): void {
+  likeBookmark(bookmark: Bookmark): void {
     if (!this.userIsLoggedIn) {
       const dialogConfig = new MatDialogConfig();
 
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
       dialogConfig.data = {
-        message: 'You need to be logged in to star public bookmarks'
+        message: 'You need to be logged in to like public bookmarks'
       };
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userDataStore.starBookmark(bookmark);
+      this.userDataStore.likeBookmark(bookmark);
     }
   }
 
-  unstarBookmark(bookmark: Bookmark): void {
-    this.userDataStore.unstarBookmark(bookmark);
+  unLikeBookmark(bookmark: Bookmark): void {
+    this.userDataStore.unLikeBookmark(bookmark);
   }
 
 
