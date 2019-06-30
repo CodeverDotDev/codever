@@ -22,7 +22,7 @@ module.exports = {
       shared: req.body.shared,
       starredBy: req.body.starredBy,
       lastAccessedAt: req.body.lastAccessedAt,
-      stars: req.body.stars
+      likes: req.body.likes
     });
 
     return bookmark;
