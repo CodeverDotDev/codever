@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
 
 router.get('/tagged/:tag', async (req, res) => {
   try {
-    const orderByFilter = req.query.orderBy === 'STARS' ? {stars: -1} : {createdAt: -1};
+    const orderByFilter = req.query.orderBy === 'STARS' ? {likes: -1} : {createdAt: -1};
 
     const bookmarks = await Bookmark.find({
       shared: true,

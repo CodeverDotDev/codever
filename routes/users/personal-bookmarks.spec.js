@@ -461,7 +461,7 @@ describe('Personal Bookmarks tests', function () {
       "userId": testUserId,
       "shared": true,
       "starredBy": [],
-      "stars": 0,
+      "likes": 0,
       "lastAccessedAt": null
     }
 

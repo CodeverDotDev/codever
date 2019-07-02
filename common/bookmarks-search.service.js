@@ -3,6 +3,7 @@ const showdown = require('showdown'),
   converter = new showdown.Converter();
 
 const Bookmark = require('../models/bookmark');
+const User = require('../models/user');
 const escapeStringRegexp = require('escape-string-regexp');
 const constants = require('./constants');
 
@@ -104,7 +105,13 @@ let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, l
   }
 
   if ( domain === constants.DOMAIN_PERSONAL ) {
-    filter.userId = userId;
+    const userData = await User.findOne({
+      userId: userId
+    });
+    filter.$or = [
+      {userId: userId},
+      {"_id": {$in: userData.favorites}}
+    ]
   }
 
   let bookmarks = await Bookmark.find(
@@ -138,7 +145,13 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, limit, domain,
   }
 
   if ( domain === constants.DOMAIN_PERSONAL ) {
-    filter.userId = userId;
+    const userData = await User.findOne({
+      userId: userId
+    });
+    filter.$or = [
+      {userId: userId},
+      {"_id": {$in: userData.favorites}}
+    ]
   }
 
   let bookmarks = await Bookmark.find(
@@ -172,7 +185,13 @@ let getBookmarksForSearchedTags = async function (searchedTags, limit, domain, u
   }
 
   if ( domain === constants.DOMAIN_PERSONAL ) {
-    filter.userId = userId;
+    const userData = await User.findOne({
+      userId: userId
+    });
+    filter.$or = [
+      {userId: userId},
+      {"_id": {$in: userData.favorites}}
+    ]
   }
 
   let bookmarks = await Bookmark.find(filter)
