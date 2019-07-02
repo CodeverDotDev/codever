@@ -27,7 +27,7 @@ export class HomepageComponent implements OnInit {
   counter = 20;
 
   @ViewChild(BookmarksSearchComponent)
-  private searchComponent: BookmarksSearchComponent;
+  searchComponent: BookmarksSearchComponent;
 
   history$: Observable<Bookmark[]>;
   pinned$: Observable<Bookmark[]>;
