@@ -22,7 +22,7 @@ const swaggerDocument = YAML.load('./docs/swagger.yaml');
 
 const app = express();
 
-mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks');
+mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks', { useNewUrlParser: true });
 
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);

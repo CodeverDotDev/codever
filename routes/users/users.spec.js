@@ -30,7 +30,7 @@ describe('User Data tests', function () {
       }
     ],
     "readLater": [],
-    "stars": [],
+    "likes": [],
     "watchedTags": [],
     "pinned": [],
     "history": []
@@ -143,7 +143,7 @@ describe('User Data tests', function () {
 
   it('should successfully UPDATE example user new starred bookmark', function (done) {
     let userExampleWithStars = JSON.parse(JSON.stringify(userExample));
-    userExampleWithStars.stars = [starredBookmarkId];
+    userExampleWithStars.likes = [starredBookmarkId];
 
     request(app)
       .put(`${baseApiUrlUnderTest}/${testUserId}`)
@@ -152,8 +152,8 @@ describe('User Data tests', function () {
       .end(function (error, response) {
         expect(response.statusCode).to.equal(HttpStatus.OK);
         expect(response.body.userId).to.equal(testUserId);
-        expect(response.body.stars).to.have.lengthOf(1);
-        expect(response.body.stars[0]).to.equal(starredBookmarkId);
+        expect(response.body.likes).to.have.lengthOf(1);
+        expect(response.body.likes[0]).to.equal(starredBookmarkId);
         done();
       });
   });
@@ -167,7 +167,7 @@ describe('User Data tests', function () {
         expect(response.body.userId).to.equal(testUserId);
         expect(response.body.searches).to.have.lengthOf(1);
         expect(response.body.searches[0].text).to.equal(searchTextExample);
-        expect(response.body.stars[0]).to.equal(starredBookmarkId);
+        expect(response.body.likes[0]).to.equal(starredBookmarkId);
 
         done();
       });

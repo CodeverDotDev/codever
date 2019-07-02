@@ -57,14 +57,14 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
   }
 
   let blockedTags = '';
-  for (let i = 0; i < bookmark.tags.length; i++){
+  for ( let i = 0; i < bookmark.tags.length; i++ ) {
     const tag = bookmark.tags[i];
-    if(tag.startsWith('awesome')) {
+    if ( tag.startsWith('awesome') ) {
       blockedTags = blockedTags.concat(' ' + tag);
     }
   }
 
-  if (blockedTags) {
+  if ( blockedTags ) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('The following tags are blocked:' + blockedTags, ['The following tags are blocked:' + blockedTags]));
@@ -93,7 +93,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
       shared: true,
       location: bookmark.location
     }).lean().exec();
-    if( existingBookmark ) {
+    if ( existingBookmark ) {
       return response
         .status(HttpStatus.CONFLICT)
         .send(new MyError('A public bookmark with this location is already present',
@@ -122,43 +122,6 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
   }
 
 });
-
-
-/*/!* GET personal and starred bookmarks of the user *!/
-personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
-  try {
-    let bookmarks;
-    let userId = request.kauth.grant.access_token.content.sub;
-    if ( userId !== request.params.userId ) {
-      return response
-        .status(HttpStatus.UNAUTHORIZED)
-        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
-    }
-
-    const userData = await User.findOne({
-      userId: request.params.userId
-    });
-
-    if ( !userData ) {
-      bookmarks = await Bookmark.find({userId: request.params.userId});
-    } else {
-      bookmarks = await Bookmark.find(
-        {
-          $or: [
-            {userId: request.params.userId},
-            {"_id": {$in: userData.stars}}
-          ]
-        }
-      );
-    }
-
-    response.send(bookmarks);
-  } catch (err) {
-    return response
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send(err);
-  }
-});*/
 
 /* GET bookmark of user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
@@ -293,13 +256,13 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
   }
 
   let blockedTags = '';
-  for (let i = 0; i < request.body.tags.length; i++){
+  for ( let i = 0; i < request.body.tags.length; i++ ) {
     const tag = request.body.tags[i];
-    if(tag.startsWith('awesome')) {
+    if ( tag.startsWith('awesome') ) {
       blockedTags = blockedTags.concat(' ' + tag);
     }
   }
-  if (blockedTags) {
+  if ( blockedTags ) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('The following tags are blocked:' + blockedTags, ['The following tags are blocked:' + blockedTags]));
@@ -326,9 +289,9 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
     const existingBookmark = await Bookmark.findOne({
       shared: true,
       location: request.body.location,
-      userId: { $ne: request.params.userId}
+      userId: {$ne: request.params.userId}
     }).lean().exec();
-    if( existingBookmark ) {
+    if ( existingBookmark ) {
       return response
         .status(HttpStatus.CONFLICT)
         .send(new MyError('A public bookmark with this location is already present',
@@ -402,7 +365,15 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
     } else {
       await User.update(
         {},
-        {$pull: {readLater: bookmarkId, stars: bookmarkId, pinned: bookmarkId, history: bookmarkId}},
+        {
+          $pull: {
+            readLater: bookmarkId,
+            likes: bookmarkId,
+            pinned: bookmarkId,
+            history: bookmarkId,
+            favorites: bookmarkId
+          }
+        },
         {multi: true}
       );
 
