@@ -79,10 +79,9 @@ ul.tags li:not(:last-child):after {
 
 .star-group {
   display: inline-flex;
-  width: 4rem;
   height: 1.4rem;
   vertical-align: middle;
-  margin-right: 0.7rem;
+  margin-right: 1.5rem;
 
   input:nth-child(2) {
     width: 1.8rem;
@@ -261,6 +260,12 @@ ul.tags li:not(:last-child):after {
 
 .btn-sm {
   margin-right: 0.5rem;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1240px;
+  }
 }
 
 // END bootstrap override

@@ -18,10 +18,10 @@
     Latest
   </button>
   <button type="button" class="btn"
-          [ngClass]="{'btn-secondary': orderBy === 'STARS', 'btn-outline-secondary': orderBy !== 'STARS'}"
-          [disabled]="orderBy === 'STARS'"
-          (click)="getByStars()">
-    Stars
+          [ngClass]="{'btn-secondary': orderBy === 'LIKES', 'btn-outline-secondary': orderBy !== 'LIKES'}"
+          [disabled]="orderBy === 'LIKES'"
+          (click)="getByLikes()">
+    Likes
   </button>
 </div>
 

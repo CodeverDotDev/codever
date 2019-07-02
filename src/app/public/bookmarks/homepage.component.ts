@@ -31,8 +31,8 @@ export class HomepageComponent implements OnInit {
 
   history$: Observable<Bookmark[]>;
   pinned$: Observable<Bookmark[]>;
+  favorites$: Observable<Bookmark[]>;
   laterReads$: Observable<Bookmark[]>;
-  starredBookmarks$: Observable<Bookmark[]>;
   bookmarksForWatchedTags$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
@@ -55,11 +55,10 @@ export class HomepageComponent implements OnInit {
     this.userIsLoggedIn$.then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfo$().subscribe( userInfo => {
+        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
           this.selectTabWhenLoggedIn(selectedTab);
           this.userData$ = this.userDataStore.getUserData$();
         });
-        // this.userData$ = this.userDataStore.getUserData$();
       } else {
         this.selectedTabWhenNotLoggedIn(selectedTab);
       }
@@ -68,32 +67,36 @@ export class HomepageComponent implements OnInit {
   }
 
   private selectTabWhenLoggedIn(selectedTab) {
-    switch (selectedTab) {
-      case 'history': {
-        this.selectedIndex = 1;
-        break;
+      switch (selectedTab) {
+        case 'history': {
+          this.selectedIndex = 1;
+          break;
+        }
+        case 'pinned': {
+          this.selectedIndex = 2;
+          break;
+        }
+        case 'read-later': {
+          this.selectedIndex = 3;
+          break;
+        }
+        case 'favorites': {
+          this.selectedIndex = 4;
+          break;
+        }
+        case 'watched-tags': {
+          this.selectedIndex = 5;
+          break;
+        }
+        case 'search-results': {
+          this.selectedIndex = 6;
+          break;
+        }
+        default: {
+          this.selectedIndex = 0;
+          this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$();
+        }
       }
-      case 'pinned': {
-        this.selectedIndex = 2;
-        break;
-      }
-      case 'read-later': {
-        this.selectedIndex = 3;
-        break;
-      }
-      case 'starred': {
-        this.selectedIndex = 4;
-        break;
-      }
-      case 'watched-tags': {
-        this.selectedIndex = 5;
-        break;
-      }
-      default: {
-        this.selectedIndex = 0;
-        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$();
-      }
-    }
   }
 
   private selectedTabWhenNotLoggedIn(selectedTab) {
@@ -110,7 +113,7 @@ export class HomepageComponent implements OnInit {
         this.selectedIndex = 3;
         break;
       }
-      case 'starred': {
+      case 'favorites': {
         this.selectedIndex = 4;
         break;
       }
@@ -118,11 +121,16 @@ export class HomepageComponent implements OnInit {
         this.selectedIndex = 5;
         break;
       }
+      case 'search-results': {
+        this.selectedIndex = 6;
+        break;
+      }
       default: {
         this.selectedIndex = 0;
         this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$();
       }
     }
+
   }
 
   showMoreResults() {
@@ -141,7 +149,7 @@ export class HomepageComponent implements OnInit {
       } else if (event.index === 3) {
         this.laterReads$ = this.userDataStore.getLaterReads$();
       } else if (event.index === 4) {
-        this.starredBookmarks$ = this.userDataStore.getStarredBookmarks$();
+        this.favorites$ = this.userDataStore.getFavoriteBookmarks$();
       } else if (event.index === 5) {
         this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags$();
       }
@@ -177,16 +185,32 @@ export class HomepageComponent implements OnInit {
         break;
       }
       case 4 : {
-        return 'starred'
+        return 'favorites'
         break;
       }
       case 5 : {
         return 'watched-tags';
         break;
       }
+      case 6: {
+        return 'search-results';
+        break;
+      }
       default: {
         return 'community';
       }
     }
+  }
+
+  onSearchTriggered(searchTriggered: boolean) {
+    if (searchTriggered) {
+      this.selectedIndex = 6;
+    }
+  }
+
+  onClearSearchText(searchTextCleared: boolean) {
+   if (searchTextCleared) {
+     this.selectedIndex = 1;
+   }
   }
 }

@@ -10,11 +10,21 @@
           <h6 class="card-subtitle mb-2 text-muted url-under-title"><span [innerHtml]="bookmark.location | slice:0:150 | highlight: queryText"></span></h6>
         </div>
         <div style="display: flex">
-          <span *ngIf="!(userData$ | async)?.pinned?.includes(bookmark._id) else markedAsPinned" class="clock-wrapper" title="Pin bookmark" (click)="addToPinned(bookmark)"><i class="fas fa-thumbtack"></i></span>
+          <span *ngIf="!(userData$ | async)?.favorites?.includes(bookmark._id) else markedAsFavorite" class="clock-wrapper" title="Add to Favorites" (click)="addToFavorites(bookmark)">
+            <i class="far fa-star"></i>
+          </span>
+          <ng-template #markedAsFavorite>
+            <span class="clock-wrapper" title="Remove from Favorites" (click)="removeFromFavorites(bookmark)"><i class="fas fa-star"></i></span>
+          </ng-template>
+          <span *ngIf="!(userData$ | async)?.pinned?.includes(bookmark._id) else markedAsPinned" class="clock-wrapper" title="Pin bookmark" (click)="addToPinned(bookmark)">
+            <i class="fas fa-thumbtack"></i>
+          </span>
           <ng-template #markedAsPinned>
             <span class="clock-wrapper" title="Unpin bookmark" (click)="removeFromPinned(bookmark)"><i class="fas fa-thumbtack fa-rotate-90"></i></span>
           </ng-template>
-          <span *ngIf="!(userData$ | async)?.readLater?.includes(bookmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(bookmark)"><i class="far fa-clock"></i></span>
+          <span *ngIf="!(userData$ | async)?.readLater?.includes(bookmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(bookmark)">
+            <i class="far fa-clock"></i>
+          </span>
           <ng-template #markedAsReadLater>
             <span class="clock-wrapper" title="Remove from Read later" (click)="removeFromReadLater(bookmark)"><i class="fas fa-clock"></i></span>
           </ng-template>
@@ -31,16 +41,16 @@
     <div class="card-footer">
       <div class="tags-group">
         <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-            <span *ngIf="userIsLoggedIn && (userData$ | async)?.stars?.indexOf(bookmark._id) !== -1 else emptyStar"
-                  class="input-group-text star-span" id="btnGroupAddon2" (click)="unstarBookmark(bookmark)" style="cursor:pointer">
-              <i class="fas fa-star"></i>
+            <span *ngIf="userIsLoggedIn && (userData$ | async)?.likes?.indexOf(bookmark._id) !== -1 else emptyStar"
+                  title="UnLike" class="star-span" (click)="unLikeBookmark(bookmark)" style="cursor:pointer">
+              <i class="fas fa-thumbs-up fa-lg"></i>
             </span>
           <ng-template #emptyStar>
-              <span class="input-group-text star-span" id="btnGroupAddon3" (click)="starBookmark(bookmark)" style="cursor:pointer">
-                <i class="far fa-star"></i>
+              <span class="star-span" title="Like" (click)="likeBookmark(bookmark)" style="cursor:pointer">
+                <i class="far fa-thumbs-up fa-lg"></i>
               </span>
           </ng-template>
-          <span>{{bookmark.stars}}</span>
+          <span>{{bookmark.likes}}</span>
         </div>
         <span *ngIf="bookmark.publishedOn" class="badge  badge-info float-xs-left"><i class="fa fa-calendar-alt"></i> {{bookmark.publishedOn | date:"yyyy-MM-dd"}}</span>
         <span *ngIf="bookmark.githubURL" class="badge  badge-primary float-xs-left">
