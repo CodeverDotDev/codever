@@ -15,7 +15,7 @@ const bookmarkSchema = new Schema({
     language: String,
     starredBy: [String],
     lastAccessedAt: Date,
-    stars: Number
+    likes: Number
 },
 {
   timestamps: true

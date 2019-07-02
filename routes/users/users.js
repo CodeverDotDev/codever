@@ -24,7 +24,7 @@ usersRouter.use(keycloak.middleware());
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
 
 
-/* GET personal bookmarks of the user */
+/* GET personal bookmarks of the users */
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
@@ -90,8 +90,8 @@ usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, resp
   }
 });
 
-/* GET list of starred bookmarks by the user */
-usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) => {
+/* GET list of liked bookmarks by the user */
+usersRouter.get('/:userId/likes', keycloak.protect(), async (request, response) => {
   try {
     let userId = request.kauth.grant.access_token.content.sub;
     if ( userId !== request.params.userId ) {
@@ -112,7 +112,7 @@ usersRouter.get('/:userId/stars', keycloak.protect(), async (request, response) 
           )
         );
     } else {
-      const bookmarks = await Bookmark.find({"_id": {$in: userData.stars}});
+      const bookmarks = await Bookmark.find({"_id": {$in: userData.likes}});
       response.send(bookmarks);
     }
 
@@ -153,7 +153,6 @@ usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, res
         .limit(100)
         .lean()
         .exec();
-      ;
       //
       response.send(bookmarks);
     }
@@ -193,6 +192,44 @@ usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response)
       });
 
       response.send(orderedBookmarksAsInPinned);
+    }
+
+  } catch (err) {
+    return response
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send(err);
+  }
+});
+
+/* GET list of user's favorite bookmarks */
+usersRouter.get('/:userId/favorites', keycloak.protect(), async (request, response) => {
+  try {
+    let userId = request.kauth.grant.access_token.content.sub;
+    if ( userId !== request.params.userId ) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
+
+    const userData = await User.findOne({
+      userId: request.params.userId
+    });
+    if ( !userData ) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .send(new MyError(
+          'User data was not found',
+          ['User data of the user with the userId ' + request.params.userId + ' was not found']
+          )
+        );
+    } else {
+      const bookmarks = await Bookmark.find({"_id": {$in: userData.favorites}});
+      //we need to order the bookmarks to correspond the one in the userData.history array
+      const orderedBookmarksAsInFavorites = userData.favorites.map(bookmarkId => {
+        return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+      });
+
+      response.send(orderedBookmarksAsInFavorites);
     }
 
   } catch (err) {
@@ -277,10 +314,11 @@ usersRouter.post('/:userId', keycloak.protect(), async (request, response) => {
       userId: request.params.userId,
       searches: request.body.searches,
       readLater: request.body.readLater,
-      stars: request.body.stars,
+      likes: request.body.likes,
       watchedTags: request.body.watchedTags,
       pinned: request.body.pinned,
-      pinned: request.body.history
+      favorites: request.body.favorites,
+      history: request.body.history
     });
 
     const newUserData = await userData.save();
@@ -403,7 +441,7 @@ usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => 
 /*
 * rate bookmark
 */
-usersRouter.patch('/:userId/bookmarks/stars/:bookmarkId', keycloak.protect(), async (request, response) => {
+usersRouter.patch('/:userId/bookmarks/likes/:bookmarkId', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
   if ( userId !== request.params.userId ) {
@@ -436,9 +474,9 @@ usersRouter.patch('/:userId/bookmarks/stars/:bookmarkId', keycloak.protect(), as
           )
         );
     } else {
-      if ( request.body.action === 'STAR' ) {
+      if ( request.body.action === 'LIKE' ) {
         try {
-          if (userData.stars.includes(request.params.bookmarkId)) {
+          if (userData.likes.includes(request.params.bookmarkId)) {
             return response
               .status(HttpStatus.BAD_REQUEST)
               .send(new MyError('You already starred this bookmark', ['You already starred this bookmark']));
@@ -446,10 +484,10 @@ usersRouter.patch('/:userId/bookmarks/stars/:bookmarkId', keycloak.protect(), as
 
             await User.update(
               {userId: request.params.userId},
-              {$push: {stars: request.params.bookmarkId}}
+              {$push: {likes: request.params.bookmarkId}}
             );
 
-            const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$inc: {stars: 1}});
+            const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$inc: {likes: 1}});
 
             const bookmarkNotFound = !bookmark;
             if ( bookmarkNotFound ) {
@@ -466,20 +504,20 @@ usersRouter.patch('/:userId/bookmarks/stars/:bookmarkId', keycloak.protect(), as
         } catch (err) {
           return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(new MyError('Unknown Server Error', ['Unknow server error when starring bookmark with id ' + request.params.bookmarkId]));
         }
-      } else if ( request.body.action === 'UNSTAR' ) {
+      } else if ( request.body.action === 'UNLIKE' ) {
         try {
-          if (!userData.stars.includes(request.params.bookmarkId)) {
+          if (!userData.likes.includes(request.params.bookmarkId)) {
             return response
               .status(HttpStatus.BAD_REQUEST)
-              .send(new MyError('You did not star this bookmark', ['You did not star this bookmark']));
+              .send(new MyError('You did not like this bookmark', ['You did not like this bookmark']));
           } else {
 
             await User.update(
               {userId: request.params.userId},
-              {$pull: {stars: request.params.bookmarkId}}
+              {$pull: {likes: request.params.bookmarkId}}
             );
 
-            const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$inc: {stars: -1}});
+            const bookmark = await Bookmark.findOneAndUpdate({_id: request.params.bookmarkId}, {$inc: {likes: -1}});
             const bookmarkNotFound = !bookmark;
             if ( bookmarkNotFound ) {
               return response
@@ -497,7 +535,7 @@ usersRouter.patch('/:userId/bookmarks/stars/:bookmarkId', keycloak.protect(), as
       } else {
         return response
           .status(HttpStatus.BAD_REQUEST)
-          .send(new MyError('Rating action should be either STAR or UNSTAR', ['Rating action should be either STAR or UNSTAR']));
+          .send(new MyError('Rating action should be either LIKE or UNLIKE', ['Rating action should be either STAR or UNSTAR']));
       }
     }
   } catch (err) {
