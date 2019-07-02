@@ -262,6 +262,12 @@ ul.tags li:not(:last-child):after {
   margin-right: 0.5rem;
 }
 
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1240px;
+  }
+}
+
 // END bootstrap override
 
 label {
