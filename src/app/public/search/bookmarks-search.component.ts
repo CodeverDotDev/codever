@@ -1,9 +1,10 @@
-import { Observable, of, of as observableOf } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { map, startWith } from 'rxjs/operators';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { BookmarkFilterService } from '../../core/filter.service';
 import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
@@ -31,14 +32,20 @@ export class BookmarksSearchComponent implements OnInit {
   @Input()
   context: string;
 
+  @Output()
+  searchTriggered = new EventEmitter<boolean>();
+
+  @Output()
+  clearSearchText = new EventEmitter<boolean>();
+
   _userData: UserData;
 
-  filteredBookmarks: Observable<Bookmark[]>;
+
+  searchResults$: Observable<Bookmark[]>;
 
   searchControl = new FormControl();
   searchText: string; // holds the value in the search box
   public showNotFound = false;
-  public numberOfResultsFiltered: number;
   counter = 10;
 
 
@@ -62,6 +69,7 @@ export class BookmarksSearchComponent implements OnInit {
   ];
 
   constructor(private router: Router,
+              private location: Location,
               private route: ActivatedRoute,
               private bookmarkStore: PublicBookmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
@@ -97,10 +105,6 @@ export class BookmarksSearchComponent implements OnInit {
         });
     }
 
-  }
-
-  get userData$() {
-    return of(this._userData);
   }
 
   private _filter(value: string): string[] {
@@ -157,10 +161,10 @@ export class BookmarksSearchComponent implements OnInit {
     this.searchControl.valueChanges.subscribe(val => {
       this.searchText = val;
       this.showNotFound = false;
-      if (val.trim() === '') {
-        this.showSearchResults = false;
-      }
 
+      if (val.trim() === '') {
+         this.showSearchResults = false;
+      }
       this.syncQueryParamsWithSearchBox();
     });
   }
@@ -174,15 +178,6 @@ export class BookmarksSearchComponent implements OnInit {
     if (deleted) {
       this.searchControl.setValue(this.searchText);
     }
-  }
-
-  /**
-   *
-   * @param bookmark
-   */
-  gotoBookmarkDetail(bookmark: Bookmark): void {
-    const link = ['/bookmarks', bookmark._id];
-    this.router.navigate(link);
   }
 
   onSearchDomainChange(newValue) {
@@ -234,32 +229,24 @@ export class BookmarksSearchComponent implements OnInit {
 
   searchBookmarks(searchText: string) {
     if (searchText.trim() !== '') {
+      this.searchTriggered.emit(true);
+
       if (this.previousTerm !== searchText) {
         this.previousTerm = searchText;
         this.counter = 10;
       }
-      let filteredPublicBookmarks: Observable<Bookmark[]>;
       if (this.searchDomain === 'personal' && this.userId) {
-        filteredPublicBookmarks = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, this.counter, this.userId);
+        this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, this.counter, this.userId);
+        this.showSearchResults = true;
       } else {
-        filteredPublicBookmarks = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, this.counter);
+        this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, this.counter);
+        this.showSearchResults = true;
       }
-      filteredPublicBookmarks.subscribe(bookmarks => {
-        this.numberOfResultsFiltered = bookmarks.length;
-        if (this.numberOfResultsFiltered > 0) {
-          this.showNotFound = false;
-          this.showSearchResults = true;
-          this.filteredBookmarks = observableOf(bookmarks.slice(0, this.counter));
-        } else {
-          this.showNotFound = true;
-          this.filteredBookmarks = observableOf<Bookmark[]>([]);
-        }
-      });
     }
 
   }
 
-  private syncQueryParamsWithSearchBox() {
+   syncQueryParamsWithSearchBox() {
     if (this.searchText) {
       this.router.navigate(['.'],
         {
@@ -270,7 +257,8 @@ export class BookmarksSearchComponent implements OnInit {
       );
 
     } else {
-      this.router.navigate(['.'],
+      this.clearSearchText.emit(true);
+      this.router.navigate(['./'],
         {
           relativeTo: this.route,
           queryParams: {q: null, sd: null},

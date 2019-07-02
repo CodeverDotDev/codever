@@ -27,24 +27,24 @@ export class BookmarkFilterService {
     bookmarks$.subscribe(
 
       bookmarks => {
-        let filteredBookmarks;
+        let searchResults$;
         if (bookmarks instanceof List) {
-          filteredBookmarks = bookmarks.toArray(); // we start with all bookmarks
+          searchResults$ = bookmarks.toArray(); // we start with all bookmarks
         } else {
-          filteredBookmarks = bookmarks;
+          searchResults$ = bookmarks;
         }
 
         if (language && language !== 'all') {
-          filteredBookmarks = filteredBookmarks.filter(x => x.language === language);
+          searchResults$ = searchResults$.filter(x => x.language === language);
         }
         searchedTags.forEach(tag => {
-          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsTag(x, tag));
+          searchResults$ = searchResults$.filter(x => this.bookmarkContainsTag(x, tag));
         });
         searchedTerms.forEach(term => {
-          filteredBookmarks = filteredBookmarks.filter(x => this.bookmarkContainsSearchedTerm(x, term.trim()));
+          searchResults$ = searchResults$.filter(x => this.bookmarkContainsSearchedTerm(x, term.trim()));
         });
 
-        result = filteredBookmarks;
+        result = searchResults$;
       },
       err => {
         console.log('Error filtering bookmakrs');

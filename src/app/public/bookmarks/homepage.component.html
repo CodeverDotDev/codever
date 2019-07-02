@@ -1,11 +1,11 @@
 <div id="public-search-box">
 
-  <app-bookmark-search [context]="'Public'" [userData$]="userData$"></app-bookmark-search>
+  <app-bookmark-search [context]="'Public'" [userData$]="userData$" (searchTriggered)="onSearchTriggered($event)" (clearSearchText)="onClearSearchText($event)"></app-bookmark-search>
 
   <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)" [selectedIndex]="selectedIndex">
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">Community &nbsp;<i class="fas fa-share-alt"></i></span>
+        <span class="app-tab-label"><i class="fas fa-share-alt"></i> Community</span>
       </ng-template>
       <app-async-bookmark-list [bookmarks]="publicBookmarks$" [shownSize]="counter"
                                [userData$]="userData$"></app-async-bookmark-list>
@@ -18,7 +18,7 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">History  &nbsp;<i class="fas fa-history"></i></span>
+        <span class="app-tab-label"><i class="fas fa-history"></i> History</span>
       </ng-template>
       <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInLastVisited"
            class="missing-category-bookmarks-message alert alert-info">
@@ -42,7 +42,7 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">Pinned  &nbsp;<i class="fas fa-thumbtack"></i></span>
+        <span class="app-tab-label"><i class="fas fa-thumbtack"></i> Pinned</span>
       </ng-template>
       <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToPin" class="missing-category-bookmarks-message alert alert-info">
         <p>
@@ -66,7 +66,7 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">Read Later  &nbsp;<i class="fas fa-clock"></i></span>
+        <span class="app-tab-label"><i class="fas fa-clock"></i> Read Later</span>
       </ng-template>
       <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToReadLater"
            class="missing-category-bookmarks-message alert alert-info">
@@ -91,7 +91,7 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">Favorites  &nbsp;<i class="fas fa-star"></i></span>
+        <span class="app-tab-label"><i class="fas fa-star"></i> Favorites</span>
       </ng-template>
       <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToFavorite"
            class="missing-category-bookmarks-message alert alert-info">
@@ -115,7 +115,7 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label">Watched tags  &nbsp;<i class="fas fa-eye"></i></span>
+        <span class="app-tab-label"><i class="fas fa-eye"></i> Watched tags</span>
       </ng-template>
       <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToWatchTags"
            class="missing-category-bookmarks-message alert alert-info">
@@ -152,6 +152,34 @@
                                  [userData$]="userData$"></app-async-bookmark-list>
       </ng-template>
     </mat-tab>
+    <mat-tab *ngIf="searchComponent.showSearchResults">
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"><i class="fas fa-search"></i> Results</span>
+      </ng-template>
+      <div *ngIf="(searchComponent.searchResults$ | async)?.length === 0" class="alert alert-info no-search-results" role="alert">
+        No <strong>{{searchComponent.searchDomain}}</strong> bookmarks found for "<em>{{searchComponent.searchText}}</em>".
+        Please try a different search or
+        <button *ngIf="searchComponent.searchDomain === 'personal'; else oppositeSearchDomain" type="button"
+                class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('public')">
+          <i class="fa fa-search"></i> public bookmarks
+        </button>
+        <ng-template #oppositeSearchDomain>
+          <button type="button" class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('personal')">
+            <i class="fa fa-search"></i> personal bookmarks
+          </button>
 
+        </ng-template>
+      </div>
+      <div *ngIf="(searchComponent.searchResults$ | async)?.length > 0">
+        <app-async-bookmark-list [bookmarks]="searchComponent.searchResults$" [queryText]="searchComponent.searchText"
+                                 [shownSize]="searchComponent.counter" [userData$]="userData$"
+                                 (bookmarkDeleted)="searchComponent.onBookmarkDeleted($event)"></app-async-bookmark-list>
+
+        <button type="button" class="btn btn-primary btn-lg btn-block" (click)="searchComponent.onShowMoreResults()"
+                [disabled]="searchComponent.counter > (searchComponent.searchResults$ | async)?.length">Show more
+        </button>
+        <hr/>
+      </div>
+    </mat-tab>
   </mat-tab-group>
 </div>
