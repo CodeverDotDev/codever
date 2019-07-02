@@ -30,6 +30,9 @@ export class UserDataStore {
   private _pinned: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private pinnedBookmarksHaveBeenLoaded = false;
 
+  private _favorites: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
+  private favoriteBookmarksHaveBeenLoaded = false;
+
   private _history: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private historyHasBeenLoaded = false;
 
@@ -77,9 +80,10 @@ export class UserDataStore {
             userId: userId,
             searches: [],
             readLater: [],
-            stars: [],
+            likes: [],
             watchedTags: [],
             pinned: [],
+            favorites: [],
             history: []
           }
 
@@ -151,9 +155,9 @@ export class UserDataStore {
     }
   }
 
-  getStarredBookmarks$(): Observable<Bookmark[]> {
+  getLikedBookmarks$(): Observable<Bookmark[]> {
     if (!this.starredBookmarksHaveBeenLoaded) {
-      this.userService.getStarredBookmarks(this.userId).subscribe(data => {
+      this.userService.getLikedBookmarks(this.userId).subscribe(data => {
         this.starredBookmarksHaveBeenLoaded = true;
         this._stars.next(data);
       });
@@ -161,8 +165,8 @@ export class UserDataStore {
     return this._stars.asObservable();
   }
 
-  addToStarredBookmarks(bookmark: Bookmark) {
-    this.userData.stars.unshift(bookmark._id);
+  addToLikedBookmarks(bookmark: Bookmark) {
+    this.userData.likes.unshift(bookmark._id);
     this.updateUserData(this.userData).subscribe(() => {
       if (this.starredBookmarksHaveBeenLoaded) {
         const starredBookmarks: Bookmark[] = this._stars.getValue();
@@ -172,8 +176,8 @@ export class UserDataStore {
     });
   }
 
-  removeFromStarredBookmarks(bookmark: Bookmark) {
-    this.userData.stars = this.userData.stars.filter(x => x !== bookmark._id);
+  removeFromLikedBookmarks(bookmark: Bookmark) {
+    this.userData.likes = this.userData.likes.filter(x => x !== bookmark._id);
     this.updateUserData(this.userData).subscribe( () => {
       this.publishStarredBookmarksAfterDeletion(bookmark);
     });
@@ -233,6 +237,46 @@ export class UserDataStore {
     }
   }
 
+  getFavoriteBookmarks$(): Observable<Bookmark[]> {
+    if (!this.favoriteBookmarksHaveBeenLoaded) {
+      this.userService.getFavoriteBookmarks(this.userId).subscribe(data => {
+        this.favoriteBookmarksHaveBeenLoaded = true;
+        this._favorites.next(data);
+      });
+    }
+    return this._favorites.asObservable();
+  }
+
+  addToFavoriteBookmarks(bookmark: Bookmark) {
+    this.userData.favorites.unshift(bookmark._id);
+    this.updateUserData(this.userData).subscribe(() => {
+      if (this.favoriteBookmarksHaveBeenLoaded) {
+        const favoritesBookmarks: Bookmark[] = this._favorites.getValue();
+        favoritesBookmarks.unshift(bookmark);
+
+        this._favorites.next(favoritesBookmarks); // insert at the top (index 0)
+      }
+    });
+  }
+
+  removeFromFavoriteBookmarks(bookmark: Bookmark) {
+    this.userData.favorites = this.userData.favorites.filter(x => x !== bookmark._id);
+    this.updateUserData(this.userData).subscribe(() => {
+      this.publishedFavoritesAfterDeletion(bookmark);
+    });
+  }
+
+  private publishedFavoritesAfterDeletion(bookmark: Bookmark) {
+    if (this.favoriteBookmarksHaveBeenLoaded) {
+      const favoritesBookmarks: Bookmark[] = this._favorites.getValue();
+      const index = favoritesBookmarks.findIndex((favoriteBookmark) => bookmark._id === favoriteBookmark._id);
+      if (index !== -1) {
+        favoritesBookmarks.splice(index, 1);
+        this._favorites.next(favoritesBookmarks);
+      }
+    }
+  }
+
   getHistory$(): Observable<Bookmark[]> {
     if (!this.historyHasBeenLoaded) {
       this.userService.getLastVisitedBookmarks(this.userId).subscribe(data => {
@@ -267,11 +311,13 @@ export class UserDataStore {
   removeFromStoresAtDeletion(bookmark: Bookmark) {
     this.userData.history = this.userData.history.filter(x => x !== bookmark._id);
     this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
+    this.userData.favorites = this.userData.favorites.filter(x => x !== bookmark._id);
     this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
-    this.userData.stars = this.userData.stars.filter(x => x !== bookmark._id);
+    this.userData.likes = this.userData.likes.filter(x => x !== bookmark._id);
     this.updateUserData(this.userData).subscribe(() => {
       this.publishHistoryAfterDeletion(bookmark);
       this.publishedPinnedAfterDeletion(bookmark);
+      this.publishedFavoritesAfterDeletion(bookmark);
       this.publishReadLaterAfterDeletion(bookmark);
       this.publishStarredBookmarksAfterDeletion(bookmark);
     });
@@ -305,23 +351,23 @@ export class UserDataStore {
     this.forceReloadOfBookmarksForWatchedTags = true;
   }
 
-  starBookmark(bookmark: Bookmark) {
-    bookmark.stars++;
-    this.userData.stars.unshift(bookmark._id);
+  likeBookmark(bookmark: Bookmark) {
+    bookmark.likes++;
+    this.userData.likes.unshift(bookmark._id);
     const rateBookmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
-      action: RatingActionType.STAR,
+      action: RatingActionType.LIKE,
       bookmark: bookmark
     }
     this.rateBookmark(rateBookmarkRequest);
   }
 
-  unstarBookmark(bookmark: Bookmark) {
-    bookmark.stars--;
-    this.userData.stars.splice(this.userData.stars.indexOf(bookmark._id), 1);
+  unLikeBookmark(bookmark: Bookmark) {
+    bookmark.likes--;
+    this.userData.likes.splice(this.userData.likes.indexOf(bookmark._id), 1);
     const rateBookmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
-      action: RatingActionType.UNSTAR,
+      action: RatingActionType.UNLIKE,
       bookmark: bookmark
     }
 
@@ -330,10 +376,10 @@ export class UserDataStore {
 
   private rateBookmark(rateBookmarkRequest: RateBookmarkRequest) {
     this.userService.rateBookmark(rateBookmarkRequest).subscribe(() => {
-      if (rateBookmarkRequest.action === RatingActionType.STAR) {
-        this.addToStarredBookmarks(rateBookmarkRequest.bookmark);
+      if (rateBookmarkRequest.action === RatingActionType.LIKE) {
+        this.addToLikedBookmarks(rateBookmarkRequest.bookmark);
       } else {
-        this.removeFromStarredBookmarks(rateBookmarkRequest.bookmark);
+        this.removeFromLikedBookmarks(rateBookmarkRequest.bookmark);
       }
     });
   }

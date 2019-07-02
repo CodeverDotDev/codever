@@ -35,7 +35,7 @@
 </div>
 
 <mat-form-field class="search-domain-select">
-  <mat-label>Search domain</mat-label>
+  <mat-label>Search in</mat-label>
   <mat-select [ngModel]="searchDomain" (ngModelChange)="onSearchDomainChange($event)">
     <mat-option *ngFor="let searchDomain of searchDomains" [value]="searchDomain.value">
       {{searchDomain.viewValue}}
@@ -45,32 +45,6 @@
 
 <div class="clear" style="margin-bottom: 1rem"></div>
 
-<div *ngIf="showNotFound" class="alert alert-info" role="alert">
-  No <strong>{{searchDomain}}</strong> bookmarks found for "<em>{{searchText}}</em>".
-  Please try a different search or
-  <button *ngIf="searchDomain === 'personal'; else oppositeSearchDomain" type="button" class="btn btn-outline-primary btn-sm" (click)="onSearchDomainChange('public')">
-    <i class="fa fa-search"></i> public bookmarks
-  </button>
-  <ng-template #oppositeSearchDomain>
-    <button type="button" class="btn btn-outline-primary btn-sm" (click)="onSearchDomainChange('personal')">
-      <i class="fa fa-search"></i> personal bookmarks
-    </button>
-
-  </ng-template>
-</div>
-
-
-<div *ngIf="showSearchResults">
-  <app-async-bookmark-list [bookmarks]="filteredBookmarks" [queryText]="searchText"
-                           [shownSize]="counter" [userData$]="userData$"
-                           (bookmarkDeleted)="onBookmarkDeleted($event)"></app-async-bookmark-list>
-  <div *ngIf="numberOfResultsFiltered > 0">
-    <button type="button" class="btn btn-primary btn-lg btn-block" (click)="onShowMoreResults()"
-            [disabled]="counter > numberOfResultsFiltered">Show more
-    </button>
-    <hr/>
-  </div>
-</div>
 
 
 

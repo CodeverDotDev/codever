@@ -43,15 +43,21 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
-  getStarredBookmarks(userId: string): Observable<Bookmark[]> {
+  getLikedBookmarks(userId: string): Observable<Bookmark[]> {
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/stars`)
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/likes`)
       .pipe(shareReplay(1));
   }
 
   getPinnedBookmarks(userId: string): Observable<Bookmark[]> {
     return this.httpClient
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/pinned`)
+      .pipe(shareReplay(1));
+  }
+
+  getFavoriteBookmarks(userId: string): Observable<Bookmark[]> {
+    return this.httpClient
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/favorites`)
       .pipe(shareReplay(1));
   }
 
@@ -70,7 +76,7 @@ export class UserDataService {
 
   rateBookmark(rateBookmarkRequest: RateBookmarkRequest): Observable<any> {
     return this.httpClient
-      .patch(`${this.usersApiBaseUrl}/${rateBookmarkRequest.ratingUserId}/bookmarks/stars/${rateBookmarkRequest.bookmark._id}`,
+      .patch(`${this.usersApiBaseUrl}/${rateBookmarkRequest.ratingUserId}/bookmarks/likes/${rateBookmarkRequest.bookmark._id}`,
         JSON.stringify(rateBookmarkRequest),
         {headers: this.headers})
       .pipe(shareReplay(1));
