@@ -68,8 +68,8 @@ export class TagComponent implements OnInit {
     this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy);
   }
 
-  getByStars() {
-    this.orderBy = 'STARS';
+  getByLikes() {
+    this.orderBy = 'LIKES';
     this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy);
   }
 

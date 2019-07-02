@@ -29,10 +29,10 @@ homepage
     mark more bookmarks for later reads
       - verify order - latest down the pipe
   star bookmark
-    - number of stars increases by one for the bookmark (star is filled)
+    - number of likes increases by one for the bookmark (star is filled)
     - should appear in starred section
-  unstar bookmark
-    - number of stars decreases by one (star is now unfilled)
+  unlike bookmark
+    - number of likes decreases by one (star is now unfilled)
     - should not appear in starred section
 
 notes

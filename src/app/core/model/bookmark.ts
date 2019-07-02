@@ -15,5 +15,5 @@ export interface Bookmark {
   updatedAt?: Date;
   lastAccessedAt?: Date;
   starredBy?: string[];
-  stars?: number;
+  likes?: number;
 }

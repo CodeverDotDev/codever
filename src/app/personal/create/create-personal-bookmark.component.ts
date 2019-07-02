@@ -185,7 +185,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       shared: bookmark.shared,
       starredBy: [],
       lastAccessedAt: new Date(),
-      stars: 0
+      likes: 0
     };
 
     this.personalBookmarksService.createBookmark(this.userId, newBookmark)
@@ -242,7 +242,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   private rateBookmark(bookmark: Bookmark) {
     const rateBookmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
-      action: RatingActionType.STAR,
+      action: RatingActionType.LIKE,
       bookmark: bookmark
     }
     const obs = this.userDataService.rateBookmark(rateBookmarkRequest);
