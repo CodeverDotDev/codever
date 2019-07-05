@@ -33,7 +33,7 @@
 
       <hr class="title-content-separator">
       <app-bookmark-text [bookmark]="bookmark" [queryText]="queryText"></app-bookmark-text>
-      <div class="edit-buttons-wrapper" *ngIf="bookmark.userId === (userData$ | async)?.userId ">
+      <div class="edit-buttons-wrapper" *ngIf="(bookmark.userId === (userData$ | async)?.userId) || keycloakService.isUserInRole('ROLE_ADMIN')">
         <button type="button" class="btn btn-primary btn-sm" (click)="gotoDetail(bookmark)"><i class="far fa-edit"></i> Edit</button>
         <button type="button" class="btn btn-danger btn-sm" (click)="openDeleteDialog(bookmark)"><i class="far fa-trash-alt"></i> Delete</button>
       </div>
