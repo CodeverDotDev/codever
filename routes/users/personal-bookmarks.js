@@ -1,6 +1,7 @@
 const express = require('express');
 const personalBookmarksRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
+const Token = require('keycloak-connect/middleware/auth-utils/token');
 
 const Bookmark = require('../../models/bookmark');
 const User = require('../../models/user');
@@ -21,7 +22,7 @@ const showdown = require('showdown'),
   converter = new showdown.Converter();
 
 //add keycloak middleware
-var keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
+const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 personalBookmarksRouter.use(keycloak.middleware());
 
 /**
@@ -228,18 +229,21 @@ personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, 
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, response) => {
-
   let userId = request.kauth.grant.access_token.content.sub;
-  if ( userId !== request.params.userId ) {
-    return response
-      .status(HttpStatus.UNAUTHORIZED)
-      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
-  }
+  const token = new Token(request.kauth.grant.access_token.token, 'bookmarks-api');
+  const isNotAdmin = !token.hasRealmRole('ROLE_ADMIN');
+  if(isNotAdmin) {
+    if ( userId !== request.params.userId) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
 
-  if ( request.body.userId !== userId ) {
-    return response
-      .status(HttpStatus.BAD_REQUEST)
-      .send(new MyError('The userId of the bookmark does not match the userId parameter', ['The userId of the bookmark does not match the userId parameter']));
+    if ( request.body.userId !== userId ) {
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new MyError('The userId of the bookmark does not match the userId parameter', ['The userId of the bookmark does not match the userId parameter']));
+    }
   }
 
   const requiredAttributesMissing = !request.body.name || !request.body.location || !request.body.tags || request.body.tags.length === 0;
@@ -339,12 +343,15 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
 * DELETE bookmark for user
 */
 personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (request, response) => {
-
-  const userId = request.kauth.grant.access_token.content.sub;
-  if ( userId !== request.params.userId ) {
-    return response
-      .status(HttpStatus.UNAUTHORIZED)
-      .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+  const token = new Token(request.kauth.grant.access_token.token, 'bookmarks-api');
+  const isNotAdmin = !token.hasRealmRole('ROLE_ADMIN');
+  if(isNotAdmin) {
+    const userId = request.kauth.grant.access_token.content.sub;
+    if ( userId !== request.params.userId ) {
+      return response
+        .status(HttpStatus.UNAUTHORIZED)
+        .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
+    }
   }
 
   const bookmarkId = request.params.bookmarkId;
