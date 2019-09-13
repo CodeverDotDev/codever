@@ -2,19 +2,23 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { UserData } from '../../core/model/user-data';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-social-share-dialog',
   templateUrl: './social-share-dialog.component.html',
-  styleUrls: ['./social-share-dialog.component.scss']
+  styleUrls: ['./social-share-dialog.component.scss'],
+  providers: [DatePipe]
 })
 export class SocialShareDialogComponent implements OnInit {
 
   public bookmark: Bookmark;
   userData: UserData;
   tagsStr: string;
+  tweetText: string;
 
   constructor(
+    private datePipe: DatePipe,
     private dialogRef: MatDialogRef<SocialShareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data
   ) {
@@ -22,6 +26,13 @@ export class SocialShareDialogComponent implements OnInit {
     this.tagsStr = this.bookmark.tags.map(tag => {
       return this.prepareTagForTweet(tag);
     }).join(',');
+    this.tweetText = this.bookmark.name + '\n';
+    if (this.bookmark.publishedOn) {
+      this.tweetText += 'Published on ' + this.datePipe.transform(this.bookmark.publishedOn, 'yyyy-MM-dd') + '\n';
+    }
+    if (this.bookmark.githubURL) {
+      this.tweetText += 'Source code ' + this.bookmark.githubURL + '\n\n';
+    }
   }
 
   ngOnInit() {
