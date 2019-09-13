@@ -8,7 +8,7 @@
       <div class="col">
         <tweet
           [url]="bookmark.location"
-          [text]="bookmark.name | slice:0:140"
+          [text]="tweetText"
           [hashTags]="tagsStr"
           (click)="onShareButtonClick()">
         </tweet>
