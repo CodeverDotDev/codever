@@ -20,7 +20,7 @@
             <i class="fas fa-thumbtack"></i>
           </span>
           <ng-template #markedAsPinned>
-            <span class="clock-wrapper" title="Unpin bookmark" (click)="removeFromPinned(bookmark)"><i class="fas fa-thumbtack fa-rotate-90"></i></span>
+            <span class="clock-wrapper" title="Unpin bookmark" (click)="removeFromPinned(bookmark)"><i class="fas fa-thumbtack fa-rotate-90 pinned"></i></span>
           </ng-template>
           <span *ngIf="!(userData$ | async)?.readLater?.includes(bookmark._id) else markedAsReadLater" class="clock-wrapper" title="Read later" (click)="addToReadLater(bookmark)">
             <i class="far fa-clock"></i>
