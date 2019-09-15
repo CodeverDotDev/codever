@@ -127,6 +127,9 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     this.publicBookmarksService.getScrapingData(location).subscribe(response => {
       if (response) {
         this.bookmarkForm.get('name').patchValue(response.title, {emitEvent: false});
+        if (response.publishedOn) {
+          this.bookmarkForm.get('publishedOn').patchValue(response.publishedOn, {emitEvent: false});
+        }
         this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent: false});
       }
     });
