@@ -112,13 +112,14 @@ router.get('/scrape', function (req, res, next) {
           publishedOn: '',
           videoDuration: null
         }
-        let youtubeVideoId = getYoutubeVideoId(bookmarkUrl);
+        // let youtubeVideoId = getYoutubeVideoId(bookmarkUrl);
+        let youtubeVideoId = req.query.youtubeVideoId;
 
-        if(youtubeVideoId) {
+        if(youtubeVideoId !== 'null') {
           superagent
             .get('https://www.googleapis.com/youtube/v3/videos')
             .query({id: youtubeVideoId})
-            .query({key: 'AIzaSyDeKPEHAop1stH5wMpJ2rBRfoevObFJBOc'})
+            .query({key: process.env.NODEJS_BOOKMARKS_API_YOUTUBE_API_KEY})
             .query({part: 'snippet,contentDetails,statistics,status'})
             .then(response => {
               const publishedAt = response.body.items[0].snippet.publishedAt;

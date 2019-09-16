@@ -39,3 +39,5 @@ npm-debug.log
 
 #env configuration
 env.json
+
+.env
