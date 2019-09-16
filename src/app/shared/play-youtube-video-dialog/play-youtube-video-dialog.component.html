@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Play: {{bookmark.name}}</h2>
+
+<hr>
+
+<mat-dialog-content>
+  <div style="align: center">
+
+    <iframe [src]='safeUrl' frameborder="0" allowfullscreen width="{{videoWidth}}" height="{{videoHeight}}" align="middle"></iframe>
+  </div>
+</mat-dialog-content>
+
+<hr>
+
+<mat-dialog-actions class="app-dialog-actions">
+  <button type="button" class="btn btn-primary btn-sm" (click)="close()">Close</button>
+</mat-dialog-actions>

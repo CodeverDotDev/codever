@@ -16,4 +16,5 @@ export interface Bookmark {
   lastAccessedAt?: Date;
   starredBy?: string[];
   likes?: number;
+  youtubeVideoId?: string;
 }

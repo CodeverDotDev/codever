@@ -13,6 +13,7 @@ import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-b
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
 import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
+import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
 
 
 /**
@@ -40,6 +41,7 @@ import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
     DeleteBookmarkDialogComponent,
     SocialShareDialogComponent,
     LoginRequiredDialogComponent,
+    PlayYoutubeVideoDialogComponent
   ],
   exports: [
     CommonModule,
@@ -55,7 +57,8 @@ import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
   entryComponents: [
     DeleteBookmarkDialogComponent,
     LoginRequiredDialogComponent,
-    SocialShareDialogComponent
+    SocialShareDialogComponent,
+    PlayYoutubeVideoDialogComponent
   ]
 })
 export class SharedModule { }

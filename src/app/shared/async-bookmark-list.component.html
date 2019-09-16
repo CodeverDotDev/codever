@@ -4,6 +4,7 @@
       <div class="header-wrapper">
         <div class="titles">
           <h5 class="card-title">
+            <i *ngIf="bookmark.youtubeVideoId" class="fab fa-youtube youtube-icon" (click)="playYoutubeVideo(bookmark)" title="Play video"></i>
             <a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name | highlight: queryText" (click)="onBookmarkLinkClick(bookmark)"></a>
             <sup class="external-link-hint"><i class="fas fa-external-link-alt"></i></sup>
           </h5>

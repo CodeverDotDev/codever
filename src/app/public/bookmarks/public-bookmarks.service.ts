@@ -29,9 +29,12 @@ export class PublicBookmarksService {
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
 
-  getScrapingData(url: String): Observable<Webpage> {
+  getScrapingData(url: string, youtubeVideoId: string): Observable<Webpage> {
+    const params = new HttpParams()
+      .set('url', url)
+      .set('youtubeVideoId', youtubeVideoId)
     return this.httpClient
-      .get<Webpage>(`${this.publicBookmarksApiBaseUrl}/scrape?url=${url}`);
+      .get<Webpage>(`${this.publicBookmarksApiBaseUrl}/scrape`, {params: params});
   }
 
   getPublicBookmarkByLocation(url: string): Observable<Bookmark> {
