@@ -12,6 +12,7 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
 import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
 import { UserInfoStore } from '../core/user/user-info.store';
+import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -46,6 +47,8 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   private _shownSize = 0;
 
+  public innerWidth: any;
+
   @Input()
   set shownSize(shownSize: number) {
     this._shownSize = shownSize;
@@ -69,6 +72,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
@@ -171,6 +175,36 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   removeFromFavorites(bookmark: Bookmark) {
     this.userDataStore.removeFromFavoriteBookmarks(bookmark);
+  }
+
+
+  playYoutubeVideo(bookmark: Bookmark) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    const relativeWidth = (this.innerWidth * 80) / 100; // take up to 80% of the screen size
+    const youtubeSizeHeight = (315 * relativeWidth) / 560; // youtube embed video ration is width="560" and height="315"
+    const relativeHeight = youtubeSizeHeight + (youtubeSizeHeight * 23) / 100; // add 10% to that for title and close button
+    dialogConfig.width = relativeWidth + 'px';
+    dialogConfig.height = relativeHeight + 'px';
+
+    const videoWidth = (relativeWidth * 95) / 100;
+    dialogConfig.data = {
+      bookmark: bookmark,
+      videoWidth: videoWidth,
+      videoHeight: (videoWidth * 315) / 560
+    };
+
+    console.log('dialog-width', dialogConfig.width);
+    console.log('dialog-height', dialogConfig.height);
+
+    console.log('video-width', videoWidth);
+    console.log('video-height', (videoWidth * 315) / 560);
+
+
+    const dialogRef = this.deleteDialog.open(PlayYoutubeVideoDialogComponent, dialogConfig);
   }
 
   openDeleteDialog(bookmark: Bookmark) {
