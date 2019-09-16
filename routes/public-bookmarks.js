@@ -8,6 +8,7 @@ var MyError = require('../models/error');
 const constants = require('../common/constants');
 
 const bookmarksSearchService = require('../common/bookmarks-search.service');
+const superagent = require('superagent');
 
 const MAX_NUMBER_RETURNED_RESULTS = 100;
 
@@ -62,19 +63,81 @@ router.get('/tagged/:tag', async (req, res) => {
   }
 });
 
+/**
+ * Convert youtube api duration format "PT6M10S" to 6m, "PT2H18M43S" to 2h:18min
+ * @param duration
+ * @returns {null}
+ */
+function formatDuration(duration) {
+  duration = duration.substring(2); // get rid of 'PT'
+  if(duration.indexOf('M') >= 0 && duration.indexOf('H')== -1) {
+    return duration.substring(0, duration.indexOf('M')) + 'min';
+  }
+
+  if(duration.indexOf('M') >= 0 && duration.indexOf('H') >= 0) {
+    const hours = duration.substring(0, duration.indexOf('H')) + 'h';
+    const minutes = duration.substring(duration.indexOf('H') + 1, duration.indexOf('M')) + 'min';
+    return hours + ':' + minutes;
+  }
+
+  return null;
+}
+
+let getYoutubeVideoId = function (bookmarkUrl) {
+  let youtubeVideoId = null;
+  if ( bookmarkUrl.startsWith('https://youtu.be/') ) {
+    youtubeVideoId = bookmarkUrl.split('/').pop();
+  } else if ( bookmarkUrl.startsWith('https://www.youtube.com') ) {
+    youtubeVideoId = bookmarkUrl.split('v=')[1];
+    const ampersandPosition = youtubeVideoId.indexOf('&');
+    if ( ampersandPosition != -1 ) {
+      youtubeVideoId = youtubeVideoId.substring(0, ampersandPosition);
+    }
+  }
+  return youtubeVideoId;
+};
+
 /* GET title of bookmark given its url */
 router.get('/scrape', function (req, res, next) {
   if ( req.query.url ) {
-    request(req.query.url, function (error, response, body) {
+    const bookmarkUrl = req.query.url;
+    request(bookmarkUrl, function (error, response, body) {
       if ( !error && response.statusCode == 200 ) {
         const $ = cheerio.load(body);
         const webpageTitle = $("title").text();
         const metaDescription = $('meta[name=description]').attr("content");
-        const webpage = {
+        let webpage = {
           title: webpageTitle,
-          metaDescription: metaDescription
+          metaDescription: metaDescription,
+          publishedOn: '',
+          videoDuration: null
         }
-        res.send(webpage);
+        // let youtubeVideoId = getYoutubeVideoId(bookmarkUrl);
+        let youtubeVideoId = req.query.youtubeVideoId;
+
+        if(youtubeVideoId !== 'null') {
+          superagent
+            .get('https://www.googleapis.com/youtube/v3/videos')
+            .query({id: youtubeVideoId})
+            .query({key: process.env.NODEJS_BOOKMARKS_API_YOUTUBE_API_KEY})
+            .query({part: 'snippet,contentDetails,statistics,status'})
+            .then(response => {
+              const publishedAt = response.body.items[0].snippet.publishedAt;
+              webpage.publishedOn = publishedAt.substring(0, publishedAt.indexOf('T'));
+              webpage.videoDuration = formatDuration(response.body.items[0].contentDetails.duration);
+              if (webpage.title.endsWith('- YouTube')) {
+                webpage.title = webpageTitle.replace('- YouTube', ' - ' + webpage.videoDuration);
+              } else {
+                webpage.title = webpageTitle + ' - ' + webpage.videoDuration;
+              }
+              res.send(webpage);
+            })
+            .catch(err => {
+              // err.message, err.response
+            });
+        } else {
+          res.send(webpage);
+        }
       }
     });
   }
