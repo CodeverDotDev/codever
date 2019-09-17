@@ -144,7 +144,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     let youtubeVideoId = null;
     if ( bookmarkUrl.startsWith('https://youtu.be/') ) {
       youtubeVideoId = bookmarkUrl.split('/').pop();
-    } else if ( bookmarkUrl.startsWith('https://www.youtube.com') ) {
+    } else if ( bookmarkUrl.startsWith('https://www.youtube.com/watch') ) {
       youtubeVideoId = bookmarkUrl.split('v=')[1];
       const ampersandPosition = youtubeVideoId.indexOf('&');
       if ( ampersandPosition !== -1 ) {

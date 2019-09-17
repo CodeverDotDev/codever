@@ -1,4 +1,8 @@
-<h2 mat-dialog-title>Play: "{{bookmark.name}}"</h2>
+<h3 *ngIf="videoWidth > 800 else noVideoTitle">Play: "{{bookmark.name}}"</h3>
+
+<ng-template #noVideoTitle>
+  <h3>Play video</h3>
+</ng-template>
 
 <hr>
 
