@@ -184,29 +184,20 @@ export class AsyncBookmarkListComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
 
-    const relativeWidth = (this.innerWidth * 80) / 100; // take up to 80% of the screen size
-    const youtubeSizeHeight = (315 * relativeWidth) / 560; // youtube embed video ration is width="560" and height="315"
-    const relativeHeight = youtubeSizeHeight + (youtubeSizeHeight * 23) / 100; // add 10% to that for title and close button
+    let relativeWidth = (this.innerWidth * 80) / 100; // take up to 80% of the screen size
+    if (this.innerWidth > 1500) {
+      relativeWidth = (1500 * 80 ) / 100;
+    } else {
+      relativeWidth = (this.innerWidth * 80 ) / 100;
+    }
+
+    const relativeHeight = (relativeWidth * 9) / 16 + 120; // 16:9 to which we add 120 px for the dialog action buttons ("close")
     dialogConfig.width = relativeWidth + 'px';
     dialogConfig.height = relativeHeight + 'px';
 
-/*    const overlayConfig = new OverlayConfig({
-        scrollStrategy: this.overlay.scrollStrategies.block()
-  });*/
-
-    const videoWidth = (relativeWidth * 95) / 100;
     dialogConfig.data = {
       bookmark: bookmark,
-      videoWidth: videoWidth,
-      videoHeight: (videoWidth * 315) / 560
     };
-
-    console.log('dialog-width', dialogConfig.width);
-    console.log('dialog-height', dialogConfig.height);
-
-    console.log('video-width', videoWidth);
-    console.log('video-height', (videoWidth * 315) / 560);
-
 
     const dialogRef = this.deleteDialog.open(PlayYoutubeVideoDialogComponent, dialogConfig);
   }
