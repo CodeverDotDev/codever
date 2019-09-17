@@ -190,6 +190,10 @@ export class AsyncBookmarkListComponent implements OnInit {
     dialogConfig.width = relativeWidth + 'px';
     dialogConfig.height = relativeHeight + 'px';
 
+/*    const overlayConfig = new OverlayConfig({
+        scrollStrategy: this.overlay.scrollStrategies.block()
+  });*/
+
     const videoWidth = (relativeWidth * 95) / 100;
     dialogConfig.data = {
       bookmark: bookmark,

@@ -23,7 +23,6 @@ export class PlayYoutubeVideoDialogComponent implements OnInit {
     this.bookmark = data.bookmark;
     this.videoWidth = data.videoWidth;
     this.videoHeight = data.videoHeight;
-    // this.safeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${this.bookmark.youtubeVideoId}?&autoplay=1`);
     this.safeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${this.bookmark.youtubeVideoId}`);
   }
 
