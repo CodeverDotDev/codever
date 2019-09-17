@@ -1,15 +1,6 @@
-<h3 *ngIf="videoWidth > 800 else noVideoTitle">Play: "{{bookmark.name}}"</h3>
-
-<ng-template #noVideoTitle>
-  <h3>Play video</h3>
-</ng-template>
-
-<hr>
-
 <mat-dialog-content>
-  <div style="align: center">
-
-    <iframe [src]='safeUrl' frameborder="0" allowfullscreen width="{{videoWidth}}" height="{{videoHeight}}" align="middle"></iframe>
+  <div class="videoWrapper">
+    <iframe [src]='safeUrl' frameborder="0" allowfullscreen width="560" height="315"></iframe>
   </div>
 </mat-dialog-content>
 

@@ -11,8 +11,6 @@ import { Bookmark } from '../../core/model/bookmark';
 export class PlayYoutubeVideoDialogComponent implements OnInit {
 
   bookmark: Bookmark;
-  videoHeight: any;
-  videoWidth: any;
   safeUrl: any;
 
   constructor(
@@ -21,8 +19,6 @@ export class PlayYoutubeVideoDialogComponent implements OnInit {
     private _sanitizer: DomSanitizer
   ) {
     this.bookmark = data.bookmark;
-    this.videoWidth = data.videoWidth;
-    this.videoHeight = data.videoHeight;
     this.safeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${this.bookmark.youtubeVideoId}`);
   }
 
