@@ -99,7 +99,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       githubURL: '',
       description: ['', descriptionSizeValidator],
       shared: false,
-      language: 'en'
+      language: 'en',
+      youtubeVideoId: null
     });
 
     this.bookmarkForm.get('location').valueChanges.pipe(
@@ -124,13 +125,35 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   private getScrapeData(location) {
     this.personalBookmarkPresent = false;
-    this.publicBookmarksService.getScrapingData(location).subscribe(response => {
+    const youtubeVideoId = this.getYoutubeVideoId(location);
+    if (youtubeVideoId) {
+      this.bookmarkForm.get('youtubeVideoId').patchValue(youtubeVideoId, {emitEvent: false});
+    }
+    this.publicBookmarksService.getScrapingData(location, youtubeVideoId).subscribe(response => {
       if (response) {
         this.bookmarkForm.get('name').patchValue(response.title, {emitEvent: false});
+        if (response.publishedOn) {
+          this.bookmarkForm.get('publishedOn').patchValue(response.publishedOn, {emitEvent: false});
+        }
         this.bookmarkForm.get('description').patchValue(response.metaDescription, {emitEvent: false});
       }
     });
   }
+
+   private getYoutubeVideoId(bookmarkUrl): string {
+    let youtubeVideoId = null;
+    if ( bookmarkUrl.startsWith('https://youtu.be/') ) {
+      youtubeVideoId = bookmarkUrl.split('/').pop();
+    } else if ( bookmarkUrl.startsWith('https://www.youtube.com/watch') ) {
+      youtubeVideoId = bookmarkUrl.split('v=')[1];
+      const ampersandPosition = youtubeVideoId.indexOf('&');
+      if ( ampersandPosition !== -1 ) {
+        youtubeVideoId = youtubeVideoId.substring(0, ampersandPosition);
+      }
+    }
+
+    return youtubeVideoId;
+  };
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
@@ -187,6 +210,10 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       lastAccessedAt: new Date(),
       likes: 0
     };
+
+    if (bookmark.youtubeVideoId) {
+      newBookmark.youtubeVideoId = bookmark.youtubeVideoId;
+    }
 
     this.personalBookmarksService.createBookmark(this.userId, newBookmark)
       .subscribe(
