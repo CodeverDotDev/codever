@@ -67,7 +67,7 @@ import { UserDataStore } from './core/user/userdata.store';
   declarations: [
     AppComponent,
     PageNotFoundComponent,
-    LoaderComponent
+    LoaderComponent,
   ],
   bootstrap: [AppComponent]
 })
