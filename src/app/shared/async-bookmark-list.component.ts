@@ -12,6 +12,7 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
 import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
 import { UserInfoStore } from '../core/user/user-info.store';
+import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -46,6 +47,8 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   private _shownSize = 0;
 
+  public innerWidth: any;
+
   @Input()
   set shownSize(shownSize: number) {
     this._shownSize = shownSize;
@@ -69,6 +72,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
@@ -171,6 +175,31 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   removeFromFavorites(bookmark: Bookmark) {
     this.userDataStore.removeFromFavoriteBookmarks(bookmark);
+  }
+
+
+  playYoutubeVideo(bookmark: Bookmark) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    let relativeWidth = (this.innerWidth * 80) / 100; // take up to 80% of the screen size
+    if (this.innerWidth > 1500) {
+      relativeWidth = (1500 * 80 ) / 100;
+    } else {
+      relativeWidth = (this.innerWidth * 80 ) / 100;
+    }
+
+    const relativeHeight = (relativeWidth * 9) / 16 + 120; // 16:9 to which we add 120 px for the dialog action buttons ("close")
+    dialogConfig.width = relativeWidth + 'px';
+    dialogConfig.height = relativeHeight + 'px';
+
+    dialogConfig.data = {
+      bookmark: bookmark,
+    };
+
+    const dialogRef = this.deleteDialog.open(PlayYoutubeVideoDialogComponent, dialogConfig);
   }
 
   openDeleteDialog(bookmark: Bookmark) {
