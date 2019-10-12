@@ -1,0 +1,38 @@
+version: '3'
+
+volumes:
+  postgres_data:
+    driver: local
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+  keycloak:
+    image: jboss/keycloak:6.0.1
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+    ports:
+      - 8480:8080
+    depends_on:
+      - postgres
+  mongo:
+    image: mongo:3.4
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD:secret
+    ports:
+      - 27017
