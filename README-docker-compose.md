@@ -19,3 +19,8 @@ CMD [“node”, “server.js”]
 // Command instruction in the docker-compose.yml file
 command: nodemon server.js
 
+# docker stop container
+
+```bash
+docker stop my_container
+```
