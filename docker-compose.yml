@@ -3,6 +3,7 @@ version: '3'
 volumes:
   postgres_data:
     driver: local
+  mongo_data:
 
 services:
   postgres:
@@ -28,11 +29,24 @@ services:
       - 8480:8080
     depends_on:
       - postgres
+  api:
+    build: .
+    command: nodemon --inspect ./bin/www
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
   mongo:
     image: mongo:3.4
     container_name: mongo
     environment:
+      MONGO_INITDB_DATABASE=dev-bookmarks
       MONGO_INITDB_ROOT_USERNAME:mongoadmin
       MONGO_INITDB_ROOT_PASSWORD:secret
     ports:
       - 27017
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongo_data: /data/db
