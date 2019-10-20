@@ -23,10 +23,11 @@ const swaggerDocument = YAML.load('./docs/swagger.yaml');
 const app = express();
 
 const mongoUserName = process.env.MONGODB_BOOKMARKS_USERNAME || 'bookmarks';
-const mongoUserPwd= process.env.MONGODB_BOOKMARKS_USERPWD || 'secret';
+const mongoUserPwd= process.env.MONGODB_BOOKMARKS_PASSWORD || 'secret';
 const mongoBookmarksCollectionName= process.env.MONGODB_BOOKMARKS_COLLECTION || 'dev-bookmarks';
+const mongoHost= process.env.MONGODB_HOST || 'mongo';
 
-mongoose.connect(`mongodb://${mongoUserName}:${mongoUserPwd}@localhost:27017/${mongoBookmarksCollectionName}`, { useNewUrlParser: true });
+mongoose.connect(`mongodb://${mongoUserName}:${mongoUserPwd}@${mongoHost}:27017/${mongoBookmarksCollectionName}`, { useNewUrlParser: true });
 
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);

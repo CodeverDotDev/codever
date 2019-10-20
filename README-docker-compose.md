@@ -24,3 +24,22 @@ command: nodemon server.js
 ```bash
 docker stop my_container
 ```
+
+
+## Keycloak
+not authorized on admin to execute command { listDatabases: 1.0 }
+
+http://localhost:8480/auth/admin
+
+
+### Connect to mongo
+mongo -u bookmarks -p --authenticationDatabase dev-bookmarks
+db.changeUserPassword("bookmarks", "secret")
+
+### echo environment variables
+#### mongo
+docker exec bookmarks-api_mongo bash -c 'echo "$MONGO_INITDB_DATABASE"'
+
+#### nodejs
+docker exec  bookmarks-api_node bash -c 'echo "$MONGODB_BOOKMARKS_USERNAME"'
+
