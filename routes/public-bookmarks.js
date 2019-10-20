@@ -12,6 +12,9 @@ const superagent = require('superagent');
 
 const MAX_NUMBER_RETURNED_RESULTS = 100;
 
+const common = require('../common/config');
+const config = common.config();
+
 /**
  *  Returns the public bookmarks
  */
@@ -119,7 +122,7 @@ router.get('/scrape', function (req, res, next) {
           superagent
             .get('https://www.googleapis.com/youtube/v3/videos')
             .query({id: youtubeVideoId})
-            .query({key: process.env.NODEJS_BOOKMARKS_API_YOUTUBE_API_KEY})
+            .query({key: config.youtubeApiKey})
             .query({part: 'snippet,contentDetails,statistics,status'})
             .then(response => {
               const publishedAt = response.body.items[0].snippet.publishedAt;
@@ -133,7 +136,7 @@ router.get('/scrape', function (req, res, next) {
               res.send(webpage);
             })
             .catch(err => {
-              // err.message, err.response
+               console.error(err);
             });
         } else {
           res.send(webpage);
