@@ -63,4 +63,12 @@ docker exec -it bookmarks-api_node /bin/bash
 docker exec -it bookmarks-api_keycloak /bin/bash
 ```
 
+### volumes
 
+```bash
+docker volume ls | grep mongo
+```
+
+```bash
+docker volume rm bookmarks-api_mongo_data
+```
