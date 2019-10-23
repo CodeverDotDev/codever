@@ -39,36 +39,36 @@ services:
       - 8480:8080
     depends_on:
       - postgres
-  node:
-    container_name: bookmarks-api_node
-    build:
-      context: .
-      args:
-        - NODE_ENV=development
-    #command: nodemon --debug=0.0.0.0:5858 ./bin/www
-    command: nodemon --inspect=0.0.0.0:9229 ./bin/www
-    ports:
-      - "3000:3000"
-      - "9229:9229"
-      - "9230:9230"
-    volumes:
-      - .:/opt/node_app/app:delegated
-      # this is a workaround to prevent host node_modules from accidently getting mounted in container
-      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
-      # this will overwrite the default node_modules dir in container so it won't conflict with our
-      # /opt/node_app/node_modules location. Thanks to PR from @brnluiz
-      - notused:/opt/node_app/app/node_modules
-    networks:
-      - backend
-    environment:
-      - NODE_ENV=development
-      - MONGODB_BOOKMARKS_USERNAME=bookmarks
-      - MONGODB_BOOKMARKS_PASSWORD=secret
-      - MONGODB_BOOKMARKS_COLLECTION=dev-bookmarks
-      - MONGODB_HOST=mongo
-    depends_on:
-      - mongo
-      - keycloak
+#  node:
+#    container_name: bookmarks-api_node
+#    build:
+#      context: .
+#      args:
+#        - NODE_ENV=development
+#    #command: nodemon --debug=0.0.0.0:5858 ./bin/www
+#    command: nodemon --inspect=0.0.0.0:9229 ./bin/www
+#    ports:
+#      - "3000:3000"
+#      - "9229:9229"
+#      - "9230:9230"
+#    volumes:
+#      - .:/opt/node_app/app:delegated
+#      # this is a workaround to prevent host node_modules from accidently getting mounted in container
+#      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
+#      # this will overwrite the default node_modules dir in container so it won't conflict with our
+#      # /opt/node_app/node_modules location. Thanks to PR from @brnluiz
+#      - notused:/opt/node_app/app/node_modules
+#    networks:
+#      - backend
+#    environment:
+#      - NODE_ENV=development
+#      - MONGODB_BOOKMARKS_USERNAME=bookmarks
+#      - MONGODB_BOOKMARKS_PASSWORD=secret
+#      - MONGODB_BOOKMARKS_COLLECTION=dev-bookmarks
+#      - MONGODB_HOST=mongo
+#    depends_on:
+#      - mongo
+#      - keycloak
   mongo:
     image: mongo:3.4
     container_name: bookmarks-api_mongo
@@ -78,12 +78,12 @@ services:
       - MONGO_INITDB_DATABASE=dev-bookmarks
       - MONGO_INITDB_ROOT_USERNAME=mongoadmin
       - MONGO_INITDB_ROOT_PASSWORD=secret
-    healthcheck:
-      test: "[ `echo 'db.runCommand(\"ping\").ok' | mongo localhost/example-database --quiet` ] && echo 0 || echo 1"
-      interval: 5s
-      start_period: 10s
-      timeout: 4s
-      retries: 3
+#    healthcheck:
+#      test: "[ `echo 'db.runCommand(\"ping\").ok' | mongo localhost/example-database --quiet` ] && echo 0 || echo 1"
+#      interval: 5s
+#      start_period: 10s
+#      timeout: 4s
+#      retries: 3
     ports:
       - 27017:27017
     volumes:
