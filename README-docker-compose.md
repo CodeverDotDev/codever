@@ -1,8 +1,14 @@
+## docker images
+
 Docker-compose
 https://docs.docker.com/compose/
 
 mongo - image
 https://hub.docker.com/_/mongo
+
+keycloak
+https://hub.docker.com/r/jboss/keycloak/
+
 
 Initializing a fresh instance
 When a container is started for the first time it will execute files with extensions .sh and .js
@@ -18,6 +24,8 @@ As we can see, the command defined in in the docker-compose.yml file overrides t
 CMD [“node”, “server.js”]
 // Command instruction in the docker-compose.yml file
 command: nodemon server.js
+
+
 
 # docker stop container
 
@@ -42,4 +50,17 @@ docker exec bookmarks-api_mongo bash -c 'echo "$MONGO_INITDB_DATABASE"'
 
 #### nodejs
 docker exec  bookmarks-api_node bash -c 'echo "$MONGODB_BOOKMARKS_USERNAME"'
+
+### bash in container
+
+#### node
+```
+docker exec -it bookmarks-api_node /bin/bash
+```
+
+#### keycloak
+```
+docker exec -it bookmarks-api_keycloak /bin/bash
+```
+
 

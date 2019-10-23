@@ -25,7 +25,7 @@ const app = express();
 const mongoUserName = process.env.MONGODB_BOOKMARKS_USERNAME || 'bookmarks';
 const mongoUserPwd= process.env.MONGODB_BOOKMARKS_PASSWORD || 'secret';
 const mongoBookmarksCollectionName= process.env.MONGODB_BOOKMARKS_COLLECTION || 'dev-bookmarks';
-const mongoHost= process.env.MONGODB_HOST || 'mongo';
+const mongoHost= process.env.MONGODB_HOST || 'localhost';
 
 mongoose.connect(`mongodb://${mongoUserName}:${mongoUserPwd}@${mongoHost}:27017/${mongoBookmarksCollectionName}`, { useNewUrlParser: true });
 
