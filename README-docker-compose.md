@@ -67,8 +67,11 @@ docker exec -it bookmarks-api_keycloak /bin/bash
 
 ```bash
 docker volume ls | grep mongo
+docker volume ls | grep postgres
 ```
 
 ```bash
 docker volume rm bookmarks-api_mongo_data
+
+docker volume rm bookmarks-api_postgres_data
 ```
