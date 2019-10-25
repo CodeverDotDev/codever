@@ -2,9 +2,12 @@
 
 Back-end API for the [www.bookmarks.dev](http://www.bookmarks.dev).
 
-This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
- [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
- is done via [Keycloak](http://www.keycloak.org/):
+## Built With
+* [MongoDB](https://docs.mongodb.com/manual/)
+* [ExpressJS](https://expressjs.com/en/api.html)
+* [Angular](https://angular.io/docs/ts/latest/)
+* [NodeJS](https://nodejs.org/en/docs/)
+* [Keycloak](http://www.keycloak.org/) for authentication and authorization:
  
  ![components-graph](docs/graphviz/components-graph.png)
  
@@ -91,11 +94,18 @@ $ npm run integration-tests
 
 ## Deployment
 
-- `env.json` is not commit but needs to be delivered at build time 
+- `env.json` is not commit but needs to be delivered at build time
 
-# License
+## Contributing  
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-[MIT](/LICENSE)
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 
 
