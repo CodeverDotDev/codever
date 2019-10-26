@@ -54,28 +54,6 @@ npm run debug
 This will start the API with [nodemon](http://nodemon.io) and will watch for code changes and automatically redeploy. 
 
 
-### Installation and develop on local machine
-
-> Create an `env.json` file based on the the `env.example.json` example. You don't need to configure the _production_ part.
-
-```bash
-# clone backend repo
-$ git clone https://github.com/Codingpedia/bookmarks-api.git
-
-# change directory to the app
-$ cd bookmarks-api
-
-# use the preconfigured node version
-$ nvm use
-
-# install the dependencies with npm
-$ npm install
-
-# start the server with nodemon, so that changes in the dynamically reflected
-$ DEBUG=bookmarks-api:* nodemon start
-
-```
-
 ### Testing
 
 Run the integration test by issuing the following command.
