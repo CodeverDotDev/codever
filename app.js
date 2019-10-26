@@ -22,7 +22,12 @@ const swaggerDocument = YAML.load('./docs/swagger.yaml');
 
 const app = express();
 
-mongoose.connect('mongodb://codingpedia:codingpedia@localhost:27017/codingpedia-bookmarks', { useNewUrlParser: true });
+const mongoUserName = process.env.MONGODB_BOOKMARKS_USERNAME || 'bookmarks';
+const mongoUserPwd= process.env.MONGODB_BOOKMARKS_PASSWORD || 'secret';
+const mongoBookmarksCollectionName= process.env.MONGODB_BOOKMARKS_COLLECTION || 'dev-bookmarks';
+const mongoHost= process.env.MONGODB_HOST || 'localhost';
+
+mongoose.connect(`mongodb://${mongoUserName}:${mongoUserPwd}@${mongoHost}:27017/${mongoBookmarksCollectionName}`, { useNewUrlParser: true });
 
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);

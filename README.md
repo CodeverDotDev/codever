@@ -1,61 +1,58 @@
-# API for www.bookmarks.dev, the Bookmark Manager for Developers & Co
+# Bookmarks.dev-API
 
-This repo contains the back-end API source code of the [www.bookmarks.dev](http://www.bookmarks.dev) website.
+Back-end API for the [www.bookmarks.dev](http://www.bookmarks.dev).
+
+## Built With
+* [MongoDB](https://docs.mongodb.com/manual/)
+* [ExpressJS](https://expressjs.com/en/api.html)
+* [Angular](https://angular.io/docs/ts/latest/)
+* [NodeJS](https://nodejs.org/en/docs/)
+* [Keycloak](http://www.keycloak.org/) for authentication and authorization:
  
-![Bookmarks Context](docs/bookmarks-dev-context.png)
-
-This project is developed with the MEAN stack, featuring [MongoDB](https://docs.mongodb.com/manual/), [ExpressJS](https://expressjs.com/en/api.html),
- [Angular](https://angular.io/docs/ts/latest/) and [NodeJS](https://nodejs.org/en/docs/). Authentication and authorization
- is done via [Keycloak](http://www.keycloak.org/): 
+ ![components-graph](docs/graphviz/components-graph.png)
  
-![Network Diagram](https://raw.githubusercontent.com/wiki/Codingpedia/bookmarks-api/images/network-diagram.png)
-
+> The production setup is can be found here - [components production](https://raw.githubusercontent.com/wiki/CodepediaOrg/bookmarks-api/images/network-diagram.png)
 ***
 
+## Getting Started 
 
-## Development setup
-
-You need mongodb, keycloak and nodejs to get the api working
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+ See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
 What you need to run this app:
 * `node` and `npm` (we recommend using [NVM](https://github.com/creationix/nvm))
-* Ensure you're running Node at least (`v6.x.x`+) and NPM (`3.x.x`+)
+  * Ensure you're running Node at least (`v6.x.x`+) and NPM (`3.x.x`+)
+* **Docker** - we recommend using [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-#### MongoDB
+### Installing (development setup)
 
-Follow the instructions from the [Mongo DB documentation](https://docs.mongodb.com/v3.2/installation/) and install version 3.2 on your local machine.
-Connect to the mongo client:
+A step by step series of examples that tell you how to get a development env running
 
-```bash
-# change to mongo installation directory
-$ cd MONGO_HOME
-
-# run the mongo client
-$ ./bin/mongo
-```
-
- and then create the codingpedia-bookmarks database:
+#### Start MongoDB and Keycloak server
 
 ```bash
-# change to mongo installation directory
-> use codingpedia-bookmarks
+docker-compose up
 
-# verify that is present
+OR
 
-> show dbs;
-admin                  0.000GB
-codingpedia-bookmarks  0.000GB
-keycloak               0.001GB
-local                  0.000GB
+docker-compose up -d # if you want it to run in the background
 ```
 
-#### Keycloak
+#### Create a Keycloak user (2 min)
+Follow the screenshots in [Add a Keycloak user](docs/keycloak/add-keycloak-user.md) to create a test user to use.
 
-This is the **heaviest** step, we need to set up for development. But by using Keycloak we get lots of things like Single-Sign On, 
-OpenId-Connect Support, social logins, user admin console, that otherwise would take lots of effort to implement by ourselves.
-To make our life easier, I have prepared a wiki page about [Keycloak Setup For Development](https://github.com/Codingpedia/bookmarks-api/wiki/Keycloak-Setup-for-Development).
+#### Start API
+
+```bash
+nvm use
+npm install
+npm run debug
+```
+
+This will start the API with [nodemon](http://nodemon.io) and will watch for code changes and automatically redeploy. 
+
 
 ### Installation and develop on local machine
 
@@ -95,13 +92,20 @@ $ npm run integration-tests
 * [local](http://localhost:3000/api/docs)
 * [production](https://www.bookmarks.dev/api/docs)
 
-## Note
+## Deployment
 
-- `env.json` is not commit but needs to be delivered at build time 
+- `env.json` is not commit but needs to be delivered at build time
 
-# License
+## Contributing  
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-[MIT](/LICENSE)
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 
 
