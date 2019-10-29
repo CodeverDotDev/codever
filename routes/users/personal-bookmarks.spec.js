@@ -3,41 +3,64 @@ const chai = require('chai');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes');
 const expect = chai.expect;
-
-const Bookmark = require('../../models/bookmark');
+const jwt = require('jsonwebtoken');
 
 const common = require('../../common/config');
 const config = common.config();
 
 const superagent = require('superagent');
 
-const testData = require('../../common/test-data');
+let bearerToken;
+
+let testUserId;
+const baseApiUrlUnderTest = '/api/personal/users/';
+
+let bookmarkExample;
+
+before(async function () {
+  try {
+    const userBearerTokenResponse = await
+      superagent
+        .post(config.integration_tests.token_endpoint)
+        .send('client_id=' + config.integration_tests.client_id)
+        .send('client_secret=' + config.integration_tests.client_secret)
+        .send('grant_type=client_credentials')
+        .set('Accept', 'application/json');
+
+    const accessToken = userBearerTokenResponse.body.access_token;
+    bearerToken = 'Bearer ' + accessToken;
+    const decoded = jwt.decode(accessToken);
+    testUserId = decoded.sub;
+    bookmarkExample = {
+      "name": "Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg",
+        "location": "http://www.codingpedia.org/ama/cleaner-code-in-nodejs-with-async-await-mongoose-calls-example",
+        "language": "en",
+        "tags": [
+        "nodejs",
+        "async-await",
+        "mongoose",
+        "mongodb"
+      ],
+        "publishedOn": "2017-11-05",
+        "githubURL": "https://github.com/Codingpedia/bookmarks-api",
+        "description": "Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs",
+        "descriptionHtml": "<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>",
+        "userId": testUserId,
+        "shared": true,
+        "starredBy": [],
+        "likes": 0,
+        "lastAccessedAt": null
+    }
+
+  } catch (err) {
+    console.error('Error when getting user bearer token', err)
+  }
+
+});
 
 describe('Personal Bookmarks tests', function () {
 
-  let bearerToken;
-  const testUserId = config.integration_tests.test_user_id;
-  const baseApiUrlUnderTest = '/api/personal/users/';
-
-  let bookmarkExample = testData.bookmarkExample;
-
-  before(function(done) {
-
-    superagent
-      .post(config.integration_tests.token_endpoint)
-      .send('client_id=' + config.integration_tests.client_id)
-      .send('client_secret=' + config.integration_tests.client_secret)
-      .send('grant_type=client_credentials')
-      .set('Accept', 'application/json')
-      .then(response => {
-        bearerToken = 'Bearer ' + response.body.access_token;
-        done();
-      });
-
-
-  });
-
-  describe('invalid user id calls' , function () {
+  describe('invalid user id calls', function () {
     it('should fail trying to GET bookmarks with false user id', function (done) {
       request(app)
         .get(baseApiUrlUnderTest + 'false_user_id/bookmarks')
@@ -81,7 +104,7 @@ describe('Personal Bookmarks tests', function () {
     });
   });
 
-  describe('invalid bookmark attributes at CREATION' , function () {
+  describe('invalid bookmark attributes at CREATION', function () {
     it('should fail trying to CREATE bookmark without a name', function (done) {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       invalidBookmark.name = '';
@@ -194,7 +217,7 @@ describe('Personal Bookmarks tests', function () {
 
   });
 
-  describe('inexistent bookmark id tests' , function () {
+  describe('inexistent bookmark id tests', function () {
     it('should fail trying to update inexistent bookmark', function (done) {
       let inexistentBookmarkId = '507f1f77bcf86cd799439011';
       request(app)
@@ -221,7 +244,7 @@ describe('Personal Bookmarks tests', function () {
 
   });
 
-  describe('test successful creation, update and deletion of bookmark' , function () {
+  describe('test successful creation, update and deletion of bookmark', function () {
 
     let createdBookmark;
 
@@ -277,7 +300,7 @@ describe('Personal Bookmarks tests', function () {
         });
     });
 
-    describe('invalid bookmark attributes at UPDATE' , function () {
+    describe('invalid bookmark attributes at UPDATE', function () {
       it('should fail trying to UPDATE bookmark without a title', function (done) {
         let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
         invalidBookmark.name = '';
@@ -391,7 +414,7 @@ describe('Personal Bookmarks tests', function () {
     });
 
     it('should successfully UPDATE bookmark', function (done) {
-      let updatedBookmark= JSON.parse(JSON.stringify(createdBookmark));
+      let updatedBookmark = JSON.parse(JSON.stringify(createdBookmark));
       updatedBookmark.name += ' rocks';
 
       request(app)
@@ -411,7 +434,7 @@ describe('Personal Bookmarks tests', function () {
                 return done(error);
               }
               expect(response.statusCode).to.equal(HttpStatus.OK);
-              expect(response.body.name).to.equal(bookmarkExample.name  + ' rocks');
+              expect(response.body.name).to.equal(bookmarkExample.name + ' rocks');
 
               done();
             });
@@ -435,63 +458,110 @@ describe('Personal Bookmarks tests', function () {
 
   describe('Personal bookmarks - test search functionality', function () {
 
-    const testUserId = config.integration_tests.test_user_id;
-    const baseApiUnderTestUrl = '/api/personal/users/' + testUserId + '/bookmarks/';
-
+    let basePathApiPersonalUsersBookmarks;
+    let bookmarkExample;
     let createdBookmarkId;
 
-    const verySpecialTitle = "very special title very-special-java-title";
-    const verySpecialLocation = "http://www.very-special-url.com";
-    const verySpecialTag = "very-special-tag";
-    const verySpecialSourceCodeUrl = "https://very-special-github-url.com";
-    const bookmarkExample = {
-      "name": verySpecialTitle,
-      "location": verySpecialLocation,
-      "language": "en",
-      "tags": [
-        verySpecialTag,
-        "async-await",
-        "mongoose",
-        "mongodb"
-      ],
-      "publishedOn": "2017-11-05",
-      "githubURL": verySpecialSourceCodeUrl,
-      "description": "This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark",
-      "descriptionHtml": "<p>This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark</p>",
-      "userId": testUserId,
-      "shared": true,
-      "starredBy": [],
-      "likes": 0,
-      "lastAccessedAt": null
-    }
+    const verySpecialTitle = "very special title very-special-java-title - personal bookmarks search";
+    const verySpecialLocation = "http://www.very-special-url.com/personal-bookmarks.spec.js";
+    const verySpecialTag = "very-special-tag-personal-bookmarks";
+    const verySpecialSourceCodeUrl = "https://very-special-github-url.com/personal-bookmarks-search";
 
-    it('should succeed creating example bookmark', function (done) {
-      request(app)
-        .post(baseApiUnderTestUrl)
+    before(async  function(){
+
+      basePathApiPersonalUsersBookmarks = '/api/personal/users/' + testUserId + '/bookmarks/'; //it has to be initialised here otherwiese "testUserId" is undefined, variables are called
+      bookmarkExample = {
+        "name": verySpecialTitle,
+        "location": verySpecialLocation,
+        "language": "en",
+        "tags": [
+          verySpecialTag,
+          "async-await",
+          "mongoose",
+          "mongodb"
+        ],
+        "publishedOn": "2017-11-05",
+        "githubURL": verySpecialSourceCodeUrl,
+        "description": "This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark",
+        "descriptionHtml": "<p>This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark</p>",
+        "userId": testUserId,
+        "shared": true,
+        "starredBy": [],
+        "likes": 0,
+        "lastAccessedAt": null
+      }
+
+      try {
+        const response = await request(app)
+          .post(basePathApiPersonalUsersBookmarks)
+          .set('Authorization', bearerToken)
+          .send(bookmarkExample);
+
+        if(response.statusCode !== HttpStatus.CREATED) {
+          throw new Error("Sample bookmark not properly created");
+        }
+        const locationHeaderValue = response.header['location']
+
+        //set the id of the bookmarkexample now that it is created
+        const lastSlashIndex = locationHeaderValue.lastIndexOf('/');
+        createdBookmarkId = locationHeaderValue.substring(lastSlashIndex + 1);
+      } catch (err) {
+        console.error('Failed to create sample bookmark to look for ', err);
+        throw err;
+      }
+
+      const userData = {
+        userId: testUserId,
+        searches: [],
+        readLater: [],
+        likes: [],
+        watchedTags: [],
+        pinned: [],
+        favorites: [],
+        history: []
+      }
+
+      const createUserDataResponse = await request(app)
+        .post('/api/personal/users/' + testUserId)
         .set('Authorization', bearerToken)
-        .send(bookmarkExample)
-        .end(function (error, response) {
-          if (error) {
-            return done(error);
-          }
-          expect(response.statusCode).to.equal(HttpStatus.CREATED);
-          const locationHeaderValue = response.header['location']
-          const isLocationHeaderPresent = response.header['location'] !== undefined;
-          expect(isLocationHeaderPresent).to.be.true;
+        .send(userData);
 
-          //set the id of the bookmarkexample now that it is created
-          const lastSlashIndex = locationHeaderValue.lastIndexOf('/');
-          createdBookmarkId = locationHeaderValue.substring(lastSlashIndex + 1);
+      if(createUserDataResponse.statusCode !== HttpStatus.CREATED) {
+        throw new Error("Sample bookmark not properly created");
+      }
 
-          done();
-        });
     });
 
-    it('should find bookmark with with very-special-tag in query param as word', function (done) {
-      request(app)
-        .get(baseApiUnderTestUrl)
+    after(async function(){
+      await request(app)
+        .delete(`${basePathApiPersonalUsersBookmarks}/${createdBookmarkId}`)
+        .set('Authorization', bearerToken);
+
+      await request(app)
+        .delete('/api/personal/users/' + testUserId)
+        .set('Authorization', bearerToken);
+    });
+
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param as word', async function () {
+      const response = await request(app)
+        .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
-        .query({query: "very-special-tag"})
+        .query({q: "very-special-tag-personal-bookmarks"})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+
+    });
+
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param only as tag', function (done) {
+      request(app)
+        .get(basePathApiPersonalUsersBookmarks)
+        .set('Authorization', bearerToken)
+        .query({q: `[${verySpecialTag}]`})
         .query({limit: 10})
         .end(function (err, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
@@ -503,27 +573,11 @@ describe('Personal Bookmarks tests', function () {
         });
     });
 
-    it('should find bookmark with with very-special-tag in query param only as tag', function (done) {
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param as tag and word', function (done) {
       request(app)
-        .get(baseApiUnderTestUrl)
+        .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
-        .query({query: `[${verySpecialTag}]`})
-        .query({limit: 10})
-        .end(function (err, response) {
-          expect(response.statusCode).to.equal(HttpStatus.OK);
-          const filteredBookmarks = response.body;
-          const foundBookmark = filteredBookmarks[0];
-          expect(filteredBookmarks.length).to.equal(1);
-          expect(foundBookmark.name).to.equal(verySpecialTitle);
-          done();
-        });
-    });
-
-    it('should find bookmark with with very-special-tag in query param as tag and word', function (done) {
-      request(app)
-        .get(baseApiUnderTestUrl)
-        .set('Authorization', bearerToken)
-        .query({query: `${verySpecialTag} [${verySpecialTag}]`})
+        .query({q: `${verySpecialTag} [${verySpecialTag}]`})
         .query({limit: 10})
         .end(function (err, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
@@ -537,9 +591,9 @@ describe('Personal Bookmarks tests', function () {
 
     it(`should find bookmark with special title - ${verySpecialTitle} `, function (done) {
       request(app)
-        .get(baseApiUnderTestUrl)
+        .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
-        .query({query: `${verySpecialTitle}`})
+        .query({q: `${verySpecialTitle}`})
         .query({limit: 10})
         .end(function (err, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
@@ -553,9 +607,9 @@ describe('Personal Bookmarks tests', function () {
 
     it(`should find bookmark with special source code url title - ${verySpecialSourceCodeUrl} `, function (done) {
       request(app)
-        .get(baseApiUnderTestUrl)
+        .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
-        .query({query: `${verySpecialSourceCodeUrl}`})
+        .query({q: `${verySpecialSourceCodeUrl}`})
         .query({limit: 10})
         .end(function (err, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
@@ -569,9 +623,9 @@ describe('Personal Bookmarks tests', function () {
 
     it(`should find bookmark with special location - ${verySpecialLocation} `, function (done) {
       request(app)
-        .get(baseApiUnderTestUrl)
+        .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
-        .query({query: `${verySpecialLocation}`})
+        .query({q: `${verySpecialLocation}`})
         .query({limit: 10})
         .end(function (err, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
@@ -582,21 +636,7 @@ describe('Personal Bookmarks tests', function () {
           done();
         });
     });
-
-    it('should succeed deleting created bookmark', function (done) {
-      request(app)
-        .delete(`${baseApiUnderTestUrl}/${createdBookmarkId}`)
-        .set('Authorization', bearerToken)
-        .end(function (error, response) {
-          if (error) {
-            return done(error);
-          }
-          expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
-
-          done();
-        });
-    });
-
   });
 
-});
+})
+;

@@ -37,9 +37,8 @@ npm-debug.log
 # Generated test coverage reports
 .nyc_output
 
-#env configuration
-env.json
 
 .env
 
-env.json
+# pm2 prod setup
+pm2-process.json
