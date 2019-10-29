@@ -62,14 +62,12 @@ create a _nodemon.json_ file based on the [nodemon.json.example](nodemon.json.ex
 
 ### Integration tests
 
-Start Keycloak and mongodb by issuing the ``docker-compose`` above 
-```bash
-docker-compose up
-```
+> Start Keycloak and mongodb by issuing the `docker-compose up` command
+
 Run the integration test by issuing the following command.
 
 ```bash
-$ npm run integration-tests
+npm run integration-tests
 ```
 
 A report will be generated.
