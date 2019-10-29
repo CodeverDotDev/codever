@@ -13,10 +13,6 @@ const config = common.config();
 
 const HttpStatus = require('http-status-codes');
 
-//showdown converter - https://github.com/showdownjs/showdown
-const showdown = require('showdown'),
-  converter = new showdown.Converter();
-
 //add keycloak middleware
 const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 usersRouter.use(keycloak.middleware());
@@ -302,13 +298,12 @@ usersRouter.post('/:userId', keycloak.protect(), async (request, response) => {
           ['the userId must be consistent across path, body and access token']));
     }
 
-    if ( !searchesAreValid(request) ) {
+    if ( !userSearchesAreValid(request) ) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('Searches are not valid',
           ['Searches are not valid - search text is required']));
     }
-
 
     const userData = new User({
       userId: request.params.userId,
@@ -356,7 +351,7 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
           ['the userId must be consistent across path, body and access token']));
     }
 
-    if ( !searchesAreValid(request) ) {
+    if ( !userSearchesAreValid(request) ) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('Searches are not valid',
@@ -388,7 +383,7 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
   }
 });
 
-function searchesAreValid(request) {
+function userSearchesAreValid(request) {
   const searches = request.body.searches;
   if ( searches && searches.length > 0 ) {
     for ( let i = 0; i < searches.length; i++ ) {

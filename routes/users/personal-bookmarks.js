@@ -159,7 +159,7 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
       return response.send(bookmarks);
     }
   } catch (err) {
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
   }
 });
 

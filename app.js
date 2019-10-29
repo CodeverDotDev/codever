@@ -26,8 +26,15 @@ const mongoUserName = process.env.MONGODB_BOOKMARKS_USERNAME || 'bookmarks';
 const mongoUserPwd= process.env.MONGODB_BOOKMARKS_PASSWORD || 'secret';
 const mongoBookmarksCollectionName= process.env.MONGODB_BOOKMARKS_COLLECTION || 'dev-bookmarks';
 const mongoHost= process.env.MONGODB_HOST || 'localhost';
+const mongoPort= process.env.MONGODB_PORT || '27017';
 
-mongoose.connect(`mongodb://${mongoUserName}:${mongoUserPwd}@${mongoHost}:27017/${mongoBookmarksCollectionName}`, { useNewUrlParser: true });
+const mongooseConnectOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+};
+
+const mongoUrl = `mongodb://${mongoUserName}:${mongoUserPwd}@${mongoHost}:${mongoPort}/${mongoBookmarksCollectionName}`;
+mongoose.connect(mongoUrl, mongooseConnectOptions);
 
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);

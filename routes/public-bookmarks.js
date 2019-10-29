@@ -12,9 +12,6 @@ const superagent = require('superagent');
 
 const MAX_NUMBER_RETURNED_RESULTS = 100;
 
-const common = require('../common/config');
-const config = common.config();
-
 /**
  *  Returns the public bookmarks
  */
@@ -122,7 +119,7 @@ router.get('/scrape', function (req, res, next) {
           superagent
             .get('https://www.googleapis.com/youtube/v3/videos')
             .query({id: youtubeVideoId})
-            .query({key: config.youtubeApiKey})
+            .query({key: process.env.YOUTUBE_API_KEY || "change-me-with-a-valid-youtube-key-if-you-need-me"}) //used only when adding youtube videos
             .query({part: 'snippet,contentDetails,statistics,status'})
             .then(response => {
               const publishedAt = response.body.items[0].snippet.publishedAt;
