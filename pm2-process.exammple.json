@@ -1,0 +1,20 @@
+{
+  "apps" : [{
+    "name" : "codingmarks-api-node-10.15.0",
+    "script" : "bin/www",
+    "interpreter" : "node@10.15.0",
+    "env": {
+      "NODE_ENV": "development",
+      "YOUTUBE_API_KEY" : "AIxxxx"
+    },
+    "env_production" : {
+      "NODE_ENV": "production",
+      "YOUTUBE_API_KEY" : "Axxxx",
+      "MONGODB_BOOKMARKS_USERNAME": "bookmarks",
+      "MONGODB_BOOKMARKS_PASSWORD": "xxx",
+      "MONGODB_BOOKMARKS_COLLECTION" : "dev-bookmarks",
+      "MONGODB_HOST": "localhost",
+      "MONGODB_PORT": "27017"
+    }
+  }]
+}

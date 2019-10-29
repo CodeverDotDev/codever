@@ -14,9 +14,9 @@ let findBookmarks = async function (query, limit, domain, userId) {
   const searchedTags = searchedTermsAndTags[1];
   let bookmarks = [];
 
-  if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
+  if (searchedTerms.length > 0 && searchedTags.length > 0) {
     bookmarks = await getBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit, domain, userId);
-  } else if ( searchedTerms.length > 0 ) {
+  } else if (searchedTerms.length > 0) {
     bookmarks = await getBookmarksForSearchedTerms(searchedTerms, limit, domain, userId);
   } else {
     bookmarks = await getBookmarksForSearchedTags(searchedTags, limit, domain, userId);
@@ -38,11 +38,11 @@ let splitSearchQuery = function (query) {
   let isInsideTag = false;
 
 
-  for ( let i = 0; i < query.length; i++ ) {
+  for (let i = 0; i < query.length; i++) {
     const currentCharacter = query[i];
-    if ( currentCharacter === ' ' ) {
-      if ( !isInsideTag ) {
-        if ( !isInsideTerm ) {
+    if (currentCharacter === ' ') {
+      if (!isInsideTag) {
+        if (!isInsideTerm) {
           continue;
         } else {
           terms.push(term);
@@ -52,21 +52,21 @@ let splitSearchQuery = function (query) {
       } else {
         tag += ' ';
       }
-    } else if ( currentCharacter === '[' ) {
-      if ( isInsideTag ) {
+    } else if (currentCharacter === '[') {
+      if (isInsideTag) {
         tags.push(tag.trim());
         tag = '';
       } else {
         isInsideTag = true;
       }
-    } else if ( currentCharacter === ']' ) {
-      if ( isInsideTag ) {
+    } else if (currentCharacter === ']') {
+      if (isInsideTag) {
         isInsideTag = false;
         tags.push(tag.trim());
         tag = '';
       }
     } else {
-      if ( isInsideTag ) {
+      if (isInsideTag) {
         tag += currentCharacter;
       } else {
         isInsideTerm = true;
@@ -75,11 +75,11 @@ let splitSearchQuery = function (query) {
     }
   }
 
-  if ( tag.length > 0 ) {
+  if (tag.length > 0) {
     tags.push(tag.trim());
   }
 
-  if ( term.length > 0 ) {
+  if (term.length > 0) {
     terms.push(term);
   }
 
@@ -100,11 +100,11 @@ let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, l
         $search: searchedTerms.join(' ')
       }
   }
-  if ( domain === constants.DOMAIN_PUBLIC ) {
+  if (domain === constants.DOMAIN_PUBLIC) {
     filter.shared = true;
   }
 
-  if ( domain === constants.DOMAIN_PERSONAL ) {
+  if (domain === constants.DOMAIN_PERSONAL) {
     const userData = await User.findOne({
       userId: userId
     });
@@ -125,7 +125,7 @@ let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, l
     .lean()
     .exec();
 
-  for ( const term of searchedTerms ) {
+  for (const term of searchedTerms) {
     bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
   }
   bookmarks = bookmarks.slice(0, limit);
@@ -140,14 +140,12 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, limit, domain,
   let filter = {
     $text: {$search: termsQuery}
   }
-  if ( domain === constants.DOMAIN_PUBLIC ) {
+  if (domain === constants.DOMAIN_PUBLIC) {
     filter.shared = true;
   }
 
-  if ( domain === constants.DOMAIN_PERSONAL ) {
-    const userData = await User.findOne({
-      userId: userId
-    });
+  if (domain === constants.DOMAIN_PERSONAL) {
+    const userData = await User.findOne({userId: userId});
     filter.$or = [
       {userId: userId},
       {"_id": {$in: userData.favorites}}
@@ -165,7 +163,7 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, limit, domain,
     .lean()
     .exec();
 
-  for ( const term of searchedTerms ) {
+  for (const term of searchedTerms) {
     bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
   }
   bookmarks = bookmarks.slice(0, limit);
@@ -180,11 +178,11 @@ let getBookmarksForSearchedTags = async function (searchedTags, limit, domain, u
         $all: searchedTags
       }
   }
-  if ( domain === constants.DOMAIN_PUBLIC ) {
+  if (domain === constants.DOMAIN_PUBLIC) {
     filter.shared = true;
   }
 
-  if ( domain === constants.DOMAIN_PERSONAL ) {
+  if (domain === constants.DOMAIN_PERSONAL) {
     const userData = await User.findOne({
       userId: userId
     });
@@ -210,7 +208,7 @@ let bookmarkContainsSearchedTerm = function (bookmark, searchedTerm) {
   const separatingChars = '\\s\\.,;#\\-\\/_\\[\\]\\(\\)\\*\\+';
   const escapedSearchPattern = `(^|[${separatingChars}])(${escapeRegExp(searchedTerm.toLowerCase())})(?=$|[${separatingChars}])`;
   const pattern = new RegExp(escapedSearchPattern);
-  if ( (bookmark.name && pattern.test(bookmark.name.toLowerCase()))
+  if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
     || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
     || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
     || (bookmark.githubURL && pattern.test(bookmark.githubURL.toLowerCase()))
@@ -218,12 +216,12 @@ let bookmarkContainsSearchedTerm = function (bookmark, searchedTerm) {
     result = true;
   }
 
-  if ( result ) {
+  if (result) {
     return true;
   } else {
     // if not found already look through the tags also
     bookmark.tags.forEach(tag => {
-      if ( pattern.test(tag.toLowerCase()) ) {
+      if (pattern.test(tag.toLowerCase())) {
         result = true;
       }
     });

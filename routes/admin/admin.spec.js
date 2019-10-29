@@ -6,29 +6,48 @@ const expect = chai.expect;
 
 const common = require('../../common/config');
 const config = common.config();
-const testData = require('../../common/test-data');
 const superagent = require('superagent');
 
 describe('Admin API Tests', function () {
 
-  let bearerToken;
+  let adminBearerToken;
   const baseApiUnderTestUrl = '/api/admin/bookmarks/';
 
-  let bookmarkExample = testData.bookmarkExample;
+  let bookmarkExample;
 
+  before(async function () {
 
-  before(function (done) {
-    superagent
+    //set admin bearer token
+    const response = await superagent
       .post(config.integration_tests.token_endpoint)
       .send('client_id=' + config.integration_tests.admin.client_id)
       .send('client_secret=' + config.integration_tests.admin.client_secret)
       .send('grant_type=client_credentials')
-      .set('Accept', 'application/json')
-      .then(response => {
-        bearerToken = 'Bearer ' + response.body.access_token;
-        console.log(bearerToken);
-        done();
-      });
+      .set('Accept', 'application/json');
+
+    adminBearerToken = 'Bearer ' + response.body.access_token;
+
+    //set bookmark example
+    bookmarkExample = {
+      "name": "Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg",
+      "location": "http://www.codepedia.org/ama/cleaner-code-in-nodejs-with-async-await-mongoose-calls-example",
+      "language": "en",
+      "tags": [
+        "nodejs",
+        "async-await",
+        "mongoose",
+        "mongodb"
+      ],
+      "publishedOn": "2017-11-05",
+      "githubURL": "https://github.com/Codingpedia/bookmarks-api",
+      "description": "Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs",
+      "descriptionHtml": "<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>",
+      "userId": "some-user-id-for-admin-api-tests",
+      "shared": true,
+      "starredBy": [],
+      "likes": 0,
+      "lastAccessedAt": null
+    }
   });
 
   describe('Get bookmarks functionality', function () {
@@ -36,7 +55,7 @@ describe('Admin API Tests', function () {
     it('should find some bookmarks', function (done) {
       request(app)
         .get(baseApiUnderTestUrl)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .end(function (err, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
           const bookmarks = response.body;
@@ -50,7 +69,7 @@ describe('Admin API Tests', function () {
     it('should find some public bookmarks', function (done) {
       request(app)
         .get(baseApiUnderTestUrl)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .query({public: true}) //difference to previous test
         .end(function (err, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
@@ -64,12 +83,12 @@ describe('Admin API Tests', function () {
   });
 
   describe('get latest bookmarks function tests', function () {
-    const latestEntriesApiBaseUrl =  baseApiUnderTestUrl + 'latest-entries';
+    const latestEntriesApiBaseUrl = baseApiUnderTestUrl + 'latest-entries';
 
     it('should return the latest bookmarks - without query parameters', function (done) {
       request(app)
         .get(latestEntriesApiBaseUrl)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
           done();
@@ -82,7 +101,7 @@ describe('Admin API Tests', function () {
       request(app)
         .get(latestEntriesApiBaseUrl)
         .query({since: oneMonthBeforeNow.getTime()})
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
           done();
@@ -100,7 +119,7 @@ describe('Admin API Tests', function () {
         .get(latestEntriesApiBaseUrl)
         .query({since: sevenDaysBeforeNow.getTime()})
         .query({to: twoDaysBeforeNow.getTime()})
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.OK);
           done();
@@ -118,7 +137,7 @@ describe('Admin API Tests', function () {
         .get(latestEntriesApiBaseUrl)
         .query({since: twoDaysBeforeNow.getTime()})
         .query({to: sevenDaysBeforeNow.getTime()})
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .end(function (err, res) {
           expect(res.statusCode).to.equal(HttpStatus.BAD_REQUEST);
           done();
@@ -126,13 +145,13 @@ describe('Admin API Tests', function () {
     });
   });
 
-  describe('invalid bookmark attributes at CREATION' , function () {
+  describe('invalid bookmark attributes at CREATION', function () {
     it('should fail trying to CREATE bookmark without a name', function (done) {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       invalidBookmark.name = '';
       request(app)
         .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -146,7 +165,7 @@ describe('Admin API Tests', function () {
       invalidBookmark.userId = '';
       request(app)
         .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -160,7 +179,7 @@ describe('Admin API Tests', function () {
       invalidBookmark.location = '';
       request(app)
         .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -174,7 +193,7 @@ describe('Admin API Tests', function () {
       invalidBookmark.tags = [];
       request(app)
         .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -188,7 +207,7 @@ describe('Admin API Tests', function () {
       invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
       request(app)
         .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -209,7 +228,7 @@ describe('Admin API Tests', function () {
 
       request(app)
         .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -229,7 +248,7 @@ describe('Admin API Tests', function () {
 
       request(app)
         .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(invalidBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -240,14 +259,14 @@ describe('Admin API Tests', function () {
 
   });
 
-  describe('admin - test successful creation, update and deletion of bookmark' , function () {
+  describe('admin - test successful creation, update and deletion of bookmark', function () {
 
     let createdBookmark;
 
     it('should succeed creating example bookmark', function (done) {
       request(app)
         .post(baseApiUnderTestUrl)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(bookmarkExample)
         .end(function (error, response) {
           if (error) {
@@ -264,7 +283,7 @@ describe('Admin API Tests', function () {
 
           request(app)
             .get(`${baseApiUnderTestUrl}${bookmarkId}`)
-            .set('Authorization', bearerToken)
+            .set('Authorization', adminBearerToken)
             .end(function (error, response) {
               if (error) {
                 return done(error);
@@ -281,11 +300,11 @@ describe('Admin API Tests', function () {
         });
     });
 
-    it('should find created bookmark by location', function (done){
+    it('should find created bookmark by location', function (done) {
       request(app)
         .get(baseApiUnderTestUrl)
         .query({location: createdBookmark.location})
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .end(function (error, response) {
           if (error) {
             return done(error);
@@ -299,28 +318,23 @@ describe('Admin API Tests', function () {
         });
     });
 
-    it('should find created bookmark by userId', function (done){
-      request(app)
+    it('should find created bookmark by userId', async function () {
+      const response = await request(app)
         .get(baseApiUnderTestUrl)
         .query({userId: createdBookmark.userId})
-        .set('Authorization', bearerToken)
-        .end(function (error, response) {
-          if (error) {
-            return done(error);
-          }
-          expect(response.statusCode).to.equal(HttpStatus.OK);
-          expect(response.body.length).to.equal(1);
-          const responseBookmark = response.body[0];
-          expect(responseBookmark.location).to.equal(createdBookmark.location);
+        .set('Authorization', adminBearerToken);
 
-          done();
-        });
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      expect(response.body.length).to.equal(1);
+      const responseBookmark = response.body[0];
+      expect(responseBookmark.location).to.equal(createdBookmark.location);
+
     });
 
     it('should fail trying to add bookmark with existent location for same user', function (done) {
       request(app)
         .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(bookmarkExample)
         .end(function (error, response) {
           if (error) {
@@ -333,13 +347,13 @@ describe('Admin API Tests', function () {
     });
 
 
-    describe('invalid bookmark attributes at UPDATE' , function () {
+    describe('invalid bookmark attributes at UPDATE', function () {
       it('should fail trying to UPDATE bookmark without a title', function (done) {
         let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
         invalidBookmark.name = '';
         request(app)
           .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', bearerToken)
+          .set('Authorization', adminBearerToken)
           .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -349,13 +363,12 @@ describe('Admin API Tests', function () {
       });
 
 
-
       it('should fail trying to UPDATE bookmark without a location', function (done) {
         let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
         invalidBookmark.location = '';
         request(app)
           .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', bearerToken)
+          .set('Authorization', adminBearerToken)
           .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -369,7 +382,7 @@ describe('Admin API Tests', function () {
         invalidBookmark.userId = '';
         request(app)
           .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', bearerToken)
+          .set('Authorization', adminBearerToken)
           .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -383,7 +396,7 @@ describe('Admin API Tests', function () {
         invalidBookmark.tags = [];
         request(app)
           .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', bearerToken)
+          .set('Authorization', adminBearerToken)
           .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -397,7 +410,7 @@ describe('Admin API Tests', function () {
         invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
         request(app)
           .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', bearerToken)
+          .set('Authorization', adminBearerToken)
           .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -417,7 +430,7 @@ describe('Admin API Tests', function () {
 
         request(app)
           .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', bearerToken)
+          .set('Authorization', adminBearerToken)
           .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -437,7 +450,7 @@ describe('Admin API Tests', function () {
 
         request(app)
           .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', bearerToken)
+          .set('Authorization', adminBearerToken)
           .send(invalidBookmark)
           .end(function (error, response) {
             expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
@@ -445,16 +458,16 @@ describe('Admin API Tests', function () {
             done();
           });
       });
-  });
+    });
 
 
     it('should successfully UPDATE bookmark', function (done) {
-      let updatedBookmark= JSON.parse(JSON.stringify(createdBookmark));
+      let updatedBookmark = JSON.parse(JSON.stringify(createdBookmark));
       updatedBookmark.name += ' rocks';
 
       request(app)
         .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(updatedBookmark)
         .end(function (error, response) {
           expect(response.statusCode).to.equal(HttpStatus.OK);
@@ -463,36 +476,31 @@ describe('Admin API Tests', function () {
           //make also a read to be sure sure :P
           request(app)
             .get(`${baseApiUnderTestUrl}${updatedBookmark._id}`)
-            .set('Authorization', bearerToken)
+            .set('Authorization', adminBearerToken)
             .end(function (error, response) {
               if (error) {
                 return done(error);
               }
               expect(response.statusCode).to.equal(HttpStatus.OK);
-              expect(response.body.name).to.equal(bookmarkExample.name  + ' rocks');
+              expect(response.body.name).to.equal(bookmarkExample.name + ' rocks');
 
               done();
             });
         });
     });
 
-    it('should succeed deleting created bookmark', function (done) {
-      request(app)
+    it('should succeed deleting created bookmark', async function () {
+      const response = await request(app)
         .delete(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-        .set('Authorization', bearerToken)
-        .end(function (error, response) {
-          if (error) {
-            return done(error);
-          }
-          expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
-          done();
-        });
+        .set('Authorization', adminBearerToken);
+
+      expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
     });
 
     it('should succeed creating example bookmark and deleting it by location', function (done) {
       request(app)
         .post(baseApiUnderTestUrl)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(bookmarkExample)
         .end(function (error, response) {
           if (error) {
@@ -506,7 +514,7 @@ describe('Admin API Tests', function () {
           request(app)
             .delete(`${baseApiUnderTestUrl}`)
             .query({location: bookmarkExample.location})
-            .set('Authorization', bearerToken)
+            .set('Authorization', adminBearerToken)
             .end(function (error, response) {
               if (error) {
                 return done(error);
@@ -521,7 +529,7 @@ describe('Admin API Tests', function () {
     it('should succeed creating example bookmark and deleting it by userId', function (done) {
       request(app)
         .post(baseApiUnderTestUrl)
-        .set('Authorization', bearerToken)
+        .set('Authorization', adminBearerToken)
         .send(bookmarkExample)
         .end(function (error, response) {
           if (error) {
@@ -535,7 +543,7 @@ describe('Admin API Tests', function () {
           request(app)
             .delete(`${baseApiUnderTestUrl}`)
             .query({userId: bookmarkExample.userId})
-            .set('Authorization', bearerToken)
+            .set('Authorization', adminBearerToken)
             .end(function (error, response) {
               if (error) {
                 return done(error);
@@ -548,33 +556,33 @@ describe('Admin API Tests', function () {
     });
 
     it('should succeed trying to delete non-existent bookmark', function (done) {
-        request(app)
-          .delete(`${baseApiUnderTestUrl}`)
-          .query({location: bookmarkExample.location})
-          .set('Authorization', bearerToken)
-          .end(function (error, response) {
-            if (error) {
-              return done(error);
-            }
-            expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+      request(app)
+        .delete(`${baseApiUnderTestUrl}`)
+        .query({location: bookmarkExample.location})
+        .set('Authorization', adminBearerToken)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
 
-            done();
-          });
+          done();
+        });
     });
 
     it('should succeed trying to delete non-existent bookmark', function (done) {
-        request(app)
-          .delete(`${baseApiUnderTestUrl}`)
-          .query({userId: bookmarkExample.userId})
-          .set('Authorization', bearerToken)
-          .end(function (error, response) {
-            if (error) {
-              return done(error);
-            }
-            expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+      request(app)
+        .delete(`${baseApiUnderTestUrl}`)
+        .query({userId: bookmarkExample.userId})
+        .set('Authorization', adminBearerToken)
+        .end(function (error, response) {
+          if (error) {
+            return done(error);
+          }
+          expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
 
-            done();
-          });
+          done();
+        });
     });
 
   });
