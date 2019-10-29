@@ -1,8 +1,9 @@
-var app = require('../../app');
-var chai = require('chai');
-var request = require('supertest');
-var HttpStatus = require('http-status-codes');
-var expect = chai.expect;
+const app = require('../../app');
+const chai = require('chai');
+const request = require('supertest');
+const HttpStatus = require('http-status-codes');
+const expect = chai.expect;
+const jwt = require('jsonwebtoken');
 
 const common = require('../../common/config');
 const config = common.config();
@@ -15,50 +16,55 @@ const superagent = require('superagent');
 describe('User Data tests', function () {
 
   let bearerToken;
-  const testUserId = config.integration_tests.test_user_id;
+  let testUserId;
   const baseApiUrlUnderTest = '/api/personal/users';
 
   const starredBookmarkId = "bookmarkid-3443";
 
-  const searchTextExample= 'nodejs rocks';
-  const userExample = {
-    "userId": config.integration_tests.test_user_id,
-    "searches": [
-      {
-        "text": searchTextExample,
-        "lastAccessedAt": "2019-01-28T05:47:47.652Z"
+  const searchTextExample = 'nodejs rocks';
+  let userExample;
+
+  before(async function () {
+    try {
+      const userBearerTokenResponse = await
+        superagent
+          .post(config.integration_tests.token_endpoint)
+          .send('client_id=' + config.integration_tests.client_id)
+          .send('client_secret=' + config.integration_tests.client_secret)
+          .send('grant_type=client_credentials')
+          .set('Accept', 'application/json');
+
+      const accessToken = userBearerTokenResponse.body.access_token;
+      bearerToken = 'Bearer ' + accessToken;
+      const decoded = jwt.decode(accessToken);
+      testUserId = decoded.sub;
+
+      userExample = {
+        "userId": testUserId,
+        "searches": [
+          {
+            "text": searchTextExample,
+            "lastAccessedAt": "2019-01-28T05:47:47.652Z"
+          }
+        ],
+        "readLater": [],
+        "likes": [],
+        "watchedTags": [],
+        "pinned": [],
+        "history": []
       }
-    ],
-    "readLater": [],
-    "likes": [],
-    "watchedTags": [],
-    "pinned": [],
-    "history": []
-  }
 
-  before(function (done) {
-
-    superagent
-      .post(config.integration_tests.token_endpoint)
-      .send('client_id=' + config.integration_tests.client_id)
-      .send('client_secret=' + config.integration_tests.client_secret)
-      .send('grant_type=client_credentials')
-      .set('Accept', 'application/json')
-      .then(response => {
-        bearerToken = 'Bearer ' + response.body.access_token;
-        done();
-      });
-
+    } catch (err) {
+      console.error('Error when getting user bearer token', err)
+    }
   });
 
-  it('should fail trying to GET user details with invalid user id', function (done) {
-    request(app)
+  it('should fail trying to GET user details with invalid user id', async function () {
+    const response = await request(app)
       .get(baseApiUrlUnderTest + '/false_user_id')
-      .set('Authorization', bearerToken)
-      .end(function (error, response) {
-        expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
-        done();
-      });
+      .set('Authorization', bearerToken);
+
+    expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
   });
 
   it('should fail trying to GET data for unexisting user', function (done) {

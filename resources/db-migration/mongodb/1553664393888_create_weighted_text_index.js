@@ -18,5 +18,5 @@ db.bookmarks.createIndex(
         default_language: "none",
         language_override: "none"
     }
-)
+);
 
