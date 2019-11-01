@@ -44,6 +44,22 @@
                 }
               ],
               "serviceWorker": true
+            },
+            "non-docker": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.non-docker.ts"
+                }
+              ]
+            },
+            "prod-local-testing": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod-backend.local-testing.ts"
+                }
+              ]
             }
           }
         },
@@ -55,6 +71,12 @@
           "configurations": {
             "production": {
               "browserTarget": "bookmarks:build:production"
+            },
+            "non-docker": {
+              "browserTarget": "bookmarks:build:non-docker"
+            },
+            "prod-backend": {
+              "browserTarget": "bookmarks:build:prod-local-testing"
             }
           }
         },
