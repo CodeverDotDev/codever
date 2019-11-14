@@ -8,7 +8,6 @@ const User = require('../../models/user');
 const bookmarkHelper = require('../../common/bookmark-helper');
 const bookmarksSearchService = require('../../common/bookmarks-search.service');
 const MyError = require('../../models/error');
-const escapeStringRegexp = require('escape-string-regexp');
 
 const common = require('../../common/config');
 const config = common.config();
@@ -152,7 +151,7 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
       }
       return response.send(bookmark);
     } else {//no filter - latest bookmarks added to the platform
-      bookmarks = await Bookmark.find({userId: request.params.userId})
+      const bookmarks = await Bookmark.find({userId: request.params.userId})
         .sort({lastAccessedAt: -1})
         .limit(100);
 
@@ -184,7 +183,7 @@ personalBookmarksRouter.get('/tags', keycloak.protect(), async (request, respons
 
     response.send(tags);
   } catch (err) {
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
   }
 });
 

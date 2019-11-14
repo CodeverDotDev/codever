@@ -4,7 +4,6 @@ var cheerio = require('cheerio');
 var router = express.Router();
 var Bookmark = require('../models/bookmark');
 var HttpStatus = require('http-status-codes');
-var MyError = require('../models/error');
 const constants = require('../common/constants');
 
 const bookmarksSearchService = require('../common/bookmarks-search.service');
@@ -83,22 +82,9 @@ function formatDuration(duration) {
   return null;
 }
 
-let getYoutubeVideoId = function (bookmarkUrl) {
-  let youtubeVideoId = null;
-  if ( bookmarkUrl.startsWith('https://youtu.be/') ) {
-    youtubeVideoId = bookmarkUrl.split('/').pop();
-  } else if ( bookmarkUrl.startsWith('https://www.youtube.com') ) {
-    youtubeVideoId = bookmarkUrl.split('v=')[1];
-    const ampersandPosition = youtubeVideoId.indexOf('&');
-    if ( ampersandPosition != -1 ) {
-      youtubeVideoId = youtubeVideoId.substring(0, ampersandPosition);
-    }
-  }
-  return youtubeVideoId;
-};
 
 /* GET title of bookmark given its url */
-router.get('/scrape', function (req, res, next) {
+router.get('/scrape', function (req, res) {
   if ( req.query.url ) {
     const bookmarkUrl = req.query.url;
     request(bookmarkUrl, function (error, response, body) {
@@ -112,7 +98,6 @@ router.get('/scrape', function (req, res, next) {
           publishedOn: '',
           videoDuration: null
         }
-        // let youtubeVideoId = getYoutubeVideoId(bookmarkUrl);
         let youtubeVideoId = req.query.youtubeVideoId;
 
         if(youtubeVideoId !== 'null') {
@@ -144,7 +129,7 @@ router.get('/scrape', function (req, res, next) {
 });
 
 /* GET bookmark by id. */
-router.get('/:id', function (req, res, next) {
+router.get('/:id', function (req, res) {
   Bookmark.findById(req.params.id, function (err, bookmark) {
     if ( err ) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(err);
@@ -159,7 +144,7 @@ router.get('/:id', function (req, res, next) {
 
 
 /* TODO - maybe implement later advancedSearch */
-router.get('/advanced-search', function (req, res, next) {
+router.get('/advanced-search', function (req, res) {
   var regexSearch = [];
   if ( req.query.name ) {
     var regExpName = new RegExp(req.query.category, 'i');

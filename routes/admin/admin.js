@@ -334,7 +334,7 @@ adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (re
           ['You can either delete bookmarks by location or userId - at least one of them mandatory']));
     }
 
-    const responseDeletion = await Bookmark.deleteMany(filter);
+    await Bookmark.deleteMany(filter);
     response.status(HttpStatus.NO_CONTENT).send('Bookmarks successfully deleted');
   } catch (err) {
     return response
