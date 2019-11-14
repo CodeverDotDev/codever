@@ -13,7 +13,6 @@ module.exports = {
       bookmark = new Bookmark({
         name: req.body.name,
         location: req.body.location,
-        userId: req.body.userId,
         language: req.body.language,
         description: req.body.description,
         descriptionHtml: descriptionHtml,
@@ -32,7 +31,6 @@ module.exports = {
       bookmark = new Bookmark({
         name: req.body.name,
         location: req.body.location,
-        userId: req.body.userId,
         language: req.body.language,
         description: req.body.description,
         descriptionHtml: descriptionHtml,

@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^6.6.0",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.7",
