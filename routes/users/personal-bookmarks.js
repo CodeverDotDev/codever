@@ -30,7 +30,7 @@ personalBookmarksRouter.use(keycloak.middleware());
 personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) => {
 
   let userId = request.kauth.grant.access_token.content.sub;
-  if ( userId !== request.params.userId ) {
+  if (userId !== request.params.userId) {
     return response
       .status(HttpStatus.UNAUTHORIZED)
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -38,41 +38,41 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 
   const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
 
-  if ( bookmark.userId !== userId ) {
+  if (bookmark.userId !== userId) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('The userId of the bookmark does not match the userId parameter', ['The userId of the bookmark does not match the userId parameter']));
   }
 
   const missingRequiredAttributes = !bookmark.name || !bookmark.location || !bookmark.tags || bookmark.tags.length === 0;
-  if ( missingRequiredAttributes ) {
+  if (missingRequiredAttributes) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
-  if ( bookmark.tags.length > constants.MAX_NUMBER_OF_TAGS ) {
+  if (bookmark.tags.length > constants.MAX_NUMBER_OF_TAGS) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
   let blockedTags = '';
-  for ( let i = 0; i < bookmark.tags.length; i++ ) {
+  for (let i = 0; i < bookmark.tags.length; i++) {
     const tag = bookmark.tags[i];
-    if ( tag.startsWith('awesome') ) {
+    if (tag.startsWith('awesome')) {
       blockedTags = blockedTags.concat(' ' + tag);
     }
   }
 
-  if ( blockedTags ) {
+  if (blockedTags) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('The following tags are blocked:' + blockedTags, ['The following tags are blocked:' + blockedTags]));
   }
 
-  if ( bookmark.description ) {
+  if (bookmark.description) {
     const descriptionIsTooLong = bookmark.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
-    if ( descriptionIsTooLong ) {
+    if (descriptionIsTooLong) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed',
@@ -80,7 +80,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
     }
 
     const descriptionHasTooManyLines = bookmark.description.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
-    if ( descriptionHasTooManyLines ) {
+    if (descriptionHasTooManyLines) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
@@ -88,12 +88,12 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
     }
   }
 
-  if ( bookmark.shared ) {
+  if (bookmark.shared) {
     const existingBookmark = await Bookmark.findOne({
       shared: true,
       location: bookmark.location
     }).lean().exec();
-    if ( existingBookmark ) {
+    if (existingBookmark) {
       return response
         .status(HttpStatus.CONFLICT)
         .send(new MyError('A public bookmark with this location is already present',
@@ -111,7 +111,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 
   } catch (err) {
     const duplicateKeyinMongoDb = err.name === 'MongoError' && err.code === 11000;
-    if ( duplicateKeyinMongoDb ) {
+    if (duplicateKeyinMongoDb) {
       return response
         .status(HttpStatus.CONFLICT)
         .send(new MyError('Duplicate key', [err.message]));
@@ -127,7 +127,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
-  if ( userId !== request.params.userId ) {
+  if (userId !== request.params.userId) {
     return response
       .status(HttpStatus.UNAUTHORIZED)
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -137,16 +137,16 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
     const searchText = request.query.q;
     const limit = parseInt(request.query.limit);
 
-    if ( searchText ) {
+    if (searchText) {
       const bookmarks = await bookmarksSearchService.findBookmarks(searchText, limit, constants.DOMAIN_PERSONAL, userId);
 
       return response.send(bookmarks);
-    } else if ( request.query.location ) {
+    } else if (request.query.location) {
       const bookmark = await Bookmark.findOne({
         userId: request.params.userId,
         location: request.query.location
       }).lean().exec();
-      if ( !bookmark ) {
+      if (!bookmark) {
         return response.status(HttpStatus.NOT_FOUND).send("Bookmark not found");
       }
       return response.send(bookmark);
@@ -166,7 +166,7 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
 personalBookmarksRouter.get('/tags', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
-  if ( userId !== request.params.userId ) {
+  if (userId !== request.params.userId) {
     return response
       .status(HttpStatus.UNAUTHORIZED)
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -192,7 +192,7 @@ personalBookmarksRouter.get('/tags', keycloak.protect(), async (request, respons
 personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, response) => {
 
   const userId = request.kauth.grant.access_token.content.sub;
-  if ( userId !== request.params.userId ) {
+  if (userId !== request.params.userId) {
     return response
       .status(HttpStatus.UNAUTHORIZED)
       .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -204,7 +204,7 @@ personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, 
       userId: request.params.userId
     });
 
-    if ( !bookmark ) {
+    if (!bookmark) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -213,7 +213,7 @@ personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, 
           )
         );
     } else {
-      response.status(HttpStatus.OK).send(bookmark);
+      return response.status(HttpStatus.OK).send(bookmark);
     }
   } catch (err) {
     return response
@@ -231,14 +231,14 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
   let userId = request.kauth.grant.access_token.content.sub;
   const token = new Token(request.kauth.grant.access_token.token, 'bookmarks-api');
   const isNotAdmin = !token.hasRealmRole('ROLE_ADMIN');
-  if(isNotAdmin) {
-    if ( userId !== request.params.userId) {
+  if (isNotAdmin) {
+    if (userId !== request.params.userId) {
       return response
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
     }
 
-    if ( request.body.userId !== userId ) {
+    if (request.body.userId !== userId) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('The userId of the bookmark does not match the userId parameter', ['The userId of the bookmark does not match the userId parameter']));
@@ -246,55 +246,55 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
   }
 
   const requiredAttributesMissing = !request.body.name || !request.body.location || !request.body.tags || request.body.tags.length === 0;
-  if ( requiredAttributesMissing ) {
+  if (requiredAttributesMissing) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Missing required attributes', ['Missing required attributes']));
   }
 
-  if ( request.body.tags.length > constants.MAX_NUMBER_OF_TAGS ) {
+  if (request.body.tags.length > constants.MAX_NUMBER_OF_TAGS) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('Too many tags have been submitted', ['Too many tags have been submitted']));
   }
 
   let blockedTags = '';
-  for ( let i = 0; i < request.body.tags.length; i++ ) {
+  for (let i = 0; i < request.body.tags.length; i++) {
     const tag = request.body.tags[i];
-    if ( tag.startsWith('awesome') ) {
+    if (tag.startsWith('awesome')) {
       blockedTags = blockedTags.concat(' ' + tag);
     }
   }
-  if ( blockedTags ) {
+  if (blockedTags) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('The following tags are blocked:' + blockedTags, ['The following tags are blocked:' + blockedTags]));
   }
 
   const descriptionIsTooLong = request.body.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
-  if ( descriptionIsTooLong ) {
+  if (descriptionIsTooLong) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .send(new MyError('The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed',
         ['The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed']));
   }
 
-  if ( request.body.description ) {
+  if (request.body.description) {
     const descriptionHasTooManyLines = request.body.description.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
-    if ( descriptionHasTooManyLines ) {
+    if (descriptionHasTooManyLines) {
       return response
         .status(HttpStatus.BAD_REQUEST)
         .send(new MyError('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed',
           ['The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed']));
     }
   }
-  if ( request.body.shared ) {
+  if (request.body.shared) {
     const existingBookmark = await Bookmark.findOne({
       shared: true,
       location: request.body.location,
       userId: {$ne: request.params.userId}
     }).lean().exec();
-    if ( existingBookmark ) {
+    if (existingBookmark) {
       return response
         .status(HttpStatus.CONFLICT)
         .send(new MyError('A public bookmark with this location is already present',
@@ -302,7 +302,8 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
     }
   }
 
-  if ( !request.body.descriptionHtml ) {
+  const descriptionHtmlNotSet = !request.body.descriptionHtml;
+  if (descriptionHtmlNotSet) {
     request.body.descriptionHtml = converter.makeHtml(request.body.description);
   }
 
@@ -317,17 +318,17 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
     );
 
     const bookmarkNotFound = !bookmark;
-    if ( bookmarkNotFound ) {
+    if (bookmarkNotFound) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError('Not Found Error', ['Bookmark for user id ' + request.params.userId + ' and bookmark id ' + request.params.bookmarkId + ' not found']));
     } else {
-      response
+      return response
         .status(200)
         .send(bookmark);
     }
   } catch (err) {
-    if ( err.name === 'MongoError' && err.code === 11000 ) {
+    if (err.name === 'MongoError' && err.code === 11000) {
       return response
         .status(HttpStatus.CONFLICT)
         .send(new MyError('Duplicate key', [err.message]));
@@ -344,9 +345,9 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
 personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (request, response) => {
   const token = new Token(request.kauth.grant.access_token.token, 'bookmarks-api');
   const isNotAdmin = !token.hasRealmRole('ROLE_ADMIN');
-  if(isNotAdmin) {
+  if (isNotAdmin) {
     const userId = request.kauth.grant.access_token.content.sub;
-    if ( userId !== request.params.userId ) {
+    if (userId !== request.params.userId) {
       return response
         .status(HttpStatus.UNAUTHORIZED)
         .send(new MyError('Unauthorized', ['the userId does not match the subject in the access token']));
@@ -360,7 +361,7 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
       userId: request.params.userId
     });
 
-    if ( !bookmark ) {
+    if (!bookmark) {
       return response
         .status(HttpStatus.NOT_FOUND)
         .send(new MyError(
@@ -383,7 +384,7 @@ personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (reques
         {multi: true}
       );
 
-      response.status(HttpStatus.NO_CONTENT).send();
+      return response.status(HttpStatus.NO_CONTENT).send();
     }
   } catch (err) {
     return response
