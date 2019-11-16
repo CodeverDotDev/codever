@@ -40,5 +40,7 @@ npm-debug.log
 
 .env
 
+nodemon.json
+
 # pm2 prod setup
 pm2-process.json

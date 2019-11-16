@@ -507,7 +507,6 @@ describe('Admin API Tests', function () {
             return done(error);
           }
           expect(response.statusCode).to.equal(HttpStatus.CREATED);
-          const locationHeaderValue = response.header['location']
           const isLocationHeaderPresent = response.header['location'] !== undefined;
           expect(isLocationHeaderPresent).to.be.true;
 
@@ -536,7 +535,6 @@ describe('Admin API Tests', function () {
             return done(error);
           }
           expect(response.statusCode).to.equal(HttpStatus.CREATED);
-          const locationHeaderValue = response.header['location']
           const isLocationHeaderPresent = response.header['location'] !== undefined;
           expect(isLocationHeaderPresent).to.be.true;
 
