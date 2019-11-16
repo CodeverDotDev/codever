@@ -7,9 +7,8 @@ const config = common.config();
 
 const constants = require('../common/constants')
 
-/* GET title of bookmark given its url */
-router.get('/', function(req, res) {
-  if(config.environment === constants.ENV.DEV){
+router.get('/', function (req, res) {
+  if (config.environment === constants.ENV.DEV) {
     const gitSha1 = revision.execSync('git rev-parse HEAD')
       .toString()
       .trim();
@@ -25,4 +24,3 @@ router.get('/', function(req, res) {
 });
 
 module.exports = router;
-  

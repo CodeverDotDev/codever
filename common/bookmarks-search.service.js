@@ -1,6 +1,3 @@
-//showdown converter - https://github.com/showdownjs/showdown
-const showdown = require('showdown'),
-  converter = new showdown.Converter();
 
 const Bookmark = require('../models/bookmark');
 const User = require('../models/user');
@@ -228,31 +225,6 @@ let bookmarkContainsSearchedTerm = function (bookmark, searchedTerm) {
   }
 
   return result;
-}
-
-function escapeRegExp(str) {
-  const specials = [
-      // order matters for these
-      '-'
-      , '['
-      , ']'
-      // order doesn't matter for any of these
-      , '/'
-      , '{'
-      , '}'
-      , '('
-      , ')'
-      , '*'
-      , '+'
-      , '?'
-      , '.'
-      , '\\'
-      , '^'
-      , '$'
-      , '|'
-    ],
-    regex = RegExp('[' + specials.join('\\') + ']', 'g');
-  return str.replace(regex, '\\$&'); // $& means the whole matched string
 }
 
 function escapeRegExp(str) {

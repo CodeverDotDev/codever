@@ -15,9 +15,6 @@ db.createUser(
 
 db.auth("bookmarks", "secret");
 
-db = db.getSiblingDB("dev-bookmarks"); // not needed as MONGO_INITDB_DATABASE=dev-bookmarks is specified
-
-
 //insert initial public dev bookmarks
 db.bookmarks.insert(
   [
