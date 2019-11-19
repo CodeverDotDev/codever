@@ -1,6 +1,6 @@
 
-const Bookmark = require('../models/bookmark');
-const User = require('../models/user');
+const Bookmark = require('../model/bookmark');
+const User = require('../model/user');
 const escapeStringRegexp = require('escape-string-regexp');
 const constants = require('./constants');
 
