@@ -1,5 +1,6 @@
 const ENV = {
   'DEV': 'development',
+  'TEST': 'test',
   'PROD': 'production'
 }
 
