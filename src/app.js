@@ -107,6 +107,7 @@ if (app.get('env') === 'development') {
 app.use(function handleNotFoundError(error, req, res, next) {
   if (error instanceof NotFoundError) {
     return res.status(HttpStatus.NOT_FOUND).send({
+      httpStatus: HttpStatus.NOT_FOUND,
       message: error.message,
       error: {}
     });
@@ -117,6 +118,7 @@ app.use(function handleNotFoundError(error, req, res, next) {
 app.use(function handlePublicBookmarkExistingError(error, req, res, next) {
   if (error instanceof PublicBookmarkExistingError) {
     return res.status(HttpStatus.CONFLICT).send({
+      httpStatus: HttpStatus.CONFLICT,
       message: error.message,
       error: {}
     });
@@ -154,11 +156,13 @@ app.use(function handleDatabaseError(error, request, response, next) {
       return response
         .status(HttpStatus.CONFLICT)
         .json({
+          httpStatus: HttpStatus.CONFLICT,
           type: 'MongoError',
           message: error.message
         });
     } else {
       return response.status(503).json({
+        httpStatus: HttpStatus.SERVICE_UNAVAILABLE,
         type: 'MongoError',
         message: error.message
       });
