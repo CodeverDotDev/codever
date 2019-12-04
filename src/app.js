@@ -1,4 +1,5 @@
 const express = require('express');
+require('express-async-errors');
 const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -14,7 +15,7 @@ const {MongoError} = require('mongodb');
 const ValidationError = require('./error/validation.error');
 const NotFoundError = require('./error/not-found.error');
 const PublicBookmarkExistingError = require('./error/public-bookmark-existent.error');
-const UseridTokenValidationError = require('./routes/users/userid-validation.error');
+const UseridValidationError = require('./routes/users/userid-validation.error');
 
 const fs = require('fs-extra');
 const rfs = require('rotating-file-stream/index');
@@ -127,7 +128,7 @@ app.use(function handlePublicBookmarkExistingError(error, req, res, next) {
 });
 
 app.use(function handleUserIdValidationError(error, req, res, next) {
-  if (error instanceof UseridTokenValidationError) {
+  if (error instanceof UseridValidationError) {
     res.status(HttpStatus.UNAUTHORIZED);
     return res.send({
       httpStatus: HttpStatus.UNAUTHORIZED,
