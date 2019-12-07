@@ -3,18 +3,6 @@ db.bookmarks.find().forEach(
     var bookmarkUrl = e.location;
     var isYoutubeVideo= false;
     var youtubeVideoId = '';
-    if(isYoutubeVideo) {
-      e.youtubeVideoId = youtubeVideoId;
-    }
-  }
-);
-
-
-db.bookmarks.find().forEach(
-  function(e) {
-    var bookmarkUrl = e.location;
-    var isYoutubeVideo= false;
-    var youtubeVideoId = '';
     if ( bookmarkUrl.startsWith('https://youtu.be/') ) {
       print(bookmarkUrl);
       youtubeVideoId = bookmarkUrl.split('/').pop();
