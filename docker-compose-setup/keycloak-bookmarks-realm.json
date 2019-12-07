@@ -1572,13 +1572,13 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "saml-user-property-mapper",
+            "oidc-usermodel-property-mapper",
             "oidc-full-name-mapper",
-            "oidc-address-mapper",
+            "saml-user-property-mapper",
             "oidc-usermodel-attribute-mapper",
             "saml-role-list-mapper",
-            "oidc-usermodel-property-mapper",
             "saml-user-attribute-mapper",
+            "oidc-address-mapper",
             "oidc-sha256-pairwise-sub-mapper"
           ]
         }
@@ -1658,14 +1658,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
+            "oidc-usermodel-property-mapper",
+            "oidc-address-mapper",
+            "saml-role-list-mapper",
             "oidc-usermodel-attribute-mapper",
             "oidc-full-name-mapper",
-            "saml-role-list-mapper",
-            "oidc-address-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
             "saml-user-attribute-mapper",
             "saml-user-property-mapper",
-            "oidc-usermodel-property-mapper"
+            "oidc-sha256-pairwise-sub-mapper"
           ]
         }
       }
@@ -1713,7 +1713,7 @@
   "supportedLocales": [],
   "authenticationFlows": [
     {
-      "id": "6c564f17-ffae-4a34-8891-1c982df8415f",
+      "id": "7e4e7e86-1609-4664-b541-13ca4eb0f609",
       "alias": "Handle Existing Account",
       "description": "Handle what to do if there is existing account with same email/username like authenticated identity provider",
       "providerId": "basic-flow",
@@ -1744,7 +1744,7 @@
       ]
     },
     {
-      "id": "abf765c5-e55d-4eaf-9d3b-ef4144650283",
+      "id": "f99ef48c-7cbe-4e1f-be29-333129f6f101",
       "alias": "Verify Existing Account by Re-authentication",
       "description": "Reauthentication of existing account",
       "providerId": "basic-flow",
@@ -1768,7 +1768,7 @@
       ]
     },
     {
-      "id": "8c912f9b-cf95-4be0-9eb9-65ff26d7bdd9",
+      "id": "2f9fd638-e84e-42fd-8dd2-8922cd7a715d",
       "alias": "browser",
       "description": "browser based authentication",
       "providerId": "basic-flow",
@@ -1806,7 +1806,7 @@
       ]
     },
     {
-      "id": "f97adbf0-9fde-4f0e-939d-755f587cd1f0",
+      "id": "749057bc-b40e-4eda-8df2-0c568c308965",
       "alias": "clients",
       "description": "Base authentication for clients",
       "providerId": "client-flow",
@@ -1844,7 +1844,7 @@
       ]
     },
     {
-      "id": "de0c173c-005f-49e5-a684-28179220a0d0",
+      "id": "1fc0df80-a16e-44cc-b398-e06bf1c53341",
       "alias": "direct grant",
       "description": "OpenID Connect Resource Owner Grant",
       "providerId": "basic-flow",
@@ -1875,7 +1875,7 @@
       ]
     },
     {
-      "id": "c38a5be9-1909-4bdc-9736-9103498c07c6",
+      "id": "13529577-0084-427a-a6fa-ee93c6bfb48a",
       "alias": "docker auth",
       "description": "Used by Docker clients to authenticate against the IDP",
       "providerId": "basic-flow",
@@ -1892,7 +1892,7 @@
       ]
     },
     {
-      "id": "c3490194-117a-486e-a02f-1098c90402a9",
+      "id": "66e73030-4fd0-46c6-8b05-68cda4eba20a",
       "alias": "first broker login",
       "description": "Actions taken after first broker login with identity provider account, which is not yet linked to any Keycloak account",
       "providerId": "basic-flow",
@@ -1925,7 +1925,7 @@
       ]
     },
     {
-      "id": "b391d302-0f1f-4e61-b28d-529e18fab9d7",
+      "id": "70713558-851a-4583-b113-6b1f9f6ab7d3",
       "alias": "forms",
       "description": "Username, password, otp and other auth forms.",
       "providerId": "basic-flow",
@@ -1949,7 +1949,7 @@
       ]
     },
     {
-      "id": "d34dcc7e-2111-4317-9ad8-4f9179b3d3c6",
+      "id": "3d3eb949-292c-498d-afed-9bb050eb1e04",
       "alias": "http challenge",
       "description": "An authentication flow based on challenge-response HTTP Authentication Schemes",
       "providerId": "basic-flow",
@@ -1987,7 +1987,7 @@
       ]
     },
     {
-      "id": "0510820b-517b-4361-99d0-8faec22d64b3",
+      "id": "50691af8-02f7-4b9b-b6e9-f101e9c9fdbb",
       "alias": "registration",
       "description": "registration flow",
       "providerId": "basic-flow",
@@ -2005,7 +2005,7 @@
       ]
     },
     {
-      "id": "86170b7d-cca0-45a6-838b-1e1844df7ded",
+      "id": "d2f7f383-148d-4cce-9424-b94fb6b8de72",
       "alias": "registration form",
       "description": "registration form",
       "providerId": "form-flow",
@@ -2043,7 +2043,7 @@
       ]
     },
     {
-      "id": "64e36867-5e8f-41e0-94fa-0f7894a1d4c6",
+      "id": "0a1ceb77-e99e-4156-a450-f14c8ce9177b",
       "alias": "reset credentials",
       "description": "Reset credentials for a user if they forgot their password or something",
       "providerId": "basic-flow",
@@ -2081,7 +2081,7 @@
       ]
     },
     {
-      "id": "3960bbc3-e14e-49b5-b0bf-80ce30a9c66d",
+      "id": "d42aad04-f211-4848-b005-d9940d59d1af",
       "alias": "saml ecp",
       "description": "SAML ECP Profile Authentication Flow",
       "providerId": "basic-flow",
@@ -2100,14 +2100,14 @@
   ],
   "authenticatorConfig": [
     {
-      "id": "d2b760ee-3fc0-4a05-82be-f005af77d4b8",
+      "id": "c174e39e-847c-4c9f-804c-313af973c14a",
       "alias": "create unique user config",
       "config": {
         "require.password.update.after.registration": "false"
       }
     },
     {
-      "id": "0b0d3137-57ac-4d2f-a2f6-a6d0236bb7d3",
+      "id": "645e442c-ce65-4919-946a-7ff4e3a1d20b",
       "alias": "review profile config",
       "config": {
         "update.profile.on.first.login": "missing"
@@ -2169,10 +2169,10 @@
   "dockerAuthenticationFlow": "docker auth",
   "attributes": {
     "_browser_header.xXSSProtection": "1; mode=block",
-    "_browser_header.strictTransportSecurity": "max-age=31536000; includeSubDomains",
     "_browser_header.xFrameOptions": "SAMEORIGIN",
-    "quickLoginCheckMilliSeconds": "1000",
+    "_browser_header.strictTransportSecurity": "max-age=31536000; includeSubDomains",
     "permanentLockout": "false",
+    "quickLoginCheckMilliSeconds": "1000",
     "_browser_header.xRobotsTag": "none",
     "maxFailureWaitSeconds": "900",
     "minimumQuickLoginWaitSeconds": "60",
@@ -2180,13 +2180,13 @@
     "actionTokenGeneratedByUserLifespan": "300",
     "maxDeltaTimeSeconds": "43200",
     "_browser_header.xContentTypeOptions": "nosniff",
-    "actionTokenGeneratedByAdminLifespan": "43200",
     "offlineSessionMaxLifespan": "5184000",
+    "actionTokenGeneratedByAdminLifespan": "43200",
     "_browser_header.contentSecurityPolicyReportOnly": "",
     "bruteForceProtected": "false",
     "_browser_header.contentSecurityPolicy": "frame-src 'self'; frame-ancestors 'self'; object-src 'none';",
-    "offlineSessionMaxLifespanEnabled": "false",
-    "waitIncrementSeconds": "60"
+    "waitIncrementSeconds": "60",
+    "offlineSessionMaxLifespanEnabled": "false"
   },
   "keycloakVersion": "6.0.1",
   "userManagedAccessAllowed": false

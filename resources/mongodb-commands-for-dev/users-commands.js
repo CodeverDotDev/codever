@@ -12,8 +12,6 @@ db.users.update({},
   {multi:true}
 );
 
-{{description.errors.tooManyCharacters.value}}
-
 //remove a tag from all public bookmarks
 db.bookmarks.update(
   { shared: true},
