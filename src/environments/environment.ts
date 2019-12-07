@@ -5,7 +5,7 @@ export const environment = {
   HOST: 'http://localhost:4200/',
   keycloak:  {
     'realm': 'bookmarks',
-    'url': 'http://localhost:8380/auth',
+    'url': 'http://localhost:8480/auth',
     'clientId': 'bookmarks'
   }
 };
