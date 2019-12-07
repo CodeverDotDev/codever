@@ -75,7 +75,7 @@ export class UserDataStore {
         this._userData.next(this.userData)
       },
       (errorResponse: HttpErrorResponse) => {
-        if (errorResponse.status === 404 && errorResponse.error.title === 'User data was not found') {
+        if (errorResponse.status === 404 && errorResponse.error.message === `User data NOT_FOUND for userId: ${this.userId}`) {
           const initialUserData: UserData = {
             userId: userId,
             searches: [],
