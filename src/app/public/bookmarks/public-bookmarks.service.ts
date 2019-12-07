@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { Webpage } from '../../core/model/webpage';
+import { WebpageData } from '../../core/model/webpage-data';
 import { Bookmark } from '../../core/model/bookmark';
 
 import { environment } from 'environments/environment';
@@ -29,12 +29,17 @@ export class PublicBookmarksService {
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
 
-  getScrapingData(url: string, youtubeVideoId: string): Observable<Webpage> {
-    const params = new HttpParams()
-      .set('url', url)
-      .set('youtubeVideoId', youtubeVideoId)
+  getScrapingData(location: string, youtubeVideoId: string): Observable<WebpageData> {
+    let params;
+    if (youtubeVideoId) {
+      params = new HttpParams()
+        .set('youtubeVideoId', youtubeVideoId)
+    } else {
+      params = new HttpParams()
+        .set('location', location);
+    }
     return this.httpClient
-      .get<Webpage>(`${this.publicBookmarksApiBaseUrl}/scrape`, {params: params});
+      .get<WebpageData>(`${this.publicBookmarksApiBaseUrl}/scrape`, {params: params});
   }
 
   getPublicBookmarkByLocation(url: string): Observable<Bookmark> {
