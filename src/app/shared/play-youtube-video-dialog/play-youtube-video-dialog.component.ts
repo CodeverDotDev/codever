@@ -26,7 +26,7 @@ export class PlayYoutubeVideoDialogComponent implements OnInit {
   }
 
   close() {
-    this.dialogRef.close('DELETE_CANCELED');
+    this.dialogRef.close('Play Youtube Video Closed');
   }
 
 }
