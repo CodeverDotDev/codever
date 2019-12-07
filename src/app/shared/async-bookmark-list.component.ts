@@ -181,7 +181,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   playYoutubeVideo(bookmark: Bookmark) {
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = true;
+    dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
 
     let relativeWidth = (this.innerWidth * 80) / 100; // take up to 80% of the screen size
