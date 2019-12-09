@@ -17,4 +17,5 @@ export interface Bookmark {
   starredBy?: string[];
   likes?: number;
   youtubeVideoId?: string;
+  stackoverflowQuestionId?: string;
 }
