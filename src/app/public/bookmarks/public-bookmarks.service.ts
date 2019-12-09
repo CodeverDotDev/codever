@@ -29,15 +29,23 @@ export class PublicBookmarksService {
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
 
-  getScrapingData(location: string, youtubeVideoId: string): Observable<WebpageData> {
-    let params;
-    if (youtubeVideoId) {
-      params = new HttpParams()
-        .set('youtubeVideoId', youtubeVideoId)
-    } else {
-      params = new HttpParams()
+  getScrapingData(location: string): Observable<WebpageData> {
+    const params = new HttpParams()
         .set('location', location);
-    }
+    return this.httpClient
+      .get<WebpageData>(`${this.publicBookmarksApiBaseUrl}/scrape`, {params: params});
+  }
+
+  getYoutubeVideoData(youtubeVideoId: string) {
+    const params = new HttpParams()
+      .set('youtubeVideoId', youtubeVideoId)
+    return this.httpClient
+      .get<WebpageData>(`${this.publicBookmarksApiBaseUrl}/scrape`, {params: params});
+  }
+
+  getStackoverflowQuestionData(stackoverflowQuestionId: string) {
+    const params = new HttpParams()
+      .set('stackoverflowQuestionId', stackoverflowQuestionId)
     return this.httpClient
       .get<WebpageData>(`${this.publicBookmarksApiBaseUrl}/scrape`, {params: params});
   }
