@@ -69,7 +69,6 @@ let getBookmarkById = async function (bookmarkId) {
 };
 
 let getYoutubeVideoData = async (youtubeVideoId) => {
-  //let youtubeVideoId = req.query.youtubeVideoId;
   const response = await request
     .get('https://www.googleapis.com/youtube/v3/videos')
     .query({id: youtubeVideoId})
@@ -95,7 +94,27 @@ let getYoutubeVideoData = async (youtubeVideoId) => {
   }
 
   return webpageData;
+}
 
+let getStackoverflowQuestionData = async (stackoverflowQuestionId) => {
+  const response = await request
+    .get(`https://api.stackexchange.com/2.2/questions/${stackoverflowQuestionId}`)
+    .query({site: 'stackoverflow'})
+    .query({key: process.env.STACK_EXCHANGE_API_KEY || "change-me-with-a-valid-stackexchange-key-if-you-need-me"});
+
+  const tags = response.body.items[0].tags;
+  const title = response.body.items[0].title;
+  const creationDateMillis = response.body.items[0].creation_date * 1000;
+  const creationDate = new Date(creationDateMillis).toISOString();
+  const publishedOn = creationDate.substring(0, creationDate.indexOf('T'));
+
+  const webpageData = {
+    title: title,
+    tags: tags,
+    publishedOn: publishedOn
+  }
+
+  return webpageData;
 }
 
 /**
@@ -125,5 +144,6 @@ module.exports = {
   getBookmarksForTag: getBookmarksForTag,
   getBookmarkById: getBookmarkById,
   getScrapedDataForLocation: getScrapedDataForLocation,
-  getYoutubeVideoData: getYoutubeVideoData
+  getYoutubeVideoData: getYoutubeVideoData,
+  getStackoverflowQuestionData: getStackoverflowQuestionData
 };
