@@ -12,7 +12,7 @@ db.bookmarks.find().forEach(
       print('stackoverflowQuestionId ' + stackoverflowQuestionId);
       print('with location ' + e.location);
       e.stackoverflowQuestionId = stackoverflowQuestionId;
-      //db.bookmarks.save(e);
+      db.bookmarks.save(e);
     }
   }
 );
