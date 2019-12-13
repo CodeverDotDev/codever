@@ -11,7 +11,7 @@ at [https://github.com/CodepediaOrg/bookmarks](https://github.com/CodepediaOrg/b
 
  Built with [Angular](https://angular.io/) and [Angular CLI](https://cli.angular.io/)
  
- ![components-graph](docs/graphviz/components-graph.png)
+ ![components-graph](documentation/graphviz/components-graph.png)
  
 > The production setup is can be found here - [components production](https://raw.githubusercontent.com/wiki/CodepediaOrg/bookmarks-api/images/network-diagram.png)
 
