@@ -4,9 +4,7 @@
 
 Efficiently manage your dev bookmarks. The public and worthy ones are published on Github 
 at [https://github.com/CodepediaOrg/bookmarks](https://github.com/CodepediaOrg/bookmarks#readme)
-  
-<br/>
-  
+
  ---
 
  Built with [Angular](https://angular.io/) and [Angular CLI](https://cli.angular.io/)
