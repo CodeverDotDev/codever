@@ -25,7 +25,7 @@ export class BookmarkTextComponent  implements  AfterViewInit, AfterViewChecked 
   show = false; // add one more property
   public showMoreText = false;
 
-  @ViewChild('bookmarkText') elementView: ElementRef;
+  @ViewChild('bookmarkText', {static: false}) elementView: ElementRef;
   public viewHeight: number;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
