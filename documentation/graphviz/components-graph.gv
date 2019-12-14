@@ -1,0 +1,16 @@
+digraph technical_context_diagram {
+    rankdir=LR;  //Rank Direction Left to Right
+    user [label="User"]
+    angular [label="Front-end\n(Angular)", style=filled, fillcolor=green, shape=rectangle]
+    api [label="Api\n(Node.js)", shape=rectangle, style=filled, fillcolor=yellow]
+    keycloak [label="Auth\n(Keycloak)",  shape=rectangle]
+    postgres [label="Postgres DB", shape="cylinder"]
+    mongo [label="Data store\n(Mongo DB)", shape="cylinder"]
+
+    user -> angular;
+    angular -> api;
+    api -> mongo;
+    angular -> keycloak;
+    api -> keycloak;
+    keycloak -> postgres;
+}
