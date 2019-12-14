@@ -26,7 +26,7 @@ export class HomepageComponent implements OnInit {
   userData$: Observable<UserData>;
   counter = 20;
 
-  @ViewChild(BookmarksSearchComponent)
+  @ViewChild(BookmarksSearchComponent, {static: true})
   searchComponent: BookmarksSearchComponent;
 
   history$: Observable<Bookmark[]>;
