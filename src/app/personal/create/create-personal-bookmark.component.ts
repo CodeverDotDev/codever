@@ -54,7 +54,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   filteredTags: Observable<any[]>;
 
-  @ViewChild('tagInput') tagInput: ElementRef;
+  @ViewChild('tagInput', {static: false})
+  tagInput: ElementRef;
 
   constructor(
     private formBuilder: FormBuilder,
