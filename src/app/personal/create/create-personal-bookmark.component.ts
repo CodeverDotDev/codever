@@ -17,7 +17,7 @@ import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {PersonalBookmarksService} from '../../core/personal-bookmarks.service';
 import {UserDataStore} from '../../core/user/userdata.store';
 import {Logger} from '../../core/logger.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ErrorService} from '../../core/error/error.service';
 import {UserDataService} from '../../core/user-data.service';
 import {UserInfoStore} from '../../core/user/user-info.store';
@@ -54,6 +54,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   filteredTags: Observable<any[]>;
 
+  url; // value of "url" query parameter if present
+
   @ViewChild('tagInput', {static: false})
   tagInput: ElementRef;
 
@@ -70,6 +72,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private userDataStore: UserDataStore,
     private logger: Logger,
     private router: Router,
+    private route: ActivatedRoute,
     private errorService: ErrorService
   ) {
     this.userInfoStore.getUserInfo$().subscribe(userInfo => {
@@ -89,13 +92,14 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.url = this.route.snapshot.queryParamMap.get('url');
     this.buildForm();
   }
 
   buildForm(): void {
     this.bookmarkForm = this.formBuilder.group({
       name: ['', Validators.required],
-      location: ['', Validators.required],
+      location: [this.url ? this.url : '', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
       githubURL: '',
@@ -106,23 +110,35 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       stackoverflowQuestionId: null,
     });
 
+    if (this.url) {
+      this.verifyExistenceInPersonalBookmarks(this.url);
+    }
+
+    this.onChanges();
+  }
+
+  private onChanges() {
     this.bookmarkForm.get('location').valueChanges.pipe(
       debounceTime(1000),
       distinctUntilChanged(), )
       .subscribe(location => {
-        this.personalBookmarksService.getPersonalBookmarkByLocation(this.userId, location).subscribe(httpResponse => {
-            if (httpResponse.status === 200) {
-              this.personalBookmarkPresent = true;
-            } else {
-              this.getScrapeData(location);
-            }
-          },
-          (errorResponse: HttpErrorResponse) => {
-            if (errorResponse.status === 404) {
-              this.getScrapeData(location);
-            }
-          });
+        this.verifyExistenceInPersonalBookmarks(location);
 
+      });
+  }
+
+  private verifyExistenceInPersonalBookmarks(location) {
+    this.personalBookmarksService.getPersonalBookmarkByLocation(this.userId, location).subscribe(httpResponse => {
+        if (httpResponse.status === 200) {
+          this.personalBookmarkPresent = true;
+        } else {
+          this.getScrapeData(location);
+        }
+      },
+      (errorResponse: HttpErrorResponse) => {
+        if (errorResponse.status === 404) {
+          this.getScrapeData(location);
+        }
       });
   }
 
@@ -211,7 +227,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     return stackoverflowQuestionId;
   }
 
-  add(event: MatChipInputEvent): void {
+  addTag(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
@@ -230,7 +246,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     this.tags.markAsDirty();
   }
 
-  remove(index: number): void {
+  removeTagByIndex(index: number): void {
     const tags = this.bookmarkForm.get('tags') as FormArray;
 
     if (index >= 0) {
@@ -243,7 +259,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     return this.autocompleteTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
+  selectedTag(event: MatAutocompleteSelectedEvent): void {
     const tags = this.bookmarkForm.get('tags') as FormArray;
     tags.push(this.formBuilder.control(event.option.viewValue));
     this.tagInput.nativeElement.value = '';
@@ -288,11 +304,15 @@ export class CreatePersonalBookmarkComponent implements OnInit {
             this.publicBookmarksStore.addBookmarkToPublicStore(newBookmark);
           }
           this.userDataStore.addToHistory(newBookmark);
-          this.router.navigate(
-            ['/'],
-            {
-              queryParams: {tab: 'history'}
-            });
+          if (this.url) {
+            window.location.href = this.url;
+          } else {
+            this.router.navigate(
+              ['/'],
+              {
+                queryParams: {tab: 'history'}
+              });
+          }
         },
         (error: HttpResponse<any>) => {
           this.errorService.handleError(error.body.json());
