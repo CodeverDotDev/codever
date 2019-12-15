@@ -69,7 +69,6 @@ export class BookmarksSearchComponent implements OnInit {
   ];
 
   constructor(private router: Router,
-              private location: Location,
               private route: ActivatedRoute,
               private bookmarkStore: PublicBookmarksStore,
               private bookmarkFilterService: BookmarkFilterService,
