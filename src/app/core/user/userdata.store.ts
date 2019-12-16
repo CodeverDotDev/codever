@@ -1,17 +1,17 @@
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
 
-import { Injectable } from '@angular/core';
-import { Logger } from '../logger.service';
-import { ErrorService } from '../error/error.service';
+import {Injectable} from '@angular/core';
+import {Logger} from '../logger.service';
+import {ErrorService} from '../error/error.service';
 
-import { KeycloakService } from 'keycloak-angular';
-import { UserData } from '../model/user-data';
-import { UserDataService } from '../user-data.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Bookmark } from '../model/bookmark';
-import { UserInfoService } from './user-info.service';
-import { UserInfoStore } from './user-info.store';
-import { RateBookmarkRequest, RatingActionType } from '../model/rate-bookmark.request';
+import {KeycloakService} from 'keycloak-angular';
+import {UserData} from '../model/user-data';
+import {UserDataService} from '../user-data.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Bookmark} from '../model/bookmark';
+import {UserInfoService} from './user-info.service';
+import {UserInfoStore} from './user-info.store';
+import {RateBookmarkRequest, RatingActionType} from '../model/rate-bookmark.request';
 
 @Injectable({
   providedIn: 'root'
@@ -98,7 +98,7 @@ export class UserDataStore {
   }
 
   getUserData$(): Observable<UserData> {
-    if ( !this.loadInitilDataCalled ) {
+    if (!this.loadInitilDataCalled) {
       this.loadInitialData(this.userId);
     }
     return this._userData.asObservable();
@@ -129,11 +129,7 @@ export class UserDataStore {
   addToLaterReads(bookmark: Bookmark) {
     this.userData.readLater.push(bookmark._id);
     this.updateUserData(this.userData).subscribe(() => {
-      if (this.laterReadsHaveBeenLoaded) {
-        const laterReads: Bookmark[] = this._laterReads.getValue();
-        laterReads.push(bookmark);
-        this._laterReads.next(laterReads); // insert at the top (index 0)
-      }
+      this.publishLaterReadsAfterCreation(bookmark);
     });
   }
 
@@ -178,7 +174,7 @@ export class UserDataStore {
 
   removeFromLikedBookmarks(bookmark: Bookmark) {
     this.userData.likes = this.userData.likes.filter(x => x !== bookmark._id);
-    this.updateUserData(this.userData).subscribe( () => {
+    this.updateUserData(this.userData).subscribe(() => {
       this.publishStarredBookmarksAfterDeletion(bookmark);
     });
 
@@ -291,14 +287,40 @@ export class UserDataStore {
     this.removeFromUserDataHistoryIfPresent(bookmark);
     this.userData.history.unshift(bookmark._id);
     this.updateUserData(this.userData).subscribe(() => {
-      if (this.historyHasBeenLoaded) {
-        let lastVisitedBookmarks: Bookmark[] = this._history.getValue();
-        lastVisitedBookmarks = lastVisitedBookmarks.filter(item => item._id !== bookmark._id);
-        lastVisitedBookmarks.unshift(bookmark);
-
-        this._history.next(lastVisitedBookmarks);
-      }
+      this.publishHistoryAfterCreation(bookmark);
     });
+  }
+
+  addToHistoryAndReadLater(bookmark: Bookmark) {
+    // history
+    this.removeFromUserDataHistoryIfPresent(bookmark);
+    this.userData.history.unshift(bookmark._id);
+
+    // read later
+    this.userData.readLater.push(bookmark._id);
+
+    this.updateUserData(this.userData).subscribe(() => {
+      this.publishHistoryAfterCreation(bookmark);
+      this.publishLaterReadsAfterCreation(bookmark);
+    });
+  }
+
+  private publishLaterReadsAfterCreation(bookmark: Bookmark) {
+    if (this.laterReadsHaveBeenLoaded) {
+      const laterReads: Bookmark[] = this._laterReads.getValue();
+      laterReads.push(bookmark);
+      this._laterReads.next(laterReads); // insert at the top (index 0)
+    }
+  }
+
+  private publishHistoryAfterCreation(bookmark: Bookmark) {
+    if (this.historyHasBeenLoaded) {
+      let lastVisitedBookmarks: Bookmark[] = this._history.getValue();
+      lastVisitedBookmarks = lastVisitedBookmarks.filter(item => item._id !== bookmark._id);
+      lastVisitedBookmarks.unshift(bookmark);
+
+      this._history.next(lastVisitedBookmarks);
+    }
   }
 
   private removeFromUserDataHistoryIfPresent(bookmark: Bookmark) {
@@ -395,7 +417,7 @@ export class UserDataStore {
     const index = this.userData.watchedTags.indexOf(tag);
     if (index > -1) {
       this.userData.watchedTags.splice(index, 1);
-      this.updateUserData(this.userData).subscribe( () => {
+      this.updateUserData(this.userData).subscribe(() => {
         this.forceReloadBookmarksForWatchedTags();
       });
     }
