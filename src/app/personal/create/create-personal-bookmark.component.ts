@@ -105,6 +105,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       githubURL: '',
       description: ['', descriptionSizeValidator],
       shared: false,
+      readLater: false,
       language: 'en',
       youtubeVideoId: null,
       stackoverflowQuestionId: null,
@@ -303,7 +304,12 @@ export class CreatePersonalBookmarkComponent implements OnInit {
           if (bookmark.shared) {
             this.publicBookmarksStore.addBookmarkToPublicStore(newBookmark);
           }
-          this.userDataStore.addToHistory(newBookmark);
+          if (this.bookmarkForm.controls['readLater'].value === true) {
+            this.userDataStore.addToHistoryAndReadLater(newBookmark);
+          } else {
+            this.userDataStore.addToHistory(newBookmark);
+          }
+
           if (this.url) {
             window.location.href = this.url;
           } else {
