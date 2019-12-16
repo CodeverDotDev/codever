@@ -22,11 +22,16 @@
   <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
     <div class="form-group">
       <label for="location">Location*</label>
-      <input type="text" class="form-control" id="location"
-             required
-             name="location"
-             formControlName="location"
-             placeholder="Usually an URL">
+      <div class="input-group">
+        <input type="text" class="form-control" id="location"
+               required
+               name="location"
+               formControlName="location"
+               placeholder="Usually an URL">
+        <div class="input-group-append">
+          <div class="input-group-text"><a href="{{bookmarkForm.get('location').value}}" target="_blank" title="Jump to location"><i class="fas fa-external-link-alt"></i></a></div>
+        </div>
+      </div>
       <div [hidden]="bookmarkForm.get('location').valid || (bookmarkForm.get('location').pristine)"
            class="alert alert-danger">
         Location is required
@@ -50,7 +55,9 @@
       <label class="form-check-label">
         <input #publicBookmark [checked]="makePublic" (click)="onClickMakePublic(publicBookmark.checked)"
                class="form-check-input" type="checkbox" value="true" formControlName="shared">
-        <strong> Make Public</strong> - pls favor <a href="https://github.com/CodepediaOrg/bookmarks/blob/master/tags/public-tags-simple.json" target="_blank">recommended tags</a> (<em>spam will not be tolerated</em>)
+        <strong> Make Public</strong> - pls favor <a
+        href="https://github.com/CodepediaOrg/bookmarks/blob/master/tags/public-tags-simple.json" target="_blank">recommended
+        tags</a> (<em>spam will not be tolerated</em>)
       </label>
     </div>
     <div class="form-group form-group-distanced">
