@@ -76,6 +76,7 @@ let getYoutubeVideoData = async (youtubeVideoId) => {
     .query({part: 'snippet,contentDetails,statistics,status'});
 
   let title = response.body.items[0].snippet.title;
+  const tags = response.body.items[0].snippet.tags;
   const description = response.body.items[0].snippet.description;
   const publishedAt = response.body.items[0].snippet.publishedAt;
   const publishedOn = publishedAt.substring(0, publishedAt.indexOf('T'));
@@ -88,6 +89,7 @@ let getYoutubeVideoData = async (youtubeVideoId) => {
 
   const webpageData = {
     title: title,
+    tags: tags.slice(0,8).map(tag => tag.trim().replace(/\s+/g, '-')),
     metaDescription: description.substring(0, 500),
     publishedOn: publishedOn,
     videoDuration: videoDuration
