@@ -10,7 +10,7 @@ describe('About Component', () => {
   it('should ...', () => {
     const fixture = TestBed.createComponent(AboutComponent);
     fixture.detectChanges();
-    expect(fixture.nativeElement.children[0].textContent).toContain('Collection of (cu)rated coding bookmarks');
+    expect(fixture.nativeElement.children[0].textContent).toContain('Bookmarking for Developers & Co');
   });
 
 });
