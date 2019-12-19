@@ -3,6 +3,9 @@ import {NgModule} from '@angular/core';
 import {TagComponent} from './tag/tag.component';
 import {AboutComponent} from './about/about.component';
 import {HomepageComponent} from './bookmarks/homepage.component';
+import {HowtoComponent} from './howto/howto.component';
+import {PrivacyPolicyComponent} from './privacy/privacy-policy.component';
+import {TermsOfServiceComponent} from './terms/terms-of-service.component';
 
 export function tagMatcher(url: UrlSegment[]) {
     return url.length === 1 && url[0].path !== 'personal' ? ({consumed: url}) : null;
@@ -25,6 +28,18 @@ const publicBookmarksRoutes: Routes = [
   {
     path: 'about',
     component: AboutComponent
+  },
+  {
+    path: 'howto',
+    component: HowtoComponent
+  },
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicyComponent,
+  },
+  {
+    path: 'terms-and-conditions',
+    component: TermsOfServiceComponent,
   },
   {
     path: '',

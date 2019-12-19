@@ -1,0 +1,29 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h2>Saving bookmarks</h2>
+    <p class="lead">There are several ways to save bookmarks:</p>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">The easiest is to use the
+        <a
+          href="javascript:(function(){location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(location.href);})();"
+          class="nav-link"><i class="fas fa-bookmark"></i> Add to bookmarks.dev</a> bookmarklet.
+        Drag and drop this link that into your browser toolbar. When you surf and find
+        a page you want bookmarked just click this link and you will be redirected to the
+        <a href="https://www.bookmarks.dev/personal/new"><strong>Add new bookmark</strong></a> page. Once added, you
+        will be redirected back to the visited page
+      </li>
+      <li class="list-group-item">Save directly using the
+        <button type="button" class="btn btn-primary btn-sm add-new-bookmark" routerLink="/personal/new">
+          <i class="fa fa-plus"></i>
+          New bookmark
+        </button>
+        button from the navigation menu
+      </li>
+      <li class="list-group-item">Use the <a
+        href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb">
+        <i class="fab fa-chrome"></i> Save URL to bookmarks.dev</a>
+        chrome extension if you use Chromium based browsers
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Save URL to bookmarks.dev",
+  "version": "1.0.0",
+  "description": "Adds the current page to bookmarks.dev and returns back to it",
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {},
+  "homepage_url": "https://www.bookmarks.dev"
+}
