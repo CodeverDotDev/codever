@@ -1,6 +1,6 @@
 export interface WebpageData {
   title: string;
   metaDescription: string;
-  tags: string[];
+  tags?: string[];
   publishedOn?: Date;
 }
