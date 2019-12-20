@@ -1,16 +1,31 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h2>Saving bookmarks</h2>
+    <h2>Save bookmarks</h2>
     <p class="lead">There are several ways to save bookmarks:</p>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">The easiest is to use the
-        <a
-          href="javascript:(function(){location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(location.href);})();"
-          class="nav-link"><i class="fas fa-bookmark"></i> Add to bookmarks.dev</a> bookmarklet.
-        Drag and drop this link that into your browser toolbar. When you surf and find
-        a page you want bookmarked just click this link and you will be redirected to the
-        <a href="https://www.bookmarks.dev/personal/new"><strong>Add new bookmark</strong></a> page. Once added, you
-        will be redirected back to the visited page
+      <li class="list-group-item">The easiest is to use the provided <strong>bookmarklets</strong>.
+        Bookmarklets are little javascript links that live in the bookmarks toolbar of your browser.
+        Just drag one of the links bellow to your browser toolbar:
+        <ul>
+          <li>
+            <a
+              class="bookmarklet"
+              href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;void(open('http://localhost:4200/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t),'Bookmarks.dev','toolbar=no,width=1024,height=850'))})();">
+              <i class="fas fa-bookmark"></i> Save URL to bookmarks.dev - popup
+            </a> - when clicked a popup to save the current URL is displayed [<em>recommended for <strong>desktops</strong> and notebooks with good resolution</em>]
+          </li>
+          <li>
+            <a
+              href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;location.href='http://localhost:4200/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)})();">
+              <i class="fas fa-bookmark"></i> Save URL to bookmarks.dev - redirect
+            </a> - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
+            Bookmark</a> form.
+            Once added you come back to the initial page [<em>recommended for <strong>phones</strong> or smaller resolution devices</em>]
+          </li>
+        </ul>
+        <p class="note_normal">You can <strong>select the text on page</strong> that you want to be added to the
+          description of the bookmark
+          before you click the bookmarklet's link </p>
       </li>
       <li class="list-group-item">Save directly using the
         <button type="button" class="btn btn-primary btn-sm add-new-bookmark" routerLink="/personal/new">
@@ -25,5 +40,41 @@
         chrome extension if you use Chromium based browsers
       </li>
     </ul>
+    <hr/>
+    <h2>Search bookmarks</h2>
+    <p class="lead">You can search bookmarks by placing your search terms in the Search bar. You can choose to search in
+      <strong>Public Bookmarks</strong> or in <strong>Personal & Favorites</strong>, by selecting one of the options
+      beneath the Search Bar.
+      Tags must be embedded in <strong>square bracktes []</strong>.</p>
+    <br>
+    <p>Let's say you want to look for personal bookmarks that contain the text <strong><em>exception</em></strong> and
+      are tagged with
+      <strong><em>java</em></strong>. Then
+      would put <strong><em>exception [java]</em></strong> in the search bar, and use the <strong>Personal &
+        Favorites</strong> option </p>
+
+    <img src="./assets/img/search-bar-example.png" alt="Search bar example" style="align-content: center;"/>
+    <p class="note_normal">You have the possibility to save this search by clicking the <strong>Save search</strong>
+      button. This way it will be displayed in the <strong>auto completion</strong> when you input text in the Search
+      bar </p>
+
+    <h3>Search via query parameters</h3>
+    <p class="lead">You can execute the same search via <strong>query parameters</strong></p>
+
+    You can trigger the same search as above by calling the following URL:
+    <pre>
+      https://www.bookmarks.dev/search?q=exception [java]&sd=personal
+    </pre>
+    <ul>
+      <li><strong>q</strong> - here is your input search text</li>
+      <li><strong>sd</strong> - search domain with two options</li>
+      <ul>
+        <li><strong>personal</strong> - personal and favorite bookmarks</li>
+        <li><strong>public</strong> - public bookmarks (may include personal bookmarks if they come from same user)</li>
+      </ul>
+    </ul>
+    <p class="note_normal">This is very handy if you use Web Search tools where you can define custom queries,
+      like <a href="https://www.alfredapp.com/help/features/web-search/"> Alfred Web Search</a> if you are on Mac</p>
+
   </div>
 </div>
