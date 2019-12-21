@@ -4,17 +4,40 @@
     in the information industry.
   <p>
 
-  To make bookmarking easier it features:
+    To make bookmarking easier it features:
   <ul>
-    <li>
-      Bookmarklet to easily save bookmarks
-      <a href="javascript:(function(){location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(location.href);})();" class="nav-link"><i class="fas fa-bookmark"></i> Add to bookmarks.dev</a>
-      drag this link to your browser toolbar to start using it
+    <ul>
+      <li>
+        <a
+          class="bookmarklet"
+          href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;void(open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t),'Bookmarks.dev','toolbar=no,width=1024,height=850'))})();">
+          <i class="fas fa-bookmark"></i> Save URL to bookmarks.dev - popup
+        </a> - when clicked a popup to save the current URL is displayed [<em>recommended for <strong>desktops</strong>
+        and notebooks with good resolution</em>]
+      </li>
+      <li>
+        <a
+          href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)})();">
+          <i class="fas fa-bookmark"></i> Save URL to bookmarks.dev - redirect
+        </a> - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
+        Bookmark</a> form.
+        Once added you come back to the initial page [<em>recommended for <strong>phones</strong> or smaller resolution
+        devices</em>]
+      </li>
+    </ul>
+    <li>Use the <a
+      href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb"><i
+      class="fab fa-chrome"></i> Save URL to bookmarks.dev</a> chrome extension if you use Chromium based browsers
     </li>
-    <li>Use the <a href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb"><i class="fab fa-chrome"></i> Save URL to bookmarks.dev</a> chrome extension if you use Chromium based browsers</li>
-    <li><a href="https://www.bookmarks.dev/?tab=read-later"><i class="fas fa-clock"></i> Read Later</a> - list of bookmarks to read later </li>
-    <li><a href="https://www.bookmarks.dev/?tab=pinned"><i class="fas fa-thumbtack"></i> Pinned</a> - pin the bookmarks you intensively use currently </li>
-    <li><a href="https://www.bookmarks.dev/?tab=favorites"><i class="fas fa-star"></i> Favorites</a> - add public bookmarks to favorites to find them in your personal searches</li>
+    <li><a href="https://www.bookmarks.dev/?tab=read-later"><i class="fas fa-clock"></i> Read Later</a> - list of
+      bookmarks to read later
+    </li>
+    <li><a href="https://www.bookmarks.dev/?tab=pinned"><i class="fas fa-thumbtack"></i> Pinned</a> - pin the bookmarks
+      you intensively use currently
+    </li>
+    <li><a href="https://www.bookmarks.dev/?tab=favorites"><i class="fas fa-star"></i> Favorites</a> - add public
+      bookmarks to favorites to find them in your personal searches
+    </li>
     <li><strong>Save searches</strong> to use later for easier pin pointing known bookmarks</li>
   </ul>
 
