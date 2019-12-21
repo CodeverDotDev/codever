@@ -3,20 +3,20 @@
     <h2>Save bookmarks</h2>
     <p class="lead">There are several ways to save bookmarks:</p>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">The easiest is to use the provided <a
-        href="https://en.wikipedia.org/wiki/Bookmarklet">bookmarklets</a>.
+      <li class="list-group-item">The easiest is to use the provided <strong>bookmarklets</strong>.
+        Bookmarklets are little javascript links that live in the bookmarks toolbar of your browser.
         Just drag one of the links bellow to your browser toolbar:
         <ul>
           <li>
             <a
               class="bookmarklet"
-              href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};p=document.title;void(open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d),'Bookmarks.dev','toolbar=no,width=1024,height=850'))})();">
+              href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;void(open('http://localhost:4200/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t),'Bookmarks.dev','toolbar=no,width=1024,height=850'))})();">
               <i class="fas fa-bookmark"></i> Save URL to bookmarks.dev - popup
             </a> - when clicked a popup to save the current URL is displayed [<em>recommended for <strong>desktops</strong> and notebooks with good resolution</em>]
           </li>
           <li>
             <a
-              href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};p=document.title;location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)})();">
+              href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;location.href='http://localhost:4200/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)})();">
               <i class="fas fa-bookmark"></i> Save URL to bookmarks.dev - redirect
             </a> - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
             Bookmark</a> form.
