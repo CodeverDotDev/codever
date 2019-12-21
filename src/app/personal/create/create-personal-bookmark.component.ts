@@ -55,6 +55,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   filteredTags: Observable<any[]>;
 
   url; // value of "url" query parameter if present
+  desc; // value of "url" query parameter if present
 
   @ViewChild('tagInput', {static: false})
   tagInput: ElementRef;
@@ -93,6 +94,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   ngOnInit(): void {
     this.url = this.route.snapshot.queryParamMap.get('url');
+    this.desc = this.route.snapshot.queryParamMap.get('desc');
     this.buildForm();
   }
 
@@ -103,7 +105,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
       githubURL: '',
-      description: ['', descriptionSizeValidator],
+      description: [this.desc ? this.desc : '', descriptionSizeValidator],
       shared: false,
       readLater: false,
       language: 'en',
@@ -121,7 +123,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   private onChanges() {
     this.bookmarkForm.get('location').valueChanges.pipe(
       debounceTime(1000),
-      distinctUntilChanged(), )
+      distinctUntilChanged(),)
       .subscribe(location => {
         this.verifyExistenceInPersonalBookmarks(location);
 
@@ -179,7 +181,9 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     if (webpageData.publishedOn) {
       this.bookmarkForm.get('publishedOn').patchValue(webpageData.publishedOn, {emitEvent: false});
     }
-    if (webpageData.metaDescription) {
+    if (this.desc) {
+      this.bookmarkForm.get('description').patchValue(this.desc, {emitEvent: false});
+    } else if (webpageData.metaDescription) {
       this.bookmarkForm.get('description').patchValue(webpageData.metaDescription, {emitEvent: false});
     }
     if (webpageData.tags) {

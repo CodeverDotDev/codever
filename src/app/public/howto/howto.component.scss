@@ -1,5 +1,9 @@
-.bookmarks-context {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
+.note_normal {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #f6ce8e;
+  background-color: #f7f5e7;
+  margin: 10px;
+  padding: 10px;
+  font-style: italic;
 }
