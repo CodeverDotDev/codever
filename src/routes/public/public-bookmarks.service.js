@@ -87,14 +87,16 @@ let getYoutubeVideoData = async (youtubeVideoId) => {
     title = title + ' - ' + videoDuration;
   }
 
-  const webpageData = {
+  let webpageData = {
     title: title,
-    tags: tags.slice(0,8).map(tag => tag.trim().replace(/\s+/g, '-')),
     metaDescription: description.substring(0, 500),
     publishedOn: publishedOn,
     videoDuration: videoDuration
   }
 
+  if(tags) { //some youtube videos might not have tags defined
+    webpageData.tags = tags.slice(0,8).map(tag => tag.trim().replace(/\s+/g, '-'));
+  }
   return webpageData;
 }
 
