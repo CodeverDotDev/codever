@@ -347,23 +347,29 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   onClickMakePublic(checkboxValue) {
     if (checkboxValue) {
-      this.makePublic = true;
       const location: string = this.bookmarkForm.controls['location'].value;
-      this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(response => {
-        if (response) {
-          this.displayModal = 'block';
-          this.existingPublicBookmark = response;
-          this.bookmarkForm.patchValue({
-            shared: false
-          });
+      this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(bookmark => {
+          if (bookmark) {
+            this.displayModal = 'block';
+            this.existingPublicBookmark = bookmark;
+            this.bookmarkForm.patchValue({
+              shared: false
+            });
+          }
+        },
+        (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status === 404) {
+            this.makePublic = true;
+          }
         }
-      });
+      );
+    } else {
+      this.makePublic = false;
     }
   }
 
   onStarClick() {
     this.displayModal = 'none';
-    this.makePublic = false;
     if (this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
       this.existingPublicBookmark.starredBy.push(this.userId);
       this.rateBookmark(this.existingPublicBookmark);
@@ -386,7 +392,6 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   onCancelClick() {
     this.displayModal = 'none';
-    this.makePublic = false;
   }
 
   get tags() {
