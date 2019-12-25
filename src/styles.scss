@@ -16,6 +16,7 @@ pre {
 
 .navigation-space-buffer {
   margin-top: 1rem;
+  padding: 10px;
 }
 
 .description-chars-counter {
@@ -108,6 +109,11 @@ pre{
 .missing-category-bookmarks-message {
   margin: 2rem 0;
   font-size: 1.2rem;
+}
+
+
+.private-bookmark {
+  background-color: #fcf8f1;
 }
 
 @media (max-width: 1349px) {

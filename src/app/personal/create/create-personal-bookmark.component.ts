@@ -1,28 +1,28 @@
-import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Bookmark} from '../../core/model/bookmark';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MarkdownService} from '../markdown.service';
-import {KeycloakService} from 'keycloak-angular';
-import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
-import {Observable, throwError as observableThrowError} from 'rxjs';
-import {languages} from '../../shared/language-options';
-import {tagsValidator} from '../../shared/tags-validation.directive';
-import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
-import {PublicBookmarksService} from '../../public/bookmarks/public-bookmarks.service';
-import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
-import {RateBookmarkRequest, RatingActionType} from '../../core/model/rate-bookmark.request';
-import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {PersonalBookmarksService} from '../../core/personal-bookmarks.service';
-import {UserDataStore} from '../../core/user/userdata.store';
-import {Logger} from '../../core/logger.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ErrorService} from '../../core/error/error.service';
-import {UserDataService} from '../../core/user-data.service';
-import {UserInfoStore} from '../../core/user/user-info.store';
-import {SuggestedTagsStore} from '../../core/user/suggested-tags.store';
-import {WebpageData} from '../../core/model/webpage-data';
+import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Bookmark } from '../../core/model/bookmark';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MarkdownService } from '../markdown.service';
+import { KeycloakService } from 'keycloak-angular';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
+import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
+import { Observable, throwError as observableThrowError } from 'rxjs';
+import { languages } from '../../shared/language-options';
+import { tagsValidator } from '../../shared/tags-validation.directive';
+import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
+import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
+import { descriptionSizeValidator } from '../../shared/description-size-validation.directive';
+import { RateBookmarkRequest, RatingActionType } from '../../core/model/rate-bookmark.request';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
+import { UserDataStore } from '../../core/user/userdata.store';
+import { Logger } from '../../core/logger.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ErrorService } from '../../core/error/error.service';
+import { UserDataService } from '../../core/user-data.service';
+import { UserInfoStore } from '../../core/user/user-info.store';
+import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
+import { WebpageData } from '../../core/model/webpage-data';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -55,6 +55,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   filteredTags: Observable<any[]>;
 
   url; // value of "url" query parameter if present
+  desc; // value of "desc" query parameter if present
+  title; // value of "title" query parameter if present
 
   @ViewChild('tagInput', {static: false})
   tagInput: ElementRef;
@@ -93,17 +95,19 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   ngOnInit(): void {
     this.url = this.route.snapshot.queryParamMap.get('url');
+    this.desc = this.route.snapshot.queryParamMap.get('desc');
+    this.title = this.route.snapshot.queryParamMap.get('title');
     this.buildForm();
   }
 
   buildForm(): void {
     this.bookmarkForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: [this.title ? this.title : '', Validators.required],
       location: [this.url ? this.url : '', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
       githubURL: '',
-      description: ['', descriptionSizeValidator],
+      description: [this.desc ? this.desc : '', descriptionSizeValidator],
       shared: false,
       readLater: false,
       language: 'en',
@@ -121,7 +125,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   private onChanges() {
     this.bookmarkForm.get('location').valueChanges.pipe(
       debounceTime(1000),
-      distinctUntilChanged(), )
+      distinctUntilChanged(),)
       .subscribe(location => {
         this.verifyExistenceInPersonalBookmarks(location);
 
@@ -133,26 +137,27 @@ export class CreatePersonalBookmarkComponent implements OnInit {
         if (httpResponse.status === 200) {
           this.personalBookmarkPresent = true;
         } else {
-          this.getScrapeData(location);
+          this.getWebPageData(location);
         }
       },
       (errorResponse: HttpErrorResponse) => {
         if (errorResponse.status === 404) {
-          this.getScrapeData(location);
+          this.getWebPageData(location);
         }
       });
   }
 
-  private getScrapeData(location) {
+  private getWebPageData(location) {
     this.personalBookmarkPresent = false;
     const youtubeVideoId = this.getYoutubeVideoId(location);
     if (youtubeVideoId) {
       this.bookmarkForm.get('youtubeVideoId').patchValue(youtubeVideoId, {emitEvent: false});
       this.publicBookmarksService.getYoutubeVideoData(youtubeVideoId).subscribe((webpageData: WebpageData) => {
-          this.patchFormAttributesWithScrapedData(webpageData);
+          this.patchFormAttributesWithWebPageData(webpageData);
         },
         error => {
           console.error(`Problems when scraping data for youtube id ${youtubeVideoId}`, error);
+          // fallback to scrape from location
           this.updateFormWithScrapingDataFromLocation(location);
         });
     } else {
@@ -160,26 +165,30 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       if (stackoverflowQuestionId) {
         this.bookmarkForm.get('stackoverflowQuestionId').patchValue(stackoverflowQuestionId, {emitEvent: false});
         this.publicBookmarksService.getStackoverflowQuestionData(stackoverflowQuestionId).subscribe((webpageData: WebpageData) => {
-            this.patchFormAttributesWithScrapedData(webpageData);
+            this.patchFormAttributesWithWebPageData(webpageData);
           },
           error => {
             console.error(`Problems when scraping data for stackoverflow id ${stackoverflowQuestionId}`, error);
+            // fallback to scrape from location
             this.updateFormWithScrapingDataFromLocation(location);
           });
       } else {
+        // for everything else try to scrape the web page for the location
         this.updateFormWithScrapingDataFromLocation(location);
       }
     }
   }
 
-  private patchFormAttributesWithScrapedData(webpageData) {
+  private patchFormAttributesWithWebPageData(webpageData) {
     if (webpageData.title) {
       this.bookmarkForm.get('name').patchValue(webpageData.title, {emitEvent: false});
     }
     if (webpageData.publishedOn) {
       this.bookmarkForm.get('publishedOn').patchValue(webpageData.publishedOn, {emitEvent: false});
     }
-    if (webpageData.metaDescription) {
+    if (this.desc) {// use user selected text if present
+      this.bookmarkForm.get('description').patchValue(this.desc, {emitEvent: false});
+    } else if (webpageData.metaDescription) {
       this.bookmarkForm.get('description').patchValue(webpageData.metaDescription, {emitEvent: false});
     }
     if (webpageData.tags) {
@@ -194,12 +203,21 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   }
 
   private updateFormWithScrapingDataFromLocation(location) {
-    this.publicBookmarksService.getScrapingData(location).subscribe((webpageData: WebpageData) => {
-        this.patchFormAttributesWithScrapedData(webpageData);
-      },
-      error => {
-        console.error(`Problems when scraping data for locaation ${location}`, error);
-      });
+    if (this.desc) {
+      const webpageData: WebpageData = {
+        title: this.title,
+        metaDescription: this.desc
+      }
+      this.patchFormAttributesWithWebPageData(webpageData);
+    } else { // go try to scrape for description and title if user did not select any text
+      this.publicBookmarksService.getScrapingData(location).subscribe((webpageData: WebpageData) => {
+          this.patchFormAttributesWithWebPageData(webpageData);
+        },
+        error => {
+          console.error(`Problems when scraping data for location ${location}`, error);
+        });
+    }
+
   }
 
   private getYoutubeVideoId(bookmarkUrl): string {
@@ -329,23 +347,29 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   onClickMakePublic(checkboxValue) {
     if (checkboxValue) {
-      this.makePublic = true;
       const location: string = this.bookmarkForm.controls['location'].value;
-      this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(response => {
-        if (response) {
-          this.displayModal = 'block';
-          this.existingPublicBookmark = response;
-          this.bookmarkForm.patchValue({
-            shared: false
-          });
+      this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(bookmark => {
+          if (bookmark) {
+            this.displayModal = 'block';
+            this.existingPublicBookmark = bookmark;
+            this.bookmarkForm.patchValue({
+              shared: false
+            });
+          }
+        },
+        (errorResponse: HttpErrorResponse) => {
+          if (errorResponse.status === 404) {
+            this.makePublic = true;
+          }
         }
-      });
+      );
+    } else {
+      this.makePublic = false;
     }
   }
 
   onStarClick() {
     this.displayModal = 'none';
-    this.makePublic = false;
     if (this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
       this.existingPublicBookmark.starredBy.push(this.userId);
       this.rateBookmark(this.existingPublicBookmark);
@@ -368,7 +392,6 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   onCancelClick() {
     this.displayModal = 'none';
-    this.makePublic = false;
   }
 
   get tags() {
