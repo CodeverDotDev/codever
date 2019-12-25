@@ -55,6 +55,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   filteredTags: Observable<any[]>;
 
   url; // value of "url" query parameter if present
+  popup; // if present will go popup to the submitted url
   desc; // value of "desc" query parameter if present
   title; // value of "title" query parameter if present
 
@@ -97,6 +98,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     this.url = this.route.snapshot.queryParamMap.get('url');
     this.desc = this.route.snapshot.queryParamMap.get('desc');
     this.title = this.route.snapshot.queryParamMap.get('title');
+    this.popup = this.route.snapshot.queryParamMap.get('popup');
+
     this.buildForm();
   }
 
@@ -312,8 +315,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
     this.personalBookmarksService.createBookmark(this.userId, newBookmark)
       .subscribe(
-        res => {
-          const headers = res.headers;
+        response => {
+          const headers = response.headers;
           // get the bookmark id, which lies in the "location" response header
           const lastSlashIndex = headers.get('location').lastIndexOf('/');
           const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
@@ -329,7 +332,11 @@ export class CreatePersonalBookmarkComponent implements OnInit {
           }
 
           if (this.url) {
-            window.location.href = this.url;
+            if (this.popup) {
+               window.close();
+            } else {
+              window.location.href = this.url;
+            }
           } else {
             this.router.navigate(
               ['/'],
@@ -344,6 +351,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
         }
       );
   }
+
 
   onClickMakePublic(checkboxValue) {
     if (checkboxValue) {
