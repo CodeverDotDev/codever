@@ -8,17 +8,16 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>This URL is already public on Bookmarks.dev. You can save it as private and like it to help it get
-          exposure</p>
+        <p>This URL is already public on Bookmarks.dev. You can still save it as <strong>private</strong> and give it a thumbs up to promote it</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="onStarClick()">Star bookmark</button>
+        <button type="button" class="btn btn-primary" (click)="onStarClick()">Like bookmark <i class="far fa-thumbs-up fa-lg"></i></button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onCancelClick()">Cancel</button>
       </div>
     </div>
   </div>
 </div>
-<div class="col-md-8 col-md-offset-2 navigation-space-buffer">
+<div class="navigation-space-buffer" [ngClass]="{'private-bookmark': makePublic === false}">
   <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
     <div class="form-group">
       <label for="location">Location*</label>
