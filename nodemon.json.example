@@ -2,6 +2,7 @@
   "env": {
     "NODE_ENV": "development",
     "YOUTUBE_API_KEY" : "change-me-with-a-valid-youtube-api-key",
+    "STACK_EXCHANGE_API_KEY" : "change-me-with-a-valid-stackexchange-api-key",
     "MONGODB_BOOKMARKS_USERNAME": "bookmarks",
     "MONGODB_BOOKMARKS_PASSWORD": "secret",
     "MONGODB_BOOKMARKS_COLLECTION": "dev-bookmarks",
