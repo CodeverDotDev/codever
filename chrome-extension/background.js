@@ -1,7 +1,7 @@
-chrome.browserAction.onClicked.addListener(function(activeTab) {
-  var tabUrl = encodeURIComponent(activeTab.url);
-  var addNewBookmarkUrl = 'https://www.bookmarks.dev/personal/new?url=' + tabUrl;
+chrome.browserAction.onClicked.addListener(iconClicked);
 
-  //Update the url here.
-  chrome.tabs.update(activeTab.id, {url: addNewBookmarkUrl});
-});
+function iconClicked() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {action: "save-bookmark"});
+  });
+};
