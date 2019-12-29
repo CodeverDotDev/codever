@@ -17,7 +17,7 @@
       <li class="nav-item">
         <a
           class="nav-link"
-          href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;void(open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev','toolbar=no,width=1024,height=850'))})();">
+          href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''}let t=document.title;let w,h;if(innerWidth>1500){w=1210}else{w=(innerWidth*80)/100}if(innerHeight>1500){h=1210}else{h=(innerHeight*90)/100}let features=`toolbar=no,width=${w},height=${h},top=0,left=0`;open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();">
           <i class="fas fa-bookmark"></i> Bookmarklet
         </a>
       </li>
