@@ -1,24 +1,14 @@
 {
   "manifest_version": 2,
-  "name": "Save URL to bookmarks.dev",
+  "name": "Save to Bookmarks.dev",
   "version": "2.0.0",
-  "description": "Save the active tab as a bookmark to www.bookmarks.dev",
+  "description": "Save the active tab's URL as a bookmark to www.bookmarks.dev",
   "icons": {
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
   "permissions": [
     "activeTab"
-  ],
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content.js"
-      ]
-    }
   ],
   "background": {
     "scripts": [
