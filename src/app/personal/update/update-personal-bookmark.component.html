@@ -1,4 +1,4 @@
-<div class="col-md-8 col-md-offset-2 navigation-space-buffer">
+<div class="navigation-space-buffer">
   <div *ngIf="bookmark">
     <h3>Edit... {{bookmark.name}} </h3>
     <form #bookmarkForm="ngForm" (ngSubmit)="updateBookmark(bookmarkForm.value)">

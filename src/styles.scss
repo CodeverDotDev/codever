@@ -89,6 +89,16 @@ pre{
   background-color:#eff0f1;border-radius:3px
 }
 
+.note_normal {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #f6ce8e;
+  background-color: #f7f5e7;
+  margin: 10px;
+  padding: 10px;
+  font-style: italic;
+}
+
 //highlight
 .highlight {
   background: yellow;
@@ -269,6 +279,9 @@ pre{
   margin-bottom: 0.5rem;
 }
 
+.jumbotron {
+  padding: 2rem;
+}
 .card-body {
   padding: 0.8rem;
 }
