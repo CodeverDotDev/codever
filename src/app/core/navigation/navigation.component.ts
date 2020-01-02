@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
 import { environment } from '../../../environments/environment';
 import { KeycloakServiceWrapper } from '../keycloak-service-wrapper.service';
-import { KeycloakProfile } from 'keycloak-js';
 import { UserInfoOidc } from '../model/user-info.oidc';
 import { UserInfoStore } from '../user/user-info.store';
 import { Observable } from 'rxjs';

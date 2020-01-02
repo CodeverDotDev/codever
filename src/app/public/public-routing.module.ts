@@ -18,6 +18,31 @@ const publicBookmarksRoutes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'history',
+    redirectTo: '/?tab=history',
+    pathMatch: 'full'
+  },
+  {
+    path: 'pinned',
+    redirectTo: '/?tab=pinned',
+    pathMatch: 'full'
+  },
+  {
+    path: 'readlater',
+    redirectTo: '/?tab=read-later',
+    pathMatch: 'full'
+  },
+  {
+    path: 'favorites',
+    redirectTo: '/?tab=favorites',
+    pathMatch: 'full'
+  },
+  {
+    path: 'watched-tags',
+    redirectTo: '/?tab=watched-tags',
+    pathMatch: 'full'
+  },
+  {
     path: 'tagged/:tag',
     component: TagComponent
   },
