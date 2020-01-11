@@ -14,6 +14,7 @@ import { KeycloakServiceWrapper } from './keycloak-service-wrapper.service';
 import { UserInfoService } from './user/user-info.service';
 import { UserInfoStore } from './user/user-info.store';
 import { SuggestedTagsStore } from './user/suggested-tags.store';
+import { MyBookmarksStore } from './user/my-bookmarks.store';
 
 
 /**
@@ -42,6 +43,7 @@ import { SuggestedTagsStore } from './user/suggested-tags.store';
     PersonalBookmarksService,
     UserDataService,
     UserDataStore,
+    MyBookmarksStore,
     UserInfoService,
     UserInfoStore,
     SuggestedTagsStore,

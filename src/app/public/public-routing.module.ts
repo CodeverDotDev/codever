@@ -8,7 +8,7 @@ import {PrivacyPolicyComponent} from './privacy/privacy-policy.component';
 import {TermsOfServiceComponent} from './terms/terms-of-service.component';
 
 export function tagMatcher(url: UrlSegment[]) {
-    return url.length === 1 && url[0].path !== 'personal' ? ({consumed: url}) : null;
+    return url.length === 1 && url[0].path !== 'personal' && url[0].path !== 'dashboard' ? ({consumed: url}) : null;
 }
 
 const publicBookmarksRoutes: Routes = [

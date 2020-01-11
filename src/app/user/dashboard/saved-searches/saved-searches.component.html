@@ -1,0 +1,66 @@
+<h4 style="margin-top: 1rem">Used for searching in public bookmarks </h4>
+<div *ngIf="(userData$ | async)">
+  <span *ngFor="let mySearch of (userData$ | async).searches" class="my-saved-search">
+      <a *ngIf="mySearch.searchDomain === 'public'"
+        [routerLink]="['/search']"
+        [queryParams]="{q: mySearch.text, sd: 'public' }"
+        class="badge badge-secondary">
+    {{mySearch.text}}
+      </a>
+  </span>
+
+  <div class="clear"></div>
+</div>
+
+<hr/>
+
+<h4 style="margin-top: 1rem">Used for searching in my bookmarks and favorites</h4>
+<div *ngIf="(userData$ | async)">
+  <span *ngFor="let mySearch of (userData$ | async).searches" class="my-saved-search">
+      <a *ngIf="mySearch.searchDomain === 'personal' || !mySearch.searchDomain"
+         [routerLink]="['/search']"
+         [queryParams]="{q: mySearch.text, sd: 'private' }"
+         class="badge badge-secondary">
+    {{mySearch.text}}
+      </a>
+  </span>
+
+  <div class="clear"></div>
+</div>
+
+<hr/>
+
+
+<h5 class="text-danger" style="margin-top: 1rem">Danger zone</h5>
+<div class="border border-danger rounded-lg" style="padding: 1rem">
+  <h4>Delete <strong>saved searches</strong> </h4>
+  <div class="input-group search-component">
+    <div class="input-group-prepend">
+    <span class="input-group-text">
+      <i class="fa fa-search"></i>
+    </span>
+    </div>
+    <input
+      #tagSearchBox
+      type="text"
+      class="form-control"
+      [formControl]="selectSavedSearchControl"
+      placeholder="Start typing to select saved search"
+      [matAutocomplete]="auto"
+    >
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option}}
+      </mat-option>
+    </mat-autocomplete>
+    <div class="input-group-append">
+      <button class="btn btn-outline-danger"
+              type="button"
+              (click)="openDeleteDialog(tagSearchBox.value)"
+              [disabled]="!buttonEnabled"
+      >Delete <strong>saved search</strong>
+      </button>
+    </div>
+  </div>
+</div>
+
+

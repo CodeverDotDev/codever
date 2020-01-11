@@ -23,6 +23,7 @@ import { UserDataService } from '../../core/user-data.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 import { WebpageData } from '../../core/model/webpage-data';
+import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -69,6 +70,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     private userDataService: UserDataService,
     private markdownService: MarkdownService,
     private publicBookmarksStore: PublicBookmarksStore,
+    private myBookmarksStore: MyBookmarksStore,
     private personalBookmarksService: PersonalBookmarksService,
     private suggestedTagsStore: SuggestedTagsStore,
     private userInfoStore: UserInfoStore,
@@ -330,6 +332,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
           } else {
             this.userDataStore.addToHistory(newBookmark);
           }
+
+          this.myBookmarksStore.addToLastCreated(bookmark);
 
           if (this.url) {
             if (this.popup) {

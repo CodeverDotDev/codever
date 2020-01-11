@@ -64,7 +64,7 @@ export class BookmarksSearchComponent implements OnInit {
   searchDomain = 'public';
 
   searchDomains: SearchDomain[] = [
-    {value: 'personal', viewValue: 'Personal & Favorites'},
+    {value: 'personal', viewValue: 'Mine & Favorites'},
     {value: 'public', viewValue: 'Public bookmarks'}
   ];
 
@@ -193,7 +193,8 @@ export class BookmarksSearchComponent implements OnInit {
       text: this.searchText,
       createdAt: now,
       lastAccessedAt: now,
-      searchDomain: this.searchDomain
+      searchDomain: this.searchDomain,
+      count: 1
     }
     const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
     if (emptyUserData) {
@@ -212,6 +213,11 @@ export class BookmarksSearchComponent implements OnInit {
     const index = this._userData.searches.findIndex((search: Search) => search.text === selectedValue);
     const updatedSearch: Search = this._userData.searches.splice(index, 1)[0];
     updatedSearch.lastAccessedAt = new Date();
+    if (updatedSearch.count) {
+      updatedSearch.count++;
+    } else {
+      updatedSearch.count = 1;
+    }
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData(this._userData).subscribe();

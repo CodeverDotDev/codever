@@ -1,0 +1,24 @@
+<div class="btn-group my-bookmarks-btn-group" role="group" >
+  <button type="button" class="btn" title="Bookmarks you've created recently"
+          [ngClass]="{'btn-secondary': orderBy === 'LAST_CREATED', 'btn-outline-secondary': orderBy !== 'LAST_CREATED'}"
+          [disabled]="orderBy === 'LAST_CREATED'"
+          (click)="getLastCreatedBookmarks()">
+
+    Recently created
+  </button>
+  <button type="button" class="btn" title="Your bookmarks you've viewed the most"
+          [ngClass]="{'btn-secondary': orderBy === 'MOST_USED', 'btn-outline-secondary': orderBy !== 'MOST_USED'}"
+          [disabled]="orderBy === 'MOST_USED'"
+          (click)="getMostUsedBookmarks()">
+    Frequently visited
+  </button>
+  <!-- TODO remove when all private modus is implemented -->
+  <button type="button" class="btn" title="Your most liked public bookmarks"
+          [ngClass]="{'btn-secondary': orderBy === 'MOST_LIKES', 'btn-outline-secondary': orderBy !== 'MOST_LIKES'}"
+          [disabled]="orderBy === 'MOST_LIKES'"
+          (click)="getMostLikedBookmarks()">
+    Most likes
+  </button>
+</div>
+
+<app-async-bookmark-list [bookmarks]="userBookmarks$" [userData$]="userData$"></app-async-bookmark-list>
