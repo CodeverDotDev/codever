@@ -6,6 +6,7 @@ import { Bookmark } from '../../core/model/bookmark';
 
 import { environment } from 'environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable()
 export class PublicBookmarksService {
@@ -26,7 +27,8 @@ export class PublicBookmarksService {
     const params = new HttpParams()
       .set('q', searchText)
       .set('limit', limit.toString());
-    return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
+    return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params})
+      .pipe(shareReplay(1));
   }
 
   getScrapingData(location: string): Observable<WebpageData> {

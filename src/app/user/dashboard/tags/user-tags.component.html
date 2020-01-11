@@ -1,0 +1,60 @@
+<h4 style="margin-top: 1rem">Used for my public bookmarks</h4>
+<div *ngIf="(usedTags$ | async)">
+  <span *ngFor="let tag of (usedTags$ | async).public" class="my-used-tag">
+      <a
+        [routerLink]="['/search']"
+        [queryParams]="{q: '[' + tag.name + '] user:' + userId, sd: 'public'}"
+        class="badge badge-secondary">
+    {{tag.name}}
+      </a> <span class="tag-count">x {{tag.count}}</span>
+  </span>
+
+  <div class="clear"></div>
+</div>
+
+<hr/>
+
+<h4>Used for my private bookmarks</h4>
+<div *ngIf="(usedTags$ | async)">
+  <span *ngFor="let tag of (usedTags$ | async).private" class="my-used-tag">
+    <a [routerLink]="['/search']"
+       [queryParams]="{q: 'private:only [' + tag.name + ']', sd: 'personal'}"
+       class="badge badge-secondary">
+      {{tag.name}}
+    </a> <span class="tag-count">x {{tag.count}}</span>
+  </span>
+  <div class="clear"></div>
+</div>
+<h5 class="text-danger" style="margin-top: 1rem">Danger zone</h5>
+<div class="border border-danger rounded-lg" style="padding: 1rem">
+  <h4>Delete <strong>all private</strong> bookmarks by <strong>tag</strong></h4>
+  <div class="input-group search-component">
+    <div class="input-group-prepend">
+    <span class="input-group-text">
+      <i class="fa fa-search"></i>
+    </span>
+    </div>
+    <input
+      #tagSearchBox
+      type="text"
+      class="form-control"
+      [formControl]="selectTagControl"
+      placeholder="Start typing to select tag"
+      [matAutocomplete]="auto"
+    >
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayTag">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option.name}}
+      </mat-option>
+    </mat-autocomplete>
+    <div class="input-group-append">
+      <button class="btn btn-outline-danger"
+              type="button"
+              (click)="openDeleteDialog(tagSearchBox.value)"
+              [disabled]="!buttonEnabled"
+      >Delete <strong>ALL private</strong> bookmarks by selected tag
+      </button>
+    </div>
+  </div>
+</div>
+
+

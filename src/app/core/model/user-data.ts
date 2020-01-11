@@ -16,5 +16,6 @@ export interface Search {
   createdAt?: Date;
   lastAccessedAt?: Date;
   searchDomain?: string; // personal or public at the moment
+  count?: number; // number of times search was used
 }
 
