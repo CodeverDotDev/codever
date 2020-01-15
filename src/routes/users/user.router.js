@@ -49,6 +49,14 @@ usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, res
   response.send(bookmarks);
 });
 
+/* GET list of used tag for the user */
+usersRouter.get('/:userId/used-tags', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const bookmarks = await UserDataService.getUsedTags(request.params.userId);
+
+  response.send(bookmarks);
+});
+
 /* GET list of user's pinned bookmarks */
 usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);

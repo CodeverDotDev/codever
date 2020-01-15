@@ -63,11 +63,39 @@ let getBookmarkByLocation = async (userId, location) => {
   }
 };
 
-/* GET bookmark of user by location - currently there is a limit set to 100 */
-let getLatestBookmarks = async (userId) => {
+/* GET last accessed bookmarks of the - currently there is a limit set to 100 */
+let getLastAccessedBookmarks = async (userId) => {
   const bookmarks = await Bookmark.find({userId: userId})
     .sort({lastAccessedAt: -1})
     .limit(100);
+
+  return bookmarks;
+};
+
+/* GET last created bookmarks of the user - currently there is a limit set to 100 */
+let getLastCreatedBookmarks = async (userId) => {
+  const bookmarks = await Bookmark.find({userId: userId})
+    .sort({createdAt: -1})
+    .limit(30);
+
+  return bookmarks;
+};
+
+/* GET last created bookmarks of the user - currently there is a limit set to 100 */
+let getMostLikedBookmarks = async (userId) => {
+  const bookmarks = await Bookmark.find({userId: userId})
+    .sort({likes: -1})
+    .limit(30);
+
+  return bookmarks;
+};
+
+/* GET last created bookmarks of the user - currently there is a limit set to 100 */
+let getMostUsedBookmarks = async (userId) => {
+  const bookmarks = await Bookmark.find({ userId: userId, ownerVisitCount : { $exists: true }})
+    .select('+ownerVisitCount')
+    .sort({ownerVisitCount: -1})
+    .limit(30);
 
   return bookmarks;
 };
@@ -98,6 +126,21 @@ let updateBookmark = async (userId, bookmarkId, bookmark) => {
     return updatedBookmark;
   }
 };
+
+let increaseOwnerVisitCount = async (userId, bookmarkId) => {
+  const updated = await Bookmark.findOneAndUpdate(
+    {
+      _id: bookmarkId,
+      userId: userId
+    },
+    {
+      $inc: {ownerVisitCount: 1}
+    },
+    {new: true}
+  );
+  console.log(updated);
+}
+
 
 /*
 * DELETE bookmark for user
@@ -150,8 +193,12 @@ module.exports = {
   getTagsForUser: getTagsForUser,
   getBookmarkById: getBookmarkById,
   getBookmarkByLocation: getBookmarkByLocation,
-  getLatestBookmarks: getLatestBookmarks,
+  getLastAccessedBookmarks: getLastAccessedBookmarks,
+  getLastCreatedBookmarks: getLastCreatedBookmarks,
+  getMostUsedBookmarks: getMostUsedBookmarks,
+  getMostLikedBookmarks: getMostLikedBookmarks,
   updateBookmark: updateBookmark,
+  increaseOwnerVisitCount: increaseOwnerVisitCount,
   deleteBookmarkById: deleteBookmarkById,
   deleteBookmarkByLocation: deleteBookmarkByLocation
 };

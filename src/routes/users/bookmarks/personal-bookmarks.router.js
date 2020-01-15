@@ -66,7 +66,22 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
 
 /* GET bookmark of user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
-  const bookmarks = await PersonalBookmarksService.getLatestBookmarks(request.params.userId);
+  let bookmarks;
+  const orderBy = request.query.orderBy;
+  switch (orderBy) {
+    case 'MOST_LIKES':
+      bookmarks = await PersonalBookmarksService.getMostLikedBookmarks(request.params.userId);
+      break;
+    case 'LAST_CREATED':
+      bookmarks = await PersonalBookmarksService.getLastCreatedBookmarks(request.params.userId);
+      break;
+    case 'MOST_USED':
+      bookmarks = await PersonalBookmarksService.getMostUsedBookmarks(request.params.userId);
+      break;
+    default:
+      bookmarks = await PersonalBookmarksService.getLastAccessedBookmarks(request.params.userId);
+  }
+
   return response.send(bookmarks);
 });
 
@@ -103,6 +118,21 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
   const updatedBookmark = await PersonalBookmarksService.updateBookmark(userId, bookmarkId, bookmark);
 
   return response.status(HttpStatus.OK).send(updatedBookmark);
+});
+
+
+/**
+ * full UPDATE via PUT - that is the whole document is required and will be updated
+ * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
+ */
+personalBookmarksRouter.post('/:bookmarkId/owner-visits/inc', keycloak.protect(), async (request, response) => {
+
+  UserIdValidator.validateUserId(request);
+
+  const {userId, bookmarkId} = request.params;
+  await PersonalBookmarksService.increaseOwnerVisitCount(userId, bookmarkId);
+
+  return response.status(HttpStatus.OK).send();
 });
 
 /*
