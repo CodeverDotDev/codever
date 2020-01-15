@@ -39,7 +39,7 @@ router.get('/', async (request, response, next) => {
  * When no filter send latest public bookmarks
  */
 router.get('/', async (request, response) => {
-  const bookmarks = await PublicBookmarksService.getLatestBookmarks();
+  const bookmarks = await PublicBookmarksService.getLatestPublicBookmarks();
 
   return response.send(bookmarks);
 });

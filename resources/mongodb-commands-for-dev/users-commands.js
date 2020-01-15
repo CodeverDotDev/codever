@@ -9,19 +9,19 @@ db.users.update({},
       readLater: []
     }
   },
-  {multi:true}
+  {multi: true}
 );
 
 //remove a tag from all public bookmarks
 db.bookmarks.update(
-  { shared: true},
-  { $pull: { tags: "algoritmos" } },
-  { multi: true }
+  {shared: true},
+  {$pull: {tags: "algoritmos"}},
+  {multi: true}
 );
 
 
 //reset array for specific user
-db.users.update({userId : "55d49696-c07d-4b31-929c-29f7c8f1a10a"},
+db.users.update({userId: "55d49696-c07d-4b31-929c-29f7c8f1a10a"},
   {
     $set: {
       pinned: [],
@@ -48,4 +48,69 @@ db.bookmarks.find(
   }
 ).pretty();
 
+//get all tags of userId grouped by count desc
+db.bookmarks.aggregate([
+  //first stage - filter
+  {
+    $match: {
+      userId: "33d22b0e-9474-46b3-9da4-b1fb5d273abc"
+    },
+  },
 
+  //second stage - unwind tags
+  {$unwind: "$tags"},
+
+  //third stage - group
+  {
+    $group: {
+      _id: {
+        tag: '$tags'
+      },
+      count: {
+        $sum: 1
+      }
+    }
+  },
+
+  //fourth stage - order by count desc
+  {
+    $sort: {count: -1}
+  }
+
+]);
+
+//get all "public" tags for user
+db.bookmarks.aggregate([
+  //first stage - filter
+  {
+    $match: {
+      "$and": [
+        {
+          userId: "33d22b0e-9474-46b3-9da4-b1fb5d273abc"
+        },
+        {shared: true}
+      ]
+    },
+  },
+
+  //second stage - unwind tags
+  {$unwind: "$tags"},
+
+  //third stage - group
+  {
+    $group: {
+      _id: {
+        tag: '$tags'
+      },
+      count: {
+        $sum: 1
+      }
+    }
+  },
+
+  //fourth stage - order by count desc
+  {
+    $sort: {count: -1}
+  }
+
+]);
