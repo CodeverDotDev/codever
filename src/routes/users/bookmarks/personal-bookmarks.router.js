@@ -38,7 +38,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 
 });
 
-/* GET bookmark of user  by id*/
+/* GET bookmarks of user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, next) => {
   UserIdValidator.validateUserId(request);
 
@@ -155,11 +155,26 @@ personalBookmarksRouter.delete('/', keycloak.protect(), async (request, response
   const location = request.query.location;
   if (location) {
     await PersonalBookmarksService.deleteBookmarkByLocation(request.params.userId, location);
+    return response.status(HttpStatus.NO_CONTENT).send();
   } else {
     next();
   }
 
-  return response.status(HttpStatus.NO_CONTENT).send();
+});
+
+/*
+* DELETE private bookmarks for user and tag
+*/
+personalBookmarksRouter.delete('/', keycloak.protect(), async (request, response, next) => {
+  UserIdValidator.validateIsAdminOrUserId(request);
+
+  const {tag, type} = request.query;
+  if (tag && type === 'private') {
+    await PersonalBookmarksService.deletePrivateBookmarksByTag(request.params.userId, tag);
+    return response.status(HttpStatus.NO_CONTENT).send();
+  } else {
+    next();
+  }
 });
 
 personalBookmarksRouter.delete('/', keycloak.protect(), async () => {
