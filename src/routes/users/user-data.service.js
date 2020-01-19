@@ -151,13 +151,57 @@ let getWatchedTags = async function (userId) {
   }
 }
 
-let getUsedTags = async function (userId) {
+let getUsedTagsForPublicBookmarks = async function (userId) {
 
   const aggregatedTags = await Bookmark.aggregate([
     //first stage - filter
     {
       $match: {
-        userId: userId
+        userId: userId,
+        shared: true,
+      },
+    },
+
+    //second stage - unwind tags
+    {$unwind: "$tags"},
+
+    //third stage - group
+    {
+      $group: {
+        _id: {
+          tag: '$tags'
+        },
+        count: {
+          $sum: 1
+        }
+      }
+    },
+
+    //fourth stage - order by count desc
+    {
+      $sort: {count: -1}
+    }
+
+  ]);
+
+  const usedTags = aggregatedTags.map(aggregatedTag => {
+    return {
+      name: aggregatedTag._id.tag,
+      count: aggregatedTag.count
+    }
+  });
+
+  return usedTags;
+}
+
+let getUsedTagsForPrivateBookmarks = async function (userId) {
+
+  const aggregatedTags = await Bookmark.aggregate([
+    //first stage - filter
+    {
+      $match: {
+        userId: userId,
+        shared: false
       },
     },
 
@@ -331,7 +375,8 @@ module.exports = {
   getLaterReads: getLaterReads,
   getLikedBookmarks: getLikedBookmarks,
   getWatchedTags: getWatchedTags,
-  getUsedTags: getUsedTags,
+  getUsedTagsForPublicBookmarks: getUsedTagsForPublicBookmarks,
+  getUsedTagsForPrivateBookmarks: getUsedTagsForPrivateBookmarks,
   getPinnedBookmarks: getPinnedBookmarks,
   getFavoriteBookmarks: getFavoriteBookmarks,
   getBookmarksFromHistory: getBookmarksFromHistory,
