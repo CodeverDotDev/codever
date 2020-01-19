@@ -186,7 +186,7 @@ describe('Personal Bookmarks tests', function () {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const textSnippet = "long text in the making";
       let longText = textSnippet;
-      for (var i = 0; i < 100; i++) {
+      for ( var i = 0; i < 100; i++ ) {
         longText += textSnippet;
       }
       invalidBookmark.description = longText;
@@ -205,7 +205,7 @@ describe('Personal Bookmarks tests', function () {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const line = "oneline\n";
       let longText = line;
-      for (var i = 0; i < 101; i++) {
+      for ( var i = 0; i < 101; i++ ) {
         longText += line;
       }
       invalidBookmark.description = longText;
@@ -358,7 +358,7 @@ describe('Personal Bookmarks tests', function () {
         let bookmarkWithTooBigDescription = JSON.parse(JSON.stringify(createdBookmark));
         const textSnippet = "long text in the making";
         let longText = textSnippet;
-        for (var i = 0; i < 100; i++) {
+        for ( var i = 0; i < 100; i++ ) {
           longText += textSnippet;
         }
         bookmarkWithTooBigDescription.description = longText;
@@ -376,7 +376,7 @@ describe('Personal Bookmarks tests', function () {
         let bookmarkWithDescriptionWithTooManyLines = JSON.parse(JSON.stringify(createdBookmark));
         const line = "oneline\n";
         let longText = line;
-        for (var i = 0; i < 101; i++) {
+        for ( var i = 0; i < 101; i++ ) {
           longText += line;
         }
         bookmarkWithDescriptionWithTooManyLines.description = longText;
@@ -471,7 +471,7 @@ describe('Personal Bookmarks tests', function () {
           .set('Authorization', bearerToken)
           .send(bookmarkExample);
 
-        if (response.statusCode !== HttpStatus.CREATED) {
+        if ( response.statusCode !== HttpStatus.CREATED ) {
           throw new Error("Sample bookmark not properly created");
         }
         const locationHeaderValue = response.header['location']
@@ -500,7 +500,7 @@ describe('Personal Bookmarks tests', function () {
         .set('Authorization', bearerToken)
         .send(userData);
 
-      if (createUserDataResponse.statusCode !== HttpStatus.CREATED) {
+      if ( createUserDataResponse.statusCode !== HttpStatus.CREATED ) {
         throw new Error("Sample bookmark not properly created");
       }
 
@@ -531,52 +531,46 @@ describe('Personal Bookmarks tests', function () {
 
     });
 
-    it('should find bookmark with very-special-tag-personal-bookmarks in query param only as tag', function (done) {
-      request(app)
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param only as tag', async function () {
+      const response = await request(app)
         .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
         .query({q: `[${verySpecialTag}]`})
-        .query({limit: 10})
-        .end(function (err, response) {
-          expect(response.statusCode).to.equal(HttpStatus.OK);
-          const filteredBookmarks = response.body;
-          const foundBookmark = filteredBookmarks[0];
-          expect(filteredBookmarks.length).to.equal(1);
-          expect(foundBookmark.name).to.equal(verySpecialTitle);
-          done();
-        });
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
 
-    it('should find bookmark with very-special-tag-personal-bookmarks in query param as tag and word', function (done) {
-      request(app)
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param as tag and word', async function () {
+      const response = await request(app)
         .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
         .query({q: `${verySpecialTag} [${verySpecialTag}]`})
-        .query({limit: 10})
-        .end(function (err, response) {
-          expect(response.statusCode).to.equal(HttpStatus.OK);
-          const filteredBookmarks = response.body;
-          const foundBookmark = filteredBookmarks[0];
-          expect(filteredBookmarks.length).to.equal(1);
-          expect(foundBookmark.name).to.equal(verySpecialTitle);
-          done();
-        });
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
 
-    it(`should find bookmark with special title - ${verySpecialTitle} `, function (done) {
-      request(app)
+    it(`should find bookmark with special title - ${verySpecialTitle} `, async function () {
+      const response = await request(app)
         .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
         .query({q: `${verySpecialTitle}`})
-        .query({limit: 10})
-        .end(function (err, response) {
-          expect(response.statusCode).to.equal(HttpStatus.OK);
-          const filteredBookmarks = response.body;
-          const foundBookmark = filteredBookmarks[0];
-          expect(filteredBookmarks.length).to.equal(1);
-          expect(foundBookmark.name).to.equal(verySpecialTitle);
-          done();
-        });
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
 
     it(`should find bookmark with special source code url title - ${verySpecialSourceCodeUrl} `, async function () {

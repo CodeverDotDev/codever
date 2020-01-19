@@ -1,22 +1,38 @@
-
 const Bookmark = require('../model/bookmark');
 const User = require('../model/user');
 const escapeStringRegexp = require('escape-string-regexp');
-const constants = require('./constants');
 
-let findBookmarks = async function (query, limit, domain, userId) {
+let findPersonalBookmarks = async function (query, limit, userId) {
   //split in text and tags
   const searchedTermsAndTags = splitSearchQuery(query);
   const searchedTerms = searchedTermsAndTags[0];
   const searchedTags = searchedTermsAndTags[1];
   let bookmarks = [];
 
-  if (searchedTerms.length > 0 && searchedTags.length > 0) {
-    bookmarks = await getBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit, domain, userId);
-  } else if (searchedTerms.length > 0) {
-    bookmarks = await getBookmarksForSearchedTerms(searchedTerms, limit, domain, userId);
+  if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
+    bookmarks = await getPersonalBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit, userId);
+  } else if ( searchedTerms.length > 0 ) {
+    bookmarks = await getPersonalBookmarksForSearchedTerms(searchedTerms, limit, userId);
   } else {
-    bookmarks = await getBookmarksForSearchedTags(searchedTags, limit, domain, userId);
+    bookmarks = await getPersonalBookmarksForSearchedTags(searchedTags, limit, userId);
+  }
+
+  return bookmarks;
+}
+
+let findPublicBookmarks = async function (query, limit) {
+  //split in text and tags
+  const searchedTermsAndTags = splitSearchQuery(query);
+  const searchedTerms = searchedTermsAndTags[0];
+  const searchedTags = searchedTermsAndTags[1];
+  let bookmarks = [];
+
+  if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
+    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit);
+  } else if ( searchedTerms.length > 0 ) {
+    bookmarks = await getPublicBookmarksForSearchedTerms(searchedTerms, limit);
+  } else {
+    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, limit);
   }
 
   return bookmarks;
@@ -35,11 +51,11 @@ let splitSearchQuery = function (query) {
   let isInsideTag = false;
 
 
-  for (let i = 0; i < query.length; i++) {
+  for ( let i = 0; i < query.length; i++ ) {
     const currentCharacter = query[i];
-    if (currentCharacter === ' ') {
-      if (!isInsideTag) {
-        if (!isInsideTerm) {
+    if ( currentCharacter === ' ' ) {
+      if ( !isInsideTag ) {
+        if ( !isInsideTerm ) {
           continue;
         } else {
           terms.push(term);
@@ -49,21 +65,21 @@ let splitSearchQuery = function (query) {
       } else {
         tag += ' ';
       }
-    } else if (currentCharacter === '[') {
-      if (isInsideTag) {
+    } else if ( currentCharacter === '[' ) {
+      if ( isInsideTag ) {
         tags.push(tag.trim());
         tag = '';
       } else {
         isInsideTag = true;
       }
-    } else if (currentCharacter === ']') {
-      if (isInsideTag) {
+    } else if ( currentCharacter === ']' ) {
+      if ( isInsideTag ) {
         isInsideTag = false;
         tags.push(tag.trim());
         tag = '';
       }
     } else {
-      if (isInsideTag) {
+      if ( isInsideTag ) {
         tag += currentCharacter;
       } else {
         isInsideTerm = true;
@@ -72,11 +88,11 @@ let splitSearchQuery = function (query) {
     }
   }
 
-  if (tag.length > 0) {
+  if ( tag.length > 0 ) {
     tags.push(tag.trim());
   }
 
-  if (term.length > 0) {
+  if ( term.length > 0 ) {
     terms.push(term);
   }
 
@@ -86,8 +102,10 @@ let splitSearchQuery = function (query) {
   return result;
 }
 
-let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, domain, userId) {
+
+let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit) {
   let filter = {
+    shared: true,
     tags:
       {
         $all: searchedTags
@@ -96,19 +114,6 @@ let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, l
       {
         $search: searchedTerms.join(' ')
       }
-  }
-  if (domain === constants.DOMAIN_PUBLIC) {
-    filter.shared = true;
-  }
-
-  if (domain === constants.DOMAIN_PERSONAL) {
-    const userData = await User.findOne({
-      userId: userId
-    });
-    filter.$or = [
-      {userId: userId},
-      {"_id": {$in: userData.favorites}}
-    ]
   }
 
   let bookmarks = await Bookmark.find(
@@ -122,7 +127,7 @@ let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, l
     .lean()
     .exec();
 
-  for (const term of searchedTerms) {
+  for ( const term of searchedTerms ) {
     bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
   }
   bookmarks = bookmarks.slice(0, limit);
@@ -130,23 +135,13 @@ let getBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, l
   return bookmarks;
 }
 
-let getBookmarksForSearchedTerms = async function (searchedTerms, limit, domain, userId) {
+let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit) {
 
   const termsJoined = searchedTerms.join(' ');
   const termsQuery = escapeStringRegexp(termsJoined);
   let filter = {
+    shared: true,
     $text: {$search: termsQuery}
-  }
-  if (domain === constants.DOMAIN_PUBLIC) {
-    filter.shared = true;
-  }
-
-  if (domain === constants.DOMAIN_PERSONAL) {
-    const userData = await User.findOne({userId: userId});
-    filter.$or = [
-      {userId: userId},
-      {"_id": {$in: userData.favorites}}
-    ]
   }
 
   let bookmarks = await Bookmark.find(
@@ -160,7 +155,7 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, limit, domain,
     .lean()
     .exec();
 
-  for (const term of searchedTerms) {
+  for ( const term of searchedTerms ) {
     bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
   }
   bookmarks = bookmarks.slice(0, limit);
@@ -168,25 +163,13 @@ let getBookmarksForSearchedTerms = async function (searchedTerms, limit, domain,
   return bookmarks;
 }
 
-let getBookmarksForSearchedTags = async function (searchedTags, limit, domain, userId) {
+let getPublicBookmarksForSearchedTags = async function (searchedTags, limit) {
   let filter = {
+    shared: true,
     tags:
       {
         $all: searchedTags
       }
-  }
-  if (domain === constants.DOMAIN_PUBLIC) {
-    filter.shared = true;
-  }
-
-  if (domain === constants.DOMAIN_PERSONAL) {
-    const userData = await User.findOne({
-      userId: userId
-    });
-    filter.$or = [
-      {userId: userId},
-      {"_id": {$in: userData.favorites}}
-    ]
   }
 
   let bookmarks = await Bookmark.find(filter)
@@ -198,6 +181,106 @@ let getBookmarksForSearchedTags = async function (searchedTags, limit, domain, u
   return bookmarks;
 }
 
+let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, userId) {
+  let filter = {
+    tags:
+      {
+        $all: searchedTags
+      },
+    $text:
+      {
+        $search: searchedTerms.join(' ')
+      }
+  }
+
+  const userData = await User.findOne({
+    userId: userId
+  });
+  filter.$or = [
+    {userId: userId},
+    {"_id": {$in: userData.favorites}}
+  ]
+
+  let bookmarks = await Bookmark.find(
+    filter,
+    {
+      score: {$meta: "textScore"}
+    }
+  )
+  //.sort({createdAt: -1})
+    .sort({score: {$meta: "textScore"}})
+    .lean()
+    .exec();
+
+  for ( const term of searchedTerms ) {
+    bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
+  }
+  bookmarks = bookmarks.slice(0, limit);
+
+  return bookmarks;
+}
+
+
+let getPersonalBookmarksForSearchedTerms = async function (searchedTerms, limit, userId) {
+
+  const termsJoined = searchedTerms.join(' ');
+  const termsQuery = escapeStringRegexp(termsJoined);
+  let filter = {
+    $text: {$search: termsQuery}
+  }
+
+  const userData = await User.findOne({userId: userId});
+  filter.$or = [
+    {userId: userId},
+    {"_id": {$in: userData.favorites}}
+  ]
+
+  let bookmarks = await Bookmark.find(
+    filter,
+    {
+      score: {$meta: "textScore"}
+    }
+  )
+  //.sort({createdAt: -1}) //let's give it a try with text score
+    .sort({score: {$meta: "textScore"}})
+    .lean()
+    .exec();
+
+  for ( const term of searchedTerms ) {
+    bookmarks = bookmarks.filter(x => bookmarkContainsSearchedTerm(x, term.trim()));
+  }
+  bookmarks = bookmarks.slice(0, limit);
+
+  return bookmarks;
+}
+
+
+let getPersonalBookmarksForSearchedTags = async function (searchedTags, limit, userId) {
+  let filter = {
+    tags:
+      {
+        $all: searchedTags
+      }
+  }
+
+  const userData = await User.findOne({
+    userId: userId
+  });
+  filter.$or = [
+    {userId: userId},
+    {"_id": {$in: userData.favorites}}
+  ]
+
+  let bookmarks = await Bookmark.find(filter)
+    .sort({createdAt: -1})
+    .limit(limit)
+    .lean()
+    .exec();
+
+  return bookmarks;
+}
+
+
 let bookmarkContainsSearchedTerm = function (bookmark, searchedTerm) {
   let result = false;
   // const escapedSearchPattern = '\\b' + this.escapeRegExp(searchedTerm.toLowerCase()) + '\\b'; word boundary was not enough, especially for special characters which can happen in coding
@@ -205,7 +288,7 @@ let bookmarkContainsSearchedTerm = function (bookmark, searchedTerm) {
   const separatingChars = '\\s\\.,;#\\-\\/_\\[\\]\\(\\)\\*\\+';
   const escapedSearchPattern = `(^|[${separatingChars}])(${escapeRegExp(searchedTerm.toLowerCase())})(?=$|[${separatingChars}])`;
   const pattern = new RegExp(escapedSearchPattern);
-  if ((bookmark.name && pattern.test(bookmark.name.toLowerCase()))
+  if ( (bookmark.name && pattern.test(bookmark.name.toLowerCase()))
     || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
     || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
     || (bookmark.githubURL && pattern.test(bookmark.githubURL.toLowerCase()))
@@ -213,12 +296,12 @@ let bookmarkContainsSearchedTerm = function (bookmark, searchedTerm) {
     result = true;
   }
 
-  if (result) {
+  if ( result ) {
     return true;
   } else {
     // if not found already look through the tags also
     bookmark.tags.forEach(tag => {
-      if (pattern.test(tag.toLowerCase())) {
+      if ( pattern.test(tag.toLowerCase()) ) {
         result = true;
       }
     });
@@ -253,5 +336,6 @@ function escapeRegExp(str) {
 }
 
 module.exports = {
-  findBookmarks: findBookmarks
+  findPersonalBookmarks: findPersonalBookmarks,
+  findPublicBookmarks: findPublicBookmarks
 }
