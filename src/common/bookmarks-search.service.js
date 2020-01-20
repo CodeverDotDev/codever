@@ -5,16 +5,23 @@ const escapeStringRegexp = require('escape-string-regexp');
 let findPersonalBookmarks = async function (query, limit, userId) {
   //split in text and tags
   const searchedTermsAndTags = splitSearchQuery(query);
-  const searchedTerms = searchedTermsAndTags[0];
-  const searchedTags = searchedTermsAndTags[1];
+  let searchedTerms = searchedTermsAndTags.terms;
+  const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
 
+  let privateOnly = false;
+  const privateOnlyIndex = searchedTerms && searchedTerms.indexOf('private:only');
+  if ( privateOnlyIndex > -1 ) {
+    privateOnly = true;
+    searchedTerms.splice(privateOnlyIndex, 1);
+  }
+
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit, userId);
+    bookmarks = await getPersonalBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit, userId, privateOnly);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForSearchedTerms(searchedTerms, limit, userId);
+    bookmarks = await getPersonalBookmarksForSearchedTerms(searchedTerms, limit, userId, privateOnly);
   } else {
-    bookmarks = await getPersonalBookmarksForSearchedTags(searchedTags, limit, userId);
+    bookmarks = await getPersonalBookmarksForSearchedTags(searchedTags, limit, userId, privateOnly);
   }
 
   return bookmarks;
@@ -23,16 +30,27 @@ let findPersonalBookmarks = async function (query, limit, userId) {
 let findPublicBookmarks = async function (query, limit) {
   //split in text and tags
   const searchedTermsAndTags = splitSearchQuery(query);
-  const searchedTerms = searchedTermsAndTags[0];
-  const searchedTags = searchedTermsAndTags[1];
+  const searchedTerms = searchedTermsAndTags.terms;
+  const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
+  const regex = /user:\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
-  if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit);
-  } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTerms(searchedTerms, limit);
+  let userId = null;
+  let filteredTerms = [];
+  for(let i = 0; i < searchedTerms.length; i++){
+    if(searchedTerms[i].match(regex)){
+      userId = searchedTerms[i].split(':')[1];
+    } else {
+      filteredTerms.push(searchedTerms[i]);
+    }
+  }
+
+  if ( filteredTerms.length > 0 && searchedTags.length > 0 ) {
+    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, filteredTerms, limit, userId);
+  } else if ( filteredTerms.length > 0 ) {
+    bookmarks = await getPublicBookmarksForSearchedTerms(filteredTerms, limit, userId);
   } else {
-    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, limit);
+    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, limit, userId);
   }
 
   return bookmarks;
@@ -40,7 +58,7 @@ let findPublicBookmarks = async function (query, limit) {
 
 let splitSearchQuery = function (query) {
 
-  const result = [[], []];
+  const result = {};
 
   const terms = [];
   let term = '';
@@ -96,14 +114,14 @@ let splitSearchQuery = function (query) {
     terms.push(term);
   }
 
-  result[0] = terms;
-  result[1] = tags;
+  result.terms = terms;
+  result.tags = tags;
 
   return result;
 }
 
 
-let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit) {
+let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, userId) {
   let filter = {
     shared: true,
     tags:
@@ -114,6 +132,10 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTe
       {
         $search: searchedTerms.join(' ')
       }
+  }
+
+  if ( userId ) {
+    filter.userId = userId;
   }
 
   let bookmarks = await Bookmark.find(
@@ -135,13 +157,17 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTe
   return bookmarks;
 }
 
-let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit) {
+let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit, userId) {
 
   const termsJoined = searchedTerms.join(' ');
   const termsQuery = escapeStringRegexp(termsJoined);
   let filter = {
     shared: true,
     $text: {$search: termsQuery}
+  }
+
+  if ( userId ) {
+    filter.userId = userId;
   }
 
   let bookmarks = await Bookmark.find(
@@ -163,13 +189,17 @@ let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit) {
   return bookmarks;
 }
 
-let getPublicBookmarksForSearchedTags = async function (searchedTags, limit) {
+let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, userId) {
   let filter = {
     shared: true,
     tags:
       {
         $all: searchedTags
       }
+  }
+
+  if ( userId ) {
+    filter.userId = userId;
   }
 
   let bookmarks = await Bookmark.find(filter)
@@ -181,7 +211,7 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, limit) {
   return bookmarks;
 }
 
-let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, userId) {
+let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, userId, privateOnly) {
   let filter = {
     tags:
       {
@@ -191,6 +221,10 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searched
       {
         $search: searchedTerms.join(' ')
       }
+  }
+
+  if ( privateOnly ) {
+    filter.shared = false;
   }
 
   const userData = await User.findOne({
@@ -221,14 +255,16 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searched
 }
 
 
-let getPersonalBookmarksForSearchedTerms = async function (searchedTerms, limit, userId) {
+let getPersonalBookmarksForSearchedTerms = async function (searchedTerms, limit, userId, privateOnly) {
 
   const termsJoined = searchedTerms.join(' ');
   const termsQuery = escapeStringRegexp(termsJoined);
   let filter = {
     $text: {$search: termsQuery}
   }
-
+  if ( privateOnly ) {
+    filter.shared = false;
+  }
   const userData = await User.findOne({userId: userId});
   filter.$or = [
     {userId: userId},
@@ -255,14 +291,16 @@ let getPersonalBookmarksForSearchedTerms = async function (searchedTerms, limit,
 }
 
 
-let getPersonalBookmarksForSearchedTags = async function (searchedTags, limit, userId) {
+let getPersonalBookmarksForSearchedTags = async function (searchedTags, limit, userId, privateOnly) {
   let filter = {
     tags:
       {
         $all: searchedTags
       }
   }
-
+  if ( privateOnly ) {
+    filter.shared = false;
+  }
   const userData = await User.findOne({
     userId: userId
   });
