@@ -453,7 +453,7 @@ describe('Personal Bookmarks tests', function () {
         "description": "This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark",
         "descriptionHtml": "<p>This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark</p>",
         "userId": testUserId,
-        "shared": true,
+        "shared": false,
         "starredBy": [],
         "likes": 0,
         "lastAccessedAt": null
@@ -520,7 +520,23 @@ describe('Personal Bookmarks tests', function () {
       const response = await request(app)
         .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
-        .query({q: "very-special-tag-personal-bookmarks"})
+        .query({q: verySpecialTag})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+
+    });
+
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param as word - private:only', async function () {
+      const queryText=`${verySpecialTag} private:only`;
+      const response = await request(app)
+        .get(basePathApiPersonalUsersBookmarks)
+        .set('Authorization', bearerToken)
+        .query({q: queryText})
         .query({limit: 10});
 
       expect(response.statusCode).to.equal(HttpStatus.OK);
@@ -545,11 +561,41 @@ describe('Personal Bookmarks tests', function () {
       expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
 
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param only as tag - private:only', async function () {
+      const queryText = `[${verySpecialTag}] private:only`;
+      const response = await request(app)
+        .get(basePathApiPersonalUsersBookmarks)
+        .set('Authorization', bearerToken)
+        .query({q: queryText})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+    });
+
     it('should find bookmark with very-special-tag-personal-bookmarks in query param as tag and word', async function () {
       const response = await request(app)
         .get(basePathApiPersonalUsersBookmarks)
         .set('Authorization', bearerToken)
         .query({q: `${verySpecialTag} [${verySpecialTag}]`})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+    });
+
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param as tag and word - private:only', async function () {
+      const queryText = `${verySpecialTag} [${verySpecialTag}] private:only`;
+      const response = await request(app)
+        .get(basePathApiPersonalUsersBookmarks)
+        .set('Authorization', bearerToken)
+        .query({q: queryText})
         .query({limit: 10});
 
       expect(response.statusCode).to.equal(HttpStatus.OK);
