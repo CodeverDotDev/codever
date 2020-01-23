@@ -17,22 +17,8 @@ export class UserInfoStore {
   constructor(private userService: UserDataService,
               private logger: Logger,
               private errorService: ErrorService,
-              // private keycloakService: KeycloakService,
               private userInfoService: UserInfoService,
   ) {
-/*    this.keycloakService.keycloakEvents$.subscribe(keycloakEvent => {
-      if (keycloakEvent.type === KeycloakEventType.OnAuthLogout) {
-        this.userInfoLoaded = false;
-      }
-    });
-
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userInfoService.getUserInfo().subscribe(userInfo => {
-          this.loadInitialData();
-        });
-      }
-    });*/
   }
 
   private loadInitialData() {
@@ -44,7 +30,7 @@ export class UserInfoStore {
   }
 
   public getUserInfo$(): Observable<UserInfoOidc> {
-    if ( !this.userInfoLoaded ) {
+    if (!this.userInfoLoaded) {
       this.loadInitialData();
       this.userInfoLoaded = true;
     }

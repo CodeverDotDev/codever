@@ -13,6 +13,7 @@ import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
 import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
 import { UserInfoStore } from '../core/user/user-info.store';
 import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
+import { MyBookmarksStore } from '../core/user/my-bookmarks.store';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -21,8 +22,6 @@ import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/pla
 })
 export class AsyncBookmarkListComponent implements OnInit {
 
-  @Input()
-  userId: string;
 
   @Input()
   bookmarks: Observable<Bookmark[]>;
@@ -38,14 +37,16 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   private router: Router;
   private userDataStore: UserDataStore;
+  private myBookmarksStore: MyBookmarksStore;
   private publicBookmarksStore: PublicBookmarksStore;
   private personalBookmarksService: PersonalBookmarksService;
   private keycloakService: KeycloakService;
   private userInfoStore: UserInfoStore;
 
+  userId: string;
   userIsLoggedIn = false;
 
-  private _shownSize = 0;
+  private _shownSize = 30; // default value if not provided as input
 
   public innerWidth: any;
 
@@ -69,6 +70,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
     this.userInfoStore = <UserInfoStore>this.injector.get(UserInfoStore);
     this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
+    this.myBookmarksStore = <MyBookmarksStore>this.injector.get(MyBookmarksStore);
   }
 
   ngOnInit(): void {
@@ -76,6 +78,9 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
+        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+          this.userId = userInfo.sub;
+        });
       }
     });
   }
@@ -113,6 +118,11 @@ export class AsyncBookmarkListComponent implements OnInit {
   onBookmarkLinkClick(bookmark: Bookmark) {
     if (this.userIsLoggedIn) {
       this.userDataStore.addToHistory(bookmark);
+      if (this.userId === bookmark.userId) {
+        this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe(response => {
+          console.log('Owner visits count increased');
+        });
+      }
     }
   }
 
@@ -186,9 +196,9 @@ export class AsyncBookmarkListComponent implements OnInit {
 
     let relativeWidth = (this.innerWidth * 80) / 100; // take up to 80% of the screen size
     if (this.innerWidth > 1500) {
-      relativeWidth = (1500 * 80 ) / 100;
+      relativeWidth = (1500 * 80) / 100;
     } else {
-      relativeWidth = (this.innerWidth * 80 ) / 100;
+      relativeWidth = (this.innerWidth * 80) / 100;
     }
 
     const relativeHeight = (relativeWidth * 9) / 16 + 120; // 16:9 to which we add 120 px for the dialog action buttons ("close")
@@ -229,6 +239,7 @@ export class AsyncBookmarkListComponent implements OnInit {
       this.bookmarkDeleted.emit(true);
       this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
       this.userDataStore.removeFromStoresAtDeletion(bookmark);
+      this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
     });
   }
 
