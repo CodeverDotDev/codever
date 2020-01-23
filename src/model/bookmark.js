@@ -16,6 +16,7 @@ const bookmarkSchema = new Schema({
     starredBy: [String],
     lastAccessedAt: Date,
     likes: Number,
+    ownerVisitCount: {type:Number, select: false},
     youtubeVideoId: {type:String, required: false},
     stackoverflowQuestionId: {type:String, required: false},
 },
