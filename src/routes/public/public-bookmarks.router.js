@@ -14,7 +14,7 @@ router.get('/', async (request, response, next) => {
   const searchText = request.query.q;
   const limit = parseInt(request.query.limit);
   if (searchText) {
-    const bookmarks = await bookmarksSearchService.findBookmarks(searchText, limit, constants.DOMAIN_PUBLIC, null);
+    const bookmarks = await bookmarksSearchService.findPublicBookmarks(searchText, limit);
     response.send(bookmarks);
   } else {
     next()
@@ -39,7 +39,7 @@ router.get('/', async (request, response, next) => {
  * When no filter send latest public bookmarks
  */
 router.get('/', async (request, response) => {
-  const bookmarks = await PublicBookmarksService.getLatestBookmarks();
+  const bookmarks = await PublicBookmarksService.getLatestPublicBookmarks();
 
   return response.send(bookmarks);
 });

@@ -38,7 +38,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 
 });
 
-/* GET bookmark of user  by id*/
+/* GET bookmarks of user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, next) => {
   UserIdValidator.validateUserId(request);
 
@@ -46,7 +46,7 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
   const limit = parseInt(request.query.limit);
 
   if (searchText) {
-    const bookmarks = await bookmarksSearchService.findBookmarks(searchText, limit, constants.DOMAIN_PERSONAL, request.params.userId);
+    const bookmarks = await bookmarksSearchService.findPersonalBookmarks(searchText, limit, request.params.userId);
     return response.send(bookmarks);
   } else {
     next();
@@ -66,7 +66,22 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
 
 /* GET bookmark of user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
-  const bookmarks = await PersonalBookmarksService.getLatestBookmarks(request.params.userId);
+  let bookmarks;
+  const orderBy = request.query.orderBy;
+  switch (orderBy) {
+    case 'MOST_LIKES':
+      bookmarks = await PersonalBookmarksService.getMostLikedBookmarks(request.params.userId);
+      break;
+    case 'LAST_CREATED':
+      bookmarks = await PersonalBookmarksService.getLastCreatedBookmarks(request.params.userId);
+      break;
+    case 'MOST_USED':
+      bookmarks = await PersonalBookmarksService.getMostUsedBookmarks(request.params.userId);
+      break;
+    default:
+      bookmarks = await PersonalBookmarksService.getLastAccessedBookmarks(request.params.userId);
+  }
+
   return response.send(bookmarks);
 });
 
@@ -105,6 +120,21 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
   return response.status(HttpStatus.OK).send(updatedBookmark);
 });
 
+
+/**
+ * full UPDATE via PUT - that is the whole document is required and will be updated
+ * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
+ */
+personalBookmarksRouter.post('/:bookmarkId/owner-visits/inc', keycloak.protect(), async (request, response) => {
+
+  UserIdValidator.validateUserId(request);
+
+  const {userId, bookmarkId} = request.params;
+  await PersonalBookmarksService.increaseOwnerVisitCount(userId, bookmarkId);
+
+  return response.status(HttpStatus.OK).send();
+});
+
 /*
 * DELETE bookmark for user
 */
@@ -125,11 +155,26 @@ personalBookmarksRouter.delete('/', keycloak.protect(), async (request, response
   const location = request.query.location;
   if (location) {
     await PersonalBookmarksService.deleteBookmarkByLocation(request.params.userId, location);
+    return response.status(HttpStatus.NO_CONTENT).send();
   } else {
     next();
   }
 
-  return response.status(HttpStatus.NO_CONTENT).send();
+});
+
+/*
+* DELETE private bookmarks for user and tag
+*/
+personalBookmarksRouter.delete('/', keycloak.protect(), async (request, response, next) => {
+  UserIdValidator.validateIsAdminOrUserId(request);
+
+  const {tag, type} = request.query;
+  if (tag && type === 'private') {
+    await PersonalBookmarksService.deletePrivateBookmarksByTag(request.params.userId, tag);
+    return response.status(HttpStatus.NO_CONTENT).send();
+  } else {
+    next();
+  }
 });
 
 personalBookmarksRouter.delete('/', keycloak.protect(), async () => {
