@@ -1,24 +1,24 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {ReactiveFormsModule} from '@angular/forms';
-import {AppComponent} from './app.component';
-import {AppRoutingModule} from './app.routing';
-import {SharedModule} from './shared/shared.module';
-import {CoreModule} from './core/core.module';
-import {PublicBookmarksModule} from './public/public.module';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
-import {initializer} from './app-init';
-import {RouterModule} from '@angular/router';
-import {PageNotFoundComponent} from './not-found.component';
-import {MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule} from '@angular/material';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {OverlayModule} from '@angular/cdk/overlay';
-import {ServiceWorkerModule} from '@angular/service-worker';
-import {environment} from '../environments/environment';
-import {LoaderInterceptorService} from './core/loader/loader-interceptor.service';
-import {LoaderComponent} from './shared/loader/loader.component';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app.routing';
+import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './core/core.module';
+import { PublicBookmarksModule } from './public/public.module';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { initializer } from './app-init';
+import { RouterModule } from '@angular/router';
+import { PageNotFoundComponent } from './not-found.component';
+import { MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule } from '@angular/material';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { LoaderInterceptorService } from './core/loader/loader-interceptor.service';
+import { LoaderComponent } from './shared/loader/loader.component';
 import { SocialButtonsModule } from './social-buttons/social-buttons.module';
 import { UserInfoStore } from './core/user/user-info.store';
 import { UserDataStore } from './core/user/userdata.store';
@@ -42,7 +42,7 @@ import { UserDataStore } from './core/user/userdata.store';
     OverlayModule,
     // routing module
     AppRoutingModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [
     {
@@ -71,4 +71,5 @@ import { UserDataStore } from './core/user/userdata.store';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

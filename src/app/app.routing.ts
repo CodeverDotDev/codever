@@ -1,11 +1,15 @@
-import {RouterModule, Routes} from '@angular/router';
-import {NgModule} from '@angular/core';
-import {PageNotFoundComponent} from './not-found.component';
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { PageNotFoundComponent } from './not-found.component';
 
 const routes: Routes = [
   {
     path: 'personal',
     loadChildren: 'app/personal/personal-bookmarks.module#PersonalBookmarksModule'
+  },
+  {
+    path: 'dashboard',
+    loadChildren: 'app/user/dashboard/user-dashboard.module#UserDashboardModule'
   },
   {
     path: 'public',
@@ -16,9 +20,8 @@ const routes: Routes = [
     redirectTo: 'public',
     pathMatch: 'full'
   },
-  { path: '**', component: PageNotFoundComponent }
+  {path: '**', component: PageNotFoundComponent}
 ];
-
 
 
 /**
@@ -32,5 +35,6 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}
 

@@ -1,0 +1,26 @@
+<mat-tab-group>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fas fa-bookmark"></i> My bookmarks</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <app-user-bookmarks [userId]="userId"></app-user-bookmarks>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fas fa-tags"></i> My Tags</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <app-user-tags [userId]="userId"></app-user-tags>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-search"></i> Saved searches</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <app-saved-searches></app-saved-searches>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

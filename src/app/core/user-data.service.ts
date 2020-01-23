@@ -8,6 +8,7 @@ import { UserData } from './model/user-data';
 import { Bookmark } from './model/bookmark';
 import { shareReplay } from 'rxjs/operators';
 import { RateBookmarkRequest } from './model/rate-bookmark.request';
+import { UsedTags } from './model/used-tag';
 
 @Injectable()
 export class UserDataService {
@@ -73,6 +74,12 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
+  getUsedTags(userId: string): Observable<UsedTags> {
+    return this.httpClient
+      .get<UsedTags>(`${this.usersApiBaseUrl}/${userId}/used-tags`)
+      .pipe(shareReplay(1));
+  }
+
 
   rateBookmark(rateBookmarkRequest: RateBookmarkRequest): Observable<any> {
     return this.httpClient
@@ -81,5 +88,4 @@ export class UserDataService {
         {headers: this.headers})
       .pipe(shareReplay(1));
   }
-
 }
