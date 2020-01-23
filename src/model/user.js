@@ -3,7 +3,9 @@ var Schema = mongoose.Schema;
 
 const searchSchema = new Schema({
   text: String,
-  lastAccessedAt: Date
+  lastAccessedAt: Date,
+  searchDomain: String,
+  count: Number
 },
 {
   timestamps: true

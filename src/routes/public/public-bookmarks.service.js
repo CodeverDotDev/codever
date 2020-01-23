@@ -144,7 +144,7 @@ function formatDuration(duration) {
 
 module.exports = {
   getBookmarkByLocation: getBookmarkByLocation,
-  getLatestBookmarks: getLatestBookmarks,
+  getLatestPublicBookmarks: getLatestBookmarks,
   getBookmarksForTag: getBookmarksForTag,
   getBookmarkById: getBookmarkById,
   getScrapedDataForLocation: getScrapedDataForLocation,
