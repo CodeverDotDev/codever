@@ -29,11 +29,11 @@ let updateUserData = async function (userData, userId) {
   validateUserData(userData, userId);
 
   //hold only 30 bookmarks in history or pinned
-  if (userData.history.length > 30) {
+  if ( userData.history.length > 30 ) {
     userData.history = userData.history.slice(0, 3);
   }
 
-  if (userData.pinned.length > 30) {
+  if ( userData.pinned.length > 30 ) {
     userData.pinned = userData.pinned.slice(0, 3);
   }
 
@@ -53,24 +53,24 @@ function validateUserData(userData, userId) {
   let validationErrorMessages = [];
 
   const invalidUserIdInUserData = !userData.userId || userData.userId !== userId;
-  if (invalidUserIdInUserData) {
+  if ( invalidUserIdInUserData ) {
     validationErrorMessages.push('Missing or invalid userId in provided user data');
   }
 
-  if (!userSearchesAreValid(userData)) {
+  if ( !userSearchesAreValid(userData) ) {
     validationErrorMessages.push('Searches are not valid - search text is required');
   }
 
-  if (validationErrorMessages.length > 0) {
+  if ( validationErrorMessages.length > 0 ) {
     throw new ValidationError('Submitted user data is not valid', validationErrorMessages);
   }
 }
 
 function userSearchesAreValid(userData) {
   const searches = userData.searches;
-  if (searches && searches.length > 0) {
-    for (let i = 0; i < searches.length; i++) {
-      if (!searches[i].text) {
+  if ( searches && searches.length > 0 ) {
+    for ( let i = 0; i < searches.length; i++ ) {
+      if ( !searches[i].text ) {
         return false;
       }
     }
@@ -84,7 +84,7 @@ let getUserData = async function (userId) {
     userId: userId
   });
 
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     return userData;
@@ -96,7 +96,7 @@ let deleteUserData = async function (userId) {
     userId: userId
   });
 
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     return 'user deleted';
@@ -108,7 +108,7 @@ let getLaterReads = async function (userId) {
   const userData = await User.findOne({
     userId: userId
   });
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     const bookmarks = await Bookmark.find({"_id": {$in: userData.readLater}});
@@ -122,7 +122,7 @@ let getLikedBookmarks = async function (userId) {
   const userData = await User.findOne({
     userId: userId
   });
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     const bookmarks = await Bookmark.find({"_id": {$in: userData.likes}});
@@ -135,7 +135,7 @@ let getWatchedTags = async function (userId) {
   const userData = await User.findOne({
     userId: userId
   });
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     const bookmarks = await Bookmark.find({
@@ -151,12 +151,98 @@ let getWatchedTags = async function (userId) {
   }
 }
 
+let getUsedTagsForPublicBookmarks = async function (userId) {
+
+  const aggregatedTags = await Bookmark.aggregate([
+    //first stage - filter
+    {
+      $match: {
+        userId: userId,
+        shared: true,
+      },
+    },
+
+    //second stage - unwind tags
+    {$unwind: "$tags"},
+
+    //third stage - group
+    {
+      $group: {
+        _id: {
+          tag: '$tags'
+        },
+        count: {
+          $sum: 1
+        }
+      }
+    },
+
+    //fourth stage - order by count desc
+    {
+      $sort: {count: -1}
+    }
+
+  ]);
+
+  const usedTags = aggregatedTags.map(aggregatedTag => {
+    return {
+      name: aggregatedTag._id.tag,
+      count: aggregatedTag.count
+    }
+  });
+
+  return usedTags;
+}
+
+let getUsedTagsForPrivateBookmarks = async function (userId) {
+
+  const aggregatedTags = await Bookmark.aggregate([
+    //first stage - filter
+    {
+      $match: {
+        userId: userId,
+        shared: false
+      },
+    },
+
+    //second stage - unwind tags
+    {$unwind: "$tags"},
+
+    //third stage - group
+    {
+      $group: {
+        _id: {
+          tag: '$tags'
+        },
+        count: {
+          $sum: 1
+        }
+      }
+    },
+
+    //fourth stage - order by count desc
+    {
+      $sort: {count: -1}
+    }
+
+  ]);
+
+  const usedTags = aggregatedTags.map(aggregatedTag => {
+    return {
+      name: aggregatedTag._id.tag,
+      count: aggregatedTag.count
+    }
+  });
+
+  return usedTags;
+}
+
 let getPinnedBookmarks = async function (userId) {
 
   const userData = await User.findOne({
     userId: userId
   });
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     const bookmarks = await Bookmark.find({"_id": {$in: userData.pinned}});
@@ -173,7 +259,7 @@ let getFavoriteBookmarks = async function (userId) {
   const userData = await User.findOne({
     userId: userId
   });
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     const bookmarks = await Bookmark.find({"_id": {$in: userData.favorites}});
@@ -191,7 +277,7 @@ let getBookmarksFromHistory = async function (userId) {
   const userData = await User.findOne({
     userId: userId
   });
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     const bookmarks = await Bookmark.find({"_id": {$in: userData.history}});
@@ -213,12 +299,12 @@ let rateBookmark = async function (receivedUserData, userId, bookmarkId) {
     userId: userId
   });
 
-  if (!userData) {
+  if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    if (receivedUserData.action === 'LIKE') {
+    if ( receivedUserData.action === 'LIKE' ) {
       return await likeBookmark(userData, userId, bookmarkId);
-    } else if (receivedUserData.action === 'UNLIKE') {
+    } else if ( receivedUserData.action === 'UNLIKE' ) {
       return await dislikeBookmark(userData, userId, bookmarkId);
     }
   }
@@ -226,22 +312,22 @@ let rateBookmark = async function (receivedUserData, userId, bookmarkId) {
 
 let validateInputForBookmarkRating = function (userData, userId) {
   let validationErrorMessages = [];
-  if (userId !== userData.ratingUserId) {
+  if ( userId !== userData.ratingUserId ) {
     validationErrorMessages.push('The ratingUserId in the request.body must be the same as the userId request parameter');
   }
-  if (!userData.action) {
+  if ( !userData.action ) {
     validationErrorMessages.push('Missing required attributes - action');
   }
-  if (!(userData.action === 'LIKE' || userData.action === 'UNLIKE')) {
+  if ( !(userData.action === 'LIKE' || userData.action === 'UNLIKE') ) {
     validationErrorMessages.push('Invalid value - rating action should be LIKE or UNLIKE');
   }
-  if (validationErrorMessages.length > 0) {
+  if ( validationErrorMessages.length > 0 ) {
     throw new ValidationError('Rating bookmark input is not valid', validationErrorMessages);
   }
 }
 
 let likeBookmark = async function (userData, userId, bookmarkId) {
-  if (userData.likes.includes(bookmarkId)) {
+  if ( userData.likes.includes(bookmarkId) ) {
     throw new ValidationError('You already starred this bookmark', ['You already starred this bookmark']);
   } else {
 
@@ -253,7 +339,7 @@ let likeBookmark = async function (userData, userId, bookmarkId) {
     const bookmark = await Bookmark.findOneAndUpdate({_id: bookmarkId}, {$inc: {likes: 1}});
 
     const bookmarkNotFound = !bookmark;
-    if (bookmarkNotFound) {
+    if ( bookmarkNotFound ) {
       throw new NotFoundError('Bookmark with bookmark id ' + bookmarkId + ' not found');
     } else {
       return bookmark;
@@ -262,7 +348,7 @@ let likeBookmark = async function (userData, userId, bookmarkId) {
 }
 
 let dislikeBookmark = async function (userData, userId, bookmarkId) {
-  if (!userData.likes.includes(bookmarkId)) {
+  if ( !userData.likes.includes(bookmarkId) ) {
     throw new ValidationError('You did not like this bookmark', ['You did not like this bookmark']);
   } else {
 
@@ -273,7 +359,7 @@ let dislikeBookmark = async function (userData, userId, bookmarkId) {
 
     const bookmark = await Bookmark.findOneAndUpdate({_id: bookmarkId}, {$inc: {likes: -1}});
     const bookmarkNotFound = !bookmark;
-    if (bookmarkNotFound) {
+    if ( bookmarkNotFound ) {
       throw new NotFoundError('Bookmark with bookmark id ' + bookmarkId + ' not found');
     } else {
       return bookmark;
@@ -289,6 +375,8 @@ module.exports = {
   getLaterReads: getLaterReads,
   getLikedBookmarks: getLikedBookmarks,
   getWatchedTags: getWatchedTags,
+  getUsedTagsForPublicBookmarks: getUsedTagsForPublicBookmarks,
+  getUsedTagsForPrivateBookmarks: getUsedTagsForPrivateBookmarks,
   getPinnedBookmarks: getPinnedBookmarks,
   getFavoriteBookmarks: getFavoriteBookmarks,
   getBookmarksFromHistory: getBookmarksFromHistory,

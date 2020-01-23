@@ -41,7 +41,7 @@ let getBookmarkById = async (userId, bookmarkId) => {
     userId: userId
   });
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError(`Bookmark NOT_FOUND the userId: ${userId} AND id: ${bookmarkId}`);
   } else {
     return bookmark;
@@ -56,18 +56,46 @@ let getBookmarkByLocation = async (userId, location) => {
     location: location
   }).lean().exec();
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError(`Bookmark NOT_FOUND the userId: ${userId} AND location: ${location}`);
   } else {
     return bookmark;
   }
 };
 
-/* GET bookmark of user by location - currently there is a limit set to 100 */
-let getLatestBookmarks = async (userId) => {
+/* GET last accessed bookmarks of the - currently there is a limit set to 100 */
+let getLastAccessedBookmarks = async (userId) => {
   const bookmarks = await Bookmark.find({userId: userId})
     .sort({lastAccessedAt: -1})
     .limit(100);
+
+  return bookmarks;
+};
+
+/* GET last created bookmarks of the user - currently there is a limit set to 100 */
+let getLastCreatedBookmarks = async (userId) => {
+  const bookmarks = await Bookmark.find({userId: userId})
+    .sort({createdAt: -1})
+    .limit(30);
+
+  return bookmarks;
+};
+
+/* GET last created bookmarks of the user - currently there is a limit set to 100 */
+let getMostLikedBookmarks = async (userId) => {
+  const bookmarks = await Bookmark.find({userId: userId})
+    .sort({likes: -1})
+    .limit(30);
+
+  return bookmarks;
+};
+
+/* GET last created bookmarks of the user - currently there is a limit set to 100 */
+let getMostUsedBookmarks = async (userId) => {
+  const bookmarks = await Bookmark.find({userId: userId, ownerVisitCount: {$exists: true}})
+    .select('+ownerVisitCount')
+    .sort({ownerVisitCount: -1})
+    .limit(30);
 
   return bookmarks;
 };
@@ -92,12 +120,25 @@ let updateBookmark = async (userId, bookmarkId, bookmark) => {
   );
 
   const bookmarkNotFound = !updatedBookmark;
-  if (bookmarkNotFound) {
+  if ( bookmarkNotFound ) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId + ' AND location: ' + bookmark.location);
   } else {
     return updatedBookmark;
   }
 };
+
+let increaseOwnerVisitCount = async (userId, bookmarkId) => {
+  await Bookmark.findOneAndUpdate(
+    {
+      _id: bookmarkId,
+      userId: userId
+    },
+    {
+      $inc: {ownerVisitCount: 1}
+    }
+  );
+}
+
 
 /*
 * DELETE bookmark for user
@@ -108,7 +149,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
     userId: userId
   });
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId);
   } else {
     await User.update(
@@ -130,7 +171,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
 };
 
 /*
-* DELETE bookmark for user by location
+* DELETE bookmark for user by "location"
 */
 let deleteBookmarkByLocation = async (userId, location) => {
   const bookmark = await Bookmark.findOneAndRemove({
@@ -138,9 +179,22 @@ let deleteBookmarkByLocation = async (userId, location) => {
     userId: userId
   });
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError(`Bookmark NOT_FOUND the userId: ${userId} AND location: ${location}`);
   }
+
+  return true;
+};
+
+/*
+* DELETE private bookmarks for user by "tag"
+*/
+let deletePrivateBookmarksByTag = async (userId, tag) => {
+  await Bookmark.deleteMany({
+    userId: userId,
+    shared: false,
+    tags: tag
+  });
 
   return true;
 };
@@ -150,8 +204,13 @@ module.exports = {
   getTagsForUser: getTagsForUser,
   getBookmarkById: getBookmarkById,
   getBookmarkByLocation: getBookmarkByLocation,
-  getLatestBookmarks: getLatestBookmarks,
+  getLastAccessedBookmarks: getLastAccessedBookmarks,
+  getLastCreatedBookmarks: getLastCreatedBookmarks,
+  getMostUsedBookmarks: getMostUsedBookmarks,
+  getMostLikedBookmarks: getMostLikedBookmarks,
   updateBookmark: updateBookmark,
+  increaseOwnerVisitCount: increaseOwnerVisitCount,
   deleteBookmarkById: deleteBookmarkById,
-  deleteBookmarkByLocation: deleteBookmarkByLocation
+  deleteBookmarkByLocation: deleteBookmarkByLocation,
+  deletePrivateBookmarksByTag: deletePrivateBookmarksByTag
 };

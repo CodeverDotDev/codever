@@ -49,6 +49,20 @@ usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, res
   response.send(bookmarks);
 });
 
+/* GET list of used tag for the user */
+usersRouter.get('/:userId/used-tags', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const usedTagsForPublicBookmarks = await UserDataService.getUsedTagsForPublicBookmarks(request.params.userId);
+  const usedTagsForPrivateBookmarks = await UserDataService.getUsedTagsForPrivateBookmarks(request.params.userId);
+
+  const usedTags = {
+    public: usedTagsForPublicBookmarks,
+    private: usedTagsForPrivateBookmarks
+  }
+
+  response.send(usedTags);
+});
+
 /* GET list of user's pinned bookmarks */
 usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);

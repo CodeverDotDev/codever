@@ -151,6 +151,20 @@ describe('Public API Tests', function () {
       expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
 
+    it('should find bookmark with with very-special-tag in query param as word and user', async function () {
+      const queryText = `${verySpecialTag} user:${testUserId}`
+      const response = await request(app)
+        .get(basePathApiPublicBookmarks)
+        .query({q: queryText})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+    });
+
     it('should find bookmark with with very-special-tag in query param only as tag', async function () {
       const response = await request(app)
         .get(basePathApiPublicBookmarks)
@@ -164,10 +178,38 @@ describe('Public API Tests', function () {
       expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
 
+    it('should find bookmark with with very-special-tag in query param only as tag and user', async function () {
+      const queryText = `[${verySpecialTag}] user:${testUserId}`
+      const response = await request(app)
+        .get(basePathApiPublicBookmarks)
+        .query({q: queryText})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+    });
+
     it('should find bookmark with with very-special-tag in query param as tag and word', async function () {
       const response = await request(app)
         .get(basePathApiPublicBookmarks)
         .query({q: `${verySpecialTag} [${verySpecialTag}]`})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+    });
+
+    it('should find bookmark with with very-special-tag in query param as tag and word plus user', async function () {
+      const queryText = `${verySpecialTag} [${verySpecialTag}] user:${testUserId}`;
+      const response = await request(app)
+        .get(basePathApiPublicBookmarks)
+        .query({q: queryText})
         .query({limit: 10});
 
       expect(response.statusCode).to.equal(HttpStatus.OK);
