@@ -26,7 +26,7 @@ export class SavedSearchesComponent implements OnInit {
   @Input()
   userId: string;
 
-  private buttonEnabled: boolean;
+  buttonEnabled: boolean;
 
   constructor(
     private deleteDialog: MatDialog,
