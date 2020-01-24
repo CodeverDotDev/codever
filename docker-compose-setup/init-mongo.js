@@ -23,7 +23,6 @@ db.bookmarks.insert(
         "programming",
         "blog"
       ],
-      "starredBy": [],
       "name": "Share coding knowledge – CodepediaOrg",
       "location": "https://www.codepedia.org/",
       "userId": "39108679-04a7-451e-aff3-207eb40c3263",
@@ -45,7 +44,6 @@ db.bookmarks.insert(
         "blog",
         "resources"
       ],
-      "starredBy": [],
       "name": "Bookmarks Manager for Devevelopers & Co",
       "location": "https://www.bookmarks.dev/",
       "userId": "39108679-04a7-451e-aff3-207eb40c3263",
@@ -68,7 +66,6 @@ db.bookmarks.insert(
         "blog",
         "open-source"
       ],
-      "starredBy": [],
       "name": "Collection of public dev bookmarks, shared with from www.bookmarks.dev",
       "location": "https://github.com/CodepediaOrg/bookmarks#readme",
       "userId": "39108679-04a7-451e-aff3-207eb40c3263",
