@@ -22,7 +22,6 @@ module.exports = {
       githubURL: req.body.githubURL,
       userId: req.body.userId || req.params.userId,
       shared: req.body.shared,
-      starredBy: req.body.starredBy,
       lastAccessedAt: req.body.lastAccessedAt,
       likes: req.body.likes,
       youtubeVideoId: youtubeVideoId ? youtubeVideoId : null,
