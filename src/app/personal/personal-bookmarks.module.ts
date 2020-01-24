@@ -10,19 +10,22 @@ import { CreatePersonalBookmarkComponent } from './create/create-personal-bookma
 import {
   MatAutocompleteModule,
   MatChipsModule,
+  MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
   MatTabsModule
 } from '@angular/material';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { PublicBookmarkPresentDialogComponent } from './create/public-bookmark-present-dialog/public-bookmark-present-dialog.component';
 
 
 @NgModule({
   declarations : [
     CreatePersonalBookmarkComponent,
     UpdatePersonalBookmarkComponent,
-    PersonalBookmarksComponent
+    PersonalBookmarksComponent,
+    PublicBookmarkPresentDialogComponent
   ],
   imports: [
     SharedModule,
@@ -34,11 +37,15 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatIconModule,
     MatAutocompleteModule,
     MatTabsModule,
+    MatDialogModule,
     PersonalBookmarksRoutingModule
   ],
   providers: [
     MarkdownService,
     AuthGuard
+  ],
+  entryComponents: [
+    PublicBookmarkPresentDialogComponent
   ]
 })
 export class PersonalBookmarksModule {}
