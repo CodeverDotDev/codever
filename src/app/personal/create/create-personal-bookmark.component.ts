@@ -5,14 +5,13 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { MarkdownService } from '../markdown.service';
 import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatDialog, MatDialogConfig } from '@angular/material';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { languages } from '../../shared/language-options';
 import { tagsValidator } from '../../shared/tags-validation.directive';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
 import { descriptionSizeValidator } from '../../shared/description-size-validation.directive';
-import { RateBookmarkRequest, RatingActionType } from '../../core/model/rate-bookmark.request';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { UserDataStore } from '../../core/user/userdata.store';
@@ -24,6 +23,7 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 import { WebpageData } from '../../core/model/webpage-data';
 import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
+import { PublicBookmarkPresentDialogComponent } from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -34,7 +34,6 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   bookmarkForm: FormGroup;
   userId = null;
-  existingPublicBookmark: Bookmark;
   displayModal = 'none';
   makePublic = false;
   personalBookmarkPresent = false;
@@ -64,6 +63,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   tagInput: ElementRef;
 
   constructor(
+    private publicBookmarkPresentDialog: MatDialog,
     private formBuilder: FormBuilder,
     private keycloakService: KeycloakService,
     private publicBookmarksService: PublicBookmarksService,
@@ -302,7 +302,6 @@ export class CreatePersonalBookmarkComponent implements OnInit {
       descriptionHtml: this.markdownService.toHtml(bookmark.description),
       userId: this.userId,
       shared: bookmark.shared,
-      starredBy: [],
       lastAccessedAt: new Date(),
       likes: 0
     };
@@ -337,7 +336,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
           if (this.url) {
             if (this.popup) {
-               window.close();
+              window.close();
             } else {
               window.location.href = this.url;
             }
@@ -361,13 +360,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     if (checkboxValue) {
       const location: string = this.bookmarkForm.controls['location'].value;
       this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(bookmark => {
-          if (bookmark) {
-            this.displayModal = 'block';
-            this.existingPublicBookmark = bookmark;
-            this.bookmarkForm.patchValue({
-              shared: false
-            });
-          }
+          this.openPublicBookmarkPresentDialog(bookmark);
         },
         (errorResponse: HttpErrorResponse) => {
           if (errorResponse.status === 404) {
@@ -380,30 +373,30 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     }
   }
 
-  onStarClick() {
-    this.displayModal = 'none';
-    if (this.existingPublicBookmark.starredBy.indexOf(this.userId) === -1) {
-      this.existingPublicBookmark.starredBy.push(this.userId);
-      this.rateBookmark(this.existingPublicBookmark);
-    }
-  }
-
-  private rateBookmark(bookmark: Bookmark) {
-    const rateBookmarkRequest: RateBookmarkRequest = {
-      ratingUserId: this.userId,
-      action: RatingActionType.LIKE,
+  openPublicBookmarkPresentDialog(bookmark: Bookmark) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
       bookmark: bookmark
-    }
-    const obs = this.userDataService.rateBookmark(rateBookmarkRequest);
-    obs.subscribe(
-      res => {
-        this.publicBookmarksStore.updateBookmarkInPublicStore(bookmark);
+    };
+
+    const dialogRef = this.publicBookmarkPresentDialog.open(PublicBookmarkPresentDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(
+      data => {
+        if (data === 'LIKE_BOOKMARK') {
+          this.likeExistingPublicBookmak(bookmark);
+        }
       }
     );
   }
 
-  onCancelClick() {
-    this.displayModal = 'none';
+  likeExistingPublicBookmak(bookmark: Bookmark): void {
+    this.userDataStore.getUserData$().subscribe(userData => {
+      if (userData.likes.indexOf(bookmark._id) === -1) {
+        this.userDataStore.likeBookmark(bookmark);
+      }
+    })
   }
 
   get tags() {
