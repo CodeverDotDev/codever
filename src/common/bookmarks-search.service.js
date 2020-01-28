@@ -49,6 +49,8 @@ let findPublicBookmarks = async function (query, limit) {
     bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, filteredTerms, limit, userId);
   } else if ( filteredTerms.length > 0 ) {
     bookmarks = await getPublicBookmarksForSearchedTerms(filteredTerms, limit, userId);
+  } else if(userId) {
+    bookmarks = await getPublicBookmarksForUser(limit, userId);
   } else {
     bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, limit, userId);
   }
@@ -200,6 +202,22 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, use
 
   if ( userId ) {
     filter.userId = userId;
+  }
+
+  let bookmarks = await Bookmark.find(filter)
+    .sort({createdAt: -1})
+    .limit(limit)
+    .lean()
+    .exec();
+
+  return bookmarks;
+}
+
+let getPublicBookmarksForUser = async function (limit, userId) {
+
+  let filter = {
+    shared: true,
+    userId: userId
   }
 
   let bookmarks = await Bookmark.find(filter)
