@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
-const constants = require('../../common/constants');
 
 const ValidationError = require('../../error/validation.error');
 
-const bookmarksSearchService = require('../../common/bookmarks-search.service');
+const publicBookmarksSearchService = require('./public-bookmarks-search.service');
 const PublicBookmarksService = require('./public-bookmarks.service');
 
 /**
@@ -14,7 +13,7 @@ router.get('/', async (request, response, next) => {
   const searchText = request.query.q;
   const limit = parseInt(request.query.limit);
   if (searchText) {
-    const bookmarks = await bookmarksSearchService.findPublicBookmarks(searchText, limit);
+    const bookmarks = await publicBookmarksSearchService.findPublicBookmarks(searchText, limit);
     response.send(bookmarks);
   } else {
     next()
