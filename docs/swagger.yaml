@@ -224,10 +224,6 @@ definitions:
         type: string
       shared:
         type: boolean
-      starredBy:
-        type: array
-        items:
-          type: string
       tags:
         type: array
         items:

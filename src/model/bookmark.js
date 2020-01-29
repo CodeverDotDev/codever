@@ -13,7 +13,6 @@ const bookmarkSchema = new Schema({
     userId: {type: String, ref:'User'},
     shared: Boolean,
     language: String,
-    starredBy: [String],
     lastAccessedAt: Date,
     likes: Number,
     ownerVisitCount: {type:Number, select: false},

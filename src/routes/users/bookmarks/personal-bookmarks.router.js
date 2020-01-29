@@ -3,7 +3,7 @@ const personalBookmarksRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
 const bookmarkHelper = require('../../../common/bookmark-helper');
-const bookmarksSearchService = require('../../../common/bookmarks-search.service');
+const personalBookmarksSearchService = require('./personal-bookmarks-search.service');
 const PersonalBookmarksService = require('./personal-bookmarks.service');
 const UserIdValidator = require('../userid.validator');
 
@@ -11,8 +11,6 @@ const ValidationError = require('../../../error/validation.error');
 
 const common = require('../../../common/config');
 const config = common.config();
-
-const constants = require('../../../common/constants');
 
 const HttpStatus = require('http-status-codes/index');
 
@@ -24,7 +22,6 @@ personalBookmarksRouter.use(keycloak.middleware());
 /**
  * CREATE bookmark for user
  */
-//personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) => {
 personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) => {
 
   UserIdValidator.validateUserId(request);
@@ -46,7 +43,7 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
   const limit = parseInt(request.query.limit);
 
   if (searchText) {
-    const bookmarks = await bookmarksSearchService.findPersonalBookmarks(searchText, limit, request.params.userId);
+    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(searchText, limit, request.params.userId);
     return response.send(bookmarks);
   } else {
     next();
