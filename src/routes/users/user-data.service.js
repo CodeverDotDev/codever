@@ -251,7 +251,7 @@ let getPinnedBookmarks = async function (userId) {
       return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
     });
 
-    return orderedBookmarksAsInPinned;
+    return orderedBookmarksAsInPinned.filter(bookmark => bookmark !== undefined);
   }
 }
 
@@ -287,7 +287,8 @@ let getBookmarksFromHistory = async function (userId) {
       return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
     });
 
-    return orderedBookmarksAsInHistory;
+    //check for "potentially" deleted bookmarks via "delete all private for tag"
+    return orderedBookmarksAsInHistory.filter(bookmark => bookmark !== undefined);
   }
 }
 
