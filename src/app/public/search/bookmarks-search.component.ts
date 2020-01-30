@@ -4,7 +4,6 @@ import { map, startWith } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { BookmarkFilterService } from '../../core/filter.service';
 import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
@@ -36,7 +35,7 @@ export class BookmarksSearchComponent implements OnInit {
   searchTriggered = new EventEmitter<boolean>();
 
   @Output()
-  clearSearchText = new EventEmitter<boolean>();
+  searchTextCleared = new EventEmitter<boolean>();
 
   _userData: UserData;
 
@@ -162,7 +161,7 @@ export class BookmarksSearchComponent implements OnInit {
       this.showNotFound = false;
 
       if (val.trim() === '') {
-         this.showSearchResults = false;
+        this.showSearchResults = false;
       }
       this.syncQueryParamsWithSearchBox();
     });
@@ -251,7 +250,7 @@ export class BookmarksSearchComponent implements OnInit {
 
   }
 
-   syncQueryParamsWithSearchBox() {
+  syncQueryParamsWithSearchBox() {
     if (this.searchText) {
       this.router.navigate(['.'],
         {
@@ -262,7 +261,7 @@ export class BookmarksSearchComponent implements OnInit {
       );
 
     } else {
-      this.clearSearchText.emit(true);
+      this.searchTextCleared.emit(true);
       this.router.navigate(['./'],
         {
           relativeTo: this.route,
@@ -273,4 +272,7 @@ export class BookmarksSearchComponent implements OnInit {
     }
   }
 
+  clearSearchText() {
+    this.searchControl.patchValue('');
+  }
 }

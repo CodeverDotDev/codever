@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" [routerLink]="['']" routerLinkActive="active">
-    <div class="app-brand">
+    <div class="app-brand" (click)="onLogoClick()">
       <div>
         <img src="assets/logo.png" width="60" height="60" class="d-inline-block align-middle" alt="Logo Bookmarks.dev">
       </div>

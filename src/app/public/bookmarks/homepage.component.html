@@ -1,6 +1,7 @@
 <div id="public-search-box">
 
-  <app-bookmark-search [context]="'Public'" [userData$]="userData$" (searchTriggered)="onSearchTriggered($event)" (clearSearchText)="onClearSearchText($event)"></app-bookmark-search>
+  <app-bookmark-search [context]="'Public'" [userData$]="userData$" (searchTriggered)="onSearchTriggered($event)"
+                       (searchTextCleared)="onClearSearchText($event)"></app-bookmark-search>
 
   <mat-tab-group (selectedTabChange)="tabSelectionChanged($event)" [selectedIndex]="selectedIndex">
     <mat-tab>
