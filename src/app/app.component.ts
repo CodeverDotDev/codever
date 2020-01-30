@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import 'styles.scss';
 
 @Component({
-  selector: 'my-app', // <my-app></my-app>
+  selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

@@ -22,6 +22,7 @@ import { LoaderComponent } from './shared/loader/loader.component';
 import { SocialButtonsModule } from './social-buttons/social-buttons.module';
 import { UserInfoStore } from './core/user/user-info.store';
 import { UserDataStore } from './core/user/userdata.store';
+import { AppService } from './app.service';
 
 @NgModule({
   exports: [
@@ -61,8 +62,8 @@ import { UserDataStore } from './core/user/userdata.store';
       provide: HTTP_INTERCEPTORS,
       useClass: LoaderInterceptorService,
       multi: true
-    }
-
+    },
+    AppService
   ],
   declarations: [
     AppComponent,
