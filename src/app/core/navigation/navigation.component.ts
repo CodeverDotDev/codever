@@ -5,6 +5,7 @@ import { KeycloakServiceWrapper } from '../keycloak-service-wrapper.service';
 import { UserInfoOidc } from '../model/user-info.oidc';
 import { UserInfoStore } from '../user/user-info.store';
 import { Observable } from 'rxjs';
+import { AppService } from '../../app.service';
 
 @Component({
   selector: 'app-navigation',
@@ -28,7 +29,8 @@ export class NavigationComponent implements OnInit {
     });
   }
 
-  constructor(private keycloakService: KeycloakService,
+  constructor(private appService: AppService,
+              private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private keycloakServiceWrapper: KeycloakServiceWrapper) {
   }
@@ -40,4 +42,9 @@ export class NavigationComponent implements OnInit {
   login() {
     this.keycloakServiceWrapper.login();
   }
+
+  onLogoClick() {
+    this.appService.clickLogo(true);
+  }
+
 }

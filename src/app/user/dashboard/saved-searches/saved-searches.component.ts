@@ -26,7 +26,7 @@ export class SavedSearchesComponent implements OnInit {
   @Input()
   userId: string;
 
-  private buttonEnabled: boolean;
+  buttonEnabled: boolean;
 
   constructor(
     private deleteDialog: MatDialog,
@@ -47,9 +47,9 @@ export class SavedSearchesComponent implements OnInit {
         map(value => this._filter(value))
       );
 
-        this.selectSavedSearchControl.valueChanges.subscribe(value => {
-          this.buttonEnabled = this.options.includes(value);
-        })
+    this.selectSavedSearchControl.valueChanges.subscribe(value => {
+      this.buttonEnabled = this.options.includes(value);
+    })
   }
 
   private _filter(value: string): string[] {
@@ -65,8 +65,6 @@ export class SavedSearchesComponent implements OnInit {
     dialogConfig.data = {
       savedSearchText: savedSearchText
     };
-
-    console.log(dialogConfig.data);
 
     const dialogRef = this.deleteDialog.open(DeleteSavedSearchDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(

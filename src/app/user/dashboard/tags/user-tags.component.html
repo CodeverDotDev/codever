@@ -14,7 +14,7 @@
 
 <hr/>
 
-<h4>Used for my private bookmarks</h4>
+<h4>Used for my private only bookmarks</h4>
 <div *ngIf="(usedTags$ | async)">
   <span *ngFor="let tag of (usedTags$ | async).private" class="my-used-tag">
     <a [routerLink]="['/search']"

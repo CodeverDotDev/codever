@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { List } from 'immutable';
 import { Bookmark } from '../../core/model/bookmark';
@@ -12,6 +12,7 @@ import { BookmarksSearchComponent } from '../search/bookmarks-search.component';
 import { MatTabChangeEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { UserInfoStore } from '../../core/user/user-info.store';
+import { AppService } from '../../app.service';
 
 
 @Component({
@@ -40,7 +41,8 @@ export class HomepageComponent implements OnInit {
 
   selectedIndex: number;
 
-  constructor(private publicBookmarksStore: PublicBookmarksStore,
+  constructor(private appService: AppService,
+              private publicBookmarksStore: PublicBookmarksStore,
               private router: Router,
               private route: ActivatedRoute,
               private keycloakService: KeycloakService,
@@ -64,39 +66,45 @@ export class HomepageComponent implements OnInit {
       }
     });
 
+    this.appService.logoClicked.subscribe(logoClicked => {
+      if (logoClicked) {
+        this.searchComponent.clearSearchText();
+      }
+    });
+
   }
 
   private selectTabWhenLoggedIn(selectedTab) {
-      switch (selectedTab) {
-        case 'history': {
-          this.selectedIndex = 1;
-          break;
-        }
-        case 'pinned': {
-          this.selectedIndex = 2;
-          break;
-        }
-        case 'read-later': {
-          this.selectedIndex = 3;
-          break;
-        }
-        case 'favorites': {
-          this.selectedIndex = 4;
-          break;
-        }
-        case 'watched-tags': {
-          this.selectedIndex = 5;
-          break;
-        }
-        case 'search-results': {
-          this.selectedIndex = 6;
-          break;
-        }
-        default: {
-          this.selectedIndex = 0;
-          this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$();
-        }
+    switch (selectedTab) {
+      case 'history': {
+        this.selectedIndex = 1;
+        break;
       }
+      case 'pinned': {
+        this.selectedIndex = 2;
+        break;
+      }
+      case 'read-later': {
+        this.selectedIndex = 3;
+        break;
+      }
+      case 'favorites': {
+        this.selectedIndex = 4;
+        break;
+      }
+      case 'watched-tags': {
+        this.selectedIndex = 5;
+        break;
+      }
+      case 'search-results': {
+        this.selectedIndex = 6;
+        break;
+      }
+      default: {
+        this.selectedIndex = 0;
+        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$();
+      }
+    }
   }
 
   private selectedTabWhenNotLoggedIn(selectedTab) {
@@ -209,8 +217,8 @@ export class HomepageComponent implements OnInit {
   }
 
   onClearSearchText(searchTextCleared: boolean) {
-   if (searchTextCleared) {
-     this.selectedIndex = 1;
-   }
+    if (searchTextCleared) {
+      this.selectedIndex = 0;
+    }
   }
 }
