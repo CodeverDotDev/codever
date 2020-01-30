@@ -14,7 +14,6 @@ export interface Bookmark {
   createdAt?: Date;
   updatedAt?: Date;
   lastAccessedAt?: Date;
-  starredBy?: string[];
   ownerVisitCount?: number;
   likes?: number;
   youtubeVideoId?: string;
