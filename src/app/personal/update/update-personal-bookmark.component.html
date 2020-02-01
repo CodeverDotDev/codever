@@ -63,7 +63,7 @@
             {{tag}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
-          <input placeholder="Max 8, use comma, space or enter to separate them"
+          <input placeholder="Max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
                  [matChipInputFor]="chipList"
                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                  [matChipInputAddOnBlur]="addOnBlur"
