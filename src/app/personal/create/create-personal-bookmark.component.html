@@ -60,7 +60,7 @@
             {{tag.value}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
-          <input placeholder="&nbsp;&nbsp;Tags* - max 8, use comma, space or enter to separate them..."
+          <input placeholder="&nbsp;&nbsp;Tags* - max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
                  matInput
                  #tagInput
                  [formControl]="tagsControl"

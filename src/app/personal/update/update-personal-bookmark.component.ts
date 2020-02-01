@@ -85,7 +85,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
 
     // Add our fruit
     if ((value || '').trim()) {
-      this.bookmark.tags.push(this.currentTag);
+      this.bookmark.tags.push(this.currentTag.trim().toLowerCase());
     }
 
     // Reset the input value
