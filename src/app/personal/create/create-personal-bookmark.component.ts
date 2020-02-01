@@ -258,7 +258,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     // Add our tag
     if ((value || '').trim()) {
       const tags = this.bookmarkForm.get('tags') as FormArray;
-      tags.push(this.formBuilder.control(value.trim()));
+      tags.push(this.formBuilder.control(value.trim().toLowerCase()));
     }
 
     // Reset the input value
