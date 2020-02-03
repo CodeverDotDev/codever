@@ -17,7 +17,8 @@ import {
   MatTabsModule
 } from '@angular/material';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { PublicBookmarkPresentDialogComponent } from './create/public-bookmark-present-dialog/public-bookmark-present-dialog.component';
+import { PublicBookmarkPresentDialogComponent } from './save-bookmark-form/public-bookmark-present-dialog/public-bookmark-present-dialog.component';
+import { SaveBookmarkFormComponent } from './save-bookmark-form/save-bookmark-form.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { PublicBookmarkPresentDialogComponent } from './create/public-bookmark-p
     CreatePersonalBookmarkComponent,
     UpdatePersonalBookmarkComponent,
     PersonalBookmarksComponent,
-    PublicBookmarkPresentDialogComponent
+    PublicBookmarkPresentDialogComponent,
+    SaveBookmarkFormComponent
   ],
   imports: [
     SharedModule,

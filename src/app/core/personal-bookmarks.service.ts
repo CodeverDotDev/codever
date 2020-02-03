@@ -42,6 +42,10 @@ export class PersonalBookmarksService {
     }).pipe(shareReplay(1));
   }
 
+  getPersonalBookmarkById(userId: string, bookmarkId: string): Observable<Bookmark> {
+    return this.httpClient.get<Bookmark>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/${bookmarkId}`).pipe(shareReplay(1));
+  }
+
   getPersonalBookmarkOrderedBy(userId: string, orderBy: string): Observable<Bookmark[]> {
     let params = new HttpParams();
     params = params.append('orderBy', orderBy);
@@ -74,7 +78,7 @@ export class PersonalBookmarksService {
 
   increaseOwnerVisitCount(bookmark: Bookmark) {
     return this.httpClient
-      .post(`${this.personalBookmarksApiBaseUrl}${bookmark.userId}/bookmarks/${bookmark._id}/owner-visits/inc`, {},
+      .post(`${this.personalBookmarksApiBaseUrl}/${bookmark.userId}/bookmarks/${bookmark._id}/owner-visits/inc`, {},
         {headers: this.headers})
       .pipe(shareReplay(1));
   }

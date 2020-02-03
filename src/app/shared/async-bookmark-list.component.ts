@@ -117,11 +117,9 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   onBookmarkLinkClick(bookmark: Bookmark) {
     if (this.userIsLoggedIn) {
-      this.userDataStore.addToHistory(bookmark);
+      this.userDataStore.addToHistoryAndReadLater$(bookmark, false).subscribe();
       if (this.userId === bookmark.userId) {
-        this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe(response => {
-          console.log('Owner visits count increased');
-        });
+        this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
       }
     }
   }
