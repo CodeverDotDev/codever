@@ -1,0 +1,141 @@
+<div *ngIf="!isUpdate || (isUpdate && bookmark$ | async)" class="navigation-space-buffer" [ngClass]="{'private-bookmark': makePublic === false}">
+  <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
+    <div class="form-group">
+      <label for="location">Location*</label>
+      <div class="input-group">
+        <input type="text" class="form-control" id="location"
+               required
+               name="location"
+               formControlName="location"
+               placeholder="Usually an URL">
+        <div class="input-group-append">
+          <div class="input-group-text"><a href="{{bookmarkForm.get('location').value}}" target="_blank" title="Jump to location"><i class="fas fa-external-link-alt"></i></a></div>
+        </div>
+      </div>
+      <div [hidden]="bookmarkForm.get('location').valid || (bookmarkForm.get('location').pristine)"
+           class="alert alert-danger">
+        Location is required
+      </div>
+      <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
+        You have already bookmarked this URL.
+      </div>
+    </div>
+    <div class="form-group form-group-distanced">
+      <label for="name">Title*</label>
+      <input type="text" class="form-control" id="name"
+             required
+             formControlName="name"
+             placeholder="Name of the bookmark to recognize later">
+      <div [hidden]="bookmarkForm.get('name').valid || (bookmarkForm.get('name').pristine)"
+           class="alert alert-danger">
+        Name is required
+      </div>
+    </div>
+    <div class="form-check" style="margin-bottom: 1.5rem; margin-top: 1rem">
+      <label class="form-check-label">
+        <input #publicBookmark [checked]="makePublic" (click)="onClickMakePublic(publicBookmark.checked)"
+               class="form-check-input" type="checkbox" value="true" formControlName="shared"
+               [attr.disabled]="isUpdate && bookmark.shared?'':null">
+        <strong> Make Public </strong> - pls favor <a
+        href="https://github.com/CodepediaOrg/bookmarks/blob/master/tags/public-tags-simple.json" target="_blank">recommended
+        tags</a> (<em>spam will not be tolerated</em>)
+      </label>
+    </div>
+    <div class="form-group form-group-distanced">
+      <label for="language">Language*</label>
+      <select class="form-control form-control-sm"
+              id="language"
+              formControlName="language"
+              style="width:20%;">
+        <option value=en selected="selected">English</option>
+        <option *ngFor="let lang of languages" value="{{lang.code}}">{{lang.name}}</option>
+      </select>
+    </div>
+
+    <div id="tags" class="form-group-distanced">
+      <mat-form-field class="full-width">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let tag of tags.controls; let i = index;" [selectable]="selectable"
+                    [removable]="removable" (removed)="removeTagByIndex(i)">
+            {{tag.value}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="&nbsp;&nbsp;Tags* - max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
+                 matInput
+                 #tagInput
+                 [formControl]="tagsControl"
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="addOnBlur"
+                 [matAutocomplete]="auto"
+                 (matChipInputTokenEnd)="addTag($event)"
+                 formArrayName="tags"
+          />
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedTag($event)">
+          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+            {{ tag }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)" class="alert alert-danger">
+        <div *ngIf="tags.errors.tagsAreRequired">
+          Tags are required.
+        </div>
+        <div *ngIf="tags.errors.tooManyTags">
+          You can add maximum 8 tags.
+        </div>
+        <div *ngIf="tags.errors.blockedTags">
+          The tag <strong>{{tags.errors.blockedTags.value}}</strong> is blocked. Please use others.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group form-group-distanced">
+      <label for="publishedOn">Published on <i class="far fa-calendar-alt"></i></label>
+      <input type="date" class="form-control" id="publishedOn"
+             formControlName="publishedOn"
+             placeholder='Date when page was published yyyy-MM-dd'>
+    </div>
+    <div class="form-group form-group-distanced">
+      <label for="githubURL">Source code URL <i class="fab fa-github"></i></label>
+      <input type="url"
+             class="form-control"
+             id="githubURL"
+             formControlName="githubURL"
+             placeholder='URL of the post, project on GitHub - e.g. https://github.com/CodepediaOrg/bookmarks'>
+    </div>
+    <div class="form-group">
+      <label for="description" style="width: 100%">Description - <i class="fab fa-markdown"></i> <a
+        class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
+        supported</a></label>
+      <textarea class="form-control"
+                id="description"
+                formControlName="description"
+                placeholder="Writing descriptions with keywords can help find your bookmarks more easily through search. You can give an overview of the bookmark and place keywords in the beginning of the description."
+                style="height: 250px">
+      </textarea>
+      <div class="description-chars-counter">{{description.value ? description.value.length : 0}} / 1500</div>
+      <div class="clear"></div>
+      <div *ngIf="description.invalid && (description.dirty || description.touched)" class="alert alert-danger">
+        <div *ngIf="description.errors.tooManyLines">
+          Your description has {{description.errors.tooManyLines.value}} lines. Maximum 100 lines are allowed.
+        </div>
+        <div *ngIf="description.errors.tooManyCharacters">
+          Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 1500 characters are
+          allowed.
+        </div>
+      </div>
+    </div>
+    <div class="form-check" style="margin-bottom: 1.5rem; margin-top: 1rem">
+      <label class="form-check-label">
+        <input class="form-check-input" type="checkbox" value="true" formControlName="readLater">
+        Add to <strong>Read Later <i class="fas fa-clock"></i></strong>
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!bookmarkForm.valid || personalBookmarkPresent">
+      Save bookmark
+    </button>
+  </form>
+</div>
+
