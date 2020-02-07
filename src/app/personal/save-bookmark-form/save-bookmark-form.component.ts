@@ -414,10 +414,10 @@ export class SaveBookmarkFormComponent implements OnInit {
       );
   }
 
-  private publishInStores(newBookmark: Bookmark, readLater) {
-    this.userDataStore.publishLaterReadsAfterCreation(newBookmark);
+  private publishInStores(bookmark: Bookmark, readLater) {
+    this.userDataStore.publishHistoryAfterCreation(bookmark);
     if (readLater) {
-      this.userDataStore.publishHistoryAfterCreation(newBookmark);
+      this.userDataStore.publishLaterReadsAfterCreation(bookmark);
     }
   }
 
