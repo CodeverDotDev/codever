@@ -16,14 +16,13 @@ module.exports = {
       language: req.body.language,
       description: req.body.description,
       descriptionHtml: descriptionHtml,
-      category: req.body.category,
       tags: req.body.tags,
       publishedOn: req.body.publishedOn,
-      githubURL: req.body.githubURL,
+      sourceCodeURL: req.body.sourceCodeURL,
       userId: req.body.userId || req.params.userId,
-      shared: req.body.shared,
+      public: req.body.public,
       lastAccessedAt: req.body.lastAccessedAt,
-      likes: req.body.likes,
+      likeCount: req.body.likeCount,
       youtubeVideoId: youtubeVideoId ? youtubeVideoId : null,
       stackoverflowQuestionId: stackoverflowQuestionId ? stackoverflowQuestionId : null
     });

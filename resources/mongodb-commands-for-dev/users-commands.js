@@ -14,7 +14,7 @@ db.users.update({},
 
 //remove a tag from all public bookmarks
 db.bookmarks.update(
-  {shared: true},
+  {public: true},
   {$pull: {tags: "algoritmos"}},
   {multi: true}
 );
@@ -88,7 +88,7 @@ db.bookmarks.aggregate([
         {
           userId: "33d22b0e-9474-46b3-9da4-b1fb5d273abc"
         },
-        {shared: true}
+        {public: true}
       ]
     },
   },
