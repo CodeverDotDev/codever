@@ -1,19 +1,20 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Bookmark } from '../core/model/bookmark';
-import { Router } from '@angular/router';
-import { KeycloakService } from 'keycloak-angular';
-import { PublicBookmarksStore } from '../public/bookmarks/store/public-bookmarks-store.service';
-import { UserData } from '../core/model/user-data';
-import { UserDataStore } from '../core/user/userdata.store';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
-import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
-import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
-import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
-import { UserInfoStore } from '../core/user/user-info.store';
-import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
-import { MyBookmarksStore } from '../core/user/my-bookmarks.store';
+import {Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Bookmark} from '../core/model/bookmark';
+import {Router} from '@angular/router';
+import {KeycloakService} from 'keycloak-angular';
+import {PublicBookmarksStore} from '../public/bookmarks/store/public-bookmarks-store.service';
+import {UserData} from '../core/model/user-data';
+import {UserDataStore} from '../core/user/userdata.store';
+import {MatDialog, MatDialogConfig} from '@angular/material';
+import {DeleteBookmarkDialogComponent} from './delete-bookmark-dialog/delete-bookmark-dialog.component';
+import {LoginRequiredDialogComponent} from './login-required-dialog/login-required-dialog.component';
+import {PersonalBookmarksService} from '../core/personal-bookmarks.service';
+import {SocialShareDialogComponent} from './social-share-dialog/social-share-dialog.component';
+import {UserInfoStore} from '../core/user/user-info.store';
+import {PlayYoutubeVideoDialogComponent} from './play-youtube-video-dialog/play-youtube-video-dialog.component';
+import {MyBookmarksStore} from '../core/user/my-bookmarks.store';
+import {AdminService} from '../core/admin/admin.service';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -40,6 +41,7 @@ export class AsyncBookmarkListComponent implements OnInit {
   private myBookmarksStore: MyBookmarksStore;
   private publicBookmarksStore: PublicBookmarksStore;
   private personalBookmarksService: PersonalBookmarksService;
+  private adminService: AdminService;
   private keycloakService: KeycloakService;
   private userInfoStore: UserInfoStore;
 
@@ -68,6 +70,7 @@ export class AsyncBookmarkListComponent implements OnInit {
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
     this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
+    this.adminService = <AdminService>this.injector.get(AdminService);
     this.userInfoStore = <UserInfoStore>this.injector.get(UserInfoStore);
     this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
     this.myBookmarksStore = <MyBookmarksStore>this.injector.get(MyBookmarksStore);
@@ -233,12 +236,21 @@ export class AsyncBookmarkListComponent implements OnInit {
   }
 
   deleteBookmark(bookmark: Bookmark): void {
-    this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
-      this.bookmarkDeleted.emit(true);
-      this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-      this.userDataStore.removeFromStoresAtDeletion(bookmark);
-      this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
-    });
+    const deleteAsAdmin = this.keycloakService.isUserInRole('ROLE_ADMIN') && bookmark.userId !== this.userId;
+    if (deleteAsAdmin) {
+      this.adminService.deleteBookmark(bookmark).subscribe(() => {
+        this.bookmarkDeleted.emit(true);
+        this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+      });
+    } else {
+      this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
+        this.bookmarkDeleted.emit(true);
+        this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+        this.userDataStore.removeFromStoresAtDeletion(bookmark);
+        this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
+      });
+    }
+
   }
 
   shareBookmark(bookmark: Bookmark) {
