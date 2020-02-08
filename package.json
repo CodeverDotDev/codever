@@ -1,10 +1,10 @@
 {
   "name": "bookmarks.dev-api",
-  "version": "6.10.0",
+  "version": "7.0.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "nodemon --inspect ./bin/www",
+    "debug": "nodemon --inspect ./bin/www --watch src --watch docs/openapi/openapi.yaml",
     "integration-tests": "NODE_ENV=test nyc mocha '**/*.spec.js' --exit"
   },
   "dependencies": {

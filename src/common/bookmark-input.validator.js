@@ -72,9 +72,9 @@ let validateBookmarkInputForAdmin = function(bookmark) {
 }
 
 let verifyPublicBookmarkExistenceOnCreation = async function(bookmark) {
-  if (bookmark.shared) {
+  if (bookmark.public) {
     const existingBookmark = await Bookmark.findOne({
-      shared: true,
+      public: true,
       location: bookmark.location
     }).lean().exec();
     if (existingBookmark) {
@@ -86,9 +86,9 @@ let verifyPublicBookmarkExistenceOnCreation = async function(bookmark) {
 }
 
 let verifyPublicBookmarkExistenceOnUpdate = async function(bookmark, userId) {
-  if (bookmark.shared) {
+  if (bookmark.public) {
     const existingBookmark = await Bookmark.findOne({
-      shared: true,
+      public: true,
       location: bookmark.location,
       userId: {$ne: userId}
     }).lean().exec();
