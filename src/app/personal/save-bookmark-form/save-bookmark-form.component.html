@@ -35,7 +35,7 @@
       <label class="form-check-label">
         <input #publicBookmark [checked]="makePublic" (click)="onClickMakePublic(publicBookmark.checked)"
                class="form-check-input" type="checkbox" value="true" formControlName="shared"
-               [attr.disabled]="isUpdate && bookmark.shared?'':null">
+               [attr.disabled]="isUpdate && bookmark.shared && !keycloakService.isUserInRole('ROLE_ADMIN')?'':null">
         <strong> Make Public </strong> - pls favor <a
         href="https://github.com/CodepediaOrg/bookmarks/blob/master/tags/public-tags-simple.json" target="_blank">recommended
         tags</a> (<em>spam will not be tolerated</em>)
@@ -105,6 +105,19 @@
              formControlName="githubURL"
              placeholder='URL of the post, project on GitHub - e.g. https://github.com/CodepediaOrg/bookmarks'>
     </div>
+    <!-- ask community about this feature
+    <div class="form-group form-group-distanced">
+      <mat-form-field >
+        <mat-label style="width: 200px">Level <i class="fas fa-user-graduate level_icon"></i>  <i class="fas fa-user-tie level_icon"></i> <i class="fas fa-user-ninja level_icon"></i></mat-label>
+        <select matNativeControl formControlName="level" name="level">
+          <option value="" ></option>
+          <option value="beginner" class="beginner_option" selected>Beginner</option>
+          <option value="intermediate" style="font-size: large">Intermediate </option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </mat-form-field>
+    </div>
+    -->
     <div class="form-group">
       <label for="description" style="width: 100%">Description - <i class="fab fa-markdown"></i> <a
         class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
