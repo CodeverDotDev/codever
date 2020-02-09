@@ -78,7 +78,7 @@ let verifyPublicBookmarkExistenceOnCreation = async function(bookmark) {
       location: bookmark.location
     }).lean().exec();
     if (existingBookmark) {
-      throw new PublicBookmarkExistentError(`A public bookmark with this location is already present - location: ${bookmark.location}`);
+      throw new PublicBookmarkExistentError(`Create: A public bookmark with this location is already present - location: ${bookmark.location}`);
     }
   }
 
@@ -93,7 +93,7 @@ let verifyPublicBookmarkExistenceOnUpdate = async function(bookmark, userId) {
       userId: {$ne: userId}
     }).lean().exec();
     if (existingBookmark) {
-      throw new PublicBookmarkExistentError(`A public bookmark with this location is already present - location: ${bookmark.location}`);
+      throw new PublicBookmarkExistentError(`Update: A public bookmark with this location is already present - location: ${bookmark.location}`);
     }
   }
 

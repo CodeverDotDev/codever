@@ -8,33 +8,38 @@ let findPublicBookmarks = async function (query, limit) {
   const searchedTerms = searchedTermsAndTags.terms;
   const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
-  const regex = /user:\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
-  let userId = null;
-  let filteredTerms = [];
-  for ( let i = 0; i < searchedTerms.length; i++ ) {
-    if ( searchedTerms[i].match(regex) ) {
-      userId = searchedTerms[i].split(':')[1];
-    } else {
-      filteredTerms.push(searchedTerms[i]);
-    }
-  }
+  const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
 
-  if ( filteredTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, filteredTerms, limit, userId);
-  } else if ( filteredTerms.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTerms(filteredTerms, limit, userId);
+  if ( nonSpecialSearchTerms.length > 0 && searchedTags.length > 0 ) {
+    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, limit, specialSearchFilters);
+  } else if ( nonSpecialSearchTerms.length > 0 ) {
+    bookmarks = await getPublicBookmarksForSearchedTerms(nonSpecialSearchTerms, limit, specialSearchFilters);
   } else if ( searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, limit, userId);
-  } else if(userId) {
-    bookmarks = await getPublicBookmarksForUser(limit, userId);
+    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, limit, specialSearchFilters);
+  } else if(specialSearchFilters.userId) {
+    bookmarks = await getPublicBookmarksForUser(limit, specialSearchFilters.userId);
   }
 
   return bookmarks;
 }
 
+let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
+  if ( specialSearchFilters.userId ) {
+    filter.userId = specialSearchFilters.userId;
+  }
 
-let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, userId) {
+  if ( specialSearchFilters.lang ) {
+    filter.language = specialSearchFilters.lang
+  }
+
+  if ( specialSearchFilters.site ) {
+    filter.location = new RegExp(specialSearchFilters.site, 'i');
+  }
+};
+
+
+let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, specialSearchFilters) {
   let filter = {
     shared: true,
     tags:
@@ -47,9 +52,7 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTe
       }
   }
 
-  if ( userId ) {
-    filter.userId = userId;
-  }
+  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
 
   let bookmarks = await Bookmark.find(
     filter,
@@ -70,7 +73,7 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTe
   return bookmarks;
 }
 
-let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit, userId) {
+let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit, specialSearchFilters) {
 
   const termsJoined = searchedTerms.join(' ');
   const termsQuery = escapeStringRegexp(termsJoined);
@@ -79,9 +82,7 @@ let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit, u
     $text: {$search: termsQuery}
   }
 
-  if ( userId ) {
-    filter.userId = userId;
-  }
+  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
 
   let bookmarks = await Bookmark.find(
     filter,
@@ -102,7 +103,7 @@ let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit, u
   return bookmarks;
 }
 
-let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, userId) {
+let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, specialSearchFilters) {
   let filter = {
     shared: true,
     tags:
@@ -111,9 +112,7 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, use
       }
   }
 
-  if ( userId ) {
-    filter.userId = userId;
-  }
+  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
 
   let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})
