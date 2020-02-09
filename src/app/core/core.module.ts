@@ -15,6 +15,7 @@ import { UserInfoService } from './user/user-info.service';
 import { UserInfoStore } from './user/user-info.store';
 import { SuggestedTagsStore } from './user/suggested-tags.store';
 import { MyBookmarksStore } from './user/my-bookmarks.store';
+import {AdminService} from './admin/admin.service';
 
 
 /**
@@ -41,6 +42,7 @@ import { MyBookmarksStore } from './user/my-bookmarks.store';
     Logger,
     ErrorService,
     PersonalBookmarksService,
+    AdminService,
     UserDataService,
     UserDataStore,
     MyBookmarksStore,
