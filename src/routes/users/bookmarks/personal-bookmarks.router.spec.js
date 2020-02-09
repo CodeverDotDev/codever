@@ -285,7 +285,7 @@ describe('Personal Bookmarks tests', function () {
         .send(bookmarkExample)
 
       expect(response.statusCode).to.equal(HttpStatus.CONFLICT);
-      expect(response.body.message).to.equal(`A public bookmark with this location is already present - location: ${bookmarkExample.location}`);
+      expect(response.body.message).to.equal(`Create: A public bookmark with this location is already present - location: ${bookmarkExample.location}`);
     });
 
     describe('invalid bookmark attributes at UPDATE', function () {
@@ -602,6 +602,51 @@ describe('Personal Bookmarks tests', function () {
       expect(filteredBookmarks.length).to.equal(1);
       expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
+
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param as tag and word - private:only and lang', async function () {
+      const queryText = `${verySpecialTag} [${verySpecialTag}] private:only lang:en`;
+      const response = await request(app)
+        .get(basePathApiPersonalUsersBookmarks)
+        .set('Authorization', bearerToken)
+        .query({q: queryText})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+    });
+
+    it('should NOT find bookmark with very-special-tag-personal-bookmarks in query param as tag and word - private:only and wrong lang', async function () {
+      const queryText = `${verySpecialTag} [${verySpecialTag}] private:only lang:de`;
+      const response = await request(app)
+        .get(basePathApiPersonalUsersBookmarks)
+        .set('Authorization', bearerToken)
+        .query({q: queryText})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      expect(filteredBookmarks.length).to.equal(0);
+    });
+
+
+    it('should find bookmark with very-special-tag-personal-bookmarks in query param as tag and word - private:only, lang and site', async function () {
+      const queryText = `${verySpecialTag} [${verySpecialTag}] private:only lang:en site:very-special-url.com`;
+      const response = await request(app)
+        .get(basePathApiPersonalUsersBookmarks)
+        .set('Authorization', bearerToken)
+        .query({q: queryText})
+        .query({limit: 10});
+
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      const filteredBookmarks = response.body;
+      const foundBookmark = filteredBookmarks[0];
+      expect(filteredBookmarks.length).to.equal(1);
+      expect(foundBookmark.name).to.equal(verySpecialTitle);
+    });
+
 
     it(`should find bookmark with special title - ${verySpecialTitle} `, async function () {
       const response = await request(app)

@@ -116,7 +116,46 @@ function escapeRegExp(str) {
   return str.replace(regex, '\\$&'); // $& means the whole matched string
 }
 
+let extractSpecialSearchTerms = function (searchedTerms) {
+  let specialSearchFilters = {}
+  let nonSpecialSearchTerms = [];
+  for ( let i = 0; i < searchedTerms.length; i++ ) {
+    const searchTerm = searchedTerms[i];
+
+    const langParamIndex = searchTerm.startsWith('lang:');
+    if ( langParamIndex > 0 ) {
+      specialSearchFilters.lang = searchTerm.substring(5, searchTerm.length);
+      continue;
+    }
+
+    const siteParamIndex = searchTerm.startsWith('site:');
+    if ( siteParamIndex > 0 ) {
+      specialSearchFilters.site = searchTerm.substring(5, searchTerm.length);
+      continue;
+    }
+
+    if ( searchTerm === 'private:only' ) {
+      specialSearchFilters.privateOnly = true;
+      continue;
+    }
+
+    const regex = /user:\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
+    if ( searchedTerms[i].match(regex) ) {
+      specialSearchFilters.userId = searchedTerms[i].split(':')[1];
+      continue;
+    }
+
+    nonSpecialSearchTerms.push(searchTerm);
+  }
+
+  return {
+    specialSearchFilters: specialSearchFilters,
+    nonSpecialSearchTerms: nonSpecialSearchTerms
+  }
+}
+
 module.exports = {
   splitSearchQuery: splitSearchQuery,
-  bookmarkContainsSearchedTerm: bookmarkContainsSearchedTerm
+  bookmarkContainsSearchedTerm: bookmarkContainsSearchedTerm,
+  extractSpecialSearchTerms: extractSpecialSearchTerms
 }

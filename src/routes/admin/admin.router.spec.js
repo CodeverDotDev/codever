@@ -321,7 +321,7 @@ describe('Admin API Tests', function () {
         .send(bookmarkExample);
 
       expect(response.statusCode).to.equal(HttpStatus.CONFLICT);
-      expect(response.body.message).to.equal(`A public bookmark with this location is already present - location: ${bookmarkExample.location}`);
+      expect(response.body.message).to.equal(`Create: A public bookmark with this location is already present - location: ${bookmarkExample.location}`);
     });
 
 

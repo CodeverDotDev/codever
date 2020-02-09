@@ -11,25 +11,34 @@ let findPersonalBookmarks = async function (query, limit, userId) {
   const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
 
-  let privateOnly = false;
-  const privateOnlyIndex = searchedTerms && searchedTerms.indexOf('private:only');
-  if ( privateOnlyIndex > -1 ) {
-    privateOnly = true;
-    searchedTerms.splice(privateOnlyIndex, 1);
-  }
+  const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
 
-  if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForTagsAndTerms(searchedTags, searchedTerms, limit, userId, privateOnly);
-  } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForSearchedTerms(searchedTerms, limit, userId, privateOnly);
+  if ( nonSpecialSearchTerms.length > 0 && searchedTags.length > 0 ) {
+    bookmarks = await getPersonalBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, limit, userId, specialSearchFilters);
+  } else if ( nonSpecialSearchTerms.length > 0 ) {
+    bookmarks = await getPersonalBookmarksForSearchedTerms(nonSpecialSearchTerms, limit, userId, specialSearchFilters);
   } else {
-    bookmarks = await getPersonalBookmarksForSearchedTags(searchedTags, limit, userId, privateOnly);
+    bookmarks = await getPersonalBookmarksForSearchedTags(searchedTags, limit, userId, specialSearchFilters);
   }
 
   return bookmarks;
 }
 
-let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, userId, privateOnly) {
+let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
+  if ( specialSearchFilters.privateOnly ) {
+    filter.shared = false;
+  }
+
+  if ( specialSearchFilters.lang ) {
+    filter.language = specialSearchFilters.lang
+  }
+
+  if ( specialSearchFilters.site ) {
+    filter.location = new RegExp(specialSearchFilters.site, 'i'); //TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
+  }
+};
+
+let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, userId, specialSearchFilters) {
   let filter = {
     tags:
       {
@@ -41,9 +50,7 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searched
       }
   }
 
-  if ( privateOnly ) {
-    filter.shared = false;
-  }
+  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
 
   const userData = await User.findOne({
     userId: userId
@@ -73,16 +80,16 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, searched
 }
 
 
-let getPersonalBookmarksForSearchedTerms = async function (searchedTerms, limit, userId, privateOnly) {
+let getPersonalBookmarksForSearchedTerms = async function (searchedTerms, limit, userId, specialSearchFilters) {
 
   const termsJoined = searchedTerms.join(' ');
   const termsQuery = escapeStringRegexp(termsJoined);
   let filter = {
     $text: {$search: termsQuery}
   }
-  if ( privateOnly ) {
-    filter.shared = false;
-  }
+
+  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+
   const userData = await User.findOne({userId: userId});
   filter.$or = [
     {userId: userId},
@@ -109,16 +116,16 @@ let getPersonalBookmarksForSearchedTerms = async function (searchedTerms, limit,
 }
 
 
-let getPersonalBookmarksForSearchedTags = async function (searchedTags, limit, userId, privateOnly) {
+let getPersonalBookmarksForSearchedTags = async function (searchedTags, limit, userId, specialSearchFilters) {
   let filter = {
     tags:
       {
         $all: searchedTags
       }
   }
-  if ( privateOnly ) {
-    filter.shared = false;
-  }
+
+  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+
   const userData = await User.findOne({
     userId: userId
   });
@@ -135,7 +142,6 @@ let getPersonalBookmarksForSearchedTags = async function (searchedTags, limit, u
 
   return bookmarks;
 }
-
 
 
 module.exports = {
