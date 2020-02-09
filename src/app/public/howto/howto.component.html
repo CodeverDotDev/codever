@@ -1,14 +1,18 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h2>Getting started</h2>
-    <p class="lead">Bookmarks.dev is a bookmark manager created and designed with Developers & Co in mind. Take a look at our <a href="{{environment.HOST}}/about">About</a> page for more details.
+    <p class="lead">Bookmarks.dev is a bookmark manager created and designed with Developers & Co in mind. Take a look
+      at our <a href="{{environment.HOST}}/about">About</a> page for more details.
     <p>
-    Create an <a target="_blank" href="{{environment.keycloak.url}}/realms/bookmarks/account/">Account</a> first.
-    You will be taken to the <strong>Login/Registration</strong> form, where you can choose to connect via <strong>email and password</strong>, or
-    via one of the many supported identity providers (<i class="fab fa-github"></i> Github, <i class="fab fa-google"></i> Google,
-    <i class="fab fa-twitter"></i> Twitter, <i class="fab fa-stack-overflow"></i> StackOverflow, <i class="fab fa-linkedin"></i> LinkedIn
-    or <i class="fab fa-facebook"></i> Facebook). Choose an <strong>username</strong>,
-    <a href="{{environment.HOST}}/personal/new"><strong>add your first bookmark</strong></a> and you are good to go.
+      Create an <a target="_blank" href="{{environment.keycloak.url}}/realms/bookmarks/account/">Account</a> first.
+      You will be taken to the <strong>Login/Registration</strong> form, where you can choose to connect via <strong>email
+      and password</strong>, or
+      via one of the many supported identity providers (<i class="fab fa-github"></i> Github, <i
+      class="fab fa-google"></i> Google,
+      <i class="fab fa-twitter"></i> Twitter, <i class="fab fa-stack-overflow"></i> StackOverflow, <i
+      class="fab fa-linkedin"></i> LinkedIn
+      or <i class="fab fa-facebook"></i> Facebook). Choose an <strong>username</strong>,
+      <a href="{{environment.HOST}}/personal/new"><strong>add your first bookmark</strong></a> and you are good to go.
     <hr/>
     <h2>Save bookmarks</h2>
     <p class="lead">We've made it easy to save bookmarks:</p>
@@ -80,6 +84,33 @@
         Favorites</strong> option </p>
 
     <img src="./assets/img/search-bar-example.png" alt="Search bar example" style="align-content: center;"/>
+
+    <br/>
+    <br/>
+    <h3>Filters</h3>
+    You can filter further by adding the following parameters to your search
+    <ul>
+      <li>
+        <code>lang:iso_language_code</code>
+        - e.g. <code>lang:en</code> for English, <code>lang:es</code> for Spanish and <code>lang:de</code>
+        for German bookmarks
+      </li>
+
+      <li><code>site:site_URL</code>
+        - e.g. <code>site:codepedia.org</code> bookmarks only from website <a href="https://www.codepedia.org">www.codepedia.org</a>
+      </li>
+      <li><code>private:only</code>
+        - when you want to search only through your <strong>private</strong> bookmarks
+      </li>
+    </ul>
+
+    For example if you want to search for bookmarks that contain <code>javascript</code>, are in <code>German</code>
+    and published on <code>www.codepedia.org</code>, you would use the following as query text in the search box:
+    <code>
+      javascript lang:de site:codepedia.org
+    </code>
+
+    <h3>Save searches</h3>
     <p class="note_normal">You have the possibility to save this search by clicking the <strong>Save search</strong>
       button. This way it will be displayed in the <strong>auto completion</strong> when you input text in the Search
       bar </p>
@@ -89,7 +120,8 @@
 
     You can trigger the same search as above by calling the following URL:
 
-    <a href="https://www.bookmarks.dev/search?q=exception [java]&sd=personal">https://www.bookmarks.dev/search?q=exception [java]&sd=personal</a>
+    <a href="https://www.bookmarks.dev/search?q=exception [java]&sd=personal">https://www.bookmarks.dev/search?q=exception
+      [java]&sd=personal</a>
     <ul>
       <li><strong>q</strong> - here is your input search text</li>
       <li><strong>sd</strong> - search domain with two options</li>
