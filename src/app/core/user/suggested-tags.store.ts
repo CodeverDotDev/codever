@@ -12,7 +12,7 @@ export class SuggestedTagsStore {
 
   getSuggestedTags$(userId: String) {
     if (!this.suggestedTagsLoaded) {
-      this.personalBookmarksService.getTagsOfUser(userId).subscribe( data => {
+      this.personalBookmarksService.getSuggestedTagsForUser(userId).subscribe(data => {
         this.suggestedTagsLoaded = true;
         this._suggestedTags.next(data);
       });

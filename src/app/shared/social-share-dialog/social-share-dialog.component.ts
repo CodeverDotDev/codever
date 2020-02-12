@@ -30,8 +30,8 @@ export class SocialShareDialogComponent implements OnInit {
     if (this.bookmark.publishedOn) {
       this.tweetText += 'Published on ' + this.datePipe.transform(this.bookmark.publishedOn, 'yyyy-MM-dd') + '\n';
     }
-    if (this.bookmark.githubURL) {
-      this.tweetText += 'Source code ' + this.bookmark.githubURL + '\n\n';
+    if (this.bookmark.sourceCodeURL) {
+      this.tweetText += 'Source code ' + this.bookmark.sourceCodeURL + '\n\n';
     }
   }
 
