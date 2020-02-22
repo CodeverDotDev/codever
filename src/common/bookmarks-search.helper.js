@@ -72,7 +72,7 @@ let bookmarkContainsSearchedTerm = function (bookmark, searchedTerm) {
   if ( (bookmark.name && pattern.test(bookmark.name.toLowerCase()))
     || (bookmark.location && pattern.test(bookmark.location.toLowerCase()))
     || (bookmark.description && pattern.test(bookmark.description.toLowerCase()))
-    || (bookmark.githubURL && pattern.test(bookmark.githubURL.toLowerCase()))
+    || (bookmark.sourceCodeURL && pattern.test(bookmark.sourceCodeURL.toLowerCase()))
   ) {
     result = true;
   }

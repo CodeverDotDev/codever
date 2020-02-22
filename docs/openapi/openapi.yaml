@@ -1,0 +1,702 @@
+openapi: 3.0.3
+info:
+  title: Bookmarks.dev API
+  description: API supporting the [www.bookmarks.dev](https://www.bookmarks.dev)
+  contact:
+    name: Adrian Matei
+    url: https://github.com/adrianmatei-me
+    email: ama@codingpedia.org
+  license:
+    name: License MIT
+    url: https://github.com/CodepediaOrg/bookmarks.dev-api/blob/develop/LICENSE
+  version: 2.0.0
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local server for development
+  - url: https://www.bookmarks.dev/api
+    description: Main (production) server
+
+tags:
+  - name: root
+    description: Used to mark the root endpoint
+  - name: version
+    description: Access to the project's version and gitSha1
+  - name: public-bookmarks
+    description: Access to public bookmarks
+  - name: personal-bookmarks
+    description: Operations performed on personal bookmarks
+  - name: user-data
+    description: Operations performed on user data
+  - name: helper
+    description: Helper endpoints/operations
+
+
+paths:
+  /:
+    get:
+      description: message with link to Swagger docs
+      tags:
+        - root
+      responses:
+        200:
+          description: message with link to Swagger docs
+          content: {}
+
+  /version:
+    get:
+      description: displays the current version of the project (from package.json) and the gitSha1
+      tags:
+        - version
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+
+  /public/bookmarks:
+    get:
+      summary: Returns list of public bookmarks filtered with query parameters.
+      tags:
+        - public-bookmarks
+      description: |
+        * if `q` param is present they are filtered by the query text contained in it. (takes precedence over `location`)
+        * if `location` param is present returns a list with one **public** bookmark with that URL
+        * else **defaults** to the latest added 100 public bookmarks
+
+        > The list is empty if not public bookmarks returned for filter
+      parameters:
+        - $ref: "#/components/parameters/searchTextQueryParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+        - $ref: "#/components/parameters/locationQueryParam"
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/BookmarkListResponse'
+
+  /webpage-info/scrape:
+    get:
+      description: Returns web page info about the page scraped by `location`, `youtubeVideoId` or `stackoverflowQuestionId`
+      operationId: get-webpage-info
+      tags:
+        - helper
+      parameters:
+        - name: location
+          in: query
+          description: url of the page scraped for data - **this takes precedence over the other query params if present**
+          schema:
+            type: string
+        - name: youtubeVideoId
+          in: query
+          description: id of the youtube video - https://www.youtube.com/watch?v=**Emlc7mkZDQ4**
+          schema:
+            type: string
+        - name: stackoverflowQuestionId
+          in: query
+          description: id of the question from stackoverflow - https://stackoverflow.com/questions/**51391080**/handling-errors-in-express-async-middleware
+          schema:
+            type: string
+      responses:
+        200:
+          description: contains details about the web page, youtube video or stackoverflow question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebpageInfo'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /personal/users/{userId}/bookmarks:
+    get:
+      description: |
+        Returns list of user's bookmarks - might be filtered by query text (`q` with `limit`) > `location` > `orderBy parameters;
+        The parameters precedence is shown via **>**
+      operationId: get-personal-bookmarks
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: "#/components/parameters/userIdPathParam"
+        - $ref: "#/components/parameters/searchTextQueryParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+        - $ref: "#/components/parameters/locationQueryParam"
+        - name: orderBy
+          in: query
+          description: |
+            It is considered in the abscence of `q` or `location` parameters
+            Possible values:
+              * MOST_LIKES - personal bookmarks most liked by the community
+              * LAST_CREATED - personal bookmarks last added
+              * MOST_USED - personal bookmarks the user (owner) clicked the most
+          schema:
+            type: string
+            enum: [MOST_LIKES, LAST_CREATED, MOST_USED]
+      responses:
+        200:
+          description: list of user's bookmarks
+          $ref: '#/components/responses/BookmarkListResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+    post:
+      description: Create new bookmark for user
+      operationId: create-bookmark
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      requestBody:
+        description: Bookmark json data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bookmark'
+            examples:
+              blog-article:
+                value:
+                  name: Cleaner code in an Express REST API with unified error handling – CodepediaOrg
+                  location: https://www.codepedia.org/ama/cleaner-code-in-expressjs-rest-api-with-custom-error-handling
+                  language: en
+                  tags: [nodejs, error-handling, expressjs]
+                  publishedOn: 2019-12-02,
+                  sourceCodeURL: https://github.com/CodepediaOrg/bookmarks.dev-api
+                  description: Shows how you can make your backend ExpressJS REST API cleaner by using custom error handling middleware. Code snippets of before and after refactoring are presented to make the point
+                  descriptionHtml: <p>Shows how you can make your backend ExpressJS REST API cleaner by using custom error handling middleware. Code snippets of before and after refactoring are presented to make the point</p>
+                  userId: 4c617f2b-2bad-498b-a9c6-4e9a8c303798
+                  public: true,
+                  lastAccessedAt: 2020-02-15T20:42:19.297Z
+                  likeCount: 0
+              stackoverflow-question:
+                value:
+                  name: Create GUID / UUID in JavaScript?
+                  location: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+                  language: en
+                  tags: [javascript, guid, uuid]
+                  publishedOn: 2008-09-19
+                  sourceCodeURL:
+                  description: UUIDs (Universally Unique IDentifier), also known as GUIDs (Globally Unique IDentifier), according to [RFC 4122](https://www.ietf.org/rfc/rfc4122.txt), are identifiers with a certain uniqueness guarantee.\n\nThe best way to generate them, is to follow implementation instructions in the said RFC, use one of the many community vetted open source implementations.\n\nA popular Open Source tool for working with UUIDs in JavaScript is [node-uuid](https://github.com/kelektiv/node-uuid)\n\nNote that just randomly generating the identifiers byte by byte, or character by character, will not give you the same guarantees as a conforming implementation. Also, very important, systems working with compliant UUIDs may choose not to accept randomly generated ones, and many open source validators will actually check for a valid structure.\n\nAn UUID must have this format:\n```\nxxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx\n```\nWhere the M and N positions may only have certain values. At this time, the only valid values for M are 1, 2, 3, 4 and 5, so randomly generating that position would make most results unacceptable.
+                  descriptionHtml: <p>UUIDs (Universally Unique IDentifier), also known as GUIDs (Globally Unique IDentifier), according to <a href=\"https://www.ietf.org/rfc/rfc4122.txt\">RFC 4122</a>, are identifiers with a certain uniqueness guarantee.</p>\n<p>The best way to generate them, is to follow implementation instructions in the said RFC, use one of the many community vetted open source implementations.</p>\n<p>A popular Open Source tool for working with UUIDs in JavaScript is <a href=\"https://github.com/kelektiv/node-uuid\">node-uuid</a></p>\n<p>Note that just randomly generating the identifiers byte by byte, or character by character, will not give you the same guarantees as a conforming implementation. Also, very important, systems working with compliant UUIDs may choose not to accept randomly generated ones, and many open source validators will actually check for a valid structure.</p>\n<p>An UUID must have this format:</p>\n<pre><code>xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx\n</code></pre>\n<p>Where the M and N positions may only have certain values. At this time, the only valid values for M are 1, 2, 3, 4 and 5, so randomly generating that position would make most results unacceptable.</p>
+                  userId: 4c617f2b-2bad-498b-a9c6-4e9a8c303798
+                  public: true
+                  lastAccessedAt: 2020-02-15T20:59:45.447Z
+                  likeCount: 0
+                  stackoverflowQuestionId: 105034
+              youtube-video:
+                value:
+                  name: Jake Archibald In The Loop - JSConf.Asia - 35min
+                  location: https://www.youtube.com/watch?v=cCOL7MC4Pl0
+                  language: en
+                  tags: [javascript, event-loop, browser]
+                  publishedOn: 2018-02-09
+                  sourceCodeURL:
+                  description: Have you ever had a bug where things were happening in the wrong order, or particular style changes were being ignored? Ever fixed that bug by wrapping a section of code in a setTimeout? Ever found that fix to be unreliable, and played around with the timeout number until it kinda almost always worked? \nThis talk looks at the browser's event loop, the thing that orchestrates the main thread of the browser, which includes JavaScript, events, and rendering. We'll look at the difference between tasks, microtasks, requestAnimationFrame, requestIdleCallback, and where events land. \nHopefully you'll never have to use setTimeout hacks again!\"
+                  descriptionHtml: <p>Have you ever had a bug where things were happening in the wrong order, or particular style changes were being ignored? Ever fixed that bug by wrapping a section of code in a setTimeout? Ever found that fix to be unreliable, and played around with the timeout number until it kinda almost always worked? \nThis talk looks at the browser's event loop, the thing that orchestrates the main thread of the browser, which includes JavaScript, events, and rendering. We'll look at the difference between tasks, microtasks, requestAnimationFrame, requestIdleCallback, and where events land. \nHopefully you'll never have to use setTimeout hacks again!\"</p>
+                  userId: 4c617f2b-2bad-498b-a9c6-4e9a8c303798
+                  public: true
+                  lastAccessedAt: 2020-02-15T21:12:12.670Z
+                  likeCount: 0
+                  youtubeVideoId: cCOL7MC4Pl0
+
+      responses:
+        201:
+          description: Empty response, http status is relevant
+          headers:
+            location:
+              description: resource url of the newly created bookmark
+              schema:
+                type: object
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        409:
+          description: |
+            Conflict. It can be triggered either when trying to create a public bookmark that is already present
+            or a bookmark with the location is already present for the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorModel'
+      x-codegen-request-body-name: body
+
+    delete:
+      description: Batch delete personal bookmarks, given query parameters
+      operationId: delete-personal-bookmarks
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: '#/components/parameters/locationQueryParam'
+        - in: query
+          name: tag
+          description: Private bookmarks with this tag will be batch deleted. It is considered in combination with the `type` param which needs to have the value `private`
+          schema:
+            type: string
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - private
+      responses:
+        204:
+          description: OK (No content) when bookmarks have been deleted
+          content: {}
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /personal/users/{userId}/bookmarks/suggested-tags:
+    get:
+      description: Returns suggested tags used in auto-completion when saving a bookmark
+      operationId: get-suggested-tags-for-user
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      type: string
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /personal/users/{userId}/bookmarks/{bookmarkId}:
+    put:
+      description: (full) update existing bookmark of user
+      operationId: update-bookmark
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: '#/components/parameters/bookmarkIdPathParam'
+      requestBody:
+        description: Complete bookmark to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bookmark'
+        required: true
+      responses:
+        200:
+          description: OK when operation successful and updated bookmark in body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          description: internal server error, when unknown server error is catched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorModel'
+      x-codegen-request-body-name: body
+    delete:
+      description: deletes bookmark of user
+      operationId: delete-bookmark
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: '#/components/parameters/bookmarkIdPathParam'
+      responses:
+        204:
+          description: OK (No content) when operation successful and bookmark was
+            removed
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /personal/users/{userId}:
+    description: Operations that work on user data
+    post:
+      description: Creates user data
+      operationId: create-user-data
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      requestBody:
+        description: User data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        201:
+          description: OK when operation successful and updated user data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    get:
+      description: Reads user data
+      operationId: get-user-data
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      description: Updates user data
+      operationId: update-user-data
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      requestBody:
+        description: User data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      description: delete user data
+      operationId: delete-user-data
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      responses:
+        204:
+          description: OK - No-content
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    Bookmark:
+      required:
+        - language
+        - location
+        - name
+        - tags
+        - userId
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        location:
+          type: string
+        language:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        descriptionHtml:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        lastAccessedAt:
+          type: string
+          format: date-time
+        publishedOn:
+          type: string
+          format: date
+        public:
+          type: boolean
+        userId:
+          type: string
+        likeCount:
+          type: number
+        sourceCodeURL:
+          type: string
+        ownerVisitCount:
+          type: number
+        youtubeVideoId:
+          type: string
+        stackoverflowQuestionId:
+          type: string
+
+    Search:
+      required:
+        - text
+        - searchDomain
+      properties:
+        text:
+          type: string
+        lastAccessedAt:
+          type: string
+          format: date-time
+        searchDomain:
+          type: string
+          enum:
+            - public
+            - personal
+        count:
+          type: integer
+    User:
+      required:
+        - userId
+      properties:
+        userId:
+          type: string
+        searches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Search'
+        readLater:
+          type: array
+          items:
+            type: string
+        likes:
+          type: array
+          items:
+            type: string
+        watchedTags:
+          type: array
+          items:
+            type: string
+        favorites:
+          type: array
+          items:
+            type: string
+        history:
+          type: array
+          items:
+            type: string
+
+    BasicErrorModel:
+      type: object
+      required:
+        - httpStatus
+        - message
+      properties:
+        httpStatus:
+          type: integer
+        message:
+          type: string
+        type:
+          type: string
+          description: specify error Type (e.g. 'MongoError')
+        stack:
+          type: string
+          description: the stacktrace of the error - it is filled only in "development" mode
+
+    ValidationErrorModel:
+      allOf:
+        - $ref: '#/components/schemas/BasicErrorModel'
+        - type: object
+          required:
+            - validationErrors
+            - httpStatus
+          properties:
+            httpStatus:
+              type: integer
+              enum: [400]
+            validationErrors:
+              type: array
+              items:
+                type: string
+    WebpageInfo:
+      type: object
+      properties:
+        title:
+          type: string
+        metaDescription:
+          type: string
+        tags:
+          description: these are avaialble for youtube videos and stackoverflow questions
+          type: array
+          items:
+            type: string
+        publishedOn:
+          type: string
+          format: date
+    Version:
+      type: object
+      required:
+        - version
+        - gitSha1
+      properties:
+        version:
+          type: string
+        gitSha1:
+          type: string
+  parameters:
+    userIdPathParam:
+      name: userId
+      in: path
+      description: keycloak user id
+      required: true
+      schema:
+        type: string
+        default: 4c617f2b-2bad-498b-a9c6-4e9a8c303798
+    bookmarkIdPathParam:
+      name: bookmarkId
+      in: path
+      description: id of the bookmark
+      required: true
+      schema:
+        type: string
+    searchTextQueryParam:
+      name: q
+      in: query
+      description: |
+        search query (terms are separated by space). There are special filters available:
+          * `lang:iso_language_code` - e.g. `lang:en` for English, `lang:es` for Spanish and `lang:de` for German bookmarks
+          * `site:site_URL` - e.g. `site:codepedia.org` bookmarks only from website [www.codepedia.org](https://www.codepedia.org)
+          * `userId:UUID-user` - to be used only when querying **public bookmarks** submitted by the user with  `userId`
+          * `private:only` - makes sense **only** when used for querying **personal bookmarks**
+      schema:
+        type: string
+      examples:       # Multiple examples
+        german:
+          value: 'lang:de'    # Example value
+          summary: Will look only for bookmarks in German
+        site:
+          value: 'site:codepedia.org'
+          summary: Wille look only for bookmarks with the domain **codepedia.org**
+        complex:
+          value: 'exception handling [java] site:codepedia.org'
+          summary: Wille look only for bookmarks with terms "exception" and "handling" tagged with "java" and the domain **codepedia.org**
+        complex-private-only:
+          value: 'exception handling [java] site:wiki.my-corporation.com private:only'
+          summary: Same as above but only within **private** bookmarks
+    limitQueryParam:
+      name: limit
+      in: query
+      description: Limits the number of returned results (used in combination with queryParam)
+      required: false
+      schema:
+        type: integer
+        default: 10
+        format: int32
+    locationQueryParam:
+      name: location
+      in: query
+      description: location of the bookmark, usually an URL
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    BookmarkListResponse:
+      description: List of bookmarks
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Bookmark'
+    ForbiddenError:
+      description: Access token is missing or invalid
+    UnauthorizedError:
+      description: unauthorized (you need to have a valid token) and userId must
+        match the subject in token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicErrorModel'
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicErrorModel'
+    InternalServerError:
+      description: Internal server error, when unknown server error is catched
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicErrorModel'
+    ValidationError:
+      description: Bad request, validation errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorModel'
+
+# 2) Apply the security globally to all operations
+security:
+  - bearerAuth: []         # use the same name as above

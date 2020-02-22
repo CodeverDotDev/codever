@@ -11,14 +11,12 @@ let findPublicBookmarks = async function (query, limit) {
 
   const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
 
-  if ( nonSpecialSearchTerms.length > 0 && searchedTags.length > 0 ) {
+  if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
     bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, limit, specialSearchFilters);
-  } else if ( nonSpecialSearchTerms.length > 0 ) {
+  } else if ( searchedTerms.length > 0 ) {
     bookmarks = await getPublicBookmarksForSearchedTerms(nonSpecialSearchTerms, limit, specialSearchFilters);
   } else if ( searchedTags.length > 0 ) {
     bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, limit, specialSearchFilters);
-  } else if(specialSearchFilters.userId) {
-    bookmarks = await getPublicBookmarksForUser(limit, specialSearchFilters.userId);
   }
 
   return bookmarks;
@@ -39,16 +37,19 @@ let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filte
 };
 
 
-let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTerms, limit, specialSearchFilters) {
+let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, limit, specialSearchFilters) {
   let filter = {
-    shared: true,
+    public: true,
     tags:
       {
         $all: searchedTags
-      },
-    $text:
+      }
+  }
+
+  if ( nonSpecialSearchTerms.length > 0 ) {
+    filter.$text =
       {
-        $search: searchedTerms.join(' ')
+        $search: nonSpecialSearchTerms.join(' ')
       }
   }
 
@@ -65,7 +66,7 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTe
     .lean()
     .exec();
 
-  for ( const term of searchedTerms ) {
+  for ( const term of nonSpecialSearchTerms ) {
     bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
   }
   bookmarks = bookmarks.slice(0, limit);
@@ -73,13 +74,16 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, searchedTe
   return bookmarks;
 }
 
-let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit, specialSearchFilters) {
+let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, limit, specialSearchFilters) {
 
-  const termsJoined = searchedTerms.join(' ');
-  const termsQuery = escapeStringRegexp(termsJoined);
   let filter = {
-    shared: true,
-    $text: {$search: termsQuery}
+    public: true
+  }
+
+  if(nonSpecialSearchTerms.length > 0){
+    const termsJoined = nonSpecialSearchTerms.join(' ');
+    const termsQuery = escapeStringRegexp(termsJoined);
+    filter.$text = {$search: termsQuery};
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -95,7 +99,7 @@ let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit, s
     .lean()
     .exec();
 
-  for ( const term of searchedTerms ) {
+  for ( const term of nonSpecialSearchTerms ) {
     bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
   }
   bookmarks = bookmarks.slice(0, limit);
@@ -105,7 +109,7 @@ let getPublicBookmarksForSearchedTerms = async function (searchedTerms, limit, s
 
 let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, specialSearchFilters) {
   let filter = {
-    shared: true,
+    public: true,
     tags:
       {
         $all: searchedTags
@@ -126,7 +130,7 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, spe
 let getPublicBookmarksForUser = async function (limit, userId) {
 
   let filter = {
-    shared: true,
+    public: true,
     userId: userId
   }
 

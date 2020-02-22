@@ -4,15 +4,15 @@ db.bookmarks.createIndex(
         location: "text",
         description: "text",
         tags: "text",
-        githubURL: "text",
+        sourceCodeURL: "text",
     },
     {
         weights: {
             name: 2,
-            location: 3,
+            location: 5,
             description: 1,
             tags: 3,
-            githubURL: 1
+            sourceCodeURL: 1
         },
         name: "full_text_search",
         default_language: "none",

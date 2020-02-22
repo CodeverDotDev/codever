@@ -26,9 +26,9 @@ router.get('/', async (request, response, next) => {
 router.get('/', async (request, response, next) => {
   const location = request.query.location;
   if (location) {
-    const bookmark = await PublicBookmarksService.getBookmarkByLocation(location);
+    const bookmarksForLocation = await PublicBookmarksService.getBookmarkByLocation(location);
 
-    return response.send(bookmark);
+    return response.send(bookmarksForLocation);
   } else {
     next()
   }
@@ -44,7 +44,7 @@ router.get('/', async (request, response) => {
 });
 
 router.get('/tagged/:tag', async (request, response) => {
-  const orderByFilter = request.query.orderBy === 'STARS' ? {likes: -1} : {createdAt: -1};
+  const orderByFilter = request.query.orderBy === 'STARS' ? {likeCount: -1} : {createdAt: -1};
   const bookmarks = await PublicBookmarksService.getBookmarksForTag(request.params.tag, orderByFilter);
 
   return response.send(bookmarks);
@@ -60,36 +60,6 @@ router.get('/scrape', async function (request, response, next) {
   } else {
     next();
   }
-});
-
-/* GET youtube video data */
-router.get('/scrape', async function (request, response, next) {
-  const youtubeVideoId = request.query.youtubeVideoId;
-  if (youtubeVideoId) {
-    const webpageData = await PublicBookmarksService.getYoutubeVideoData(youtubeVideoId)
-
-    return response.send(webpageData);
-  } else {
-    next();
-  }
-});
-
-/* GET stackoverflow question data */
-router.get('/scrape', async function (request, response, next) {
-  const stackoverflowQuestionId = request.query.stackoverflowQuestionId;
-  if (stackoverflowQuestionId) {
-    const webpageData = await PublicBookmarksService.getStackoverflowQuestionData(stackoverflowQuestionId)
-
-    return response.send(webpageData);
-  } else {
-    next();
-  }
-});
-
-/* GET title of bookmark given its url */
-router.get('/scrape', async function () {
-  throw new ValidationError('Missing parameters - url or youtubeVideoId',
-    ['You need to provide the url to scrape for or the youtubeVideoId']);
 });
 
 /**

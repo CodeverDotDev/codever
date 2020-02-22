@@ -1,10 +1,10 @@
 const Token = require('keycloak-connect/middleware/auth-utils/token');
-const UseridTokenValidationError = require('./userid-validation.error');
+const UserIdValidationError = require('./userid-validation.error');
 
 let validateUserId = function (request) {
   const userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
-    throw new UseridTokenValidationError('the userId does not match the subject in the access token');
+    throw new UserIdValidationError('The userId does not match the subject in the access token');
   }
 }
 

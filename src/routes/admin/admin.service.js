@@ -8,7 +8,7 @@ const BookmarkInputValidator = require('../../common/bookmark-input.validator');
 let getBookmarksWithFilter = async (isPublic, location, userId) => {
   let filter = {};
   if (isPublic) {
-    filter.shared = true;
+    filter.public = true;
   }
   if (location) {
     filter.location = location;
@@ -25,7 +25,7 @@ let getBookmarksWithFilter = async (isPublic, location, userId) => {
 let getTagsOrderByNumberDesc = async () => {
   const tags = await Bookmark.aggregate(
     [
-      {$match: {shared: true}},
+      {$match: {public: true}},
       {$project: {"tags": 1}},
       {$unwind: "$tags"},
       {$group: {"_id": "$tags", "count": {"$sum": 1}}},
@@ -52,7 +52,7 @@ let getLatestBookmarksBetweenDates = async (fromDate, toDate) => {
   }
   const bookmarks = await Bookmark.find(
     {
-      'shared': true,
+      'public': true,
       createdAt: {
         $gte: fromDate,
         $lte: toDate
@@ -67,7 +67,7 @@ let getLatestBookmarksWithDaysBack = async (daysBack) => {
 
   const bookmarks = await Bookmark.find(
     {
-      'shared': true,
+      'public': true,
       createdAt: {$gte: new Date((new Date().getTime() - (daysBack * 24 * 60 * 60 * 1000)))}
     }
   ).sort({createdAt: 'desc'}).lean().exec();

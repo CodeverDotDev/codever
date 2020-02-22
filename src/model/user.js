@@ -19,7 +19,8 @@ var userSchema = new Schema({
     watchedTags: [String],
     pinned: [String],
     favorites: [String],
-    history: [String]
+    history: [String],
+    __v: { type: Number, select: false}
 },
 {
   timestamps: true

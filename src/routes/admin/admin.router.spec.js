@@ -43,12 +43,12 @@ describe('Admin API Tests', function () {
         "mongodb"
       ],
       "publishedOn": "2017-11-05",
-      "githubURL": "https://github.com/Codingpedia/bookmarks.dev-api",
+      "sourceCodeURL": "https://github.com/Codingpedia/bookmarks.dev-api",
       "description": "Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs",
       "descriptionHtml": "<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>",
       "userId": "some-user-id-for-admin-api-tests",
-      "shared": true,
-      "likes": 0,
+      "public": true,
+      "likeCount": 0,
       "lastAccessedAt": null
     }
   });
