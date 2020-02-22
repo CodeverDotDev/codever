@@ -6,18 +6,18 @@ const bookmarkSchema = new Schema({
     location: {type:String, required: true},
     description: String,
     descriptionHtml: String,
-    category: {type:String},
     tags: [String],
     publishedOn: Date,
-    githubURL: {type:String},
+    sourceCodeURL: {type:String},
     userId: {type: String, ref:'User'},
-    shared: Boolean,
+    public: Boolean,
     language: String,
-    lastAccessedAt: Date,
-    likes: Number,
+    lastAccessedAt: {type: Date, select: false},
+    likeCount: Number,
     ownerVisitCount: {type:Number, select: false},
     youtubeVideoId: {type:String, required: false},
     stackoverflowQuestionId: {type:String, required: false},
+    __v: { type: Number, select: false}
 },
 {
   timestamps: true

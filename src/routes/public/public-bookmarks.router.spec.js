@@ -29,7 +29,9 @@ describe('Public API Tests', function () {
         .get(basePathApiPublicBookmarks)
         .query({location: 'unknown-url'});
 
-      expect(response.statusCode).to.equal(HttpStatus.NOT_FOUND);
+      const foundBookmarks = response.body;
+      expect(response.statusCode).to.equal(HttpStatus.OK);
+      expect(foundBookmarks.length).to.equal(0);
     });
   });
 
@@ -73,12 +75,12 @@ describe('Public API Tests', function () {
             "mongodb"
           ],
           "publishedOn": "2017-11-05",
-          "githubURL": verySpecialSourceCodeUrl,
+          "sourceCodeURL": verySpecialSourceCodeUrl,
           "description": "This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark",
           "descriptionHtml": "<p>This is a very special bookmark used for testing the search functionality. Indeed very-special-bookmark</p>",
           "userId": testUserId,
-          "shared": true,
-          "likes": 0,
+          "public": true,
+          "likeCount": 0,
           "lastAccessedAt": null
         }
 
@@ -324,27 +326,6 @@ describe('Public API Tests', function () {
       expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
 
-  });
-
-  describe('Test scrape functionality', function () {
-    it('should fail when trying to scrape with no query parameters', async function () {
-      const response = await request(app)
-        .get(basePathApiPublicBookmarks + '/scrape');
-
-      expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).to.equal('Missing parameters - url or youtubeVideoId');
-      expect(response.body.validationErrors).to.include('You need to provide the url to scrape for or the youtubeVideoId');
-    });
-
-    it('should succeed scraping website', async function () {
-      const response = await request(app)
-        .get(basePathApiPublicBookmarks + '/scrape')
-        .query({location: 'https://www.bookmarks.dev'});
-
-      expect(response.statusCode).to.equal(HttpStatus.OK);
-      expect(response.body.title).to.equal('Dev Bookmarks');
-      expect(response.body.metaDescription).to.contain('Bookmarking for Developers & Co');
-    });
   });
 
 });
