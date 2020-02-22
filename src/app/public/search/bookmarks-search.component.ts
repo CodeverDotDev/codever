@@ -4,7 +4,6 @@ import { map, startWith } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BookmarkFilterService } from '../../core/filter.service';
 import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
@@ -70,7 +69,6 @@ export class BookmarksSearchComponent implements OnInit {
   constructor(private router: Router,
               private route: ActivatedRoute,
               private bookmarkStore: PublicBookmarksStore,
-              private bookmarkFilterService: BookmarkFilterService,
               private publicBookmarksService: PublicBookmarksService,
               private personalBookmarksService: PersonalBookmarksService,
               private keycloakService: KeycloakService,

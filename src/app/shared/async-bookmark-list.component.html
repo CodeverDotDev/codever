@@ -1,6 +1,6 @@
 <div class="bookmarks-list" *ngFor="let bookmark of bookmarks | async; let i=index" >
   <div *ngIf="i < shownSize" class="card">
-    <div class="card-body show-hide" [ngClass]="{'private-bookmark': bookmark.shared === false}">
+    <div class="card-body show-hide" [ngClass]="{'private-bookmark': bookmark.public === false}">
       <div class="header-wrapper">
         <div class="titles">
           <h5 class="card-title">
@@ -52,10 +52,10 @@
                 <i class="far fa-thumbs-up"></i>
               </span>
           </ng-template>
-          <span>{{bookmark.likes}}</span>
+          <span>{{bookmark.likeCount}}</span>
         </div>
-        <span *ngIf="bookmark.githubURL" class="badge  badge-primary float-xs-left">
-          <a href="{{bookmark.githubURL}}" target="_blank">
+        <span *ngIf="bookmark.sourceCodeURL" class="badge  badge-primary float-xs-left">
+          <a href="{{bookmark.sourceCodeURL}}" target="_blank">
             <i class="fab fa-github"></i> Source code <sup><i class="fas fa-external-link-alt fa-sm"></i></sup>
           </a>
         </span>
@@ -63,7 +63,7 @@
         <a *ngFor="let tag of bookmark.tags" [routerLink]="['/tagged', tag]">
           <span class="badge badge-secondary float-xs-left" [innerHtml]="tag | highlight: queryText"></span>
         </a>
-        <span *ngIf="bookmark.shared; else isPrivateBookmark" class="badge badge-light float-xl-right share-action" title="Share" (click)="shareBookmark(bookmark)"><i class="fas fa-share"></i> SHARE</span>
+        <span *ngIf="bookmark.public; else isPrivateBookmark" class="badge badge-light float-xl-right share-action" title="Share" (click)="shareBookmark(bookmark)"><i class="fas fa-share"></i> SHARE</span>
         <ng-template  #isPrivateBookmark>
           <span class="badge badge-light float-xl-right" title="Private"><i class="fas fa-lock"></i> PRIVATE</span>
         </ng-template>

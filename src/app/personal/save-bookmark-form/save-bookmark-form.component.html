@@ -34,8 +34,8 @@
     <div class="form-check" style="margin-bottom: 1.5rem; margin-top: 1rem">
       <label class="form-check-label">
         <input #publicBookmark [checked]="makePublic" (click)="onClickMakePublic(publicBookmark.checked)"
-               class="form-check-input" type="checkbox" value="true" formControlName="shared"
-               [attr.disabled]="isUpdate && bookmark.shared && !keycloakService.isUserInRole('ROLE_ADMIN')?'':null">
+               class="form-check-input" type="checkbox" value="true" formControlName="public"
+               [attr.disabled]="isUpdate && bookmark.public && !keycloakService.isUserInRole('ROLE_ADMIN')?'':null">
         <strong> Make Public </strong> - pls favor <a
         href="https://github.com/CodepediaOrg/bookmarks/blob/master/tags/public-tags-simple.json" target="_blank">recommended
         tags</a> (<em>spam will not be tolerated</em>)
@@ -98,11 +98,11 @@
              placeholder='Date when page was published yyyy-MM-dd'>
     </div>
     <div class="form-group form-group-distanced">
-      <label for="githubURL">Source code URL <i class="fab fa-github"></i></label>
+      <label for="sourceCodeURL">Source code URL <i class="fab fa-github"></i></label>
       <input type="url"
              class="form-control"
-             id="githubURL"
-             formControlName="githubURL"
+             id="sourceCodeURL"
+             formControlName="sourceCodeURL"
              placeholder='URL of the post, project on GitHub - e.g. https://github.com/CodepediaOrg/bookmarks'>
     </div>
     <!-- ask community about this feature
