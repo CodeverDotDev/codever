@@ -1,23 +1,18 @@
-openapi: 3.0.0
+---
+swagger: '2.0'
 info:
-  version: 2.0.0
-  title: Bookmarks.dev API
-  description: API supporting the www.bookmarks.dev website
+  version: 1.0.0
+  title: Bookmarks.dev api
+  description: API supporting the bookmarks.dev website
   contact:
     name: Adrian Matei
     email: ama@codingpedia.org
     url: http://www.adrianmatei.me
   license:
     name: MIT
-
-servers:
-  - url: https://www.bookmarks.dev/api
-    description: Main (production) server
-  - url: http://localhost:3000/api
-    description: Local server for development
-
+basePath: "/api"
 paths:
-  /:
+  "/":
     get:
       description: message with link to Swagger docs
       produces:
@@ -25,38 +20,38 @@ paths:
       responses:
         '200':
           description: message with link to Swagger docs
-  /public/bookmarks:
+  "/public/bookmarks":
     get:
-      description: returns public bookmarks. Depending on provided query params there are
-      different posibilities.
+      description: returns all public (shared) bookmarks
       produces:
         - application/json
-      parameters:
-        - in: query
-          name: q
-          schema:
-            type: string
-          required: false
-          description: query text to filter bookmarks
-        - in: query
-          name: limit
-          schema:
-            type: number
-          required: false
-          description: limits the number of results to this value
-        - in: query
-          name: location
-          schema:
-            type: string
-          required: false
-          description: finds the public bookmark with this location
       responses:
         '200':
-          description: latest added public bookmarks
+          description: all public bookmarks
           schema:
             type: array
             items:
               "$ref": "#/definitions/bookmark"
+  "/secured/public/bookmarks/{bookmarkId}":
+    patch:
+      description: updates rating of bookmark (a user starred or unstarred the bookmark)
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK when operation successful and updated bookmark in body
+          schema:
+            "$ref": "#/definitions/bookmark"
+        '404':
+          description: NOT_FOUND when bookmark cannot be found
+          schema:
+            "$ref": "#/definitions/myError"
+        '401':
+          description: unauthorized (you need to have a valid token) and the ratingUserId must be the same with the one in the request body
+        '500':
+          description: internal server error, when unknown server error is catched
+          schema:
+            "$ref": "#/definitions/myError"
   "/personal/users/{userId}/bookmarks":
     get:
       description: list of user's bookmarks
@@ -209,41 +204,31 @@ definitions:
     properties:
       _id:
         type: string
-      name:
-        type: string
-      location:
-        type: string
-      language:
-        type: string
-      tags:
-        type: array
-        items:
-          type: string
-      description:
-        type: string
-      descriptionHtml:
-        type: string
       updatedAt:
         type: string
       createdAt:
         type: string
+      description:
+        type: string
+      descriptionHtml:
+        type: string
+      language:
+        type: string
       lastAccessedAt:
+        type: string
+      location:
+        type: string
+      name:
         type: string
       publishedOn:
         type: string
-      public:
+      shared:
         type: boolean
+      tags:
+        type: array
+        items:
+          type: string
       userId:
-        type: string
-      likeCount:
-        type: number
-      sourceCodeURL:
-        type: string
-      ownerVisitCount:
-        type: number
-      youtubeVideoId:
-        type: string
-      stackoverflowQuestionId:
         type: string
   myError:
     type: object
@@ -254,4 +239,3 @@ definitions:
         type: array
         items:
           type: string
-
