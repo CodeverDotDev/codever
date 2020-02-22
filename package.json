@@ -1,6 +1,6 @@
 {
   "name": "bookmarks.dev",
-  "version": "8.17.0",
+  "version": "9.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

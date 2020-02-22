@@ -21,10 +21,11 @@ import {ErrorService} from '../../core/error/error.service';
 import {UserDataService} from '../../core/user-data.service';
 import {UserInfoStore} from '../../core/user/user-info.store';
 import {SuggestedTagsStore} from '../../core/user/suggested-tags.store';
-import {WebpageData} from '../../core/model/webpage-data';
+import {WebpageInfo} from '../../core/model/webpage-info';
 import {MyBookmarksStore} from '../../core/user/my-bookmarks.store';
 import {PublicBookmarkPresentDialogComponent} from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
 import {AdminService} from '../../core/admin/admin.service';
+import {WebpageInfoService} from '../../core/webpage-info/webpage-info.service';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -87,6 +88,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     private publicBookmarksStore: PublicBookmarksStore,
     private myBookmarksStore: MyBookmarksStore,
     private personalBookmarksService: PersonalBookmarksService,
+    private webpageInfoService: WebpageInfoService,
     private adminService: AdminService,
     private suggestedTagsStore: SuggestedTagsStore,
     private userInfoStore: UserInfoStore,
@@ -117,7 +119,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     if (this.isUpdate) { // this is update
       this.bookmark$.subscribe(bookmark => {
         this.bookmark = bookmark;
-        this.makePublic = this.bookmark.shared;
+        this.makePublic = this.bookmark.public;
         this.bookmarkForm.patchValue(this.bookmark);
         for (let i = 0; i < this.bookmark.tags.length; i++) {
           const formTags = this.bookmarkForm.get('tags') as FormArray;
@@ -136,9 +138,9 @@ export class SaveBookmarkFormComponent implements OnInit {
       location: [this.url ? this.url : '', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
-      githubURL: '',
+      sourceCodeURL: '',
       description: [this.desc ? this.desc : '', descriptionSizeValidator],
-      shared: false,
+      public: false,
       readLater: false,
       language: 'en',
       youtubeVideoId: null,
@@ -165,26 +167,21 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   private verifyExistenceInPersonalBookmarks(location) {
-    this.personalBookmarksService.getPersonalBookmarkByLocation(this.userId, location).subscribe(httpResponse => {
-        if (httpResponse.status === 200) {
-          this.personalBookmarkPresent = true;
-        } else {
-          this.getWebPageData(location);
-        }
-      },
-      (errorResponse: HttpErrorResponse) => {
-        if (errorResponse.status === 404) {
-          this.getWebPageData(location);
-        }
-      });
+    this.personalBookmarksService.getPersonalBookmarkByLocation(this.userId, location).subscribe((bookmarks: Bookmark[]) => {
+      if (bookmarks.length === 1) {
+        this.personalBookmarkPresent = true;
+      } else {
+        this.getWebPageInfo(location);
+      }
+    });
   }
 
-  private getWebPageData(location) {
+  private getWebPageInfo(location) {
     this.personalBookmarkPresent = false;
     const youtubeVideoId = this.getYoutubeVideoId(location);
     if (youtubeVideoId) {
       this.bookmarkForm.get('youtubeVideoId').patchValue(youtubeVideoId, {emitEvent: false});
-      this.publicBookmarksService.getYoutubeVideoData(youtubeVideoId).subscribe((webpageData: WebpageData) => {
+      this.webpageInfoService.getYoutubeVideoData(youtubeVideoId).subscribe((webpageData: WebpageInfo) => {
           this.patchFormAttributesWithWebPageData(webpageData);
         },
         error => {
@@ -196,7 +193,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       const stackoverflowQuestionId = this.getStackoverflowQuestionId(location);
       if (stackoverflowQuestionId) {
         this.bookmarkForm.get('stackoverflowQuestionId').patchValue(stackoverflowQuestionId, {emitEvent: false});
-        this.publicBookmarksService.getStackoverflowQuestionData(stackoverflowQuestionId).subscribe((webpageData: WebpageData) => {
+        this.webpageInfoService.getStackoverflowQuestionData(stackoverflowQuestionId).subscribe((webpageData: WebpageInfo) => {
             this.patchFormAttributesWithWebPageData(webpageData);
           },
           error => {
@@ -236,13 +233,13 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   private updateFormWithScrapingDataFromLocation(location) {
     if (this.desc) {
-      const webpageData: WebpageData = {
+      const webpageData: WebpageInfo = {
         title: this.title,
         metaDescription: this.desc
       }
       this.patchFormAttributesWithWebPageData(webpageData);
     } else { // go try to scrape for description and title if user did not select any text
-      this.publicBookmarksService.getScrapingData(location).subscribe((webpageData: WebpageData) => {
+      this.webpageInfoService.getScrapingData(location).subscribe((webpageData: WebpageInfo) => {
           this.patchFormAttributesWithWebPageData(webpageData);
         },
         error => {
@@ -337,7 +334,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     const readLater = this.bookmarkForm.controls['readLater'].value;
 
     const updateAsAdmin = this.keycloakService.isUserInRole('ROLE_ADMIN') && bookmark.userId !== this.userId;
-    if (updateAsAdmin ) {
+    if (updateAsAdmin) {
       this.adminService.updateBookmark(bookmark).subscribe(
         () => {
           this.navigateToHomePage()
@@ -373,13 +370,13 @@ export class SaveBookmarkFormComponent implements OnInit {
       language: bookmark.language,
       tags: bookmark.tags,
       publishedOn: bookmark.publishedOn,
-      githubURL: bookmark.githubURL,
+      sourceCodeURL: bookmark.sourceCodeURL,
       description: bookmark.description,
       descriptionHtml: this.markdownService.toHtml(bookmark.description),
       userId: this.userId,
-      shared: bookmark.shared,
+      public: bookmark.public,
       lastAccessedAt: new Date(),
-      likes: 0
+      likeCount: 0
     };
 
     if (bookmark.youtubeVideoId) {
@@ -401,7 +398,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
           this.myBookmarksStore.addToLastCreated(bookmark);
 
-          if (bookmark.shared) {
+          if (bookmark.public) {
             this.publicBookmarksStore.addBookmarkToPublicStore(newBookmark);
           }
 
@@ -437,12 +434,11 @@ export class SaveBookmarkFormComponent implements OnInit {
   onClickMakePublic(checkboxValue) {
     if (checkboxValue) {
       const location: string = this.bookmarkForm.controls['location'].value;
-      this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(bookmark => {
-          this.openPublicBookmarkPresentDialog(bookmark);
-        },
-        (errorResponse: HttpErrorResponse) => {
-          if (errorResponse.status === 404) {
+      this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(bookmarksForLocation => {
+          if (bookmarksForLocation.length === 0) {
             this.makePublic = true;
+          } else {
+            this.openPublicBookmarkPresentDialog(bookmarksForLocation[0]);
           }
         }
       );
@@ -467,7 +463,7 @@ export class SaveBookmarkFormComponent implements OnInit {
         }
         this.makePublic = false;
         this.bookmarkForm.patchValue({
-          shared: false
+          public: false
         });
       }
     );

@@ -364,7 +364,7 @@ export class UserDataStore {
   }
 
   likeBookmark(bookmark: Bookmark) {
-    bookmark.likes++;
+    bookmark.likeCount++;
     this.userData.likes.unshift(bookmark._id);
     const rateBookmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
@@ -375,7 +375,7 @@ export class UserDataStore {
   }
 
   unLikeBookmark(bookmark: Bookmark) {
-    bookmark.likes--;
+    bookmark.likeCount--;
     this.userData.likes.splice(this.userData.likes.indexOf(bookmark._id), 1);
     const rateBookmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,

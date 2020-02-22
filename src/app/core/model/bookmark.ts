@@ -7,15 +7,15 @@ export interface Bookmark {
   tags: string[];
   tagsLine?: string;
   publishedOn?: Date;
-  githubURL?: string;
+  sourceCodeURL?: string;
   userId?: String;
-  shared?: boolean;
+  public?: boolean;
   language: string;
   createdAt?: Date;
   updatedAt?: Date;
   lastAccessedAt?: Date;
   ownerVisitCount?: number;
-  likes?: number;
+  likeCount?: number;
   youtubeVideoId?: string;
   stackoverflowQuestionId?: string;
 }
