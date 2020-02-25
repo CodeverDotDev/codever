@@ -65,7 +65,6 @@ The ``npm run debug`` starts nodemon with the `--inspect` parameter so you can a
 ![nodejs-remote-debugging](docs/debugging/attach-to-nodemon-process.png)
 
 
-
 ##### Visual Studio Code
 See [Node.js debugging in VS Code with Nodemon](https://github.com/microsoft/vscode-recipes/tree/master/nodemon)
 
@@ -87,8 +86,11 @@ npm run integration-tests
 
 A report will be generated.
 
-## Swagger docs
+## OpenAPI Docs
 
+The API has an OpenAPI specification available at [docs/openapi/openapi.yaml](docs/openapi/openapi.yaml)
+
+Based on that a GUI is generated to test the API directly from browser: 
 * [local](http://localhost:3000/api/docs)
 * [production](https://www.bookmarks.dev/api/docs)
 
@@ -114,11 +116,11 @@ pm2 stop pm2-process.json --env production
 ```
 
 ## Contributing  
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/CodepediaOrg/bookmarks.dev-api/tags).
 
 ## License
 
