@@ -18,15 +18,18 @@
     Latest
   </button>
   <button type="button" class="btn"
-          [ngClass]="{'btn-secondary': orderBy === 'LIKES', 'btn-outline-secondary': orderBy !== 'LIKES'}"
-          [disabled]="orderBy === 'LIKES'"
-          (click)="getByLikes()">
-    Likes
+          [ngClass]="{'btn-secondary': orderBy === 'LIKE_COUNT', 'btn-outline-secondary': orderBy !== 'LIKE_COUNT'}"
+          [disabled]="orderBy === 'LIKE_COUNT'"
+          (click)="getByLikeCount()">
+    Like count
   </button>
 </div>
 
-<app-async-bookmark-list [bookmarks]="bookmarksForTag$" [queryText]="tag" [shownSize]="counter"
-                         [userData$]="userData$"></app-async-bookmark-list>
+<app-async-bookmark-list
+  [bookmarks$]="bookmarksForTag$"
+  [queryText]="tag"
+  [callerPagination]="taggedCallerPagination"
+  [userData$]="userData$"></app-async-bookmark-list>
 
 <div *ngIf="(bookmarksForTag$ | async)?.length - counter > 0">
   <button type="button" class="btn btn-primary btn-lg btn-block" (click)="showMoreResults()"

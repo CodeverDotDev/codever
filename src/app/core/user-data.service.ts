@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from 'environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { UserData } from './model/user-data';
 import { Bookmark } from './model/bookmark';
 import { shareReplay } from 'rxjs/operators';
@@ -38,9 +38,12 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
-  getLaterReads(userId: string): Observable<Bookmark[]> {
+  getReadLater(userId: string, page: number, limit: number): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('limit', limit.toString())
+      .set('page', page.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/later-reads`)
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/read-later`, {params: params})
       .pipe(shareReplay(1));
   }
 
@@ -50,27 +53,39 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
-  getPinnedBookmarks(userId: string): Observable<Bookmark[]> {
+  getPinnedBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('limit', limit.toString())
+      .set('page', page.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/pinned`)
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/pinned`, {params: params})
       .pipe(shareReplay(1));
   }
 
-  getFavoriteBookmarks(userId: string): Observable<Bookmark[]> {
+  getFavoriteBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('limit', limit.toString())
+      .set('page', page.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/favorites`)
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/favorites`, {params: params})
       .pipe(shareReplay(1));
   }
 
-  getLastVisitedBookmarks(userId: string): Observable<Bookmark[]> {
+  getLastVisitedBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('limit', limit.toString())
+      .set('page', page.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`)
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`, {params: params})
       .pipe(shareReplay(1));
   }
 
-  getBookmarksForWatchedTags(userId: string): Observable<Bookmark[]> {
+  getBookmarksForWatchedTags(userId: string, page: number, limit: number): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('limit', limit.toString())
+      .set('page', page.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/watched-tags`)
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/watched-tags`, {params: params})
       .pipe(shareReplay(1));
   }
 

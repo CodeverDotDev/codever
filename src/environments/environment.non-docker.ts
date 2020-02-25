@@ -7,5 +7,6 @@ export const environment = {
     'realm': 'bookmarks',
     'url': 'http://localhost:8380/auth',
     'clientId': 'bookmarks'
-  }
+  },
+  PAGINATION_PAGE_SIZE: 10
 };
