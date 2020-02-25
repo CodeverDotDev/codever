@@ -16,6 +16,12 @@ import {SuggestedTagsStore} from './user/suggested-tags.store';
 import {MyBookmarksStore} from './user/my-bookmarks.store';
 import {AdminService} from './admin/admin.service';
 import {WebpageInfoService} from './webpage-info/webpage-info.service';
+import { PaginationNotificationService } from './pagination-notification.service';
+import { UserDataHistoryStore } from './user/userdata.history.store';
+import { NotifyStoresService } from './user/notify-stores.service';
+import { UserDataPinnedStore } from './user/userdata.pinned.store';
+import { UserDataReadLaterStore } from './user/user-data-read-later-store.service';
+import { UserDataFavoritesStore } from './user/userdata.favorites.store';
 
 
 /**
@@ -44,9 +50,15 @@ import {WebpageInfoService} from './webpage-info/webpage-info.service';
     AdminService,
     UserDataService,
     UserDataStore,
+    UserDataHistoryStore,
+    UserDataPinnedStore,
+    UserDataReadLaterStore,
+    UserDataFavoritesStore,
+    NotifyStoresService,
     MyBookmarksStore,
     UserInfoService,
     UserInfoStore,
+    PaginationNotificationService,
     SuggestedTagsStore,
     WebpageInfoService,
     LoaderService,

@@ -49,3 +49,8 @@
   margin-right: 0.5rem;
 }
 
+.isDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}

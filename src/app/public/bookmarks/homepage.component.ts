@@ -1,6 +1,5 @@
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { List } from 'immutable';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
@@ -13,6 +12,12 @@ import { MatTabChangeEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { AppService } from '../../app.service';
+import { PaginationNotificationService } from '../../core/pagination-notification.service';
+import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
+import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
+import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-store.service';
+import { UserDataFavoritesStore } from '../../core/user/userdata.favorites.store';
+import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 
 
 @Component({
@@ -22,10 +27,9 @@ import { AppService } from '../../app.service';
 })
 export class HomepageComponent implements OnInit {
 
-  publicBookmarks$: Observable<List<Bookmark>>;
+  publicBookmarks$: Observable<Bookmark[]>;
   tags: string[] = allTags;
   userData$: Observable<UserData>;
-  counter = 20;
 
   @ViewChild(BookmarksSearchComponent, {static: true})
   searchComponent: BookmarksSearchComponent;
@@ -33,13 +37,26 @@ export class HomepageComponent implements OnInit {
   history$: Observable<Bookmark[]>;
   pinned$: Observable<Bookmark[]>;
   favorites$: Observable<Bookmark[]>;
-  laterReads$: Observable<Bookmark[]>;
+  readLater$: Observable<Bookmark[]>;
   bookmarksForWatchedTags$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
   userIsLoggedIn$: Promise<boolean>;
 
-  selectedIndex: number;
+  selectedTabIndex: number;
+
+  currentPageCommunity = 1;
+  currentPageHistory = 1;
+  currentPagePinned = 1;
+  currentPageReadLater = 1;
+  currentPageFavorites = 1;
+  currentPageWatchedTags = 1;
+  callerPaginationCommunity = 'community';
+  callerPaginationHistory = 'history';
+  callerPaginationPinned = 'pinned';
+  callerPaginationReadLater = 'read-later';
+  callerPaginationFavorites = 'favorites';
+  callerPaginationWatchedTags = 'watched-tags';
 
   constructor(private appService: AppService,
               private publicBookmarksStore: PublicBookmarksStore,
@@ -47,126 +64,172 @@ export class HomepageComponent implements OnInit {
               private route: ActivatedRoute,
               private keycloakService: KeycloakService,
               private userDataStore: UserDataStore,
-              private userInfoStore: UserInfoStore
+              private userDataHistoryStore: UserDataHistoryStore,
+              private userDataPinnedStore: UserDataPinnedStore,
+              private userDataReadLaterStore: UserDataReadLaterStore,
+              private userDataFavoritesStore: UserDataFavoritesStore,
+              private userDataWatchedTagsStore: UserDataWatchedTagsStore,
+              private userInfoStore: UserInfoStore,
+              private paginationNotificationService: PaginationNotificationService,
   ) {
   }
 
   ngOnInit(): void {
-    const selectedTab = this.route.snapshot.queryParamMap.get('tab');
+    const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
     this.userIsLoggedIn$ = this.keycloakService.isLoggedIn();
     this.userIsLoggedIn$.then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.selectTabWhenLoggedIn(selectedTab);
+          this.setTabIndexFromQueryParam(tabQueryParam); // this method is called twice to avoid autmatically executing changeTab events
           this.userData$ = this.userDataStore.getUserData$();
         });
       } else {
-        this.selectedTabWhenNotLoggedIn(selectedTab);
+        this.setTabIndexFromQueryParam(tabQueryParam);
       }
+
+      const page = this.route.snapshot.queryParamMap.get('page');
+      this.setCurrentPageFromQueryParam(page);
+
     });
 
+    this.listenToClickOnLogoEvent();
+
+    this.listenToPaginationNavigationEvents();
+  }
+
+  private setTabIndexFromQueryParam(tabQueryParam) {
+    switch (tabQueryParam) {
+      case 'history': {
+        this.selectedTabIndex = TabIndex.History;
+        break;
+      }
+      case 'pinned': {
+        this.selectedTabIndex = TabIndex.Pinned;
+        break;
+      }
+      case 'read-later': {
+        this.selectedTabIndex = TabIndex.ReadLater;
+        break;
+      }
+      case 'favorites': {
+        this.selectedTabIndex = TabIndex.Favorites;
+        break;
+      }
+      case 'watched-tags': {
+        this.selectedTabIndex = TabIndex.WatchedTags;
+        break;
+      }
+      case 'search-results': {
+        this.selectedTabIndex = TabIndex.SearchResults;
+        break;
+      }
+      default: {
+        this.selectedTabIndex = 0;
+        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(1);
+      }
+    }
+  }
+
+  private setCurrentPageFromQueryParam(page: string) {
+    if (page) {
+      switch (this.selectedTabIndex) {
+        case TabIndex.Community:
+          this.currentPageCommunity = parseInt(page, 0);
+          break;
+        case TabIndex.History:
+          this.currentPageHistory = parseInt(page, 0);
+          break;
+        case TabIndex.Pinned:
+          this.currentPagePinned = parseInt(page, 0);
+          break;
+        case TabIndex.ReadLater:
+          this.currentPageReadLater = parseInt(page, 0);
+          break;
+        case TabIndex.Favorites:
+          this.currentPageFavorites = parseInt(page, 0);
+          break;
+        case TabIndex.WatchedTags:
+          this.currentPageWatchedTags = parseInt(page, 0);
+          break;
+        case TabIndex.SearchResults:
+          this.searchComponent.currentPage = parseInt(page, 0);
+      }
+    }
+  }
+
+  private listenToClickOnLogoEvent() {
     this.appService.logoClicked.subscribe(logoClicked => {
       if (logoClicked) {
+        this.currentPageCommunity = 1;
+        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageCommunity);
         this.searchComponent.clearSearchText();
       }
     });
-
   }
 
-  private selectTabWhenLoggedIn(selectedTab) {
-    switch (selectedTab) {
-      case 'history': {
-        this.selectedIndex = 1;
-        break;
+  private listenToPaginationNavigationEvents() {
+    this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
+      if (paginationAction.caller === this.callerPaginationCommunity && this.selectedTabIndex === TabIndex.Community) {
+        this.currentPageCommunity = paginationAction.page;
+        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(paginationAction.page);
       }
-      case 'pinned': {
-        this.selectedIndex = 2;
-        break;
+      if (paginationAction.caller === this.callerPaginationHistory && this.selectedTabIndex === TabIndex.History) {
+        this.currentPageHistory = paginationAction.page;
+        this.publicBookmarks$ = this.userDataHistoryStore.getHistory$(paginationAction.page);
       }
-      case 'read-later': {
-        this.selectedIndex = 3;
-        break;
+      if (paginationAction.caller === this.callerPaginationPinned && this.selectedTabIndex === TabIndex.Pinned) {
+        this.currentPagePinned = paginationAction.page;
+        this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(paginationAction.page);
       }
-      case 'favorites': {
-        this.selectedIndex = 4;
-        break;
+      if (paginationAction.caller === this.callerPaginationReadLater && this.selectedTabIndex === TabIndex.ReadLater) {
+        this.currentPageReadLater = paginationAction.page;
+        this.readLater$ = this.userDataReadLaterStore.getReadLater$(paginationAction.page);
       }
-      case 'watched-tags': {
-        this.selectedIndex = 5;
-        break;
+      if (paginationAction.caller === this.callerPaginationFavorites && this.selectedTabIndex === TabIndex.Favorites) {
+        this.currentPageFavorites = paginationAction.page;
+        this.favorites$ = this.userDataFavoritesStore.getFavoriteBookmarks$(paginationAction.page);
       }
-      case 'search-results': {
-        this.selectedIndex = 6;
-        break;
+      if (paginationAction.caller === this.callerPaginationWatchedTags && this.selectedTabIndex === TabIndex.WatchedTags) {
+        this.currentPageWatchedTags = paginationAction.page;
+        this.favorites$ = this.userDataWatchedTagsStore.getBookmarksForWatchedTags$(paginationAction.page);
       }
-      default: {
-        this.selectedIndex = 0;
-        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$();
-      }
-    }
-  }
-
-  private selectedTabWhenNotLoggedIn(selectedTab) {
-    switch (selectedTab) {
-      case 'history': {
-        this.selectedIndex = 1;
-        break;
-      }
-      case 'pinned': {
-        this.selectedIndex = 2;
-        break;
-      }
-      case 'read-later': {
-        this.selectedIndex = 3;
-        break;
-      }
-      case 'favorites': {
-        this.selectedIndex = 4;
-        break;
-      }
-      case 'watched-tags': {
-        this.selectedIndex = 5;
-        break;
-      }
-      case 'search-results': {
-        this.selectedIndex = 6;
-        break;
-      }
-      default: {
-        this.selectedIndex = 0;
-        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$();
-      }
-    }
-
-  }
-
-  showMoreResults() {
-    this.counter += 20;
+    });
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {
-    this.selectedIndex = event.index;
+    this.selectedTabIndex = event.index;
     if (this.userIsLoggedIn) {
-      if (event.index === 0) {
-        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$();
-      } else if (event.index === 1) {
-        this.history$ = this.userDataStore.getHistory$();
-      } else if (event.index === 2) {
-        this.pinned$ = this.userDataStore.getPinnedBookmarks$();
-      } else if (event.index === 3) {
-        this.laterReads$ = this.userDataStore.getLaterReads$();
-      } else if (event.index === 4) {
-        this.favorites$ = this.userDataStore.getFavoriteBookmarks$();
-      } else if (event.index === 5) {
-        this.bookmarksForWatchedTags$ = this.userDataStore.getBookmarksForWatchedTags$();
+      switch (event.index) {
+        case TabIndex.Community:
+          this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageCommunity);
+          break;
+        case TabIndex.History:
+          this.history$ = this.userDataHistoryStore.getHistory$(this.currentPageHistory);
+          break;
+        case TabIndex.Pinned:
+          this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(this.currentPagePinned);
+          break;
+        case TabIndex.ReadLater:
+          this.readLater$ = this.userDataReadLaterStore.getReadLater$(this.currentPageReadLater);
+          break;
+        case TabIndex.Favorites:
+          this.favorites$ = this.userDataFavoritesStore.getFavoriteBookmarks$(this.currentPageFavorites);
+          break;
+        case TabIndex.WatchedTags:
+          this.bookmarksForWatchedTags$ = this.userDataWatchedTagsStore.getBookmarksForWatchedTags$(this.currentPageWatchedTags);
+          break;
       }
     }
 
+    const queryParamsFromIndex = this.getQueryParamsForTabIndex(this.selectedTabIndex);
     this.router.navigate(['.'],
       {
         relativeTo: this.route,
-        queryParams: {tab: this.getTabFromIndex(this.selectedIndex)},
+        queryParams: {
+          tab: queryParamsFromIndex.tab,
+          page: queryParamsFromIndex.page
+        },
         queryParamsHandling: 'merge'
       }
     );
@@ -178,47 +241,63 @@ export class HomepageComponent implements OnInit {
     this.keycloakService.login(options);
   }
 
-  private getTabFromIndex(selectedIndex: number) {
-    switch (selectedIndex) {
-      case 1: {
-        return 'history'
+  private getQueryParamsForTabIndex(tabIndex: number): TabSwitchQueryParams {
+    switch (tabIndex) {
+      case TabIndex.History: {
+        return {tab: 'history', page: this.currentPageHistory}
         break;
       }
-      case 2: {
-        return 'pinned';
+      case TabIndex.Pinned: {
+        return {tab: 'pinned', page: this.currentPagePinned};
         break;
       }
-      case 3 : {
-        return 'read-later'
+      case TabIndex.ReadLater : {
+        return {tab: 'read-later', page: this.currentPageReadLater};
         break;
       }
-      case 4 : {
-        return 'favorites'
+      case TabIndex.Favorites : {
+        return {tab: 'favorites', page: this.currentPageFavorites};
         break;
       }
-      case 5 : {
-        return 'watched-tags';
+      case TabIndex.WatchedTags : {
+        return {tab: 'watched-tags', page: this.currentPageWatchedTags};
         break;
       }
-      case 6: {
-        return 'search-results';
+      case TabIndex.SearchResults: {
+        return {tab: 'search-results', page: this.searchComponent.currentPage};
         break;
       }
       default: {
-        return 'community';
+        return {tab: 'community', page: this.currentPageCommunity};
       }
     }
   }
 
   onSearchTriggered(searchTriggered: boolean) {
     if (searchTriggered) {
-      this.selectedIndex = 6;
+      this.selectedTabIndex = TabIndex.SearchResults;
     }
   }
 
   onClearSearchText(searchTextCleared: boolean) {
     if (searchTextCleared) {
-      this.selectedIndex = 0;
+      this.selectedTabIndex = TabIndex.Community;
     }
   }
+
+}
+
+export interface TabSwitchQueryParams {
+  tab: string;
+  page: number;
+}
+
+enum TabIndex {
+  Community = 0,
+  History,
+  Pinned,
+  ReadLater,
+  Favorites,
+  WatchedTags,
+  SearchResults
 }
