@@ -8,7 +8,7 @@ import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
 import { Search, UserData } from '../../core/model/user-data';
-import { MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatDialog, MatDialogConfig } from '@angular/material';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
@@ -16,6 +16,7 @@ import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.serv
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { environment } from '../../../environments/environment';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
+import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
 
 export interface SearchDomain {
   value: string;
@@ -62,7 +63,7 @@ export class BookmarksSearchComponent implements OnInit {
   searchDomain = 'public';
 
   searchDomains: SearchDomain[] = [
-    {value: 'personal', viewValue: 'Mine & Favorites'},
+    {value: 'personal', viewValue: 'My bookmarks'},
     {value: 'public', viewValue: 'Public bookmarks'}
   ];
 
@@ -78,7 +79,8 @@ export class BookmarksSearchComponent implements OnInit {
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,
               private userDataStore: UserDataStore,
-              private userInfoStore: UserInfoStore) {
+              private userInfoStore: UserInfoStore,
+              private loginDialog: MatDialog) {
   }
 
   @Input()
@@ -190,10 +192,23 @@ export class BookmarksSearchComponent implements OnInit {
   }
 
   onSearchDomainChange(newValue) {
-    this.searchDomain = newValue;
-    this.syncQueryParamsWithSearchBox();
-    if (this.searchText && this.searchText !== '') {
-      this.searchBookmarks(this.searchText);
+    if (newValue === 'personal' && !this.userIsLoggedIn) {
+      this.searchDomain = 'public';
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to search in your personal bookmarks'
+      };
+
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      this.searchDomain = newValue;
+      this.syncQueryParamsWithSearchBox();
+      if (this.searchText && this.searchText !== '') {
+        this.searchBookmarks(this.searchText);
+      }
     }
   }
 
@@ -255,7 +270,7 @@ export class BookmarksSearchComponent implements OnInit {
         this.showSearchResults = true;
         this.searchTriggered.emit(true);
       } else {
-        this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage);
+        this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, 'relevant');
         this.showSearchResults = true;
         this.searchTriggered.emit(true);
       }

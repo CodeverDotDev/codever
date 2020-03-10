@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Bookmark } from '../core/model/bookmark';
 import { ActivatedRoute, Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
@@ -21,15 +21,18 @@ import { PaginationAction } from '../core/model/pagination-action';
 import { UserDataHistoryStore } from '../core/user/userdata.history.store';
 import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
 import { UserDataReadLaterStore } from '../core/user/user-data-read-later-store.service';
-import { UserDataFavoritesStore } from '../core/user/userdata.favorites.store';
+import { UserDataWatchedTagsStore } from '../core/user/userdata.watched-tags.store';
+import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
+import { FeedStore } from '../core/user/feed-store.service';
 
 @Component({
   selector: 'app-async-bookmark-list',
   templateUrl: './async-bookmark-list.component.html',
   styleUrls: ['./async-bookmark-list.component.scss']
 })
-export class AsyncBookmarkListComponent implements OnInit, OnChanges {
+export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implements OnInit, OnChanges {
 
+  verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
   @Input()
   bookmarks$: Observable<Bookmark[]>;
@@ -55,8 +58,8 @@ export class AsyncBookmarkListComponent implements OnInit, OnChanges {
   private userDataHistoryStore: UserDataHistoryStore;
   private userDataPinnedStore: UserDataPinnedStore;
   private userDataReadLaterStore: UserDataReadLaterStore;
-  private userDataFavoritesStore: UserDataFavoritesStore;
   private myBookmarksStore: MyBookmarksStore;
+  private feedStore: FeedStore;
   private publicBookmarksStore: PublicBookmarksStore;
   private personalBookmarksService: PersonalBookmarksService;
   private adminService: AdminService;
@@ -78,8 +81,10 @@ export class AsyncBookmarkListComponent implements OnInit, OnChanges {
   constructor(
     private injector: Injector,
     private deleteDialog: MatDialog,
-    private loginDialog: MatDialog,
+    public userDataWatchedTagsStore: UserDataWatchedTagsStore,
+    public loginDialog: MatDialog,
   ) {
+    super(loginDialog, userDataWatchedTagsStore);
     this.router = <Router>this.injector.get(Router);
     this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
@@ -88,10 +93,10 @@ export class AsyncBookmarkListComponent implements OnInit, OnChanges {
     this.adminService = <AdminService>this.injector.get(AdminService);
     this.userInfoStore = <UserInfoStore>this.injector.get(UserInfoStore);
     this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
+    this.feedStore = <FeedStore>this.injector.get(FeedStore);
     this.userDataHistoryStore = <UserDataHistoryStore>this.injector.get(UserDataHistoryStore);
     this.userDataReadLaterStore = <UserDataReadLaterStore>this.injector.get(UserDataReadLaterStore);
     this.userDataPinnedStore = <UserDataPinnedStore>this.injector.get(UserDataPinnedStore);
-    this.userDataFavoritesStore = <UserDataFavoritesStore>this.injector.get(UserDataFavoritesStore);
     this.myBookmarksStore = <MyBookmarksStore>this.injector.get(MyBookmarksStore);
     this.paginationNotificationService = <PaginationNotificationService>this.injector.get(PaginationNotificationService);
 
@@ -126,6 +131,23 @@ export class AsyncBookmarkListComponent implements OnInit, OnChanges {
   gotoDetail(bookmark: Bookmark): void {
     const link = ['./personal/bookmarks', bookmark._id];
     this.router.navigate(link, {state: {bookmark: bookmark}});
+  }
+
+  copyToMine(bookmark: Bookmark): void {
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to copy it to your personal list'
+      };
+
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      const link = ['./personal/bookmarks/copy-to-mine'];
+      this.router.navigate(link, {state: {bookmark: bookmark}, queryParams: {id: bookmark._id}});
+    }
   }
 
   likeBookmark(bookmark: Bookmark): void {
@@ -199,27 +221,6 @@ export class AsyncBookmarkListComponent implements OnInit, OnChanges {
     this.userDataReadLaterStore.removeFromReadLater(bookmark);
   }
 
-  addToFavorites(bookmark: Bookmark) {
-    if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to add bookmarks to "Favorites"'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    } else {
-      this.userDataFavoritesStore.addToFavoriteBookmarks(bookmark);
-    }
-  }
-
-  removeFromFavorites(bookmark: Bookmark) {
-    this.userDataFavoritesStore.removeFromFavoriteBookmarks(bookmark);
-  }
-
-
   playYoutubeVideo(bookmark: Bookmark) {
     const dialogConfig = new MatDialogConfig();
 
@@ -272,6 +273,7 @@ export class AsyncBookmarkListComponent implements OnInit, OnChanges {
       this.adminService.deleteBookmark(bookmark).subscribe(() => {
         this.bookmarkDeleted.emit(true);
         this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+        this.feedStore.removeFromFeedBookmarks(bookmark);
       });
     } else {
       this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
@@ -279,6 +281,7 @@ export class AsyncBookmarkListComponent implements OnInit, OnChanges {
         this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
         this.userDataStore.removeFromStoresAtDeletion(bookmark);
         this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
+        this.feedStore.removeFromFeedBookmarks(bookmark);
       });
     }
 
@@ -323,5 +326,4 @@ export class AsyncBookmarkListComponent implements OnInit, OnChanges {
       }
     );
   }
-
 }

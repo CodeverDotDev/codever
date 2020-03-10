@@ -8,5 +8,7 @@ export const environment = {
     'url': 'http://localhost:8480/auth',
     'clientId': 'bookmarks'
   },
-  PAGINATION_PAGE_SIZE: 5
+  PAGINATION_PAGE_SIZE: 5,
+  TOP_PUBLIC_USER_TAGS_LIMIT: 10,
+  RECENT_PUBLIC_USER_BOOKMARKS_LIMIT: 5
 };

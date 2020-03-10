@@ -26,8 +26,8 @@ export class PersonalBookmarksService {
   getFilteredPersonalBookmarks(searchText: string, limit: number, page: number, userId: string): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('q', searchText)
-      .set('limit', limit.toString())
-      .set('page', page.toString());
+      .set('page', page.toString())
+      .set('limit', limit.toString());
     return this.httpClient.get<Bookmark[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks`,
       {params: params})
       .pipe(shareReplay(1));
@@ -89,6 +89,13 @@ export class PersonalBookmarksService {
       .set('type', 'private');
     return this.httpClient
       .delete(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks`, {headers: this.headers, params: params})
+      .pipe(shareReplay(1));
+  }
+
+  updateDisplayNameInBookmarks(userId: string, displayName: string): Observable<any> {
+    return this.httpClient
+      .patch(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/display-name`, {displayName: displayName},
+        {headers: this.headers})
       .pipe(shareReplay(1));
   }
 }

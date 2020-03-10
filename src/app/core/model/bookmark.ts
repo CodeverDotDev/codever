@@ -9,6 +9,7 @@ export interface Bookmark {
   publishedOn?: Date;
   sourceCodeURL?: string;
   userId?: String;
+  userDisplayName: String;
   public?: boolean;
   language: string;
   createdAt?: Date;

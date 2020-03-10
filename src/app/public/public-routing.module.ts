@@ -6,9 +6,10 @@ import {HomepageComponent} from './bookmarks/homepage.component';
 import {HowtoComponent} from './howto/howto.component';
 import {PrivacyPolicyComponent} from './privacy/privacy-policy.component';
 import {TermsOfServiceComponent} from './terms/terms-of-service.component';
+import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
 
 export function tagMatcher(url: UrlSegment[]) {
-    return url.length === 1 && url[0].path !== 'personal' && url[0].path !== 'dashboard' ? ({consumed: url}) : null;
+    return url.length === 1 && url[0].path !== 'personal' && url[0].path !== 'dashboard' && url[0].path !== 'settings' ? ({consumed: url}) : null;
 }
 
 const publicBookmarksRoutes: Routes = [
@@ -65,6 +66,19 @@ const publicBookmarksRoutes: Routes = [
   {
     path: 'terms-and-conditions',
     component: TermsOfServiceComponent,
+  },
+  {
+    path: 'users/:userId',
+    component: UserPublicProfileComponent,
+    children: [
+      // This is a WILDCARD CATCH-ALL route that is scoped to the "/users/:userId"
+      // route prefix. It will only catch non-matching routes that live
+      // within this portion of the router tree.
+      {
+        path: '**',
+        component: UserPublicProfileComponent
+      }
+    ]
   },
   {
     path: '',

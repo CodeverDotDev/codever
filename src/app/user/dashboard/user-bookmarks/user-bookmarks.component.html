@@ -4,7 +4,7 @@
           [disabled]="orderBy === 'LAST_CREATED'"
           (click)="getLastCreatedBookmarks()">
 
-    Recently created
+    Latest posts
   </button>
   <button type="button" class="btn" title="Your bookmarks you've viewed the most"
           [ngClass]="{'btn-secondary': orderBy === 'MOST_USED', 'btn-outline-secondary': orderBy !== 'MOST_USED'}"
@@ -17,7 +17,7 @@
           [ngClass]="{'btn-secondary': orderBy === 'MOST_LIKES', 'btn-outline-secondary': orderBy !== 'MOST_LIKES'}"
           [disabled]="orderBy === 'MOST_LIKES'"
           (click)="getMostLikedBookmarks()">
-    Most likes
+    Top likes
   </button>
 </div>
 
