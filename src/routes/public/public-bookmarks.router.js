@@ -1,19 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
-const ValidationError = require('../../error/validation.error');
-
 const publicBookmarksSearchService = require('./public-bookmarks-search.service');
 const PublicBookmarksService = require('./public-bookmarks.service');
+
+const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
 
 /**
  *  Returns the with query text
  */
 router.get('/', async (request, response, next) => {
   const searchText = request.query.q;
-  const limit = parseInt(request.query.limit);
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+
   if (searchText) {
-    const bookmarks = await publicBookmarksSearchService.findPublicBookmarks(searchText, limit);
+    const bookmarks = await publicBookmarksSearchService.findPublicBookmarks(searchText, page, limit);
     response.send(bookmarks);
   } else {
     next()
@@ -38,14 +39,17 @@ router.get('/', async (request, response, next) => {
  * When no filter send latest public bookmarks
  */
 router.get('/', async (request, response) => {
-  const bookmarks = await PublicBookmarksService.getLatestPublicBookmarks();
+
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarks = await PublicBookmarksService.getLatestPublicBookmarks(page, limit);
 
   return response.send(bookmarks);
 });
 
 router.get('/tagged/:tag', async (request, response) => {
-  const orderByFilter = request.query.orderBy === 'STARS' ? {likeCount: -1} : {createdAt: -1};
-  const bookmarks = await PublicBookmarksService.getBookmarksForTag(request.params.tag, orderByFilter);
+  const orderBy = request.query.orderBy;
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarks = await PublicBookmarksService.getBookmarksForTag(request.params.tag, orderBy, page, limit);
 
   return response.send(bookmarks);
 });

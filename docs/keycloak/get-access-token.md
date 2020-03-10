@@ -6,7 +6,7 @@ Below are shown some examples of doing that for the dev environment.
 
 ## Get Access Token via service user password (grant type `password`)
 ```bash
-curl  \
+curl  -s \
   -d 'client_id=bookmarks' \
   -d 'username=ama' \
   -d "password=ama" \

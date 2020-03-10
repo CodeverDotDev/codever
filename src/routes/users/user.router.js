@@ -6,6 +6,7 @@ const Keycloak = require('keycloak-connect');
 
 const UserDataService = require('./user-data.service');
 const userIdTokenValidator = require('./userid.validator');
+const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
 
 const common = require('../../common/config');
 const config = common.config();
@@ -26,9 +27,10 @@ usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
 });
 
 /* GET list of bookmarks to be read later for the user */
-usersRouter.get('/:userId/later-reads', keycloak.protect(), async (request, response) => {
+usersRouter.get('/:userId/read-later', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
-  const bookmarks = await UserDataService.getLaterReads(request.params.userId);
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarks = await UserDataService.getReadLater(request.params.userId, page, limit);
 
   response.status(HttpStatus.OK).send(bookmarks);
 });
@@ -44,7 +46,8 @@ usersRouter.get('/:userId/likes', keycloak.protect(), async (request, response) 
 /* GET list of bookmarks for the user's watchedTags */
 usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
-  const bookmarks = await UserDataService.getWatchedTags(request.params.userId);
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarks = await UserDataService.getWatchedTags(request.params.userId, page, limit);
 
   response.send(bookmarks);
 });
@@ -66,7 +69,8 @@ usersRouter.get('/:userId/used-tags', keycloak.protect(), async (request, respon
 /* GET list of user's pinned bookmarks */
 usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
-  const pinnedBookmarks = await UserDataService.getPinnedBookmarks(request.params.userId);
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const pinnedBookmarks = await UserDataService.getPinnedBookmarks(request.params.userId, page, limit);
 
   response.send(pinnedBookmarks);
 });
@@ -74,7 +78,8 @@ usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response)
 /* GET list of user's favorite bookmarks */
 usersRouter.get('/:userId/favorites', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
-  const favoriteBookmarks = await UserDataService.getFavoriteBookmarks(request.params.userId);
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const favoriteBookmarks = await UserDataService.getFavoriteBookmarks(request.params.userId, page, limit);
 
   response.send(favoriteBookmarks);
 });
@@ -82,7 +87,8 @@ usersRouter.get('/:userId/favorites', keycloak.protect(), async (request, respon
 /* GET list of user's last visited bookmarks */
 usersRouter.get('/:userId/history', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
-  const bookmarksFromHistory = await UserDataService.getBookmarksFromHistory(request.params.userId);
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarksFromHistory = await UserDataService.getBookmarksFromHistory(request.params.userId, page, limit);
 
   response.send(bookmarksFromHistory);
 });
