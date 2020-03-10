@@ -1,8 +1,10 @@
 const express = require('express');
 const usersRouter = express.Router();
+
 const personalBookmarksRouter = require('./bookmarks/personal-bookmarks.router');
 
 const Keycloak = require('keycloak-connect');
+
 
 const UserDataService = require('./user-data.service');
 const userIdTokenValidator = require('./userid.validator');
@@ -17,14 +19,54 @@ const HttpStatus = require('http-status-codes/index');
 const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 usersRouter.use(keycloak.middleware());
 
+const aws = require('aws-sdk');
+aws.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION
+});
+
+const s3 = new aws.S3();
+const multer = require("multer");
+const multerS3 = require('multer-s3');
+const path = require('path')
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'bookmarks.dev',
+    acl: 'public-read',
+    cacheControl: 'max-age=31536000',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      const key = `user-profile-images/${process.env.NODE_ENV}/${req.params.userId}_${Date.now().toString()}${path.extname(file.originalname)}`
+      cb(null, key);
+    }
+  })
+});
+
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
 
-/* GET personal bookmarks of the users */
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
   const userData = await UserDataService.getUserData(request.params.userId);
+
   return response.status(HttpStatus.OK).json(userData);
 });
+
+/* save profile picture */
+usersRouter.post('/:userId/profile-picture', keycloak.protect(),
+  upload.single("image" /* name attribute of <file> element in your form */),
+  async (request, response) => {
+    userIdTokenValidator.validateUserId(request);
+
+    return response.status(HttpStatus.OK).send({
+      url: request.file.location
+    });
+  });
 
 /* GET list of bookmarks to be read later for the user */
 usersRouter.get('/:userId/read-later', keycloak.protect(), async (request, response) => {
@@ -43,14 +85,16 @@ usersRouter.get('/:userId/likes', keycloak.protect(), async (request, response) 
   response.send(likedBookmarks);
 });
 
-/* GET list of bookmarks for the user's watchedTags */
-usersRouter.get('/:userId/watched-tags', keycloak.protect(), async (request, response) => {
+
+/* GET list of bookmarks for the user's feed */
+usersRouter.get('/:userId/feed', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const bookmarks = await UserDataService.getWatchedTags(request.params.userId, page, limit);
+  const bookmarks = await UserDataService.getFeedBookmarks(request.params.userId, page, limit);
 
   response.send(bookmarks);
 });
+
 
 /* GET list of used tag for the user */
 usersRouter.get('/:userId/used-tags', keycloak.protect(), async (request, response) => {
@@ -75,7 +119,12 @@ usersRouter.get('/:userId/pinned', keycloak.protect(), async (request, response)
   response.send(pinnedBookmarks);
 });
 
-/* GET list of user's favorite bookmarks */
+/*
+/**
+ * Deprecated - might get reactivated if community decides for it
+ *
+ * GET list of user's favorite bookmarks
+ */
 usersRouter.get('/:userId/favorites', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
@@ -132,6 +181,36 @@ usersRouter.patch('/:userId/bookmarks/likes/:bookmarkId', keycloak.protect(), as
   const bookmark = await UserDataService.rateBookmark(request.body, request.params.userId, request.params.bookmarkId);
 
   return response.status(HttpStatus.OK).send(bookmark);
+});
+
+usersRouter.patch('/:userId/following/users/:followedUserId', keycloak.protect(), async  (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const {userId, followedUserId} = request.params;
+  const updatedUserData = await UserDataService.followUser(userId, followedUserId);
+
+  return response.status(HttpStatus.OK).send(updatedUserData);
+});
+
+usersRouter.patch('/:userId/unfollowing/users/:followedUserId', keycloak.protect(), async  (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const {userId, followedUserId} = request.params;
+  const updatedUserData = await UserDataService.unfollowUser(userId, followedUserId);
+
+  return response.status(HttpStatus.OK).send(updatedUserData);
+});
+
+usersRouter.get('/:userId/following/users', keycloak.protect(), async  (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const followedUsersData = await UserDataService.getFollowedUsersData(request.params.userId);
+
+  return response.status(HttpStatus.OK).send(followedUsersData);
+});
+
+usersRouter.get('/:userId/followers', keycloak.protect(), async  (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const followers = await UserDataService.getFollowers(request.params.userId);
+
+  return response.status(HttpStatus.OK).send(followers);
 });
 
 module.exports = usersRouter;
