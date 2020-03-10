@@ -27,7 +27,6 @@ export class MyBookmarksStore {
     return this._lastCreated.asObservable();
   }
 
-
   addToLastCreated(bookmark: Bookmark): void {
     if (this.lastCreatedHaveBeenLoaded) {
       const lastCreated = this._lastCreated.getValue();

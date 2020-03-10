@@ -16,8 +16,11 @@ export class TagService {
     this.bookmarksUrl = environment.API_URL + '/public/bookmarks/';
   }
 
-  getBookmarksForTag(tag: string, orderBy: string): Observable<Bookmark[]> {
-    const params = new HttpParams().set('orderBy', orderBy);
+  getBookmarksForTag(tag: string, orderBy: string, page: number, limit: number): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('orderBy', orderBy)
+      .set('page', page.toString())
+      .set('limit', limit.toString());
     return this.httpClient.get<Bookmark[]>(`${this.bookmarksUrl}tagged/${tag}`, {params: params})
       .pipe(shareReplay(1));
   };

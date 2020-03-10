@@ -1,65 +1,79 @@
-import {Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Bookmark} from '../core/model/bookmark';
-import {Router} from '@angular/router';
-import {KeycloakService} from 'keycloak-angular';
-import {PublicBookmarksStore} from '../public/bookmarks/store/public-bookmarks-store.service';
-import {UserData} from '../core/model/user-data';
-import {UserDataStore} from '../core/user/userdata.store';
-import {MatDialog, MatDialogConfig} from '@angular/material';
-import {DeleteBookmarkDialogComponent} from './delete-bookmark-dialog/delete-bookmark-dialog.component';
-import {LoginRequiredDialogComponent} from './login-required-dialog/login-required-dialog.component';
-import {PersonalBookmarksService} from '../core/personal-bookmarks.service';
-import {SocialShareDialogComponent} from './social-share-dialog/social-share-dialog.component';
-import {UserInfoStore} from '../core/user/user-info.store';
-import {PlayYoutubeVideoDialogComponent} from './play-youtube-video-dialog/play-youtube-video-dialog.component';
-import {MyBookmarksStore} from '../core/user/my-bookmarks.store';
-import {AdminService} from '../core/admin/admin.service';
+import { Component, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Bookmark } from '../core/model/bookmark';
+import { ActivatedRoute, Router } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
+import { PublicBookmarksStore } from '../public/bookmarks/store/public-bookmarks-store.service';
+import { UserData } from '../core/model/user-data';
+import { UserDataStore } from '../core/user/userdata.store';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
+import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
+import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
+import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
+import { UserInfoStore } from '../core/user/user-info.store';
+import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
+import { MyBookmarksStore } from '../core/user/my-bookmarks.store';
+import { AdminService } from '../core/admin/admin.service';
+import { PaginationNotificationService } from '../core/pagination-notification.service';
+import { environment } from '../../environments/environment';
+import { PaginationAction } from '../core/model/pagination-action';
+import { UserDataHistoryStore } from '../core/user/userdata.history.store';
+import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
+import { UserDataReadLaterStore } from '../core/user/user-data-read-later-store.service';
+import { UserDataFavoritesStore } from '../core/user/userdata.favorites.store';
 
 @Component({
   selector: 'app-async-bookmark-list',
   templateUrl: './async-bookmark-list.component.html',
   styleUrls: ['./async-bookmark-list.component.scss']
 })
-export class AsyncBookmarkListComponent implements OnInit {
+export class AsyncBookmarkListComponent implements OnInit, OnChanges {
 
 
   @Input()
-  bookmarks: Observable<Bookmark[]>;
+  bookmarks$: Observable<Bookmark[]>;
 
   @Input()
-  queryText: string;
+  queryText: string; // used for highlighting search terms in the bookmarks list
 
   @Input()
   userData$: Observable<UserData>;
+
+  @Input()
+  callerPagination: string;
+
+  @Input()
+  showPagination = true;
 
   @Output()
   bookmarkDeleted = new EventEmitter<boolean>();
 
   private router: Router;
+  private route: ActivatedRoute;
   private userDataStore: UserDataStore;
+  private userDataHistoryStore: UserDataHistoryStore;
+  private userDataPinnedStore: UserDataPinnedStore;
+  private userDataReadLaterStore: UserDataReadLaterStore;
+  private userDataFavoritesStore: UserDataFavoritesStore;
   private myBookmarksStore: MyBookmarksStore;
   private publicBookmarksStore: PublicBookmarksStore;
   private personalBookmarksService: PersonalBookmarksService;
   private adminService: AdminService;
   private keycloakService: KeycloakService;
   private userInfoStore: UserInfoStore;
+  private paginationNotificationService: PaginationNotificationService;
 
   userId: string;
   userIsLoggedIn = false;
 
-  private _shownSize = 30; // default value if not provided as input
-
   public innerWidth: any;
 
-  @Input()
-  set shownSize(shownSize: number) {
-    this._shownSize = shownSize;
-  }
+  environment = environment;
 
-  get shownSize(): number {
-    return this._shownSize;
-  }
+  currentPage: number;
+
+  Arr = Array; // Array type captured in a variable
 
   constructor(
     private injector: Injector,
@@ -67,13 +81,20 @@ export class AsyncBookmarkListComponent implements OnInit {
     private loginDialog: MatDialog,
   ) {
     this.router = <Router>this.injector.get(Router);
+    this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
     this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
     this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
     this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
     this.adminService = <AdminService>this.injector.get(AdminService);
     this.userInfoStore = <UserInfoStore>this.injector.get(UserInfoStore);
     this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
+    this.userDataHistoryStore = <UserDataHistoryStore>this.injector.get(UserDataHistoryStore);
+    this.userDataReadLaterStore = <UserDataReadLaterStore>this.injector.get(UserDataReadLaterStore);
+    this.userDataPinnedStore = <UserDataPinnedStore>this.injector.get(UserDataPinnedStore);
+    this.userDataFavoritesStore = <UserDataFavoritesStore>this.injector.get(UserDataFavoritesStore);
     this.myBookmarksStore = <MyBookmarksStore>this.injector.get(MyBookmarksStore);
+    this.paginationNotificationService = <PaginationNotificationService>this.injector.get(PaginationNotificationService);
+
   }
 
   ngOnInit(): void {
@@ -86,6 +107,16 @@ export class AsyncBookmarkListComponent implements OnInit {
         });
       }
     });
+
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const page = this.route.snapshot.queryParamMap.get('page');
+    if (page) {
+      this.currentPage = parseInt(page, 0);
+    } else {
+      this.currentPage = 1;
+    }
   }
 
   /**
@@ -120,7 +151,7 @@ export class AsyncBookmarkListComponent implements OnInit {
 
   onBookmarkLinkClick(bookmark: Bookmark) {
     if (this.userIsLoggedIn) {
-      this.userDataStore.addToHistoryAndReadLater$(bookmark, false).subscribe();
+      this.userDataHistoryStore.addToHistoryAndReadLater$(bookmark, false).subscribe();
       if (this.userId === bookmark.userId) {
         this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
       }
@@ -139,13 +170,13 @@ export class AsyncBookmarkListComponent implements OnInit {
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userDataStore.addToPinnedBookmarks(bookmark);
+      this.userDataPinnedStore.addToPinnedBookmarks(bookmark);
     }
 
   }
 
   removeFromPinned(bookmark: Bookmark) {
-    this.userDataStore.removeFromPinnedBookmarks(bookmark);
+    this.userDataPinnedStore.removeFromPinnedBookmarks(bookmark);
   }
 
   addToReadLater(bookmark: Bookmark) {
@@ -160,12 +191,12 @@ export class AsyncBookmarkListComponent implements OnInit {
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userDataStore.addToLaterReads(bookmark);
+      this.userDataReadLaterStore.addToReadLater(bookmark);
     }
   }
 
   removeFromReadLater(bookmark: Bookmark) {
-    this.userDataStore.removeFromLaterReads(bookmark);
+    this.userDataReadLaterStore.removeFromReadLater(bookmark);
   }
 
   addToFavorites(bookmark: Bookmark) {
@@ -180,12 +211,12 @@ export class AsyncBookmarkListComponent implements OnInit {
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userDataStore.addToFavoriteBookmarks(bookmark);
+      this.userDataFavoritesStore.addToFavoriteBookmarks(bookmark);
     }
   }
 
   removeFromFavorites(bookmark: Bookmark) {
-    this.userDataStore.removeFromFavoriteBookmarks(bookmark);
+    this.userDataFavoritesStore.removeFromFavoriteBookmarks(bookmark);
   }
 
 
@@ -272,4 +303,25 @@ export class AsyncBookmarkListComponent implements OnInit {
       }
     );
   }
+
+  navigate(page: number) {
+    const paginationAction: PaginationAction = {
+      caller: this.callerPagination,
+      page: page
+    }
+    this.currentPage = page;
+    this.syncPageQueryParam();
+    this.paginationNotificationService.clickPageNavigation(paginationAction);
+  }
+
+  syncPageQueryParam() {
+    this.router.navigate(['.'],
+      {
+        relativeTo: this.route,
+        queryParams: {page: this.currentPage},
+        queryParamsHandling: 'merge'
+      }
+    );
+  }
+
 }

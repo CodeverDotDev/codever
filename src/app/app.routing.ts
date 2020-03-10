@@ -5,15 +5,15 @@ import { PageNotFoundComponent } from './not-found.component';
 const routes: Routes = [
   {
     path: 'personal',
-    loadChildren: 'app/personal/personal-bookmarks.module#PersonalBookmarksModule'
+    loadChildren: () => import('app/personal/personal-bookmarks.module').then(m => m.PersonalBookmarksModule)
   },
   {
     path: 'dashboard',
-    loadChildren: 'app/user/dashboard/user-dashboard.module#UserDashboardModule'
+    loadChildren: () => import('app/user/dashboard/user-dashboard.module').then(m => m.UserDashboardModule)
   },
   {
     path: 'public',
-    loadChildren: 'app/public/public.module#PublicBookmarksModule'
+    loadChildren: () => import('app/public/public.module').then(m => m.PublicBookmarksModule)
   },
   {
     path: '',

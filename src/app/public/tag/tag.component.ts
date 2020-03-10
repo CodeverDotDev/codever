@@ -8,8 +8,10 @@ import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
-import { UserInfo } from 'os';
 import { UserInfoStore } from '../../core/user/user-info.store';
+import { environment } from '../../../environments/environment';
+import { PaginationNotificationService } from '../../core/pagination-notification.service';
+import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 
 @Component({
   selector: 'app-tag',
@@ -24,27 +26,35 @@ export class TagComponent implements OnInit {
   counter = 30;
   orderBy = 'LATEST'; // TODO move to enum orderBy values
   userIsLoggedIn = false;
-
-  // default is oder by latest/newest
+  currentPage: number;
+  taggedCallerPagination = 'tagged-page';
 
   constructor(private tagService: TagService,
               private userDataStore: UserDataStore,
+              private userDataWatchedTagsStore: UserDataWatchedTagsStore,
               private userInfoStore: UserInfoStore,
               private keycloakService: KeycloakService,
+              private paginationNotificationService: PaginationNotificationService,
               private route: ActivatedRoute,
               private loginDialog: MatDialog) {
   }
 
   ngOnInit() {
     this.tag = this.route.snapshot.params['tag'];
+    const page = this.route.snapshot.queryParamMap.get('page');
+    if (page) {
+      this.currentPage = parseInt(page, 0);
+    } else {
+      this.currentPage = 1;
+    }
     this.route.paramMap.subscribe(
       params => {
         this.tag = params.get('tag');
         if (this.tag) {
-          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy);
+          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, this.currentPage, environment.PAGINATION_PAGE_SIZE);
         } else {
           this.tag = this.route.snapshot.url[0].path;
-          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy);
+          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, this.currentPage, environment.PAGINATION_PAGE_SIZE);
         }
       });
 
@@ -52,9 +62,15 @@ export class TagComponent implements OnInit {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfo$().subscribe( userInfo => {
+        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
           this.userData$ = this.userDataStore.getUserData$();
         });
+      }
+    });
+
+    this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
+      if (paginationAction.caller === this.taggedCallerPagination) {
+        this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, paginationAction.page, environment.PAGINATION_PAGE_SIZE);
       }
     });
   }
@@ -65,12 +81,12 @@ export class TagComponent implements OnInit {
 
   getLatestForTag() {
     this.orderBy = 'LATEST';
-    this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy);
+    this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, this.currentPage, environment.PAGINATION_PAGE_SIZE);
   }
 
-  getByLikes() {
-    this.orderBy = 'LIKES';
-    this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy);
+  getByLikeCount() {
+    this.orderBy = 'LIKE_COUNT';
+    this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, this.currentPage, environment.PAGINATION_PAGE_SIZE);
   }
 
   watchTag() {
@@ -85,12 +101,12 @@ export class TagComponent implements OnInit {
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userDataStore.watchTag(this.tag);
+      this.userDataWatchedTagsStore.watchTag(this.tag);
     }
   }
 
   unwatchTag() {
-    this.userDataStore.unwatchTag(this.tag);
+    this.userDataWatchedTagsStore.unwatchTag(this.tag);
   }
 
 }

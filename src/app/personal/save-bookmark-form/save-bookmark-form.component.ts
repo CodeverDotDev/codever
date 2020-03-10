@@ -26,6 +26,8 @@ import {MyBookmarksStore} from '../../core/user/my-bookmarks.store';
 import {PublicBookmarkPresentDialogComponent} from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
 import {AdminService} from '../../core/admin/admin.service';
 import {WebpageInfoService} from '../../core/webpage-info/webpage-info.service';
+import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
+import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-store.service';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -93,6 +95,8 @@ export class SaveBookmarkFormComponent implements OnInit {
     private suggestedTagsStore: SuggestedTagsStore,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
+    private userdataHistoryStore: UserDataHistoryStore,
+    private userDataReadLaterStore: UserDataReadLaterStore,
     private logger: Logger,
     private router: Router,
     private route: ActivatedRoute,
@@ -343,7 +347,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       );
     } else {
       this.personalBookmarksService.updateBookmark(bookmark).pipe(
-        concatMap((updatedBookmark) => this.userDataStore.addToHistoryAndReadLater$(updatedBookmark, readLater))
+        concatMap((updatedBookmark) => this.userdataHistoryStore.addToHistoryAndReadLater$(updatedBookmark, readLater))
       ).subscribe(
         () => {
           this.publishInStores(bookmark, readLater);
@@ -403,7 +407,7 @@ export class SaveBookmarkFormComponent implements OnInit {
           }
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
-          this.userDataStore.addToHistoryAndReadLater$(newBookmark, readLater).subscribe(() => {
+          this.userdataHistoryStore.addToHistoryAndReadLater$(newBookmark, readLater).subscribe(() => {
             this.publishInStores(newBookmark, readLater);
 
             if (this.url) {
@@ -425,9 +429,9 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   private publishInStores(bookmark: Bookmark, readLater) {
-    this.userDataStore.publishHistoryAfterCreation(bookmark);
+    this.userdataHistoryStore.publishHistoryAfterCreation(bookmark);
     if (readLater) {
-      this.userDataStore.publishLaterReadsAfterCreation(bookmark);
+      this.userDataReadLaterStore.publishReadLaterAfterCreation(bookmark);
     }
   }
 
