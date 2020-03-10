@@ -2,7 +2,7 @@ const Bookmark = require('../../model/bookmark');
 const escapeStringRegexp = require('escape-string-regexp');
 const bookmarksSearchHelper = require('../../common/bookmarks-search.helper');
 
-let findPublicBookmarks = async function (query, limit) {
+let findPublicBookmarks = async function (query, page, limit) {
   //split in text and tags
   const searchedTermsAndTags = bookmarksSearchHelper.splitSearchQuery(query);
   const searchedTerms = searchedTermsAndTags.terms;
@@ -12,11 +12,11 @@ let findPublicBookmarks = async function (query, limit) {
   const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, limit, specialSearchFilters);
+    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTerms(nonSpecialSearchTerms, limit, specialSearchFilters);
+    bookmarks = await getPublicBookmarksForSearchedTerms(nonSpecialSearchTerms, page, limit, specialSearchFilters);
   } else if ( searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, limit, specialSearchFilters);
+    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, page, limit, specialSearchFilters);
   }
 
   return bookmarks;
@@ -37,7 +37,7 @@ let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filte
 };
 
 
-let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, limit, specialSearchFilters) {
+let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters) {
   let filter = {
     public: true,
     tags:
@@ -69,12 +69,14 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecial
   for ( const term of nonSpecialSearchTerms ) {
     bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
   }
-  bookmarks = bookmarks.slice(0, limit);
+
+  const startPoint = ( page - 1 ) * limit;
+  bookmarks = bookmarks.slice(startPoint, startPoint + limit);
 
   return bookmarks;
 }
 
-let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, limit, specialSearchFilters) {
+let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, specialSearchFilters) {
 
   let filter = {
     public: true
@@ -102,12 +104,13 @@ let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, 
   for ( const term of nonSpecialSearchTerms ) {
     bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
   }
-  bookmarks = bookmarks.slice(0, limit);
+  const startPoint = ( page - 1 ) * limit;
+  bookmarks = bookmarks.slice(startPoint, startPoint + limit);
 
   return bookmarks;
 }
 
-let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, specialSearchFilters) {
+let getPublicBookmarksForSearchedTags = async function (searchedTags, page, limit, specialSearchFilters) {
   let filter = {
     public: true,
     tags:
@@ -120,6 +123,7 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, spe
 
   let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})
+    .skip(( page - 1 ) * limit)
     .limit(limit)
     .lean()
     .exec();
@@ -127,7 +131,7 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, limit, spe
   return bookmarks;
 }
 
-let getPublicBookmarksForUser = async function (limit, userId) {
+let getPublicBookmarksForUser = async function (limit, page, userId) {
 
   let filter = {
     public: true,
@@ -136,6 +140,7 @@ let getPublicBookmarksForUser = async function (limit, userId) {
 
   let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})
+    .skip(( page - 1 ) * limit)
     .limit(limit)
     .lean()
     .exec();

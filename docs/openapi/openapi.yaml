@@ -5,7 +5,7 @@ info:
   contact:
     name: Adrian Matei
     url: https://github.com/adrianmatei-me
-    email: ama@codingpedia.org
+    email: ama@codepedia.org
   license:
     name: License MIT
     url: https://github.com/CodepediaOrg/bookmarks.dev-api/blob/develop/LICENSE
@@ -58,7 +58,9 @@ paths:
 
   /public/bookmarks:
     get:
-      summary: Returns list of public bookmarks filtered with query parameters.
+      summary: |
+        Returns list of public bookmarks filtered with query parameters. `page` and `limit` query parameters are used
+        for pagination - if missing default values are used.
       tags:
         - public-bookmarks
       description: |
@@ -69,6 +71,7 @@ paths:
         > The list is empty if not public bookmarks returned for filter
       parameters:
         - $ref: "#/components/parameters/searchTextQueryParam"
+        - $ref: "#/components/parameters/pageQueryParam"
         - $ref: "#/components/parameters/limitQueryParam"
         - $ref: "#/components/parameters/locationQueryParam"
       responses:
@@ -113,12 +116,14 @@ paths:
       description: |
         Returns list of user's bookmarks - might be filtered by query text (`q` with `limit`) > `location` > `orderBy parameters;
         The parameters precedence is shown via **>**
+        `page` and `limit` query parameters are used for pagination - if missing default values are used.
       operationId: get-personal-bookmarks
       tags:
         - personal-bookmarks
       parameters:
         - $ref: "#/components/parameters/userIdPathParam"
         - $ref: "#/components/parameters/searchTextQueryParam"
+        - $ref: "#/components/parameters/pageQueryParam"
         - $ref: "#/components/parameters/limitQueryParam"
         - $ref: "#/components/parameters/locationQueryParam"
         - name: orderBy
@@ -285,6 +290,35 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
 
   /personal/users/{userId}/bookmarks/{bookmarkId}:
+    get:
+      description: Returns bookmark for user
+      operationId: get-bookmark-for-user-by-id
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: '#/components/parameters/bookmarkIdPathParam'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          description: internal server error, when unknown server error is catched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorModel'
     put:
       description: (full) update existing bookmark of user
       operationId: update-bookmark
@@ -439,6 +473,116 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/InternalServerError'
+
+  /personal/users/{userId}/history:
+    description: |
+      Returns latest bookmarks accessed, created or updated by the user
+      `page` and `limit` query parameters are used for pagination - if missing default values are used.
+    get:
+      description: Reads user data
+      operationId: get-user-data-history
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: "#/components/parameters/pageQueryParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/BookmarkListResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /personal/users/{userId}/pinned:
+    description: |
+      Returns pinned bookmarks by the user
+      `page` and `limit` query parameters are used for pagination - if missing default values are used.
+    get:
+      description: Reads user data
+      operationId: get-user-data-pinned
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: "#/components/parameters/pageQueryParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/BookmarkListResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /personal/users/{userId}/favorites:
+    description: |
+      Returns bookmarks user added to **Favorites**
+      `page` and `limit` query parameters are used for pagination - if missing default values are used.
+    get:
+      description: Reads user data
+      operationId: get-user-data-favorites
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: "#/components/parameters/pageQueryParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/BookmarkListResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /personal/users/{userId}/watched-tags:
+    description: |
+      Returns bookmarks for **tags** that the user is **watching**
+      `page` and `limit` query parameters are used for pagination - if missing default values are used.
+    get:
+      description: Reads user data
+      operationId: get-user-data-watched-tags
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: "#/components/parameters/pageQueryParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/BookmarkListResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /personal/users/{userId}/read-later:
+    description: |
+      Returns bookmarks the user added to **Read later**
+      `page` and `limit` query parameters are used for pagination - if missing default values are used.
+    get:
+      description: Reads user data
+      operationId: get-user-data-read-later
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: "#/components/parameters/pageQueryParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/BookmarkListResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
 
 components:
   schemas:
@@ -639,6 +783,17 @@ components:
         complex-private-only:
           value: 'exception handling [java] site:wiki.my-corporation.com private:only'
           summary: Same as above but only within **private** bookmarks
+    pageQueryParam:
+      name: page
+      in: query
+      description: |
+        Pagination query param - it is used to skip results in combination with `limit` query param
+        Defaults to **1** and in this case **no results are skipped**
+      required: false
+      schema:
+        type: integer
+        default: 1
+        format: int32
     limitQueryParam:
       name: limit
       in: query
@@ -646,7 +801,7 @@ components:
       required: false
       schema:
         type: integer
-        default: 10
+        default: 55
         format: int32
     locationQueryParam:
       name: location

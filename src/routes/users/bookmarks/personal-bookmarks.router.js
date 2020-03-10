@@ -6,6 +6,7 @@ const bookmarkHelper = require('../../../common/bookmark-helper');
 const personalBookmarksSearchService = require('./personal-bookmarks-search.service');
 const PersonalBookmarksService = require('./personal-bookmarks.service');
 const UserIdValidator = require('../userid.validator');
+const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
 
 const ValidationError = require('../../../error/validation.error');
 
@@ -29,7 +30,7 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
   let newBookmark = await PersonalBookmarksService.createBookmark(request.params.userId, bookmark);
 
   response
-    .set('Location', `${config.basicApiUrl}private/${request.params.userId}/bookmarks/${newBookmark.id}`)
+    .set('Location', `${config.basicApiUrl}/personal/users/${request.params.userId}/bookmarks/${newBookmark.id}`)
     .status(HttpStatus.CREATED)
     .send({response: 'Bookmark created for userId ' + request.params.userId});
 
@@ -40,10 +41,9 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
   UserIdValidator.validateUserId(request);
 
   const searchText = request.query.q;
-  const limit = parseInt(request.query.limit);
-
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
   if (searchText) {
-    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(searchText, limit, request.params.userId);
+    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(searchText, page, limit, request.params.userId);
     return response.send(bookmarks);
   } else {
     next();
@@ -65,12 +65,13 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) => {
   let bookmarks;
   const orderBy = request.query.orderBy;
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
   switch (orderBy) {
     case 'MOST_LIKES':
-      bookmarks = await PersonalBookmarksService.getMostLikedBookmarks(request.params.userId);
+      bookmarks = await PersonalBookmarksService.getMostLikedBookmarks(request.params.userId, page, limit);
       break;
     case 'LAST_CREATED':
-      bookmarks = await PersonalBookmarksService.getLastCreatedBookmarks(request.params.userId);
+      bookmarks = await PersonalBookmarksService.getLastCreatedBookmarks(request.params.userId, page, limit);
       break;
     case 'MOST_USED':
       bookmarks = await PersonalBookmarksService.getMostUsedBookmarks(request.params.userId);
@@ -138,8 +139,8 @@ personalBookmarksRouter.post('/:bookmarkId/owner-visits/inc', keycloak.protect()
 personalBookmarksRouter.delete('/:bookmarkId', keycloak.protect(), async (request, response) => {
 
   UserIdValidator.validateUserId(request);
-
-  await PersonalBookmarksService.deleteBookmarkById(request.params.userId, request.params.bookmarkId);
+  const {userId, bookmarkId} = request.params;
+  await PersonalBookmarksService.deleteBookmarkById(userId, bookmarkId);
   return response.status(HttpStatus.NO_CONTENT).send();
 });
 

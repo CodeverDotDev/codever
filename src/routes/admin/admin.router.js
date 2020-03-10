@@ -74,7 +74,7 @@ adminRouter.post('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (requ
   let newBookmark = await AdminService.createBookmark(bookmark);
 
   response
-    .set('Location', `${config.basicApiUrl}private/${request.params.userId}/bookmarks/${newBookmark.id}`)
+    .set('Location', `${config.basicApiUrl}/personal/users/${request.params.userId}/bookmarks/${newBookmark.id}`)
     .status(HttpStatus.CREATED)
     .send({response: 'Bookmark created for userId ' + request.params.userId});
 });
