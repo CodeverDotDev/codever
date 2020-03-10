@@ -3,7 +3,7 @@ const Bookmark = require('../../model/bookmark');
 
 const NotFoundError = require('../../error/not-found.error');
 
-let getBookmarkByLocation = async (location) => {
+let getPublicBookmarkByLocation = async (location) => {
   const bookmark = await Bookmark.findOne({
     'public': true,
     location: location
@@ -15,7 +15,7 @@ let getBookmarkByLocation = async (location) => {
   }
 }
 
-let getLatestBookmarks = async (page, limit) => {
+let getLatestPublicBookmarks = async (page, limit) => {
 
   const bookmarks = await Bookmark.find({'public': true})
     .sort({createdAt: -1})
@@ -56,14 +56,14 @@ let getBookmarksForTag = async (tag, orderBy, page, limit) => {
 let getBookmarkById = async function (bookmarkId) {
   const bookmark = await Bookmark.findById(bookmarkId);
   if ( !bookmark ) {
-    throw new NotFoundError(`Bookmakr data NOT_FOUND for id: ${request.params.userId}`);
+    throw new NotFoundError(`Bookmark data NOT_FOUND for id: ${bookmarkId}`);
   }
   return bookmark;
 };
 
 module.exports = {
-  getBookmarkByLocation: getBookmarkByLocation,
-  getLatestPublicBookmarks: getLatestBookmarks,
+  getPublicBookmarkByLocation: getPublicBookmarkByLocation,
+  getLatestPublicBookmarks: getLatestPublicBookmarks,
   getBookmarksForTag: getBookmarksForTag,
   getBookmarkById: getBookmarkById
 };

@@ -40,6 +40,7 @@ let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filte
 
 let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
   let filter = {
+    userId: userId,
     tags:
       {
         $all: searchedTags
@@ -54,14 +55,6 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
-
-  const userData = await User.findOne({
-    userId: userId
-  });
-  filter.$or = [
-    {userId: userId},
-    {"_id": {$in: userData.favorites}}
-  ]
 
   let bookmarks = await Bookmark.find(
     filter,
@@ -86,7 +79,7 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
 
 let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
 
-  let filter = { };
+  let filter = {userId: userId };
   if(nonSpecialSearchTerms.length > 0) {
     const termsJoined = nonSpecialSearchTerms.join(' ');
     const termsQuery = escapeStringRegexp(termsJoined);
@@ -94,12 +87,6 @@ let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
-
-  const userData = await User.findOne({userId: userId});
-  filter.$or = [
-    {userId: userId},
-    {"_id": {$in: userData.favorites}}
-  ]
 
   let bookmarks = await Bookmark.find(
     filter,
@@ -124,6 +111,7 @@ let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms
 
 let getPersonalBookmarksForSearchedTags = async function (searchedTags, page, limit, userId, specialSearchFilters) {
   let filter = {
+    userId: userId,
     tags:
       {
         $all: searchedTags
@@ -131,14 +119,6 @@ let getPersonalBookmarksForSearchedTags = async function (searchedTags, page, li
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
-
-  const userData = await User.findOne({
-    userId: userId
-  });
-  filter.$or = [
-    {userId: userId},
-    {"_id": {$in: userData.favorites}}
-  ]
 
   let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})

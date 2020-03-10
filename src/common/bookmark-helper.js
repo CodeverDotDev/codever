@@ -20,6 +20,7 @@ module.exports = {
       publishedOn: req.body.publishedOn,
       sourceCodeURL: req.body.sourceCodeURL,
       userId: req.body.userId || req.params.userId,
+      userDisplayName: req.body.userDisplayName,
       public: req.body.public,
       lastAccessedAt: req.body.lastAccessedAt,
       likeCount: req.body.likeCount,

@@ -36,13 +36,14 @@ personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) 
 
 });
 
+
 /* GET bookmarks of user */
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, next) => {
   UserIdValidator.validateUserId(request);
 
   const searchText = request.query.q;
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  if (searchText) {
+  if ( searchText ) {
     const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(searchText, page, limit, request.params.userId);
     return response.send(bookmarks);
   } else {
@@ -53,8 +54,8 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
 
 /* GET bookmark of user by location*/
 personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, next) => {
-  if (request.query.location) {
-    const bookmark = await PersonalBookmarksService.getBookmarkByLocation(request.params.userId, request.query.location);
+  if ( request.query.location ) {
+    const bookmark = await PersonalBookmarksService.getPersonalBookmarkByLocation(request.params.userId, request.query.location);
     return response.send(bookmark);
   } else {
     next();
@@ -151,7 +152,7 @@ personalBookmarksRouter.delete('/', keycloak.protect(), async (request, response
   UserIdValidator.validateUserId(request);
 
   const location = request.query.location;
-  if (location) {
+  if ( location ) {
     await PersonalBookmarksService.deleteBookmarkByLocation(request.params.userId, location);
     return response.status(HttpStatus.NO_CONTENT).send();
   } else {
@@ -167,7 +168,7 @@ personalBookmarksRouter.delete('/', keycloak.protect(), async (request, response
   UserIdValidator.validateUserId(request);
 
   const {tag, type} = request.query;
-  if (tag && type === 'private') {
+  if ( tag && type === 'private' ) {
     await PersonalBookmarksService.deletePrivateBookmarksByTag(request.params.userId, tag);
     return response.status(HttpStatus.NO_CONTENT).send();
   } else {
@@ -178,6 +179,16 @@ personalBookmarksRouter.delete('/', keycloak.protect(), async (request, response
 personalBookmarksRouter.delete('/', keycloak.protect(), async () => {
   throw new ValidationError('Missing parameters',
     ['You need to provide location or tag to delete personal bookmarks']);
+});
+
+personalBookmarksRouter.patch('/display-name', keycloak.protect(), async (request, response) => {
+  UserIdValidator.validateUserId(request);
+  const userId = request.params.userId;
+  const displayName = request.body.displayName;
+
+  await PersonalBookmarksService.updateDisplayNameInBookmarks(userId, displayName);
+
+  return response.status(HttpStatus.OK).send();
 });
 
 module.exports = personalBookmarksRouter;
