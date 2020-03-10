@@ -1,3 +1,5 @@
+const constants = require('../../common/constants');
+
 const User = require('../../model/user');
 const Bookmark = require('../../model/bookmark');
 
@@ -28,13 +30,13 @@ let updateUserData = async function (userData, userId) {
 
   validateUserData(userData, userId);
 
-  //hold only 30 bookmarks in history or pinned
-  if ( userData.history.length > 30 ) {
-    userData.history = userData.history.slice(0, 3);
+  //hold max 50 bookmarks in history or pinned
+  if ( userData.history.length > constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE ) {
+    userData.history = userData.history.slice(0, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
   }
 
-  if ( userData.pinned.length > 30 ) {
-    userData.pinned = userData.pinned.slice(0, 3);
+  if ( userData.pinned.length > constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE ) {
+    userData.pinned = userData.pinned.slice(0, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
   }
 
   delete userData._id;//once we proved it's present we delete it to avoid the following MOngoError by findOneAndUpdate
@@ -103,7 +105,7 @@ let deleteUserData = async function (userId) {
   }
 }
 
-let getLaterReads = async function (userId) {
+let getReadLater = async function (userId, page, limit) {
 
   const userData = await User.findOne({
     userId: userId
@@ -111,7 +113,8 @@ let getLaterReads = async function (userId) {
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const bookmarks = await Bookmark.find({"_id": {$in: userData.readLater}});
+    const readLaterRangeIds = userData.readLater.slice((page - 1) * limit, (page - 1) * limit + limit );
+    const bookmarks = await Bookmark.find({"_id": {$in: readLaterRangeIds}});
 
     return bookmarks;
   }
@@ -131,7 +134,7 @@ let getLikedBookmarks = async function (userId) {
   }
 }
 
-let getWatchedTags = async function (userId) {
+let getWatchedTags = async function (userId, page, limit) {
   const userData = await User.findOne({
     userId: userId
   });
@@ -143,7 +146,8 @@ let getWatchedTags = async function (userId) {
       tags: {$elemMatch: {$in: userData.watchedTags}}
     })
       .sort({createdAt: -1})
-      .limit(100)
+      .skip((page - 1) * limit)
+      .limit(limit)
       .lean()
       .exec();
 
@@ -237,7 +241,7 @@ let getUsedTagsForPrivateBookmarks = async function (userId) {
   return usedTags;
 }
 
-let getPinnedBookmarks = async function (userId) {
+let getPinnedBookmarks = async function (userId, page, limit) {
 
   const userData = await User.findOne({
     userId: userId
@@ -245,34 +249,36 @@ let getPinnedBookmarks = async function (userId) {
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const bookmarks = await Bookmark.find({"_id": {$in: userData.pinned}});
+    const pinnedRangeIds = userData.pinned.slice((page - 1) * limit, (page - 1) * limit + limit );
+    const bookmarks = await Bookmark.find({"_id": {$in: pinnedRangeIds}});
     //we need to order the bookmarks to correspond the one in the userData.pinned array
-    const orderedBookmarksAsInPinned = userData.pinned.map(bookmarkId => {
-      return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+    const orderedBookmarksAsInPinned = bookmarks.sort(function(a, b){
+      return pinnedRangeIds.indexOf(a._id) - pinnedRangeIds.indexOf(b._id);
     });
 
     return orderedBookmarksAsInPinned.filter(bookmark => bookmark !== undefined);
   }
 }
 
-let getFavoriteBookmarks = async function (userId) {
+let getFavoriteBookmarks = async function (userId, page, limit) {
   const userData = await User.findOne({
     userId: userId
   });
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const bookmarks = await Bookmark.find({"_id": {$in: userData.favorites}});
+    const favoritesRangeIds = userData.favorites.slice((page - 1) * limit, (page - 1) * limit + limit );
+    const bookmarks = await Bookmark.find({"_id": {$in: favoritesRangeIds}});
     //we need to order the bookmarks to correspond the one in the userData.favorites array
-    const orderedBookmarksAsInFavorites = userData.favorites.map(bookmarkId => {
-      return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+    const orderedBookmarksAsInFavorites = bookmarks.sort(function(a, b){
+      return favoritesRangeIds.indexOf(a._id) - favoritesRangeIds.indexOf(b._id);
     });
 
     return orderedBookmarksAsInFavorites;
   }
 }
 
-let getBookmarksFromHistory = async function (userId) {
+let getBookmarksFromHistory = async function (userId, page, limit) {
 
   const userData = await User.findOne({
     userId: userId
@@ -280,15 +286,17 @@ let getBookmarksFromHistory = async function (userId) {
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const bookmarks = await Bookmark.find({"_id": {$in: userData.history}});
+    const historyRangeIds = userData.history.slice((page - 1) * limit, (page - 1) * limit + limit );
+    const bookmarks = await Bookmark.find({"_id": {$in: historyRangeIds}});
 
     //we need to order the bookmarks to correspond the one in the userData.history array
-    const orderedBookmarksAsInHistory = userData.history.map(bookmarkId => {
-      return bookmarks.filter(bookmark => bookmark._id.toString() === bookmarkId)[0];
+    const orderedBookmarksAsInHistory = bookmarks.sort(function(a, b){
+      return historyRangeIds.indexOf(a._id) - historyRangeIds.indexOf(b._id);
     });
 
     //check for "potentially" deleted bookmarks via "delete all private for tag"
-    return orderedBookmarksAsInHistory.filter(bookmark => bookmark !== undefined);
+    //return orderedBookmarksAsInHistory.filter(bookmark => bookmark !== undefined);
+    return orderedBookmarksAsInHistory;
   }
 }
 
@@ -306,7 +314,7 @@ let rateBookmark = async function (receivedUserData, userId, bookmarkId) {
     if ( receivedUserData.action === 'LIKE' ) {
       return await likeBookmark(userData, userId, bookmarkId);
     } else if ( receivedUserData.action === 'UNLIKE' ) {
-      return await dislikeBookmark(userData, userId, bookmarkId);
+      return await unlikeBookmark(userData, userId, bookmarkId);
     }
   }
 }
@@ -348,7 +356,7 @@ let likeBookmark = async function (userData, userId, bookmarkId) {
   }
 }
 
-let dislikeBookmark = async function (userData, userId, bookmarkId) {
+let unlikeBookmark = async function (userData, userId, bookmarkId) {
   if ( !userData.likes.includes(bookmarkId) ) {
     throw new ValidationError('You did not like this bookmark', ['You did not like this bookmark']);
   } else {
@@ -373,7 +381,7 @@ module.exports = {
   createUserData: createUserData,
   getUserData: getUserData,
   deleteUserData: deleteUserData,
-  getLaterReads: getLaterReads,
+  getReadLater: getReadLater,
   getLikedBookmarks: getLikedBookmarks,
   getWatchedTags: getWatchedTags,
   getUsedTagsForPublicBookmarks: getUsedTagsForPublicBookmarks,

@@ -618,7 +618,7 @@ describe('Personal Bookmarks tests', function () {
       expect(foundBookmark.name).to.equal(verySpecialTitle);
     });
 
-    it('should NOT find bookmark with very-special-tag-personal-bookmarks in query param as tag and word - private:only and wrong lang', async function () {
+    it('should NOT find bookmark with very-special-tag-personal-bookmarks in query param as tag and word - private:only and wrong lang:de', async function () {
       const queryText = `${verySpecialTag} [${verySpecialTag}] private:only lang:de`;
       const response = await request(app)
         .get(basePathApiPersonalUsersBookmarks)
