@@ -7,6 +7,9 @@ body {
 a {
   color: #4078c0;
 }
+a:hover {
+  cursor:pointer;
+}
 
 pre {
   background-color: #f5f5f5;
@@ -52,9 +55,32 @@ ul.tags li:not(:last-child):after {
 .tags-group {
   padding: 0.3rem 0 0.3rem 0;
   margin-bottom: 0.3rem;
+}
 
+.used-tag {
+  font-size: 1.3rem;
+  margin-right: 1.3rem;
+  white-space:nowrap;
   a {
-    color: #FFFFFF;
+    padding: 0.3rem;
+    margin-top: 0.5rem;
+  }
+  .tag-count {
+    font-size: 1rem;
+  }
+}
+
+.tag-list {
+  a {
+    font-weight: 400;
+    padding: 0.25rem 0.1rem 0.25rem 0.5rem;
+  }
+}
+
+.tag-list-header {
+  a {
+    font-weight: 500;
+    padding: 0.25rem 0.1rem 0.25rem 0.5rem;
   }
 }
 
@@ -116,6 +142,27 @@ pre{
   }
 }
 
+// push profile link to bottom - https://stackoverflow.com/questions/585945/how-to-align-content-of-a-div-to-the-bottom
+.user-profile-card {
+  margin-right: 1rem;
+  margin-top: 1rem;
+
+  position: relative;
+  min-height: 340px;
+
+  .social {
+    a {
+      font-size: 1.2rem;
+      padding-right: 0.5rem;
+    }
+  }
+
+  #see-profile-link {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+}
 
 
 
@@ -292,10 +339,6 @@ pre{
   padding: 0.25rem;
 }
 
-.btn-sm {
-  margin-right: 0.5rem;
-}
-
 @media (min-width: 1400px) {
   .container {
     max-width: 1240px;
@@ -306,6 +349,7 @@ pre{
 
 label {
   width: 100%;
+  font-weight: 600;
 }
 
 .full-width {

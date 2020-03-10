@@ -9,6 +9,7 @@ import { Bookmark } from './model/bookmark';
 import { shareReplay } from 'rxjs/operators';
 import { RateBookmarkRequest } from './model/rate-bookmark.request';
 import { UsedTags } from './model/used-tag';
+import { UserDataProfile } from './model/user-data-profile';
 
 @Injectable()
 export class UserDataService {
@@ -38,10 +39,17 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
+  uploadProfileImage(userId: String, image: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('image', image);
+
+    return this.httpClient.post(`${this.usersApiBaseUrl}/${userId}/profile-picture`, formData);
+  }
+
   getReadLater(userId: string, page: number, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
-      .set('limit', limit.toString())
-      .set('page', page.toString());
+      .set('page', page.toString())
+      .set('limit', limit.toString());
     return this.httpClient
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/read-later`, {params: params})
       .pipe(shareReplay(1));
@@ -55,37 +63,40 @@ export class UserDataService {
 
   getPinnedBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
-      .set('limit', limit.toString())
-      .set('page', page.toString());
+      .set('page', page.toString())
+      .set('limit', limit.toString());
     return this.httpClient
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/pinned`, {params: params})
       .pipe(shareReplay(1));
   }
 
+  /**
+   * Deprecated - "favorites" has been temporarily deactivated till complete removal or reactivation
+   */
   getFavoriteBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
-      .set('limit', limit.toString())
-      .set('page', page.toString());
+      .set('page', page.toString())
+      .set('limit', limit.toString());
     return this.httpClient
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/favorites`, {params: params})
       .pipe(shareReplay(1));
   }
 
-  getLastVisitedBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
+  getFeedBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
-      .set('limit', limit.toString())
-      .set('page', page.toString());
+      .set('page', page.toString())
+      .set('limit', limit.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`, {params: params})
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/feed`, {params: params})
       .pipe(shareReplay(1));
   }
 
-  getBookmarksForWatchedTags(userId: string, page: number, limit: number): Observable<Bookmark[]> {
+  getLastVisitedBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
-      .set('limit', limit.toString())
-      .set('page', page.toString());
+      .set('page', page.toString())
+      .set('limit', limit.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/watched-tags`, {params: params})
+      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`, {params: params})
       .pipe(shareReplay(1));
   }
 
@@ -101,6 +112,30 @@ export class UserDataService {
       .patch(`${this.usersApiBaseUrl}/${rateBookmarkRequest.ratingUserId}/bookmarks/likes/${rateBookmarkRequest.bookmark._id}`,
         JSON.stringify(rateBookmarkRequest),
         {headers: this.headers})
+      .pipe(shareReplay(1));
+  }
+
+  followUser(userId: string, followedUserId: string): Observable<UserData> {
+    return this.httpClient
+      .patch<UserData>(`${this.usersApiBaseUrl}/${userId}/following/users/${followedUserId}`, {})
+      .pipe(shareReplay(1));
+  }
+
+  unfollowUser(userId: string, followedUserId: string) {
+    return this.httpClient
+      .patch<UserData>(`${this.usersApiBaseUrl}/${userId}/unfollowing/users/${followedUserId}`, {})
+      .pipe(shareReplay(1));
+  }
+
+  getFollowedUsers$(userId: string): Observable<UserDataProfile[]> {
+    return this.httpClient
+      .get<UserDataProfile[]>(`${this.usersApiBaseUrl}/${userId}/following/users`)
+      .pipe(shareReplay(1));
+  }
+
+  getFollowers$(userId: string): Observable<UserDataProfile[]> {
+    return this.httpClient
+      .get<UserDataProfile[]>(`${this.usersApiBaseUrl}/${userId}/followers`)
       .pipe(shareReplay(1));
   }
 }

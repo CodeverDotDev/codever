@@ -1,33 +1,35 @@
-import {concatMap, debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators';
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Bookmark} from '../../core/model/bookmark';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MarkdownService} from '../markdown.service';
-import {KeycloakService} from 'keycloak-angular';
-import {COMMA, ENTER, SPACE} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent, MatChipInputEvent, MatDialog, MatDialogConfig} from '@angular/material';
-import {Observable, throwError as observableThrowError} from 'rxjs';
-import {languages} from '../../shared/language-options';
-import {tagsValidator} from '../../shared/tags-validation.directive';
-import {PublicBookmarksStore} from '../../public/bookmarks/store/public-bookmarks-store.service';
-import {PublicBookmarksService} from '../../public/bookmarks/public-bookmarks.service';
-import {descriptionSizeValidator} from '../../shared/description-size-validation.directive';
-import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {PersonalBookmarksService} from '../../core/personal-bookmarks.service';
-import {UserDataStore} from '../../core/user/userdata.store';
-import {Logger} from '../../core/logger.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ErrorService} from '../../core/error/error.service';
-import {UserDataService} from '../../core/user-data.service';
-import {UserInfoStore} from '../../core/user/user-info.store';
-import {SuggestedTagsStore} from '../../core/user/suggested-tags.store';
-import {WebpageInfo} from '../../core/model/webpage-info';
-import {MyBookmarksStore} from '../../core/user/my-bookmarks.store';
-import {PublicBookmarkPresentDialogComponent} from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
-import {AdminService} from '../../core/admin/admin.service';
-import {WebpageInfoService} from '../../core/webpage-info/webpage-info.service';
+import { concatMap, debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Bookmark } from '../../core/model/bookmark';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MarkdownService } from '../markdown.service';
+import { KeycloakService } from 'keycloak-angular';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
+import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatDialog, MatDialogConfig } from '@angular/material';
+import { Observable, throwError as observableThrowError } from 'rxjs';
+import { languages } from '../../shared/language-options';
+import { tagsValidator } from '../../shared/tags-validation.directive';
+import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
+import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
+import { descriptionSizeValidator } from '../../shared/description-size-validation.directive';
+import { HttpResponse } from '@angular/common/http';
+import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
+import { UserDataStore } from '../../core/user/userdata.store';
+import { Logger } from '../../core/logger.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ErrorService } from '../../core/error/error.service';
+import { UserDataService } from '../../core/user-data.service';
+import { UserInfoStore } from '../../core/user/user-info.store';
+import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
+import { WebpageInfo } from '../../core/model/webpage-info';
+import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
+import { PublicBookmarkPresentDialogComponent } from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
+import { AdminService } from '../../core/admin/admin.service';
+import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-store.service';
+import { UserData } from '../../core/model/user-data';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -38,6 +40,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   bookmarkForm: FormGroup;
   userId = null;
+  private userData: UserData;
   makePublic = false;
   personalBookmarkPresent = false;
 
@@ -78,6 +81,9 @@ export class SaveBookmarkFormComponent implements OnInit {
   @Input()
   isUpdate: boolean;
 
+  @Input()
+  copyToMine = false;
+
   bookmark: Bookmark;
 
   constructor(
@@ -97,6 +103,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     private userDataStore: UserDataStore,
     private userdataHistoryStore: UserDataHistoryStore,
     private userDataReadLaterStore: UserDataReadLaterStore,
+    private datePipe: DatePipe,
     private logger: Logger,
     private router: Router,
     private route: ActivatedRoute,
@@ -104,7 +111,9 @@ export class SaveBookmarkFormComponent implements OnInit {
   ) {
     this.userInfoStore.getUserInfo$().subscribe(userInfo => {
       this.userId = userInfo.sub;
-
+      this.userDataStore.getUserData$().subscribe(userData => {
+        this.userData = userData;
+      });
       this.suggestedTagsStore.getSuggestedTags$(this.userId).subscribe(tags => {
         this.autocompleteTags = tags.sort();
 
@@ -116,15 +125,23 @@ export class SaveBookmarkFormComponent implements OnInit {
         );
       });
     });
+
   }
 
   ngOnInit(): void {
     this.buildForm();
-    if (this.isUpdate) { // this is update
+    if (this.isUpdate || this.copyToMine) {
       this.bookmark$.subscribe(bookmark => {
         this.bookmark = bookmark;
         this.makePublic = this.bookmark.public;
+        if (this.copyToMine) {
+          this.makePublic = false;
+          this.bookmark._id = null;
+          this.bookmark.public = false;
+          this.verifyExistenceInPersonalBookmarks(bookmark.location);
+        }
         this.bookmarkForm.patchValue(this.bookmark);
+        this.bookmarkForm.get('publishedOn').patchValue(this.datePipe.transform(bookmark.publishedOn, 'yyyy-MM-dd')); // issue setting date otherwise on date field
         for (let i = 0; i < this.bookmark.tags.length; i++) {
           const formTags = this.bookmarkForm.get('tags') as FormArray;
           formTags.push(this.formBuilder.control(this.bookmark.tags[i]));
@@ -159,13 +176,13 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   private onChanges() {
-    if (!this.isUpdate) {
+    const isNewBookmark = !this.isUpdate && !this.copyToMine;
+    if (isNewBookmark) {
       this.bookmarkForm.get('location').valueChanges.pipe(
         debounceTime(1000),
-        distinctUntilChanged(),)
+        distinctUntilChanged(), )
         .subscribe(location => {
           this.verifyExistenceInPersonalBookmarks(location);
-
         });
     }
   }
@@ -174,7 +191,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     this.personalBookmarksService.getPersonalBookmarkByLocation(this.userId, location).subscribe((bookmarks: Bookmark[]) => {
       if (bookmarks.length === 1) {
         this.personalBookmarkPresent = true;
-      } else {
+      } else if (!this.copyToMine) {
         this.getWebPageInfo(location);
       }
     });
@@ -321,6 +338,8 @@ export class SaveBookmarkFormComponent implements OnInit {
   saveBookmark(bookmark: Bookmark) {
     if (this.isUpdate) {
       this.updateBookmark(bookmark)
+    } else if (this.copyToMine) {
+      this.copyBookmarkToMine(bookmark);
     } else {
       this.createBookmark(bookmark);
     }
@@ -333,6 +352,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     bookmark.updatedAt = now;
     bookmark.lastAccessedAt = now;
     bookmark.userId = this.bookmark.userId;
+    bookmark.userDisplayName = this.bookmark.userDisplayName;
     bookmark._id = this.bookmark._id;
 
     const readLater = this.bookmarkForm.controls['readLater'].value;
@@ -378,6 +398,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       description: bookmark.description,
       descriptionHtml: this.markdownService.toHtml(bookmark.description),
       userId: this.userId,
+      userDisplayName: this.userData.profile.displayName,
       public: bookmark.public,
       lastAccessedAt: new Date(),
       likeCount: 0
@@ -489,6 +510,38 @@ export class SaveBookmarkFormComponent implements OnInit {
     return this.bookmarkForm.get('description');
   }
 
+  private copyBookmarkToMine(bookmark: Bookmark) {
+
+    bookmark.descriptionHtml = this.markdownService.toHtml(bookmark.description);
+    const now = new Date();
+    bookmark.updatedAt = now;
+    bookmark.lastAccessedAt = now;
+    bookmark.userId = this.userId;
+    bookmark.userDisplayName = this.userData.profile.displayName;
+
+    this.personalBookmarksService.createBookmark(this.userId, bookmark)
+      .subscribe(
+        response => {
+          const headers = response.headers;
+          // get the bookmark id, which lies in the "location" response header
+          const lastSlashIndex = headers.get('location').lastIndexOf('/');
+          const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
+          bookmark._id = newBookmarkId;
+
+          this.myBookmarksStore.addToLastCreated(bookmark);
+
+          const readLater = this.bookmarkForm.controls['readLater'].value;
+          this.userdataHistoryStore.addToHistoryAndReadLater$(bookmark, readLater).subscribe(() => {
+            this.publishInStores(bookmark, readLater);
+            this.navigateToHomePage();
+          });
+        },
+        (error: HttpResponse<any>) => {
+          this.errorService.handleError(error.body.json());
+          return observableThrowError(error.body.json());
+        }
+      );
+  }
 }
 
 

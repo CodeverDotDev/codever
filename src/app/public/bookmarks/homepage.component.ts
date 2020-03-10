@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
@@ -8,7 +8,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { BookmarksSearchComponent } from '../search/bookmarks-search.component';
-import { MatTabChangeEvent } from '@angular/material';
+import { MatDialog, MatTabChangeEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { AppService } from '../../app.service';
@@ -16,8 +16,9 @@ import { PaginationNotificationService } from '../../core/pagination-notificatio
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-store.service';
-import { UserDataFavoritesStore } from '../../core/user/userdata.favorites.store';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
+import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';
+import { FeedStore } from '../../core/user/feed-store.service';
 
 
 @Component({
@@ -25,9 +26,10 @@ import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss']
 })
-export class HomepageComponent implements OnInit {
+export class HomepageComponent extends TagFollowingBaseComponent implements OnInit, OnDestroy {
 
-  publicBookmarks$: Observable<Bookmark[]>;
+  feedBookmarks$: Observable<Bookmark[]>;
+  pageNavigationSubscription: Subscription;
   tags: string[] = allTags;
   userData$: Observable<UserData>;
 
@@ -36,27 +38,22 @@ export class HomepageComponent implements OnInit {
 
   history$: Observable<Bookmark[]>;
   pinned$: Observable<Bookmark[]>;
-  favorites$: Observable<Bookmark[]>;
   readLater$: Observable<Bookmark[]>;
-  bookmarksForWatchedTags$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
   userIsLoggedIn$: Promise<boolean>;
 
   selectedTabIndex: number;
 
-  currentPageCommunity = 1;
+  currentPageFeed = 1;
   currentPageHistory = 1;
   currentPagePinned = 1;
   currentPageReadLater = 1;
-  currentPageFavorites = 1;
-  currentPageWatchedTags = 1;
-  callerPaginationCommunity = 'community';
+  callerPaginationFeed = 'feed';
   callerPaginationHistory = 'history';
   callerPaginationPinned = 'pinned';
   callerPaginationReadLater = 'read-later';
-  callerPaginationFavorites = 'favorites';
-  callerPaginationWatchedTags = 'watched-tags';
+  seeAllPublicToggle = false;
 
   constructor(private appService: AppService,
               private publicBookmarksStore: PublicBookmarksStore,
@@ -67,11 +64,13 @@ export class HomepageComponent implements OnInit {
               private userDataHistoryStore: UserDataHistoryStore,
               private userDataPinnedStore: UserDataPinnedStore,
               private userDataReadLaterStore: UserDataReadLaterStore,
-              private userDataFavoritesStore: UserDataFavoritesStore,
-              private userDataWatchedTagsStore: UserDataWatchedTagsStore,
+              private feedStore: FeedStore,
+              public userDataWatchedTagsStore: UserDataWatchedTagsStore,
+              public loginDialog: MatDialog,
               private userInfoStore: UserInfoStore,
               private paginationNotificationService: PaginationNotificationService,
   ) {
+    super(loginDialog, userDataWatchedTagsStore);
   }
 
   ngOnInit(): void {
@@ -81,24 +80,25 @@ export class HomepageComponent implements OnInit {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.setTabIndexFromQueryParam(tabQueryParam); // this method is called twice to avoid autmatically executing changeTab events
+          this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn); // this method is called twice to avoid autmatically executing changeTab events
           this.userData$ = this.userDataStore.getUserData$();
         });
       } else {
-        this.setTabIndexFromQueryParam(tabQueryParam);
+        this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn);
       }
 
       const page = this.route.snapshot.queryParamMap.get('page');
       this.setCurrentPageFromQueryParam(page);
 
+      this.listenToClickOnLogoEvent(isLoggedIn);
+
+      this.listenToPaginationNavigationEvents(isLoggedIn);
+
     });
 
-    this.listenToClickOnLogoEvent();
-
-    this.listenToPaginationNavigationEvents();
   }
 
-  private setTabIndexFromQueryParam(tabQueryParam) {
+  private setTabIndexFromQueryParam(tabQueryParam, isLoggedIn: boolean) {
     switch (tabQueryParam) {
       case 'history': {
         this.selectedTabIndex = TabIndex.History;
@@ -112,21 +112,17 @@ export class HomepageComponent implements OnInit {
         this.selectedTabIndex = TabIndex.ReadLater;
         break;
       }
-      case 'favorites': {
-        this.selectedTabIndex = TabIndex.Favorites;
-        break;
-      }
-      case 'watched-tags': {
-        this.selectedTabIndex = TabIndex.WatchedTags;
-        break;
-      }
       case 'search-results': {
         this.selectedTabIndex = TabIndex.SearchResults;
         break;
       }
       default: {
         this.selectedTabIndex = 0;
-        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(1);
+        if (isLoggedIn && !this.seeAllPublicToggle) {
+          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(1);
+        } else {
+          this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(1);
+        }
       }
     }
   }
@@ -134,8 +130,8 @@ export class HomepageComponent implements OnInit {
   private setCurrentPageFromQueryParam(page: string) {
     if (page) {
       switch (this.selectedTabIndex) {
-        case TabIndex.Community:
-          this.currentPageCommunity = parseInt(page, 0);
+        case TabIndex.Feed:
+          this.currentPageFeed = parseInt(page, 0);
           break;
         case TabIndex.History:
           this.currentPageHistory = parseInt(page, 0);
@@ -146,37 +142,40 @@ export class HomepageComponent implements OnInit {
         case TabIndex.ReadLater:
           this.currentPageReadLater = parseInt(page, 0);
           break;
-        case TabIndex.Favorites:
-          this.currentPageFavorites = parseInt(page, 0);
-          break;
-        case TabIndex.WatchedTags:
-          this.currentPageWatchedTags = parseInt(page, 0);
-          break;
         case TabIndex.SearchResults:
           this.searchComponent.currentPage = parseInt(page, 0);
       }
     }
   }
 
-  private listenToClickOnLogoEvent() {
+  private listenToClickOnLogoEvent(isLoggedIn: boolean) {
     this.appService.logoClicked.subscribe(logoClicked => {
       if (logoClicked) {
-        this.currentPageCommunity = 1;
-        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageCommunity);
+        this.currentPageFeed = 1;
+        if (isLoggedIn && !this.seeAllPublicToggle) {
+          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.currentPageFeed);
+        } else {
+          this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageFeed);
+        }
+
         this.searchComponent.clearSearchText();
       }
     });
   }
 
-  private listenToPaginationNavigationEvents() {
-    this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
-      if (paginationAction.caller === this.callerPaginationCommunity && this.selectedTabIndex === TabIndex.Community) {
-        this.currentPageCommunity = paginationAction.page;
-        this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(paginationAction.page);
+  private listenToPaginationNavigationEvents(isLoggedIn: boolean) {
+    this.pageNavigationSubscription = this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
+      if (paginationAction.caller === this.callerPaginationFeed && this.selectedTabIndex === TabIndex.Feed) {
+        this.currentPageFeed = paginationAction.page;
+        if (isLoggedIn && !this.seeAllPublicToggle) {
+          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(paginationAction.page)
+        } else {
+          this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(paginationAction.page);
+        }
       }
       if (paginationAction.caller === this.callerPaginationHistory && this.selectedTabIndex === TabIndex.History) {
         this.currentPageHistory = paginationAction.page;
-        this.publicBookmarks$ = this.userDataHistoryStore.getHistory$(paginationAction.page);
+        this.history$ = this.userDataHistoryStore.getHistory$(paginationAction.page);
       }
       if (paginationAction.caller === this.callerPaginationPinned && this.selectedTabIndex === TabIndex.Pinned) {
         this.currentPagePinned = paginationAction.page;
@@ -186,14 +185,6 @@ export class HomepageComponent implements OnInit {
         this.currentPageReadLater = paginationAction.page;
         this.readLater$ = this.userDataReadLaterStore.getReadLater$(paginationAction.page);
       }
-      if (paginationAction.caller === this.callerPaginationFavorites && this.selectedTabIndex === TabIndex.Favorites) {
-        this.currentPageFavorites = paginationAction.page;
-        this.favorites$ = this.userDataFavoritesStore.getFavoriteBookmarks$(paginationAction.page);
-      }
-      if (paginationAction.caller === this.callerPaginationWatchedTags && this.selectedTabIndex === TabIndex.WatchedTags) {
-        this.currentPageWatchedTags = paginationAction.page;
-        this.favorites$ = this.userDataWatchedTagsStore.getBookmarksForWatchedTags$(paginationAction.page);
-      }
     });
   }
 
@@ -201,8 +192,12 @@ export class HomepageComponent implements OnInit {
     this.selectedTabIndex = event.index;
     if (this.userIsLoggedIn) {
       switch (event.index) {
-        case TabIndex.Community:
-          this.publicBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageCommunity);
+        case TabIndex.Feed:
+          if (this.userIsLoggedIn && !this.seeAllPublicToggle) {
+            this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.currentPageFeed);
+          } else {
+            this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageFeed);
+          }
           break;
         case TabIndex.History:
           this.history$ = this.userDataHistoryStore.getHistory$(this.currentPageHistory);
@@ -212,12 +207,6 @@ export class HomepageComponent implements OnInit {
           break;
         case TabIndex.ReadLater:
           this.readLater$ = this.userDataReadLaterStore.getReadLater$(this.currentPageReadLater);
-          break;
-        case TabIndex.Favorites:
-          this.favorites$ = this.userDataFavoritesStore.getFavoriteBookmarks$(this.currentPageFavorites);
-          break;
-        case TabIndex.WatchedTags:
-          this.bookmarksForWatchedTags$ = this.userDataWatchedTagsStore.getBookmarksForWatchedTags$(this.currentPageWatchedTags);
           break;
       }
     }
@@ -255,20 +244,12 @@ export class HomepageComponent implements OnInit {
         return {tab: 'read-later', page: this.currentPageReadLater};
         break;
       }
-      case TabIndex.Favorites : {
-        return {tab: 'favorites', page: this.currentPageFavorites};
-        break;
-      }
-      case TabIndex.WatchedTags : {
-        return {tab: 'watched-tags', page: this.currentPageWatchedTags};
-        break;
-      }
       case TabIndex.SearchResults: {
         return {tab: 'search-results', page: this.searchComponent.currentPage};
         break;
       }
       default: {
-        return {tab: 'community', page: this.currentPageCommunity};
+        return {tab: 'feed', page: this.currentPageFeed};
       }
     }
   }
@@ -281,10 +262,24 @@ export class HomepageComponent implements OnInit {
 
   onClearSearchText(searchTextCleared: boolean) {
     if (searchTextCleared) {
-      this.selectedTabIndex = TabIndex.Community;
+      this.selectedTabIndex = TabIndex.Feed;
     }
   }
 
+  ngOnDestroy(): void {
+    this.pageNavigationSubscription.unsubscribe();
+  }
+
+  seeAllPublic(seeAllPublicToggle: boolean) {
+    if (seeAllPublicToggle) {
+      this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(1);
+      this.seeAllPublicToggle = true;
+    } else {
+      this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(1);
+      this.seeAllPublicToggle = false;
+    }
+
+  }
 }
 
 export interface TabSwitchQueryParams {
@@ -293,11 +288,9 @@ export interface TabSwitchQueryParams {
 }
 
 enum TabIndex {
-  Community = 0,
+  Feed = 0,
   History,
   Pinned,
   ReadLater,
-  Favorites,
-  WatchedTags,
   SearchResults
 }

@@ -14,6 +14,7 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
 import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
+import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
 
 
 /**
@@ -41,7 +42,8 @@ import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/pla
     DeleteBookmarkDialogComponent,
     SocialShareDialogComponent,
     LoginRequiredDialogComponent,
-    PlayYoutubeVideoDialogComponent
+    PlayYoutubeVideoDialogComponent,
+    TagFollowingBaseComponent
   ],
   exports: [
     CommonModule,

@@ -22,16 +22,16 @@
         <button type="button" class="btn btn-primary btn-sm add-new-bookmark" routerLink="/personal/new"
                 title="Go to Create Bookmark form">
           <i class="fa fa-plus"></i>
-          New bookmark
+          Bookmark
         </button>
       </li>
       <li class="nav-item">
         <a
-          title="Drag this to your browser toolbar"
+          title="Drag to your browser toolbar for easy bookmarking"
           class="nav-link"
           href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''}let t=document.title;let w,h;if(innerWidth>1500){w=1210}else{w=(innerWidth*80)/100}if(innerHeight>1500){h=1210}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=0,left=0`;open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();">
           <i class="fas fa-bookmark"></i>
-          Save URL Bookmarklet
+          Bookmarklet
         </a>
       </li>
       <li class="nav-item">
@@ -60,7 +60,7 @@
             class="fab fa-github"></i>
         </a>
       </li>
-      <li *ngIf="(userInfo$ | async); else notLoggedIn" class="nav-item dropdown ml-auto">
+      <li *ngIf="(userInfoOidc$ | async); else notLoggedIn" class="nav-item dropdown ml-auto">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
           <i class="fa fa-user"></i>
@@ -74,17 +74,21 @@
             Dashboard <i class="fas fa-tachometer-alt"></i>
           </a>
           <div class="dropdown-divider"></div>
+          <a class="dropdown-item" routerLink="/settings">
+            Settings
+            <i class="fas fa-cog"></i>
+          </a>
           <a class="dropdown-item" href="{{environment.keycloak.url}}/realms/bookmarks/account/">
             Account
             <i class="fas fa-user-shield"></i>
           </a>
           <div class="dropdown-divider"></div>
           <span class="dropdown-item-text">
-            {{(userInfo$ | async).name}}</span>
-          <span class="navbar-text dropdown-item-text">{{(userInfo$ | async).email}}</span>
+            {{(userInfoOidc$ | async).name}}</span>
+          <span class="navbar-text dropdown-item-text">{{(userInfoOidc$ | async).email}}</span>
 
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#" (click)="logout()">Sign out</a>
+          <a class="dropdown-item" href="#" (click)="doLogout()">Sign out</a>
         </div>
       </li>
       <ng-template #notLoggedIn>

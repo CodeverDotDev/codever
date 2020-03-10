@@ -12,6 +12,10 @@ const routes: Routes = [
     loadChildren: () => import('app/user/dashboard/user-dashboard.module').then(m => m.UserDashboardModule)
   },
   {
+    path: 'settings',
+    loadChildren: () => import('app/user-settings/user-settings.module').then(m => m.UserSettingsModule)
+  },
+  {
     path: 'public',
     loadChildren: () => import('app/public/public.module').then(m => m.PublicBookmarksModule)
   },

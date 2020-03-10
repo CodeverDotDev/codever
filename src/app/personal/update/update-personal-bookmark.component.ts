@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
-import { map, startWith } from 'rxjs/operators';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Observable, of } from 'rxjs';
 
