@@ -79,6 +79,6 @@ export class SavedSearchesComponent implements OnInit {
   deleteSavedSearch(savedSearchText: string) {
     const index = this._userData.searches.findIndex((search: Search) => search.text === savedSearchText);
     this._userData.searches.splice(index, 1);
-    this.userDataStore.updateUserData(this._userData).subscribe();
+    this.userDataStore.updateUserData$(this._userData).subscribe();
   }
 }

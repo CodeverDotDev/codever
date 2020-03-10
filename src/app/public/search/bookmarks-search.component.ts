@@ -14,6 +14,8 @@ import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
+import { environment } from '../../../environments/environment';
+import { PaginationNotificationService } from '../../core/pagination-notification.service';
 
 export interface SearchDomain {
   value: string;
@@ -44,12 +46,10 @@ export class BookmarksSearchComponent implements OnInit {
   searchControl = new FormControl();
   searchText: string; // holds the value in the search box
   public showNotFound = false;
-  counter = 10;
 
 
   userIsLoggedIn = false;
   userId: string;
-  previousTerm: string;
 
   autocompleteSearches = [];
   filteredSearches: Observable<any[]>;
@@ -66,11 +66,15 @@ export class BookmarksSearchComponent implements OnInit {
     {value: 'public', viewValue: 'Public bookmarks'}
   ];
 
+  currentPage: number;
+  callerPaginationSearchResults = 'search-results';
+
   constructor(private router: Router,
               private route: ActivatedRoute,
               private bookmarkStore: PublicBookmarksStore,
               private publicBookmarksService: PublicBookmarksService,
               private personalBookmarksService: PersonalBookmarksService,
+              private paginationNotificationService: PaginationNotificationService,
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,
               private userDataStore: UserDataStore,
@@ -151,6 +155,20 @@ export class BookmarksSearchComponent implements OnInit {
     });
 
     this.watchSearchBoxValueChanges();
+
+    const page = this.route.snapshot.queryParamMap.get('page');
+    if (page) {
+      this.currentPage = parseInt(page, 0);
+    } else {
+      this.currentPage = 1;
+    }
+
+    this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
+      if (paginationAction.caller === this.callerPaginationSearchResults) {
+        this.currentPage = paginationAction.page;
+        this.searchBookmarks(this.searchText);
+      }
+    })
   }
 
   private watchSearchBoxValueChanges() {
@@ -163,11 +181,6 @@ export class BookmarksSearchComponent implements OnInit {
       }
       this.syncQueryParamsWithSearchBox();
     });
-  }
-
-  onShowMoreResults() {
-    this.counter += 10;
-    this.searchBookmarks(this.searchText);
   }
 
   onBookmarkDeleted(deleted: boolean) {
@@ -202,7 +215,7 @@ export class BookmarksSearchComponent implements OnInit {
     } else {
       this._userData.searches.unshift(newSearch);
     }
-    this.userDataStore.updateUserData(this._userData).subscribe();
+    this.userDataStore.updateUserData$(this._userData).subscribe();
   }
 
   onAutocompleteSelectionChanged(event: MatAutocompleteSelectedEvent) {
@@ -217,7 +230,7 @@ export class BookmarksSearchComponent implements OnInit {
     }
     this._userData.searches.unshift(updatedSearch);
 
-    this.userDataStore.updateUserData(this._userData).subscribe();
+    this.userDataStore.updateUserData$(this._userData).subscribe();
     this.searchBookmarks(selectedValue);
   }
 
@@ -229,20 +242,22 @@ export class BookmarksSearchComponent implements OnInit {
     this.isFocusOnSearchControl = false;
   }
 
+  searchBookmarksFromSearchBox(searchText: string) {
+    this.currentPage = 1;
+    this.searchBookmarks(searchText);
+    this.syncQueryParamsWithSearchBox();
+  }
+
   searchBookmarks(searchText: string) {
     if (searchText.trim() !== '') {
-      this.searchTriggered.emit(true);
-
-      if (this.previousTerm !== searchText) {
-        this.previousTerm = searchText;
-        this.counter = 10;
-      }
       if (this.searchDomain === 'personal' && this.userId) {
-        this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, this.counter, this.userId);
+        this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, this.userId);
         this.showSearchResults = true;
+        this.searchTriggered.emit(true);
       } else {
-        this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, this.counter);
+        this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage);
         this.showSearchResults = true;
+        this.searchTriggered.emit(true);
       }
     }
 
@@ -253,7 +268,7 @@ export class BookmarksSearchComponent implements OnInit {
       this.router.navigate(['.'],
         {
           relativeTo: this.route,
-          queryParams: {q: this.searchText, sd: this.searchDomain},
+          queryParams: {q: this.searchText, sd: this.searchDomain, page: this.currentPage},
           queryParamsHandling: 'merge'
         }
       );
@@ -263,7 +278,7 @@ export class BookmarksSearchComponent implements OnInit {
       this.router.navigate(['./'],
         {
           relativeTo: this.route,
-          queryParams: {q: null, sd: null},
+          queryParams: {q: null, sd: null, page: null},
           queryParamsHandling: 'merge'
         }
       );

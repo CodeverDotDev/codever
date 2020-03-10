@@ -16,14 +16,18 @@ export class PublicBookmarksService {
     this.publicBookmarksApiBaseUrl = environment.API_URL + '/public/bookmarks';
   }
 
-  getRecentPublicBookmarks(): Observable<Bookmark[]> {
-    return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl);
+  getRecentPublicBookmarks(page: number, limit: number): Observable<Bookmark[]> {
+    const params = new HttpParams()
+      .set('limit', limit.toString())
+      .set('page', page.toString());
+    return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
 
-  getFilteredPublicBookmarks(searchText: string, limit: number): Observable<Bookmark[]> {
+  getFilteredPublicBookmarks(searchText: string, limit: number, page: number): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('q', searchText)
-      .set('limit', limit.toString());
+      .set('limit', limit.toString())
+      .set('page', page.toString());
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params})
       .pipe(shareReplay(1));
   }
