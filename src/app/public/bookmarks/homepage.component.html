@@ -9,26 +9,28 @@
       <ng-template mat-tab-label>
         <span class="app-tab-label"><i class="fas fa-share-alt"></i> Feed</span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedIn$ | async)" >
+      <div *ngIf="!(userIsLoggedIn$ | async)">
         <div class="alert alert-info mt-2">
-          <button type="button" class="btn btn-primary btn-sm mr-2" (click)="login('feed')"><i class="fas fa-unlock"></i> Login / Register</button>
-            to see posts with your favorite topics in your feed
+          <button type="button" class="btn btn-primary btn-sm mr-2" (click)="login('feed')"><i
+            class="fas fa-unlock"></i> Login / Register
+          </button>
+          to see posts with your favorite topics in your feed
         </div>
       </div>
       <div *ngIf="(userData$ | async) as userData">
         <div *ngIf="userData.watchedTags.length > 0; else startWatchingTags" class="mt-2 mb-3">
           <button *ngIf="!seeAllPublicToggle; else seeOnlyFeed"
-            class="btn btn-outline-primary btn-sm  mr-3 mt-2 tag-list-header"
-            title="Click to see all public posts except ignored"
-            (click)="seeAllPublic(true)"
+                  class="btn btn-outline-primary btn-sm  mr-3 mt-2 tag-list-header"
+                  title="Click to see all public posts except ignored"
+                  (click)="seeAllPublic(true)"
           >
             All public <i class="fas fa-toggle-off"></i>
           </button>
           <ng-template #seeOnlyFeed>
             <button
-                    class="btn btn-success btn-sm  mr-3 mt-2 tag-list-header"
-                    title="Click to see only my feed"
-                    (click)="seeAllPublic(false)"
+              class="btn btn-success btn-sm  mr-3 mt-2 tag-list-header"
+              title="Click to see only my feed"
+              (click)="seeAllPublic(false)"
             >
               All public <i class="fas fa-toggle-on"></i>
             </button>
@@ -42,10 +44,10 @@
             Watching <i class="fas fa-eye"></i>
           </a>
           <div *ngFor="let tag of (userData$ | async).watchedTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
-            <a
-              [routerLink]="['/tagged', tag]"
-              class="btn btn-secondary btn-sm"
-              title="Show public bookmarks tagged {{tag}}"
+            <a type="button"
+               class="btn btn-secondary btn-sm text-white"
+               (click)="searchPublicTaggedBookmarks(tag)"
+               title="Show public bookmarks tagged {{tag}}"
             >
               {{tag}}
             </a>
@@ -73,7 +75,8 @@
                 (click)="unignoreTag(tag)"><i class="fas fa-ban"></i> Unignore tag
               </a>
               <ng-template #ignoreTagOption>
-                <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag </a>
+                <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag
+                </a>
               </ng-template>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Tag's page </a>
@@ -86,7 +89,8 @@
       </div>
       <ng-template #startWatchingTags>
         <div class="alert alert-info mt-3">
-          <strong>Watch tags <i class="fas fa-eye"></i></strong> to see more posts with your favorite topics in your feed
+          <strong>Watch tags <i class="fas fa-eye"></i></strong> to see more posts with your favorite topics in your
+          feed
         </div>
       </ng-template>
       <app-async-bookmark-list
@@ -151,8 +155,7 @@
           <app-async-bookmark-list
             [bookmarks$]="pinned$"
             [userData$]="userData$"
-            [callerPagination]="callerPaginationPinned"
-          >
+            [callerPagination]="callerPaginationPinned">
           </app-async-bookmark-list>
         </ng-template>
       </ng-template>
@@ -199,27 +202,55 @@
            role="alert">
         No <strong>{{searchComponent.searchDomain}}</strong> bookmarks found for
         "<em>{{searchComponent.searchText}}</em>".
-        Please try a different search or
-        <button *ngIf="searchComponent.searchDomain === 'personal'; else oppositeSearchDomain" type="button"
-                class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('public')">
-          <i class="fa fa-search"></i> public bookmarks
-        </button>
-        <ng-template #oppositeSearchDomain>
-          <button type="button" class="btn btn-outline-primary btn-sm"
+        Did you mean to look into
+        <span *ngIf="searchComponent.searchDomain === 'personal'">
+          <button class="btn btn-outline-primary btn-sm"
+                    (click)="searchComponent.onSearchDomainChange('public')">
+            <i class="fa fa-search"></i> public bookmarks
+          </button>
+          or
+          <button class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('my-codelets')">
+            <i class="fa fa-search"></i> my codelets
+          </button>
+        </span>
+
+        <span *ngIf="searchComponent.searchDomain === 'public'">
+          <button class="btn btn-outline-primary btn-sm"
                   (click)="searchComponent.onSearchDomainChange('personal')">
             <i class="fa fa-search"></i> personal bookmarks
           </button>
+          or
+          <button class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('my-codelets')">
+            <i class="fa fa-search"></i> my codelets
+          </button>
+        </span>
 
-        </ng-template>
+        <span *ngIf="searchComponent.searchDomain === 'my-codelets'">
+          <button class="btn btn-outline-primary btn-sm"
+                  (click)="searchComponent.onSearchDomainChange('personal')">
+            <i class="fa fa-search"></i> personal bookmarks
+          </button>
+          or
+          <button class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('public')">
+            <i class="fa fa-search"></i> public bookmarks
+          </button>
+        </span>
+        ?
       </div>
-        <app-async-bookmark-list
-          [bookmarks$]="searchComponent.searchResults$"
-          [queryText]="searchComponent.searchText"
-          [userData$]="userData$"
-          [callerPagination]="searchComponent.callerPaginationSearchResults"
-          (bookmarkDeleted)="searchComponent.onBookmarkDeleted($event)">
-        </app-async-bookmark-list>
-        <hr/>
+
+
+      <app-async-bookmark-list *ngIf="searchComponent.searchDomain !== 'my-codelets'; else showCodeletResults"
+                               [bookmarks$]="searchComponent.searchResults$"
+                               [queryText]="searchComponent.searchText"
+                               [userData$]="userData$"
+                               [callerPagination]="searchComponent.callerPaginationSearchResults"
+                               (bookmarkDeleted)="searchComponent.onBookmarkDeleted($event)">
+      </app-async-bookmark-list>
+      <ng-template #showCodeletResults>
+        <app-async-codelet-list [codelets$]="searchComponent.searchResults$"
+                                [queryText]="searchComponent.searchText"></app-async-codelet-list>
+      </ng-template>
+      <hr/>
     </mat-tab>
   </mat-tab-group>
 </div>

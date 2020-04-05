@@ -128,14 +128,14 @@
                 placeholder="Writing descriptions with keywords can help find your bookmarks more easily through search. You can give an overview of the bookmark and place keywords in the beginning of the description."
                 style="height: 250px">
       </textarea>
-      <div class="description-chars-counter">{{description.value ? description.value.length : 0}} / 1500</div>
+      <div class="description-chars-counter">{{description.value ? description.value.length : 0}} / 3000</div>
       <div class="clear"></div>
       <div *ngIf="description.invalid && (description.dirty || description.touched)" class="alert alert-danger">
         <div *ngIf="description.errors.tooManyLines">
-          Your description has {{description.errors.tooManyLines.value}} lines. Maximum 100 lines are allowed.
+          Your description has {{description.errors.tooManyLines.value}} lines. Maximum 300 lines are allowed.
         </div>
         <div *ngIf="description.errors.tooManyCharacters">
-          Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 1500 characters are
+          Your description has {{description.errors.tooManyCharacters.value}} characters. Maximum 3000 characters are
           allowed.
         </div>
       </div>

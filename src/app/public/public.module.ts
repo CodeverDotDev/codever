@@ -14,10 +14,13 @@ import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
 import { UserPublicService } from './user-public-profile/user-public.service';
+import { CodeletModule } from '../codelet/codelet.module';
+import { BookmarkletComponent } from './bookmarklets/bookmarklet.component';
 
 @NgModule({
   declarations : [
     AboutComponent,
+    BookmarkletComponent,
     HowtoComponent,
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
@@ -31,7 +34,8 @@ import { UserPublicService } from './user-public-profile/user-public.service';
     PublicBookmarksRoutingModule,
     MatTabsModule,
     MatAutocompleteModule,
-    MatSelectModule
+    MatSelectModule,
+    CodeletModule
   ],
   providers: [
     PublicBookmarksService,

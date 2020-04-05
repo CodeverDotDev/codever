@@ -280,6 +280,12 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
     }
 
   }
+
+  searchPublicTaggedBookmarks(tag: string) {
+    this.searchComponent.searchControl.setValue('[' + tag + ']');
+    this.searchComponent.searchDomain = 'public';
+    this.searchComponent.searchBookmarks('[' + tag + ']')
+  }
 }
 
 export interface TabSwitchQueryParams {

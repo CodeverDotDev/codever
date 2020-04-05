@@ -7,6 +7,7 @@ import {HowtoComponent} from './howto/howto.component';
 import {PrivacyPolicyComponent} from './privacy/privacy-policy.component';
 import {TermsOfServiceComponent} from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
+import { BookmarkletComponent } from './bookmarklets/bookmarklet.component';
 
 export function tagMatcher(url: UrlSegment[]) {
     return url.length === 1 && url[0].path !== 'personal' && url[0].path !== 'dashboard' && url[0].path !== 'settings' ? ({consumed: url}) : null;
@@ -50,6 +51,10 @@ const publicBookmarksRoutes: Routes = [
   {
     path: 'tags/:tag',
     component: TagComponent
+  },
+  {
+    path: 'bookmarklets',
+    component: BookmarkletComponent
   },
   {
     path: 'about',

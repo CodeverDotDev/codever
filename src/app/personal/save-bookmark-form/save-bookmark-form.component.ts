@@ -11,7 +11,6 @@ import { languages } from '../../shared/language-options';
 import { tagsValidator } from '../../shared/tags-validation.directive';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
-import { descriptionSizeValidator } from '../../shared/description-size-validation.directive';
 import { HttpResponse } from '@angular/common/http';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { UserDataStore } from '../../core/user/userdata.store';
@@ -30,6 +29,7 @@ import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-store.service';
 import { UserData } from '../../core/model/user-data';
 import { DatePipe } from '@angular/common';
+import { textSizeValidator } from '../../core/validators/text-size.validator';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -160,7 +160,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
       sourceCodeURL: '',
-      description: [this.desc ? this.desc : '', descriptionSizeValidator],
+      description: [this.desc ? this.desc : '', textSizeValidator(3000, 300)],
       public: false,
       readLater: false,
       language: 'en',

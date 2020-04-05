@@ -24,6 +24,7 @@ import { UserDataReadLaterStore } from './user/user-data-read-later-store.servic
 import { UserDataFavoritesStore } from './user/userdata.favorites.store';
 import { AuthGuard } from './auth/auth-guard.service';
 import { FeedStore } from './user/feed-store.service';
+import { PersonalCodeletsService } from './personal-codelets.service';
 
 
 /**
@@ -50,6 +51,7 @@ import { FeedStore } from './user/feed-store.service';
     ErrorService,
     AuthGuard,
     PersonalBookmarksService,
+    PersonalCodeletsService,
     AdminService,
     UserDataService,
     UserDataStore,
