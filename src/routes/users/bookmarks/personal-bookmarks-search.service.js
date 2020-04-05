@@ -1,5 +1,4 @@
 const Bookmark = require('../../../model/bookmark');
-const User = require('../../../model/user');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const bookmarksSearchHelper = require('../../../common/bookmarks-search.helper');
@@ -23,20 +22,6 @@ let findPersonalBookmarks = async function (query, page, limit, userId) {
 
   return bookmarks;
 }
-
-let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
-  if ( specialSearchFilters.privateOnly ) {
-    filter.public = false;
-  }
-
-  if ( specialSearchFilters.lang ) {
-    filter.language = specialSearchFilters.lang
-  }
-
-  if ( specialSearchFilters.site ) {
-    filter.location = new RegExp(specialSearchFilters.site, 'i'); //TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
-  }
-};
 
 let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
   let filter = {
@@ -130,6 +115,19 @@ let getPersonalBookmarksForSearchedTags = async function (searchedTags, page, li
   return bookmarks;
 }
 
+let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
+  if ( specialSearchFilters.privateOnly ) {
+    filter.public = false;
+  }
+
+  if ( specialSearchFilters.lang ) {
+    filter.language = specialSearchFilters.lang
+  }
+
+  if ( specialSearchFilters.site ) {
+    filter.location = new RegExp(specialSearchFilters.site, 'i'); //TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
+  }
+};
 
 module.exports = {
   findPersonalBookmarks: findPersonalBookmarks

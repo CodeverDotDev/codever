@@ -2,6 +2,7 @@ const express = require('express');
 const usersRouter = express.Router();
 
 const personalBookmarksRouter = require('./bookmarks/personal-bookmarks.router');
+const personalCodeletsRouter = require('./codelets/personal-codelets.router');
 
 const Keycloak = require('keycloak-connect');
 
@@ -49,6 +50,7 @@ const upload = multer({
 });
 
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
+usersRouter.use('/:userId/codelets', personalCodeletsRouter);
 
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
@@ -212,5 +214,7 @@ usersRouter.get('/:userId/followers', keycloak.protect(), async  (request, respo
 
   return response.status(HttpStatus.OK).send(followers);
 });
+
+
 
 module.exports = usersRouter;
