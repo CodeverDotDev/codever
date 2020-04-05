@@ -1,0 +1,50 @@
+<div *ngIf="(codelets$ | async) as codelets" class="mt-2">
+  <div *ngFor="let codelet of codelets">
+    <div class="card mt-3">
+      <div class="card-body show-hide">
+        <div class="header-wrapper">
+          <div class="titles">
+            <h4 class="card-title">
+              <a routerLink="my-codelets/{{codelet._id}}" [innerHtml]="codelet.title | highlight: queryText"></a>
+            </h4>
+            <h6 class="card-subtitle mb-2 text-muted url-under-title">
+            <span *ngIf="codelet.sourceUrl">Source - <a href="{{codelet.sourceUrl}}" target="_blank">{{codelet.sourceUrl}}</a>
+              <sup class="ml-1"><i class="fas fa-external-link-alt"></i></sup>
+            </span>
+            </h6>
+          </div>
+        </div>
+
+        <hr class="title-content-separator">
+
+        <app-codelet-card-body [codelet]="codelet" [queryText]="queryText"></app-codelet-card-body>
+
+      </div>
+      <div class="card-footer" style="padding-right: 0.3rem">
+        <div class="tags-group">
+          <span *ngFor="let tag of codelet.tags" class="badge badge-secondary float-xs-left"
+                [innerHtml]="tag | highlight: queryText"></span>
+
+          <div class="float-right mt-1">
+            <button
+              type="button" class="btn btn-light btn-sm"
+              (click)="editCodelet(codelet)"
+              title="Edit bookmark">
+              <i  class="far fa-edit"></i> Edit
+            </button>
+            <button
+              type="button" class="btn btn-light btn-sm"
+              (click)="editCodelet(codelet)"
+              title="Delete bookmark">
+              <i class="far fa-trash-alt"></i> Delete
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+

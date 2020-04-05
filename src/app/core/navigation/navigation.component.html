@@ -19,19 +19,43 @@
   <div class="navbar-collapse collapse" id="collapsingNavbar">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <button type="button" class="btn btn-primary btn-sm add-new-bookmark" routerLink="/personal/new"
-                title="Go to Create Bookmark form">
-          <i class="fa fa-plus"></i>
-          Bookmark
-        </button>
+        <div class="btn-group tag-list mt-1 mr-2">
+          <a class="btn btn-primary btn-sm" routerLink="/personal/new"
+            title="New Bookmark">
+            <i class="fa fa-plus"></i>
+            New
+          </a>
+          <button
+            type=" button"
+            class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              routerLink="/personal/new"><i class="fa fa-bookmark"></i>
+              Bookmark
+            </a>
+            <a
+              class="dropdown-item"
+              routerLink="/my-codelets/new"><i class="fa fa-code"></i>
+              Codelet
+            </a>
+          </div>
+        </div>
       </li>
       <li class="nav-item">
         <a
-          title="Drag to your browser toolbar for easy bookmarking"
+          title="Bookmarklets page"
           class="nav-link"
-          href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''}let t=document.title;let w,h;if(innerWidth>1500){w=1210}else{w=(innerWidth*80)/100}if(innerHeight>1500){h=1210}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=0,left=0`;open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();">
+          routerLink="bookmarklets"
+          routerLinkActive="active">
           <i class="fas fa-bookmark"></i>
-          Bookmarklet
+          Bookmarklets
         </a>
       </li>
       <li class="nav-item">
