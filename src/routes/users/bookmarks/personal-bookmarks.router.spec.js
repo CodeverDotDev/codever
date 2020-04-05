@@ -185,7 +185,7 @@ describe('Personal Bookmarks tests', function () {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const textSnippet = "long text in the making";
       let longText = textSnippet;
-      for ( var i = 0; i < 100; i++ ) {
+      for ( var i = 0; i < 200; i++ ) {
         longText += textSnippet;
       }
       invalidBookmark.description = longText;
@@ -204,7 +204,7 @@ describe('Personal Bookmarks tests', function () {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const line = "oneline\n";
       let longText = line;
-      for ( var i = 0; i < 101; i++ ) {
+      for ( var i = 0; i < 301; i++ ) {
         longText += line;
       }
       invalidBookmark.description = longText;
@@ -357,7 +357,7 @@ describe('Personal Bookmarks tests', function () {
         let bookmarkWithTooBigDescription = JSON.parse(JSON.stringify(createdBookmark));
         const textSnippet = "long text in the making";
         let longText = textSnippet;
-        for ( var i = 0; i < 100; i++ ) {
+        for ( var i = 0; i < 200; i++ ) {
           longText += textSnippet;
         }
         bookmarkWithTooBigDescription.description = longText;
@@ -375,7 +375,7 @@ describe('Personal Bookmarks tests', function () {
         let bookmarkWithDescriptionWithTooManyLines = JSON.parse(JSON.stringify(createdBookmark));
         const line = "oneline\n";
         let longText = line;
-        for ( var i = 0; i < 101; i++ ) {
+        for ( var i = 0; i < 301; i++ ) {
           longText += line;
         }
         bookmarkWithDescriptionWithTooManyLines.description = longText;
