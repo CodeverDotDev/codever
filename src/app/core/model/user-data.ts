@@ -1,13 +1,32 @@
 export interface UserData {
   _id?: string;
   userId?: string;
+  profile?: Profile;
   searches?: Search[];
   readLater?: string[]; // ids of bookmarks to read later
   likes?: string[]; // ids of bookmarks the user liked
   favorites?: string[]; // ids of bookmarks marked as favorite
   watchedTags?: string[];
+  ignoredTags?: string[];
   pinned?: string[]; // ids of pinned bookmarks
   history?: string[]; // ids of last visited bookmarks, order is important
+  following?: Following;
+  followers?: string[];
+}
+
+export interface Profile {
+  displayName: string,
+  imageUrl?: string,
+  summary?: string,
+  websiteLink?: string,
+  twitterLink?: string,
+  githubLink?: string,
+  linkedinLink?: string
+}
+
+export interface Following {
+  users?: string[];
+  tags?: string[];
 }
 
 export interface Search {

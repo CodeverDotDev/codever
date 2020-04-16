@@ -44,10 +44,34 @@
           before you click the bookmarklet's link </p>
       </li>
       <li class="list-group-item">Save directly using the
-        <button type="button" class="btn btn-primary btn-sm add-new-bookmark" routerLink="/personal/new">
-          <i class="fa fa-plus"></i>
-          New bookmark
-        </button>
+        <div class="btn-group tag-list mt-1 mr-2">
+          <a class="btn btn-primary btn-sm" routerLink="/personal/new"
+             title="New Bookmark">
+            <i class="fa fa-plus"></i>
+            New
+          </a>
+          <button
+            type=" button"
+            class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              routerLink="/personal/new"><i class="fa fa-bookmark"></i>
+              Bookmark
+            </a>
+            <a
+              class="dropdown-item"
+              routerLink="/my-codelets/new"><i class="fa fa-code"></i>
+              Codelet
+            </a>
+          </div>
+        </div>
         button from the navigation menu
       </li>
       <li class="list-group-item">Use the <a
@@ -69,21 +93,20 @@
     </p>
 
     <p>You can easily differentiate between private and public bookmarks:</p>
-    <img src="./assets/img/public-vs-private-bookmarks.png" alt="Search bar example" style="align-content: center;"/>
+    <img src="./assets/img/public-vs-private-bookmarks.png" alt="Search bar example" style="align-content: center; width: 100%; height: auto"/>
     <hr/>
     <h2>Search bookmarks</h2>
     <p class="lead">You can search bookmarks by placing your search terms in the Search bar. You can choose to search in
-      <strong>Public Bookmarks</strong> or in <strong>Mine & Favorites</strong>, by selecting one of the options
-      beneath the Search Bar.
-      Tags must be embedded in <strong>square bracktes - e.g. [java]</strong>.</p>
+      <strong>Public Bookmarks</strong>, in <strong>My Bookmarks</strong> or <strong>My codelets</strong> by selecting one of the options
+      beneath the Search Bar.<br/><br/>
+      Tags must be embedded in <strong>square bracktes - e.g. [java]</strong></p>
     <br>
     <p>Let's say you want to look for personal bookmarks that contain the text <strong><em>exception</em></strong> and
       are tagged with
       <strong><em>java</em></strong>. Then
-      would put <strong><em>exception [java]</em></strong> in the search bar, and use the <strong>Personal &
-        Favorites</strong> option </p>
+      would put <strong><em>exception [java]</em></strong> in the search bar, and use the <strong>My Bookmarks</strong> option </p>
 
-    <img src="./assets/img/search-bar-example.png" alt="Search bar example" style="align-content: center;"/>
+    <img src="./assets/img/search-bar-example.png" alt="Search bar example" style="align-content: center; width: 100%; height: auto"/>
 
     <br/>
     <br/>
@@ -133,5 +156,45 @@
     <p class="note_normal">This is very handy if you use Web Search tools where you can define custom queries,
       like <a href="https://www.alfredapp.com/help/features/web-search/"> Alfred Web Search</a> if you are on Mac</p>
 
+    <hr/>
+
+    <h2>Codelets <i class="fa fa-code"></i></h2>
+    <p class="lead"><strong>Codelets</strong> are special types of bookmarks where you save small pieces of code you
+      would want to recall later. At the present moment all codelets are <strong>private only</strong>.</p>
+    <h3>Save codelets</h3>
+    You need to select the <strong><i class="fa fa-code"></i> Codelet</strong> option from the
+    <div class="btn-group tag-list mt-1 mr-2">
+      <a class="btn btn-primary btn-sm" routerLink="/personal/new"
+         title="New Bookmark">
+        <i class="fa fa-plus"></i>
+        New
+      </a>
+      <button
+        type=" button"
+        class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <div class="dropdown-menu">
+        <a
+          class="dropdown-item"
+          routerLink="/personal/new"><i class="fa fa-bookmark"></i>
+          Bookmark
+        </a>
+        <a
+          class="dropdown-item"
+          routerLink="/my-codelets/new"><i class="fa fa-code"></i>
+          Codelet
+        </a>
+      </div>
+    </div>
+    button.
+
+    <h3>Search codelets</h3>
+    Searching for codelets works the same as the one for regular bookmarks. Just select the <strong>My codelets</strong> option under the search bar.
+    You can also save searches the same way as for regular bookmarks.
   </div>
 </div>

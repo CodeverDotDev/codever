@@ -10,7 +10,7 @@ export function initializer(keycloak: KeycloakService, userInfoStore: UserInfoSt
         keycloak.keycloakEvents$.subscribe(event => {
           if (event.type === KeycloakEventType.OnAuthSuccess) {
             userInfoStore.getUserInfo$().subscribe( userInfo => {
-              userDataStore.loadInitialUserData(userInfo.sub);
+              userDataStore.loadInitialUserData(userInfo.sub, userInfo.given_name, userInfo.email);
               console.log('load initial userInfo');
             });
           }

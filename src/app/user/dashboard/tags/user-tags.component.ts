@@ -1,20 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UsedTag, UsedTags } from '../../../core/model/used-tag';
 import { UserDataService } from '../../../core/user-data.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DeleteBookmarksByTagDialogComponent } from './delete-bookmarks-by-tag-dialog/delete-bookmarks-by-tag-dialog.component';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
+import { UserData } from '../../../core/model/user-data';
+import { UserDataWatchedTagsStore } from '../../../core/user/userdata.watched-tags.store';
+import { TagFollowingBaseComponent } from '../../../shared/tag-following-base-component/tag-following-base.component';
 
 @Component({
   selector: 'app-user-tags',
   templateUrl: './user-tags.component.html',
   styleUrls: ['./user-tags.component.scss']
 })
-export class UserTagsComponent implements OnInit {
-
+export class UserTagsComponent extends TagFollowingBaseComponent implements OnInit {
 
   usedTags$: Observable<UsedTags>;
 
@@ -26,12 +28,18 @@ export class UserTagsComponent implements OnInit {
   @Input()
   userId: string;
 
+  @Input()
+  userData$: Observable<UserData>;
+
   buttonEnabled: boolean;
 
   constructor(
     private deleteDialog: MatDialog,
     private userDataService: UserDataService,
+    public userDataWatchedTagsStore: UserDataWatchedTagsStore,
+    public loginDialog: MatDialog,
     private personaBookmarksService: PersonalBookmarksService) {
+      super(loginDialog, userDataWatchedTagsStore);
   }
 
   ngOnInit() {
@@ -94,4 +102,5 @@ export class UserTagsComponent implements OnInit {
       window.location.reload();
     });
   }
+
 }

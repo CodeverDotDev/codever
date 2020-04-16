@@ -1,0 +1,66 @@
+<div id="about-content" class="jumbotron">
+  <h2 class="display-4">Bookmarklets</h2>
+  <p class="lead"><a href="https://en.wikipedia.org/wiki/Bookmarklet" target="_blank"> Bookmarklets <sup class="external-link-hint"><i class="fas fa-external-link-alt"></i></sup></a> are little javascript links that live in the bookmarks toolbar of your browser.
+  <p>
+    We recommend you drag one of the links bellow to your browser's toolbar
+  </p>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <h3>Bookmarks</h3>
+      <ul>
+        <li>
+          <a
+            class="bookmarklet"
+            href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''};let t=document.title;let w,h;if(innerWidth>1500){w=1210}else{w=(innerWidth*80)/100}if(innerHeight>1500){h=1210}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=0,left=0`;open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();">
+            <i class="fas fa-bookmark"></i> +Bookmarks.dev - popup
+          </a> - when clicked a popup to save the current URL is displayed [<em>recommended for
+          <strong>desktops</strong> and <strong>notebooks</strong> with good resolution</em>]
+        </li>
+        <li>
+          <a
+            href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)})();">
+            <i class="fas fa-bookmark"></i> +Bookmarks.dev - go back
+          </a> - when clicked it redirects you to the <a href="{{environment.HOST}}/personal/new">New
+          Bookmark</a> form.
+          Once added you go back to the initial page [<em>recommended for <strong>phones</strong> or smaller
+          resolution devices</em>]
+        </li>
+      </ul>
+      <p class="note_normal">You can <strong>select the text on page</strong> that you want to be added to the
+        <strong>description</strong> of the bookmark
+        before you click the bookmarklet's link </p>
+      <p class="alert-info p-2 m-2">
+        To save regular bookmarks you can also use the <a
+        href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb">
+        <i class="fab fa-chrome"></i> Save to Bookmarks.dev</a>
+        extension for Chromium based browsers. It provides the same behaviour as the first bookmarklet.
+      </p>
+    </li>
+    <li class="list-group-item"><h3>Codelets</h3>
+      <ul>
+        <li>
+          <a
+            title="Drag to your browser toolbar for easy bookmarking"
+            href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''}let t=document.title;let w,h;if(innerWidth>1500){w=1210}else{w=(innerWidth*80)/100}if(innerHeight>1500){h=1210}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=0,left=0`;open('https://www.bookmarks.dev/my-codelets/new?sourceUrl='+encodeURIComponent(l)+'&code='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();">
+            <i class="fas fa-bookmark"></i>
+            +Codelet - popup
+          </a> - when clicked a popup to save the current URL is displayed [<em>recommended for
+          <strong>desktops</strong> and <strong>notebooks</strong> with good resolution</em>]
+        </li>
+        <li>
+          <a
+            href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;location.href='https://www.bookmarks.dev/my-codelets/new?sourceUrl='+encodeURIComponent(q)+'&code='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)})();">
+            <i class="fas fa-bookmark"></i> +Codelet - go back
+          </a> - when clicked it redirects you to the <a href="{{environment.HOST}}/my-codelets/new">New Codelet Form</a> in the same window.
+
+          Once added you go back to the initial page [<em>recommended for <strong>phones</strong> or smaller
+          resolution devices</em>]
+        </li>
+      </ul>
+      <p class="alert-danger p-2 m-2">For Codelets you should select prior the code snippet from the page you are surfing on.
+        This will be "pasted" in the <a href="{{environment.HOST}}/my-codelets/new">New Codelet Form</a>, otherwise
+      it makes less sense to use the bookmarklet</p>
+    </li>
+  </ul>
+</div>
+

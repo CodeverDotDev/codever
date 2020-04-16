@@ -9,26 +9,12 @@
   <p>
     Bookmarking and managing bookmarks is made easy with the help of:
   <ul>
-    <li><strong>Bookmarklets</strong> - drag one of the links below to your browser toolbar</li>
-    <ul>
-      <li>
-        <a
-          class="bookmarklet"
-          href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''};let t=document.title;let w,h;if(innerWidth>1500){w=1210}else{w=(innerWidth*80)/100}if(innerHeight>1500){h=1210}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=0,left=0`;open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();">
-          <i class="fas fa-bookmark"></i> +Bookmarks.dev - popup
-        </a> - when clicked a popup to save the current URL is displayed [<em>recommended for <strong>desktops</strong>
-        and notebooks with good resolution</em>]
-      </li>
-      <li>
-        <a
-          href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)})();">
-          <i class="fas fa-bookmark"></i> +Bookmarks.dev - go back
-        </a> - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
-        Bookmark</a> form.
-        Once added you come back to the initial page [<em>recommended for <strong>phones</strong> or smaller resolution
-        devices</em>]
-      </li>
-    </ul>
+    <li><strong><a
+      title="Bookmarklets page"
+      href="{{environment.HOST}}/bookmarklets">
+      <i class="fas fa-bookmark"></i>
+      Bookmarklets
+    </a></strong> - drag one of the bookmarklet links mentioned to your browser toolbar</li>
     <li>Use the <a
       href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb"><i
       class="fab fa-chrome"></i> Save to bookmarks.dev</a> chrome extension for Chromium based browsers - same behaviour
@@ -44,6 +30,8 @@
       bookmarks to favorites to find them in your personal searches
     </li>
     <li><strong>Save searches</strong> to use later for easier pin pointing known bookmarks</li>
+    <li><strong>Codelets <i class="fa fa-code"></i></strong> - special kind of bookmarks where you use save code snippets
+    to recall later</li>
   </ul>
 
   <p>You can also choose only to browse our public repository of bookmarks. There are lots of good and curated resources

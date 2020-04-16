@@ -15,13 +15,13 @@ import { AppService } from '../../app.service';
 export class NavigationComponent implements OnInit {
 
   isLoggedIn: boolean;
-  userInfo$: Observable<UserInfoOidc>;
+  userInfoOidc$: Observable<UserInfoOidc>;
   environment = environment;
 
   ngOnInit() {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.userInfo$ = this.userInfoStore.getUserInfo$();
+        this.userInfoOidc$ = this.userInfoStore.getUserInfo$();
         this.isLoggedIn = true;
       } else {
         this.isLoggedIn = false;
@@ -35,7 +35,7 @@ export class NavigationComponent implements OnInit {
               private keycloakServiceWrapper: KeycloakServiceWrapper) {
   }
 
-  async logout() {
+  async doLogout() {
     await this.keycloakService.logout(environment.APP_HOME_URL);
   }
 

@@ -3,9 +3,7 @@ import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Logger } from '../logger.service';
 import { ErrorService } from '../error/error.service';
-
-import { KeycloakService } from 'keycloak-angular';
-import { UserData } from '../model/user-data';
+import { Profile, UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
@@ -13,44 +11,35 @@ import { UserInfoService } from './user-info.service';
 import { UserInfoStore } from './user-info.store';
 import { RateBookmarkRequest, RatingActionType } from '../model/rate-bookmark.request';
 import { NotifyStoresService } from './notify-stores.service';
+import { Md5 } from 'ts-md5/dist/md5';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserDataStore {
 
-  private loadInitialDataCalled = false;
   private _userData: ReplaySubject<UserData> = new ReplaySubject(1);
 
   private _stars: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private starredBookmarksHaveBeenLoaded = false;
 
   private userId: string;
+  private userFirstName: string;
 
-  userData: UserData = {searches: []};
+  userData: UserData = {profile: {displayName: 'changeMe'}, searches: []};
 
   constructor(private userService: UserDataService,
               private logger: Logger,
               private errorService: ErrorService,
-              private keycloakService: KeycloakService,
               private userInfoService: UserInfoService,
               private userInfoStore: UserInfoStore,
               private notifyStoresService: NotifyStoresService,
   ) {
-
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.userId = userInfo.sub;
-          this.loadInitialUserData(this.userId);
-        });
-      }
-    });
   }
 
-  public loadInitialUserData(userId: string) {
+  public loadInitialUserData(userId: string, userFirstName: string, email: string) {
     this.userId = userId;
-    this.loadInitialDataCalled = true;
+    this.userFirstName = userFirstName;
     this.userService.getUserData(userId).subscribe(data => {
         this.userData = data;
         this.userData.searches = this.userData.searches.sort((a, b) => {
@@ -62,12 +51,18 @@ export class UserDataStore {
       },
       (errorResponse: HttpErrorResponse) => {
         if (errorResponse.status === 404 && errorResponse.error.message === `User data NOT_FOUND for userId: ${this.userId}`) {
+          const profile: Profile = {
+            displayName: this.userFirstName,
+            imageUrl: this.getGravatarImageUrl(email)
+          }
           const initialUserData: UserData = {
             userId: userId,
+            profile: profile,
             searches: [],
             readLater: [],
             likes: [],
             watchedTags: [],
+            ignoredTags: [],
             pinned: [],
             favorites: [],
             history: []
@@ -83,15 +78,20 @@ export class UserDataStore {
     );
   }
 
+  private getGravatarImageUrl(email: string): string {
+    const md5 = new Md5();
+    md5.appendStr(email);
+    const response = `https://gravatar.com/avatar/${md5.end()}?s=340`;
+
+    return response;
+  }
+
   getUserData$(): Observable<UserData> {
-    if (!this.loadInitialDataCalled) {
-      this.loadInitialUserData(this.userId);
-    }
     return this._userData.asObservable();
   }
 
   updateUserData$(userData: UserData): Observable<UserData> {
-    const obs: Observable<any> = this.userService.updateUserData(userData);
+    const obs: Observable<UserData> = this.userService.updateUserData(userData);
 
     obs.subscribe(
       data => {
@@ -144,13 +144,6 @@ export class UserDataStore {
     }
   }
 
-  private removeFromUserDataHistoryIfPresent(bookmark: Bookmark) {
-    const index = this.userData.history.indexOf(bookmark._id);
-    if (index !== -1) {
-      this.userData.history.splice(index, 1);
-    }
-  }
-
   removeFromStoresAtDeletion(bookmark: Bookmark) {
     this.userData.history = this.userData.history.filter(x => x !== bookmark._id);
     this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
@@ -159,18 +152,12 @@ export class UserDataStore {
     this.userData.likes = this.userData.likes.filter(x => x !== bookmark._id);
     this.updateUserData$(this.userData).subscribe(() => {
       this.notifyStoresService.deleteBookmark(bookmark);
-/*      this.userDataHistoryStore.publishHistoryAfterDeletion(bookmark);
-      this.publishedPinnedAfterDeletion(bookmark);
-      this.publishedFavoritesAfterDeletion(bookmark);
-      this.publishReadLaterAfterDeletion(bookmark);
-      this.publishStarredBookmarksAfterDeletion(bookmark);*/
     });
 
   }
 
   likeBookmark(bookmark: Bookmark) {
     bookmark.likeCount++;
-    this.userData.likes.unshift(bookmark._id);
     const rateBookmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
       action: RatingActionType.LIKE,
@@ -181,7 +168,7 @@ export class UserDataStore {
 
   unLikeBookmark(bookmark: Bookmark) {
     bookmark.likeCount--;
-    this.userData.likes.splice(this.userData.likes.indexOf(bookmark._id), 1);
+
     const rateBookmarkRequest: RateBookmarkRequest = {
       ratingUserId: this.userId,
       action: RatingActionType.UNLIKE,
@@ -202,9 +189,25 @@ export class UserDataStore {
   }
 
   resetUserDataStore() {
-    this.loadInitialDataCalled = false;
     this._userData.next(null);
   }
 
-}
+  followUser$(followedUserId: string): Observable<UserData> {
+    const obs: Observable<UserData> = this.userService.followUser(this.userId, followedUserId);
 
+    obs.subscribe((userData) => {
+      this._userData.next(userData);
+    });
+
+    return obs;
+  }
+
+  unfollowUser$(followedUserId: string): Observable<UserData> {
+    const obs: Observable<UserData> = this.userService.unfollowUser(this.userId, followedUserId);
+    obs.subscribe((userData) => {
+      this._userData.next(userData);
+    });
+
+    return obs;
+  }
+}
