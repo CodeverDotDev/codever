@@ -5,7 +5,9 @@
     "interpreter" : "node@10.15.0",
     "env": {
       "NODE_ENV": "development",
-      "YOUTUBE_API_KEY" : "AIxxxx"
+      "YOUTUBE_API_KEY" : "AIxxxx",
+      "KEYCLOAK_REALM": "bookmarks",
+      "KEYCLOAK_SERVER_URL": "http://localhost:8480/auth"
     },
     "env_production" : {
       "NODE_ENV": "production",
@@ -15,7 +17,9 @@
       "MONGODB_BOOKMARKS_PASSWORD": "CHANGE_ME_WITH_VALID_MONGO_PASSWORD",
       "MONGODB_BOOKMARKS_COLLECTION" : "dev-bookmarks",
       "MONGODB_HOST": "localhost",
-      "MONGODB_PORT": "27017"
+      "MONGODB_PORT": "27017",
+      "KEYCLOAK_REALM": "bookmarks",
+      "KEYCLOAK_SERVER_URL": "https://www.bookmarks.dev/auth"
     }
   }]
 }

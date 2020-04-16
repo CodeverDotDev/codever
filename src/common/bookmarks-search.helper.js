@@ -157,5 +157,6 @@ let extractSpecialSearchTerms = function (searchedTerms) {
 module.exports = {
   splitSearchQuery: splitSearchQuery,
   bookmarkContainsSearchedTerm: bookmarkContainsSearchedTerm,
-  extractSpecialSearchTerms: extractSpecialSearchTerms
+  extractSpecialSearchTerms: extractSpecialSearchTerms,
+  escapeRegExp: escapeRegExp
 }
