@@ -22,7 +22,9 @@
               "src/manifest.json"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+               "./node_modules/highlight.js/styles/androidstudio.css"
+              // "./node_modules/highlight.js/styles/github.css"
             ],
             "scripts": []
           },

@@ -1,4 +1,4 @@
-<div class="input-group search-component">
+<div class="input-group mt-3 search-component">
   <div class="input-group-prepend">
     <span class="input-group-text"
           (mouseover)="hover=true"
@@ -15,14 +15,14 @@
     type="text"
     class="form-control"
     [formControl]="searchControl"
-    placeholder="{{searchDomain | titlecase}} bookmarks... (tags in square brackets: e.g. [angular])"
+    placeholder="{{searchDomain === 'my-codelets' ? 'My codelets' : searchDomain === 'public' ? 'Public bookmarks' : 'My bookmarks'}} ... (tags in square brackets: e.g. [angular])"
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
     (keyup.enter)="searchBookmarksFromSearchBox(publicSearchBox.value)"
   >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteSelectionChanged($event)">
-    <mat-option *ngFor="let search of filteredSearches | async" [value]="search">{{search}}</mat-option>
+    <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">{{search.text}}</mat-option>
   </mat-autocomplete>
   <div *ngIf="userIsLoggedIn" class="input-group-append">
     <button class="btn btn-outline-secondary"
@@ -43,7 +43,7 @@
   </mat-select>
 </mat-form-field>
 
-<div class="clear" style="margin-bottom: 1rem"></div>
+<div class="clear"></div>
 
 
 

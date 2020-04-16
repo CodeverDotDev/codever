@@ -23,6 +23,7 @@ import { SocialButtonsModule } from './social-buttons/social-buttons.module';
 import { UserInfoStore } from './core/user/user-info.store';
 import { UserDataStore } from './core/user/userdata.store';
 import { AppService } from './app.service';
+import { HIGHLIGHT_OPTIONS, HighlightModule, HighlightOptions } from 'ngx-highlightjs';
 
 @NgModule({
   exports: [
@@ -43,6 +44,7 @@ import { AppService } from './app.service';
     OverlayModule,
     // routing module
     AppRoutingModule,
+    HighlightModule,
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [
@@ -63,6 +65,12 @@ import { AppService } from './app.service';
       useClass: LoaderInterceptorService,
       multi: true
     },
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: <HighlightOptions>{
+        lineNumbers: true
+      }
+    }   ,
     AppService
   ],
   declarations: [

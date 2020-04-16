@@ -22,6 +22,9 @@ import { NotifyStoresService } from './user/notify-stores.service';
 import { UserDataPinnedStore } from './user/userdata.pinned.store';
 import { UserDataReadLaterStore } from './user/user-data-read-later-store.service';
 import { UserDataFavoritesStore } from './user/userdata.favorites.store';
+import { AuthGuard } from './auth/auth-guard.service';
+import { FeedStore } from './user/feed-store.service';
+import { PersonalCodeletsService } from './personal-codelets.service';
 
 
 /**
@@ -46,7 +49,9 @@ import { UserDataFavoritesStore } from './user/userdata.favorites.store';
   providers: [
     Logger,
     ErrorService,
+    AuthGuard,
     PersonalBookmarksService,
+    PersonalCodeletsService,
     AdminService,
     UserDataService,
     UserDataStore,
@@ -58,6 +63,7 @@ import { UserDataFavoritesStore } from './user/userdata.favorites.store';
     MyBookmarksStore,
     UserInfoService,
     UserInfoStore,
+    FeedStore,
     PaginationNotificationService,
     SuggestedTagsStore,
     WebpageInfoService,

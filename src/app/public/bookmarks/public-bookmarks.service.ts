@@ -18,16 +18,18 @@ export class PublicBookmarksService {
 
   getRecentPublicBookmarks(page: number, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
-      .set('limit', limit.toString())
-      .set('page', page.toString());
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
 
-  getFilteredPublicBookmarks(searchText: string, limit: number, page: number): Observable<Bookmark[]> {
+  getFilteredPublicBookmarks(searchText: string, limit: number, page: number, sort: string): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('q', searchText)
-      .set('limit', limit.toString())
-      .set('page', page.toString());
+      .set('page', page.toString())
+      .set('sort', sort)
+      .set('limit', limit.toString());
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params})
       .pipe(shareReplay(1));
   }
@@ -38,5 +40,11 @@ export class PublicBookmarksService {
     return this.httpClient
       .get<Bookmark[]>(`${this.publicBookmarksApiBaseUrl}`, {params: params});
   }
+
+  getPublicBookmarkById(bookmarkId: string): Observable<Bookmark> {
+    return this.httpClient
+      .get<Bookmark>(`${this.publicBookmarksApiBaseUrl}/${bookmarkId}`);
+  }
+
 
 }

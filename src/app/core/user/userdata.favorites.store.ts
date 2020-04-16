@@ -14,6 +14,9 @@ import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
+/*
+ * Not in use anymore - in case community decides to reactivate favorites will be needed, till then temporary deprecated
+ */
 export class UserDataFavoritesStore {
 
   private _favorites: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);

@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AsyncBookmarkListComponent } from './async-bookmark-list.component';
 import { TagsValidatorDirective } from './tags-validation.directive';
 import { BookmarkTextComponent } from './bookmark-text.component';
-import { DescriptionSizeValidatorDirective } from './description-size-validation.directive';
 import { MatAutocompleteModule, MatDialogModule, MatProgressSpinnerModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
@@ -14,6 +13,7 @@ import { LoginRequiredDialogComponent } from './login-required-dialog/login-requ
 import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
+import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
 
 
 /**
@@ -37,11 +37,11 @@ import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/pla
     AsyncBookmarkListComponent,
     BookmarkTextComponent,
     TagsValidatorDirective,
-    DescriptionSizeValidatorDirective,
     DeleteBookmarkDialogComponent,
     SocialShareDialogComponent,
     LoginRequiredDialogComponent,
-    PlayYoutubeVideoDialogComponent
+    PlayYoutubeVideoDialogComponent,
+    TagFollowingBaseComponent
   ],
   exports: [
     CommonModule,
@@ -51,7 +51,6 @@ import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/pla
     HighLightHtmlPipe,
     AsyncBookmarkListComponent,
     BookmarkTextComponent,
-    DescriptionSizeValidatorDirective,
     MatProgressSpinnerModule
   ],
   entryComponents: [
