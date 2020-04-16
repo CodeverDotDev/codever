@@ -60,7 +60,7 @@ let getBookmarkById = async (userId, bookmarkId) => {
 };
 
 /* GET bookmark of user by location*/
-let getBookmarkByLocation = async (userId, location) => {
+let getPersonalBookmarkByLocation = async (userId, location) => {
 
   const bookmark = await Bookmark.findOne({
     userId: userId,
@@ -170,8 +170,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
           readLater: bookmarkId,
           likes: bookmarkId,
           pinned: bookmarkId,
-          history: bookmarkId,
-          favorites: bookmarkId
+          history: bookmarkId
         }
       },
       {multi: true}
@@ -210,11 +209,21 @@ let deletePrivateBookmarksByTag = async (userId, tag) => {
   return true;
 };
 
+/*
+* Update displayName in all bookmarks of user
+*/
+let updateDisplayNameInBookmarks = async (userId, displayName) => {
+
+  await Bookmark.updateMany({userId: userId}, {$set: {userDisplayName: displayName}});
+
+  return true;
+};
+
 module.exports = {
   createBookmark: createBookmark,
   getSuggestedTagsForUser: getSuggestedTagsForUser,
   getBookmarkById: getBookmarkById,
-  getBookmarkByLocation: getBookmarkByLocation,
+  getPersonalBookmarkByLocation: getPersonalBookmarkByLocation,
   getLastAccessedBookmarks: getLastAccessedBookmarks,
   getLastCreatedBookmarks: getLastCreatedBookmarks,
   getMostUsedBookmarks: getMostUsedBookmarks,
@@ -224,5 +233,6 @@ module.exports = {
   deleteBookmarkById: deleteBookmarkById,
   deleteBookmarkByLocation: deleteBookmarkByLocation,
   deletePrivateBookmarksByTag: deletePrivateBookmarksByTag,
-  getUserTags: getUserTags
+  getUserTags: getUserTags,
+  updateDisplayNameInBookmarks: updateDisplayNameInBookmarks
 };

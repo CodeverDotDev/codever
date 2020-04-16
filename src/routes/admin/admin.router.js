@@ -15,6 +15,7 @@ const HttpStatus = require('http-status-codes/index');
 const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 adminRouter.use(keycloak.middleware());
 
+const superagent = require('superagent');
 
 /* GET all bookmarks */
 adminRouter.get('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
@@ -42,7 +43,7 @@ adminRouter.get('/tags', keycloak.protect('realm:ROLE_ADMIN'), async (request, r
  *
  */
 adminRouter.get('/bookmarks/latest-entries', keycloak.protect('realm:ROLE_ADMIN'), async (request, response, next) => {
-  if (request.query.since) {
+  if ( request.query.since ) {
     const fromDate = new Date(parseFloat(request.query.since, 0));
     const toDate = request.query.to ? new Date(parseFloat(request.query.to, 0)) : new Date();
     const bookmarks = await AdminService.getLatestBookmarksBetweenDates(fromDate, toDate);
@@ -104,7 +105,7 @@ adminRouter.delete('/bookmarks/:bookmarkId', keycloak.protect('realm:ROLE_ADMIN'
 */
 adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response, next) => {
   const location = request.query.location;
-  if (location) {
+  if ( location ) {
     await AdminService.deleteBookmarksByLocation(location);
     return response.status(HttpStatus.NO_CONTENT).send();
   } else {
@@ -117,7 +118,7 @@ adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (re
  */
 adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response, next) => {
   const userId = request.query.userId;
-  if (userId) {
+  if ( userId ) {
     await AdminService.deleteBookmarksByUserId(userId);
     return response.status(HttpStatus.NO_CONTENT).send();
   } else {
@@ -134,5 +135,53 @@ adminRouter.delete('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (re
     .send({message: 'You can either delete bookmarks by location or userId - at least one of them mandatory'});
 });
 
+/*
+  updates user display name
+  This should be used only one time.
+ */
+adminRouter.put('/users/profile/display-name', keycloak.protect('realm:KEYCLOAK_REALM_ADMIN'), async (request, response) => {
+  const responseUsers = await superagent.get(`${process.env.KEYCLOAK_SERVER_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users`)
+    .set('Authorization', request.headers.authorization)
+    .query({briefRepresentation: true})
+    .query({first: 0})
+    .query({max: 500});
+
+  const keycloakUsers = responseUsers.body;
+  const updatedUsers = await AdminService.updateDisplayNameForUsers(keycloakUsers);
+
+  return response.status(HttpStatus.OK).send(updatedUsers);
+});
+
+/**
+ * Updates user profile image url with gravatar image if present
+ *
+ */
+
+adminRouter.put('/users/profile/image-url', keycloak.protect('realm:KEYCLOAK_REALM_ADMIN'), async (request, response) => {
+  const responseUsers = await superagent.get(`${process.env.KEYCLOAK_SERVER_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users`)
+    .set('Authorization', request.headers.authorization)
+    .query({briefRepresentation: true})
+    .query({first: 0})
+    .query({max: 500});
+
+  const keycloakUsers = responseUsers.body;
+  const updatedUsers = await AdminService.setProfileImageUrlForUsersWithGravatar(keycloakUsers);
+
+  return response.status(HttpStatus.OK).send(updatedUsers);
+});
+
+//deletes user from keycloak and mongo
+adminRouter.delete('/users/:userId', keycloak.protect('realm:KEYCLOAK_REALM_ADMIN'), async (request, response) => {
+  const userId = request.params.userId;
+  const userDeletedResponse = await superagent.delete(`${process.env.KEYCLOAK_SERVER_URL}/admin/realms/${process.env.KEYCLOAK_REALM}/users/${userId}`)
+    .set('Authorization', request.headers.authorization);
+
+  if(userDeletedResponse.ok) {
+    await AdminService.deleteUserByUserId(userId);
+    await AdminService.deleteBookmarksByUserId(userId);
+
+    return response.status(HttpStatus.NO_CONTENT).send();
+  }
+});
 
 module.exports = adminRouter;

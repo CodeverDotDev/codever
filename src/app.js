@@ -12,6 +12,7 @@ const userRouter = require('./routes/users/user.router');
 const webPageInfoRouter = require('./routes/webpage-info/webpage-info.router');
 const adminRouter = require('./routes/admin/admin.router');
 const publicBookmarksRouter = require('./routes/public/public-bookmarks.router');
+const publicUsersRouter = require('./routes/public/public-users.router');
 const {MongoError} = require('mongodb');
 const ValidationError = require('./error/validation.error');
 const NotFoundError = require('./error/not-found.error');
@@ -81,6 +82,7 @@ app.use(function (req, res, next) {
 
 app.use('/api', apiBasePathRouter);
 app.use('/api/version', versionRouter);
+app.use('/api/public/users', publicUsersRouter);
 app.use('/api/public/bookmarks', publicBookmarksRouter);
 app.use('/api/personal/users', userRouter);
 app.use('/api/webpage-info', webPageInfoRouter);

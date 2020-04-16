@@ -2,7 +2,7 @@
 const showdown = require('showdown'),
   converter = new showdown.Converter();
 
-const Bookmark = require('../model/bookmark');
+const Codelet = require('../../../model/codelet');
 
 module.exports = {
   buildBookmarkFromRequest: function (req) {

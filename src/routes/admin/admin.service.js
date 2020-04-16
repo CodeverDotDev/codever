@@ -1,19 +1,21 @@
 const Bookmark = require('../../model/bookmark');
+const User = require('../../model/user');
 const NotFoundError = require('../../error/not-found.error');
 const ValidationError = require('../../error/validation.error');
+const crypto = require('crypto');
 
 const BookmarkInputValidator = require('../../common/bookmark-input.validator');
 
 /* GET all bookmarks */
 let getBookmarksWithFilter = async (isPublic, location, userId) => {
   let filter = {};
-  if (isPublic) {
+  if ( isPublic ) {
     filter.public = true;
   }
-  if (location) {
+  if ( location ) {
     filter.location = location;
   }
-  if (userId) {
+  if ( userId ) {
     filter.userId = userId;
   }
   const bookmarks = await Bookmark.find(filter).sort({createdAt: -1}).lean().exec();
@@ -47,7 +49,7 @@ let getTagsOrderByNumberDesc = async () => {
  */
 let getLatestBookmarksBetweenDates = async (fromDate, toDate) => {
 
-  if (fromDate > toDate) {
+  if ( fromDate > toDate ) {
     throw new ValidationError('timing query parameters values', ['<Since> param value must be before <to> parameter value']);
   }
   const bookmarks = await Bookmark.find(
@@ -81,7 +83,7 @@ let getBookmarkById = async (bookmarkId) => {
     _id: bookmarkId
   });
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError(`Bookmark NOT_FOUND with id:${bookmarkId}`);
   } else {
     return bookmark;
@@ -121,7 +123,7 @@ let updateBookmark = async (bookmark) => {
   );
 
   const bookmarkNotFound = !updatedBookmark;
-  if (bookmarkNotFound) {
+  if ( bookmarkNotFound ) {
     throw new NotFoundError('Bookmark with the id ' + bookmark._id + ' not found');
   } else {
     return updatedBookmark;
@@ -136,7 +138,7 @@ let deleteBookmarkById = async (bookmarkId) => {
     _id: bookmarkId
   });
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError(`Bookmark NOT_FOUND with id: ${bookmarkId}`);
   } else {
     return true;
@@ -156,9 +158,91 @@ let deleteBookmarksByLocation = async (location) => {
  * Delete bookmarks of a user, identified by userId
  */
 let deleteBookmarksByUserId = async (userId) => {
-    await Bookmark.deleteMany({userId: userId});
-    return true;
+  await Bookmark.deleteMany({userId: userId});
+  return true;
 };
+
+/**
+ * Updates displayName in User documents with the first name from Keycloak if not set already
+ *
+ * @param keycloakUsers
+ * @returns {Promise<Array>}
+ */
+let updateDisplayNameForUsers = async (keycloakUsers) => {
+  let response = [];
+  for ( let keycloakUser of keycloakUsers ) {
+    const updatedUser = await User.findOneAndUpdate(
+      {
+        $and: [
+          {userId: keycloakUser.id},
+          { "profile.displayName": { "$exists": false } },
+        ]
+      },
+      {"$set": {"profile.displayName": keycloakUser.firstName}},
+      {new: true}
+    );
+
+    if(updatedUser) {
+      response.push({
+        userId: updatedUser.userId,
+        email: keycloakUser.email,
+        displayName: updatedUser.profile.displayName
+      });
+    }
+  }
+
+  return response;
+}
+
+/**
+ * Updates displayName in User documents with the first name from Keycloak if not set already
+ *
+ * @param keycloakUsers
+ * @returns {Promise<Array>}
+ */
+let setProfileImageUrlForUsersWithGravatar = async (keycloakUsers) => {
+  let response = [];
+  for ( let keycloakUser of keycloakUsers ) {
+    const emailMd5Hash = crypto.createHash('md5').update(keycloakUser.email).digest('hex');
+    const imageUrl = `https://gravatar.com/avatar/${emailMd5Hash}?s=340`;
+    const updatedUser = await User.findOneAndUpdate(
+      {
+        $and: [
+          {userId: keycloakUser.id},
+          { "profile.imageUrl": { "$exists": false } },
+        ]
+      },
+      {"$set": {"profile.imageUrl": imageUrl}},
+      {new: true}
+    );
+
+    if(updatedUser) {
+      response.push({
+        userId: updatedUser.userId,
+        email: keycloakUser.email,
+        imageUrl: updatedUser.profile.imageUrl
+      });
+    }
+  }
+
+  return response;
+}
+
+/*
+* DELETE user by userId
+*/
+let deleteUserByUserId = async (userId) => {
+  const user = await User.findOneAndRemove({
+    userId: userId
+  });
+
+  if ( !user ) {
+    throw new NotFoundError(`User NOT_FOUND with userId: ${userId}`);
+  } else {
+    return true;
+  }
+};
+
 
 module.exports = {
   getBookmarksWithFilter: getBookmarksWithFilter,
@@ -169,6 +253,9 @@ module.exports = {
   createBookmark: createBookmark,
   updateBookmark: updateBookmark,
   deleteBookmarkById: deleteBookmarkById,
+  deleteUserByUserId: deleteUserByUserId,
   deleteBookmarksByLocation: deleteBookmarksByLocation,
-  deleteBookmarksByUserId: deleteBookmarksByUserId
+  deleteBookmarksByUserId: deleteBookmarksByUserId,
+  updateDisplayNameForUsers: updateDisplayNameForUsers,
+  setProfileImageUrlForUsersWithGravatar: setProfileImageUrlForUsersWithGravatar
 };

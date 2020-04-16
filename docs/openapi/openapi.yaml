@@ -79,6 +79,29 @@ paths:
           description: OK
           $ref: '#/components/responses/BookmarkListResponse'
 
+  /public/users/{userId}/profile:
+    get:
+      summary: returns public profile data (user profile & top public tags ) for user
+      tags:
+        - public-user-data
+      parameters:
+        - $ref: "#/components/parameters/userIdPathParam"
+        - $ref: "#/components/parameters/limitQueryParam"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    $ref: '#/components/schemas/UserProfile'
+                  topUsedPublicTags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TagCount'
+
   /webpage-info/scrape:
     get:
       description: Returns web page info about the page scraped by `location`, `youtubeVideoId` or `stackoverflowQuestionId`
@@ -524,6 +547,7 @@ paths:
       `page` and `limit` query parameters are used for pagination - if missing default values are used.
     get:
       description: Reads user data
+      deprecated: true
       operationId: get-user-data-favorites
       tags:
         - user-data
@@ -540,13 +564,13 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenError'
 
-  /personal/users/{userId}/watched-tags:
+  /personal/users/{userId}/feed:
     description: |
-      Returns bookmarks for **tags** that the user is **watching**
+      Returns bookmarks to be displayed on user feed (landing page)
       `page` and `limit` query parameters are used for pagination - if missing default values are used.
     get:
       description: Reads user data
-      operationId: get-user-data-watched-tags
+      operationId: get-user-feed-bookmarks
       tags:
         - user-data
       parameters:
@@ -579,6 +603,79 @@ paths:
         200:
           description: OK
           $ref: '#/components/responses/BookmarkListResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /personal/users/{userId}/following/users:
+    get:
+      description: get the user profiles of then ones the `userId` is following
+      operationId: get-follewed-users
+      tags:
+        - user-following
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/UserDataProfilesResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
+  /personal/users/{userId}/followers:
+    get:
+      description: get the user profiles of `userId`'s followers
+      operationId: get-followers
+      tags:
+        - user-following
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/UserDataProfilesResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
+  /personal/users/{userId}/following/users/{followedUserId}:
+    description: Adds `followedUserId` to the `following` list of `userId`, and `userId` to `followers` list of `followedUserId`
+    patch:
+      operationId: add-user-to-following
+      tags:
+        - user-following
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: '#/components/parameters/followedUserIdPathParam'
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/UserDataResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+  /personal/users/{userId}/unfollowing/users/{followedUserId}:
+    description: Removes `followedUserId` from the `following` list of `userId`, and `userId` from the `followers` list of `followedUserId`
+    patch:
+      operationId: remove-user-from-following
+      tags:
+        - user-following
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: '#/components/parameters/followedUserIdPathParam'
+      responses:
+        200:
+          description: OK
+          $ref: '#/components/responses/UserDataResponse'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -638,6 +735,20 @@ components:
         stackoverflowQuestionId:
           type: string
 
+    UserProfile:
+      properties:
+        displayName:
+          type: string
+        summary:
+          type: string
+        websiteLink:
+          type: string
+        twitterLink:
+          type: string
+        githubLink:
+          type: string
+        linkedinLink:
+          type: string
     Search:
       required:
         - text
@@ -655,12 +766,24 @@ components:
             - personal
         count:
           type: integer
+    Following:
+      properties:
+        users:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
     User:
       required:
         - userId
       properties:
         userId:
           type: string
+        profile:
+          $ref: '#/components/schemas/UserProfile'
         searches:
           type: array
           items:
@@ -678,6 +801,7 @@ components:
           items:
             type: string
         favorites:
+          deprecated: true
           type: array
           items:
             type: string
@@ -685,7 +809,33 @@ components:
           type: array
           items:
             type: string
+        followers:
+          type: array
+          items:
+            type: string
+        following:
+          $ref: '#/components/schemas/Following'
 
+    UserDataProfile:
+      required:
+        - userId
+      properties:
+        userId:
+          type: string
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+
+    TagCount:
+      type: object
+      required:
+        - name
+        - count
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+          description: how much many times the tag has been used in the specific context
     BasicErrorModel:
       type: object
       required:
@@ -752,6 +902,13 @@ components:
       schema:
         type: string
         default: 4c617f2b-2bad-498b-a9c6-4e9a8c303798
+    followedUserIdPathParam:
+      name: followedUserId
+      in: path
+      description: the id of the user to be following
+      required: true
+      schema:
+        type: string
     bookmarkIdPathParam:
       name: bookmarkId
       in: path
@@ -824,6 +981,20 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Bookmark'
+    UserDataResponse:
+      description: User data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    UserDataProfilesResponse:
+      description: List of user profiles
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UserDataProfile'
     ForbiddenError:
       description: Access token is missing or invalid
     UnauthorizedError:
