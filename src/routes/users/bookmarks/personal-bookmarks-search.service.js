@@ -1,5 +1,4 @@
 const Bookmark = require('../../../model/bookmark');
-const User = require('../../../model/user');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const bookmarksSearchHelper = require('../../../common/bookmarks-search.helper');
@@ -24,22 +23,9 @@ let findPersonalBookmarks = async function (query, page, limit, userId) {
   return bookmarks;
 }
 
-let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
-  if ( specialSearchFilters.privateOnly ) {
-    filter.public = false;
-  }
-
-  if ( specialSearchFilters.lang ) {
-    filter.language = specialSearchFilters.lang
-  }
-
-  if ( specialSearchFilters.site ) {
-    filter.location = new RegExp(specialSearchFilters.site, 'i'); //TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
-  }
-};
-
 let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
   let filter = {
+    userId: userId,
     tags:
       {
         $all: searchedTags
@@ -54,14 +40,6 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
-
-  const userData = await User.findOne({
-    userId: userId
-  });
-  filter.$or = [
-    {userId: userId},
-    {"_id": {$in: userData.favorites}}
-  ]
 
   let bookmarks = await Bookmark.find(
     filter,
@@ -86,7 +64,7 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
 
 let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
 
-  let filter = { };
+  let filter = {userId: userId };
   if(nonSpecialSearchTerms.length > 0) {
     const termsJoined = nonSpecialSearchTerms.join(' ');
     const termsQuery = escapeStringRegexp(termsJoined);
@@ -94,12 +72,6 @@ let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
-
-  const userData = await User.findOne({userId: userId});
-  filter.$or = [
-    {userId: userId},
-    {"_id": {$in: userData.favorites}}
-  ]
 
   let bookmarks = await Bookmark.find(
     filter,
@@ -124,6 +96,7 @@ let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms
 
 let getPersonalBookmarksForSearchedTags = async function (searchedTags, page, limit, userId, specialSearchFilters) {
   let filter = {
+    userId: userId,
     tags:
       {
         $all: searchedTags
@@ -131,14 +104,6 @@ let getPersonalBookmarksForSearchedTags = async function (searchedTags, page, li
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
-
-  const userData = await User.findOne({
-    userId: userId
-  });
-  filter.$or = [
-    {userId: userId},
-    {"_id": {$in: userData.favorites}}
-  ]
 
   let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})
@@ -150,6 +115,19 @@ let getPersonalBookmarksForSearchedTags = async function (searchedTags, page, li
   return bookmarks;
 }
 
+let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
+  if ( specialSearchFilters.privateOnly ) {
+    filter.public = false;
+  }
+
+  if ( specialSearchFilters.lang ) {
+    filter.language = specialSearchFilters.lang
+  }
+
+  if ( specialSearchFilters.site ) {
+    filter.location = new RegExp(specialSearchFilters.site, 'i'); //TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
+  }
+};
 
 module.exports = {
   findPersonalBookmarks: findPersonalBookmarks

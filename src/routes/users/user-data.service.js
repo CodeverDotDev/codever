@@ -5,6 +5,7 @@ const Bookmark = require('../../model/bookmark');
 
 const ValidationError = require('../../error/validation.error');
 const NotFoundError = require('../../error/not-found.error');
+const PublicBookmarksService = require('../public/public-bookmarks.service');
 
 let createUserData = async function (userData, userId) {
 
@@ -12,10 +13,12 @@ let createUserData = async function (userData, userId) {
 
   const newUserData = new User({
     userId: userId,
+    profile: userData.profile,
     searches: userData.searches,
     readLater: userData.readLater,
     likes: userData.likes,
     watchedTags: userData.watchedTags,
+    ignoredTags: userData.ignoredTags,
     pinned: userData.pinned,
     favorites: userData.favorites,
     history: userData.history
@@ -84,7 +87,7 @@ function userSearchesAreValid(userData) {
 let getUserData = async function (userId) {
   const userData = await User.findOne({
     userId: userId
-  });
+  }).select("+followers");
 
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
@@ -113,7 +116,7 @@ let getReadLater = async function (userId, page, limit) {
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const readLaterRangeIds = userData.readLater.slice((page - 1) * limit, (page - 1) * limit + limit );
+    const readLaterRangeIds = userData.readLater.slice((page - 1) * limit, (page - 1) * limit + limit);
     const bookmarks = await Bookmark.find({"_id": {$in: readLaterRangeIds}});
 
     return bookmarks;
@@ -129,27 +132,6 @@ let getLikedBookmarks = async function (userId) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
     const bookmarks = await Bookmark.find({"_id": {$in: userData.likes}});
-
-    return bookmarks;
-  }
-}
-
-let getWatchedTags = async function (userId, page, limit) {
-  const userData = await User.findOne({
-    userId: userId
-  });
-  if ( !userData ) {
-    throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
-  } else {
-    const bookmarks = await Bookmark.find({
-      public: true,
-      tags: {$elemMatch: {$in: userData.watchedTags}}
-    })
-      .sort({createdAt: -1})
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean()
-      .exec();
 
     return bookmarks;
   }
@@ -249,10 +231,10 @@ let getPinnedBookmarks = async function (userId, page, limit) {
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const pinnedRangeIds = userData.pinned.slice((page - 1) * limit, (page - 1) * limit + limit );
+    const pinnedRangeIds = userData.pinned.slice((page - 1) * limit, (page - 1) * limit + limit);
     const bookmarks = await Bookmark.find({"_id": {$in: pinnedRangeIds}});
     //we need to order the bookmarks to correspond the one in the userData.pinned array
-    const orderedBookmarksAsInPinned = bookmarks.sort(function(a, b){
+    const orderedBookmarksAsInPinned = bookmarks.sort(function (a, b) {
       return pinnedRangeIds.indexOf(a._id) - pinnedRangeIds.indexOf(b._id);
     });
 
@@ -260,6 +242,10 @@ let getPinnedBookmarks = async function (userId, page, limit) {
   }
 }
 
+/**
+ * Deprecated - might get reactivated if community decides for it
+ *
+ */
 let getFavoriteBookmarks = async function (userId, page, limit) {
   const userData = await User.findOne({
     userId: userId
@@ -267,10 +253,10 @@ let getFavoriteBookmarks = async function (userId, page, limit) {
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const favoritesRangeIds = userData.favorites.slice((page - 1) * limit, (page - 1) * limit + limit );
+    const favoritesRangeIds = userData.favorites.slice((page - 1) * limit, (page - 1) * limit + limit);
     const bookmarks = await Bookmark.find({"_id": {$in: favoritesRangeIds}});
     //we need to order the bookmarks to correspond the one in the userData.favorites array
-    const orderedBookmarksAsInFavorites = bookmarks.sort(function(a, b){
+    const orderedBookmarksAsInFavorites = bookmarks.sort(function (a, b) {
       return favoritesRangeIds.indexOf(a._id) - favoritesRangeIds.indexOf(b._id);
     });
 
@@ -286,11 +272,11 @@ let getBookmarksFromHistory = async function (userId, page, limit) {
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const historyRangeIds = userData.history.slice((page - 1) * limit, (page - 1) * limit + limit );
+    const historyRangeIds = userData.history.slice((page - 1) * limit, (page - 1) * limit + limit);
     const bookmarks = await Bookmark.find({"_id": {$in: historyRangeIds}});
 
     //we need to order the bookmarks to correspond the one in the userData.history array
-    const orderedBookmarksAsInHistory = bookmarks.sort(function(a, b){
+    const orderedBookmarksAsInHistory = bookmarks.sort(function (a, b) {
       return historyRangeIds.indexOf(a._id) - historyRangeIds.indexOf(b._id);
     });
 
@@ -376,6 +362,146 @@ let unlikeBookmark = async function (userData, userId, bookmarkId) {
   }
 }
 
+let followUser = async function (userId, followedUserId) {
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {$push: {'following.users': followedUserId}},
+    {new: true}
+  );
+
+  await User.findOneAndUpdate(
+    {userId: followedUserId},
+    {$push: {followers: userId}}
+  );
+
+  return updatedUserData;
+}
+
+let unfollowUser = async function (userId, followedUserId) {
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {$pull: {'following.users': followedUserId}},
+    {new: true}
+  );
+
+  await User.findOneAndUpdate(
+    {userId: followedUserId},
+    {$pull: {followers: userId}}
+  );
+
+  return updatedUserData;
+}
+
+let getFollowedUsersData = async function (userId) {
+  const userData = await User.findOne({
+    userId: userId
+  });
+
+  if ( !userData ) {
+    throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
+  } else {
+    const followedUsers = await User.find(
+      {userId: {$in: userData.following.users}}
+    ).select('userId profile');
+
+    return followedUsers;
+  }
+}
+let getFollowers = async function (userId) {
+  const userData = await User.findOne({
+    userId: userId
+  }).select("+followers");
+
+  if ( !userData ) {
+    throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
+  } else {
+    const followers = await User.find(
+      {userId: {$in: userData.followers}}
+    ).select('userId profile');
+
+    return followers;
+  }
+}
+
+/**
+ * Highly unlikely case if the user is following popular tags
+ * It returns bookmarks tagged with user's watched tags and if end is reached
+ * the recent public bookmarks except ignored.
+ *
+ * @param userId
+ * @param page
+ * @param limit
+ * @returns {Promise<void>}
+ */
+
+let getFeedBookmarks = async function (userId, page, limit) {
+  const userData = await User.findOne({
+    userId: userId
+  });
+  if ( !userData ) {
+    // falls back to getting the public bookmarks - the case happens when the user register for the first time via Keycloak
+    return PublicBookmarksService.getLatestPublicBookmarks(page, limit);
+  } else {
+
+    const filterFeedBookmarks = {
+      public: true,
+      $and: [
+        {
+          tags: {
+            $elemMatch: {$in: userData.watchedTags}
+          }
+        },
+        {
+          tags: {
+            $not: {$elemMatch: {$in: userData.ignoredTags}}
+          }
+        }
+      ]
+    };
+
+    let bookmarks = await Bookmark.find(filterFeedBookmarks)
+      .sort({createdAt: -1})
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean()
+      .exec();
+
+
+    if ( bookmarks.length < limit ) {
+      const count = await Bookmark.countDocuments(filterFeedBookmarks);
+
+      const intervalRight = page * limit;
+      const pageOtherPublicBookmarks = count === 0 ? 0 : Math.floor((intervalRight - count) / limit );
+      const limitOtherPublicBookmarks = intervalRight - count < limit ? intervalRight - count : limit;
+
+      const otherPublicBookmarks = await Bookmark.find({
+        public: true,
+        $and: [
+          {
+            tags: {
+              $not: {$elemMatch: {$in: userData.watchedTags}}
+            }
+          },
+          {
+            tags: {
+              $not: {$elemMatch: {$in: userData.ignoredTags}}
+            }
+          }
+        ]
+      })
+        .sort({createdAt: -1})
+        .skip(pageOtherPublicBookmarks * limit)
+        .limit(limitOtherPublicBookmarks)
+        .lean()
+        .exec();
+
+      bookmarks = bookmarks.concat(otherPublicBookmarks);
+    }
+
+    return bookmarks;
+  }
+}
+
 module.exports = {
   updateUserData: updateUserData,
   createUserData: createUserData,
@@ -383,11 +509,15 @@ module.exports = {
   deleteUserData: deleteUserData,
   getReadLater: getReadLater,
   getLikedBookmarks: getLikedBookmarks,
-  getWatchedTags: getWatchedTags,
   getUsedTagsForPublicBookmarks: getUsedTagsForPublicBookmarks,
   getUsedTagsForPrivateBookmarks: getUsedTagsForPrivateBookmarks,
   getPinnedBookmarks: getPinnedBookmarks,
   getFavoriteBookmarks: getFavoriteBookmarks,
   getBookmarksFromHistory: getBookmarksFromHistory,
-  rateBookmark: rateBookmark
+  rateBookmark: rateBookmark,
+  followUser: followUser,
+  unfollowUser: unfollowUser,
+  getFollowedUsersData: getFollowedUsersData,
+  getFollowers: getFollowers,
+  getFeedBookmarks: getFeedBookmarks
 }

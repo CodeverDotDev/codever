@@ -185,7 +185,7 @@ describe('Personal Bookmarks tests', function () {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const textSnippet = "long text in the making";
       let longText = textSnippet;
-      for ( var i = 0; i < 100; i++ ) {
+      for ( var i = 0; i < 200; i++ ) {
         longText += textSnippet;
       }
       invalidBookmark.description = longText;
@@ -204,7 +204,7 @@ describe('Personal Bookmarks tests', function () {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       const line = "oneline\n";
       let longText = line;
-      for ( var i = 0; i < 101; i++ ) {
+      for ( var i = 0; i < 301; i++ ) {
         longText += line;
       }
       invalidBookmark.description = longText;
@@ -357,7 +357,7 @@ describe('Personal Bookmarks tests', function () {
         let bookmarkWithTooBigDescription = JSON.parse(JSON.stringify(createdBookmark));
         const textSnippet = "long text in the making";
         let longText = textSnippet;
-        for ( var i = 0; i < 100; i++ ) {
+        for ( var i = 0; i < 200; i++ ) {
           longText += textSnippet;
         }
         bookmarkWithTooBigDescription.description = longText;
@@ -375,7 +375,7 @@ describe('Personal Bookmarks tests', function () {
         let bookmarkWithDescriptionWithTooManyLines = JSON.parse(JSON.stringify(createdBookmark));
         const line = "oneline\n";
         let longText = line;
-        for ( var i = 0; i < 101; i++ ) {
+        for ( var i = 0; i < 301; i++ ) {
           longText += line;
         }
         bookmarkWithDescriptionWithTooManyLines.description = longText;
@@ -470,7 +470,7 @@ describe('Personal Bookmarks tests', function () {
           .send(bookmarkExample);
 
         if ( response.statusCode !== HttpStatus.CREATED ) {
-          throw new Error("Sample bookmark not properly created");
+          throw new Error("Sample personal bookmark not properly created");
         }
         const locationHeaderValue = response.header['location']
 
@@ -488,9 +488,10 @@ describe('Personal Bookmarks tests', function () {
         readLater: [],
         likes: [],
         watchedTags: [],
+        ignoredTags: [],
         pinned: [],
         favorites: [],
-        history: []
+        history: [],
       }
 
       const createUserDataResponse = await request(app)
@@ -499,7 +500,7 @@ describe('Personal Bookmarks tests', function () {
         .send(userData);
 
       if ( createUserDataResponse.statusCode !== HttpStatus.CREATED ) {
-        throw new Error("Sample bookmark not properly created");
+        throw new Error("Sample personal bookmark not properly created");
       }
 
     });

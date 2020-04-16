@@ -6,6 +6,8 @@
     "MONGODB_BOOKMARKS_USERNAME": "bookmarks",
     "MONGODB_BOOKMARKS_PASSWORD": "secret",
     "MONGODB_BOOKMARKS_COLLECTION": "dev-bookmarks",
-    "MONGODB_HOST": "localhost"
+    "MONGODB_HOST": "localhost",
+    "KEYCLOAK_REALM": "bookmarks",
+    "KEYCLOAK_SERVER_URL": "http://localhost:8480/auth"
   }
 }

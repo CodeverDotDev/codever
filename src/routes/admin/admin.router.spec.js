@@ -212,7 +212,7 @@ describe('Admin API Tests', function () {
       let bookmark_with_a_too_big_description = JSON.parse(JSON.stringify(bookmarkExample));
       const textSnippet = "long text in the making";
       let longText = textSnippet;
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < 200; i++) {
         longText += textSnippet;
       }
       bookmark_with_a_too_big_description.description = longText;
@@ -231,7 +231,7 @@ describe('Admin API Tests', function () {
       let bookmark_with_description_with_too_many_lines = JSON.parse(JSON.stringify(bookmarkExample));
       const line = "oneline\n";
       let longText = line;
-      for (var i = 0; i < 101; i++) {
+      for (var i = 0; i < 301; i++) {
         longText += line;
       }
       bookmark_with_description_with_too_many_lines.description = longText;
@@ -402,7 +402,7 @@ describe('Admin API Tests', function () {
         let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
         const textSnippet = "long text in the making";
         let longText = textSnippet;
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < 200; i++) {
           longText += textSnippet;
         }
         invalidBookmark.description = longText;
@@ -421,7 +421,7 @@ describe('Admin API Tests', function () {
         let invalidBookmark = JSON.parse(JSON.stringify(createdBookmark));
         const line = "oneline\n";
         let longText = line;
-        for (var i = 0; i < 101; i++) {
+        for (var i = 0; i < 301; i++) {
           longText += line;
         }
         invalidBookmark.description = longText;
