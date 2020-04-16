@@ -12,7 +12,6 @@ db.createUser(
 );
 
 
-
 db.auth("bookmarks", "secret");
 
 //insert initial public dev bookmarks
@@ -84,6 +83,7 @@ db.bookmarks.insert(
   ]
 );
 
+//bookmarks indexes
 db.bookmarks.createIndex(
   {
     name: "text",
@@ -107,9 +107,35 @@ db.bookmarks.createIndex(
 );
 
 db.bookmarks.createIndex(
-  { location: 1, userId:1 },
+  {location: 1, userId: 1},
   {
     unique: true,
-    name:"unique_user_and_location"
+    name: "unique_user_and_location"
+  }
+);
+
+// codelets indexes
+
+db.codelets.createIndex(
+  {userId: 1}
+);
+
+db.codelets.createIndex(
+  {
+    title: "text",
+    tags: "text",
+    "codeSnippets.comment": "text",
+    sourceUrl: "text"
+  },
+  {
+    weights: {
+      title: 8,
+      tags: 13,
+      "codeSnippets.comment": 3,
+      sourceUrl: 1
+    },
+    name: "full_text_search",
+    default_language: "none",
+    language_override: "none"
   }
 );

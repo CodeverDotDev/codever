@@ -25,3 +25,17 @@ curl  \
   'http://localhost:8480/auth/realms/bookmarks/protocol/openid-connect/token' \
 | jq -r '.access_token'
 ```
+
+
+## Production
+
+### For Keycloak Realm Admin Role
+
+```bash
+curl  \
+  -d 'client_id=keycloak-realm-admin-service-account' \
+  -d 'client_secret=CHANGE-ME' \
+  -d 'grant_type=client_credentials' \
+  'https://www.bookmarks.dev/auth/realms/bookmarks/protocol/openid-connect/token' \
+| jq -r '.access_token'
+```

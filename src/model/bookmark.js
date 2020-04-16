@@ -10,6 +10,7 @@ const bookmarkSchema = new Schema({
     publishedOn: Date,
     sourceCodeURL: {type:String},
     userId: {type: String, ref:'User'},
+    userDisplayName: String,
     public: Boolean,
     language: String,
     lastAccessedAt: {type: Date, select: false},
