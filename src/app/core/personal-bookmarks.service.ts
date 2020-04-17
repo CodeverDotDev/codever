@@ -24,11 +24,6 @@ export class PersonalBookmarksService {
       .pipe(shareReplay(1));
   }
 
-  getSuggestedCodeletTags(userId: String): Observable<string[]> {
-    return this.httpClient.get<string[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/codelets/suggested-tags`)
-      .pipe(shareReplay(1));
-  }
-
   getFilteredPersonalBookmarks(searchText: string, limit: number, page: number, userId: string): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('q', searchText)
@@ -67,13 +62,6 @@ export class PersonalBookmarksService {
       .pipe(shareReplay(1));
   }
 
-  updateCodelet(codelet: Codelet): Observable<any> {
-    return this.httpClient
-      .put(`${this.personalBookmarksApiBaseUrl}/${codelet.userId}/codelets/${codelet._id}`, JSON.stringify(codelet),
-        {headers: this.headers})
-      .pipe(shareReplay(1));
-  }
-
   deleteBookmark(bookmark: Bookmark): Observable<any> {
     return this.httpClient
       .delete(`${this.personalBookmarksApiBaseUrl}/${bookmark.userId}/bookmarks/${bookmark._id}`, {headers: this.headers})
@@ -83,15 +71,6 @@ export class PersonalBookmarksService {
   createBookmark(userId: string, bookmark: Bookmark): Observable<any> {
     return this.httpClient
       .post(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks`, JSON.stringify(bookmark), {
-        headers: this.headers,
-        observe: 'response'
-      })
-      .pipe(shareReplay(1));
-  }
-
-  createCodelet(userId: string, codelet: Codelet): Observable<any> {
-    return this.httpClient
-      .post(`${this.personalBookmarksApiBaseUrl}/${userId}/codelets`, JSON.stringify(codelet), {
         headers: this.headers,
         observe: 'response'
       })
