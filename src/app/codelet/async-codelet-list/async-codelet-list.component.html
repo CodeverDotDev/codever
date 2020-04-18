@@ -5,7 +5,7 @@
         <div class="header-wrapper">
           <div class="titles">
             <h4 class="card-title">
-              <a routerLink="my-codelets/{{codelet._id}}" [innerHtml]="codelet.title | highlight: queryText"></a>
+              <a routerLink="my-codelets/{{codelet._id}}/details" [innerHtml]="codelet.title | highlight: queryText"></a>
             </h4>
             <h6 class="card-subtitle mb-2 text-muted url-under-title">
             <span *ngIf="codelet.sourceUrl">Source - <a href="{{codelet.sourceUrl}}" target="_blank">{{codelet.sourceUrl}}</a>
