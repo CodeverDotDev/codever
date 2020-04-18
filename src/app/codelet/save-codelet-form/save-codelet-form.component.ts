@@ -236,7 +236,7 @@ export class SaveCodeletFormComponent implements OnInit {
 
   navigateToCodeletDetails(codeletId: string): void {
     this.router.navigate(
-      [`/my-codelets/${codeletId}`],
+      [`/my-codelets/${codeletId}/details`],
       {
         queryParams: {popup: this.popup}
       }
