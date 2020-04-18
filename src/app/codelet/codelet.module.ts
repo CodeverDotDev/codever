@@ -32,7 +32,7 @@ const codeletRoutes: Routes = [
     component: UpdateCodeletComponent,
   },
   {
-    path: ':id',
+    path: ':id/details',
     canActivate: [AuthGuard],
     component: CodeletDetailsComponent,
   }
