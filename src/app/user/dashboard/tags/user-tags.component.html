@@ -1,0 +1,240 @@
+<div *ngIf="(userData$ | async) as userData">
+  <h3 class="mt-3">Watching <i class="fa fa-eye"></i></h3>
+  <div *ngIf="userData.watchedTags.length === 0; else listWatchedTags">
+    <div class="alert alert-info mt-3">
+      <strong>Ignore tags <i class="fas fa-ban"></i></strong> to not have bookmarks tagged with these in your feed.
+    </div>
+  </div>
+  <ng-template #listWatchedTags>
+    <div *ngFor="let tag of userData.watchedTags.sort()" class="btn-group mr-3 mt-3 tag-list-header">
+      <a
+        [routerLink]="['/tagged', tag]"
+        class="btn btn-secondary btn-sm"
+        title="Show public bookmarks tagged {{tag}}"
+      >
+        {{tag}}
+      </a>
+      <button
+        type=" button"
+        class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        (click)="onDropDownClick(tag)">
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <div class="dropdown-menu">
+        <a
+          *ngIf="(verifyForWatchedTag | async) === tag && userData.watchedTags.includes(tag); else watchTagOption"
+          class="dropdown-item"
+          (click)="unwatchTag(tag)"><i class="fas fa-eye-slash"></i> Unwatch tag
+        </a>
+        <ng-template #watchTagOption>
+          <a (click)="watchTag(tag, true)"><i class="fas fa-eye"></i> Watch tag</a>
+        </ng-template>
+        <a
+          *ngIf="(verifyForWatchedTag | async) === tag && userData.ignoredTags.includes(tag); else ignoreTagOption"
+          class="dropdown-item"
+          (click)="unignoreTag(tag)"><i class="fas fa-ban"></i> Unignore tag
+        </a>
+        <ng-template #ignoreTagOption>
+          <a (click)="ignoreTag(tag, true)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag </a>
+        </ng-template>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Tag's page </a>
+      </div>
+    </div>
+  </ng-template>
+
+  <hr/>
+
+  <h3 class="mt-4">Ignoring <i class="fa fa-ban"></i></h3>
+  <div *ngIf="userData.ignoredTags.length === 0; else listIgnoredTags">
+    <div class="alert alert-info mt-3">
+      <strong>Ignore tags <i class="fas fa-ban"></i></strong> to not have bookmarks tagged with these in your feed.
+    </div>
+  </div>
+  <ng-template #listIgnoredTags>
+    <div *ngFor="let tag of userData.ignoredTags.sort()" class="btn-group mr-3 mt-3 tag-list-header">
+      <a
+        [routerLink]="['/tagged', tag]"
+        class="btn btn-secondary btn-sm"
+        title="Show public bookmarks tagged {{tag}}">
+        {{tag}}
+      </a>
+      <button
+        type=" button"
+        class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        (click)="onDropDownClick(tag)">
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <div class="dropdown-menu">
+        <a
+          *ngIf="(verifyForWatchedTag | async) === tag && userData.watchedTags.includes(tag); else watchTagOption"
+          class="dropdown-item"
+          (click)="unwatchTag(tag)"><i class="fas fa-eye-slash"></i> Unwatch tag
+        </a>
+        <ng-template #watchTagOption>
+          <a (click)="watchTag(tag, true)"><i class="fas fa-eye"></i> Watch tag</a>
+        </ng-template>
+        <a
+          *ngIf="(verifyForWatchedTag | async) === tag && userData.ignoredTags.includes(tag); else ignoreTagOption"
+          class="dropdown-item"
+          (click)="unignoreTag(tag)"><i class="fas fa-ban"></i> Unignore tag
+        </a>
+        <ng-template #ignoreTagOption>
+          <a (click)="ignoreTag(tag, true)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag </a>
+        </ng-template>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Tag's page </a>
+      </div>
+    </div>
+  </ng-template>
+
+  <hr>
+
+
+  <h3 class="mt-2">Used in <em>my public</em> bookmarks</h3>
+
+  <div *ngIf="(usedTags$ | async)">
+
+    <div *ngFor="let tag of (usedTags$ | async).public" class="btn-group mr-3 mt-3 tag-list-header">
+      <a
+        [routerLink]="['/search']"
+        [queryParams]="{q: '[' + tag.name + '] user:' + userId, sd: 'public'}"
+        class="btn btn-secondary btn-sm"
+        title="Show my public bookmarks tagged {{tag.name}}"
+      >
+        {{tag.name}} <span class="badge badge-light">{{tag.count}}</span>
+      </a>
+      <button
+        type=" button"
+        class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        (click)="onDropDownClick(tag.name)">
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <div class="dropdown-menu">
+        <a
+          *ngIf="(verifyForWatchedTag | async) === tag.name && userData.watchedTags.includes(tag.name); else watchTagOption"
+          class="dropdown-item"
+          (click)="unwatchTag(tag.name)"><i class="fas fa-eye-slash"></i> Unwatch tag
+        </a>
+        <ng-template #watchTagOption>
+          <a class="dropdown-item"
+             (click)="watchTag(tag.name, true)">
+            <i class="fas fa-eye"></i> Watch tag
+          </a>
+        </ng-template>
+        <a
+          *ngIf="(verifyForWatchedTag | async) === tag && userData.ignoredTags.includes(tag.name); else ignoreTagOption"
+          class="dropdown-item"
+          (click)="unignoreTag(tag.name)"><i class="fas fa-ban"></i> Unignore tag
+        </a>
+        <ng-template #ignoreTagOption>
+          <a (click)="ignoreTag(tag.name, true)" class="dropdown-item"><i
+            class="fas fa-ban"></i> Ignore tag </a>
+        </ng-template>
+        <div class="dropdown-divider"></div>
+        <a
+          [routerLink]="['/search']"
+          [queryParams]="{q: '[' + tag.name + '] user:' + userId, sd: 'public'}"
+          class="dropdown-item">
+          <i class="fas fa-history"></i> My public posts </a>
+        <a class="dropdown-item" [routerLink]="['/tagged', tag.name]"><i class="fas fa-tag"></i> Tag's page </a>
+      </div>
+    </div>
+
+    <hr/>
+    <hr/>
+
+    <h3 class="mt-2">Used in <em>my private</em> bookmarks only</h3>
+
+    <div *ngFor="let tag of (usedTags$ | async).private" class="btn-group mr-3 mt-3 tag-list-header">
+      <a
+        [routerLink]="['/search']"
+        [queryParams]="{q: 'private:only [' + tag.name + ']', sd: 'personal'}"
+        class="btn btn-secondary btn-sm"
+        title="Show my private bookmarks tagged {{tag.name}}"
+      >
+        {{tag.name}} <span class="badge badge-light">{{tag.count}}</span>
+      </a>
+      <button
+        type=" button"
+        class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        (click)="onDropDownClick(tag.name)">
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <div class="dropdown-menu">
+        <a
+          *ngIf="(verifyForWatchedTag | async) === tag.name && userData.watchedTags.includes(tag.name); else watchTagOption"
+          class="dropdown-item"
+          (click)="unwatchTag(tag.name)"><i class="fas fa-eye-slash"></i> Unwatch tag
+        </a>
+        <ng-template #watchTagOption>
+          <a (click)="watchTag(tag.name, true)"><i class="fas fa-eye"></i> Watch tag</a>
+        </ng-template>
+        <a
+          *ngIf="(verifyForWatchedTag | async) === tag && userData.ignoredTags.includes(tag.name); else ignoreTagOption"
+          class="dropdown-item"
+          (click)="unignoreTag(tag.name)"><i class="fas fa-ban"></i> Unignore tag
+        </a>
+        <ng-template #ignoreTagOption>
+          <a (click)="ignoreTag(tag.name, true)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag </a>
+        </ng-template>
+        <div class="dropdown-divider"></div>
+        <a
+          [routerLink]="['/search']"
+          [queryParams]="{q: 'private:only [' + tag.name + ']', sd: 'personal'}"
+          class="dropdown-item">
+          <i class="fas fa-history"></i> My private posts </a>
+        <a class="dropdown-item" [routerLink]="['/tagged', tag.name]"><i class="fas fa-tag"></i> Tag's page </a>
+      </div>
+    </div>
+
+
+    <hr/>
+
+    <h5 class="text-danger" style="margin-top: 1rem">Danger zone</h5>
+    <div class="border border-danger rounded-lg" style="padding: 1rem">
+      <h4>Delete <strong>all private</strong> bookmarks by <strong>tag</strong></h4>
+      <div class="input-group search-component">
+        <div class="input-group-prepend">
+    <span class="input-group-text">
+      <i class="fa fa-search"></i>
+    </span>
+        </div>
+        <input
+          #tagSearchBox
+          type="text"
+          class="form-control"
+          [formControl]="selectTagControl"
+          placeholder="Start typing to select tag"
+          [matAutocomplete]="auto"
+        >
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayTag">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">{{option.name}}
+          </mat-option>
+        </mat-autocomplete>
+        <div class="input-group-append">
+          <button class="btn btn-outline-danger"
+                  type="button"
+                  (click)="openDeleteDialog(tagSearchBox.value)"
+                  [disabled]="!buttonEnabled"
+          >Delete <strong>ALL private</strong> bookmarks by selected tag
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

@@ -1,0 +1,117 @@
+<div *ngIf="!isUpdate" class="alert alert-info mt-2">
+  <strong>Codelets</strong> are special types of bookmarks where you save small pieces of code you would
+  want to recall later.
+</div>
+<div *ngIf="!isUpdate || (isUpdate && codelet$ | async)" class="navigation-space-buffer">
+  <form [formGroup]="codeletFormGroup" novalidate (ngSubmit)="saveCodelet(codeletFormGroup.value)">
+    <div class="form-group pb-1">
+      <label for="title">Title*</label>
+      <input type="text" class="form-control" id="title"
+             required
+             formControlName="title"
+             placeholder="Title of the codelet to recognize later">
+      <div [hidden]="codeletFormGroup.get('title').valid || (codeletFormGroup.get('title').pristine)"
+           class="alert alert-danger">
+        Title is required
+      </div>
+    </div>
+
+    <div id="tags">
+      <mat-form-field class="full-width">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let tag of tags.controls; let i = index;" [selectable]="selectable"
+                    [removable]="removable" (removed)="removeTagByIndex(i)">
+            {{tag.value}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="&nbsp;&nbsp;Tags* - max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
+            matInput
+            #tagInput
+            [formControl]="tagsControl"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="addOnBlur"
+            [matAutocomplete]="auto"
+            (matChipInputTokenEnd)="addTag($event)"
+            formArrayName="tags"
+          />
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedTag($event)">
+          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+            {{ tag }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)" class="alert alert-danger">
+        <div *ngIf="tags.errors.tagsAreRequired">
+          Tags are required.
+        </div>
+        <div *ngIf="tags.errors.tooManyTags">
+          You can add maximum 8 tags.
+        </div>
+      </div>
+    </div>
+    <div formArrayName="codeSnippets"
+         *ngFor="let codeSnippet of codeSnippetsFormArray.controls; let i = index;">
+      <div [formGroupName]="i" class="border rounded pt-1 pl-3 pr-3 mb-3">
+        <div class="form-group mb-0">
+          <label for="code-{{i}}" style="width: 100%">
+            Code snippet*
+            <button type="button" class="btn btn-sm btn-danger float-right"
+               [disabled]="codeSnippetsFormArray.controls.length < 2"
+            (click)="removeCodeSnippet(i)">
+              <i class="far fa-trash-alt"></i>
+            </button>
+          </label>
+          <textarea class="form-control"
+                    id="code-{{i}}"
+                    formControlName="code"
+                    placeholder="Add the code here"
+                    style="height: 350px">
+          </textarea>
+          <div class="description-chars-counter">{{codeSnippet.get('code').value ? codeSnippet.get('code').value.length : 0}} / 5000</div>
+          <div class="clear"></div>
+          <div *ngIf="codeSnippet.invalid && (codeSnippet.dirty || codeSnippet.touched)" class="alert alert-danger">
+            <div *ngIf="codeSnippet.get('code').errors.tooManyLines">
+              Your code snippet has {{codeSnippet.get('code').errors.tooManyLines.value}} lines. Maximum 500 lines are allowed.
+            </div>
+            <div *ngIf="codeSnippet.get('code').errors.tooManyCharacters">
+              Your code snippet has {{codeSnippet.get('code').errors.tooManyCharacters.value}} characters. Maximum 5000 characters
+              are
+              allowed.
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="comment-{{i}}">Comment</label>
+          <input type="url"
+                 class="form-control"
+                 id="comment-{{i}}"
+                 formControlName="comment"
+                 placeholder='Useful when code is not obvious or having multiple code snippets'>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary float-right" (click)="addEmptyCodeSnippet()">
+      <i class="fa fa-plus"></i> Add code snippet
+    </button>
+
+    <div class="form-group pt-2 pb-3">
+      <label for="sourceUrl">Source URL</label>
+      <input type="url"
+             class="form-control"
+             id="sourceUrl"
+             formControlName="sourceUrl"
+             placeholder='Where the code snippets are inspired from'>
+    </div>
+    <button type="submit" class="btn btn-primary mr-2" [disabled]="!codeletFormGroup.valid">
+      Save codelet <i class="far fa-save"></i>
+    </button>
+    <button *ngIf="isUpdate" type="button" class="btn btn-danger" (click)="openDeleteDialog()">
+      Delete codelet <i class="far fa-trash-alt"></i>
+    </button>
+  </form>
+</div>
+

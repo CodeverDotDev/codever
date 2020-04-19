@@ -1,0 +1,10 @@
+// styles applied on :host are applied on the current component, "app" in this case
+:host {
+  display: block;
+}
+
+footer {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.8em;
+}

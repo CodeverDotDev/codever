@@ -1,0 +1,50 @@
+<div class="input-group mt-3 search-component">
+  <div class="input-group-prepend">
+    <span class="input-group-text"
+          (mouseover)="hover=true"
+          (mouseleave)="hover=false"
+          [class.focused]="(isFocusOnSearchControl || hover) && searchText"
+          id="basic-addon1"
+          (click)="searchBookmarksFromSearchBox(publicSearchBox.value)">
+      <i class="fa fa-search"></i>
+    </span>
+  </div>
+  <input
+    #publicSearchBox
+    matInput
+    type="text"
+    class="form-control"
+    [formControl]="searchControl"
+    placeholder="{{searchDomain === 'my-codelets' ? 'My codelets' : searchDomain === 'public' ? 'Public bookmarks' : 'My bookmarks'}} ... (tags in square brackets: e.g. [angular])"
+    [matAutocomplete]="auto"
+    (focus)="focusOnSearchControl()"
+    (focusout)="unFocusOnSearchControl()"
+    (keyup.enter)="searchBookmarksFromSearchBox(publicSearchBox.value)"
+  >
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteSelectionChanged($event)">
+    <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">{{search.text}}</mat-option>
+  </mat-autocomplete>
+  <div *ngIf="userIsLoggedIn" class="input-group-append">
+    <button class="btn btn-outline-secondary"
+            type="button"
+            (click)="onSaveSearchClick()"
+            [disabled]="autocompleteSearches.includes(searchText) || !searchText"
+    >Save search
+    </button>
+  </div>
+</div>
+
+<mat-form-field class="search-domain-select">
+  <mat-label>Search in</mat-label>
+  <mat-select [ngModel]="searchDomain" (ngModelChange)="onSearchDomainChange($event)">
+    <mat-option *ngFor="let searchDomain of searchDomains" [value]="searchDomain.value">
+      {{searchDomain.viewValue}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div class="clear"></div>
+
+
+
+
