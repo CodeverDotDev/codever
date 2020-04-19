@@ -1,0 +1,32 @@
+.search-result{
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    width:195px;
+    height: 20px;
+    padding: 5px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.search-control input:focus {
+  outline-width: 0;
+}
+
+.search-component{
+  input:focus {
+    box-shadow: none;
+  }
+}
+
+.focused {
+  background-color:#007bff;
+  border-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.search-domain-select {
+  float: right;
+  margin-top: 0.5rem;
+}

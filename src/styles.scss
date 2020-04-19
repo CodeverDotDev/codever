@@ -1,0 +1,359 @@
+// styles in src/style directory are applied to the whole page
+body {
+  background: #FFFFFF;
+  overflow: scroll;
+}
+
+a {
+  color: #4078c0;
+}
+a:hover {
+  cursor:pointer;
+}
+
+pre {
+  background-color: #f5f5f5;
+  border-radius: 3px;
+  padding: 12px 8px;
+}
+
+.navigation-space-buffer {
+  margin-top: 1rem;
+  padding: 10px;
+}
+
+.description-chars-counter {
+  float: right;
+  margin-bottom: 0.5rem;
+}
+
+//forms - TODO maybe move to own forms.scss file... that is also valid application wide
+.ng-valid[required], .ng-valid.required {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form) {
+  border-left: 5px solid #a94442; /* red */
+}
+
+ul.tags {
+  list-style: none;
+  display: inline-block;
+  padding-left: 0.5rem;
+  margin-bottom: 0.2rem;
+  font-style: italic;
+}
+
+ul.tags li {
+  display: inline
+}
+
+ul.tags li:not(:last-child):after {
+  content: ', ';
+}
+
+.tags-group {
+  padding: 0.3rem 0 0.3rem 0;
+  margin-bottom: 0.3rem;
+}
+
+.used-tag {
+  font-size: 1.3rem;
+  margin-right: 1.3rem;
+  white-space:nowrap;
+  a {
+    padding: 0.3rem;
+    margin-top: 0.5rem;
+  }
+  .tag-count {
+    font-size: 1rem;
+  }
+}
+
+.tag-list {
+  a {
+    font-weight: 400;
+    padding: 0.25rem 0.1rem 0.25rem 0.5rem;
+  }
+}
+
+.tag-list-header {
+  a {
+    font-weight: 500;
+    padding: 0.25rem 0.1rem 0.25rem 0.5rem;
+  }
+}
+
+.badge {
+  margin-right: 0.3rem;
+}
+
+.clear {
+  clear: both;
+  margin: 0;
+  padding: 0;
+}
+
+
+.url-under-title {
+  font-size: small;
+  font-style: italic;
+}
+
+.app-tab-label {
+  font-size: 1.18rem;
+}
+
+pre{
+  margin-bottom:1em;
+  padding:12px 8px;
+  width:auto;
+  max-height:800px;
+  overflow:auto;
+  font-family:Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+  font-size:13px;
+  background-color:#eff0f1;border-radius:3px
+}
+
+.note_normal {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #f6ce8e;
+  background-color: #f7f5e7;
+  margin: 10px;
+  padding: 10px;
+  font-style: italic;
+}
+
+//highlight
+.highlight {
+  background: yellow;
+  color: black;
+}
+
+.star-group {
+  display: inline-flex;
+  height: 1.4rem;
+  vertical-align: middle;
+  margin-right: 1.5rem;
+
+  input:nth-child(2) {
+    width: 1.8rem;
+  }
+}
+
+// push profile link to bottom - https://stackoverflow.com/questions/585945/how-to-align-content-of-a-div-to-the-bottom
+.user-profile-card {
+  margin-right: 1rem;
+  margin-top: 1rem;
+
+  position: relative;
+  min-height: 340px;
+
+  .social {
+    a {
+      font-size: 1.2rem;
+      padding-right: 0.5rem;
+    }
+  }
+
+  #see-profile-link {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+}
+
+
+
+.private-bookmark {
+  background-color: #fcf8f1;
+}
+
+
+@media (max-width: 1349px) {
+  .github-fork-ribbon {
+    display: none;
+  }
+}
+
+@media (min-width: 1350px) {
+  .github-link-sm {
+    display: none;
+  }
+
+  // START Github fork ribbon
+  /* Left will inherit from right (so we don't need to duplicate code) */
+  .github-fork-ribbon {
+    /* The right and left classes determine the side we attach our banner to */
+    position: absolute;
+    /* Add a bit of padding to give some substance outside the "stitching" */
+    padding: 2px 0;
+    /* Set the base colour */
+    background-color: #a00;
+    /* Set a gradient: transparent black at the top to almost-transparent black at the bottom */
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+    /* Add a drop shadow */
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+    /* Set the font */
+    font: 700 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    z-index: 9999;
+    pointer-events: auto;
+
+    a {
+      /* Set the text properties */
+      color: #fff;
+      text-decoration: none;
+      text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      /* Set the geometry. If you fiddle with these you'll also need
+         to tweak the top and right values in .github-fork-ribbon. */
+      width: 200px;
+      line-height: 20px;
+      /* Set the layout properties */
+      display: inline-block;
+      padding: 2px 0;
+      /* Add "stitching" effect */
+      border-width: 1px 0;
+      border-style: dotted;
+      border-color: #fff;
+      border-color: rgba(255, 255, 255, 0.7);
+
+      &:hover {
+        /* Set the text properties */
+        color: #fff;
+        text-decoration: none;
+        text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        /* Set the geometry. If you fiddle with these you'll also need
+           to tweak the top and right values in .github-fork-ribbon. */
+        width: 200px;
+        line-height: 20px;
+        /* Set the layout properties */
+        display: inline-block;
+        padding: 2px 0;
+        /* Add "stitching" effect */
+        border-width: 1px 0;
+        border-style: dotted;
+        border-color: #fff;
+        border-color: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+  .github-fork-ribbon-wrapper {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    z-index: 9999; //should really be on top of everything
+    pointer-events: none;
+    /*
+    @include until-mq(1100px){
+      display: none;
+    }
+    */
+    &.fixed {
+      position: fixed;
+    }
+
+    &.left {
+      left: 0;
+    }
+
+    &.right {
+      right: 0;
+    }
+
+    &.left-bottom {
+      position: fixed;
+      top: inherit;
+      bottom: 0;
+      left: 0;
+    }
+
+    &.right-bottom {
+      position: fixed;
+      top: inherit;
+      bottom: 0;
+      right: 0;
+    }
+  }
+
+  $rotation-angle: 45deg;
+  .github-fork-ribbon-wrapper {
+    &.right .github-fork-ribbon {
+      top: 42px;
+      right: -43px;
+      transform: rotate($rotation-angle);
+    }
+
+    &.left .github-fork-ribbon {
+      top: 42px;
+      left: -43px;
+      transform: rotate(-$rotation-angle);
+    }
+
+    &.left-bottom .github-fork-ribbon {
+      top: 80px;
+      left: -43px;
+      transform: rotate($rotation-angle);
+    }
+
+    &.right-bottom .github-fork-ribbon {
+      top: 80px;
+      right: -43px;
+      transform: rotate(-$rotation-angle);
+    }
+  }
+}
+
+
+// END Github fork ribbon
+
+
+// version 4
+@import 'variables';
+@import '~bootstrap/scss/bootstrap';
+
+//import font-awesome
+@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
+
+// START bootstrap override
+.card {
+  margin-bottom: 0.5rem;
+}
+
+.jumbotron {
+  padding: 2rem;
+}
+.card-body {
+  padding: 0.8rem;
+}
+
+.card-footer {
+  padding: 0rem 1.25rem;
+}
+
+.badge {
+  padding: 0.25rem;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1240px;
+  }
+}
+
+// END bootstrap override
+
+label {
+  width: 100%;
+  font-weight: 600;
+}
+
+.full-width {
+  width: 100%;
+}
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";

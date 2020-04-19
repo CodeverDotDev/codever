@@ -1,0 +1,32 @@
+<div *ngIf="userData$ | async">
+  <div class="alert alert-info" style="margin-top: 1rem">
+    <h2>Settings for {{(userData$ | async).profile.displayName}}</h2>
+    <p>Set the profile image and the details that will appear on your profile. You can manage your identity related details (like first name, last name and password)
+      under <a href="{{environment.keycloak.url}}/realms/bookmarks/account/">Account <i
+        class="fas fa-user-shield"></i></a>
+    </p>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Profile <i class="fa fa-user"></i></span>
+      </ng-template>
+
+      <ng-template matTabContent>
+        <app-user-profile [userData$]="userData$"></app-user-profile>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+      <span class="app-tab-label">
+      <a class="dropdown-item" href="{{environment.keycloak.url}}/realms/bookmarks/account/">
+        Account
+        <i class="fas fa-user-shield"></i>
+      </a>
+      </span>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+

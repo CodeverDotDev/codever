@@ -1,0 +1,28 @@
+<header>
+  <app-navigation></app-navigation>
+</header>
+<main>
+  <app-loader></app-loader>
+
+  <router-outlet></router-outlet>
+  <!-- Routed views go here -->
+  <app-error></app-error>
+
+  <!-- Github ribbon -->
+  <div class="github-fork-ribbon-wrapper right ">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/CodepediaOrg/bookmarks#readme" target="_blank">
+        Dev Bookmarks <sup><i class="fas fa-external-link-alt fa-sm"></i></sup>
+      </a>
+    </div>
+  </div>
+
+</main>
+<footer >
+  <a [href]="url">Bookmarks.dev</a>
+  |  <a routerLink="about" routerLinkActive="active">About</a>
+  |  <a routerLink="privacy-policy" routerLinkActive="active">Privacy</a>
+  |  <a routerLink="terms-and-conditions" routerLinkActive="active">Terms & Conditions</a>
+  |  <a href="http://www.codepedia.org/tags/#codingmarks" target="_blank">Blog</a>
+  |  <a href="mailto:bookmarks@codingpedia.org">Contact</a>
+</footer>

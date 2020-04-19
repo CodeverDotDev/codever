@@ -1,0 +1,35 @@
+.view-more-results {
+  font-size: larger;
+}
+.public-profile-header {
+  margin-top: 1rem;
+  display: flex;
+  img {
+    border-radius: 8px;
+    width: 20%;
+    max-width: 200px;
+  }
+  .summary {
+    font-size: larger;
+  }
+  .social {
+    a {
+      font-size: 1.5rem;
+      padding-right: 0.8rem;
+    }
+  }
+}
+
+.public-user-info {
+  margin-left: 2rem;
+}
+
+.new-tag {
+  margin-right: 0.5rem;
+  margin-top: 0.8rem;
+  a {
+    font-weight: 600;
+    padding: 0.25rem 0.1rem 0.25rem 0.5rem;
+  }
+
+}
