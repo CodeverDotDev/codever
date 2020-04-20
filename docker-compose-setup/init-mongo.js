@@ -20,11 +20,12 @@ db.bookmarks.insert(
     {
       "tags": [
         "programming",
-        "blog"
+        "blog",
+        "open-source"
       ],
       "name": "Share coding knowledge – CodepediaOrg",
       "location": "https://www.codepedia.org/",
-      "userId": "39108679-04a7-451e-aff3-207eb40c3263",
+      "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "language": "en",
       "description": "Coding knowledge hub, providing free educational content for professionals involved in software development. The website covers different topics and technologies with posts whose difficulty levels range from beginner to “hard-core” programming.",
       "descriptionHtml": "<p>Coding knowledge hub, providing free educational content for professionals involved in software development. The website covers different topics and technologies with posts whose difficulty levels range from beginner to “hard-core” programming.</p>",
@@ -41,11 +42,12 @@ db.bookmarks.insert(
       "tags": [
         "programming",
         "blog",
-        "resources"
+        "resources",
+        "open-source"
       ],
       "name": "Bookmarks Manager for Devevelopers & Co",
       "location": "https://www.bookmarks.dev/",
-      "userId": "39108679-04a7-451e-aff3-207eb40c3263",
+      "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "language": "en",
       "description": "Bookmarks Manager for Developers & Co",
       "descriptionHtml": "<p>Bookmarks Manager for Developers &amp; Co</p>",
@@ -67,7 +69,7 @@ db.bookmarks.insert(
       ],
       "name": "Collection of public dev bookmarks, shared with from www.bookmarks.dev",
       "location": "https://github.com/CodepediaOrg/bookmarks#readme",
-      "userId": "39108679-04a7-451e-aff3-207eb40c3263",
+      "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "language": "en",
       "description": ":bookmark: :star: Collection of public dev bookmarks, shared with :heart: from www.bookmarks.dev  - CodepediaOrg/bookmarks",
       "descriptionHtml": "<p>:bookmark: :star: Collection of public dev bookmarks, shared with :heart: from www.bookmarks.dev  - CodepediaOrg/bookmarks</p>",
@@ -78,6 +80,28 @@ db.bookmarks.insert(
       "likeCount": 0,
       "createdAt": ISODate("2019-10-23T12:24:50.823Z"),
       "updatedAt": ISODate("2019-10-23T12:24:50.823Z"),
+      "__v": 0
+    },
+    {
+      "tags": [
+        "programming",
+        "resource",
+        "blog",
+        "open-source"
+      ],
+      "name": "Getting started with www.bookmarks.dev",
+      "location": "https://www.bookmarks.dev/howto",
+      "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
+      "language": "en",
+      "description": "How to save and search bookmarks, use bookmarklets and chrome extension",
+      "descriptionHtml": "<p>How to save and search bookmarks, use bookmarklets and chrome extension. Use codelets and more</p>",
+      "publishedOn": null,
+      "sourceCodeURL": "https://github.com/CodepediaOrg/bookmarks",
+      "public": true,
+      "lastAccessedAt": ISODate("2020-03-23T12:24:50.804Z"),
+      "likeCount": 0,
+      "createdAt": ISODate("2020-03-23T12:24:50.823Z"),
+      "updatedAt": ISODate("2020-03-23T12:24:50.823Z"),
       "__v": 0
     }
   ]

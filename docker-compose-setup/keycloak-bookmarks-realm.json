@@ -1,19 +1,21 @@
 {
   "id": "bookmarks",
   "realm": "bookmarks",
+  "displayName": "Bookmarks.dev",
+  "displayNameHtml": "Bookmarks.dev",
   "notBefore": 0,
   "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 0,
-  "accessTokenLifespan": 300,
-  "accessTokenLifespanForImplicitFlow": 900,
-  "ssoSessionIdleTimeout": 1800,
+  "accessTokenLifespan": 3600,
+  "accessTokenLifespanForImplicitFlow": 3600,
+  "ssoSessionIdleTimeout": 36000,
   "ssoSessionMaxLifespan": 36000,
   "ssoSessionIdleTimeoutRememberMe": 0,
   "ssoSessionMaxLifespanRememberMe": 0,
   "offlineSessionIdleTimeout": 2592000,
   "offlineSessionMaxLifespanEnabled": false,
   "offlineSessionMaxLifespan": 5184000,
-  "accessCodeLifespan": 60,
+  "accessCodeLifespan": 600,
   "accessCodeLifespanUserAction": 300,
   "accessCodeLifespanLogin": 1800,
   "actionTokenGeneratedByAdminLifespan": 43200,
@@ -38,6 +40,24 @@
   "failureFactor": 30,
   "roles": {
     "realm": [
+      {
+        "id": "89fc0a37-1818-478c-a137-a202e024da42",
+        "name": "KEYCLOAK_REALM_ADMIN",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "ROLE_ADMIN"
+          ],
+          "client": {
+            "realm-management": [
+              "manage-users"
+            ]
+          }
+        },
+        "clientRole": false,
+        "containerId": "bookmarks",
+        "attributes": {}
+      },
       {
         "id": "f959a895-c5bb-46d1-bd9c-29f3ddd79766",
         "name": "ROLE_USER",
@@ -297,7 +317,6 @@
       "integration-tests-service-account": [],
       "security-admin-console": [],
       "admin-cli": [],
-      "test-client": [],
       "broker": [
         {
           "id": "f256327b-1faf-44a7-a6d3-9e5c5c252f02",
@@ -530,6 +549,8 @@
     {
       "id": "36622d57-64c4-463d-be73-ea3a93272dc9",
       "clientId": "bookmarks-api",
+      "name": "backend",
+      "description": "API supporting the user interface",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
@@ -537,7 +558,7 @@
       "redirectUris": [],
       "webOrigins": [],
       "notBefore": 0,
-      "bearerOnly": false,
+      "bearerOnly": true,
       "consentRequired": false,
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
@@ -671,6 +692,8 @@
     {
       "id": "33cbf3cd-3008-435b-b8f0-237cb4aa3997",
       "clientId": "bookmarks",
+      "name": "frontend",
+      "description": "The Angular Webapp for the User Interface",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
@@ -809,43 +832,6 @@
           }
         }
       ],
-      "defaultClientScopes": [
-        "web-origins",
-        "role_list",
-        "profile",
-        "roles",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
-    },
-    {
-      "id": "e32393d4-a420-4afe-91a2-ac273948edb8",
-      "clientId": "test-client",
-      "surrogateAuthRequired": false,
-      "enabled": true,
-      "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
-      "redirectUris": [],
-      "webOrigins": [],
-      "notBefore": 0,
-      "bearerOnly": false,
-      "consentRequired": false,
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
-      "publicClient": true,
-      "frontchannelLogout": false,
-      "protocol": "openid-connect",
-      "attributes": {},
-      "authenticationFlowBindingOverrides": {},
-      "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": -1,
       "defaultClientScopes": [
         "web-origins",
         "role_list",
@@ -1551,9 +1537,9 @@
     "auth": "true",
     "port": "587",
     "host": "smtp.zoho.com",
-    "from": "bookmarks@codingpedia.org",
+    "from": "bookmarks@codepedia.org",
     "ssl": "",
-    "user": "bookmarks@codingpedia.org"
+    "user": "bookmarks@codepedia.org"
   },
   "eventsEnabled": false,
   "eventsListeners": [
@@ -1572,14 +1558,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-usermodel-property-mapper",
             "oidc-full-name-mapper",
+            "oidc-usermodel-property-mapper",
+            "oidc-sha256-pairwise-sub-mapper",
             "saml-user-property-mapper",
-            "oidc-usermodel-attribute-mapper",
-            "saml-role-list-mapper",
             "saml-user-attribute-mapper",
             "oidc-address-mapper",
-            "oidc-sha256-pairwise-sub-mapper"
+            "saml-role-list-mapper",
+            "oidc-usermodel-attribute-mapper"
           ]
         }
       },
@@ -1658,14 +1644,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-usermodel-property-mapper",
-            "oidc-address-mapper",
-            "saml-role-list-mapper",
-            "oidc-usermodel-attribute-mapper",
             "oidc-full-name-mapper",
+            "oidc-address-mapper",
             "saml-user-attribute-mapper",
             "saml-user-property-mapper",
-            "oidc-sha256-pairwise-sub-mapper"
+            "oidc-usermodel-property-mapper",
+            "oidc-sha256-pairwise-sub-mapper",
+            "oidc-usermodel-attribute-mapper",
+            "saml-role-list-mapper"
           ]
         }
       }
@@ -1713,7 +1699,7 @@
   "supportedLocales": [],
   "authenticationFlows": [
     {
-      "id": "7e4e7e86-1609-4664-b541-13ca4eb0f609",
+      "id": "6f8b263e-cb68-4047-8535-657b6b78b7c5",
       "alias": "Handle Existing Account",
       "description": "Handle what to do if there is existing account with same email/username like authenticated identity provider",
       "providerId": "basic-flow",
@@ -1744,7 +1730,7 @@
       ]
     },
     {
-      "id": "f99ef48c-7cbe-4e1f-be29-333129f6f101",
+      "id": "145a5e64-3998-4e74-bc44-512097afacf0",
       "alias": "Verify Existing Account by Re-authentication",
       "description": "Reauthentication of existing account",
       "providerId": "basic-flow",
@@ -1768,7 +1754,7 @@
       ]
     },
     {
-      "id": "2f9fd638-e84e-42fd-8dd2-8922cd7a715d",
+      "id": "054a39e6-fc80-4c55-9460-6ec0e703c551",
       "alias": "browser",
       "description": "browser based authentication",
       "providerId": "basic-flow",
@@ -1806,7 +1792,7 @@
       ]
     },
     {
-      "id": "749057bc-b40e-4eda-8df2-0c568c308965",
+      "id": "aeed9c55-28f5-4066-a859-7c1da71d42c4",
       "alias": "clients",
       "description": "Base authentication for clients",
       "providerId": "client-flow",
@@ -1844,7 +1830,7 @@
       ]
     },
     {
-      "id": "1fc0df80-a16e-44cc-b398-e06bf1c53341",
+      "id": "1c5d2a6f-6af4-4cd3-9d25-faddd1a33fbd",
       "alias": "direct grant",
       "description": "OpenID Connect Resource Owner Grant",
       "providerId": "basic-flow",
@@ -1875,7 +1861,7 @@
       ]
     },
     {
-      "id": "13529577-0084-427a-a6fa-ee93c6bfb48a",
+      "id": "203c9e94-a89b-4594-9faf-81014d3d3452",
       "alias": "docker auth",
       "description": "Used by Docker clients to authenticate against the IDP",
       "providerId": "basic-flow",
@@ -1892,7 +1878,7 @@
       ]
     },
     {
-      "id": "66e73030-4fd0-46c6-8b05-68cda4eba20a",
+      "id": "2912bbb0-6081-47d6-b7b5-617d0e7b20fa",
       "alias": "first broker login",
       "description": "Actions taken after first broker login with identity provider account, which is not yet linked to any Keycloak account",
       "providerId": "basic-flow",
@@ -1925,7 +1911,7 @@
       ]
     },
     {
-      "id": "70713558-851a-4583-b113-6b1f9f6ab7d3",
+      "id": "b4f28f42-1517-451c-ad39-ee52976d285f",
       "alias": "forms",
       "description": "Username, password, otp and other auth forms.",
       "providerId": "basic-flow",
@@ -1949,7 +1935,7 @@
       ]
     },
     {
-      "id": "3d3eb949-292c-498d-afed-9bb050eb1e04",
+      "id": "6cc568a8-c42c-4f4a-8c84-c1a5339f8d5f",
       "alias": "http challenge",
       "description": "An authentication flow based on challenge-response HTTP Authentication Schemes",
       "providerId": "basic-flow",
@@ -1987,7 +1973,7 @@
       ]
     },
     {
-      "id": "50691af8-02f7-4b9b-b6e9-f101e9c9fdbb",
+      "id": "0f0aaf9d-baf1-4da1-baed-e17fcdec6694",
       "alias": "registration",
       "description": "registration flow",
       "providerId": "basic-flow",
@@ -2005,7 +1991,7 @@
       ]
     },
     {
-      "id": "d2f7f383-148d-4cce-9424-b94fb6b8de72",
+      "id": "e953e192-e846-4c80-b26c-6614ee1f81bd",
       "alias": "registration form",
       "description": "registration form",
       "providerId": "form-flow",
@@ -2043,7 +2029,7 @@
       ]
     },
     {
-      "id": "0a1ceb77-e99e-4156-a450-f14c8ce9177b",
+      "id": "f6109985-3059-4b43-8311-cfd2cd5f0cc7",
       "alias": "reset credentials",
       "description": "Reset credentials for a user if they forgot their password or something",
       "providerId": "basic-flow",
@@ -2081,7 +2067,7 @@
       ]
     },
     {
-      "id": "d42aad04-f211-4848-b005-d9940d59d1af",
+      "id": "480b8f74-907e-493d-ad81-012e6a20127a",
       "alias": "saml ecp",
       "description": "SAML ECP Profile Authentication Flow",
       "providerId": "basic-flow",
@@ -2100,14 +2086,14 @@
   ],
   "authenticatorConfig": [
     {
-      "id": "c174e39e-847c-4c9f-804c-313af973c14a",
+      "id": "5afe8f19-9466-4e39-aa77-490c5b3c3eb1",
       "alias": "create unique user config",
       "config": {
         "require.password.update.after.registration": "false"
       }
     },
     {
-      "id": "645e442c-ce65-4919-946a-7ff4e3a1d20b",
+      "id": "086725f2-5449-439b-8a71-ad492913b0c7",
       "alias": "review profile config",
       "config": {
         "update.profile.on.first.login": "missing"
@@ -2173,9 +2159,11 @@
     "_browser_header.strictTransportSecurity": "max-age=31536000; includeSubDomains",
     "permanentLockout": "false",
     "quickLoginCheckMilliSeconds": "1000",
+    "displayName": "Bookmarks.dev",
     "_browser_header.xRobotsTag": "none",
     "maxFailureWaitSeconds": "900",
     "minimumQuickLoginWaitSeconds": "60",
+    "displayNameHtml": "Bookmarks.dev",
     "failureFactor": "30",
     "actionTokenGeneratedByUserLifespan": "300",
     "maxDeltaTimeSeconds": "43200",

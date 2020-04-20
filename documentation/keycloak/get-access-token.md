@@ -15,6 +15,16 @@ curl  -s \
 | jq -r '.access_token'
 ```
 
+```
+curl  -s \
+  -d 'client_id=admin-service-account' \
+  -d 'username=admin-integration-tests' \
+  -d "password=admin-integration-tests" \
+  -d 'grant_type=password' \
+  'http://localhost:8480/auth/realms/bookmarks/protocol/openid-connect/token' \
+| jq -r '.access_token'
+```
+
 ## Get Access Token via service account (grant type `client_credentials`)
 ```bash
 curl  \
