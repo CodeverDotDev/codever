@@ -29,17 +29,22 @@ What you need to run this app:
 ### Installing (development setup)
 
 #### Start MongoDB and Keycloak server
+For the first time uncomment the following line:
+```yaml
+    #command: -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=IGNORE_EXISTING
+```
+in the [docker-compose](docker-compose.yml) file, so that the initial Keycloak setup (realm and users) is loaded.
+
+> By the next docker-compose startups you should comment back this line, as it starts faster
 
 ```bash
 docker-compose up
 ```
 > Use `-d` to run it in the background
 
-#### Create a test user (2 min)
-You need to create a test user in Keycloak first.
-Follow the screenshots in [Add a Keycloak user](documentation/keycloak/add-keycloak-user.md) to create it.
-
 #### Install and run backend
+You want to have the backend API running first with the following commands:
+
 ```shell
 # install
 cd backend
@@ -51,10 +56,11 @@ npm run debug
 ```
 or in one line `cd backend; nvm use; npm install; npm run debug`
 
-This will start the API with [nodemon](http://nodemon.io) at [http://localhost:3000/api](http://localhost:3000/api) and will watch for code changes and automatically redeploy.
+This will start the API with [nodemon](http://nodemon.io) at [http://localhost:3000/api](http://localhost:3000/api)
+ and will watch for code changes in backend and automatically redeploy.
 
 > To be able to automatically add youtube videos published date and duration to the title you need to
-create a _nodemon.json_ file based on the [nodemon.json.example](nodemon.json.example) and a real youtube api key
+create a _nodemon.json_ file based on the [backend/nodemon.json.example](backend/nodemon.json.example) and your own youtube api key
 
 #### Install and run frontend
 ```shell
@@ -68,11 +74,12 @@ ng serve
 ```
 or in one line `cd frontend; nvm use; npm install; ng serve`
 
-A step by step series of examples that tell you how to get a development env running
-* [backend](backend/README.md) - `cd backend; docker-compose up; nvm use; npm install; npm run debug`
-* [frontend](frontend/README.md) - TLDR `cd frontend; nvm use; npm install; ng serve`
+You can now access the application at [http://localhost:4200](http://localhost:4200) and login 
+with the user/password `mock/mock` configured for you in the initial Keycloak setup. Some bookmarks are initially
+loaded with your account and you can start playing with them. 
 
-#### Backend 
+> You can create your own test user, or any other extra users by following the screenshots in
+> [Add a Keycloak user](documentation/keycloak/add-keycloak-user.md) to create it.
 
 ## Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
@@ -82,5 +89,4 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/CodepediaOrg/bookmarks.dev/tags).
 
 ## License
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
