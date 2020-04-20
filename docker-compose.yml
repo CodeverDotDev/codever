@@ -35,24 +35,14 @@ services:
       DB_PASSWORD: password
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: Pa55w0rd
-      #KEYCLOAK_IMPORT: /tmp/keycloak-bookmarks-realm.json
     ports:
       - 8480:8080
-      #- 8081:8081
     depends_on:
       - postgres
     #command: -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import
-
-    #command: -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
-
-    #command: -b 0.0.0.0 -Djboss.http.port=8081 -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.realmName=bookmarks -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/my_realm.json
-    #command: -b 0.0.0.0 -Djboss.http.port=8081 -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/test -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
+    #command: -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=IGNORE_EXISTING
     volumes:
-      - ./docker-compose-setup/keycloak-bookmarks-realm.json:/tmp/keycloak-bookmarks-realm.json:ro
-      # - ./docker-compose-setup/my_realm.json:/tmp/my_realm.json
-      #- ./setup:/tmp/keycloak/test/
       - ./docker-compose-setup/keycloak-export-import:/tmp/keycloak/export-import/
-      - ./docker-compose-setup/keycloak-export-import/bookmarks_realm.json:/tmp/keycloak/export-import/bookmarks_realm.json
   mongo:
     image: mongo:3.4
     container_name: bookmarks.dev-mongo
