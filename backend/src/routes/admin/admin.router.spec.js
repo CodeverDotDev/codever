@@ -24,9 +24,10 @@ describe('Admin API Tests', function () {
     //set admin bearer token
     const response = await superagent
       .post(config.integration_tests.token_endpoint)
-      .send('client_id=' + config.integration_tests.admin.client_id)
-      .send('client_secret=' + config.integration_tests.admin.client_secret)
-      .send('grant_type=client_credentials')
+      .send('client_id=' + 'bookmarks')
+      .send('username=' + 'admin-integration-tests')//TODO change me
+      .send('password=' + 'admin-integration-tests')
+      .send('grant_type=password')
       .set('Accept', 'application/json');
 
     adminBearerToken = 'Bearer ' + response.body.access_token;

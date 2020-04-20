@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="948d3de9-bc6d-4c9c-b2fd-8d0026c70c3d" name="Default Changelist" comment="move frontend files to frontend directory">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/documentation/graphviz/components-graph.gv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/documentation/graphviz/components-graph.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/documentation/graphviz/how-to-generate-png.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/CONTRIBUTING.md" beforeDir="false" afterPath="$PROJECT_DIR$/CONTRIBUTING.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docker-compose-setup/docker-compose-with-node-not-working-403-forbidden.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-setup/archive/docker-compose-with-node-not-working-403-forbidden.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docker-compose-setup/init-mongo.js" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-setup/init-mongo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docker-compose-setup/keycloak-bookmarks-realm.json" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose-setup/keycloak-bookmarks-realm.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docs/keycloak/add-keycloak-user.md" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/keycloak/add-keycloak-user.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docs/keycloak/get-access-token.md" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/keycloak/get-access-token.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docs/keycloak/img/1-go-to-users-section.png" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/keycloak/img/1-go-to-users-section.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docs/keycloak/img/2-add-user-details.png" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/keycloak/img/2-add-user-details.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docs/keycloak/img/3-user-details-screen.png" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/keycloak/img/3-user-details-screen.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/docs/keycloak/img/4-set-user-credentials.png" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/keycloak/img/4-set-user-credentials.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routes/admin/admin.router.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/admin/admin.router.spec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -7,11 +40,46 @@
       </MavenGeneralSettings>
     </option>
   </component>
+  <component name="ProjectId" id="1akR0uW43uqPuJTOn39tCfONZFS" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="js.linters.configure.manually.selectedeslint" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/backend/node_modules/mocha" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/docker-compose-setup/archive" />
+      <recent name="$PROJECT_DIR$/documentation" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/documentation" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -52,5 +120,190 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Admin API Tests.Get bookmarks functionality.should find some bookmarks" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <mocha-package>$PROJECT_DIR$/backend/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$/backend</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <envs>
+        <env name="NODE_ENV" value="test" />
+      </envs>
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/backend/src/routes/admin/admin.router.spec.js</test-file>
+      <test-names>
+        <name value="Admin API Tests" />
+        <name value="Get bookmarks functionality" />
+        <name value="should find some bookmarks" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Mocha.Admin API Tests.Get bookmarks functionality.should find some bookmarks" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="948d3de9-bc6d-4c9c-b2fd-8d0026c70c3d" name="Default Changelist" comment="" />
+      <created>1587277385419</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1587277385419</updated>
+      <workItem from="1587277386910" duration="4270000" />
+      <workItem from="1587292790013" duration="21739000" />
+    </task>
+    <task id="LOCAL-00001" summary="move frontend files to frontend directory">
+      <created>1587277590482</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1587277590482</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="move frontend files to frontend directory" />
+    <option name="LAST_COMMIT_MESSAGE" value="move frontend files to frontend directory" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="583" y="346" key="#ESLint" timestamp="1587277812670">
+      <screen x="0" y="23" width="1440" height="811" />
+    </state>
+    <state x="583" y="346" key="#ESLint/0.23.1440.811@0.23.1440.811" timestamp="1587277812670" />
+    <state x="487" y="146" key="#New_Docker_Connection" timestamp="1587277854617">
+      <screen x="0" y="23" width="1440" height="811" />
+    </state>
+    <state x="487" y="146" key="#New_Docker_Connection/0.23.1440.811@0.23.1440.811" timestamp="1587277854617" />
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587308281412">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1587308281412" />
+    <state x="0" y="0" width="979" height="811" key="CommitChangelistDialog2" timestamp="1587359269708">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="0" y="0" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1587359269708" />
+    <state x="0" y="23" width="979" height="811" key="CommitChangelistDialog2/0.23.1440.811@0.23.1440.811" timestamp="1587277589981" />
+    <state x="0" y="98" width="1440" height="753" key="DiffContextDialog" timestamp="1587359268038">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="0" y="98" width="1440" height="753" key="DiffContextDialog/0.0.1440.900@0.0.1440.900" timestamp="1587359268038" />
+    <state x="0" y="123" width="1440" height="611" key="DiffContextDialog/0.23.1440.811@0.23.1440.811" timestamp="1587277813093" />
+    <state x="0" y="111" width="1440" height="679" key="DiffContextDialog/0.23.1440.812@0.23.1440.812" timestamp="1587311143128" />
+    <state x="1440" y="265" width="2560" height="1068" key="DiffContextDialog/1440.90.2560.1417/1440.1530.1920.1177/0.23.1440.2471@1440.90.2560.1417" timestamp="1587299792329" />
+    <state x="579" y="182" key="EnvironmentVariablesDialog" timestamp="1587308279695">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="579" y="182" key="EnvironmentVariablesDialog/0.0.1440.900@0.0.1440.900" timestamp="1587308279695" />
+    <state width="1398" height="224" key="GridCell.Tab.0.bottom" timestamp="1587359909973">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1587359909973" />
+    <state width="1398" height="224" key="GridCell.Tab.0.center" timestamp="1587359909971">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1587359909971" />
+    <state width="1398" height="224" key="GridCell.Tab.0.left" timestamp="1587359909970">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1587359909970" />
+    <state width="1398" height="224" key="GridCell.Tab.0.right" timestamp="1587359909972">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1587359909972" />
+    <state width="1398" height="224" key="GridCell.Tab.1.bottom" timestamp="1587359909976">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1587359909976" />
+    <state width="1398" height="224" key="GridCell.Tab.1.center" timestamp="1587359909974">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1587359909974" />
+    <state width="1398" height="224" key="GridCell.Tab.1.left" timestamp="1587359909973">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1587359909973" />
+    <state width="1398" height="224" key="GridCell.Tab.1.right" timestamp="1587359909975">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1587359909975" />
+    <state width="1398" height="224" key="GridCell.Tab.2.bottom" timestamp="1587359909978">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.2.bottom/0.0.1440.900@0.0.1440.900" timestamp="1587359909978" />
+    <state width="1398" height="224" key="GridCell.Tab.2.center" timestamp="1587359909977">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.2.center/0.0.1440.900@0.0.1440.900" timestamp="1587359909977" />
+    <state width="1398" height="224" key="GridCell.Tab.2.left" timestamp="1587359909976">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.2.left/0.0.1440.900@0.0.1440.900" timestamp="1587359909976" />
+    <state width="1398" height="224" key="GridCell.Tab.2.right" timestamp="1587359909977">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="224" key="GridCell.Tab.2.right/0.0.1440.900@0.0.1440.900" timestamp="1587359909977" />
+    <state x="411" y="159" key="RollbackChangesDialog" timestamp="1587359276903">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="411" y="159" key="RollbackChangesDialog/0.0.1440.900@0.0.1440.900" timestamp="1587359276903" />
+    <state width="617" height="445" key="SwitcherDM" timestamp="1587359346301">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="617" height="445" key="SwitcherDM/0.0.1440.900@0.0.1440.900" timestamp="1587359346301" />
+    <state x="1618" y="90" width="2205" height="1417" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587323027464">
+      <screen x="1440" y="90" width="2560" height="1417" />
+    </state>
+    <state x="100" y="0" width="1240" height="900" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1440.812@0.23.1440.812" timestamp="1587310419966" />
+    <state x="1618" y="90" width="2205" height="1417" key="com.intellij.history.integration.ui.views.FileHistoryDialog/1440.90.2560.1417/1440.1530.1920.1177/0.23.1440.2468@1440.90.2560.1417" timestamp="1587323027464" />
+    <state x="473" y="273" width="598" height="486" key="find.popup" timestamp="1587357576038">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="473" y="273" width="598" height="486" key="find.popup/0.0.1440.900@0.0.1440.900" timestamp="1587357576038" />
+    <state x="940" y="150" width="671" height="751" key="search.everywhere.popup" timestamp="1587359628712">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="940" y="150" width="671" height="751" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1587359628712" />
+    <state x="940" y="158" width="670" height="676" key="search.everywhere.popup/0.23.1440.811@0.23.1440.811" timestamp="1587277803276" />
+    <state x="3111" y="326" width="1193" height="1183" key="search.everywhere.popup/1440.90.2560.1417/1440.1530.1920.1177/0.23.1440.2468@1440.90.2560.1417" timestamp="1587320695433" />
+    <state x="3111" y="326" width="1192" height="1182" key="search.everywhere.popup/1440.90.2560.1417/1440.1530.1920.1177/0.23.1440.2471@1440.90.2560.1417" timestamp="1587283159519" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/backend/src/routes/admin/admin.router.spec.js</url>
+          <line>58</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/backend/src/routes/admin/admin.router.spec.js</url>
+          <line>32</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

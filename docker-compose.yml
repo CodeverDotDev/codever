@@ -1,0 +1,69 @@
+version: '3.7'
+
+volumes:
+  postgres_data:
+    driver: local
+  mongo_data:
+  notused:
+
+networks:
+  backend:
+
+services:
+  postgres:
+    container_name: bookmarks.dev-postgres
+    image: postgres
+    networks:
+      - backend
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+  keycloak:
+    container_name: bookmarks.dev-keycloak
+    image: jboss/keycloak:6.0.1
+    networks:
+      - backend
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+      #KEYCLOAK_IMPORT: /tmp/keycloak-bookmarks-realm.json
+    ports:
+      - 8480:8080
+      #- 8081:8081
+    depends_on:
+      - postgres
+    #command: -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import
+
+    #command: -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
+
+    #command: -b 0.0.0.0 -Djboss.http.port=8081 -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.realmName=bookmarks -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/my_realm.json
+    #command: -b 0.0.0.0 -Djboss.http.port=8081 -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/test -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
+    volumes:
+      - ./docker-compose-setup/keycloak-bookmarks-realm.json:/tmp/keycloak-bookmarks-realm.json:ro
+      # - ./docker-compose-setup/my_realm.json:/tmp/my_realm.json
+      #- ./setup:/tmp/keycloak/test/
+      - ./docker-compose-setup/keycloak-export-import:/tmp/keycloak/export-import/
+      - ./docker-compose-setup/keycloak-export-import/bookmarks_realm.json:/tmp/keycloak/export-import/bookmarks_realm.json
+  mongo:
+    image: mongo:3.4
+    container_name: bookmarks.dev-mongo
+    networks:
+      - backend
+    environment:
+      - MONGO_INITDB_DATABASE=dev-bookmarks
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - 27017:27017
+    volumes:
+      - ./docker-compose-setup/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongo_data:/data/db

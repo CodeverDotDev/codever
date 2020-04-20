@@ -1,0 +1,149 @@
+{
+  "realm" : "bookmarks",
+  "users" : [ {
+    "id" : "27ca87c9-6242-4036-99d6-90b59ba74427",
+    "createdTimestamp" : 1587355340908,
+    "username" : "admin-integration-tests",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Admin Integration Tests",
+    "lastName" : "User",
+    "email" : "admin-integration-tests@example.com",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "DkpGtfgNhIb6WObF76JyO+P5bcEFqj/l0EIckNBk76CncEygEzcYVbie/lNN0MyszeleY92hysf8acLledu5Bg==",
+      "salt" : "HVpnaQQinCkixMLrHe1nzQ==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1587355348897,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ROLE_USER", "offline_access", "uma_authorization", "ROLE_ADMIN" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "03e59ab3-4001-4d8f-a88b-a1542aa70483",
+    "createdTimestamp" : 1587323197835,
+    "username" : "ama",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Adrian",
+    "lastName" : "Matei",
+    "email" : "ama@codepedia.org",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "HsznvKeO/suonkbfSdj7cnxiMhbX7MmpnnoypsuJAlNL0C8ENco09eMN3o4so18s5cV02EXsMnnc+slRLqj8aw==",
+      "salt" : "hLYFHboCy4VAyJKQHb3GoA==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1587323207107,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ROLE_USER", "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "a7908cb5-3b37-4cc1-a751-42f674d870e1",
+    "createdTimestamp" : 1587356845213,
+    "username" : "mock",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Mock",
+    "lastName" : "User",
+    "email" : "mock@example.com",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "FDEoJBksJ/4/N07f81bz+DfZm8MGya92tTmbvNSoMJyhL7Hw2mrk1YaxkohzJesHdIkCpI9dcdw67AzfrU9WUQ==",
+      "salt" : "5cWqPQnHAZ7C6Edeua+PXw==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1587356854174,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ROLE_USER", "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "b3df1d1e-fd11-4764-8888-b73fb87b8cb3",
+    "createdTimestamp" : 1587357316039,
+    "username" : "service-account-admin-service-account",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "email" : "service-account-admin-service-account@placeholder.org",
+    "serviceAccountClientId" : "admin-service-account",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ROLE_USER", "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "c5f2bf8c-cfc2-42c9-81d9-0a94a1163223",
+    "createdTimestamp" : 1587357316084,
+    "username" : "service-account-bookmarks-api",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "email" : "service-account-bookmarks-api@placeholder.org",
+    "serviceAccountClientId" : "bookmarks-api",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ROLE_USER", "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "bookmarks-api" : [ "uma_protection" ],
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "0922935d-ada0-404a-ba1a-1c6deed7bc85",
+    "createdTimestamp" : 1587357316166,
+    "username" : "service-account-integration-tests-service-account",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "email" : "service-account-integration-tests-service-account@placeholder.org",
+    "serviceAccountClientId" : "integration-tests-service-account",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ROLE_USER", "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}
