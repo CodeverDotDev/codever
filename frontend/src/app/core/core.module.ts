@@ -25,6 +25,7 @@ import { UserDataFavoritesStore } from './user/userdata.favorites.store';
 import { AuthGuard } from './auth/auth-guard.service';
 import { FeedStore } from './user/feed-store.service';
 import { PersonalCodeletsService } from './personal-codelets.service';
+import { MarkdownService } from './markdown/markdown.service';
 
 
 /**
@@ -68,7 +69,8 @@ import { PersonalCodeletsService } from './personal-codelets.service';
     SuggestedTagsStore,
     WebpageInfoService,
     LoaderService,
-    KeycloakServiceWrapper
+    KeycloakServiceWrapper,
+    MarkdownService
   ]
 })
 export class CoreModule {

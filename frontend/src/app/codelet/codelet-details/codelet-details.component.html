@@ -16,7 +16,7 @@
       <hr class="title-content-separator">
 
       <div *ngFor="let codeSnippet of codelet.codeSnippets; let isLast=last">
-        <p *ngIf="codeSnippet.comment" class="mb-0" [innerHtml]="codeSnippet.comment | highlight: queryText"></p>
+        <p *ngIf="codeSnippet.comment" class="mb-0" [innerHtml]="codeSnippet.comment | md2html | highlight: queryText"></p>
         <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
         <div class="clear"></div>
         <pre class="mb-0"><code [highlight]="codeSnippet.code"></code></pre>

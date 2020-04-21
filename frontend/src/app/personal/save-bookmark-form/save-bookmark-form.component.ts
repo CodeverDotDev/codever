@@ -2,7 +2,7 @@ import { concatMap, debounceTime, distinctUntilChanged, map, startWith } from 'r
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MarkdownService } from '../markdown.service';
+import { MarkdownService } from '../../core/markdown/markdown.service';
 import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatDialog, MatDialogConfig } from '@angular/material';

@@ -14,6 +14,7 @@ import { SocialShareDialogComponent } from './social-share-dialog/social-share-d
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
+import { Markdown2HtmlPipe } from './markdown2html.pipe';
 
 
 /**
@@ -34,6 +35,7 @@ import { TagFollowingBaseComponent } from './tag-following-base-component/tag-fo
   declarations: [
     HighLightPipe,
     HighLightHtmlPipe,
+    Markdown2HtmlPipe,
     AsyncBookmarkListComponent,
     BookmarkTextComponent,
     TagsValidatorDirective,
@@ -49,6 +51,7 @@ import { TagFollowingBaseComponent } from './tag-following-base-component/tag-fo
     ReactiveFormsModule,
     HighLightPipe,
     HighLightHtmlPipe,
+    Markdown2HtmlPipe,
     AsyncBookmarkListComponent,
     BookmarkTextComponent,
     MatProgressSpinnerModule

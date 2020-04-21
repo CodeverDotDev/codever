@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { PersonalBookmarksRoutingModule } from './personal-bookmarks-routing.module';
 import { PersonalBookmarksComponent } from './personal-bookmarks.component';
 import { SharedModule } from '../shared/shared.module';
-import { MarkdownService } from './markdown.service';
 import { RouterModule } from '@angular/router';
 import { UpdatePersonalBookmarkComponent } from './update/update-personal-bookmark.component';
 import { CreatePersonalBookmarkComponent } from './create/create-personal-bookmark.component';
@@ -45,7 +44,6 @@ import { DatePipe } from '@angular/common';
     PersonalBookmarksRoutingModule
   ],
   providers: [
-    MarkdownService,
     DatePipe
   ],
   entryComponents: [

@@ -167,8 +167,12 @@ export class SaveCodeletFormComponent implements OnInit {
     });
   }
 
-  addEmptyCodeSnippet(): void {
-    this.codeSnippetsFormArray.push(this.createEmptyCodeSnippet());
+  addEmptyCodeSnippet(index: number): void {
+    this.codeSnippetsFormArray.insert(index + 1,  this.createEmptyCodeSnippet());
+  }
+
+  removeCodeSnippet(index: number) {
+    this.codeSnippetsFormArray.removeAt(index);
   }
 
   addTag(event: MatChipInputEvent): void {
@@ -266,10 +270,6 @@ export class SaveCodeletFormComponent implements OnInit {
 
   get tags() {
     return <FormArray>this.codeletFormGroup.get('tags');
-  }
-
-  removeCodeSnippet(i: number) {
-    this.codeSnippetsFormArray.removeAt(i);
   }
 
   openDeleteDialog() {

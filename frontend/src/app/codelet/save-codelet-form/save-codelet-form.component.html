@@ -53,50 +53,56 @@
       </div>
     </div>
     <div formArrayName="codeSnippets"
-         *ngFor="let codeSnippet of codeSnippetsFormArray.controls; let i = index;">
+         *ngFor="let codeSnippet of codeSnippetsFormArray.controls; let i = index;" class="code-snippets">
       <div [formGroupName]="i" class="border rounded pt-1 pl-3 pr-3 mb-3">
         <div class="form-group mb-0">
+          <div class="form-group">
+            <label for="comment-{{i}}">Comment (optional)- <i class="fab fa-markdown"></i> <a
+              class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
+              supported</a></label>
+            <textarea class="form-control"
+                      id="comment-{{i}}"
+                      formControlName="comment"
+                      placeholder='Appears before code snippet in codelet details'>
+            </textarea>
+          </div>
           <label for="code-{{i}}" style="width: 100%">
             Code snippet*
-            <button type="button" class="btn btn-sm btn-danger float-right"
-               [disabled]="codeSnippetsFormArray.controls.length < 2"
-            (click)="removeCodeSnippet(i)">
-              <i class="far fa-trash-alt"></i>
-            </button>
           </label>
           <textarea class="form-control"
                     id="code-{{i}}"
                     formControlName="code"
-                    placeholder="Add the code here"
-                    style="height: 350px">
+                    placeholder="Your code goes here..."
+                    style="height: 300px">
           </textarea>
-          <div class="description-chars-counter">{{codeSnippet.get('code').value ? codeSnippet.get('code').value.length : 0}} / 5000</div>
+          <div
+            class="description-chars-counter">{{codeSnippet.get('code').value ? codeSnippet.get('code').value.length : 0}}
+            / 5000
+          </div>
           <div class="clear"></div>
           <div *ngIf="codeSnippet.invalid && (codeSnippet.dirty || codeSnippet.touched)" class="alert alert-danger">
             <div *ngIf="codeSnippet.get('code').errors.tooManyLines">
-              Your code snippet has {{codeSnippet.get('code').errors.tooManyLines.value}} lines. Maximum 500 lines are allowed.
+              Your code snippet has {{codeSnippet.get('code').errors.tooManyLines.value}} lines. Maximum 500 lines are
+              allowed.
             </div>
             <div *ngIf="codeSnippet.get('code').errors.tooManyCharacters">
-              Your code snippet has {{codeSnippet.get('code').errors.tooManyCharacters.value}} characters. Maximum 5000 characters
+              Your code snippet has {{codeSnippet.get('code').errors.tooManyCharacters.value}} characters. Maximum 5000
+              characters
               are
               allowed.
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="comment-{{i}}">Comment</label>
-          <input type="url"
-                 class="form-control"
-                 id="comment-{{i}}"
-                 formControlName="comment"
-                 placeholder='Useful when code is not obvious or having multiple code snippets'>
-        </div>
+        <button type="button" class="btn btn-sm btn-primary mb-2" (click)="addEmptyCodeSnippet(i)">
+          <i class="fa fa-plus"></i> Add
+        </button>
+        <button type="button" class="btn btn-sm btn-danger mb-2 ml-2"
+                [disabled]="codeSnippetsFormArray.controls.length < 2"
+                (click)="removeCodeSnippet(i)">
+          <i class="far fa-trash-alt"></i> Remove
+        </button>
       </div>
     </div>
-
-    <button type="button" class="btn btn-primary float-right" (click)="addEmptyCodeSnippet()">
-      <i class="fa fa-plus"></i> Add code snippet
-    </button>
 
     <div class="form-group pt-2 pb-3">
       <label for="sourceUrl">Source URL</label>
