@@ -1,18 +1,5 @@
-# Source code for bookmarks.dev - the Bookmark Manager for Developers & Co
-
-<img align="left" src="src/assets/bookmarks.dev-logo-md.png">
-
-Efficiently manage your dev bookmarks. The public and worthy ones are published on Github 
-at [https://github.com/CodepediaOrg/bookmarks](https://github.com/CodepediaOrg/bookmarks#readme)
-
- ---
-
- Built with [Angular](https://angular.io/) and [Angular CLI](https://cli.angular.io/)
- 
- ![components-graph](documentation/graphviz/components-graph.png)
- 
-> The production setup is can be found here - [components production](https://raw.githubusercontent.com/wiki/CodepediaOrg/bookmarks-api/images/network-diagram.png)
-
+# Frontend
+ The User Interface (frontend) is built with [Angular](https://angular.io/) and [Angular CLI](https://cli.angular.io/)
 
 ***
 
@@ -26,6 +13,8 @@ These instructions will get you a copy of the project up and running on your loc
 ## Development setup
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli)
+
+> Change to the `frontend` folder before running any of the commands bellow - `cd frontend`
 
 ### Development server
 
@@ -58,12 +47,6 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 I use an alias for that
 ```shell
-alias bookmarks-build-aot='cd ~/projects/dev/personal/bookmarks/bookmarks.dev; rm -rf dist*; nvm use; npm run build:aot'
+alias bookmarks-build-aot='cd ~/projects/dev/personal/bookmarks/bookmarks.dev/frontend; rm -rf dist*; nvm use; npm run build:aot'
 ```
 
-## Contributing  
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
