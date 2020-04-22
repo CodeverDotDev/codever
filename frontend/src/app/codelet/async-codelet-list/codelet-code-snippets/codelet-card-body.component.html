@@ -2,10 +2,13 @@
   <div *ngIf="viewHeight > 180 else wholeText">
     <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}">
       <div *ngFor="let codeSnippet of codelet.codeSnippets; let isLast=last">
-        <p *ngIf="codeSnippet.comment" class="mb-0" [innerHtml]="codeSnippet.comment | highlight: queryText | md2html"></p>
-        <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
-        <div class="clear"></div>
-        <pre class="mb-0"><code [highlight]="codeSnippet.code"></code></pre>
+          <p *ngIf="codeSnippet.comment" class="mb-0"
+             [innerHtml]="codeSnippet.comment | highlight: queryText | md2html"></p>
+        <div class="code-snippet-wrapper">
+          <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
+          <div class="clear"></div>
+          <pre class="mb-0"><code [highlight]="codeSnippet.code"></code></pre>
+        </div>
         <hr *ngIf="!isLast">
       </div>
     </div>
@@ -15,11 +18,13 @@
   </div>
   <ng-template #wholeText>
     <div *ngFor="let codeSnippet of codelet.codeSnippets; let isLast=last">
-      <p *ngIf="codeSnippet.comment" class="mb-1" [innerHtml]="codeSnippet.comment | highlight: queryText | md2html"></p>
-      <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
-      <div class="clear"></div>
-      <pre class="mb-0"><code [highlight]="codeSnippet.code"></code></pre>
-
+      <p *ngIf="codeSnippet.comment" class="mb-1"
+         [innerHtml]="codeSnippet.comment | highlight: queryText | md2html"></p>
+      <div class="code-snippet-wrapper">
+        <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
+        <div class="clear"></div>
+        <pre class="mb-0"><code [highlight]="codeSnippet.code"></code></pre>
+      </div>
       <hr *ngIf="!isLast">
     </div>
   </ng-template>
