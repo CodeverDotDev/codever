@@ -4,7 +4,7 @@ when managing your dev bookmarks](https://dev.to/ama/how-i-manage-my-dev-bookmar
 [bookmarking of code snippets via Codelets](https://dev.to/ama/bookmarking-code-snippets-with-codelets-3d44). Check our
 [HowTo](https://www.bookmarks.dev/howto) page to help you get started:
  
- [![Save to Bookmarks.dev chrome extension usage](https://thepracticaldev.s3.amazonaws.com/i/8ukqg9jfexbohtbkv7gt.gif)](https://www.bookmarks.dev/howto)
+ [![Save to Bookmarks.dev chrome extension usage](documentation/gif/save-youtube-video-to-bookmarks.dev.gif)](https://www.bookmarks.dev/howto)
 
 > Most worthy public bookmarks are published regularly on Github in a [separate repository](https://github.com/CodepediaOrg/bookmarks).
 
