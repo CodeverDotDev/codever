@@ -31,7 +31,6 @@
     "jquery": "^3.4.1",
     "keycloak-angular": "^7.0.1",
     "keycloak-js": "6.0.1",
-    "ng2-file-upload": "^1.4.0",
     "ngx-bootstrap": "^4.3.0",
     "ngx-highlightjs": "^4.0.2",
     "rxjs": "^6.5.3",

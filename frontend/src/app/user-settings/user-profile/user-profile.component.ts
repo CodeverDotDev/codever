@@ -4,7 +4,6 @@ import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { FileUploader } from 'ng2-file-upload';
 import { UserDataService } from '../../core/user-data.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 
@@ -26,11 +25,6 @@ export class UserProfileComponent implements OnInit {
   userProfileForm: FormGroup;
   selectedFile: ImageSnippet
 
-  uploader: FileUploader;
-  hasBaseDropZoneOver: boolean;
-  hasAnotherDropZoneOver: boolean;
-  response: string;
-
   formSetup = false;
 
   // image changing is handled separately from profile data and use this variable as placeholder for the latter
@@ -45,30 +39,7 @@ export class UserProfileComponent implements OnInit {
               private userDataService: UserDataService,
               private personalBookmarksService: PersonalBookmarksService,
               private router: Router
-  ) {
-    this.uploader = new FileUploader({
-      url: URL,
-      disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
-      formatDataFunctionIsAsync: true,
-      formatDataFunction: async (item) => {
-        return new Promise((resolve, reject) => {
-          resolve({
-            name: item._file.name,
-            length: item._file.size,
-            contentType: item._file.type,
-            date: new Date()
-          });
-        });
-      }
-    });
-
-    this.hasBaseDropZoneOver = false;
-    this.hasAnotherDropZoneOver = false;
-
-    this.response = '';
-
-    this.uploader.response.subscribe(res => this.response = res);
-  }
+  ) {}
 
   ngOnInit() {
     this.userData$.subscribe(userData => {
@@ -119,11 +90,9 @@ export class UserProfileComponent implements OnInit {
     const reader = new FileReader();
 
     reader.readAsDataURL(file);
-
     reader.addEventListener('load', (event: any) => {
 
       this.selectedFile = new ImageSnippet(event.target.result, file);
-
       this.userDataService.uploadProfileImage(this.userData.userId, this.selectedFile.file).subscribe(
         (response) => {
           this.userData.profile.imageUrl = response.url;
@@ -136,11 +105,4 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  public fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  public fileOverAnother(e: any): void {
-    this.hasAnotherDropZoneOver = e;
-  }
 }
