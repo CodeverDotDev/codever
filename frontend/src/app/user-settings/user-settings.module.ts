@@ -8,7 +8,6 @@ import { AuthGuard } from '../core/auth/auth-guard.service';
 import { CoreModule } from 'keycloak-angular';
 import { MatTabsModule } from '@angular/material';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { FileUploadModule } from 'ng2-file-upload';
 import { ImageUploadService } from './user-profile/image-upload.service';
 
 
@@ -32,7 +31,6 @@ const userSettingsRoutes: Routes = [
     CoreModule,
     CommonModule,
     MatTabsModule,
-    FileUploadModule
   ],
   providers: [
     ImageUploadService
