@@ -12,9 +12,6 @@ class ImageSnippet {
   }
 }
 
-// const URL = '/api/';
-const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
-
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -68,7 +65,8 @@ export class UserProfileComponent implements OnInit {
 
   onSubmit() {
     this.userData.profile = this.userProfileForm.value;
-    if (this.profileImageUrl) {
+    const profileImageChangedToo: boolean = this.profileImageUrl !== undefined;
+    if (profileImageChangedToo) {
       this.userData.profile.imageUrl = this.profileImageUrl;
     }
     this.userDataStore.updateUserData$(this.userData).subscribe(() => {
