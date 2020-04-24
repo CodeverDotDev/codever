@@ -1,7 +1,22 @@
 # Backend
 Back-end REST API for [www.bookmarks.dev](http://www.bookmarks.dev).
-## OpenAPI Docs
 
+## Development
+This section concerns about the local developemnt
+
+### Troubleshooting
+
+#### Restart backend
+It might happen to have a zombie running nodejs running on the port `3000` when trying to run `npm run debug`.
+Kill the process and try again
+
+```shell
+lsof -i tcp:3000
+kill -9 xxx # where xxx is the process number from the command above
+npm run debug # restart the backend server as usual
+```
+
+## OpenAPI Docs
 The API has an OpenAPI specification available at [docs/openapi/openapi.yaml](docs/openapi/openapi.yaml)
 
 Based on that a GUI is generated to test the API directly from browser:
