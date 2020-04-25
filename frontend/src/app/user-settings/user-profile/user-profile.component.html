@@ -1,19 +1,24 @@
 <div *ngIf="(userData$ | async) as userDataVar; else loading" class="navigation-space-buffer">
   <h2>Profile image <i class="fas fa-portrait"></i></h2>
   <div class="profile-image">
-    <img *ngIf="userDataVar.profile.imageUrl else robot" [src]="userDataVar.profile.imageUrl" height="200"> <br/>
+    <img *ngIf="userDataVar.profile.imageUrl else robot" [src]="userDataVar.profile.imageUrl" height="200" alt="User profile image"> <br/>
     <ng-template #robot>
       <div class="generic-profile-image"><i class="fas fa-robot"></i></div>
     </ng-template>
-    <div class="custom-file ">
+    <div class="custom-file" >
       <input #imageInput
              type="file"
              accept="image/*"
              class="form-control"
              id="picture"
              (change)="changeImage(imageInput)">
-      <label class="custom-file-label" for="picture">Choose file (max size 1MB)</label>
+      <label class="custom-file-label" style="cursor: pointer" for="picture">{{uploadImageLabel}}</label>
     </div>
+  </div>
+
+  <div *ngIf="selectedFile">
+    <div *ngIf="selectedFile.status === 'ok'" class="alert alert-success mt-2"> Image Uploaded Succesfuly!</div>
+    <div *ngIf="selectedFile.status === 'fail'" class="alert alert-danger mt-2"> Image Upload Failed!</div>
   </div>
 
   <hr/>
