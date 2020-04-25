@@ -7,8 +7,9 @@ import { Router } from '@angular/router';
 import { UserDataService } from '../../core/user-data.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 
-class ImageSnippet {
-  constructor(public src: string, public file: File) {
+class ProfileImage {
+  status = 'init';
+  constructor(public file: File) {
   }
 }
 
@@ -20,7 +21,7 @@ class ImageSnippet {
 export class UserProfileComponent implements OnInit {
 
   userProfileForm: FormGroup;
-  selectedFile: ImageSnippet
+  selectedFile: ProfileImage
 
   formSetup = false;
 
@@ -30,13 +31,15 @@ export class UserProfileComponent implements OnInit {
   @Input()
   userData$: Observable<UserData>;
   private userData: UserData;
+  uploadImageLabel = 'Choose file (max size 1MB)';
 
   constructor(private formBuilder: FormBuilder,
               private userDataStore: UserDataStore,
               private userDataService: UserDataService,
               private personalBookmarksService: PersonalBookmarksService,
               private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.userData$.subscribe(userData => {
@@ -45,7 +48,6 @@ export class UserProfileComponent implements OnInit {
         this.buildForm(this.userData);
         this.formSetup = true;
       }
-
     });
   }
 
@@ -85,22 +87,35 @@ export class UserProfileComponent implements OnInit {
 
   changeImage(imageInput: any) {
     const file: File = imageInput.files[0];
+    this.uploadImageLabel = file.name;
     const reader = new FileReader();
 
-    reader.readAsDataURL(file);
     reader.addEventListener('load', (event: any) => {
-
-      this.selectedFile = new ImageSnippet(event.target.result, file);
+      this.selectedFile = new ProfileImage(file);
       this.userDataService.uploadProfileImage(this.userData.userId, this.selectedFile.file).subscribe(
         (response) => {
           this.userData.profile.imageUrl = response.url;
           this.profileImageUrl = response.url;
           this.userDataStore.updateUserData$(this.userData);
+
+          this.onImageUploadSuccess();
         },
         (err) => {
-
+          this.onImageUploadError();
         })
     });
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
+
+  private onImageUploadSuccess() {
+    this.selectedFile.status = 'ok';
+  }
+
+  private onImageUploadError() {
+    this.selectedFile.status = 'fail';
   }
 
 }
