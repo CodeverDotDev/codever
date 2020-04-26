@@ -7,11 +7,6 @@ import { Router } from '@angular/router';
 import { UserDataService } from '../../core/user-data.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 
-class ProfileImage {
-  status = 'init';
-  constructor(public file: File) {
-  }
-}
 
 @Component({
   selector: 'app-user-profile',
@@ -21,17 +16,17 @@ class ProfileImage {
 export class UserProfileComponent implements OnInit {
 
   userProfileForm: FormGroup;
-  selectedFile: ProfileImage
+
+  profileImageChangedStatus = 'init';
+  uploadImageLabel = 'Choose file (max size 1MB)';
+  private imageFileIsTooBig = false;
+  selectedFileSrc: string;
 
   formSetup = false;
-
-  // image changing is handled separately from profile data and use this variable as placeholder for the latter
-  profileImageUrl: string;
 
   @Input()
   userData$: Observable<UserData>;
   private userData: UserData;
-  uploadImageLabel = 'Choose file (max size 1MB)';
 
   constructor(private formBuilder: FormBuilder,
               private userDataStore: UserDataStore,
@@ -67,10 +62,7 @@ export class UserProfileComponent implements OnInit {
 
   onSubmit() {
     this.userData.profile = this.userProfileForm.value;
-    const profileImageChangedToo: boolean = this.profileImageUrl !== undefined;
-    if (profileImageChangedToo) {
-      this.userData.profile.imageUrl = this.profileImageUrl;
-    }
+
     this.userDataStore.updateUserData$(this.userData).subscribe(() => {
       const displayName = this.userProfileForm.get('displayName').value;
       if (this.userProfileForm.get('displayName').dirty) {
@@ -85,37 +77,36 @@ export class UserProfileComponent implements OnInit {
     this.router.navigateByUrl(`/users/${this.userData.userId}/${displayName}`);
   }
 
-  changeImage(imageInput: any) {
+  changeImage(imageInput: HTMLInputElement) {
     const file: File = imageInput.files[0];
-    this.uploadImageLabel = file.name;
-    const reader = new FileReader();
+    this.uploadImageLabel = `${file.name} (${(file.size * 0.000001).toFixed(2)} MB)`;
+    if (file.size > 1048576) {
+      this.imageFileIsTooBig = true;
+    } else {
+      this.imageFileIsTooBig = false;
+      const reader = new FileReader();
 
-    reader.addEventListener('load', (event: any) => {
-      this.selectedFile = new ProfileImage(file);
-      this.userDataService.uploadProfileImage(this.userData.userId, this.selectedFile.file).subscribe(
-        (response) => {
-          this.userData.profile.imageUrl = response.url;
-          this.profileImageUrl = response.url;
-          this.userDataStore.updateUserData$(this.userData);
+      reader.addEventListener('load', (event: any) => {
+        this.selectedFileSrc = event.target.result;
+        this.userDataService.uploadProfileImage(this.userData.userId, file).subscribe(
+          (response) => {
+            this.userData.profile.imageUrl = response.url;
+            this.userDataStore.updateUserData$(this.userData).subscribe(
+              () => {
+                this.profileImageChangedStatus = 'ok';
+              },
+              () => {
+                this.profileImageChangedStatus = 'fail';
+              });
+          },
+          () => {
+            this.profileImageChangedStatus = 'fail';
+          });
+      });
 
-          this.onImageUploadSuccess();
-        },
-        (err) => {
-          this.onImageUploadError();
-        })
-    });
-
-    if (file) {
-      reader.readAsDataURL(file);
+      if (file) {
+        reader.readAsDataURL(file);
+      }
     }
   }
-
-  private onImageUploadSuccess() {
-    this.selectedFile.status = 'ok';
-  }
-
-  private onImageUploadError() {
-    this.selectedFile.status = 'fail';
-  }
-
 }
