@@ -97,7 +97,7 @@ app.use(function (req, res, next) {
 
 // error handlers
 app.use(function handleNotFoundError(error, req, res, next) {
-  if (error instanceof NotFoundError) {
+  if ( error instanceof NotFoundError ) {
     return res.status(HttpStatus.NOT_FOUND).send({
       httpStatus: HttpStatus.NOT_FOUND,
       message: error.message,
@@ -108,7 +108,7 @@ app.use(function handleNotFoundError(error, req, res, next) {
 });
 
 app.use(function handlePublicBookmarkExistingError(error, req, res, next) {
-  if (error instanceof PublicBookmarkExistingError) {
+  if ( error instanceof PublicBookmarkExistingError ) {
     return res.status(HttpStatus.CONFLICT).send({
       httpStatus: HttpStatus.CONFLICT,
       message: error.message,
@@ -119,7 +119,7 @@ app.use(function handlePublicBookmarkExistingError(error, req, res, next) {
 });
 
 app.use(function handleUserIdValidationError(error, req, res, next) {
-  if (error instanceof UseridValidationError) {
+  if ( error instanceof UseridValidationError ) {
     res.status(HttpStatus.UNAUTHORIZED);
     return res.send({
       httpStatus: HttpStatus.UNAUTHORIZED,
@@ -131,7 +131,7 @@ app.use(function handleUserIdValidationError(error, req, res, next) {
 });
 
 app.use(function handleValidationError(error, request, response, next) {
-  if (error instanceof ValidationError) {
+  if ( error instanceof ValidationError ) {
     return response
       .status(HttpStatus.BAD_REQUEST)
       .json({
@@ -145,8 +145,8 @@ app.use(function handleValidationError(error, request, response, next) {
 });
 
 app.use(function handleDatabaseError(error, request, response, next) {
-  if (error instanceof MongoError) {
-    if (error.code === 11000) {
+  if ( error instanceof MongoError ) {
+    if ( error.code === 11000 ) {
       return response
         .status(HttpStatus.CONFLICT)
         .json({
@@ -170,8 +170,16 @@ app.use(function handleDatabaseError(error, request, response, next) {
 // production error handler
 // no stacktraces leaked to user
 app.use(function (error, req, res, next) {
-  if (res.headersSent) {
+  if ( res.headersSent ) {
     return next(error)
+  } else if ( error.code === 'LIMIT_FILE_SIZE') { // Multer error - see https://github.com/expressjs/multer/blob/master/lib/multer-error.js && https://github.com/expressjs/multer#error-handling
+    return res
+      .status(HttpStatus.BAD_REQUEST)
+      .json({
+        httpStatus: HttpStatus.BAD_REQUEST,
+        message: error.code + ' ' + error.message,
+        stack: app.get('env') === 'development' ? error.stack : {}
+      });
   } else {
     res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR);
     res.send({

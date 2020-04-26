@@ -10,6 +10,7 @@ const Keycloak = require('keycloak-connect');
 const UserDataService = require('./user-data.service');
 const userIdTokenValidator = require('./userid.validator');
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
+const ImageValidationHelper = require('./image-validation.helper');
 
 const common = require('../../common/config');
 const config = common.config();
@@ -33,6 +34,10 @@ const multerS3 = require('multer-s3');
 const path = require('path')
 
 const upload = multer({
+  limits: {
+    fileSize: 1048576 // 1MB
+  },
+  fileFilter: ImageValidationHelper.imageFilter,
   storage: multerS3({
     s3: s3,
     bucket: 'bookmarks.dev',
