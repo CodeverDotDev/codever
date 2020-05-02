@@ -302,7 +302,6 @@ export class BookmarksSearchComponent implements OnInit {
           queryParamsHandling: 'merge'
         }
       );
-
     } else {
       this.searchTextCleared.emit(true);
       this.router.navigate(['./'],
@@ -317,5 +316,14 @@ export class BookmarksSearchComponent implements OnInit {
 
   clearSearchText() {
     this.searchControl.patchValue('');
+  }
+
+  searchAlreadySaved(autocompleteSearches: Search[], searchText: string) {
+    for (const search of autocompleteSearches) {
+      if (search.text.includes(searchText)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

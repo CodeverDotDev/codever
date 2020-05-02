@@ -1,13 +1,87 @@
-<div class="input-group mt-3 search-component">
-  <div class="input-group-prepend">
-    <span class="input-group-text"
-          (mouseover)="hover=true"
-          (mouseleave)="hover=false"
-          [class.focused]="(isFocusOnSearchControl || hover) && searchText"
-          id="basic-addon1"
-          (click)="searchBookmarksFromSearchBox(publicSearchBox.value)">
-      <i class="fa fa-search"></i>
-    </span>
+<div class="input-group mt-3 mb-4 search-component">
+  <div *ngIf="searchDomain === 'public'" class="input-group-prepend">
+    <button type="button"
+            (mouseover)="hover=true"
+            (mouseleave)="hover=false"
+            [class.focused]="(isFocusOnSearchControl || hover) && searchText"
+            (click)="onSearchDomainChange('public')"
+            [disabled]="!searchText"
+            class="btn btn-outline-secondary"
+            title="Search in public bookmarks"
+    >
+      <i class="fa fa-search"></i> Public Bookmarks
+    </button>
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" role="button"
+         title="Search in personal bookmarks"
+         (click)="onSearchDomainChange('personal')">
+        <i class="fa fa-search"></i> My Bookmarks
+      </a>
+      <a class="dropdown-item" role="button"
+         title="Search in my codelets"
+         (click)="onSearchDomainChange('my-codelets')"><i class="fa fa-search"></i>
+        My Codelets</a>
+    </div>
+  </div>
+  <div *ngIf="searchDomain === 'my-codelets'" class="input-group-prepend">
+    <button type="button"
+            (mouseover)="hover=true"
+            (mouseleave)="hover=false"
+            [class.focused]="(isFocusOnSearchControl || hover) && searchText"
+            (click)="onSearchDomainChange('my-codelets')"
+            [disabled]="!searchText"
+            title="Search in my codelets"
+            class="btn btn-outline-secondary">
+      <i class="fa fa-search"></i> My Codelets
+    </button>
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" role="button"
+         title="Search in my bookmarks"
+         (click)="onSearchDomainChange('personal')">
+        <i class="fa fa-search"></i> My Bookmarks
+      </a>
+      <a class="dropdown-item" role="button"
+         title="Search in public bookmarks"
+         (click)="onSearchDomainChange('public')">
+        <i class="fa fa-search"></i> Public Bookmarks
+      </a>
+    </div>
+  </div>
+  <div *ngIf="searchDomain === 'personal'" class="input-group-prepend">
+    <button type="button"
+            (mouseover)="hover=true"
+            (mouseleave)="hover=false"
+            [class.focused]="(isFocusOnSearchControl || hover) && searchText"
+            (click)="onSearchDomainChange('personal')"
+            [disabled]="!searchText"
+            title="Search in personal bookmarks"
+            class="btn btn-outline-secondary">
+      <i class="fa fa-search"></i> My Bookmarks
+    </button>
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" role="button"
+         title="Search in public bookmarks"
+         (click)="onSearchDomainChange('public')">
+        <i class="fa fa-search"></i> Public Bookmarks
+      </a>
+      <a class="dropdown-item" role="button"
+         title="Search in my codelets"
+         (click)="onSearchDomainChange('my-codelets')">
+        <i class="fa fa-search"></i> My Codelets
+      </a>
+    </div>
   </div>
   <input
     #publicSearchBox
@@ -15,7 +89,7 @@
     type="text"
     class="form-control"
     [formControl]="searchControl"
-    placeholder="{{searchDomain === 'my-codelets' ? 'My codelets' : searchDomain === 'public' ? 'Public bookmarks' : 'My bookmarks'}} ... (tags in square brackets: e.g. [angular])"
+    placeholder="Search text... (tags in square brackets: e.g. [angular])"
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
@@ -28,20 +102,12 @@
     <button class="btn btn-outline-secondary"
             type="button"
             (click)="onSaveSearchClick()"
-            [disabled]="autocompleteSearches.includes(searchText) || !searchText"
-    >Save search
+            title="Save search"
+            [disabled]="searchAlreadySaved(autocompleteSearches, searchText) || !searchText"
+    ><i class="fas fa-save"></i>
     </button>
   </div>
 </div>
-
-<mat-form-field class="search-domain-select">
-  <mat-label>Search in</mat-label>
-  <mat-select [ngModel]="searchDomain" (ngModelChange)="onSearchDomainChange($event)">
-    <mat-option *ngFor="let searchDomain of searchDomains" [value]="searchDomain.value">
-      {{searchDomain.viewValue}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
 
 <div class="clear"></div>
 
