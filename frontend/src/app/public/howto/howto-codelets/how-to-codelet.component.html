@@ -1,0 +1,42 @@
+<div id="howto-codelets-content" class="jumbotron">
+  <h2>Codelets <i class="fa fa-code"></i></h2>
+  <p class="lead"><strong>Codelets</strong> are special types of bookmarks where you save small pieces of code you
+    would want to recall later. At the present moment all codelets are <strong>private only</strong>.</p>
+
+  <h3>Save codelets</h3>
+  When browsing the web the easiest way is to use the <app-add-codelet-bookmarklet></app-add-codelet-bookmarklet> bookmarklet:
+  <img class="mt-2 img-fluid" src="./assets/img/gif/save-codelet-1276x936.gif" alt="How to save and search a codelet"/>
+
+  <div class="alert-info p-2 mt-2">
+    The search at the end of the demo is configured with an AlfredApp custom query - <code [innerHTML]="'https://www.bookmarks.dev/search?q={query}&sd=my-codelets'"></code>
+  </div>
+
+  <div style="display: flex; align-items: center" class="mb-2">
+    <div>
+      Otherwise use the <strong><i class="fa fa-code"></i> Codelet</strong> option in the menu bar
+    </div>
+    <div class="dropdown mt-1 ml-2">
+      <button class="btn btn-sm btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-lg fa-plus"></i>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" routerLink="/personal/new"><i class="fa fa-bookmark"></i> Bookmark</a>
+        <a class="dropdown-item" routerLink="/my-codelets/new"><i class="fa fa-code"></i> Codelet</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h3>Search codelets</h3>
+    Searching for codelets works the same as the one for regular bookmarks. Just select the <strong>My codelets</strong>
+    option in the search bar:
+    <img class="mt-2 img-fluid" src="./assets/img/gif/search-codelet-searchbar-1276x936.gif" alt="How to save and search a codelet"/>
+
+    <div class="alert-info p-2 mt-2">
+      You can save searches to reuse later the same way as for regular bookmarks.
+    </div>
+  </div>
+
+</div>
+

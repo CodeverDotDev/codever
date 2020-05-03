@@ -1,24 +1,13 @@
-import { RouterModule, Routes, UrlSegment } from '@angular/router';
-import {NgModule} from '@angular/core';
-import {TagComponent} from './tag/tag.component';
-import {AboutComponent} from './about/about.component';
-import {HomepageComponent} from './bookmarks/homepage.component';
-import {HowtoComponent} from './howto/howto.component';
-import {PrivacyPolicyComponent} from './privacy/privacy-policy.component';
-import {TermsOfServiceComponent} from './terms/terms-of-service.component';
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { TagComponent } from './tag/tag.component';
+import { AboutComponent } from './about/about.component';
+import { HomepageComponent } from './bookmarks/homepage.component';
+import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
+import { TermsOfServiceComponent } from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
-import { BookmarkletComponent } from './bookmarklets/bookmarklet.component';
-
-export function tagMatcher(url: UrlSegment[]) {
-    return url.length === 1 && url[0].path !== 'personal' && url[0].path !== 'dashboard' && url[0].path !== 'settings' ? ({consumed: url}) : null;
-}
 
 const publicBookmarksRoutes: Routes = [
-  {
-    path: 'search',
-    redirectTo: '',
-    pathMatch: 'full'
-  },
   {
     path: 'history',
     redirectTo: '/?tab=history',
@@ -53,8 +42,8 @@ const publicBookmarksRoutes: Routes = [
     component: TagComponent
   },
   {
-    path: 'bookmarklets',
-    component: BookmarkletComponent
+    path: 't/:tag',
+    component: TagComponent
   },
   {
     path: 'about',
@@ -62,7 +51,7 @@ const publicBookmarksRoutes: Routes = [
   },
   {
     path: 'howto',
-    component: HowtoComponent
+    loadChildren: () => import('app/public/howto/howto.module').then(m => m.HowtoModule)
   },
   {
     path: 'privacy-policy',
@@ -88,8 +77,7 @@ const publicBookmarksRoutes: Routes = [
   {
     path: '',
     component: HomepageComponent
-  },
-  { matcher: tagMatcher, component: TagComponent }
+  }
 ];
 
 @NgModule({

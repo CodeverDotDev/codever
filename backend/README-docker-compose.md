@@ -12,7 +12,7 @@ https://hub.docker.com/r/jboss/keycloak/
 
 Initializing a fresh instance
 When a container is started for the first time it will execute files with extensions .sh and .js
- that are found in /docker-entrypoint-initdb.d. Files will be executed in alphabetical order. 
+ that are found in /docker-entrypoint-initdb.d. Files will be executed in alphabetical order.
  .js files will be executed by mongo using the database specified by the MONGO_INITDB_DATABASE variable, if it is present,
   or test otherwise. You may also switch databases within the .js script.
 
@@ -42,12 +42,12 @@ http://localhost:8480/auth/admin
 
 ### Connect to mongo
 ```
-docker exec -it bookmarks-api_mongo /bin/bash
+docker exec -it bookmarks.dev-mongo /bin/bash
 
-mongo -u bookmarks -p --authenticationDatabase dev-bookmarks
+mongo -u bookmarks -p secret  --authenticationDatabase dev-bookmarks
 use dev-bookmarks;
 
-   
+
 db.changeUserPassword("bookmarks", "secret")
 ```
 
