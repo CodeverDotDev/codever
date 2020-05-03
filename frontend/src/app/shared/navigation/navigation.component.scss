@@ -1,0 +1,39 @@
+.add-new-bookmark {
+  margin-top: 0.3rem;
+}
+
+.navbar-brand {
+  line-height:12px;
+  padding-top:10px;
+
+  font-size: 25px;
+}
+
+.navbar-brand small {
+  font-size:11px;
+}
+
+.app-brand {
+  display: flex;
+  padding-right: 15px;
+  align-items: center;
+
+  .app-brand-text {
+    margin-left: 0.5rem;
+  }
+}
+
+.logo-image {
+  margin-top: -10px;
+  margin-bottom: -5px;
+}
+
+.large-displays {
+  display: none;
+}
+
+@media (min-width: 1440px) {
+  .large-displays {
+    display: block ;
+  }
+}

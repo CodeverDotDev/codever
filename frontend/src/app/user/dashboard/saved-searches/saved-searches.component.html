@@ -1,9 +1,9 @@
 <h4 style="margin-top: 1rem">Used for searching in public bookmarks </h4>
 <div *ngIf="(userData$ | async)">
   <span *ngFor="let mySearch of (userData$ | async).searches" class="my-saved-search">
-      <a *ngIf="mySearch.searchDomain === 'public'"
+      <a *ngIf="mySearch.searchDomain === 'public-bookmarks'"
         [routerLink]="['/search']"
-        [queryParams]="{q: mySearch.text, sd: 'public' }"
+        [queryParams]="{q: mySearch.text, sd: 'public-bookmarks' }"
         class="badge badge-secondary">
     {{mySearch.text}}
       </a>
@@ -14,10 +14,10 @@
 
 <hr/>
 
-<h4 style="margin-top: 1rem">Used for searching in my bookmarks and favorites</h4>
+<h4 style="margin-top: 1rem">Used for searching in my bookmarks </h4>
 <div *ngIf="(userData$ | async)">
   <span *ngFor="let mySearch of (userData$ | async).searches" class="my-saved-search">
-      <a *ngIf="mySearch.searchDomain === 'personal' || !mySearch.searchDomain"
+      <a *ngIf="mySearch.searchDomain === 'my-bookmarks' || !mySearch.searchDomain"
          [routerLink]="['/search']"
          [queryParams]="{q: mySearch.text, sd: 'private' }"
          class="badge badge-secondary">

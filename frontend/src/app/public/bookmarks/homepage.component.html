@@ -1,8 +1,4 @@
 <div id="public-search-box">
-
-  <app-bookmark-search [context]="'Public'" [userData$]="userData$" (searchTriggered)="onSearchTriggered($event)"
-                       (searchTextCleared)="onClearSearchText($event)"></app-bookmark-search>
-
   <mat-tab-group [selectedIndex]="selectedTabIndex"
                  (selectedTabChange)="tabSelectionChanged($event)">
     <mat-tab>
@@ -46,7 +42,7 @@
           <div *ngFor="let tag of (userData$ | async).watchedTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
             <a type="button"
                class="btn btn-secondary btn-sm text-white"
-               (click)="searchPublicTaggedBookmarks(tag)"
+               (click)="searchPublicBookmarksByTag(tag)"
                title="Show public bookmarks tagged {{tag}}"
             >
               {{tag}}
@@ -190,67 +186,6 @@
           </app-async-bookmark-list>
         </ng-template>
       </ng-template>
-
-
-    </mat-tab>
-    <mat-tab *ngIf="searchComponent.showSearchResults">
-      <ng-template mat-tab-label>
-        <span class="app-tab-label"><i class="fas fa-search"></i> Results</span>
-      </ng-template>
-      <div *ngIf="(searchComponent.searchResults$ | async)?.length === 0 && searchComponent.currentPage === 1"
-           class="alert alert-info no-search-results"
-           role="alert">
-        No <strong>{{searchComponent.searchDomain}}</strong> bookmarks found for
-        "<em>{{searchComponent.searchText}}</em>".
-        Did you mean to look into
-        <span *ngIf="searchComponent.searchDomain === 'personal'">
-          <button class="btn btn-outline-primary btn-sm"
-                    (click)="searchComponent.onSearchDomainChange('public')">
-            <i class="fa fa-search"></i> public bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('my-codelets')">
-            <i class="fa fa-search"></i> my codelets
-          </button>
-        </span>
-
-        <span *ngIf="searchComponent.searchDomain === 'public'">
-          <button class="btn btn-outline-primary btn-sm"
-                  (click)="searchComponent.onSearchDomainChange('personal')">
-            <i class="fa fa-search"></i> personal bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('my-codelets')">
-            <i class="fa fa-search"></i> my codelets
-          </button>
-        </span>
-
-        <span *ngIf="searchComponent.searchDomain === 'my-codelets'">
-          <button class="btn btn-outline-primary btn-sm"
-                  (click)="searchComponent.onSearchDomainChange('personal')">
-            <i class="fa fa-search"></i> personal bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="searchComponent.onSearchDomainChange('public')">
-            <i class="fa fa-search"></i> public bookmarks
-          </button>
-        </span>
-        ?
-      </div>
-
-
-      <app-async-bookmark-list *ngIf="searchComponent.searchDomain !== 'my-codelets'; else showCodeletResults"
-                               [bookmarks$]="searchComponent.searchResults$"
-                               [queryText]="searchComponent.searchText"
-                               [userData$]="userData$"
-                               [callerPagination]="searchComponent.callerPaginationSearchResults"
-                               (bookmarkDeleted)="searchComponent.onBookmarkDeleted($event)">
-      </app-async-bookmark-list>
-      <ng-template #showCodeletResults>
-        <app-async-codelet-list [codelets$]="searchComponent.searchResults$"
-                                [queryText]="searchComponent.searchText"></app-async-codelet-list>
-      </ng-template>
-      <hr/>
     </mat-tab>
   </mat-tab-group>
 </div>

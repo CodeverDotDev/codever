@@ -30,6 +30,7 @@ import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-sto
 import { UserData } from '../../core/model/user-data';
 import { DatePipe } from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
+import { StackoverflowHelper } from '../../core/stackoverflow.helper';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -103,6 +104,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     private userDataStore: UserDataStore,
     private userdataHistoryStore: UserDataHistoryStore,
     private userDataReadLaterStore: UserDataReadLaterStore,
+    private stackoverflowHelper: StackoverflowHelper,
     private datePipe: DatePipe,
     private logger: Logger,
     private router: Router,
@@ -211,7 +213,7 @@ export class SaveBookmarkFormComponent implements OnInit {
           this.updateFormWithScrapingDataFromLocation(location);
         });
     } else {
-      const stackoverflowQuestionId = this.getStackoverflowQuestionId(location);
+      const stackoverflowQuestionId = this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(location);
       if (stackoverflowQuestionId) {
         this.bookmarkForm.get('stackoverflowQuestionId').patchValue(stackoverflowQuestionId, {emitEvent: false});
         this.webpageInfoService.getStackoverflowQuestionData(stackoverflowQuestionId).subscribe((webpageData: WebpageInfo) => {
@@ -284,17 +286,6 @@ export class SaveBookmarkFormComponent implements OnInit {
 
     return youtubeVideoId;
   };
-
-
-  private getStackoverflowQuestionId(location: string) {
-    let stackoverflowQuestionId = null;
-    const regExpMatchArray = location.match(/stackoverflow\.com\/questions\/(\d+)/);
-    if (regExpMatchArray) {
-      stackoverflowQuestionId = regExpMatchArray[1];
-    }
-
-    return stackoverflowQuestionId;
-  }
 
   addTag(event: MatChipInputEvent): void {
     const input = event.input;

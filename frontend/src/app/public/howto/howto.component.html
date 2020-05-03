@@ -1,200 +1,53 @@
-<div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h2>Getting started</h2>
-    <p class="lead">Bookmarks.dev is a bookmark manager created and designed with Developers & Co in mind. Take a look
-      at our <a href="{{environment.HOST}}/about">About</a> page for more details.
-    <p>
-      Create an <a target="_blank" href="{{environment.keycloak.url}}/realms/bookmarks/account/">Account</a> first.
-      You will be taken to the <strong>Login/Registration</strong> form, where you can choose to connect via <strong>email
-      and password</strong>, or
-      via one of the many supported identity providers (<i class="fab fa-github"></i> Github, <i
-      class="fab fa-google"></i> Google,
-      <i class="fab fa-twitter"></i> Twitter, <i class="fab fa-stack-overflow"></i> StackOverflow, <i
-      class="fab fa-linkedin"></i> LinkedIn
-      or <i class="fab fa-facebook"></i> Facebook). Choose an <strong>username</strong>,
-      <a href="{{environment.HOST}}/personal/new"><strong>add your first bookmark</strong></a> and you are good to go.
-    <hr/>
-    <h2>Save bookmarks</h2>
-    <p class="lead">We've made it easy to save bookmarks:</p>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">The first option is with the help of <strong>bookmarklets</strong>.
-        Bookmarklets are little javascript links that live in the bookmarks toolbar of your browser.
-        Just drag one of the links bellow to your browser toolbar:
-        <ul>
-          <li>
-            <a
-              class="bookmarklet"
-              href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''};let t=document.title;let w,h;if(innerWidth>1500){w=1210}else{w=(innerWidth*80)/100}if(innerHeight>1500){h=1210}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=0,left=0`;open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();">
-              <i class="fas fa-bookmark"></i> +Bookmarks.dev - popup
-            </a> - when clicked a popup to save the current URL is displayed [<em>recommended for
-            <strong>desktops</strong> and <strong>notebooks</strong> with good resolution</em>]
-          </li>
-          <li>
-            <a
-              href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)})();">
-              <i class="fas fa-bookmark"></i> +Bookmarks.dev - go back
-            </a> - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
-            Bookmark</a> form.
-            Once added you go back to the initial page [<em>recommended for <strong>phones</strong> or smaller
-            resolution devices</em>]
-          </li>
-        </ul>
-        <p class="note_normal">You can <strong>select the text on page</strong> that you want to be added to the
-          description of the bookmark
-          before you click the bookmarklet's link </p>
-      </li>
-      <li class="list-group-item">Save directly using the
-        <div class="btn-group tag-list mt-1 mr-2">
-          <a class="btn btn-primary btn-sm" routerLink="/personal/new"
-             title="New Bookmark">
-            <i class="fa fa-plus"></i>
-            New
-          </a>
-          <button
-            type=" button"
-            class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <div class="dropdown-menu">
-            <a
-              class="dropdown-item"
-              routerLink="/personal/new"><i class="fa fa-bookmark"></i>
-              Bookmark
-            </a>
-            <a
-              class="dropdown-item"
-              routerLink="/my-codelets/new"><i class="fa fa-code"></i>
-              Codelet
-            </a>
-          </div>
-        </div>
-        button from the navigation menu
-      </li>
-      <li class="list-group-item">Use the <a
-        href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb">
-        <i class="fab fa-chrome"></i> Save to bookmarks.dev</a>
-        chrome extension for Chromium based browsers - same behaviour as the first bookmarklet
-      </li>
-    </ul>
-    <br>
-    <h3>Public & Private bookmarks</h3>
-    <p class="lead">When saving a bookmark you have the option to make it <strong>public</strong> - this won't be
-      available if you opt in for the <strong>all private modus</strong> (soon to be implemented).
-      Please share only dev related links that others might benefit from - <span
-        class="highlight"><strong>SPAM</strong> will not be tolerated and you risk having your account blocked </span>
-    </p>
+<div class="container">
+  <h2>How to</h2>
+  <hr>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <h4><i class="fas fa-xs fa-info-circle"></i> Get started</h4>
+      </mat-expansion-panel-header>
 
-    <p class="note_normal">The public bookmarks are regularly published on Github
-      at <a href="https://github.com/CodepediaOrg/bookmarks#readme"> https://github.com/CodepediaOrg/bookmarks</a>
-    </p>
+      <ng-template matExpansionPanelContent>
+        <app-howto-get-started></app-howto-get-started>
+      </ng-template>
+    </mat-expansion-panel>
 
-    <p>You can easily differentiate between private and public bookmarks:</p>
-    <img src="./assets/img/public-vs-private-bookmarks.png" alt="Search bar example" style="align-content: center; width: 100%; height: auto"/>
-    <hr/>
-    <h2>Search bookmarks</h2>
-    <p class="lead">You can search bookmarks by placing your search terms in the Search bar. You can choose to search in
-      <strong>Public Bookmarks</strong>, in <strong>My Bookmarks</strong> or <strong>My codelets</strong> by selecting one of the options
-      beneath the Search Bar.<br/><br/>
-      Tags must be embedded in <strong>square bracktes - e.g. [java]</strong></p>
-    <br>
-    <p>Let's say you want to look for personal bookmarks that contain the text <strong><em>exception</em></strong> and
-      are tagged with
-      <strong><em>java</em></strong>. Then
-      would put <strong><em>exception [java]</em></strong> in the search bar, and use the <strong>My Bookmarks</strong> option </p>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <h4><i class="fas fa-xs fa-info-circle"></i> Save bookmarks</h4>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <app-howto-save></app-howto-save>
+      </ng-template>
+    </mat-expansion-panel>
 
-    <img src="./assets/img/search-bar-example.png" alt="Search bar example" style="align-content: center; width: 100%; height: auto"/>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <h4><i class="fas fa-xs fa-info-circle"></i> Search bookmarks</h4>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <app-howto-search></app-howto-search>
+      </ng-template>
+    </mat-expansion-panel>
 
-    <br/>
-    <br/>
-    <h3>Filters</h3>
-    You can filter further by adding the following parameters to your search
-    <ul>
-      <li>
-        <code>lang:iso_language_code</code>
-        - e.g. <code>lang:en</code> for English, <code>lang:es</code> for Spanish and <code>lang:de</code>
-        for German bookmarks
-      </li>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <h4><i class="fas fa-xs fa-info-circle"></i> Bookmarklets</h4>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <app-howto-bookmarklets></app-howto-bookmarklets>
+      </ng-template>
+    </mat-expansion-panel>
 
-      <li><code>site:site_URL</code>
-        - e.g. <code>site:codepedia.org</code> bookmarks only from website <a href="https://www.codepedia.org">www.codepedia.org</a>
-      </li>
-      <li><code>private:only</code>
-        - when you want to search only through your <strong>private</strong> bookmarks
-      </li>
-    </ul>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <h4><i class="fas fa-xs fa-info-circle"></i> Codelets</h4>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <app-howto-codelets></app-howto-codelets>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
 
-    For example if you want to search for bookmarks that contain <code>javascript</code>, are in <code>German</code>
-    and published on <code>www.codepedia.org</code>, you would use the following as query text in the search box:
-    <code>
-      javascript lang:de site:codepedia.org
-    </code>
-
-    <h3>Save searches</h3>
-    <p class="note_normal">You have the possibility to save this search by clicking the <strong>Save search</strong>
-      button. This way it will be displayed in the <strong>auto completion</strong> when you input text in the Search
-      bar </p>
-
-    <h3>Search via query parameters</h3>
-    <p class="lead">You can execute the same search via <strong>query parameters</strong></p>
-
-    You can trigger the same search as above by calling the following URL:
-
-    <a href="https://www.bookmarks.dev/search?q=exception [java]&sd=personal">https://www.bookmarks.dev/search?q=exception
-      [java]&sd=personal</a>
-    <ul>
-      <li><strong>q</strong> - here is your input search text</li>
-      <li><strong>sd</strong> - search domain with two options</li>
-      <ul>
-        <li><strong>personal</strong> - mine and favorite bookmarks</li>
-        <li><strong>public</strong> - public bookmarks (may include personal bookmarks if they come from same user)</li>
-      </ul>
-    </ul>
-    <p class="note_normal">This is very handy if you use Web Search tools where you can define custom queries,
-      like <a href="https://www.alfredapp.com/help/features/web-search/"> Alfred Web Search</a> if you are on Mac</p>
-
-    <hr/>
-
-    <h2>Codelets <i class="fa fa-code"></i></h2>
-    <p class="lead"><strong>Codelets</strong> are special types of bookmarks where you save small pieces of code you
-      would want to recall later. At the present moment all codelets are <strong>private only</strong>.</p>
-    <h3>Save codelets</h3>
-    You need to select the <strong><i class="fa fa-code"></i> Codelet</strong> option from the
-    <div class="btn-group tag-list mt-1 mr-2">
-      <a class="btn btn-primary btn-sm" routerLink="/personal/new"
-         title="New Bookmark">
-        <i class="fa fa-plus"></i>
-        New
-      </a>
-      <button
-        type=" button"
-        class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        <span class="sr-only">Toggle Dropdown</span>
-      </button>
-      <div class="dropdown-menu">
-        <a
-          class="dropdown-item"
-          routerLink="/personal/new"><i class="fa fa-bookmark"></i>
-          Bookmark
-        </a>
-        <a
-          class="dropdown-item"
-          routerLink="/my-codelets/new"><i class="fa fa-code"></i>
-          Codelet
-        </a>
-      </div>
-    </div>
-    button.
-
-    <h3>Search codelets</h3>
-    Searching for codelets works the same as the one for regular bookmarks. Just select the <strong>My codelets</strong> option under the search bar.
-    You can also save searches the same way as for regular bookmarks.
-  </div>
 </div>
+

@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {Logger} from './logger.service';
 import {ErrorService} from './error/error.service';
 import {ErrorComponent} from './error/error.component';
-import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
 import {PersonalBookmarksService} from './personal-bookmarks.service';
 import {UserDataService} from './user-data.service';
@@ -26,6 +25,8 @@ import { AuthGuard } from './auth/auth-guard.service';
 import { FeedStore } from './user/feed-store.service';
 import { PersonalCodeletsService } from './personal-codelets.service';
 import { MarkdownService } from './markdown/markdown.service';
+import { SearchNotificationService } from './search-notification.service';
+import { StackoverflowHelper } from './stackoverflow.helper';
 
 
 /**
@@ -40,11 +41,9 @@ import { MarkdownService } from './markdown/markdown.service';
     RouterModule
   ],
   declarations: [
-    NavigationComponent,
     ErrorComponent
   ],
   exports: [
-    NavigationComponent,
     ErrorComponent
   ],
   providers: [
@@ -70,7 +69,9 @@ import { MarkdownService } from './markdown/markdown.service';
     WebpageInfoService,
     LoaderService,
     KeycloakServiceWrapper,
-    MarkdownService
+    MarkdownService,
+    SearchNotificationService,
+    StackoverflowHelper
   ]
 })
 export class CoreModule {

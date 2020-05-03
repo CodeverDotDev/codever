@@ -50,10 +50,11 @@ personalCodeletsRouter.get('/', keycloak.protect(), async (request, response) =>
 
 
   const searchText = request.query.q;
+  const searchInclude = request.query.include;
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
 
   const {userId} = request.params;
-  const codelet = await PersonalCodeletsSearchService.findPersonalCodelets(searchText, page, limit, userId);
+  const codelet = await PersonalCodeletsSearchService.findPersonalCodelets(searchText, page, limit, userId, searchInclude);
 
   return response.status(HttpStatus.OK).send(codelet);
 });

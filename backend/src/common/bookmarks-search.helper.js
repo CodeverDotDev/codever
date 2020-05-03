@@ -10,7 +10,6 @@ let splitSearchQuery = function (query) {
   let isInsideTerm = false;
   let isInsideTag = false;
 
-
   for ( let i = 0; i < query.length; i++ ) {
     const currentCharacter = query[i];
     if ( currentCharacter === ' ' ) {
@@ -26,10 +25,7 @@ let splitSearchQuery = function (query) {
         tag += ' ';
       }
     } else if ( currentCharacter === '[' ) {
-      if ( isInsideTag ) {
-        tags.push(tag.trim());
-        tag = '';
-      } else {
+      if ( !isInsideTag ) {
         isInsideTag = true;
       }
     } else if ( currentCharacter === ']' ) {
@@ -154,9 +150,30 @@ let extractSpecialSearchTerms = function (searchedTerms) {
   }
 }
 
+/*
+  The default search in Mongo uses the OR operatar, here
+  we make to AND by placing the search terms between ""
+ */
+let generateFullSearchText = function (nonSpecialSearchTerms) {
+  let termsQuery = '';
+  nonSpecialSearchTerms.forEach(searchTerm => {
+    if ( searchTerm.startsWith('-') ) {
+      termsQuery += ' ' + searchTerm;
+    } else { //wrap it in quotes to make it a default AND in search
+      termsQuery += ' "' + searchTerm.substring(0, searchTerm.length) + '"';
+    }
+  });
+  //const termsJoined = nonSpecialSearchTerms.join(' ');
+  //const termsQuery = escapeStringRegexp(termsJoined);
+  //const termsQuery = termsJoined;
+
+  return termsQuery.trim();
+};
+
 module.exports = {
   splitSearchQuery: splitSearchQuery,
   bookmarkContainsSearchedTerm: bookmarkContainsSearchedTerm,
   extractSpecialSearchTerms: extractSpecialSearchTerms,
-  escapeRegExp: escapeRegExp
+  escapeRegExp: escapeRegExp,
+  generateFullSearchText: generateFullSearchText
 }

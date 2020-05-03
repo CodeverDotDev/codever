@@ -24,6 +24,10 @@ const routes: Routes = [
     loadChildren: () => import('app/codelet/codelet.module').then(m => m.CodeletModule)
   },
   {
+    path: 'search',
+    loadChildren: () => import('app/search-results/search-results.module').then(m => m.SearchResultsModule)
+  },
+  {
     path: '',
     redirectTo: 'public',
     pathMatch: 'full'

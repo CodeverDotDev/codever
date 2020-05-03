@@ -76,6 +76,7 @@ export class SavedSearchesComponent implements OnInit {
     );
   }
 
+  // TODO group saved searches nach SearchDomain and delete it coresspondingly
   deleteSavedSearch(savedSearchText: string) {
     const index = this._userData.searches.findIndex((search: Search) => search.text === savedSearchText);
     this._userData.searches.splice(index, 1);

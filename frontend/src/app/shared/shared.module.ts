@@ -15,6 +15,8 @@ import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
 import { Markdown2HtmlPipe } from './markdown2html.pipe';
+import { NavigationComponent } from './navigation/navigation.component';
+import { SearchbarComponent } from './search/searchbar.component';
 
 
 /**
@@ -43,7 +45,9 @@ import { Markdown2HtmlPipe } from './markdown2html.pipe';
     SocialShareDialogComponent,
     LoginRequiredDialogComponent,
     PlayYoutubeVideoDialogComponent,
-    TagFollowingBaseComponent
+    TagFollowingBaseComponent,
+    SearchbarComponent,
+    NavigationComponent
   ],
   exports: [
     CommonModule,
@@ -54,7 +58,9 @@ import { Markdown2HtmlPipe } from './markdown2html.pipe';
     Markdown2HtmlPipe,
     AsyncBookmarkListComponent,
     BookmarkTextComponent,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NavigationComponent,
+    SearchbarComponent,
   ],
   entryComponents: [
     DeleteBookmarkDialogComponent,

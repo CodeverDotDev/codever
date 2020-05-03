@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,7 +7,6 @@ import { allTags } from '../../core/model/all-tags.const.en';
 import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
-import { BookmarksSearchComponent } from '../search/bookmarks-search.component';
 import { MatDialog, MatTabChangeEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { UserInfoStore } from '../../core/user/user-info.store';
@@ -19,6 +18,7 @@ import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-sto
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';
 import { FeedStore } from '../../core/user/feed-store.service';
+import { SearchDomain } from '../../core/model/search-domain.enum';
 
 
 @Component({
@@ -32,9 +32,6 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   pageNavigationSubscription: Subscription;
   tags: string[] = allTags;
   userData$: Observable<UserData>;
-
-  @ViewChild(BookmarksSearchComponent, {static: true})
-  searchComponent: BookmarksSearchComponent;
 
   history$: Observable<Bookmark[]>;
   pinned$: Observable<Bookmark[]>;
@@ -112,10 +109,6 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
         this.selectedTabIndex = TabIndex.ReadLater;
         break;
       }
-      case 'search-results': {
-        this.selectedTabIndex = TabIndex.SearchResults;
-        break;
-      }
       default: {
         this.selectedTabIndex = 0;
         if (isLoggedIn && !this.seeAllPublicToggle) {
@@ -141,9 +134,6 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
           break;
         case TabIndex.ReadLater:
           this.currentPageReadLater = parseInt(page, 0);
-          break;
-        case TabIndex.SearchResults:
-          this.searchComponent.currentPage = parseInt(page, 0);
       }
     }
   }
@@ -157,8 +147,6 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
         } else {
           this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageFeed);
         }
-
-        this.searchComponent.clearSearchText();
       }
     });
   }
@@ -244,25 +232,9 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
         return {tab: 'read-later', page: this.currentPageReadLater};
         break;
       }
-      case TabIndex.SearchResults: {
-        return {tab: 'search-results', page: this.searchComponent.currentPage};
-        break;
-      }
       default: {
         return {tab: 'feed', page: this.currentPageFeed};
       }
-    }
-  }
-
-  onSearchTriggered(searchTriggered: boolean) {
-    if (searchTriggered) {
-      this.selectedTabIndex = TabIndex.SearchResults;
-    }
-  }
-
-  onClearSearchText(searchTextCleared: boolean) {
-    if (searchTextCleared) {
-      this.selectedTabIndex = TabIndex.Feed;
     }
   }
 
@@ -281,10 +253,11 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
 
   }
 
-  searchPublicTaggedBookmarks(tag: string) {
-    this.searchComponent.searchControl.setValue('[' + tag + ']');
-    this.searchComponent.searchDomain = 'public';
-    this.searchComponent.searchBookmarks('[' + tag + ']')
+  searchPublicBookmarksByTag(tag: string) {
+    this.router.navigate(['./search'],
+      {
+        queryParams: {q: '[' + tag + ']', sd: SearchDomain.PUBLIC_BOOKMARKS, page: 1}
+      });
   }
 }
 
@@ -297,6 +270,5 @@ enum TabIndex {
   Feed = 0,
   History,
   Pinned,
-  ReadLater,
-  SearchResults
+  ReadLater
 }
