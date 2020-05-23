@@ -90,7 +90,7 @@
               <a
                 *ngIf="(verifyForWatchedTag | async) === tag && (userData$ | async)?.watchedTags.includes(tag); else watchTagOption"
                 class="dropdown-item"
-                (click)="unwatchTag(tag, userIsLoggedIn)"><i class="fas fa-eye-slash"> </i> Unwatch tag
+                (click)="unwatchTag(tag)"><i class="fas fa-eye-slash"> </i> Unwatch tag
               </a>
               <ng-template #watchTagOption>
                 <a (click)="watchTag(tag, userIsLoggedIn)" class="dropdown-item"><i class="fas fa-eye"></i> Watch tag
@@ -99,7 +99,7 @@
               <a
                 *ngIf="(verifyForWatchedTag | async) === tag && (userData$ | async)?.ignoredTags.includes(tag); else ignoreTagOption"
                 class="dropdown-item"
-                (click)="unignoreTag(tag, userIsLoggedIn)"><i class="fas fa-ban"></i> Unignore tag
+                (click)="unignoreTag(tag)"><i class="fas fa-ban"></i> Unignore tag
               </a>
               <ng-template #ignoreTagOption>
                 <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag

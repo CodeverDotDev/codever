@@ -1,0 +1,71 @@
+<div class="input-group search-component">
+  <div class="input-group-prepend">
+    <button type="button"
+            (mouseover)="hover=true"
+            (mouseleave)="hover=false"
+            [class.focused]="(isFocusOnSearchControl || hover) && publicSearchBox.value"
+            (click)="onSearchDomainChange(searchDomain)"
+            [disabled]="!searchBoxText"
+            class="btn btn-outline-secondary"
+            title="Search"
+    >
+      <i class="fa fa-search" style="font-size: 1.18rem"></i>
+    </button>
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" role="button"
+         title="Search in personal bookmarks"
+         (click)="onSearchDomainChange('my-bookmarks')">
+        <i class="fa fa-search"></i> My Bookmarks <i *ngIf="searchDomain === 'my-bookmarks'" class="fas fa-check"></i>
+      </a>
+      <a class="dropdown-item" role="button"
+         title="Search in public bookmarks"
+         (click)="onSearchDomainChange('public-bookmarks')">
+        <i class="fa fa-search"></i> Public Bookmarks <i *ngIf="searchDomain === 'public-bookmarks'" class="fas fa-check"></i>
+      </a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" role="button"
+         title="Search in my codelets"
+         (click)="onSearchDomainChange('my-codelets')">
+        <i class="fa fa-search"></i> My Codelets <i *ngIf="searchDomain === 'my-codelets'" class="fas fa-check"></i>
+      </a>
+    </div>
+  </div>
+  <input
+    #publicSearchBox
+    matInput
+    type="text"
+    class="form-control"
+    [formControl]="searchControl"
+    placeholder="Search in {{searchDomain === 'my-codelets' ? 'My Codelets' : searchDomain === 'public-bookmarks' ? 'Public Bookmarks' : 'My Bookmarks'}} ..."
+    [matAutocomplete]="auto"
+    (focus)="focusOnSearchControl()"
+    (focusout)="unFocusOnSearchControl()"
+    (keyup.enter)="searchBookmarksFromSearchBox(publicSearchBox.value)"
+  >
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteSelectionChanged($event)">
+    <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">{{search.text}}</mat-option>
+  </mat-autocomplete>
+  <div class="input-group-append">
+    <button *ngIf="publicSearchBox.value" class="btn btn-sm btn-outline-secondary"
+            type="button"
+            (click)="clearSearchBoxText()"
+            title="Clear"
+    ><i class="fas fa-lg fa-times"></i>
+    </button>
+    <button class="btn btn-outline-secondary"
+            type="button"
+            (click)="onSaveSearchClick()"
+            title="{{userIsLoggedIn ? 'Save search' : 'Login to save search'}}"
+            [disabled]="!searchBoxText"
+    ><i class="fas fa-save"></i>
+    </button>
+  </div>
+</div>
+
+
+
+

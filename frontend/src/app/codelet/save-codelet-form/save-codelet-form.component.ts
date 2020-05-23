@@ -19,6 +19,9 @@ import { Codelet, CodeSnippet } from '../../core/model/codelet';
 import { PersonalCodeletsService } from '../../core/personal-codelets.service';
 import { DeleteCodeletDialogComponent } from '../delete-codelet-dialog/delete-codelet-dialog.component';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
+import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
+import { StackoverflowHelper } from '../../core/stackoverflow.helper';
+import { WebpageInfo } from '../../core/model/webpage-info';
 
 @Component({
   selector: 'app-save-codelet-form',
@@ -82,7 +85,9 @@ export class SaveCodeletFormComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private errorService: ErrorService,
-    private deleteDialog: MatDialog
+    private deleteDialog: MatDialog,
+    private webpageInfoService: WebpageInfoService,
+    private stackoverflowHelper: StackoverflowHelper,
   ) {
     this.userInfoStore.getUserInfo$().subscribe(userInfo => {
       this.userId = userInfo.sub;
@@ -91,7 +96,7 @@ export class SaveCodeletFormComponent implements OnInit {
       });
       this.suggestedTagsStore.getSuggestedCodeletTags$(this.userId).subscribe(userTags => {
 
-        this.autocompleteTags = userTags.concat(this.commonCodeletTags.filter((item => userTags.indexOf(item) < 0 ))).sort();
+        this.autocompleteTags = userTags.concat(this.commonCodeletTags.filter((item => userTags.indexOf(item) < 0))).sort();
 
         this.filteredTags = this.tagsControl.valueChanges.pipe(
           startWith(null),
@@ -132,6 +137,26 @@ export class SaveCodeletFormComponent implements OnInit {
         this.tags.markAsDirty();
       });
     }
+
+    if (this.sourceUrl) {
+      const stackoverflowQuestionId = this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(this.sourceUrl);
+      if (stackoverflowQuestionId) {
+        this.webpageInfoService.getStackoverflowQuestionData(stackoverflowQuestionId).subscribe((webpageData: WebpageInfo) => {
+            if (webpageData.tags) {
+              for (let i = 0; i < webpageData.tags.length; i++) {
+                const formTags = this.codeletFormGroup.get('tags') as FormArray;
+                formTags.push(this.formBuilder.control(webpageData.tags[i]));
+              }
+
+              this.tagsControl.setValue(null);
+              this.tags.markAsDirty();
+            }
+          },
+          error => {
+            console.error(`Problems when scraping data for stackoverflow id ${stackoverflowQuestionId}`, error);
+          });
+      }
+    }
   }
 
 
@@ -168,7 +193,7 @@ export class SaveCodeletFormComponent implements OnInit {
   }
 
   addEmptyCodeSnippet(index: number): void {
-    this.codeSnippetsFormArray.insert(index + 1,  this.createEmptyCodeSnippet());
+    this.codeSnippetsFormArray.insert(index + 1, this.createEmptyCodeSnippet());
   }
 
   removeCodeSnippet(index: number) {

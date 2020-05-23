@@ -60,7 +60,7 @@ export class UserPublicProfileComponent extends TagFollowingBaseComponent implem
       this.meta.updateTag({name: 'og:description', content: publicData.publicProfile.summary})
     })
     const searchText = `user:${this.userId}`;
-    this.recentPosts$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, environment.RECENT_PUBLIC_USER_BOOKMARKS_LIMIT, 1, 'newest');
+    this.recentPosts$ = this.publicBookmarksService.searchPublicBookmarks(searchText, environment.RECENT_PUBLIC_USER_BOOKMARKS_LIMIT, 1, 'newest', null);
   }
 
   goToEditUserProfile() {

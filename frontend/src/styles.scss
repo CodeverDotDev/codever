@@ -165,7 +165,6 @@ pre{
 }
 
 
-
 .private-bookmark {
   background-color: #fcf8f1;
 }
@@ -320,6 +319,12 @@ pre{
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
 
 // START bootstrap override
+
+.right-font-icon {
+  @extend .float-right;
+  line-height: inherit;
+}
+
 .card {
   margin-bottom: 0.5rem;
 }
@@ -345,6 +350,22 @@ pre{
   }
 }
 
+.navbar {
+  z-index: 1000;
+}
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 1);
+  font-weight: 500;
+}
+
+// https://stackoverflow.com/questions/16214326/bootstrap-dropdown-with-hover
+/*@media (min-width: 768px) {
+  .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; // remove the gap so it doesn't close
+  }
+}*/
+
 // END bootstrap override
 
 label {
@@ -359,5 +380,15 @@ label {
 .code-snippet-wrapper {
   margin-top: -0.5rem;
 }
+
+.main-body {
+  margin-top:5rem
+}
+@media (max-width: 680px) {
+  .main-body {
+    margin-top:7rem
+  }
+}
+
 
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
