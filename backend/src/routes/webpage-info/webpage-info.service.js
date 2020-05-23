@@ -44,7 +44,7 @@ let getYoutubeVideoData = async (youtubeVideoId) => {
 
   let webpageInfo = {
     title: title,
-    metaDescription: description.substring(0, 500),
+    metaDescription: description.substring(0, 600),
     publishedOn: publishedOn,
     videoDuration: videoDuration
   }

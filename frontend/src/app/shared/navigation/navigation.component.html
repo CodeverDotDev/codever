@@ -1,0 +1,212 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" [routerLink]="['']" routerLinkActive="active">
+    <div class="app-brand" (click)="onLogoClick()">
+      <div>
+        <img src="assets/logo.png" width="50" height="50" class="d-inline-block align-middle logo-image"
+             alt="Logo Bookmarks.dev">
+      </div>
+      <div class="app-brand-text">
+        <span>Bookmarks
+          <br>
+          <small>Manager for Devs & Co</small>
+        </span>
+      </div>
+    </div>
+
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <ul class="navbar-nav">
+    <li class="nav-item mr-5">
+      <app-searchbar [userData$]="userData$"></app-searchbar>
+    </li>
+  </ul>
+  <div class="navbar-collapse collapse" id="collapsingNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown" title="Fork me on Github">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-github" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <i class="fab fa-lg fa-github"></i>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown-github">
+          <a
+            href="https://github.com/CodepediaOrg/bookmarks.dev#readme"
+            target="_blank"
+            title="Source code for Website"
+            class="dropdown-item">
+            <i class="fab fa-lg fa-github"></i>
+            Source code
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+          <a
+            href="https://github.com/CodepediaOrg/bookmarks#readme"
+            target="_blank"
+            title="Source code for Website"
+            class="dropdown-item">
+            <i class="fab fa-lg fa-github"></i>
+            Public bookmarks
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-howTo" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          How To
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown-howTo">
+          <a
+            title="Helps you get startet on www.bookmarks.dev"
+            class="dropdown-item"
+            routerLink="howto">
+            <i class="fas fa-info-circle"></i>
+            How To
+          </a>
+          <div class="dropdown-divider"></div>
+          <a
+            title="How to get started on www.bookmarks.dev"
+            class="dropdown-item"
+            routerLink="howto/get-started">
+            <i class="fas fa-info-circle"></i>
+            Get started
+          </a>
+          <a
+            title="How to save bookmarks on www.bookmarks.dev"
+            class="dropdown-item"
+            routerLink="howto/save">
+            <i class="fas fa-info-circle"></i>
+            Save Bookmarks
+          </a>
+          <a
+            title="How to search on www.bookmarks.dev"
+            class="dropdown-item"
+            routerLink="howto/search">
+            <i class="fas fa-info-circle"></i>
+            Search Bookmarks
+          </a>
+          <div class="dropdown-divider"></div>
+          <a
+            title="How to use bookmarklets"
+            class="dropdown-item"
+            routerLink="howto/bookmarklets"
+          >
+            <i class="fas fa-info-circle"></i>
+            Bookmarklets
+            <i class="fas fa-bookmark right-font-icon"></i>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a
+            title="How to use codelets"
+            class="dropdown-item"
+            routerLink="howto/codelets">
+            <i class="fas fa-info-circle"></i>
+            Codelets
+            <i class="fa fa-code right-font-icon"></i>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item dropdown large-displays" title="Fork me on Github">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-bookmarklet" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Bookmarking
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown-bookmarklet">
+          <h6 class="dropdown-header">Bookmarklets <i class="fas fa-bookmark"></i></h6>
+          <a
+            style="cursor: move"
+            href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''};let t=document.title;let w,h;if(innerWidth>1400){w=930}else{w=(innerWidth*65)/100}if(innerHeight>1400){h=1150}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=${innerHeight-h},left=${innerWidth - w}`;open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();"
+            target="_blank"
+            title="Drag to browser toolbar"
+            class="dropdown-item">
+            +Bookmark <i class="fas fa-arrows-alt  right-font-icon"></i>
+          </a>
+          <a
+            href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''}let t=document.title;let w,h;if(innerWidth>1400){w=930}else{w=(innerWidth*65)/100}if(innerHeight>1400){h=1150}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=${innerHeight-h},left=${innerWidth - w}`;open('https://www.bookmarks.dev/my-codelets/new?sourceUrl='+encodeURIComponent(l)+'&code='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();"
+            target="_blank"
+            title="Drag to browser toolbar"
+            style="cursor: move"
+            class="dropdown-item  cursor-move">
+            +Codelet <i class="fas fa-arrows-alt right-font-icon"></i>
+          </a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Chromium extensions <i class="fab fa-chrome"></i></h6>
+          <a
+            href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb"
+            target="_blank"
+            title="Chrome Extension URL"
+            class="dropdown-item">
+            Save bookmark to Bookmarks.dev
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-new" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-lg fa-plus"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown-new">
+          <a
+            class="dropdown-item"
+            routerLink="/personal/new">
+            <i class="fa fa-bookmark"></i>
+            Bookmark
+          </a>
+          <a
+            class="dropdown-item"
+            routerLink="/my-codelets/new">
+            <i class="fa fa-code"></i>
+            Codelet
+          </a>
+        </div>
+      </li>
+      <li *ngIf="(userInfoOidc$ | async); else notLoggedIn" class="nav-item dropdown ml-auto">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-lg fa-user"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a
+            class="dropdown-item"
+            title="Overview over your bookmarks and used tags"
+            routerLink="dashboard"
+          >
+            Dashboard
+            <i class="fas fa-tachometer-alt"></i>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" routerLink="/settings">
+            Settings
+            <i class="fas fa-cog"></i>
+          </a>
+          <a class="dropdown-item" href="{{environment.keycloak.url}}/realms/bookmarks/account/">
+            Account
+            <i class="fas fa-user-shield"></i>
+          </a>
+          <div class="dropdown-divider"></div>
+          <span class="dropdown-item-text">
+            {{(userInfoOidc$ | async).name}}</span>
+          <span class="dropdown-item-text">{{(userInfoOidc$ | async).email}}</span>
+
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#" (click)="doLogout()">Sign out</a>
+        </div>
+      </li>
+      <ng-template #notLoggedIn>
+        <li class="nav-item">
+          <a title="Go To Login/Registration Form" class="nav-link" (click)="login()">Login/Register
+          </a>
+        </li>
+      </ng-template>
+    </ul>
+  </div>
+</nav>

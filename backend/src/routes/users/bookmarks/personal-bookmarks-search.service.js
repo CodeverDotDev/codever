@@ -1,9 +1,7 @@
 const Bookmark = require('../../../model/bookmark');
-const escapeStringRegexp = require('escape-string-regexp');
-
 const bookmarksSearchHelper = require('../../../common/bookmarks-search.helper');
 
-let findPersonalBookmarks = async function (query, page, limit, userId) {
+let findPersonalBookmarks = async function (query, page, limit, userId, searchInclude) {
   //split in text and tags
   const searchedTermsAndTags = bookmarksSearchHelper.splitSearchQuery(query);
   let searchedTerms = searchedTermsAndTags.terms;
@@ -13,9 +11,9 @@ let findPersonalBookmarks = async function (query, page, limit, userId) {
   const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters);
+    bookmarks = await getPersonalBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForSearchedTerms(nonSpecialSearchTerms, page, limit, userId, specialSearchFilters);
+    bookmarks = await getPersonalBookmarksForSearchedTerms(nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude);
   } else {
     bookmarks = await getPersonalBookmarksForSearchedTags(searchedTags, page, limit, userId, specialSearchFilters);
   }
@@ -23,7 +21,7 @@ let findPersonalBookmarks = async function (query, page, limit, userId) {
   return bookmarks;
 }
 
-let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
+let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude) {
   let filter = {
     userId: userId,
     tags:
@@ -33,10 +31,11 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
   }
 
   if ( nonSpecialSearchTerms.length > 0 ) {
-    filter.$text =
-      {
-        $search: nonSpecialSearchTerms.join(' ')
-      }
+    if(searchInclude === 'any') {
+      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+    } else {
+      filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+    }
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -47,30 +46,33 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
       score: {$meta: "textScore"}
     }
   )
-  //.sort({createdAt: -1})
     .sort({score: {$meta: "textScore"}})
+    .skip( ( page - 1 ) * limit)
+    .limit(limit)
     .lean()
     .exec();
 
+/* TODO - remove
   for ( const term of nonSpecialSearchTerms ) {
     bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
   }
   const startPoint =   ( page - 1 ) * limit;
-  bookmarks = bookmarks.slice(startPoint, startPoint + limit);
+  bookmarks = bookmarks.slice(startPoint, startPoint + limit);*/
 
   return bookmarks;
 }
 
 
-let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
+let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude) {
 
   let filter = {userId: userId };
-  if(nonSpecialSearchTerms.length > 0) {
-    const termsJoined = nonSpecialSearchTerms.join(' ');
-    const termsQuery = escapeStringRegexp(termsJoined);
-    filter.$text = {$search: termsQuery}
+  if ( nonSpecialSearchTerms.length > 0 ) {
+    if(searchInclude === 'any') {
+      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+    } else {
+      filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+    }
   }
-
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
 
   let bookmarks = await Bookmark.find(
@@ -79,16 +81,11 @@ let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms
       score: {$meta: "textScore"}
     }
   )
-  //.sort({createdAt: -1}) //let's give it a try with text score
     .sort({score: {$meta: "textScore"}})
+    .skip( ( page - 1 ) * limit)
+    .limit(limit)
     .lean()
     .exec();
-
-  for ( const term of nonSpecialSearchTerms ) {
-    bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
-  }
-  const startPoint =  ( page - 1 ) * limit;
-  bookmarks = bookmarks.slice(startPoint, startPoint + limit);
 
   return bookmarks;
 }

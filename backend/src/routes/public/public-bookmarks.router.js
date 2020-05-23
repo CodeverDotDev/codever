@@ -11,11 +11,12 @@ const PaginationQueryParamsHelper = require('../../common/pagination-query-param
  */
 router.get('/', async (request, response, next) => {
   const searchText = request.query.q;
+  const searcMode = request.query.include;
   const sort = request.query.sort;
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
 
   if (searchText) {
-    const bookmarks = await publicBookmarksSearchService.findPublicBookmarks(searchText, page, limit, sort);
+    const bookmarks = await publicBookmarksSearchService.findPublicBookmarks(searchText, page, limit, sort, searcMode);
     response.send(bookmarks);
   } else {
     next()

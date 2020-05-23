@@ -1,5 +1,5 @@
 <div #bookmarkText>
-  <div *ngIf="viewHeight > 120 else wholeText">
+  <div *ngIf="viewHeight > 120 else wholeText" class="mb-2">
     <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}" *ngIf="bookmark.descriptionHtml" [innerHtml]="bookmark.descriptionHtml | highlightHtml: queryText"></div>
     <button (click)="showMoreText = !showMoreText" [ngClass]="{show_less_button: showMoreText, show_more_button: !showMoreText}" class="toggle-show-more-button"></button>
   </div>
