@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const searchSchema = new Schema({
-    _id: {type:Schema.Types.ObjectId, select: false},
     text: String,
     lastAccessedAt: Date,
     searchDomain: String,
