@@ -12,6 +12,7 @@ import { DeleteSavedSearchDialogComponent } from './saved-searches/delete-saved-
 import { SavedSearchesComponent } from './saved-searches/saved-searches.component';
 import { FollowingComponent } from './following/following.component';
 import { FollowersComponent } from './followers/followers.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const userDashboardRoutes: Routes = [
   {
@@ -43,6 +44,7 @@ const userDashboardRoutes: Routes = [
     SharedModule,
     MatTabsModule,
     MatAutocompleteModule,
+    MatExpansionModule,
     MatDialogModule,
     CommonModule
   ],

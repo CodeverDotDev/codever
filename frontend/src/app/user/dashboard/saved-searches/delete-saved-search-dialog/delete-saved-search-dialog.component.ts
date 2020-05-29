@@ -10,12 +10,14 @@ import { UsedTag } from '../../../../core/model/used-tag';
 export class DeleteSavedSearchDialogComponent implements OnInit {
 
   savedSearchText: string;
+  searchDomain: string;
 
   constructor(
     private dialogRef: MatDialogRef<DeleteSavedSearchDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data
   ) {
     this.savedSearchText = data.savedSearchText;
+    this.searchDomain = data.searchDomain;
   }
 
   ngOnInit() {
