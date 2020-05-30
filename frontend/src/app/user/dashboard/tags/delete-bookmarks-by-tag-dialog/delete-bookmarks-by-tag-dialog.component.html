@@ -3,13 +3,13 @@
 <hr>
 
 <mat-dialog-content>
-  Are you sure you want to delete <strong>ALL</strong> private bookmarks tagged with <strong>[{{tag}}]</strong>?
+  Are you sure you want to delete <strong>ALL private</strong> bookmarks tagged with <strong>[{{tag}}]</strong>?
 </mat-dialog-content>
 
 <hr>
 
 <mat-dialog-actions class="app-dialog-actions">
-  <button type="button" class="btn btn-danger btn-sm" (click)="delete()"><i class="far fa-trash-alt"></i> Delete
+  <button type="button" class="btn btn-danger btn-sm mr-2" (click)="delete()"><i class="far fa-trash-alt"></i> Delete
   </button>
   <button type="button" class="btn btn-primary btn-sm" (click)="close()">Cancel</button>
 </mat-dialog-actions>
