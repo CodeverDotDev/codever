@@ -1,4 +1,5 @@
-<div *ngIf="!isUpdate || (isUpdate && bookmark$ | async)" class="navigation-space-buffer" [ngClass]="{'private-bookmark': makePublic === false}">
+<div *ngIf="!isUpdate || (isUpdate && bookmark$ | async)" class="navigation-space-buffer"
+     [ngClass]="{'private-bookmark': makePublic === false}">
   <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
     <div class="form-group">
       <label for="location">Location*</label>
@@ -9,7 +10,8 @@
                formControlName="location"
                placeholder="Usually an URL">
         <div class="input-group-append">
-          <div class="input-group-text"><a href="{{bookmarkForm.get('location').value}}" target="_blank" title="Jump to location"><i class="fas fa-external-link-alt"></i></a></div>
+          <div class="input-group-text"><a href="{{bookmarkForm.get('location').value}}" target="_blank"
+                                           title="Jump to location"><i class="fas fa-external-link-alt"></i></a></div>
         </div>
       </div>
       <div [hidden]="bookmarkForm.get('location').valid || (bookmarkForm.get('location').pristine)"
@@ -17,7 +19,13 @@
         Location is required
       </div>
       <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
-        You have already bookmarked this URL.
+        You have already bookmarked this URL -
+        <button
+          type="button" class="btn btn-light btn-sm"
+          (click)="editExistingBookmark()"
+          title="Edit bookmark">
+          <i class="far fa-edit"></i> Edit
+        </button>
       </div>
     </div>
     <div class="form-group form-group-distanced">
@@ -60,16 +68,17 @@
             {{tag.value}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
-          <input placeholder="&nbsp;&nbsp;Tags* - max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
-                 matInput
-                 #tagInput
-                 [formControl]="tagsControl"
-                 [matChipInputFor]="chipList"
-                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                 [matChipInputAddOnBlur]="addOnBlur"
-                 [matAutocomplete]="auto"
-                 (matChipInputTokenEnd)="addTag($event)"
-                 formArrayName="tags"
+          <input
+            placeholder="&nbsp;&nbsp;Tags* - max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
+            matInput
+            #tagInput
+            [formControl]="tagsControl"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="addOnBlur"
+            [matAutocomplete]="auto"
+            (matChipInputTokenEnd)="addTag($event)"
+            formArrayName="tags"
           />
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedTag($event)">
@@ -92,7 +101,8 @@
     </div>
 
     <div class="form-group form-group-distanced">
-      <label for="publishedOn">Published on <i class="far fa-calendar-alt"></i> &nbsp; (when was the article, video, etc. published)</label>
+      <label for="publishedOn">Published on <i class="far fa-calendar-alt"></i> &nbsp; (when was the article, video,
+        etc. published)</label>
       <input type="date" class="form-control" id="publishedOn"
              formControlName="publishedOn"
              placeholder='Date when page was published yyyy-MM-dd'>

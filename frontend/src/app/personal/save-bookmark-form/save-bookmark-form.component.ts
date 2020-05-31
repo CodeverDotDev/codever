@@ -44,6 +44,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   private userData: UserData;
   makePublic = false;
   personalBookmarkPresent = false;
+  existingPersonalBookmark: Bookmark;
 
   // chips
   selectable = true;
@@ -182,7 +183,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     if (isNewBookmark) {
       this.bookmarkForm.get('location').valueChanges.pipe(
         debounceTime(1000),
-        distinctUntilChanged(), )
+        distinctUntilChanged(),)
         .subscribe(location => {
           this.verifyExistenceInPersonalBookmarks(location);
         });
@@ -193,6 +194,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     this.personalBookmarksService.getPersonalBookmarkByLocation(this.userId, location).subscribe((bookmarks: Bookmark[]) => {
       if (bookmarks.length === 1) {
         this.personalBookmarkPresent = true;
+        this.existingPersonalBookmark = bookmarks[0];
       } else if (!this.copyToMine) {
         this.getWebPageInfo(location);
       }
@@ -532,6 +534,11 @@ export class SaveBookmarkFormComponent implements OnInit {
           return observableThrowError(error.body.json());
         }
       );
+  }
+
+  editExistingBookmark(): void {
+    const link = ['./personal/bookmarks', this.existingPersonalBookmark._id];
+    this.router.navigate(link, {state: {bookmark: this.existingPersonalBookmark}});
   }
 }
 
