@@ -72,6 +72,12 @@ export class SaveCodeletFormComponent implements OnInit {
   sourceUrl; // value of "url" query parameter if present
 
   @Input()
+  tagsStr; // tags received - string with comma separated values
+
+  @Input()
+  comment; // comment received via query
+
+  @Input()
   popup; // if it's popup window
 
   constructor(
@@ -106,8 +112,6 @@ export class SaveCodeletFormComponent implements OnInit {
         );
       });
     });
-
-
   }
 
   ngOnInit(): void {
@@ -121,9 +125,8 @@ export class SaveCodeletFormComponent implements OnInit {
         this.codeletFormGroup.get('title').setValue(codelet.title);
         this.codeletFormGroup.get('sourceUrl').setValue(codelet.sourceUrl);
 
-        const formTags = this.codeletFormGroup.get('tags') as FormArray;
         for (let i = 0; i < this.codelet.tags.length; i++) {
-          formTags.push(this.formBuilder.control(this.codelet.tags[i]));
+          this.formArrayTags.push(this.formBuilder.control(this.codelet.tags[i]));
 
         }
 
@@ -134,7 +137,7 @@ export class SaveCodeletFormComponent implements OnInit {
         }
 
         this.tagsControl.setValue(null);
-        this.tags.markAsDirty();
+        this.formArrayTags.markAsDirty();
       });
     }
 
@@ -144,12 +147,11 @@ export class SaveCodeletFormComponent implements OnInit {
         this.webpageInfoService.getStackoverflowQuestionData(stackoverflowQuestionId).subscribe((webpageData: WebpageInfo) => {
             if (webpageData.tags) {
               for (let i = 0; i < webpageData.tags.length; i++) {
-                const formTags = this.codeletFormGroup.get('tags') as FormArray;
-                formTags.push(this.formBuilder.control(webpageData.tags[i]));
+                this.formArrayTags.push(this.formBuilder.control(webpageData.tags[i]));
               }
 
               this.tagsControl.setValue(null);
-              this.tags.markAsDirty();
+              this.formArrayTags.markAsDirty();
             }
           },
           error => {
@@ -157,14 +159,26 @@ export class SaveCodeletFormComponent implements OnInit {
           });
       }
     }
+
+    this.setTagsFromQueryParameter();
   }
 
+  private setTagsFromQueryParameter() {
+    if (this.tagsStr) {
+      const tags: String[] = this.tagsStr.split(',');
+      for (let i = 0; i < tags.length; i++) {
+        this.formArrayTags.push(this.formBuilder.control(tags[i].trim()));
+      }
+
+      this.tagsControl.setValue(null);
+      this.formArrayTags.markAsDirty();
+    }
+  }
 
   buildInitialForm(): void {
     this.codeletFormGroup = this.formBuilder.group({
       title: [this.title ? this.title : '', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
-      // codeSnippet: ['', [descriptionSizeValidator, Validators.required]],
       codeSnippets: new FormArray([this.createInitialCodeSnippet()]),
       sourceUrl: this.sourceUrl ? this.sourceUrl : ''
     });
@@ -181,14 +195,14 @@ export class SaveCodeletFormComponent implements OnInit {
   createInitialCodeSnippet(): FormGroup {
     return this.formBuilder.group({
       code: [this.code ? this.code : '', textSizeValidator(5000, 500)],
-      comment: ''
+      comment: [this.comment ? this.comment : '', textSizeValidator(1000, 30)]
     });
   }
 
   createEmptyCodeSnippet(): FormGroup {
     return this.formBuilder.group({
       code: ['', textSizeValidator(5000, 500)],
-      comment: ''
+      comment: ['', textSizeValidator(1000, 30)]
     });
   }
 
@@ -206,8 +220,7 @@ export class SaveCodeletFormComponent implements OnInit {
 
     // Add our tag
     if ((value || '').trim()) {
-      const tags = this.codeletFormGroup.get('tags') as FormArray;
-      tags.push(this.formBuilder.control(value.trim().toLowerCase()));
+      this.formArrayTags.push(this.formBuilder.control(value.trim().toLowerCase()));
     }
 
     // Reset the input value
@@ -216,16 +229,14 @@ export class SaveCodeletFormComponent implements OnInit {
     }
 
     this.tagsControl.setValue(null);
-    this.tags.markAsDirty();
+    this.formArrayTags.markAsDirty();
   }
 
   removeTagByIndex(index: number): void {
-    const tags = this.codeletFormGroup.get('tags') as FormArray;
-
     if (index >= 0) {
-      tags.removeAt(index);
+      this.formArrayTags.removeAt(index);
     }
-    this.tags.markAsDirty();
+    this.formArrayTags.markAsDirty();
   }
 
   filter(name: string) {
@@ -233,8 +244,7 @@ export class SaveCodeletFormComponent implements OnInit {
   }
 
   selectedTag(event: MatAutocompleteSelectedEvent): void {
-    const tags = this.codeletFormGroup.get('tags') as FormArray;
-    tags.push(this.formBuilder.control(event.option.viewValue));
+    this.formArrayTags.push(this.formBuilder.control(event.option.viewValue));
     this.tagInput.nativeElement.value = '';
     this.tagsControl.setValue(null);
   }
@@ -293,7 +303,7 @@ export class SaveCodeletFormComponent implements OnInit {
       );
   }
 
-  get tags() {
+  get formArrayTags() {
     return <FormArray>this.codeletFormGroup.get('tags');
   }
 

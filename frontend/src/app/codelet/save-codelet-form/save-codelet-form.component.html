@@ -19,7 +19,7 @@
     <div id="tags">
       <mat-form-field class="full-width">
         <mat-chip-list #chipList>
-          <mat-chip *ngFor="let tag of tags.controls; let i = index;" [selectable]="selectable"
+          <mat-chip *ngFor="let tag of formArrayTags.controls; let i = index;" [selectable]="selectable"
                     [removable]="removable" (removed)="removeTagByIndex(i)">
             {{tag.value}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
@@ -43,11 +43,11 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)" class="alert alert-danger">
-        <div *ngIf="tags.errors.tagsAreRequired">
+      <div *ngIf="formArrayTags.invalid && (formArrayTags.dirty || formArrayTags.touched)" class="alert alert-danger">
+        <div *ngIf="formArrayTags.errors.tagsAreRequired">
           Tags are required.
         </div>
-        <div *ngIf="tags.errors.tooManyTags">
+        <div *ngIf="formArrayTags.errors.tooManyTags">
           You can add maximum 8 tags.
         </div>
       </div>
