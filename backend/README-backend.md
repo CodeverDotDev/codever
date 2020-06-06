@@ -26,6 +26,12 @@ Based on that a GUI is generated to test the API directly from browser:
 ## Deployment
 We currently use [pm2](https://pm2.keymetrics.io/) to start the project in production.
 
+Undo local changes if needed:
+```
+git fetch
+git reset --hard origin/master
+```
+
 ### Start
 ```bash
 pm2 start pm2-process.json --env production
@@ -43,4 +49,10 @@ pm2 restart pm2-process.json --env production
 pm2 stop pm2-process.json --env production
 ```
 
+
+## Troubleshooting
+
+### pm2 start errored
+When `pm2 start pm2 start pm2-process.json --env production` has the status `errored`, it might help to delete the app id
+ `pm2 delete bookmarks.dev-api-node-10.15.0` and then try again
 
