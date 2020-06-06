@@ -37,7 +37,7 @@ export class PersonalBookmarksService {
 
   getPersonalBookmarkByLocation(userId: string, url: string): Observable<Bookmark[]> {
     let params = new HttpParams();
-    params = params.append('location', url);
+    params = params.append('location', encodeURIComponent(url));
 
     return this.httpClient.get<Bookmark[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks`, {
       params: params
