@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 require('express-async-errors');
 const path = require('path');
 const logger = require('morgan');
@@ -29,6 +30,13 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./docs/openapi/openapi.yaml');
 
 const app = express();
+
+// Sets "Strict-Transport-Security: max-age=5184000; includeSubDomains".
+const sixtyDaysInSeconds = 5184000;
+app.use(helmet.hsts({
+  maxAge: sixtyDaysInSeconds
+}));
+app.disable('x-powered-by');
 
 const mongoUserName = process.env.MONGODB_BOOKMARKS_USERNAME || 'bookmarks';
 const mongoUserPwd = process.env.MONGODB_BOOKMARKS_PASSWORD || 'secret';
