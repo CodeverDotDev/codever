@@ -3,6 +3,7 @@
     "name" : "codingmarks-api-node-10.15.0",
     "script" : "bin/www",
     "interpreter" : "node@10.15.0",
+    "log_date_format" : "YYYY-MM-DD HH:mm:ss.SSS Z",
     "env": {
       "NODE_ENV": "development",
       "YOUTUBE_API_KEY" : "AIxxxx",

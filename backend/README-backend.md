@@ -33,24 +33,34 @@ git reset --hard origin/master
 ```
 
 ### Start
-```bash
+```shell
 pm2 start pm2-process.json --env production
 ```
 
 > Commited is a [pm2-process.exammple.json](pm2-process.exammple.json) example file
 
 ### Restart
-```bash
+```shell
 pm2 restart pm2-process.json --env production
 ```
 
 ### Stop
-```bash
+```shell
 pm2 stop pm2-process.json --env production
 ```
 
 
 ## Troubleshooting
+
+### Show pm2 logs
+```shell
+pm2 logs bookmarks.dev-api-node-10.15.0 --lines 1000
+```
+
+### Show morgan logs
+```shell
+tail -f n100 ~/projects/bookmarks.dev-bk/backend/log/access.log
+```
 
 ### pm2 start errored
 When `pm2 start pm2 start pm2-process.json --env production` has the status `errored`, it might help to delete the app id
