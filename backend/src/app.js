@@ -75,8 +75,8 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));//swagge
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.set("trust proxy", "loopback");
 
 //add CORS support
 app.use(function (req, res, next) {
