@@ -17,6 +17,8 @@ import { TagFollowingBaseComponent } from './tag-following-base-component/tag-fo
 import { Markdown2HtmlPipe } from './markdown2html.pipe';
 import { NavigationComponent } from './navigation/navigation.component';
 import { SearchbarComponent } from './search/searchbar.component';
+import { HotKeysDialogComponent } from './history-dialog/hot-keys-dialog.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 /**
@@ -31,6 +33,7 @@ import { SearchbarComponent } from './search/searchbar.component';
     ReactiveFormsModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    MatExpansionModule,
     MatDialogModule,
     RouterModule
   ],
@@ -47,7 +50,8 @@ import { SearchbarComponent } from './search/searchbar.component';
     PlayYoutubeVideoDialogComponent,
     TagFollowingBaseComponent,
     SearchbarComponent,
-    NavigationComponent
+    NavigationComponent,
+    HotKeysDialogComponent
   ],
   exports: [
     CommonModule,
@@ -66,7 +70,8 @@ import { SearchbarComponent } from './search/searchbar.component';
     DeleteBookmarkDialogComponent,
     LoginRequiredDialogComponent,
     SocialShareDialogComponent,
-    PlayYoutubeVideoDialogComponent
+    PlayYoutubeVideoDialogComponent,
+    HotKeysDialogComponent
   ]
 })
 export class SharedModule { }
