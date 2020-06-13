@@ -11,6 +11,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { AddBookmarkBookmarkletComponent } from './shared/add-bookmark-bookmarklet.component';
 import { AddBookmarkGoBackBookmarkletComponent } from './shared/add-bookmark-go-back-bookmarklet.component';
 import { AddCodeletBookmarkletComponent } from './shared/add-codelet-bookmarklet.component';
+import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { AddCodeletBookmarkletComponent } from './shared/add-codelet-bookmarklet
     HowToCodeletComponent,
     AddBookmarkBookmarkletComponent,
     AddBookmarkGoBackBookmarkletComponent,
-    AddCodeletBookmarkletComponent
+    AddCodeletBookmarkletComponent,
+    HowtoHotkeysComponent
   ],
   exports: [
   ],

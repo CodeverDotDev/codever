@@ -6,6 +6,7 @@ import { HowToBookmarkletComponent } from './howto-bookmarklets/how-to-bookmarkl
 import { HowToCodeletComponent } from './howto-codelets/how-to-codelet.component';
 import { HowtoComponent } from './howto.component';
 import { HowtoGetStartedComponent } from './howto-get-started/howto-get-started.component';
+import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
 
 const howToRoutes: Routes = [
   {
@@ -31,6 +32,10 @@ const howToRoutes: Routes = [
   {
     path: 'codelets',
     component: HowToCodeletComponent
+  },
+  {
+    path: 'hotkeys',
+    component: HowtoHotkeysComponent
   },
   {
     path: '**',

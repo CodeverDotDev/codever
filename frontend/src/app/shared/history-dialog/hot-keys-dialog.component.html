@@ -1,0 +1,23 @@
+<h2 mat-dialog-title [innerHTML]="title"></h2>
+<div *ngIf="(bookmarks$ | async) as bookmarks" class="mt-2">
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let bookmark of bookmarks">
+      <mat-expansion-panel-header>
+        <div class="p-3">
+          <h5 class="card-title">
+            <a href="{{bookmark.location}}" target="_blank" [innerHtml]="bookmark.name"
+            >{{bookmark.name}}</a>
+            <sup class="external-link-hint"><i class="fas fa-external-link-alt"></i></sup>
+          </h5>
+          <h6 class="card-subtitle mb-2 text-muted url-under-title">
+            {{bookmark.location}}
+          </h6>
+        </div>
+      </mat-expansion-panel-header>
+
+      <ng-template matExpansionPanelContent>
+        <app-bookmark-text [bookmark]="bookmark"></app-bookmark-text>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

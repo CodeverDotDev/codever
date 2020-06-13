@@ -95,59 +95,70 @@
         [callerPagination]="callerPaginationFeed">
       </app-async-bookmark-list>
     </mat-tab>
+
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label"><i class="fas fa-history"></i> History</span>
+        <span class="app-tab-label" title="Ctrl+H for quick access"><i class="fas fa-history"></i> History</span>
       </ng-template>
       <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInLastVisited"
-           class="tabs-headline-message alert alert-info">
+           class="tabs-headline-message mt-2 alert alert-info">
         <p>In <strong>History</strong> you have a list of your last visited, created or updated bookmarks.
+          Quick access with <strong>Ctrl + H</strong>
         </p>
         You need to
         <button type="button" class="btn btn-primary btn-sm" (click)="login('history')">Login / Register</button>
         to access this functionality.
       </div>
       <ng-template #isLoggedInLastVisited>
-        <div *ngIf="(history$ | async)?.length === 0 && currentPageHistory === 1"
-             class="tabs-headline-message alert alert-info">
+        <div *ngIf="(history$ | async)?.length === 0 && currentPageHistory === 1; else historyQuickAccess"
+             class="tabs-headline-message mt-2 alert alert-info">
           <p>
-            In <strong>History</strong> you have a list of your last visited, created or updated bookmarks.
+            In <strong>History</strong> you have a list of your last visited, created or updated bookmarks. Quick access
+            with <strong>Ctrl + H</strong>
           </p>
         </div>
+        <ng-template #historyQuickAccess>
+          <div class="mt-2 lead alert alert-info">
+            <strong>Ctrl + H</strong> hot key for quick access
+          </div>
+        </ng-template>
         <app-async-bookmark-list
           [bookmarks$]="history$"
           [userData$]="userData$"
           [callerPagination]="callerPaginationHistory"
         >
-
         </app-async-bookmark-list>
-
       </ng-template>
-
     </mat-tab>
+
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label"><i class="fas fa-thumbtack"></i> Pinned</span>
+        <span class="app-tab-label" title="Ctrl+P for quick access"><i class="fas fa-thumbtack"></i> Pinned</span>
       </ng-template>
-
       <ng-template matTabContent>
-        <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToPin" class="tabs-headline-message alert alert-info">
+        <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToPin"
+             class="tabs-headline-message mt-2 alert alert-info">
           <p>
             Got some bookmarks you will use a lot today? Just pin them <i
             class="fas fa-thumbtack"></i>
-            and they will appear in the <strong>Pinned</strong> list.
+            and they will appear in the <strong>Pinned</strong> list. Quick access with <strong>Ctrl + P</strong>
           </p>
           You need to
           <button type="button" class="btn btn-primary btn-sm" (click)="login('pinned')">Login / Register</button>
           to access this functionality.
         </div>
         <ng-template #isLoggedInToPin>
-          <div *ngIf="(pinned$ | async)?.length === 0 && currentPagePinned === 1"
-               class="tabs-headline-message alert alert-info">
+          <div *ngIf="(pinned$ | async)?.length === 0 && currentPagePinned === 1; else pinnedQuickAccess"
+               class="tabs-headline-message mt-2 alert alert-info">
             Got some bookmarks you will use a lot today? Just pin it <i
             class="fas fa-thumbtack"></i>
-            and it will appear in the <strong>Pinned</strong> list.
+            and it will appear in the <strong>Pinned</strong> list. Quick access with <strong>Ctrl + P</strong>
           </div>
+          <ng-template #pinnedQuickAccess>
+            <div class="mt-2 lead alert alert-info">
+              <strong>Ctrl + P</strong> hot key for quick access
+            </div>
+          </ng-template>
           <app-async-bookmark-list
             [bookmarks$]="pinned$"
             [userData$]="userData$"
@@ -156,13 +167,14 @@
         </ng-template>
       </ng-template>
     </mat-tab>
+
     <mat-tab>
       <ng-template mat-tab-label>
         <span class="app-tab-label"><i class="fas fa-clock"></i> Read Later</span>
       </ng-template>
       <ng-template matTabContent>
         <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToReadLater"
-             class="tabs-headline-message alert alert-info">
+             class="tabs-headline-message mt-2 alert alert-info">
           <p>
             Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
             class="fas fa-clock"></i>
@@ -174,7 +186,7 @@
         </div>
         <ng-template #isLoggedInToReadLater>
           <div *ngIf="(readLater$ | async)?.length === 0 && currentPageReadLater === 1"
-               class="tabs-headline-message alert alert-info">
+               class="tabs-headline-message mt-2 alert alert-info">
             Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
             class="fas fa-clock"></i>
             on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
