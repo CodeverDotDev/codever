@@ -471,7 +471,7 @@ let getFeedBookmarks = async function (userId, page, limit) {
       const count = await Bookmark.countDocuments(filterFeedBookmarks);
 
       const intervalRight = page * limit;
-      const pageOtherPublicBookmarks = count === 0 ? 0 : Math.floor((intervalRight - count) / limit );
+      const pageOtherPublicBookmarks = count === 0 ? page -1 : Math.floor((intervalRight - count) / limit );
       const limitOtherPublicBookmarks = intervalRight - count < limit ? intervalRight - count : limit;
 
       const otherPublicBookmarks = await Bookmark.find({
