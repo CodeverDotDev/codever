@@ -1,29 +1,14 @@
 import { Component, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Bookmark } from '../core/model/bookmark';
 import { ActivatedRoute, Router } from '@angular/router';
-import { KeycloakService } from 'keycloak-angular';
-import { PublicBookmarksStore } from '../public/bookmarks/store/public-bookmarks-store.service';
 import { UserData } from '../core/model/user-data';
-import { UserDataStore } from '../core/user/userdata.store';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
-import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
-import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
-import { SocialShareDialogComponent } from './social-share-dialog/social-share-dialog.component';
-import { UserInfoStore } from '../core/user/user-info.store';
-import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
-import { MyBookmarksStore } from '../core/user/my-bookmarks.store';
-import { AdminService } from '../core/admin/admin.service';
+import { MatDialog } from '@angular/material';
 import { PaginationNotificationService } from '../core/pagination-notification.service';
 import { environment } from '../../environments/environment';
 import { PaginationAction } from '../core/model/pagination-action';
-import { UserDataHistoryStore } from '../core/user/userdata.history.store';
-import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
-import { UserDataReadLaterStore } from '../core/user/user-data-read-later-store.service';
 import { UserDataWatchedTagsStore } from '../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
-import { FeedStore } from '../core/user/feed-store.service';
 
 @Component({
   selector: 'app-async-bookmark-list',
@@ -53,24 +38,8 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
   bookmarkDeleted = new EventEmitter<boolean>();
 
   private router: Router;
-  private route: ActivatedRoute;
-  private userDataStore: UserDataStore;
-  private userDataHistoryStore: UserDataHistoryStore;
-  private userDataPinnedStore: UserDataPinnedStore;
-  private userDataReadLaterStore: UserDataReadLaterStore;
-  private myBookmarksStore: MyBookmarksStore;
-  private feedStore: FeedStore;
-  private publicBookmarksStore: PublicBookmarksStore;
-  private personalBookmarksService: PersonalBookmarksService;
-  private adminService: AdminService;
-  private keycloakService: KeycloakService;
-  private userInfoStore: UserInfoStore;
+  readonly route: ActivatedRoute;
   private paginationNotificationService: PaginationNotificationService;
-
-  userId: string;
-  userIsLoggedIn = false;
-
-  public innerWidth: any;
 
   environment = environment;
 
@@ -80,39 +49,16 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
 
   constructor(
     private injector: Injector,
-    private deleteDialog: MatDialog,
     public userDataWatchedTagsStore: UserDataWatchedTagsStore,
     public loginDialog: MatDialog,
   ) {
     super(loginDialog, userDataWatchedTagsStore);
     this.router = <Router>this.injector.get(Router);
     this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
-    this.publicBookmarksStore = <PublicBookmarksStore>this.injector.get(PublicBookmarksStore);
-    this.keycloakService = <KeycloakService>this.injector.get(KeycloakService);
-    this.personalBookmarksService = <PersonalBookmarksService>this.injector.get(PersonalBookmarksService);
-    this.adminService = <AdminService>this.injector.get(AdminService);
-    this.userInfoStore = <UserInfoStore>this.injector.get(UserInfoStore);
-    this.userDataStore = <UserDataStore>this.injector.get(UserDataStore);
-    this.feedStore = <FeedStore>this.injector.get(FeedStore);
-    this.userDataHistoryStore = <UserDataHistoryStore>this.injector.get(UserDataHistoryStore);
-    this.userDataReadLaterStore = <UserDataReadLaterStore>this.injector.get(UserDataReadLaterStore);
-    this.userDataPinnedStore = <UserDataPinnedStore>this.injector.get(UserDataPinnedStore);
-    this.myBookmarksStore = <MyBookmarksStore>this.injector.get(MyBookmarksStore);
     this.paginationNotificationService = <PaginationNotificationService>this.injector.get(PaginationNotificationService);
-
   }
 
   ngOnInit(): void {
-    this.innerWidth = window.innerWidth;
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.userId = userInfo.sub;
-        });
-      }
-    });
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -122,189 +68,6 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
     } else {
       this.currentPage = 1;
     }
-  }
-
-  /**
-   *
-   * @param bookmark
-   */
-  gotoDetail(bookmark: Bookmark): void {
-    const link = ['./personal/bookmarks', bookmark._id];
-    this.router.navigate(link, {state: {bookmark: bookmark}});
-  }
-
-  copyToMine(bookmark: Bookmark): void {
-    if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to copy it to your personal list'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    } else {
-      const link = ['./personal/bookmarks/copy-to-mine'];
-      this.router.navigate(link, {state: {bookmark: bookmark}, queryParams: {id: bookmark._id}});
-    }
-  }
-
-  likeBookmark(bookmark: Bookmark): void {
-    if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to like public bookmarks'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    } else {
-      this.userDataStore.likeBookmark(bookmark);
-    }
-  }
-
-  unLikeBookmark(bookmark: Bookmark): void {
-    this.userDataStore.unLikeBookmark(bookmark);
-  }
-
-
-  onBookmarkLinkClick(bookmark: Bookmark) {
-    if (this.userIsLoggedIn) {
-      this.userDataHistoryStore.addToHistoryAndReadLater$(bookmark, false).subscribe();
-      if (this.userId === bookmark.userId) {
-        this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
-      }
-    }
-  }
-
-  addToPinned(bookmark: Bookmark) {
-    if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to pin bookmarks'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    } else {
-      this.userDataPinnedStore.addToPinnedBookmarks(bookmark);
-    }
-
-  }
-
-  removeFromPinned(bookmark: Bookmark) {
-    this.userDataPinnedStore.removeFromPinnedBookmarks(bookmark);
-  }
-
-  addToReadLater(bookmark: Bookmark) {
-    if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to add bookmarks to "Read Later"'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    } else {
-      this.userDataReadLaterStore.addToReadLater(bookmark);
-    }
-  }
-
-  removeFromReadLater(bookmark: Bookmark) {
-    this.userDataReadLaterStore.removeFromReadLater(bookmark);
-  }
-
-  playYoutubeVideo(bookmark: Bookmark) {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = false;
-    dialogConfig.autoFocus = true;
-
-    let relativeWidth = (this.innerWidth * 80) / 100; // take up to 80% of the screen size
-    if (this.innerWidth > 1500) {
-      relativeWidth = (1500 * 80) / 100;
-    } else {
-      relativeWidth = (this.innerWidth * 80) / 100;
-    }
-
-    const relativeHeight = (relativeWidth * 9) / 16 + 120; // 16:9 to which we add 120 px for the dialog action buttons ("close")
-    dialogConfig.width = relativeWidth + 'px';
-    dialogConfig.height = relativeHeight + 'px';
-
-    dialogConfig.data = {
-      bookmark: bookmark,
-    };
-
-    const dialogRef = this.deleteDialog.open(PlayYoutubeVideoDialogComponent, dialogConfig);
-  }
-
-  openDeleteDialog(bookmark: Bookmark) {
-
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      bookmark: bookmark,
-      userData$: this.userData$
-    };
-
-    const dialogRef = this.deleteDialog.open(DeleteBookmarkDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        console.log('Dialog output:', data);
-        if (data === 'DELETE_CONFIRMED') {
-          this.deleteBookmark(bookmark);
-        }
-      }
-    );
-  }
-
-  deleteBookmark(bookmark: Bookmark): void {
-    const deleteAsAdmin = this.keycloakService.isUserInRole('ROLE_ADMIN') && bookmark.userId !== this.userId;
-    if (deleteAsAdmin) {
-      this.adminService.deleteBookmark(bookmark).subscribe(() => {
-        this.bookmarkDeleted.emit(true);
-        this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-        this.feedStore.removeFromFeedBookmarks(bookmark);
-      });
-    } else {
-      this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
-        this.bookmarkDeleted.emit(true);
-        this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-        this.userDataStore.removeFromStoresAtDeletion(bookmark);
-        this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
-        this.feedStore.removeFromFeedBookmarks(bookmark);
-      });
-    }
-
-  }
-
-  shareBookmark(bookmark: Bookmark) {
-
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.minWidth = 380;
-    dialogConfig.data = {
-      bookmark: bookmark,
-    };
-
-    const dialogRef = this.deleteDialog.open(SocialShareDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        if (data === 'DELETE_CONFIRMED') {
-        }
-      }
-    );
   }
 
   navigate(page: number) {
