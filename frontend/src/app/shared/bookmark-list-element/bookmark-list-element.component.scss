@@ -1,0 +1,46 @@
+
+.title-content-separator {
+  margin: 0 0 0.5rem 0;
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  .clock-wrapper {
+    font-size: 1.4rem;
+    margin-left: 1rem;
+    cursor: pointer;
+  }
+
+  .pinned {
+    color: red;
+  }
+}
+
+.share-action {
+  cursor: pointer;
+  margin-top: 0.3rem;
+}
+
+.external-link-hint {
+  font-size: 0.6rem;
+  margin-left: 0.2rem;
+}
+
+.youtube-icon {
+  color:red;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.stackoverflow-icon {
+  margin-right: 0.5rem;
+}
+
+.isDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
