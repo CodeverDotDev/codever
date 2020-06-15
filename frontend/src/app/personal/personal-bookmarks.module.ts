@@ -19,6 +19,7 @@ import { PublicBookmarkPresentDialogComponent } from './save-bookmark-form/publi
 import { SaveBookmarkFormComponent } from './save-bookmark-form/save-bookmark-form.component';
 import { CopyToMineBookmarkComponent } from './copy-to-mine/copy-to-mine-bookmark.component';
 import { DatePipe } from '@angular/common';
+import { BookmarkDetailsComponent } from './bookmark-details/bookmark-details.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { DatePipe } from '@angular/common';
     CopyToMineBookmarkComponent,
     PersonalBookmarksComponent,
     PublicBookmarkPresentDialogComponent,
-    SaveBookmarkFormComponent
+    SaveBookmarkFormComponent,
+    BookmarkDetailsComponent
   ],
   imports: [
     SharedModule,

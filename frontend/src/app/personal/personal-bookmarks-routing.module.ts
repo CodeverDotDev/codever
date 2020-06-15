@@ -5,6 +5,7 @@ import { AuthGuard } from '../core/auth/auth-guard.service';
 import { UpdatePersonalBookmarkComponent } from './update/update-personal-bookmark.component';
 import { CreatePersonalBookmarkComponent } from './create/create-personal-bookmark.component';
 import { CopyToMineBookmarkComponent } from './copy-to-mine/copy-to-mine-bookmark.component';
+import { BookmarkDetailsComponent } from './bookmark-details/bookmark-details.component';
 
 const personalBookmarksRoutes: Routes = [
   {
@@ -21,7 +22,11 @@ const personalBookmarksRoutes: Routes = [
         component: CopyToMineBookmarkComponent
       },
       {
-        path: 'bookmarks/:id',
+        path: 'bookmarks/:id/details',
+        component: BookmarkDetailsComponent
+      },
+      {
+        path: 'bookmarks/:id/edit',
         component: UpdatePersonalBookmarkComponent
       }
     ]

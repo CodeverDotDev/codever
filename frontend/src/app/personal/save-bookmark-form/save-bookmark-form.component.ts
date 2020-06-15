@@ -426,7 +426,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
             if (this.url) {
               if (this.popup) {
-                window.close();
+                this.navigateToBookmarkDetails(newBookmark);
               } else {
                 window.location.href = this.url;
               }
@@ -440,6 +440,15 @@ export class SaveBookmarkFormComponent implements OnInit {
           return observableThrowError(error.body.json());
         }
       );
+  }
+
+  navigateToBookmarkDetails(bookmark: Bookmark): void {
+    const link = [`./personal/bookmarks/${bookmark._id}/details`];
+    this.router.navigate(link,
+      {
+        state: {bookmark: bookmark},
+        queryParams: {popup: this.popup}
+      });
   }
 
   private publishInStores(bookmark: Bookmark, readLater) {

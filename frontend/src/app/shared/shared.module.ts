@@ -19,6 +19,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { SearchbarComponent } from './search/searchbar.component';
 import { HotKeysDialogComponent } from './history-dialog/hot-keys-dialog.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { BookmarkListElementComponent } from './bookmark-list-element/bookmark-list-element.component';
 
 
 /**
@@ -51,7 +52,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     TagFollowingBaseComponent,
     SearchbarComponent,
     NavigationComponent,
-    HotKeysDialogComponent
+    HotKeysDialogComponent,
+    BookmarkListElementComponent
   ],
   exports: [
     CommonModule,
@@ -65,6 +67,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatProgressSpinnerModule,
     NavigationComponent,
     SearchbarComponent,
+    BookmarkListElementComponent
   ],
   entryComponents: [
     DeleteBookmarkDialogComponent,
