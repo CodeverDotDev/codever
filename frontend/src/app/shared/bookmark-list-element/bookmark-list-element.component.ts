@@ -53,7 +53,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private playYoutubeDialog: MatDialog,
               public loginDialog: MatDialog,
               private deleteDialog: MatDialog,
-              private keycloakService: KeycloakService,
+              public keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private userDataHistoryStore: UserDataHistoryStore,
               private personalBookmarksService: PersonalBookmarksService,
