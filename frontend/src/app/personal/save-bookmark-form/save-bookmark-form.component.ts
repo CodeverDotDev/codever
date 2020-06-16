@@ -546,7 +546,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   editExistingBookmark(): void {
-    const link = ['./personal/bookmarks', this.existingPersonalBookmark._id];
+    const link = [`./personal/bookmarks/${this.existingPersonalBookmark._id}/edit`];
     this.router.navigate(link, {state: {bookmark: this.existingPersonalBookmark}});
   }
 }
