@@ -169,7 +169,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       public: false,
       readLater: false,
       pinned: false,
-      language: 'en',
+      language: null,
       youtubeVideoId: null,
       stackoverflowQuestionId: null,
     });
@@ -469,6 +469,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(bookmarksForLocation => {
           if (bookmarksForLocation.length === 0) {
             this.makePublic = true;
+            this.bookmarkForm.controls['language'].setValue('en');
           } else {
             this.openPublicBookmarkPresentDialog(bookmarksForLocation[0]);
           }
@@ -476,6 +477,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       );
     } else {
       this.makePublic = false;
+      this.bookmarkForm.controls['language'].setValue(null);
     }
   }
 
