@@ -62,13 +62,17 @@ export class UserDataHistoryStore {
     return this._history.asObservable();
   }
 
-  addToHistoryAndReadLater$(bookmark: Bookmark, readLater: boolean): Observable<UserData> {
+  addToHistoryAndOthers$(bookmark: Bookmark, readLater: boolean, pinned: boolean): Observable<UserData> {
     // history
     this.removeFromUserDataHistoryIfPresent(bookmark);
     this.userData.history.unshift(bookmark._id);
 
     if (readLater) {
       this.userData.readLater.push(bookmark._id);
+    }
+
+    if (pinned) {
+      this.userData.pinned.unshift(bookmark._id);
     }
 
     return this.userDataStore.updateUserData$(this.userData);

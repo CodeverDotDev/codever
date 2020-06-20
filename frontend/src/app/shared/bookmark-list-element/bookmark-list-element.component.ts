@@ -106,7 +106,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   onBookmarkLinkClick(bookmark: Bookmark) {
     if (this.userIsLoggedIn) {
-      this.userDataHistoryStore.addToHistoryAndReadLater$(bookmark, false).subscribe();
+      this.userDataHistoryStore.addToHistoryAndOthers$(bookmark, false, false).subscribe();
       if (this.userId === bookmark.userId) {
         this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
       }
