@@ -91,5 +91,13 @@ export class UserDataPinnedStore {
     }
   }
 
+  public publishReadLaterAfterCreation(bookmark: Bookmark) {
+    if (this.pinnedBookmarksHaveBeenLoaded) {
+      const pinned: Bookmark[] = this._pinned.getValue();
+      pinned.unshift(bookmark);
+      this._pinned.next(pinned); // insert at the top (index 0)
+    }
+  }
+
 }
 

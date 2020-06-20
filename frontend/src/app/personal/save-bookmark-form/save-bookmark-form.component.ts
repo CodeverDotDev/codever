@@ -31,6 +31,7 @@ import { UserData } from '../../core/model/user-data';
 import { DatePipe } from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/stackoverflow.helper';
+import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -81,7 +82,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   tagInput: ElementRef;
 
   @Input()
-  isUpdate: boolean;
+  isUpdate = false;
 
   @Input()
   copyToMine = false;
@@ -105,6 +106,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     private userDataStore: UserDataStore,
     private userdataHistoryStore: UserDataHistoryStore,
     private userDataReadLaterStore: UserDataReadLaterStore,
+    private userDataPinnedStore: UserDataPinnedStore,
     private stackoverflowHelper: StackoverflowHelper,
     private datePipe: DatePipe,
     private logger: Logger,
@@ -166,6 +168,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       description: [this.desc ? this.desc : '', textSizeValidator(3000, 300)],
       public: false,
       readLater: false,
+      pinned: false,
       language: 'en',
       youtubeVideoId: null,
       stackoverflowQuestionId: null,
@@ -348,30 +351,28 @@ export class SaveBookmarkFormComponent implements OnInit {
     bookmark.userDisplayName = this.bookmark.userDisplayName;
     bookmark._id = this.bookmark._id;
 
-    const readLater = this.bookmarkForm.controls['readLater'].value;
-
     const updateAsAdmin = this.keycloakService.isUserInRole('ROLE_ADMIN') && bookmark.userId !== this.userId;
     if (updateAsAdmin) {
       this.adminService.updateBookmark(bookmark).subscribe(
         () => {
-          this.navigateToHomePage()
+          this.navigateToHomePageHistoryTab()
         },
-        () => this.navigateToHomePage() // TODO add error handling - popover
+        () => this.navigateToHomePageHistoryTab() // TODO add error handling - popover
       );
     } else {
       this.personalBookmarksService.updateBookmark(bookmark).pipe(
-        concatMap((updatedBookmark) => this.userdataHistoryStore.addToHistoryAndReadLater$(updatedBookmark, readLater))
+        concatMap((updatedBookmark) => this.userdataHistoryStore.addToHistoryAndOthers$(updatedBookmark, false, false))
       ).subscribe(
         () => {
-          this.publishInStores(bookmark, readLater);
-          this.navigateToHomePage()
+          this.userdataHistoryStore.publishHistoryAfterCreation(bookmark);
+          this.navigateToHomePageHistoryTab()
         },
-        () => this.navigateToHomePage() // TODO add error handling - popover
+        () => this.navigateToHomePageHistoryTab() // TODO add error handling - popover
       );
     }
   }
 
-  navigateToHomePage(): void {
+  navigateToHomePageHistoryTab(): void {
     this.router.navigate(
       ['/'],
       {
@@ -421,8 +422,9 @@ export class SaveBookmarkFormComponent implements OnInit {
           }
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
-          this.userdataHistoryStore.addToHistoryAndReadLater$(newBookmark, readLater).subscribe(() => {
-            this.publishInStores(newBookmark, readLater);
+          const pinned = this.bookmarkForm.controls['pinned'].value;
+          this.userdataHistoryStore.addToHistoryAndOthers$(newBookmark, readLater, pinned).subscribe(() => {
+            this.publishInStores(newBookmark, readLater, pinned);
 
             if (this.url) {
               if (this.popup) {
@@ -431,7 +433,7 @@ export class SaveBookmarkFormComponent implements OnInit {
                 window.location.href = this.url;
               }
             } else {
-              this.navigateToHomePage();
+              this.navigateToHomePageHistoryTab();
             }
           });
         },
@@ -451,10 +453,13 @@ export class SaveBookmarkFormComponent implements OnInit {
       });
   }
 
-  private publishInStores(bookmark: Bookmark, readLater) {
+  private publishInStores(bookmark: Bookmark, readLater, pinned) {
     this.userdataHistoryStore.publishHistoryAfterCreation(bookmark);
     if (readLater) {
       this.userDataReadLaterStore.publishReadLaterAfterCreation(bookmark);
+    }
+    if (pinned) {
+      this.userDataPinnedStore.publishReadLaterAfterCreation(bookmark);
     }
   }
 
@@ -533,9 +538,10 @@ export class SaveBookmarkFormComponent implements OnInit {
           this.myBookmarksStore.addToLastCreated(bookmark);
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
-          this.userdataHistoryStore.addToHistoryAndReadLater$(bookmark, readLater).subscribe(() => {
-            this.publishInStores(bookmark, readLater);
-            this.navigateToHomePage();
+          const pinned = this.bookmarkForm.controls['pinned'].value;
+          this.userdataHistoryStore.addToHistoryAndOthers$(bookmark, readLater, pinned).subscribe(() => {
+            this.publishInStores(bookmark, readLater, pinned);
+            this.navigateToHomePageHistoryTab();
           });
         },
         (error: HttpResponse<any>) => {
