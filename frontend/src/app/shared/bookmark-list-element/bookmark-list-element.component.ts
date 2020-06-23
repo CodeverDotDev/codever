@@ -104,13 +104,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     const dialogRef = this.playYoutubeDialog.open(PlayYoutubeVideoDialogComponent, dialogConfig);
   }
 
-  onBookmarkLinkClick(bookmark: Bookmark) {
-    if (this.userIsLoggedIn) {
-      this.userDataHistoryStore.addToHistoryAndOthers$(bookmark, false, false).subscribe();
-      if (this.userId === bookmark.userId) {
-        this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
-      }
-    }
+  onBookmarkTitleClick(bookmark: Bookmark) {
+    this.addToHistoryIfLoggedIn(bookmark);
   }
 
   addToPinned(bookmark: Bookmark) {
@@ -264,4 +259,38 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     }
   }
 
+  onClickInDescription($event: any, bookmark: Bookmark) {
+    if (this.isHtmlAnchorElement($event)) {
+      $event.target.setAttribute('target', '_blank');
+      this.addToHistoryIfLoggedIn(bookmark);
+    }
+  }
+
+  onRightClickInDescription($event: any, bookmark: Bookmark) {
+    if (this.isHtmlAnchorElement($event)) {
+      alert('something');
+      this.addToHistoryIfLoggedIn(bookmark);
+    }
+  }
+
+  onMiddleClickInDescription($event: any, bookmark: Bookmark) {
+    if (this.isHtmlAnchorElement($event)) {
+      this.addToHistoryIfLoggedIn(bookmark);
+    }
+  }
+
+  private isHtmlAnchorElement($event: any) {
+    return $event.target.matches('a');
+  }
+
+  private addToHistoryIfLoggedIn(bookmark: Bookmark) {
+    if (this.userIsLoggedIn) {
+      this.userDataStore.addToHistoryAndOthers$(bookmark, false, false).subscribe(() => {
+        this.userDataHistoryStore.publishHistoryStore(bookmark);
+        if (this.userId === bookmark.userId) {
+          this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
+        }
+      });
+    }
+  }
 }

@@ -62,37 +62,13 @@ export class UserDataHistoryStore {
     return this._history.asObservable();
   }
 
-  addToHistoryAndOthers$(bookmark: Bookmark, readLater: boolean, pinned: boolean): Observable<UserData> {
-    // history
-    this.removeFromUserDataHistoryIfPresent(bookmark);
-    this.userData.history.unshift(bookmark._id);
-
-    if (readLater) {
-      this.userData.readLater.push(bookmark._id);
-    }
-
-    if (pinned) {
-      this.userData.pinned.unshift(bookmark._id);
-    }
-
-    return this.userDataStore.updateUserData$(this.userData);
-  }
-
-
-  public publishHistoryAfterCreation(bookmark: Bookmark) {
+  public publishHistoryStore(bookmark: Bookmark) {
     if (this.historyHasBeenLoaded) {
       let lastVisitedBookmarks: Bookmark[] = this._history.getValue();
       lastVisitedBookmarks = lastVisitedBookmarks.filter(item => item._id !== bookmark._id);
       lastVisitedBookmarks.unshift(bookmark);
 
       this._history.next(lastVisitedBookmarks);
-    }
-  }
-
-  private removeFromUserDataHistoryIfPresent(bookmark: Bookmark) {
-    const index = this.userData.history.indexOf(bookmark._id);
-    if (index !== -1) {
-      this.userData.history.splice(index, 1);
     }
   }
 
