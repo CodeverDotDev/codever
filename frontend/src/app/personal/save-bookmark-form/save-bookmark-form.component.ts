@@ -361,10 +361,10 @@ export class SaveBookmarkFormComponent implements OnInit {
       );
     } else {
       this.personalBookmarksService.updateBookmark(bookmark).pipe(
-        concatMap((updatedBookmark) => this.userdataHistoryStore.addToHistoryAndOthers$(updatedBookmark, false, false))
+        concatMap((updatedBookmark) => this.userDataStore.addToHistoryAndOthers$(updatedBookmark, false, false))
       ).subscribe(
         () => {
-          this.userdataHistoryStore.publishHistoryAfterCreation(bookmark);
+          this.userdataHistoryStore.publishHistoryStore(bookmark);
           this.navigateToHomePageHistoryTab()
         },
         () => this.navigateToHomePageHistoryTab() // TODO add error handling - popover
@@ -423,7 +423,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
           const pinned = this.bookmarkForm.controls['pinned'].value;
-          this.userdataHistoryStore.addToHistoryAndOthers$(newBookmark, readLater, pinned).subscribe(() => {
+          this.userDataStore.addToHistoryAndOthers$(newBookmark, readLater, pinned).subscribe(() => {
             this.publishInStores(newBookmark, readLater, pinned);
 
             if (this.url) {
@@ -454,12 +454,12 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   private publishInStores(bookmark: Bookmark, readLater, pinned) {
-    this.userdataHistoryStore.publishHistoryAfterCreation(bookmark);
+    this.userdataHistoryStore.publishHistoryStore(bookmark);
     if (readLater) {
       this.userDataReadLaterStore.publishReadLaterAfterCreation(bookmark);
     }
     if (pinned) {
-      this.userDataPinnedStore.publishReadLaterAfterCreation(bookmark);
+      this.userDataPinnedStore.publishPinnedAfterCreation(bookmark);
     }
   }
 
@@ -541,7 +541,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
           const pinned = this.bookmarkForm.controls['pinned'].value;
-          this.userdataHistoryStore.addToHistoryAndOthers$(bookmark, readLater, pinned).subscribe(() => {
+          this.userDataStore.addToHistoryAndOthers$(bookmark, readLater, pinned).subscribe(() => {
             this.publishInStores(bookmark, readLater, pinned);
             this.navigateToHomePageHistoryTab();
           });

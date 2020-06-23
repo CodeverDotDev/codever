@@ -91,7 +91,7 @@ export class UserDataPinnedStore {
     }
   }
 
-  public publishReadLaterAfterCreation(bookmark: Bookmark) {
+  public publishPinnedAfterCreation(bookmark: Bookmark) {
     if (this.pinnedBookmarksHaveBeenLoaded) {
       const pinned: Bookmark[] = this._pinned.getValue();
       pinned.unshift(bookmark);

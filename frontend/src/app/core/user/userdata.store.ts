@@ -102,6 +102,29 @@ export class UserDataStore {
     return obs;
   }
 
+  addToHistoryAndOthers$(bookmark: Bookmark, readLater: boolean, pinned: boolean): Observable<UserData> {
+    // history
+    this.removeFromUserDataHistoryIfPresent(bookmark);
+    this.userData.history.unshift(bookmark._id);
+
+    if (readLater) {
+      this.userData.readLater.push(bookmark._id);
+    }
+
+    if (pinned) {
+      this.userData.pinned.unshift(bookmark._id);
+    }
+
+    return this.updateUserData$(this.userData);
+  }
+
+  private removeFromUserDataHistoryIfPresent(bookmark: Bookmark) {
+    const index = this.userData.history.indexOf(bookmark._id);
+    if (index !== -1) {
+      this.userData.history.splice(index, 1);
+    }
+  }
+
   getLikedBookmarks$(): Observable<Bookmark[]> {
     if (!this.starredBookmarksHaveBeenLoaded) {
       this.userService.getLikedBookmarks(this.userId).subscribe(data => {
