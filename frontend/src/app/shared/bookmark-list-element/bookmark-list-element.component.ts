@@ -268,7 +268,6 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   onRightClickInDescription($event: any, bookmark: Bookmark) {
     if (this.isHtmlAnchorElement($event)) {
-      alert('something');
       this.addToHistoryIfLoggedIn(bookmark);
     }
   }
