@@ -50,7 +50,7 @@ let getYoutubeVideoData = async (youtubeVideoId) => {
   }
 
   if(tags) { //some youtube videos might not have tags defined
-    webpageInfo.tags = tags.slice(0,8).map(tag => tag.trim().replace(/\s+/g, '-'));
+    webpageInfo.tags = tags.slice(0,8).map(tag => tag.toLowerCase().trim().replace(/\s+/g, '-'));
   }
   return webpageInfo;
 }
