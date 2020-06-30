@@ -17,20 +17,46 @@
     </button>
     <div class="dropdown-menu">
       <a class="dropdown-item" role="button"
-         title="Search in personal bookmarks"
+         title="Search in My Bookmarks"
          (click)="onSearchDomainChange('my-bookmarks')">
-        <i class="fa fa-search"></i> My Bookmarks <i *ngIf="searchDomain === 'my-bookmarks'" class="fas fa-check"></i>
+        <i class="fa fa-search"></i>
+        My Bookmarks
+        <span *ngIf="searchDomain === 'my-bookmarks'; else uncheckedMyBookmarksSelection"
+              class="search-domain-selection my-bookmarks-selection float-right pl-1 pr-1">
+          <i class="fas fa-check"></i>
+        </span>
+        <ng-template #uncheckedMyBookmarksSelection>
+          <span class="my-bookmarks-selection-unchecked float-right">
+            <i class="fa fa-square fa-lg"></i>
+          </span>
+        </ng-template>
       </a>
       <a class="dropdown-item" role="button"
-         title="Search in public bookmarks"
-         (click)="onSearchDomainChange('public-bookmarks')">
-        <i class="fa fa-search"></i> Public Bookmarks <i *ngIf="searchDomain === 'public-bookmarks'" class="fas fa-check"></i>
+         title="Search in My Codelets"
+         (click)="onSearchDomainChange('my-codelets')">
+        <i class="fa fa-search"></i>
+        My Codelets
+        <span *ngIf="searchDomain === 'my-codelets'; else uncheckedMyCodeletsSelection"
+              class="search-domain-selection my-codelets-selection float-right pl-1 pr-1">
+          <i class="fas fa-check"></i>
+        </span>
+        <ng-template #uncheckedMyCodeletsSelection>
+          <span class="my-codelets-selection-unchecked  float-right">
+            <i class="fa fa-square fa-lg"></i>
+          </span>
+        </ng-template>
       </a>
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" role="button"
-         title="Search in my codelets"
-         (click)="onSearchDomainChange('my-codelets')">
-        <i class="fa fa-search"></i> My Codelets <i *ngIf="searchDomain === 'my-codelets'" class="fas fa-check"></i>
+         title="Search in public bookmarks"
+         (click)="onSearchDomainChange('public-bookmarks')">
+        <i class="fa fa-search"></i> Public Bookmarks
+        <i *ngIf="searchDomain === 'public-bookmarks'; else  uncheckedPublicBookmarksSelection" class="fas fa-check ml-1"></i>
+        <ng-template #uncheckedPublicBookmarksSelection>
+          <span class="my-codelets-selection-unchecked  float-right">
+            <i class="fa fa-square fa-lg ml-1" style="color:ghostwhite"></i>
+          </span>
+        </ng-template>
       </a>
     </div>
   </div>
@@ -44,6 +70,8 @@
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
+    [class.my-codelets-selection]="searchDomain === 'my-codelets'"
+    [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
     (keyup.enter)="searchBookmarksFromSearchBox(publicSearchBox.value)"
   >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteSelectionChanged($event)">
