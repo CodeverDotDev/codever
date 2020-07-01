@@ -1,5 +1,5 @@
 <div *ngIf="(bookmarks$ | async) as bookmarks" class="mt-2">
-  <div class="mt-1" *ngFor="let bookmark of bookmarks">
+  <div class="mt-3" *ngFor="let bookmark of bookmarks">
     <app-bookmark-list-element
       [bookmark]="bookmark"
       [userData$]="userData$"
