@@ -28,6 +28,8 @@ import { SearchDomain } from '../../core/model/search-domain.enum';
 })
 export class HomepageComponent extends TagFollowingBaseComponent implements OnInit, OnDestroy {
 
+  readonly FIRST_PAGE = 1;
+
   feedBookmarks$: Observable<Bookmark[]>;
   pageNavigationSubscription: Subscription;
   tags: string[] = allTags;
@@ -38,14 +40,15 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   readLater$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
+  userId: string;
   userIsLoggedIn$: Promise<boolean>;
 
   selectedTabIndex: number;
 
-  currentPageFeed = 1;
-  currentPageHistory = 1;
-  currentPagePinned = 1;
-  currentPageReadLater = 1;
+  currentPageFeed = this.FIRST_PAGE;
+  currentPageHistory = this.FIRST_PAGE;
+  currentPagePinned = this.FIRST_PAGE;
+  currentPageReadLater = this.FIRST_PAGE;
   callerPaginationFeed = 'feed';
   callerPaginationHistory = 'history';
   callerPaginationPinned = 'pinned';
@@ -77,6 +80,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+          this.userId = userInfo.sub;
           this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn); // this method is called twice to avoid autmatically executing changeTab events
           this.userData$ = this.userDataStore.getUserData$();
         });
@@ -112,9 +116,9 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
       default: {
         this.selectedTabIndex = 0;
         if (isLoggedIn && !this.seeAllPublicToggle) {
-          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(1);
+          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, this.FIRST_PAGE);
         } else {
-          this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(1);
+          this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.FIRST_PAGE);
         }
       }
     }
@@ -141,9 +145,9 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   private listenToClickOnLogoEvent(isLoggedIn: boolean) {
     this.appService.logoClicked.subscribe(logoClicked => {
       if (logoClicked) {
-        this.currentPageFeed = 1;
+        this.currentPageFeed = this.FIRST_PAGE;
         if (isLoggedIn && !this.seeAllPublicToggle) {
-          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.currentPageFeed);
+          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, this.currentPageFeed);
         } else {
           this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageFeed);
         }
@@ -156,22 +160,22 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
       if (paginationAction.caller === this.callerPaginationFeed && this.selectedTabIndex === TabIndex.Feed) {
         this.currentPageFeed = paginationAction.page;
         if (isLoggedIn && !this.seeAllPublicToggle) {
-          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(paginationAction.page)
+          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, paginationAction.page)
         } else {
           this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(paginationAction.page);
         }
       }
       if (paginationAction.caller === this.callerPaginationHistory && this.selectedTabIndex === TabIndex.History) {
         this.currentPageHistory = paginationAction.page;
-        this.history$ = this.userDataHistoryStore.getHistory$(paginationAction.page);
+        this.history$ = this.userDataHistoryStore.getHistory$(this.userId, paginationAction.page);
       }
       if (paginationAction.caller === this.callerPaginationPinned && this.selectedTabIndex === TabIndex.Pinned) {
         this.currentPagePinned = paginationAction.page;
-        this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(paginationAction.page);
+        this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(this.userId, paginationAction.page);
       }
       if (paginationAction.caller === this.callerPaginationReadLater && this.selectedTabIndex === TabIndex.ReadLater) {
         this.currentPageReadLater = paginationAction.page;
-        this.readLater$ = this.userDataReadLaterStore.getReadLater$(paginationAction.page);
+        this.readLater$ = this.userDataReadLaterStore.getReadLater$(this.userId, paginationAction.page);
       }
     });
   }
@@ -182,19 +186,19 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
       switch (event.index) {
         case TabIndex.Feed:
           if (this.userIsLoggedIn && !this.seeAllPublicToggle) {
-            this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.currentPageFeed);
+            this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, this.currentPageFeed);
           } else {
             this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageFeed);
           }
           break;
         case TabIndex.History:
-          this.history$ = this.userDataHistoryStore.getHistory$(this.currentPageHistory);
+          this.history$ = this.userDataHistoryStore.getHistory$(this.userId, this.currentPageHistory);
           break;
         case TabIndex.Pinned:
-          this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(this.currentPagePinned);
+          this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(this.userId, this.currentPagePinned);
           break;
         case TabIndex.ReadLater:
-          this.readLater$ = this.userDataReadLaterStore.getReadLater$(this.currentPageReadLater);
+          this.readLater$ = this.userDataReadLaterStore.getReadLater$(this.userId, this.currentPageReadLater);
           break;
       }
     }
@@ -244,10 +248,10 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
 
   seeAllPublic(seeAllPublicToggle: boolean) {
     if (seeAllPublicToggle) {
-      this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(1);
+      this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.FIRST_PAGE);
       this.seeAllPublicToggle = true;
     } else {
-      this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(1);
+      this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, this.FIRST_PAGE);
       this.seeAllPublicToggle = false;
     }
 
@@ -256,9 +260,10 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   searchPublicBookmarksByTag(tag: string) {
     this.router.navigate(['./search'],
       {
-        queryParams: {q: '[' + tag + ']', sd: SearchDomain.PUBLIC_BOOKMARKS, page: 1}
+        queryParams: {q: '[' + tag + ']', sd: SearchDomain.PUBLIC_BOOKMARKS, page: this.FIRST_PAGE}
       });
   }
+
 }
 
 export interface TabSwitchQueryParams {

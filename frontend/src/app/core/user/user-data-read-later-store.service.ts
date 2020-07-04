@@ -1,8 +1,6 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-
-import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
@@ -19,36 +17,27 @@ export class UserDataReadLaterStore {
   private _readLater: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private readLaterHaveBeenLoaded = false;
 
-  private userId: string;
   private userData: UserData;
 
   loadedPage: number;
 
   constructor(private userService: UserDataService,
               private userDataStore: UserDataStore,
-              private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.userId = userInfo.sub;
-          this.userDataStore.getUserData$().subscribe(userData => {
-            this.userData = userData;
-          });
-        });
-      }
+    this.userDataStore.getUserData$().subscribe(userData => {
+      this.userData = userData;
     });
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.publishReadLaterAfterDeletion(bookmark);
     });
   }
 
-  getReadLater$(page: number): Observable<Bookmark[]> {
+  getReadLater$(userId: string, page: number): Observable<Bookmark[]> {
     if (this.loadedPage !== page || !this.readLaterHaveBeenLoaded) {
-      this.userService.getReadLater(this.userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
+      this.userService.getReadLater(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
         if (!this.readLaterHaveBeenLoaded) {
           this.readLaterHaveBeenLoaded = true;
         }

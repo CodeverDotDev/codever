@@ -6,7 +6,6 @@ import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
-import { UserInfoStore } from './user-info.store';
 import { NotifyStoresService } from './notify-stores.service';
 import { UserDataStore } from './userdata.store';
 import { environment } from '../../../environments/environment';
@@ -19,7 +18,6 @@ export class UserDataPinnedStore {
   private _pinned: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private pinnedBookmarksHaveBeenLoaded = false;
 
-  private userId: string;
   private userData: UserData;
 
   loadedPage: number;
@@ -27,19 +25,11 @@ export class UserDataPinnedStore {
   constructor(private userService: UserDataService,
               private userDataStore: UserDataStore,
               private keycloakService: KeycloakService,
-              private userInfoStore: UserInfoStore,
               private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.userId = userInfo.sub;
-          this.userDataStore.getUserData$().subscribe(userData => {
-            this.userData = userData;
-          });
-        });
-      }
+    this.userDataStore.getUserData$().subscribe(userData => {
+      this.userData = userData;
     });
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.publishedPinnedAfterDeletion(bookmark);
@@ -47,9 +37,9 @@ export class UserDataPinnedStore {
   }
 
 
-  getPinnedBookmarks$(page: number): Observable<Bookmark[]> {
+  getPinnedBookmarks$(userId: string, page: number): Observable<Bookmark[]> {
     if (this.loadedPage !== page || !this.pinnedBookmarksHaveBeenLoaded) {
-      this.userService.getPinnedBookmarks(this.userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
+      this.userService.getPinnedBookmarks(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
         if (!this.pinnedBookmarksHaveBeenLoaded) {
           this.pinnedBookmarksHaveBeenLoaded = true;
         }

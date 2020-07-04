@@ -1,45 +1,79 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 
 import 'styles.scss';
 import { UserDataHistoryStore } from './core/user/userdata.history.store';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HotKeysDialogComponent } from './shared/history-dialog/hot-keys-dialog.component';
 import { UserDataPinnedStore } from './core/user/userdata.pinned.store';
+import { UserInfoStore } from './core/user/user-info.store';
+import { KeycloakService } from 'keycloak-angular';
+import { LoginRequiredDialogComponent } from './shared/login-required-dialog/login-required-dialog.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
   url = 'https://www.bookmarks.dev';
   innerWidth: any;
-  constructor(private userDataHistoryStore: UserDataHistoryStore,
+
+  userIsLoggedIn = false;
+  userId: string;
+
+  constructor(private keycloakService: KeycloakService,
+              private userInfoStore: UserInfoStore,
+              private userDataHistoryStore: UserDataHistoryStore,
               private userDataPinnedStore: UserDataPinnedStore,
-              private historyDialog: MatDialog) {
+              private historyDialog: MatDialog,
+              private loginDialog: MatDialog) {
     this.innerWidth = 100;
+  }
+
+  ngOnInit(): void {
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
+        this.userIsLoggedIn = true;
+        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+          this.userId = userInfo.sub;
+        });
+      }
+    });
   }
 
   @HostListener('window:keydown.control.p', ['$event'])
   showPinned(event: KeyboardEvent) {
-    event.preventDefault();
-    const dialogConfig = new MatDialogConfig();
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = false;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = this.getRelativeWidth();
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to see the Pinned Bookmarks popup'
+      };
 
-    dialogConfig.data = {
-      bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(1),
-      title: '<i class="fas fa-thumbtack"></i> Pinned'
-    };
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      event.preventDefault();
+      const dialogConfig = new MatDialogConfig();
 
-    const dialogRef = this.historyDialog.open(HotKeysDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        console.log('Dialog output:', data);
-      }
-    );
+      dialogConfig.disableClose = false;
+      dialogConfig.autoFocus = true;
+      dialogConfig.width = this.getRelativeWidth();
+
+      dialogConfig.data = {
+        bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1),
+        title: '<i class="fas fa-thumbtack"></i> Pinned'
+      };
+
+      const dialogRef = this.historyDialog.open(HotKeysDialogComponent, dialogConfig);
+      dialogRef.afterClosed().subscribe(
+        data => {
+          console.log('Dialog output:', data);
+        }
+      );
+    }
   }
 
   private getRelativeWidth() {
@@ -53,22 +87,34 @@ export class AppComponent {
 
   @HostListener('window:keydown.control.h', ['$event'])
   showHistory(event: KeyboardEvent) {
-    event.preventDefault();
-    const dialogConfig = new MatDialogConfig();
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = false;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = this.getRelativeWidth();
-    dialogConfig.data = {
-      bookmarks$: this.userDataHistoryStore.getHistory$(1),
-      title: '<i class="fas fa-history"></i> History'
-    };
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to see the History Bookmarks popup'
+      };
 
-    const dialogRef = this.historyDialog.open(HotKeysDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        console.log('Dialog output:', data);
-      }
-    );
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      event.preventDefault();
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = false;
+      dialogConfig.autoFocus = true;
+      dialogConfig.width = this.getRelativeWidth();
+      dialogConfig.data = {
+        bookmarks$: this.userDataHistoryStore.getHistory$(this.userId, 1),
+        title: '<i class="fas fa-history"></i> History'
+      };
+
+      const dialogRef = this.historyDialog.open(HotKeysDialogComponent, dialogConfig);
+      dialogRef.afterClosed().subscribe(
+        data => {
+          console.log('Dialog output:', data);
+        }
+      );
+    }
   }
 }

@@ -39,7 +39,7 @@
           >
             Watching <i class="fas fa-eye"></i>
           </a>
-          <div *ngFor="let tag of (userData$ | async).watchedTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
+          <div *ngFor="let tag of userData.watchedTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
             <a type="button"
                class="btn btn-secondary btn-sm text-white"
                (click)="searchPublicBookmarksByTag(tag)"
@@ -58,7 +58,7 @@
             </button>
             <div class="dropdown-menu">
               <a
-                *ngIf="(verifyForWatchedTag | async) === tag && (userData$ | async)?.watchedTags.includes(tag); else watchTagOption"
+                *ngIf="(verifyForWatchedTag | async) === tag && userData?.watchedTags.includes(tag); else watchTagOption"
                 class="dropdown-item"
                 (click)="unwatchTag(tag)"><i class="fas fa-eye-slash"></i> Unwatch tag
               </a>
