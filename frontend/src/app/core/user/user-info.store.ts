@@ -12,8 +12,6 @@ export class UserInfoStore {
   private _userInfo: ReplaySubject<UserInfoOidc> = new ReplaySubject(1);
   public userInfoLoaded = false;
 
-  private userId: string;
-
   constructor(private userService: UserDataService,
               private logger: Logger,
               private errorService: ErrorService,
@@ -23,7 +21,6 @@ export class UserInfoStore {
 
   private loadInitialData() {
     this.userInfoService.getUserInfo().subscribe(data => {
-        this.userId = data.sub;
         this._userInfo.next(data);
       }
     );

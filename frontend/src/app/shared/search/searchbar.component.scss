@@ -1,3 +1,5 @@
+$background-gray: rgb(240, 242, 245);
+
 .search-result{
     border-bottom: 1px solid gray;
     border-left: 1px solid gray;
@@ -91,4 +93,9 @@
 // the search bar border color to be the same as the bootstrap buttons surrounding it
 input {
   border-color: #6c757d;
+  background-color: $background-gray;
+}
+
+.unchecked-public-bookmarks-selection {
+  color: $background-gray;
 }

@@ -1,8 +1,6 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-
-import { KeycloakService } from 'keycloak-angular';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
 import { UserInfoStore } from './user-info.store';
@@ -14,38 +12,30 @@ import { environment } from '../../../environments/environment';
 })
 export class FeedStore {
 
+  readonly FIRST_PAGE = 1;
+
   private _feedBookmarks: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private feedBookmarksHaveBeenLoaded = false;
-
-  private userId: string;
 
   loadedPage: number;
 
   constructor(private userService: UserDataService,
-              private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private notifyStoresService: NotifyStoresService
   ) {
-    this.loadedPage = 1;
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.userId = userInfo.sub;
-        });
-      }
-    });
+    this.loadedPage = this.FIRST_PAGE;
 
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.removeFromFeedBookmarks(bookmark);
     });
   }
 
-  getFeedBookmarks$(page: number): Observable<Bookmark[]> {
+  getFeedBookmarks$(userId: string, page: number): Observable<Bookmark[]> {
     if (this.loadedPage !== page || !this.feedBookmarksHaveBeenLoaded) {
       if (!this.feedBookmarksHaveBeenLoaded) {
         this.feedBookmarksHaveBeenLoaded = true;
       }
-      this.userService.getFeedBookmarks(this.userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
+      this.userService.getFeedBookmarks(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
         this.loadedPage = page;
         this._feedBookmarks.next(data);
       });
