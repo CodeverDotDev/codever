@@ -19,15 +19,15 @@
     <ng-template #showPaginationBar>
       <ul class="pagination justify-content-center" style="cursor: pointer;">
         <li class="page-item">
-          <span class="page-link" (click)="navigate(currentPage - 1)"
+          <span class="page-link shadow-sm" (click)="navigate(currentPage - 1)"
                 [ngClass]="{'isDisabled': currentPage === 1}">Previous</span>
         </li>
         <li *ngFor="let page of Arr.from(Arr(currentPage).keys());  let i = index;" class="page-item"
             [ngClass]="{'active': currentPage === page + 1}">
-          <span class="page-link" (click)="navigate(page + 1)">{{page + 1}}</span>
+          <span class="page-link shadow-sm" (click)="navigate(page + 1)">{{page + 1}}</span>
         </li>
         <li class="page-item">
-          <span class="page-link" (click)="navigate(currentPage + 1)">Next</span>
+          <span class="page-link shadow-sm" (click)="navigate(currentPage + 1)">Next</span>
         </li>
       </ul>
     </ng-template>

@@ -39,6 +39,15 @@
   }
 }
 
+@media (min-width: 1600px) {
+  .search-component{
+    min-width: 775px;
+    input:focus {
+      box-shadow: none;
+    }
+  }
+}
+
 .focused {
   background-color:#007bff;
   border-color: #007bff;
