@@ -24,7 +24,7 @@
           </button>
           <ng-template #seeOnlyFeed>
             <button
-              class="btn btn-success btn-sm  mr-3 mt-2 tag-list-header"
+              class="btn btn-success btn-sm  mr-3 mt-2 tag-list-header shadow-sm"
               title="Click to see only my feed"
               (click)="seeAllPublic(false)"
             >
@@ -34,7 +34,7 @@
           <a
             [routerLink]="['/dashboard']"
             [queryParams]="{tab: 'tags'}"
-            class="btn btn-outline-secondary btn-sm  mr-3 mt-2 tag-list-header"
+            class="btn btn-outline-secondary btn-sm  mr-3 mt-2 tag-list-header shadow-sm"
             title="Go to My Tags in dashboard"
           >
             Watching <i class="fas fa-eye"></i>

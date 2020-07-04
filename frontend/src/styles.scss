@@ -7,8 +7,9 @@ body {
 a {
   color: #4078c0;
 }
+
 a:hover {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 pre {
@@ -60,11 +61,13 @@ ul.tags li:not(:last-child):after {
 .used-tag {
   font-size: 1.3rem;
   margin-right: 1.3rem;
-  white-space:nowrap;
+  white-space: nowrap;
+
   a {
     padding: 0.3rem;
     margin-top: 0.5rem;
   }
+
   .tag-count {
     font-size: 1rem;
   }
@@ -104,15 +107,16 @@ ul.tags li:not(:last-child):after {
   font-size: 1.18rem;
 }
 
-pre{
-  margin-bottom:1em;
-  padding:12px 8px;
-  width:auto;
-  max-height:800px;
-  overflow:auto;
-  font-family:Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
-  font-size:13px;
-  background-color:#eff0f1;border-radius:3px
+pre {
+  margin-bottom: 1em;
+  padding: 12px 8px;
+  width: auto;
+  max-height: 800px;
+  overflow: auto;
+  font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif;
+  font-size: 13px;
+  background-color: #eff0f1;
+  border-radius: 3px
 }
 
 .note_normal {
@@ -325,6 +329,13 @@ pre{
   line-height: inherit;
 }
 
+.btn-primary,
+.btn-secondary,
+.alert-info,
+.btn-outline-primary,
+.btn-outline-secondary {
+  @extend .shadow-sm;
+}
 
 .card {
   margin-bottom: 0.5rem;
@@ -333,6 +344,7 @@ pre{
 .jumbotron {
   padding: 2rem;
 }
+
 .card-body {
   padding: 0.8rem;
 }
@@ -347,13 +359,14 @@ pre{
 
 @media (min-width: 1400px) {
   .container {
-    max-width: 1240px;
+    max-width: 1090px;
   }
 }
 
 .navbar {
   z-index: 1000;
 }
+
 .navbar-dark .navbar-nav .nav-link {
   color: rgba(255, 255, 255, 1);
   font-weight: 500;
@@ -383,11 +396,16 @@ label {
 }
 
 .main-body {
-  margin-top:5rem
+  margin-top: 5rem;
 }
+
+.page-body {
+  background-color: rgb(240, 242, 245);
+}
+
 @media (max-width: 680px) {
   .main-body {
-    margin-top:7rem
+    margin-top: 7rem
   }
 }
 
