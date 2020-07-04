@@ -13,10 +13,18 @@
         </h5>
         <h6 class="card-subtitle mb-2 text-muted url-under-title">
               <span *ngIf="bookmark.public">
-                Posted by <a [routerLink]="['/users', bookmark.userId, bookmark.userDisplayName]">{{bookmark.userDisplayName}}</a> -
+                Posted by <a
+                [routerLink]="['/users', bookmark.userId, bookmark.userDisplayName]">{{bookmark.userDisplayName}}</a> -
               </span>
-          <span
-            [innerHtml]="bookmark.location | slice:0:150 | highlight: queryText"></span></h6>
+          <span *ngIf="bookmark.location.length <= 100; else sliceLocation"
+                [innerHtml]="bookmark.location | highlight: queryText">
+          </span>
+          <ng-template #sliceLocation>
+            <span
+              [innerHtml]="bookmark.location | slice:0:100 | highlight: queryText"></span>
+            <span>...</span>
+          </ng-template>
+        </h6>
       </div>
       <div style="display: flex">
             <span *ngIf="!(userData$ | async)?.pinned?.includes(bookmark._id) else markedAsPinned" class="clock-wrapper"
@@ -120,7 +128,7 @@
           type="button" class="btn btn-light btn-sm"
           (click)="editBookmark(bookmark)"
           title="Edit bookmark">
-          <i  class="far fa-edit"></i> Edit
+          <i class="far fa-edit"></i> Edit
         </button>
         <button
           *ngIf="(bookmark.userId === (userData$ | async)?.userId) || keycloakService.isUserInRole('ROLE_ADMIN')"
