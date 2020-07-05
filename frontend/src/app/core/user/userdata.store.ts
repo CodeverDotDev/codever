@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Logger } from '../logger.service';
 import { ErrorService } from '../error/error.service';
-import { Profile, UserData } from '../model/user-data';
+import { Following, Profile, UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
@@ -50,30 +50,41 @@ export class UserDataStore {
         this._userData.next(this.userData)
       },
       (errorResponse: HttpErrorResponse) => {
-        if (errorResponse.status === 404 && errorResponse.error.message === `User data NOT_FOUND for userId: ${this.userId}`) {
-          const profile: Profile = {
-            displayName: this.userFirstName,
-            imageUrl: this.getGravatarImageUrl(email)
-          }
-          const initialUserData: UserData = {
-            userId: userId,
-            profile: profile,
-            searches: [],
-            readLater: [],
-            likes: [],
-            watchedTags: [],
-            ignoredTags: [],
-            pinned: [],
-            favorites: [],
-            history: []
-          }
-
-          this.userService.createInitialUserData(initialUserData).subscribe((data) => {
-              this.userData = data;
-              this._userData.next(data);
-            }
-          );
+        const userDataNotCreated = errorResponse.status === 404 && errorResponse.error.message === `User data NOT_FOUND for userId: ${this.userId}`;
+        if (userDataNotCreated) {
+          this.createInitialUserData(email, userId);
         }
+      }
+    );
+  }
+
+  private createInitialUserData(email: string, userId: string) {
+    const profile: Profile = {
+      displayName: this.userFirstName,
+      imageUrl: this.getGravatarImageUrl(email),
+    }
+    const following: Following = {
+      users: [],
+      tags: []
+    }
+    const initialUserData: UserData = {
+      userId: userId,
+      profile: profile,
+      searches: [],
+      readLater: [],
+      likes: [],
+      watchedTags: [],
+      ignoredTags: [],
+      pinned: [],
+      favorites: [],
+      history: [],
+      followers: [],
+      following: following
+    }
+
+    this.userService.createInitialUserData(initialUserData).subscribe((data) => {
+        this.userData = data;
+        this._userData.next(data);
       }
     );
   }

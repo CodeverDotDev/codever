@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteSavedSearchDialogComponent } from './delete-saved-search-dialog/delete-saved-search-dialog.component';
 import { Search, UserData } from '../../../core/model/user-data';
 import { UserDataStore } from '../../../core/user/userdata.store';

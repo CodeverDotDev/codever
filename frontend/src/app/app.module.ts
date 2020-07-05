@@ -11,7 +11,6 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { initializer } from './app-init';
 import { RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './not-found.component';
-import { MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule } from '@angular/material';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -24,6 +23,7 @@ import { UserInfoStore } from './core/user/user-info.store';
 import { UserDataStore } from './core/user/userdata.store';
 import { AppService } from './app.service';
 import { HIGHLIGHT_OPTIONS, HighlightModule, HighlightOptions } from 'ngx-highlightjs';
+import { MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   exports: [
