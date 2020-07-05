@@ -27,6 +27,7 @@ import { PersonalCodeletsService } from './personal-codelets.service';
 import { MarkdownService } from './markdown/markdown.service';
 import { SearchNotificationService } from './search-notification.service';
 import { StackoverflowHelper } from './stackoverflow.helper';
+import { LoginDialogHelperService } from './login-dialog-helper.service';
 
 
 /**
@@ -71,7 +72,8 @@ import { StackoverflowHelper } from './stackoverflow.helper';
     KeycloakServiceWrapper,
     MarkdownService,
     SearchNotificationService,
-    StackoverflowHelper
+    StackoverflowHelper,
+    LoginDialogHelperService
   ]
 })
 export class CoreModule {

@@ -7,7 +7,7 @@ import { allTags } from '../../core/model/all-tags.const.en';
 import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
-import { MatDialog, MatTabChangeEvent } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../../environments/environment';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { AppService } from '../../app.service';
@@ -19,6 +19,7 @@ import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.
 import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';
 import { FeedStore } from '../../core/user/feed-store.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 
 @Component({

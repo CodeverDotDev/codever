@@ -4,7 +4,7 @@ import { UserDataService } from '../../../core/user-data.service';
 import { Observable, of } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteBookmarksByTagDialogComponent } from './delete-bookmarks-by-tag-dialog/delete-bookmarks-by-tag-dialog.component';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
 import { UserData } from '../../../core/model/user-data';
