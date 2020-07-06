@@ -400,9 +400,12 @@ let getFollowedUsersData = async function (userId) {
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const followedUsers = await User.find(
-      {userId: {$in: userData.following.users}}
-    ).select('userId profile');
+    let followedUsers = [];
+    if(userData.following) {
+      followedUsers = await User.find(
+          {userId: {$in: userData.following.users}}
+      ).select('userId profile');
+    }
 
     return followedUsers;
   }

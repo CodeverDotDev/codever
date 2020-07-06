@@ -8,7 +8,7 @@ import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
 import { Search, UserData } from '../../core/model/user-data';
-import { MatAutocompleteSelectedEvent, MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
@@ -20,6 +20,7 @@ import { Codelet } from '../../core/model/codelet';
 import { PersonalCodeletsService } from '../../core/personal-codelets.service';
 import { SearchNotificationService } from '../../core/search-notification.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 export interface SearchDomainLocal {
   value: string;

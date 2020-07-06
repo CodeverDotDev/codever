@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { UserData } from '../../core/model/user-data';
 import { Observable } from 'rxjs';
-import { Codelet } from '../../core/model/codelet';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-delete-bookmark-dialog',

@@ -10,11 +10,12 @@ import { KeycloakService } from 'keycloak-angular';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { UserPublicData } from '../../core/model/user-public-data';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
 import { Meta } from '@angular/platform-browser';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';
+import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
 
 @Component({
   selector: 'app-user-public-profile',
@@ -35,6 +36,7 @@ export class UserPublicProfileComponent extends TagFollowingBaseComponent implem
               private userInfoStore: UserInfoStore,
               private userDataStore: UserDataStore,
               public userDataWatchedTagsStore: UserDataWatchedTagsStore,
+              private loginDialogHelperService: LoginDialogHelperService,
               public loginDialog: MatDialog,
               private route: ActivatedRoute,
               private router: Router,
@@ -69,15 +71,9 @@ export class UserPublicProfileComponent extends TagFollowingBaseComponent implem
 
   followUser(followedUserId: string) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to follow users'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      const dialogConfig =
+        this.loginDialogHelperService.loginDialogConfig('You need to be logged in to follow users');
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataStore.followUser$(followedUserId).subscribe(() => {
         this.userPublicData$ = this.userPublicService.getUserPublicData$(this.userId, environment.TOP_PUBLIC_USER_TAGS_LIMIT);

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Bookmark } from '../core/model/bookmark';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserData } from '../core/model/user-data';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { PaginationNotificationService } from '../core/pagination-notification.service';
 import { environment } from '../../environments/environment';
 import { PaginationAction } from '../core/model/pagination-action';

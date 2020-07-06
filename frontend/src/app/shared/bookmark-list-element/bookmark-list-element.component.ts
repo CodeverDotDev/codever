@@ -21,6 +21,7 @@ import { AdminService } from '../../core/admin/admin.service';
 import { FeedStore } from '../../core/user/feed-store.service';
 import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
 import { Router } from '@angular/router';
+import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -64,6 +65,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private publicBookmarksStore: PublicBookmarksStore,
               private adminService: AdminService,
               private feedStore: FeedStore,
+              private loginDialogHelperService: LoginDialogHelperService,
               private myBookmarksStore: MyBookmarksStore) {
     super(loginDialog, userDataWatchedTagsStore);
   }
@@ -110,15 +112,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   addToPinned(bookmark: Bookmark) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to pin bookmarks'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      const dialogConfig =
+        this.loginDialogHelperService.loginDialogConfig('You need to be logged in to pin bookmarks');
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataPinnedStore.addToPinnedBookmarks(bookmark);
     }
@@ -131,15 +127,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   addToReadLater(bookmark: Bookmark) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to add bookmarks to "Read Later"'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      const dialogConfig =
+        this.loginDialogHelperService.loginDialogConfig( 'You need to be logged in to add bookmarks to "Read Later"');
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataReadLaterStore.addToReadLater(bookmark);
     }
@@ -151,15 +141,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   likeBookmark(bookmark: Bookmark): void {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to like public bookmarks'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      const dialogConfig =
+        this.loginDialogHelperService.loginDialogConfig( 'You need to be logged in to like public bookmarks');
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataStore.likeBookmark(bookmark);
     }
@@ -170,9 +154,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   }
 
   openDeleteDialog(bookmark: Bookmark) {
-
     const dialogConfig = new MatDialogConfig();
-
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = {

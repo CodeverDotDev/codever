@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { Observable, of } from 'rxjs';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LoginRequiredDialogComponent } from '../login-required-dialog/login-required-dialog.component';
 
 @Component({

@@ -16,6 +16,9 @@ import { UserData } from '../core/model/user-data';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PaginationNotificationService } from '../core/pagination-notification.service';
 import { SearchDomain } from '../core/model/search-domain.enum';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { LoginDialogHelperService } from '../core/login-dialog-helper.service';
+import { LoginRequiredDialogComponent } from '../shared/login-required-dialog/login-required-dialog.component';
 
 @Component({
   selector: 'app-search-results',
@@ -49,7 +52,9 @@ export class SearchResultsComponent implements OnInit {
               private userInfoStore: UserInfoStore,
               private userDataStore: UserDataStore,
               private searchNotificationService: SearchNotificationService,
-              private paginationNotificationService: PaginationNotificationService,) {
+              private paginationNotificationService: PaginationNotificationService,
+              private loginDialogHelperService: LoginDialogHelperService,
+              public loginDialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -170,19 +175,25 @@ export class SearchResultsComponent implements OnInit {
   }
 
   private tryMyCodelets(searchInclude: string) {
-    this.selectedTabIndex = 2;
-    this.searchInclude = searchInclude;
-    this.router.navigate(['.'],
-      {
-        relativeTo: this.route,
-        queryParams: {
-          sd: SearchDomain.MY_CODELETS,
-          include: searchInclude
-        },
-        queryParamsHandling: 'merge'
-      }
-    );
-    this.searchBookmarks(this.searchText, SearchDomain.MY_CODELETS, searchInclude);
+    if (this.userIsLoggedIn) {
+      this.selectedTabIndex = 2;
+      this.searchInclude = searchInclude;
+      this.router.navigate(['.'],
+        {
+          relativeTo: this.route,
+          queryParams: {
+            sd: SearchDomain.MY_CODELETS,
+            include: searchInclude
+          },
+          queryParamsHandling: 'merge'
+        }
+      );
+      this.searchBookmarks(this.searchText, SearchDomain.MY_CODELETS, searchInclude);
+    } else {
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through personal codelets');
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    }
+
   }
 
   private tryPublicBookmarks(searchInclude: string) {
@@ -204,22 +215,27 @@ export class SearchResultsComponent implements OnInit {
   }
 
   private tryPersonalBookmarks(searchInclude) {
-    this.selectedTabIndex = 1;
-    this.searchDomain = SearchDomain.MY_BOOKMARKS;
-    this.currentPage = 1;
-    this.searchInclude = searchInclude;
-    this.router.navigate(['.'],
-      {
-        relativeTo: this.route,
-        queryParams: {
-          sd: SearchDomain.MY_BOOKMARKS,
-          page: '1',
-          include: searchInclude
-        },
-        queryParamsHandling: 'merge'
-      }
-    );
-    this.searchBookmarks(this.searchText, SearchDomain.MY_BOOKMARKS, searchInclude);
+    if (this.userIsLoggedIn) {
+      this.selectedTabIndex = 1;
+      this.searchDomain = SearchDomain.MY_BOOKMARKS;
+      this.currentPage = 1;
+      this.searchInclude = searchInclude;
+      this.router.navigate(['.'],
+        {
+          relativeTo: this.route,
+          queryParams: {
+            sd: SearchDomain.MY_BOOKMARKS,
+            page: '1',
+            include: searchInclude
+          },
+          queryParamsHandling: 'merge'
+        }
+      );
+      this.searchBookmarks(this.searchText, SearchDomain.MY_BOOKMARKS, searchInclude);
+    } else {
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through personal bookmarks');
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    }
   }
 
 
