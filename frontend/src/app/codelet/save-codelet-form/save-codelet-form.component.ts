@@ -3,7 +3,6 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatDialog, MatDialogConfig } from '@angular/material';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { codelet_common_tags } from '../../shared/codelet-common-tags';
 import { tagsValidator } from '../../shared/tags-validation.directive';
@@ -22,6 +21,9 @@ import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
 import { StackoverflowHelper } from '../../core/stackoverflow.helper';
 import { WebpageInfo } from '../../core/model/webpage-info';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-save-codelet-form',

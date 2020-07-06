@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AsyncBookmarkListComponent } from './async-bookmark-list.component';
 import { TagsValidatorDirective } from './tags-validation.directive';
 import { BookmarkTextComponent } from './bookmark-text.component';
-import { MatAutocompleteModule, MatDialogModule, MatProgressSpinnerModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog/delete-bookmark-dialog.component';
 import { LoginRequiredDialogComponent } from './login-required-dialog/login-required-dialog.component';
@@ -20,6 +19,9 @@ import { SearchbarComponent } from './search/searchbar.component';
 import { HotKeysDialogComponent } from './history-dialog/hot-keys-dialog.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BookmarkListElementComponent } from './bookmark-list-element/bookmark-list-element.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 /**

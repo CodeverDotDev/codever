@@ -2,13 +2,6 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { SaveCodeletFormComponent } from './save-codelet-form/save-codelet-form.component';
 import { PersonalCodeletsService } from '../core/personal-codelets.service';
-import {
-  MatAutocompleteModule,
-  MatChipsModule, MatDialogModule,
-  MatIconModule,
-  MatSelectModule,
-  MatTabsModule, MatTooltipModule
-} from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { CreateCodeletComponent } from './create/create-codelet.component';
 import { UpdateCodeletComponent } from './update/update-codelet.component';
@@ -19,6 +12,13 @@ import { DeleteCodeletDialogComponent } from './delete-codelet-dialog/delete-cod
 import { AsyncCodeletListComponent } from './async-codelet-list/async-codelet-list.component';
 import { CodeletCardBodyComponent } from './async-codelet-list/codelet-code-snippets/codelet-card-body.component';
 import { CopySnippetButtonComponent } from './copy-snippet-button/copy-snippet-button.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const codeletRoutes: Routes = [
   {

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { environment } from '../../../environments/environment';
