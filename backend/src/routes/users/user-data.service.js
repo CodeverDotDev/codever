@@ -392,6 +392,10 @@ let unfollowUser = async function (userId, followedUserId) {
   return updatedUserData;
 }
 
+/**
+ * Return the user data for users, the user identified by @param userId
+ * is following
+ */
 let getFollowedUsersData = async function (userId) {
   const userData = await User.findOne({
     userId: userId
@@ -427,16 +431,18 @@ let getFollowers = async function (userId) {
 }
 
 /**
- * Highly unlikely case if the user is following popular tags
- * It returns bookmarks tagged with user's watched tags and if end is reached
- * the recent public bookmarks except ignored.
+ * Return a list of bookmarks to display in the user's feed with pagination.
+ * At the top are displayed recent bookmarks tagged with user's watched tags.
+ *
+ * If the user navigates to further pages and all bookmarks for watched tags
+ * have been exhausted then return the recent public bookmarks except ones tagged with tags
+ * marked as ignored by the user.
  *
  * @param userId
  * @param page
  * @param limit
  * @returns {Promise<void>}
  */
-
 let getFeedBookmarks = async function (userId, page, limit) {
   const userData = await User.findOne({
     userId: userId
