@@ -1,10 +1,14 @@
 var request = require('superagent');
 var cheerio = require('cheerio');
 
-const NotFoundError = require('../../error/not-found.error');
 const HttpStatus = require('http-status-codes/index');
 
-/* GET title of bookmark given its url */
+/* scrape URL for data:
+  - title
+  - meta description
+  - tags
+  - published date
+* */
 let getScrapedDataForLocation = async (location) => {
   const response = await request.get(location);
 
@@ -95,7 +99,6 @@ function formatDuration(duration) {
 
   return null;
 }
-
 
 module.exports = {
   getScrapedDataForLocation: getScrapedDataForLocation,

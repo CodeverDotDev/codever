@@ -12,7 +12,7 @@ const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 router.use(keycloak.middleware());
 
 
-/* GET title of bookmark given its url - might be moved to front-end */
+/* scrape URL for data */
 router.get('/scrape', keycloak.protect('realm:ROLE_USER'), async function (request, response, next) {
   const location = request.query.location;
   if (location) {
