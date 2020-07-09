@@ -62,20 +62,21 @@
     <div id="tags" class="form-group-distanced">
       <mat-form-field class="full-width">
         <mat-chip-list #chipList>
-          <mat-chip *ngFor="let tag of tags.controls; let i = index;" [selectable]="selectable"
-                    [removable]="removable" (removed)="removeTagByIndex(i)">
+          <mat-chip
+            *ngFor="let tag of tags.controls; let i = index;"
+            [selectable]="selectable"
+            [removable]="removable"
+            (removed)="removeTagByIndex(i)">
             {{tag.value}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
           <input
             placeholder="&nbsp;&nbsp;Tags* - max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
-            matInput
             #tagInput
             [formControl]="tagsControl"
+            [matAutocomplete]="auto"
             [matChipInputFor]="chipList"
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            [matChipInputAddOnBlur]="addOnBlur"
-            [matAutocomplete]="auto"
             (matChipInputTokenEnd)="addTag($event)"
             formArrayName="tags"
           />
