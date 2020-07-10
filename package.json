@@ -1,0 +1,32 @@
+{
+  "name": "bookmarks.dev",
+  "version": "1.0.0",
+  "description": "Bookmarks.dev (frontend & backend)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "cd frontend && npm start",
+    "install-frontend": "cd frontend && npm install",
+    "backend": "cd backend && npm run debug",
+    "install-backend": "cd backend && npm install",
+    "start": "npm-run-all --parallel frontend backend",
+    "install": "npm-run-all install-frontend install-backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodepediaOrg/bookmarks.dev.git"
+  },
+  "keywords": [
+    "bookmarks-manager",
+    "nodejs",
+    "angular"
+  ],
+  "author": "Adrian Matei",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BookmarksDev/bookmarks.dev/issues"
+  },
+  "homepage": "https://github.com/BookmarksDev/bookmarks.dev#readme",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
