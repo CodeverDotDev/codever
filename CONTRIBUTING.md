@@ -16,6 +16,13 @@ Please note we have a code of conduct, please follow it in all your interactions
 4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
+### Commits 
+This projects uses the [A]ngular Commit Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit)
+and [Conventional Changelog](https://github.com/conventional-changelog/conventional-changelog)
+to generate the [CHANGELOG](./CHANGELOG.md)
+
+> Please adhere to these
+
 ## Code of Conduct
 
 ### Our Pledge
