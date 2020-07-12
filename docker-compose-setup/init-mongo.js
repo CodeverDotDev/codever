@@ -153,6 +153,7 @@ db.codelets.createIndex(
     title: "text",
     tags: "text",
     "codeSnippets.comment": "text",
+    "codeSnippets.code": "text",
     sourceUrl: "text"
   },
   {
@@ -160,6 +161,7 @@ db.codelets.createIndex(
       title: 8,
       tags: 13,
       "codeSnippets.comment": 3,
+      "codeSnippets.code": 3,
       sourceUrl: 1
     },
     name: "full_text_search",
