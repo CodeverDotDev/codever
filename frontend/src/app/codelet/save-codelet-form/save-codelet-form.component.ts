@@ -23,7 +23,7 @@ import { StackoverflowHelper } from '../../core/stackoverflow.helper';
 import { WebpageInfo } from '../../core/model/webpage-info';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-save-codelet-form',
@@ -41,6 +41,8 @@ export class SaveCodeletFormComponent implements OnInit {
   selectable = true;
   removable = true;
   addOnBlur = true;
+
+  @ViewChild('matAutocomplete') chipAutocomplete: MatAutocomplete;
 
   // Enter, comma, space
   separatorKeysCodes = [ENTER, COMMA, SPACE];
@@ -221,7 +223,8 @@ export class SaveCodeletFormComponent implements OnInit {
     const value = event.value;
 
     // Add our tag
-    if ((value || '').trim()) {
+    const chipAutocompleteNotOpen = !(this.chipAutocomplete !== undefined && this.chipAutocomplete.isOpen);
+    if ((value || '').trim() && chipAutocompleteNotOpen) {
       this.formArrayTags.push(this.formBuilder.control(value.trim().toLowerCase()));
     }
 
