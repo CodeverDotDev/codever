@@ -6,6 +6,7 @@ import { HomepageComponent } from './bookmarks/homepage.component';
 import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
+import { VersionComponent } from './version/version.component';
 
 const publicBookmarksRoutes: Routes = [
   {
@@ -56,6 +57,10 @@ const publicBookmarksRoutes: Routes = [
   {
     path: 'privacy-policy',
     component: PrivacyPolicyComponent,
+  },
+  {
+    path: 'version',
+    component: VersionComponent,
   },
   {
     path: 'terms-and-conditions',

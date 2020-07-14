@@ -28,5 +28,9 @@
   "homepage": "https://github.com/BookmarksDev/bookmarks.dev#readme",
   "devDependencies": {
     "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "git-describe": "^4.0.4"
   }
 }
