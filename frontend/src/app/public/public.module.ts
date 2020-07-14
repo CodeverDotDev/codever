@@ -15,6 +15,7 @@ import { CodeletModule } from '../codelet/codelet.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
+import { VersionComponent } from './version/version.component';
 
 @NgModule({
   declarations : [
@@ -23,7 +24,8 @@ import { MatSelectModule } from '@angular/material/select';
     TermsOfServiceComponent,
     HomepageComponent,
     UserPublicProfileComponent,
-    TagComponent
+    TagComponent,
+    VersionComponent
   ],
   imports: [
     SharedModule,
