@@ -2,7 +2,7 @@
   <strong>Codelets</strong> are special types of bookmarks where you save small pieces of code you would
   want to recall later.
 </div>
-<div *ngIf="!isUpdate || (isUpdate && codelet$ | async)" class="navigation-space-buffer">
+<div *ngIf="!isUpdate || (isUpdate && codelet$ | async)" class="navigation-space-buffer rounded bg-white shadow-sm">
   <form [formGroup]="codeletFormGroup" novalidate (ngSubmit)="saveCodelet(codeletFormGroup.value)">
     <div class="form-group pb-1">
       <label for="title">Title*</label>
@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <div id="tags">
+    <div id="tags" class="mb-4 border rounded p-2">
       <mat-form-field class="full-width">
         <mat-chip-list #chipList>
           <mat-chip *ngFor="let tag of formArrayTags.controls; let i = index;" [selectable]="selectable"
@@ -25,8 +25,7 @@
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
           <input
-            placeholder="&nbsp;&nbsp;Tags* - max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
-            matInput
+            placeholder="&nbsp;&nbsp;Tags*"
             #tagInput
             [formControl]="tagsControl"
             [matChipInputFor]="chipList"
@@ -37,21 +36,26 @@
             formArrayName="tags"
           />
         </mat-chip-list>
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedTag($event)">
+        <mat-hint>Enter comma-separated values</mat-hint>
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionActivated)="optionActivated($event)"
+          (optionSelected)="selectedTag($event)">
           <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
             {{ tag }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <div *ngIf="formArrayTags.invalid && (formArrayTags.dirty || formArrayTags.touched)" class="alert alert-danger">
-        <div *ngIf="formArrayTags.errors.tagsAreRequired">
-          Tags are required.
-        </div>
-        <div *ngIf="formArrayTags.errors.tooManyTags">
-          You can add maximum 8 tags.
-        </div>
-      </div>
+      <span *ngIf="formArrayTags.invalid && (formArrayTags.dirty || formArrayTags.touched)">
+        <mat-error *ngIf="formArrayTags.errors.tagsAreRequired">
+          Tags are <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="formArrayTags.errors.tooManyTags">
+          You can add <strong>maximum 8 tags</strong>
+        </mat-error>
+      </span>
     </div>
+
     <div formArrayName="codeSnippets"
          *ngFor="let codeSnippet of codeSnippetsFormArray.controls; let i = index;" class="code-snippets">
       <div [formGroupName]="i" class="border rounded pt-1 pl-3 pr-3 mb-3">
