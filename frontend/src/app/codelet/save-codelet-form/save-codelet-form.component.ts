@@ -2,7 +2,7 @@ import { map, startWith } from 'rxjs/operators';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { KeycloakService } from 'keycloak-angular';
-import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { codelet_common_tags } from '../../shared/codelet-common-tags';
 import { tagsValidator } from '../../shared/tags-validation.directive';
@@ -23,7 +23,7 @@ import { StackoverflowHelper } from '../../core/stackoverflow.helper';
 import { WebpageInfo } from '../../core/model/webpage-info';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-save-codelet-form',
@@ -42,10 +42,10 @@ export class SaveCodeletFormComponent implements OnInit {
   removable = true;
   addOnBlur = true;
 
-  @ViewChild('matAutocomplete') chipAutocomplete: MatAutocomplete;
+  autocompleteTagsOptionActivated = false;
 
   // Enter, comma, space
-  separatorKeysCodes = [ENTER, COMMA, SPACE];
+  separatorKeysCodes = [ENTER, COMMA];
 
   commonCodeletTags = codelet_common_tags;
 
@@ -222,9 +222,8 @@ export class SaveCodeletFormComponent implements OnInit {
     const input = event.input;
     const value = event.value;
 
-    // Add our tag
-    const chipAutocompleteNotOpen = !(this.chipAutocomplete !== undefined && this.chipAutocomplete.isOpen);
-    if ((value || '').trim() && chipAutocompleteNotOpen) {
+    if ((value || '').trim()  && !this.autocompleteTagsOptionActivated) {
+    // if ((value || '').trim()) {
       this.formArrayTags.push(this.formBuilder.control(value.trim().toLowerCase()));
     }
 
@@ -248,10 +247,17 @@ export class SaveCodeletFormComponent implements OnInit {
     return this.autocompleteTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 
+  optionActivated($event: MatAutocompleteActivatedEvent) {
+    if ($event.option) {
+      this.autocompleteTagsOptionActivated = true;
+    }
+  }
+
   selectedTag(event: MatAutocompleteSelectedEvent): void {
     this.formArrayTags.push(this.formBuilder.control(event.option.viewValue));
     this.tagInput.nativeElement.value = '';
     this.tagsControl.setValue(null);
+    this.autocompleteTagsOptionActivated = false;
   }
 
   saveCodelet(codelet: Codelet) {
@@ -313,7 +319,6 @@ export class SaveCodeletFormComponent implements OnInit {
   }
 
   openDeleteDialog() {
-
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;

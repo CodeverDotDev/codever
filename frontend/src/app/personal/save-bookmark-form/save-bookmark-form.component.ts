@@ -33,7 +33,7 @@ import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -63,8 +63,6 @@ export class SaveBookmarkFormComponent implements OnInit {
   tagsControl = new FormControl();
 
   filteredTags: Observable<any[]>;
-
-  @ViewChild('matAutocomplete') chipAutocomplete: MatAutocomplete;
 
   @Input()
   url; // value of "url" query parameter if present
@@ -300,8 +298,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     const value = event.value;
 
     // Add our tag (avoid double adding in angular material 9 see - https://stackoverflow.com/questions/52608700/angular-material-mat-chips-autocomplete-bug-matchipinputtokenend-executed-befo)
-    const chipAutocompleteNotOpen = !(this.chipAutocomplete !== undefined && this.chipAutocomplete.isOpen)
-    if ((value || '').trim() && chipAutocompleteNotOpen) {
+    if ((value || '').trim()) {
       const tags = this.bookmarkForm.get('tags') as FormArray;
       tags.push(this.formBuilder.control(value.trim().toLowerCase()));
     }

@@ -1,5 +1,5 @@
-<div *ngIf="!isUpdate || (isUpdate && bookmark$ | async)" class="navigation-space-buffer"
-     [ngClass]="{'private-bookmark': makePublic === false}">
+<div *ngIf="!isUpdate || (isUpdate && bookmark$ | async)" class="navigation-space-buffer rounded shadow-sm"
+     [ngClass]="makePublic === false ? 'private-bookmark': 'bg-white'">
   <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
     <div class="form-group">
       <label for="location">Location*</label>
@@ -59,7 +59,7 @@
         <option *ngFor="let lang of languages" value="{{lang.code}}">{{lang.name}}</option>
       </select>
     </div>
-    <div id="tags" class="form-group-distanced">
+    <div id="tags" class="form-group-distanced mb-4 border rounded p-2">
       <mat-form-field class="full-width">
         <mat-chip-list #chipList>
           <mat-chip
@@ -71,7 +71,7 @@
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
           <input
-            placeholder="&nbsp;&nbsp;Tags* - max 8, lowercase; use hyphen for multiple word tags (e.g. react-native)"
+            placeholder="&nbsp; Tags*"
             #tagInput
             [formControl]="tagsControl"
             [matAutocomplete]="auto"
@@ -81,23 +81,24 @@
             formArrayName="tags"
           />
         </mat-chip-list>
+        <mat-hint>Enter comma-separated values</mat-hint>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedTag($event)">
           <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
             {{ tag }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <div *ngIf="tags.invalid && (tags.dirty || tags.touched)" class="alert alert-danger">
-        <div *ngIf="tags.errors.tagsAreRequired">
-          Tags are required.
-        </div>
-        <div *ngIf="tags.errors.tooManyTags">
-          You can add maximum 8 tags.
-        </div>
-        <div *ngIf="tags.errors.blockedTags">
-          The tag <strong>{{tags.errors.blockedTags.value}}</strong> is blocked. Please use others.
-        </div>
-      </div>
+      <span *ngIf="tags.invalid && (tags.dirty || tags.touched)">
+        <mat-error *ngIf="tags.errors.tagsAreRequired">
+          Tags are <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="tags.errors.tooManyTags">
+          You can add <strong>maximum 8 tags</strong>
+        </mat-error>
+        <mat-error *ngIf="tags.errors.blockedTags">
+          The tag <strong>{{tags.errors.blockedTags.value}}</strong> is blocked. Please use others
+        </mat-error>
+      </span>
     </div>
 
 
