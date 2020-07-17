@@ -12,7 +12,7 @@
             <a *ngIf="mySearch.searchDomain === 'my-bookmarks' || !mySearch.searchDomain"
                [routerLink]="['/search']"
                [queryParams]="{q: mySearch.text, sd: 'my-bookmarks' }"
-               class="badge badge-secondary">
+               class="badge badge-secondary mb-2">
           {{mySearch.text}} <span class="badge badge-light">{{mySearch.count}}</span>
             </a>
         </span>
@@ -32,7 +32,7 @@
             <a *ngIf="mySearch.searchDomain === 'public-bookmarks'"
                [routerLink]="['/search']"
                [queryParams]="{q: mySearch.text, sd: 'public-bookmarks' }"
-               class="badge badge-secondary">
+               class="badge badge-secondary mb-2">
               {{mySearch.text}} <span class="badge badge-light">{{mySearch.count}}</span>
             </a>
         </span>
@@ -52,7 +52,7 @@
             <a *ngIf="mySearch.searchDomain === 'my-codelets'"
                [routerLink]="['/search']"
                [queryParams]="{q: mySearch.text, sd: 'my-codelets' }"
-               class="badge badge-secondary">
+               class="badge badge-secondary mb-2">
           {{mySearch.text}} <span class="badge badge-light">{{mySearch.count}}</span>
             </a>
         </span>
