@@ -1,3 +1,25 @@
+## [2.0.4](https://github.com/BookmarksDev/bookmarks.dev/compare/1.0.0...2.0.4) (2020-07-18)
+
+
+### Bug Fixes
+
+* **fe:** more distances between saved searches in my dashboard ([684c7be](https://github.com/BookmarksDev/bookmarks.dev/commit/684c7be9963a3aeefd5de7a05ce143436d959553))
+* **fe:** overflow bootrap dropdown menu in angular expansion panel ([c996aec](https://github.com/BookmarksDev/bookmarks.dev/commit/c996aec0d3377ebabfc17ded70bbbeecc781e350))
+* **fe-codelets:** avoid double adding codelets tags reloaded ([52285dc](https://github.com/BookmarksDev/bookmarks.dev/commit/52285dcdae3305729890b8cacf2b4fe70fc5efce))
+* **fe-codelets:** avoid double adding of chip and text when selecting chip ([ef06639](https://github.com/BookmarksDev/bookmarks.dev/commit/ef06639cb97d4f1a300d46fd53fdd13f2247ed48))
+
+
+### Features
+
+* **fe:** update to angular 10 ([ceb5514](https://github.com/BookmarksDev/bookmarks.dev/commit/ceb5514fd84c27c28b0930cdd8bd678f3685595f))
+
+
+### BREAKING CHANGES
+
+* **fe:** update both angular and angular material to version 10
+
+
+
 ## [1.0.1](https://github.com/BookmarksDev/bookmarks.dev/compare/1.0.0...1.0.1) (2020-07-12)
 
 
