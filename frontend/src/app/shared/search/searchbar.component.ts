@@ -186,6 +186,10 @@ export class SearchbarComponent implements OnInit {
     const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
   }
 
+  /**
+   * It saves the current search with the current timestamp - it gets pushed
+   * at the "top" of saved searches so it will be displayed at the top in suggested searches
+   */
   onSaveSearchClick() {
     if (!this.userIsLoggedIn) {
       this.showLoginRequiredDialog('You need to be logged in to save searches')
