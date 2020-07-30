@@ -46,14 +46,16 @@
       </div>
     </div>
 
-    <hr class="title-content-separator">
-    <app-bookmark-text
-      [bookmark]="bookmark"
-      [queryText]="queryText"
-      (click)="onClickInDescription($event, bookmark)"
-      (auxclick)="onMiddleClickInDescription($event, bookmark)"
-      (contextmenu)="onRightClickInDescription($event, bookmark)">
-    </app-bookmark-text>
+    <div *ngIf="bookmark.description">
+      <hr class="title-content-separator">
+      <app-bookmark-text
+        [bookmark]="bookmark"
+        [queryText]="queryText"
+        (click)="onClickInDescription($event, bookmark)"
+        (auxclick)="onMiddleClickInDescription($event, bookmark)"
+        (contextmenu)="onRightClickInDescription($event, bookmark)">
+      </app-bookmark-text>
+    </div>
     <a *ngIf="bookmark.sourceCodeURL"
        class="btn btn-light btn-sm float-xs-left tag-list mr-2"
        href="{{bookmark.sourceCodeURL}}"
