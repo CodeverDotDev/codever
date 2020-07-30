@@ -6,7 +6,8 @@
           <h4 class="card-title" [innerHtml]="codelet.title | highlight: queryText">
           </h4>
           <h6 class="card-subtitle mb-2 text-muted url-under-title">
-            <span *ngIf="codelet.sourceUrl">Source - <a href="{{codelet.sourceUrl}}" target="_blank">{{codelet.sourceUrl}}</a>
+            <span *ngIf="codelet.sourceUrl">Source - <a href="{{codelet.sourceUrl}}"
+                                                        target="_blank">{{codelet.sourceUrl}}</a>
               <sup class="ml-1"><i class="fas fa-external-link-alt"></i></sup>
             </span>
           </h6>
@@ -16,7 +17,8 @@
       <hr class="title-content-separator">
 
       <div *ngFor="let codeSnippet of codelet.codeSnippets; let isLast=last">
-        <p *ngIf="codeSnippet.comment" class="mb-0" [innerHtml]="codeSnippet.comment | md2html | highlight: queryText"></p>
+        <p *ngIf="codeSnippet.comment" class="mb-0"
+           [innerHtml]="codeSnippet.comment | md2html"></p>
         <div class="code-snippet-wrapper">
           <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
           <div class="clear"></div>
@@ -28,8 +30,9 @@
     </div>
     <div class="card-footer" style="padding-right: 0.3rem">
       <div class="tags-group">
-        <span *ngFor="let tag of codelet.tags" class="badge badge-secondary float-xs-left"
-              [innerHtml]="tag | highlight: queryText"></span>
+        <span *ngFor="let tag of codelet.tags" class="badge badge-secondary float-xs-left">
+          {{tag}}
+        </span>
 
         <div class="float-right mt-1">
           <button
@@ -53,7 +56,8 @@
   <div class="container">
     <div class="row">
       <div class="col text-center">
-        <button class="btn btn-lg btn-primary mt-2 mb-2" *ngIf="popup" (click)="closeDialog()">Close Window <i class="fas fa-window-close"></i></button>
+        <button class="btn btn-lg btn-primary mt-2 mb-2" *ngIf="popup" (click)="closeDialog()">Close Window <i
+          class="fas fa-window-close"></i></button>
       </div>
     </div>
   </div>
