@@ -3,7 +3,7 @@
     <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}">
       <div *ngFor="let codeSnippet of codelet.codeSnippets; let isLast=last">
           <p *ngIf="codeSnippet.comment" class="mb-0"
-             [innerHtml]="codeSnippet.comment | highlight: queryText | md2html"></p>
+             [innerHtml]="codeSnippet.comment | md2html"></p>
         <div class="code-snippet-wrapper">
           <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
           <div class="clear"></div>
@@ -19,7 +19,7 @@
   <ng-template #wholeText>
     <div *ngFor="let codeSnippet of codelet.codeSnippets; let isLast=last">
       <p *ngIf="codeSnippet.comment" class="mb-1"
-         [innerHtml]="codeSnippet.comment | highlight: queryText | md2html"></p>
+         [innerHtml]="codeSnippet.comment | md2html"></p>
       <div class="code-snippet-wrapper">
         <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
         <div class="clear"></div>
