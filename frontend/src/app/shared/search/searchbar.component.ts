@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { map, startWith } from 'rxjs/operators';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Bookmark } from '../../core/model/bookmark';
@@ -42,6 +42,8 @@ export class SearchbarComponent implements OnInit {
 
   @Output()
   searchTextCleared = new EventEmitter<boolean>();
+
+  @ViewChild('publicSearchBox') searchBoxField: ElementRef;
 
   _userData: UserData;
 
@@ -262,5 +264,12 @@ export class SearchbarComponent implements OnInit {
 
   clearSearchBoxText() {
     this.searchControl.patchValue('');
+  }
+
+  @HostListener('window:keydown.control.s', ['$event'])
+  showPinned(event: KeyboardEvent) {
+    event.preventDefault();
+    this.searchBoxField.nativeElement.focus();
+    this.searchBoxField.nativeElement.select();
   }
 }
