@@ -1,3 +1,18 @@
+# [2.1.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.0.4...2.1.0) (2020-08-02)
+
+
+### Bug Fixes
+
+* remove unused pipe in codelet-details.component.html ([8f94094](https://github.com/BookmarksDev/bookmarks.dev/commit/8f9409432829d2cc4a53544766714ff359fc3304))
+
+
+### Features
+
+* **fe:** add "ctrl+s" hot key to focus on the searchbox ([7129921](https://github.com/BookmarksDev/bookmarks.dev/commit/712992148ef378514f2255bffe7d6dc50d107c84))
+* **fe:** introduce side navigation ([39dcfbc](https://github.com/BookmarksDev/bookmarks.dev/commit/39dcfbcd6a6cfbf01b4c358ce824b8bf12fadba4))
+
+
+
 ## [2.0.4](https://github.com/BookmarksDev/bookmarks.dev/compare/1.0.0...2.0.4) (2020-07-18)
 
 
