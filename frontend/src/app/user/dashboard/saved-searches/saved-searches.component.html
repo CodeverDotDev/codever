@@ -1,8 +1,9 @@
 <div *ngIf="(userData$ | async) as userData" class="mt-3 p-1">
+  <h3><i class="fas fa-xs fa-save mr-1"></i> Saved searches</h3>
   <mat-accordion multi="true">
-    <mat-expansion-panel expanded="true">
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <h4><i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> My Bookmarks (usage [count])</h4>
+        <h4><i class="fa fa-xs fa-search"></i> in My Bookmarks (usage [count])</h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <hr class="mt-0">
@@ -17,9 +18,9 @@
         <div class="clear"></div>
       </ng-template>
     </mat-expansion-panel>
-    <mat-expansion-panel expanded="true">
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <h4><i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> Public Bookmarks</h4>
+        <h4><i class="fa fa-xs fa-search"></i> in Public Bookmarks</h4>
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
@@ -36,9 +37,9 @@
       </ng-template>
     </mat-expansion-panel>
 
-    <mat-expansion-panel expanded="true">
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <h4><i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> My Codelets</h4>
+        <h4><i class="fa fa-xs fa-search"></i> in My Codelets</h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <hr class="mt-0">
@@ -53,67 +54,66 @@
         <div class="clear"></div>
       </ng-template>
     </mat-expansion-panel>
-
   </mat-accordion>
-</div>
 
-
-<h4 class="text-danger mt-5" style="margin-top: 1rem">Danger zone</h4>
-<div class="border border-danger rounded-lg" style="padding: 1rem">
-  <h4>Delete <strong>saved search</strong></h4>
-  <div class="input-group search-component">
-    <div class="input-group-prepend">
+  <h4 class="text-danger mt-5" style="margin-top: 1rem">Danger zone</h4>
+  <div class="border border-danger rounded-lg" style="padding: 1rem">
+    <h4>Delete <strong>saved search</strong></h4>
+    <div class="input-group search-component">
+      <div class="input-group-prepend">
       <span class="input-group-text">
         <i class="fa fa-search"></i>
       </span>
-      <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-              data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-        <span class="sr-only">Toggle Dropdown</span>
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" role="button"
-           title="Search in personal bookmarks"
-           (click)="onSearchDomainChange('my-bookmarks')">
-          <i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> My Bookmarks <i
-          *ngIf="searchDomain === 'my-bookmarks'" class="fas fa-check"></i>
-        </a>
-        <a class="dropdown-item" role="button"
-           title="Search in public bookmarks"
-           (click)="onSearchDomainChange('public-bookmarks')">
-          <i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> Public Bookmarks <i
-          *ngIf="searchDomain === 'public-bookmarks'"
-          class="fas fa-check"></i>
-        </a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" role="button"
-           title="Search in my codelets"
-           (click)="onSearchDomainChange('my-codelets')">
-          <i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> My Codelets <i
-          *ngIf="searchDomain === 'my-codelets'" class="fas fa-check"></i>
-        </a>
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" role="button"
+             title="Search in personal bookmarks"
+             (click)="onSearchDomainChange('my-bookmarks')">
+            <i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> My Bookmarks <i
+            *ngIf="searchDomain === 'my-bookmarks'" class="fas fa-check"></i>
+          </a>
+          <a class="dropdown-item" role="button"
+             title="Search in public bookmarks"
+             (click)="onSearchDomainChange('public-bookmarks')">
+            <i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> Public Bookmarks <i
+            *ngIf="searchDomain === 'public-bookmarks'"
+            class="fas fa-check"></i>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" role="button"
+             title="Search in my codelets"
+             (click)="onSearchDomainChange('my-codelets')">
+            <i class="fas fa-xs fa-save mr-1"></i> <i class="fa fa-xs fa-search"></i> My Codelets <i
+            *ngIf="searchDomain === 'my-codelets'" class="fas fa-check"></i>
+          </a>
+        </div>
       </div>
-    </div>
-    <input
-      #tagSearchBox
-      type="text"
-      class="form-control"
-      [formControl]="selectSavedSearchControl"
-      placeholder="Start typing to select saved search for {{searchDomainToViewValue(searchDomain)}}"
-      [matAutocomplete]="auto"
-    >
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">{{search.text}}</mat-option>
-    </mat-autocomplete>
-    <div class="input-group-append">
-      <button class="btn btn-outline-danger"
-              type="button"
-              (click)="openDeleteDialog(tagSearchBox.value)"
-              [disabled]="!buttonEnabled"
-      >Delete <strong>saved search</strong>
-      </button>
+      <input
+        #tagSearchBox
+        type="text"
+        class="form-control"
+        [formControl]="selectSavedSearchControl"
+        placeholder="Start typing to select saved search for {{searchDomainToViewValue(searchDomain)}}"
+        [matAutocomplete]="auto"
+      >
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">{{search.text}}</mat-option>
+      </mat-autocomplete>
+      <div class="input-group-append">
+        <button class="btn btn-outline-danger"
+                type="button"
+                (click)="openDeleteDialog(tagSearchBox.value)"
+                [disabled]="!buttonEnabled"
+        >Delete <strong>saved search</strong>
+        </button>
+      </div>
     </div>
   </div>
 </div>
+
 
 

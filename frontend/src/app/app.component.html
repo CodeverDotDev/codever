@@ -2,15 +2,54 @@
   <app-navigation></app-navigation>
 </header>
 <main>
-  <div class="main-body">
-    <app-loader></app-loader>
+  <!--
+  Simple side navigation from https://startbootstrap.com/templates/simple-sidebar/
+  -->
+  <div class="d-flex" id="wrapper">
+    <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="list-group list-group-flush">
+        <a
+          class="list-group-item list-group-item-action bg-light"
+          title="Landing page"
+          routerLink="/"
+        >
+          <i class="fas fa-home mr-1"></i> Home
+        </a>
+        <a
+          class="list-group-item list-group-item-action bg-light"
+          title="Get started, save & search bookmarks"
+          routerLink="/howto"
+        >
+          <i class="fas fa-info-circle mr-1"></i> How to
+        </a>
+        <a
+          class="list-group-item list-group-item-action bg-light"
+          title="Overview of your bookmarks, tags & searches"
+          routerLink="dashboard"
+        >
+          <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
 
-    <router-outlet></router-outlet>
-    <!-- Routed views go here -->
-    <app-error></app-error>
-
+        </a>
+        <a
+          class="list-group-item list-group-item-action bg-light"
+          title="Your settings"
+          routerLink="/settings"
+        >
+          <i class="fas fa-cog mr-1"></i> Settings
+        </a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="main-body">
+        <app-loader></app-loader>
+        <router-outlet></router-outlet>
+        <!-- Routed views go here -->
+        <app-error></app-error>
+      </div>
+    </div>
   </div>
 </main>
+
 <footer>
   <a [href]="url">Bookmarks.dev</a>
   | <a routerLink="about" routerLinkActive="active">About</a>
