@@ -1,9 +1,9 @@
 <div *ngIf="(userData$ | async) as userData" class="mt-2 p-1">
   <mat-accordion multi="true">
 
-    <mat-expansion-panel expanded="true">
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <h3>Watching <i class="fa fa-eye"></i></h3>
+        <h4>Watching <i class="fa fa-eye fa-sm"></i></h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <hr class="mt-0">
@@ -56,9 +56,9 @@
       </ng-template>
     </mat-expansion-panel>
 
-    <mat-expansion-panel expanded="true">
+    <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <h3 class="p-1">Ignoring <i class="fa fa-ban"></i></h3>
+        <h4 class="p-1">Ignoring <i class="fa fa-ban fa-sm"></i></h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <hr class="mt-0">
@@ -110,10 +110,10 @@
       </ng-template>
     </mat-expansion-panel>
 
-    <div *ngIf="(usedTags$ | async)">
-      <mat-expansion-panel expanded="true">
+    <div *ngIf="(usedTags$ | async)" class="mt-2">
+      <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <h3>Used with <em>my public</em> bookmarks</h3>
+          <h4>Used with <em>my public</em> bookmarks</h4>
         </mat-expansion-panel-header>
         <ng-template matExpansionPanelContent>
           <hr class="mt-0">
@@ -168,9 +168,9 @@
         </ng-template>
       </mat-expansion-panel>
 
-      <mat-expansion-panel  expanded="true">
+      <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <h3>Used with <em>my private</em> bookmarks</h3>
+          <h4>Used with <em>my private</em> bookmarks</h4>
         </mat-expansion-panel-header>
         <ng-template matExpansionPanelContent>
           <hr class="mt-0">

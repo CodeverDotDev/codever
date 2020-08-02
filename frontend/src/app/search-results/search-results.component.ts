@@ -238,7 +238,6 @@ export class SearchResultsComponent implements OnInit {
     }
   }
 
-
   tabSelectionChanged(event: MatTabChangeEvent) {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {

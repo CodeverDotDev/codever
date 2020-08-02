@@ -3,6 +3,59 @@
   display: block;
 }
 
+// START side-navigation
+#wrapper {
+  overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+  margin-top:100px;
+  //min-height: 100vh;
+  margin-left: -15rem;
+  -webkit-transition: margin .25s ease-out;
+  -moz-transition: margin .25s ease-out;
+  -o-transition: margin .25s ease-out;
+  transition: margin .25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+  width: 10rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+#sidebar-wrapper {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  #sidebar-wrapper {
+    display: flex;
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}
+// END side-navigation
+
 footer {
   margin-top: 1rem;
   text-align: center;
