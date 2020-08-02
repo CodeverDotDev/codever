@@ -267,7 +267,7 @@ export class SearchbarComponent implements OnInit {
   }
 
   @HostListener('window:keydown.control.s', ['$event'])
-  showPinned(event: KeyboardEvent) {
+  focusOnSearchBoxHotKey(event: KeyboardEvent) {
     event.preventDefault();
     this.searchBoxField.nativeElement.focus();
     this.searchBoxField.nativeElement.select();
