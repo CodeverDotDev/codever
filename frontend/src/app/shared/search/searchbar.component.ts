@@ -164,15 +164,13 @@ export class SearchbarComponent implements OnInit {
 
   onSearchDomainChange(selectedSearchDomain) {
     this.setFilteredSearches$(selectedSearchDomain);
-
     if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_CODELETS) && !this.userIsLoggedIn) {
       this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
       this.showLoginRequiredDialog('You need to be logged in to search in your personal bookmarks');
     } else {
       this.searchDomain = selectedSearchDomain;
-      if (this.searchBoxText && this.searchBoxText !== '') {
-        this.triggerBookmarkSearch(this.searchBoxText);
-      }
+      this.searchBoxField.nativeElement.focus();
+      this.searchBoxField.nativeElement.select();
     }
   }
 
