@@ -1,3 +1,12 @@
+# [2.2.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.1.0...2.2.0) (2020-08-04)
+
+
+### Features
+
+* **recent-searches:** add recent searches to user dashboard ([4c257e3](https://github.com/BookmarksDev/bookmarks.dev/commit/4c257e3ac2163c32445a07dd82ba7c48a41249f0))
+
+
+
 # [2.1.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.0.4...2.1.0) (2020-08-02)
 
 
