@@ -12,7 +12,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { KeycloakServiceWrapper } from '../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../core/user/user-info.store';
 import { UserDataStore } from '../core/user/userdata.store';
-import { UserData } from '../core/model/user-data';
+import { Search, UserData } from '../core/model/user-data';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PaginationNotificationService } from '../core/pagination-notification.service';
 import { SearchDomain } from '../core/model/search-domain.enum';
@@ -142,6 +142,7 @@ export class SearchResultsComponent implements OnInit {
   private searchBookmarks(searchText: string, searchDomain: string, searchInclude: string) {
     this.searchDomain = searchDomain;
     this.searchText = searchText;
+    this.saveRecenSearch(searchText, searchDomain);
     switch (searchDomain) {
       case SearchDomain.MY_BOOKMARKS : {
         this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(
@@ -171,6 +172,12 @@ export class SearchResultsComponent implements OnInit {
         );
         break;
       }
+    }
+  }
+
+  private saveRecenSearch(searchText: string, searchDomain) {
+      if (this.userIsLoggedIn) {
+        this.userDataStore.saveRecentSearch(searchText, searchDomain);
     }
   }
 

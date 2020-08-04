@@ -7,14 +7,15 @@ import { AuthGuard } from '../../core/auth/auth-guard.service';
 import { UserBookmarksComponent } from './user-bookmarks/user-bookmarks.component';
 import { SharedModule } from '../../shared/shared.module';
 import { DeleteBookmarksByTagDialogComponent } from './tags/delete-bookmarks-by-tag-dialog/delete-bookmarks-by-tag-dialog.component';
-import { DeleteSavedSearchDialogComponent } from './saved-searches/delete-saved-search-dialog/delete-saved-search-dialog.component';
-import { SavedSearchesComponent } from './saved-searches/saved-searches.component';
+import { DeleteSavedSearchDialogComponent } from './my-searches/delete-saved-search-dialog/delete-saved-search-dialog.component';
+import { MySearchesComponent } from './my-searches/my-searches.component';
 import { FollowingComponent } from './following/following.component';
 import { FollowersComponent } from './followers/followers.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MySearchesTemplateComponent } from './my-searches/my-searches-template/my-searches-template.component';
 
 const userDashboardRoutes: Routes = [
   {
@@ -37,9 +38,10 @@ const userDashboardRoutes: Routes = [
     UserBookmarksComponent,
     DeleteBookmarksByTagDialogComponent,
     DeleteSavedSearchDialogComponent,
-    SavedSearchesComponent,
+    MySearchesComponent,
     FollowingComponent,
-    FollowersComponent
+    FollowersComponent,
+    MySearchesTemplateComponent
   ],
   imports: [
     RouterModule.forChild(userDashboardRoutes),

@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Logger } from '../logger.service';
 import { ErrorService } from '../error/error.service';
-import { Following, Profile, UserData } from '../model/user-data';
+import { Following, Profile, Search, UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
@@ -26,7 +26,8 @@ export class UserDataStore {
   private userId: string;
   private userFirstName: string;
 
-  userData: UserData = {profile: {displayName: 'changeMe'}, searches: []};
+  // userData is initialized here to avoid some nasty undefined exceptions before the actual data is loaded
+  userData: UserData = {profile: {displayName: 'changeMe'}, searches: [], recentSearches: []};
 
   constructor(private userService: UserDataService,
               private logger: Logger,
@@ -71,6 +72,7 @@ export class UserDataStore {
       userId: userId,
       profile: profile,
       searches: [],
+      recentSearches: [],
       readLater: [],
       likes: [],
       watchedTags: [],
@@ -243,5 +245,31 @@ export class UserDataStore {
     });
 
     return obs;
+  }
+
+  saveRecentSearch(searchText: string, searchDomain: any) {
+    if (this.userId !== undefined) {
+      const now = new Date();
+      const newSearch: Search = {
+        text: searchText,
+        createdAt: now,
+        lastAccessedAt: now,
+        searchDomain: searchDomain,
+        count: 1
+      }
+      const emptyUserData = Object.keys(this.userData).length === 0 && this.userData.constructor === Object;
+      if (emptyUserData) {
+        this.userData = {
+          userId: this.userId,
+          recentSearches: [newSearch]
+        }
+      } else {
+        this.userData.recentSearches = this.userData.recentSearches
+          .filter(item => !(item.text.trim().toLowerCase() === searchText.trim().toLowerCase()
+            && item.searchDomain === searchDomain));
+        this.userData.recentSearches.unshift(newSearch);
+      }
+      this.updateUserData$(this.userData);
+    }
   }
 }

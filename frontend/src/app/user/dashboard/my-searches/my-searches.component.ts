@@ -11,10 +11,10 @@ import { SearchDomainLocal } from '../../../shared/search/searchbar.component';
 
 @Component({
   selector: 'app-saved-searches',
-  templateUrl: './saved-searches.component.html',
-  styleUrls: ['./saved-searches.component.scss']
+  templateUrl: './my-searches.component.html',
+  styleUrls: ['./my-searches.component.scss']
 })
-export class SavedSearchesComponent implements OnInit {
+export class MySearchesComponent implements OnInit {
 
 
   userData$: Observable<UserData>;

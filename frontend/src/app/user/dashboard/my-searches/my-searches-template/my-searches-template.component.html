@@ -1,0 +1,61 @@
+<mat-accordion multi="true">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <h4><i class="fa fa-xs fa-search"></i> in My Bookmarks</h4>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <hr class="mt-0">
+      <ng-container *ngFor="let mySearch of searches">
+        <span *ngIf="mySearch.searchDomain === 'my-bookmarks' || !mySearch.searchDomain" class="my-saved-search mr-2">
+          <a
+            [routerLink]="['/search']"
+            [queryParams]="{q: mySearch.text, sd: 'my-bookmarks' }"
+            class="badge badge-secondary mb-2"> <i class="fa fa-xs fa-search"></i>
+            {{mySearch.text}} <span *ngIf="showCount" class="badge badge-light">{{mySearch.count}}</span>
+          </a>
+          </span>
+      </ng-container>
+      <div class="clear"></div>
+    </ng-template>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <h4><i class="fa fa-xs fa-search"></i> in Public Bookmarks</h4>
+    </mat-expansion-panel-header>
+
+    <ng-template matExpansionPanelContent>
+      <hr class="mt-0">
+      <ng-container *ngFor="let mySearch of searches">
+        <span *ngIf="mySearch.searchDomain === 'public-bookmarks'" class="my-saved-search mr-2">
+          <a [routerLink]="['/search']"
+             [queryParams]="{q: mySearch.text, sd: 'public-bookmarks' }"
+             class="badge badge-secondary mb-2"> <i class="fa fa-xs fa-search"></i>
+            {{mySearch.text}} <span *ngIf="showCount" class="badge badge-light">{{mySearch.count}}</span>
+          </a>
+        </span>
+      </ng-container>
+      <div class="clear"></div>
+    </ng-template>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <h4><i class="fa fa-xs fa-search"></i> in My Codelets</h4>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <hr class="mt-0">
+      <ng-container *ngFor="let mySearch of searches">
+        <span *ngIf="mySearch.searchDomain === 'my-codelets'" class="my-saved-search mr-2">
+        <a
+          [routerLink]="['/search']"
+          [queryParams]="{q: mySearch.text, sd: 'my-codelets' }"
+          class="badge badge-secondary mb-2">  <i class="fa fa-xs fa-search"></i>
+          {{mySearch.text}}
+          <span *ngIf="showCount" class="badge badge-light">{{mySearch.count}}</span>
+        </a>
+        </span>
+      </ng-container>
+      <div class="clear"></div>
+    </ng-template>
+  </mat-expansion-panel>
+</mat-accordion>
