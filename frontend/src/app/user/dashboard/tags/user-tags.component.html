@@ -3,7 +3,7 @@
 
     <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <h4>Watching <i class="fa fa-eye fa-sm"></i></h4>
+        <h5>Watching <i class="fa fa-eye fa-sm"></i></h5>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <hr class="mt-0">
@@ -14,7 +14,7 @@
           </div>
         </div>
         <ng-template #listWatchedTags>
-          <div *ngFor="let tag of userData.watchedTags.sort()" class="btn-group mr-3 mt-3 tag-list-header">
+          <div *ngFor="let tag of userData.watchedTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
             <a
               [routerLink]="['/tagged', tag]"
               class="btn btn-secondary btn-sm"
@@ -58,7 +58,7 @@
 
     <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <h4 class="p-1">Ignoring <i class="fa fa-ban fa-sm"></i></h4>
+        <h5 class="p-1">Ignoring <i class="fa fa-ban fa-sm"></i></h5>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <hr class="mt-0">
@@ -69,7 +69,7 @@
           </div>
         </div>
         <ng-template #listIgnoredTags>
-          <div *ngFor="let tag of userData.ignoredTags.sort()" class="btn-group mr-3 mt-3 tag-list-header">
+          <div *ngFor="let tag of userData.ignoredTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
             <a
               [routerLink]="['/tagged', tag]"
               class="btn btn-secondary btn-sm"
@@ -113,11 +113,11 @@
     <div *ngIf="(usedTags$ | async)" class="mt-2">
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <h4>Used with <em>my public</em> bookmarks</h4>
+          <h5>Used with <em>my public</em> bookmarks</h5>
         </mat-expansion-panel-header>
         <ng-template matExpansionPanelContent>
           <hr class="mt-0">
-          <div *ngFor="let tag of (usedTags$ | async).public" class="btn-group mr-3 mt-3 tag-list-header">
+          <div *ngFor="let tag of (usedTags$ | async).public" class="btn-group mr-3 mt-2 tag-list-header">
             <a
               [routerLink]="['/search']"
               [queryParams]="{q: '[' + tag.name + '] user:' + userId, sd: 'public-bookmarks'}"
@@ -170,11 +170,11 @@
 
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <h4>Used with <em>my private</em> bookmarks</h4>
+          <h5>Used with <em>my private</em> bookmarks</h5>
         </mat-expansion-panel-header>
         <ng-template matExpansionPanelContent>
           <hr class="mt-0">
-          <div *ngFor="let tag of (usedTags$ | async).private" class="btn-group mr-3 mt-3 tag-list-header">
+          <div *ngFor="let tag of (usedTags$ | async).private" class="btn-group mr-3 mt-2 tag-list-header">
             <a
               [routerLink]="['/search']"
               [queryParams]="{q: 'private:only [' + tag.name + ']', sd: 'my-bookmarks'}"
@@ -229,7 +229,7 @@
 
   <h5 class="text-danger" style="margin-top: 1rem">Danger zone</h5>
   <div class="border border-danger rounded-lg" style="padding: 1rem">
-    <h4>Batch delete <strong>private</strong> bookmarks by <strong>tag</strong></h4>
+    <h6>Batch delete <strong>private</strong> bookmarks by <strong>tag</strong></h6>
     <div class="input-group search-component">
       <div class="input-group-prepend">
     <span class="input-group-text">
