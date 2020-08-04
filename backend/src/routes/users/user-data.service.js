@@ -15,6 +15,7 @@ let createUserData = async function (userData, userId) {
     userId: userId,
     profile: userData.profile,
     searches: userData.searches,
+    recentSearches: userData.recentSearches,
     readLater: userData.readLater,
     likes: userData.likes,
     watchedTags: userData.watchedTags,
@@ -84,10 +85,15 @@ function userSearchesAreValid(userData) {
   return true;
 }
 
+/**
+ * Returns user data
+ *  - with only latest 50 recentSearches
+ *  - the followers are added to response (default deactivated)
+ */
 let getUserData = async function (userId) {
   const userData = await User.findOne({
     userId: userId
-  }).select("+followers");
+  }, {"recentSearches": { $slice: 50 }}).select("+followers");
 
   if ( !userData ) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);

@@ -3,6 +3,7 @@ export interface UserData {
   userId?: string;
   profile?: Profile;
   searches?: Search[];
+  recentSearches?: Search[];
   readLater?: string[]; // ids of bookmarks to read later
   likes?: string[]; // ids of bookmarks the user liked
   favorites?: string[]; // ids of bookmarks marked as favorite

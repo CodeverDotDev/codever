@@ -1,62 +1,8 @@
 <div *ngIf="(userData$ | async) as userData" class="mt-3 p-1">
-  <h3><i class="fas fa-xs fa-save mr-1"></i> Saved searches</h3>
-  <mat-accordion multi="true">
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <h4><i class="fa fa-xs fa-search"></i> in My Bookmarks (usage [count])</h4>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-        <hr class="mt-0">
-        <span *ngFor="let mySearch of userData.searches" class="my-saved-search">
-            <a *ngIf="mySearch.searchDomain === 'my-bookmarks' || !mySearch.searchDomain"
-               [routerLink]="['/search']"
-               [queryParams]="{q: mySearch.text, sd: 'my-bookmarks' }"
-               class="badge badge-secondary mb-2">
-          {{mySearch.text}} <span class="badge badge-light">{{mySearch.count}}</span>
-            </a>
-        </span>
-        <div class="clear"></div>
-      </ng-template>
-    </mat-expansion-panel>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <h4><i class="fa fa-xs fa-search"></i> in Public Bookmarks</h4>
-      </mat-expansion-panel-header>
+  <h3><i class="fas fa-xs fa-save mr-1"></i> Saved searches (usage [count])</h3>
+  <app-my-searches-template [searches]="userData.searches" [showCount]="true"></app-my-searches-template>
 
-      <ng-template matExpansionPanelContent>
-        <hr class="mt-0">
-        <span *ngFor="let mySearch of userData.searches" class="my-saved-search">
-            <a *ngIf="mySearch.searchDomain === 'public-bookmarks'"
-               [routerLink]="['/search']"
-               [queryParams]="{q: mySearch.text, sd: 'public-bookmarks' }"
-               class="badge badge-secondary mb-2">
-              {{mySearch.text}} <span class="badge badge-light">{{mySearch.count}}</span>
-            </a>
-        </span>
-        <div class="clear"></div>
-      </ng-template>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <h4><i class="fa fa-xs fa-search"></i> in My Codelets</h4>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-        <hr class="mt-0">
-        <span *ngFor="let mySearch of userData.searches" class="my-saved-search">
-            <a *ngIf="mySearch.searchDomain === 'my-codelets'"
-               [routerLink]="['/search']"
-               [queryParams]="{q: mySearch.text, sd: 'my-codelets' }"
-               class="badge badge-secondary mb-2">
-          {{mySearch.text}} <span class="badge badge-light">{{mySearch.count}}</span>
-            </a>
-        </span>
-        <div class="clear"></div>
-      </ng-template>
-    </mat-expansion-panel>
-  </mat-accordion>
-
-  <h4 class="text-danger mt-5" style="margin-top: 1rem">Danger zone</h4>
+  <h4 class="text-danger mt-4" style="margin-top: 1rem">Danger zone</h4>
   <div class="border border-danger rounded-lg" style="padding: 1rem">
     <h4>Delete <strong>saved search</strong></h4>
     <div class="input-group search-component">
@@ -113,6 +59,10 @@
       </div>
     </div>
   </div>
+
+  <hr>
+  <h3 class="mt-4"><i class="fas fa-xs fa-history mr-1"></i> Recent searches </h3>
+  <app-my-searches-template [searches]="userData.recentSearches"></app-my-searches-template>
 </div>
 
 

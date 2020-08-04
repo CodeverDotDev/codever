@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SavedSearchesComponent } from './saved-searches.component';
+import { MySearchesTemplateComponent } from './my-searches-template.component';
 
-describe('UserTagsComponent', () => {
-  let component: SavedSearchesComponent;
-  let fixture: ComponentFixture<SavedSearchesComponent>;
+describe('MySearchesTemplateComponent', () => {
+  let component: MySearchesTemplateComponent;
+  let fixture: ComponentFixture<MySearchesTemplateComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SavedSearchesComponent ]
+      declarations: [ MySearchesTemplateComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SavedSearchesComponent);
+    fixture = TestBed.createComponent(MySearchesTemplateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

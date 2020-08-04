@@ -38,6 +38,12 @@
   }
 }
 
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1080px;
+  }
+}
+
 .navbar {
   z-index: 1000;
 }

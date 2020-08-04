@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { PaginationAction } from './model/pagination-action';
 import { SearchData } from './model/search-data';
 
 @Injectable()

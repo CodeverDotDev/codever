@@ -32,6 +32,7 @@ const userSchema = new Schema({
     userId: String, //global userId in the bookmarks context (currently is the Keycloak Id)
     profile: profileSchema,
     searches: [searchSchema],
+    recentSearches: [searchSchema],
     readLater: [String],
     likes: [String], //ids of bookmarks liked by user
     watchedTags: [String],
