@@ -21,6 +21,10 @@ $background-gray: rgb(240, 242, 245);
     box-shadow: none;
   }
 }
+
+.lighter-gray {
+  color:gainsboro;
+}
 // inspired from https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
@@ -43,7 +47,7 @@ $background-gray: rgb(240, 242, 245);
 
 @media (min-width: 1600px) {
   .search-component{
-    min-width: 775px;
+    min-width: 800px;
     input:focus {
       box-shadow: none;
     }

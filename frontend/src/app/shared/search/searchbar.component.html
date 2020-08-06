@@ -6,56 +6,67 @@
             [class.focused]="(isFocusOnSearchControl || hover) && publicSearchBox.value"
             (click)="onSearchDomainChange(searchDomain)"
             [disabled]="!searchBoxText"
-            class="btn btn-outline-secondary"
+            class="btn btn-outline-secondary lighter-gray"
             title="Search"
     >
       <i class="fa fa-search" style="font-size: 1.18rem"></i>
     </button>
-    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-      <span class="sr-only">Toggle Dropdown</span>
+
+    <button *ngIf="innerWidth > 1400; else toggleButton" class="btn btn-outline-secondary dropdown-toggle lighter-gray"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+      style="font-size: 15px">
+      {{searchDomain === 'my-codelets' ? 'My Codelets' : searchDomain === 'public-bookmarks' ? 'Public Bookmarks' : 'My Bookmarks'}}
     </button>
+    <ng-template #toggleButton>
+      <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+              data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+    </ng-template>
     <div class="dropdown-menu">
-      <a class="dropdown-item" role="button"
+      <a class="dropdown-item"  role="button"
          title="Search in My Bookmarks"
          (click)="onSearchDomainChange('my-bookmarks')">
-        <i class="fa fa-search"></i>
         My Bookmarks
         <span *ngIf="searchDomain === 'my-bookmarks'; else uncheckedMyBookmarksSelection"
               class="search-domain-selection my-bookmarks-selection float-right pl-1 pr-1">
-          <i class="fas fa-check"></i>
-        </span>
-        <ng-template #uncheckedMyBookmarksSelection>
-          <span class="my-bookmarks-selection-unchecked float-right">
-            <i class="fa fa-square fa-lg"></i>
+            <i class="fas fa-check"></i>
           </span>
+        <ng-template #uncheckedMyBookmarksSelection>
+            <span class="my-bookmarks-selection-unchecked float-right">
+              <i class="fa fa-square fa-lg"></i>
+            </span>
         </ng-template>
       </a>
-      <a class="dropdown-item" role="button"
+      <a class="dropdown-item"  role="button"
          title="Search in My Codelets"
          (click)="onSearchDomainChange('my-codelets')">
-        <i class="fa fa-search"></i>
         My Codelets
         <span *ngIf="searchDomain === 'my-codelets'; else uncheckedMyCodeletsSelection"
               class="search-domain-selection my-codelets-selection float-right pl-1 pr-1">
-          <i class="fas fa-check"></i>
-        </span>
-        <ng-template #uncheckedMyCodeletsSelection>
-          <span class="my-codelets-selection-unchecked  float-right">
-            <i class="fa fa-square fa-lg"></i>
+            <i class="fas fa-check"></i>
           </span>
+        <ng-template #uncheckedMyCodeletsSelection>
+            <span class="my-codelets-selection-unchecked  float-right">
+              <i class="fa fa-square fa-lg"></i>
+            </span>
         </ng-template>
       </a>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" role="button"
+      <div role="separator" class="dropdown-divider"></div>
+      <a class="dropdown-item"  role="button"
          title="Search in public bookmarks"
          (click)="onSearchDomainChange('public-bookmarks')">
-        <i class="fa fa-search"></i> Public Bookmarks
-        <i *ngIf="searchDomain === 'public-bookmarks'; else  uncheckedPublicBookmarksSelection" class="fas fa-check ml-1"></i>
+        Public Bookmarks
+        <i *ngIf="searchDomain === 'public-bookmarks'; else  uncheckedPublicBookmarksSelection"
+           class="fas fa-check ml-1"></i>
         <ng-template #uncheckedPublicBookmarksSelection>
-          <span class="my-codelets-selection-unchecked  float-right">
-            <i class="fa fa-square fa-lg ml-1 unchecked-public-bookmarks-selection"></i>
-          </span>
+            <span class="my-codelets-selection-unchecked  float-right">
+              <i class="fa fa-square fa-lg ml-1 unchecked-public-bookmarks-selection"></i>
+            </span>
         </ng-template>
       </a>
     </div>
@@ -66,7 +77,7 @@
     type="text"
     class="form-control"
     [formControl]="searchControl"
-    placeholder="Search in {{searchDomain === 'my-codelets' ? 'My Codelets' : searchDomain === 'public-bookmarks' ? 'Public Bookmarks' : 'My Bookmarks'}} ..."
+    placeholder="Search{{ innerWidth <=1400 ? searchDomain === 'my-codelets' ? ' My Codelets' : searchDomain === 'public-bookmarks' ? ' Public Bookmarks' : ' My Bookmarks' : ''}}..."
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
@@ -82,14 +93,14 @@
             type="button"
             (click)="clearSearchBoxText()"
             title="Clear"
-    ><i class="fas fa-lg fa-times"></i>
+    ><i class="fas fa-lg fa-times lighter-gray"></i>
     </button>
     <button class="btn btn-outline-secondary"
             type="button"
             (click)="onSaveSearchClick()"
             title="{{userIsLoggedIn ? 'Save search' : 'Login to save search'}}"
             [disabled]="!searchBoxText"
-    ><i class="fas fa-save"></i>
+    ><i class="fas fa-save lighter-gray"></i>
     </button>
   </div>
 </div>
