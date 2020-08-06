@@ -64,6 +64,8 @@ export class SearchbarComponent implements OnInit {
   showSearchResults = false;
   hover = false;
 
+  public innerWidth: any;
+
   searchDomain = SearchDomain.PUBLIC_BOOKMARKS.valueOf();
 
   searchDomains: SearchDomainLocal[] = [
@@ -125,6 +127,7 @@ export class SearchbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
