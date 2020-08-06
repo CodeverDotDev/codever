@@ -4,7 +4,7 @@
             (mouseover)="hover=true"
             (mouseleave)="hover=false"
             [class.focused]="(isFocusOnSearchControl || hover) && publicSearchBox.value"
-            (click)="onSearchDomainChange(searchDomain)"
+            (click)="searchBookmarksFromSearchBox(publicSearchBox.value)"
             [disabled]="!searchBoxText"
             class="btn btn-outline-secondary lighter-gray"
             title="Search"
