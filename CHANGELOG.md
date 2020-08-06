@@ -1,3 +1,12 @@
+# [2.3.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.2.0...2.3.0) (2020-08-06)
+
+
+### Features
+
+* **fe:** show search domain as text for bigger screens (>1400 currently) ([709ae64](https://github.com/BookmarksDev/bookmarks.dev/commit/709ae64942269dad74a402030bde7a97e0fac16a))
+
+
+
 # [2.2.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.1.0...2.2.0) (2020-08-04)
 
 
