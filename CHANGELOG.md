@@ -1,3 +1,12 @@
+## [2.3.1](https://github.com/BookmarksDev/bookmarks.dev/compare/2.3.0...2.3.1) (2020-08-06)
+
+
+### Bug Fixes
+
+* **fe:** trigger search when click on lupe in search bar ([0fc7cd4](https://github.com/BookmarksDev/bookmarks.dev/commit/0fc7cd45c9d1496042d2ced7866b00e4622192f5))
+
+
+
 # [2.3.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.2.0...2.3.0) (2020-08-06)
 
 
