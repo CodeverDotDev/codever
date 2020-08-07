@@ -1,3 +1,12 @@
+## [2.3.2](https://github.com/BookmarksDev/bookmarks.dev/compare/2.3.1...2.3.2) (2020-08-07)
+
+
+### Bug Fixes
+
+* **fe-searchbox:** close autocomplete panel when hitting ENTER ([f0a7d39](https://github.com/BookmarksDev/bookmarks.dev/commit/f0a7d3944c3eb312e9ff53501c90994caf74ab58))
+
+
+
 ## [2.3.1](https://github.com/BookmarksDev/bookmarks.dev/compare/2.3.0...2.3.1) (2020-08-06)
 
 
