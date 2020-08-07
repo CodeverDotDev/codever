@@ -73,6 +73,7 @@
   </div>
   <input
     #publicSearchBox
+    #autocompleteTrigger="matAutocompleteTrigger"
     matInput
     type="text"
     class="form-control"
@@ -83,7 +84,7 @@
     (focusout)="unFocusOnSearchControl()"
     [class.my-codelets-selection]="searchDomain === 'my-codelets'"
     [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
-    (keyup.enter)="searchBookmarksFromSearchBox(publicSearchBox.value)"
+    (keyup.enter)="$event.target.blur(); autocompleteTrigger.closePanel();searchBookmarksFromSearchBox(publicSearchBox.value)"
   >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteSelectionChanged($event)">
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">{{search.text}}</mat-option>
