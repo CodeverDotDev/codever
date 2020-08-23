@@ -26,7 +26,7 @@ import { PublicBookmarkPresentDialogComponent } from './public-bookmark-present-
 import { AdminService } from '../../core/admin/admin.service';
 import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
-import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-store.service';
+import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserData } from '../../core/model/user-data';
 import { DatePipe } from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
@@ -362,7 +362,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       );
     } else {
       this.personalBookmarksService.updateBookmark(bookmark).pipe(
-        concatMap((updatedBookmark) => this.userDataStore.addToHistoryAndOthers$(updatedBookmark, false, false))
+        concatMap((updatedBookmark) => this.userDataStore.updateUserDataHistory$(updatedBookmark))
       ).subscribe(
         () => {
           this.userdataHistoryStore.publishHistoryStore(bookmark);
@@ -424,8 +424,8 @@ export class SaveBookmarkFormComponent implements OnInit {
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
           const pinned = this.bookmarkForm.controls['pinned'].value;
-          this.userDataStore.addToHistoryAndOthers$(newBookmark, readLater, pinned).subscribe(() => {
-            this.publishInStores(newBookmark, readLater, pinned);
+          this.userDataStore.updateHistoryReadLaterAndPinned$(newBookmark, readLater, pinned).subscribe(() => {
+            this.publishInUserDataStores(newBookmark, readLater, pinned);
 
             if (this.url) {
               if (this.popup) {
@@ -454,7 +454,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       });
   }
 
-  private publishInStores(bookmark: Bookmark, readLater, pinned) {
+  private publishInUserDataStores(bookmark: Bookmark, readLater, pinned) {
     this.userdataHistoryStore.publishHistoryStore(bookmark);
     if (readLater) {
       this.userDataReadLaterStore.publishReadLaterAfterCreation(bookmark);
@@ -542,8 +542,8 @@ export class SaveBookmarkFormComponent implements OnInit {
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
           const pinned = this.bookmarkForm.controls['pinned'].value;
-          this.userDataStore.addToHistoryAndOthers$(bookmark, readLater, pinned).subscribe(() => {
-            this.publishInStores(bookmark, readLater, pinned);
+          this.userDataStore.updateHistoryReadLaterAndPinned$(bookmark, readLater, pinned).subscribe(() => {
+            this.publishInUserDataStores(bookmark, readLater, pinned);
             this.navigateToHomePageHistoryTab();
           });
         },

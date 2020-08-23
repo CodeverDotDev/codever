@@ -115,20 +115,44 @@ export class UserDataStore {
     return obs;
   }
 
-  addToHistoryAndOthers$(bookmark: Bookmark, readLater: boolean, pinned: boolean): Observable<UserData> {
+  updateHistoryReadLaterAndPinned$(bookmark: Bookmark, readLater: boolean, pinned: boolean): Observable<UserData> {
     // history
     this.removeFromUserDataHistoryIfPresent(bookmark);
     this.userData.history.unshift(bookmark._id);
-
+    let readLaterList = [];
     if (readLater) {
       this.userData.readLater.push(bookmark._id);
+      readLaterList = this.userData.readLater;
     }
 
+    let pinnedList = [];
     if (pinned) {
       this.userData.pinned.unshift(bookmark._id);
+      pinnedList = this.userData.pinned;
     }
 
-    return this.updateUserData$(this.userData);
+    const obs: Observable<any> = this.userService.updateUserDataHistoryReadLaterPinned(this.userId, this.userData.history, readLaterList, pinnedList);
+    obs.subscribe(
+      () => {
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
+  }
+
+  updateUserDataHistory$(bookmark: Bookmark): Observable<UserData> {
+    // history
+    this.removeFromUserDataHistoryIfPresent(bookmark);
+    this.userData.history.unshift(bookmark._id);
+    const obs: Observable<any> = this.userService.updateUserDataHistory(this.userId, this.userData.history);
+    obs.subscribe(
+      () => {
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
   }
 
   private removeFromUserDataHistoryIfPresent(bookmark: Bookmark) {
@@ -136,6 +160,54 @@ export class UserDataStore {
     if (index !== -1) {
       this.userData.history.splice(index, 1);
     }
+  }
+
+  addToUserDataPinned$(bookmark: Bookmark): Observable<UserData> {
+    this.userData.pinned.unshift(bookmark._id);
+    const obs: Observable<any> = this.userService.updateUserDataPinned(this.userId, this.userData.pinned);
+    obs.subscribe(
+      () => {
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
+  }
+
+  removeFromUserDataPinned$(bookmark: Bookmark): Observable<UserData> {
+    this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
+    const obs: Observable<any> = this.userService.updateUserDataPinned(this.userId, this.userData.pinned);
+    obs.subscribe(
+      () => {
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
+  }
+
+  addToUserReadLater$(bookmark: Bookmark): Observable<UserData> {
+    this.userData.readLater.push(bookmark._id);
+    const obs: Observable<any> = this.userService.updateUserDataReadLater(this.userId, this.userData.readLater);
+    obs.subscribe(
+      () => {
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
+  }
+
+  removeFromUserDataReadLater$(bookmark: Bookmark): Observable<UserData> {
+    this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
+    const obs: Observable<any> = this.userService.updateUserDataReadLater(this.userId, this.userData.readLater);
+    obs.subscribe(
+      () => {
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
   }
 
   getLikedBookmarks$(): Observable<Bookmark[]> {

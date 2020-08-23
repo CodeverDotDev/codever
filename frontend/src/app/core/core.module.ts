@@ -19,7 +19,7 @@ import { PaginationNotificationService } from './pagination-notification.service
 import { UserDataHistoryStore } from './user/userdata.history.store';
 import { NotifyStoresService } from './user/notify-stores.service';
 import { UserDataPinnedStore } from './user/userdata.pinned.store';
-import { UserDataReadLaterStore } from './user/user-data-read-later-store.service';
+import { UserDataReadLaterStore } from './user/userdata.readlater.store';
 import { UserDataFavoritesStore } from './user/userdata.favorites.store';
 import { AuthGuard } from './auth/auth-guard.service';
 import { FeedStore } from './user/feed-store.service';

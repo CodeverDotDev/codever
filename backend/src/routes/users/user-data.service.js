@@ -31,17 +31,7 @@ let createUserData = async function (userData, userId) {
 }
 
 let updateUserData = async function (userData, userId) {
-
   validateUserData(userData, userId);
-
-  //hold max 50 bookmarks in history or pinned
-  if ( userData.history.length > constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE ) {
-    userData.history = userData.history.slice(0, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
-  }
-
-  if ( userData.pinned.length > constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE ) {
-    userData.pinned = userData.pinned.slice(0, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
-  }
 
   delete userData._id;//once we proved it's present we delete it to avoid the following MOngoError by findOneAndUpdate
   // MongoError: After applying the update to the document {_id: ObjectId('5c513150e13cda73420a9602') , ...}, the (immutable) field '_id' was found to have been altered to _id: "5c513150e13cda73420a9602"
@@ -49,6 +39,75 @@ let updateUserData = async function (userData, userId) {
     {userId: userData.userId},
     userData,
     {upsert: true, new: true}, // options
+  );
+
+  return updatedUserData;
+}
+
+let updateUserDataHistory = async function (history, userId) {
+  history = trimMaxAllowedStoreLength(history);
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {
+      $set: {history: history}
+    }
+  );
+
+  return updatedUserData;
+}
+
+//hold max number of bookmarks in history or pinned
+let trimMaxAllowedStoreLength = function (storeItems) {
+  if ( storeItems.length > constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE ) {
+    return storeItems.slice(0, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
+  }
+  return storeItems;
+};
+
+let updateUserDataPinned = async function (pinned, userId) {
+  pinned = trimMaxAllowedStoreLength(pinned);
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {
+      $set: {pinned: pinned}
+    }
+  );
+
+  return updatedUserData;
+}
+
+let updateUserDataReadLater = async function (readLater, userId) {
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {
+      $set: {readLater: readLater}
+    }
+  );
+
+  return updatedUserData;
+}
+
+let updateUserDataHistoryReadLaterPinned = async function (input, userId) {
+
+  let {history, readLater, pinned} = input;
+
+  history = trimMaxAllowedStoreLength(history);
+  let updateInput = {history: history};
+
+  if(Array.isArray(readLater) && readLater.length){
+    updateInput.readLater = readLater;
+  }
+
+  if(Array.isArray(pinned) && pinned.length){
+    pinned = trimMaxAllowedStoreLength(pinned);
+    updateInput.pinned = pinned;
+  }
+
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {
+      $set: updateInput
+    }
   );
 
   return updatedUserData;
@@ -519,6 +578,10 @@ let getFeedBookmarks = async function (userId, page, limit) {
 
 module.exports = {
   updateUserData: updateUserData,
+  updateUserDataHistory: updateUserDataHistory,
+  updateUserDataPinned: updateUserDataPinned,
+  updateUserDataReadLater: updateUserDataReadLater,
+  updateUserDataHistoryReadLaterPinned: updateUserDataHistoryReadLaterPinned,
   createUserData: createUserData,
   getUserData: getUserData,
   deleteUserData: deleteUserData,

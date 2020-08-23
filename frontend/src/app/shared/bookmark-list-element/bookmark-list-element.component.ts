@@ -10,7 +10,7 @@ import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { LoginRequiredDialogComponent } from '../login-required-dialog/login-required-dialog.component';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
-import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-store.service';
+import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
@@ -107,7 +107,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   }
 
   onBookmarkTitleClick(bookmark: Bookmark) {
-    this.addToHistoryIfLoggedIn(bookmark);
+    this.promoteInHistoryIfLoggedIn(bookmark);
   }
 
   addToPinned(bookmark: Bookmark) {
@@ -128,7 +128,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   addToReadLater(bookmark: Bookmark) {
     if (!this.userIsLoggedIn) {
       const dialogConfig =
-        this.loginDialogHelperService.loginDialogConfig( 'You need to be logged in to add bookmarks to "Read Later"');
+        this.loginDialogHelperService.loginDialogConfig('You need to be logged in to add bookmarks to "Read Later"');
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataReadLaterStore.addToReadLater(bookmark);
@@ -142,7 +142,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   likeBookmark(bookmark: Bookmark): void {
     if (!this.userIsLoggedIn) {
       const dialogConfig =
-        this.loginDialogHelperService.loginDialogConfig( 'You need to be logged in to like public bookmarks');
+        this.loginDialogHelperService.loginDialogConfig('You need to be logged in to like public bookmarks');
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataStore.likeBookmark(bookmark);
@@ -244,19 +244,19 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   onClickInDescription($event: any, bookmark: Bookmark) {
     if (this.isHtmlAnchorElement($event)) {
       $event.target.setAttribute('target', '_blank');
-      this.addToHistoryIfLoggedIn(bookmark);
+      this.promoteInHistoryIfLoggedIn(bookmark);
     }
   }
 
   onRightClickInDescription($event: any, bookmark: Bookmark) {
     if (this.isHtmlAnchorElement($event)) {
-      this.addToHistoryIfLoggedIn(bookmark);
+      this.promoteInHistoryIfLoggedIn(bookmark);
     }
   }
 
   onMiddleClickInDescription($event: any, bookmark: Bookmark) {
     if (this.isHtmlAnchorElement($event)) {
-      this.addToHistoryIfLoggedIn(bookmark);
+      this.promoteInHistoryIfLoggedIn(bookmark);
     }
   }
 
@@ -264,9 +264,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     return $event.target.matches('a');
   }
 
-  private addToHistoryIfLoggedIn(bookmark: Bookmark) {
+  private promoteInHistoryIfLoggedIn(bookmark: Bookmark) {
     if (this.userIsLoggedIn) {
-      this.userDataStore.addToHistoryAndOthers$(bookmark, false, false).subscribe(() => {
+      this.userDataStore.updateUserDataHistory$(bookmark).subscribe(() => {
         this.userDataHistoryStore.publishHistoryStore(bookmark);
         if (this.userId === bookmark.userId) {
           this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
@@ -274,4 +274,5 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
       });
     }
   }
+
 }

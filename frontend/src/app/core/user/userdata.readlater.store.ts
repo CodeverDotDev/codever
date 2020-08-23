@@ -17,8 +17,6 @@ export class UserDataReadLaterStore {
   private _readLater: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private readLaterHaveBeenLoaded = false;
 
-  private userData: UserData;
-
   loadedPage: number;
 
   constructor(private userService: UserDataService,
@@ -27,9 +25,6 @@ export class UserDataReadLaterStore {
               private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.userDataStore.getUserData$().subscribe(userData => {
-      this.userData = userData;
-    });
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.publishReadLaterAfterDeletion(bookmark);
     });
@@ -49,15 +44,13 @@ export class UserDataReadLaterStore {
   }
 
   addToReadLater(bookmark: Bookmark) {
-    this.userData.readLater.push(bookmark._id);
-    this.userDataStore.updateUserData$(this.userData).subscribe(() => {
+    this.userDataStore.addToUserReadLater$(bookmark).subscribe(() => {
       this.publishReadLaterAfterCreation(bookmark);
     });
   }
 
   removeFromReadLater(bookmark: Bookmark) {
-    this.userData.readLater = this.userData.readLater.filter(x => x !== bookmark._id);
-    this.userDataStore.updateUserData$(this.userData).subscribe(() => {
+    this.userDataStore.removeFromUserDataReadLater$(bookmark).subscribe(() => {
       this.publishReadLaterAfterDeletion(bookmark);
     });
   }
