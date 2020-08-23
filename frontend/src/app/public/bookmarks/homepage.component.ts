@@ -14,7 +14,7 @@ import { AppService } from '../../app.service';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
-import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-store.service';
+import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';
 import { FeedStore } from '../../core/user/feed-store.service';

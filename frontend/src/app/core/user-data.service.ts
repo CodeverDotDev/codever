@@ -33,6 +33,35 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
+  updateUserDataHistory(userId: string, history: string[]): Observable<UserData> {
+    return this.httpClient
+      .patch(`${this.usersApiBaseUrl}/${userId}/history`, JSON.stringify(history), {headers: this.headers})
+      .pipe(shareReplay(1));
+  }
+
+  updateUserDataPinned(userId: string, pinned: string[]): Observable<UserData> {
+    return this.httpClient
+      .patch(`${this.usersApiBaseUrl}/${userId}/pinned`, {pinnedBookmarkIds: pinned}, {headers: this.headers})
+      .pipe(shareReplay(1));
+  }
+
+  updateUserDataReadLater(userId: string, readLater: string[]): Observable<UserData> {
+    return this.httpClient
+      .patch(`${this.usersApiBaseUrl}/${userId}/read-later`, {readLaterBookmarkIds: readLater}, {headers: this.headers})
+      .pipe(shareReplay(1));
+  }
+
+  updateUserDataHistoryReadLaterPinned(userId: string, history: string[], readLater: string[], pinned: string[]): Observable<UserData> {
+    const request = {
+      history: history,
+      readLater: readLater,
+      pinned: pinned
+    }
+    return this.httpClient
+      .patch(`${this.usersApiBaseUrl}/${userId}/history-readlater-pinned`, request, {headers: this.headers})
+      .pipe(shareReplay(1));
+  }
+
   getUserData(userId: string): Observable<UserData> {
     return this.httpClient
       .get<UserData>(`${this.usersApiBaseUrl}/${userId}`)

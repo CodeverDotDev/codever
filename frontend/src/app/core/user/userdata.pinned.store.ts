@@ -18,8 +18,6 @@ export class UserDataPinnedStore {
   private _pinned: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private pinnedBookmarksHaveBeenLoaded = false;
 
-  private userData: UserData;
-
   loadedPage: number;
 
   constructor(private userService: UserDataService,
@@ -28,9 +26,6 @@ export class UserDataPinnedStore {
               private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.userDataStore.getUserData$().subscribe(userData => {
-      this.userData = userData;
-    });
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.publishedPinnedAfterDeletion(bookmark);
     });
@@ -52,8 +47,7 @@ export class UserDataPinnedStore {
   }
 
   addToPinnedBookmarks(bookmark: Bookmark) {
-    this.userData.pinned.unshift(bookmark._id);
-    this.userDataStore.updateUserData$(this.userData).subscribe(() => {
+    this.userDataStore.addToUserDataPinned$(bookmark).subscribe(() => {
       if (this.pinnedBookmarksHaveBeenLoaded) {
         const pinnedBookmarks: Bookmark[] = this._pinned.getValue();
         pinnedBookmarks.unshift(bookmark);
@@ -64,8 +58,7 @@ export class UserDataPinnedStore {
   }
 
   removeFromPinnedBookmarks(bookmark: Bookmark) {
-    this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
-    this.userDataStore.updateUserData$(this.userData).subscribe(() => {
+    this.userDataStore.removeFromUserDataPinned$(bookmark).subscribe(() => {
       this.publishedPinnedAfterDeletion(bookmark);
     });
   }

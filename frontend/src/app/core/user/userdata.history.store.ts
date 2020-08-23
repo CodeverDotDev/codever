@@ -17,8 +17,6 @@ export class UserDataHistoryStore {
   private _history: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private historyHasBeenLoaded = false;
 
-  private userData: UserData;
-
   loadedPage: number;
 
   constructor(private userService: UserDataService,
@@ -27,9 +25,6 @@ export class UserDataHistoryStore {
               private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.userDataStore.getUserData$().subscribe(userData => {
-      this.userData = userData;
-    });
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.publishHistoryAfterDeletion(bookmark);
     });

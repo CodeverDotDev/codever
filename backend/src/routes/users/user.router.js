@@ -171,6 +171,45 @@ usersRouter.put('/:userId', keycloak.protect(), async (request, response) => {
 });
 
 /*
+* UPDATE user history
+*/
+usersRouter.patch('/:userId/history', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  await UserDataService.updateUserDataHistory(request.body, request.params.userId);
+  return response.status(HttpStatus.OK).send({historyUpdated: true});
+});
+
+/*
+* UPDATE user pinned
+*/
+usersRouter.patch('/:userId/pinned', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const pinnedBookmarkIds = request.body.pinnedBookmarkIds;
+  await UserDataService.updateUserDataPinned(pinnedBookmarkIds, request.params.userId);
+  return response.status(HttpStatus.OK).send({userDataPinnedUpdated: true});
+});
+
+/*
+* UPDATE user data read later
+*/
+usersRouter.patch('/:userId/read-later', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const readLaterBookmarkIds = request.body.readLaterBookmarkIds;
+  await UserDataService.updateUserDataReadLater(readLaterBookmarkIds, request.params.userId);
+  return response.status(HttpStatus.OK).send({userDataReadLaterUpdated: true});
+});
+
+
+/*
+* UPDATE user history, readLater and pinned
+*/
+usersRouter.patch('/:userId/history-readlater-pinned', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  await UserDataService.updateUserDataHistoryReadLaterPinned(request.body, request.params.userId);
+  return response.status(HttpStatus.OK).send({historyUpdated: true});
+});
+
+/*
 * DELETE user
 */
 usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => {
