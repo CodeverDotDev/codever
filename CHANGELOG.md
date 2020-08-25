@@ -1,3 +1,13 @@
+# [2.4.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.3.1...2.4.0) (2020-08-25)
+
+### Performance Improvements
+
+* **mongo:** add index on createdAt for bookmarks ([83388b4](https://github.com/BookmarksDev/bookmarks.dev/commit/83388b451410f0fe6ea8f91d7dab95908470d291))
+* **mongo:** add index on tags for bookmarks ([9f20cd9](https://github.com/BookmarksDev/bookmarks.dev/commit/9f20cd9b925d7b03f6f638c9f2d60dfc9d0884ca))
+* **update-user-data:** improve datat transfer when clicking links and bei pinned and read later ([2f2b72b](https://github.com/BookmarksDev/bookmarks.dev/commit/2f2b72ba5bf1490c6eb143df0bdfb88e08267a9c))
+
+
+
 ## [2.3.2](https://github.com/BookmarksDev/bookmarks.dev/compare/2.3.1...2.3.2) (2020-08-07)
 
 

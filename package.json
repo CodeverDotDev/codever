@@ -1,6 +1,6 @@
 {
   "name": "bookmarks.dev",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "Bookmarks.dev (frontend & backend)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
