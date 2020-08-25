@@ -1,7 +1,6 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-import { UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
 import { UserInfoStore } from './user-info.store';
