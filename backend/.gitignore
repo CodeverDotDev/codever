@@ -44,5 +44,6 @@ nodemon.json
 
 # pm2 prod setup
 pm2-process.json
+pm2-process-cluster.json
 
 /documentation/keycloak/get-access-token.local-dev.md
