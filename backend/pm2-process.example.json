@@ -1,7 +1,9 @@
 {
   "apps" : [{
-    "name" : "codingmarks-api-node-10.15.0",
+    "name" : "bookmarksdev-api-node-10.15.0",
     "script" : "bin/www",
+    "instances" : "max",
+    "exec_mode" : "cluster",
     "interpreter" : "node@10.15.0",
     "log_date_format" : "YYYY-MM-DD HH:mm:ss.SSS Z",
     "env": {
