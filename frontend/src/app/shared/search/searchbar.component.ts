@@ -71,7 +71,7 @@ export class SearchbarComponent implements OnInit {
   searchDomains: SearchDomainLocal[] = [
     {value: SearchDomain.MY_BOOKMARKS, viewValue: 'My bookmarks'},
     {value: SearchDomain.PUBLIC_BOOKMARKS, viewValue: 'Public bookmarks'},
-    {value: SearchDomain.MY_CODELETS, viewValue: 'My codelets'}
+    {value: SearchDomain.MY_SNIPPETS, viewValue: 'My snippets'}
   ];
 
   currentPage: number;
@@ -167,7 +167,7 @@ export class SearchbarComponent implements OnInit {
 
   onSearchDomainChange(selectedSearchDomain) {
     this.setFilteredSearches$(selectedSearchDomain);
-    if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_CODELETS) && !this.userIsLoggedIn) {
+    if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_SNIPPETS) && !this.userIsLoggedIn) {
       this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
       this.showLoginRequiredDialog('You need to be logged in to search in your personal bookmarks');
     } else {

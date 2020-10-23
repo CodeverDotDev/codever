@@ -8,12 +8,12 @@
         Just drag one of the links bellow to your browser toolbar:
         <ul>
           <li>
-            <app-add-bookmark-bookmarklet></app-add-bookmark-bookmarklet>
+            <app-add-bookmark-bookmarklet [withWindowDialog]="true"></app-add-bookmark-bookmarklet>
             - when clicked a popup to save the current URL is displayed [<em>recommended for
             <strong>desktops</strong> and <strong>notebooks</strong> with good resolution</em>]
           </li>
           <li>
-            <app-add-bookmark-go-back-bookmarklet></app-add-bookmark-go-back-bookmarklet>
+            <app-add-bookmark-bookmarklet [withWindowDialog]="false"></app-add-bookmark-bookmarklet>
             - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
             Bookmark</a> form.
             Once added you go back to the initial page [<em>recommended for <strong>phones</strong> or smaller
@@ -36,7 +36,7 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" routerLink="/personal/new"><i class="fa fa-bookmark"></i> Bookmark</a>
-              <a class="dropdown-item" routerLink="/my-codelets/new"><i class="fa fa-code"></i> Codelet</a>
+              <a class="dropdown-item" routerLink="/my-snippets/new"><i class="fa fa-code"></i> Snippet</a>
             </div>
           </div>
         </div>

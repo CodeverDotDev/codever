@@ -40,15 +40,15 @@
 
   <mat-expansion-panel>
     <mat-expansion-panel-header>
-      <h5><i class="fa fa-xs fa-search"></i> in My Codelets</h5>
+      <h5><i class="fa fa-xs fa-search"></i> in My Snippets</h5>
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
       <hr class="mt-0">
       <ng-container *ngFor="let mySearch of searches">
-        <span *ngIf="mySearch.searchDomain === 'my-codelets'" class="my-saved-search mr-2">
+        <span *ngIf="mySearch.searchDomain === 'my-snippets'" class="my-saved-search mr-2">
         <a
           [routerLink]="['/search']"
-          [queryParams]="{q: mySearch.text, sd: 'my-codelets' }"
+          [queryParams]="{q: mySearch.text, sd: 'my-snippets' }"
           class="badge badge-secondary mb-2">  <i class="fa fa-xs fa-search"></i>
           {{mySearch.text}}
           <span *ngIf="showCount" class="badge badge-light">{{mySearch.count}}</span>

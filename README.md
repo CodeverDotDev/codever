@@ -10,7 +10,7 @@
 
 ***
 
-## Getting started
+## Getting started (development or self hosting)
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 The project is developed with the MEAN stack and [Keycloak](http://www.keycloak.org/) for authentication and authorization:

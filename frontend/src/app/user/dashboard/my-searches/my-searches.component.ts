@@ -35,7 +35,7 @@ export class MySearchesComponent implements OnInit {
   searchDomains: SearchDomainLocal[] = [
     {value: SearchDomain.MY_BOOKMARKS, viewValue: 'My bookmarks'},
     {value: SearchDomain.PUBLIC_BOOKMARKS, viewValue: 'Public bookmarks'},
-    {value: SearchDomain.MY_CODELETS, viewValue: 'My codelets'}
+    {value: SearchDomain.MY_SNIPPETS, viewValue: 'My snippets'}
   ];
 
   constructor(
@@ -114,7 +114,7 @@ export class MySearchesComponent implements OnInit {
       case SearchDomain.PUBLIC_BOOKMARKS : {
         return 'Public Bookmarks'
       }
-      case SearchDomain.MY_CODELETS : {
+      case SearchDomain.MY_SNIPPETS : {
         return 'My Codelets'
       }
     }

@@ -129,6 +129,11 @@ pre {
   font-style: italic;
 }
 
+.image-container {
+  display: flex;
+  justify-content: center;
+}
+
 //highlight
 .highlight {
   background: yellow;

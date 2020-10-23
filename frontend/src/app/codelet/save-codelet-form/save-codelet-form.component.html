@@ -1,6 +1,6 @@
 <div *ngIf="!isUpdate" class="alert alert-info mt-2">
-  <strong>Codelets</strong> are special types of bookmarks where you save small pieces of code you would
-  want to recall later.
+  <i class="fas fa-info-circle"></i> To add more code snippets to the same record
+  use the <button type="button" class="btn btn-sm btn-primary mb-2"><i class="fa fa-plus"></i> Add</button> button
 </div>
 <div *ngIf="!isUpdate || (isUpdate && codelet$ | async)" class="navigation-space-buffer rounded bg-white shadow-sm">
   <form [formGroup]="codeletFormGroup" novalidate (ngSubmit)="saveCodelet(codeletFormGroup.value)">
@@ -9,7 +9,7 @@
       <input type="text" class="form-control" id="title"
              required
              formControlName="title"
-             placeholder="Title of the codelet to recognize later">
+             placeholder="Title of code snippet(s) to recognize later">
       <div [hidden]="codeletFormGroup.get('title').valid || (codeletFormGroup.get('title').pristine)"
            class="alert alert-danger">
         Title is required
@@ -67,7 +67,7 @@
             <textarea class="form-control"
                       id="comment-{{i}}"
                       formControlName="comment"
-                      placeholder='Appears before code snippet in codelet details'>
+                      placeholder='Appears before code snippet in details'>
             </textarea>
           </div>
           <label for="code-{{i}}" style="width: 100%">
@@ -117,10 +117,10 @@
              placeholder='Where the code snippets are inspired from'>
     </div>
     <button type="submit" class="btn btn-primary mr-2" [disabled]="!codeletFormGroup.valid">
-      Save codelet <i class="far fa-save"></i>
+      Save <i class="far fa-save"></i>
     </button>
     <button *ngIf="isUpdate" type="button" class="btn btn-danger" (click)="openDeleteDialog()">
-      Delete codelet <i class="far fa-trash-alt"></i>
+      Delete <i class="far fa-trash-alt"></i>
     </button>
   </form>
 </div>

@@ -85,7 +85,7 @@ export class SearchResultsComponent implements OnInit {
             this.keycloakServiceWrapper.login();
             break;
           }
-          case SearchDomain.MY_CODELETS: {
+          case SearchDomain.MY_SNIPPETS: {
             this.keycloakServiceWrapper.login();
             break;
           }
@@ -101,7 +101,7 @@ export class SearchResultsComponent implements OnInit {
     this.searchNotificationService.searchTriggeredSource$.subscribe(searchData => {
       if (searchData.searchDomain === SearchDomain.MY_BOOKMARKS) {
         this.selectedTabIndex = 1;
-      } else if (searchData.searchDomain === SearchDomain.MY_CODELETS) {
+      } else if (searchData.searchDomain === SearchDomain.MY_SNIPPETS) {
         this.selectedTabIndex = 2;
       } else {
         this.selectedTabIndex = 0;
@@ -128,7 +128,7 @@ export class SearchResultsComponent implements OnInit {
   private initSelectedTabIndex(searchDomain: string) {
     if (searchDomain === SearchDomain.MY_BOOKMARKS) {
       this.selectedTabIndex = 1;
-    } else if (searchDomain === SearchDomain.MY_CODELETS) {
+    } else if (searchDomain === SearchDomain.MY_SNIPPETS) {
       this.selectedTabIndex = 2;
     }
   }
@@ -153,7 +153,7 @@ export class SearchResultsComponent implements OnInit {
           searchInclude);
         break;
       }
-      case SearchDomain.MY_CODELETS : {
+      case SearchDomain.MY_SNIPPETS : {
         this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(
           searchText,
           environment.PAGINATION_PAGE_SIZE,
@@ -189,13 +189,13 @@ export class SearchResultsComponent implements OnInit {
         {
           relativeTo: this.route,
           queryParams: {
-            sd: SearchDomain.MY_CODELETS,
+            sd: SearchDomain.MY_SNIPPETS,
             include: searchInclude
           },
           queryParamsHandling: 'merge'
         }
       );
-      this.searchBookmarks(this.searchText, SearchDomain.MY_CODELETS, searchInclude);
+      this.searchBookmarks(this.searchText, SearchDomain.MY_SNIPPETS, searchInclude);
     } else {
       const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through personal codelets');
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);

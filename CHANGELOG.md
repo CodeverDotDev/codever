@@ -1,3 +1,8 @@
+# [2.5.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.4.0...2.5.0) (2020-10-23)
+
+### Change codelets to (code) snippets only visually 
+
+
 # [2.4.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.3.1...2.4.0) (2020-08-25)
 
 ### Performance Improvements

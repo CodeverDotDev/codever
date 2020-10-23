@@ -55,6 +55,10 @@ const publicBookmarksRoutes: Routes = [
     loadChildren: () => import('app/public/howto/howto.module').then(m => m.HowtoModule)
   },
   {
+    path: 'bookmarklets',
+    redirectTo: 'howto/bookmarklets'
+  },
+  {
     path: 'privacy-policy',
     component: PrivacyPolicyComponent,
   },
