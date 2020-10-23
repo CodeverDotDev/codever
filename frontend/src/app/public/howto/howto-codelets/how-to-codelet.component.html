@@ -1,17 +1,21 @@
 <div id="howto-codelets-content" class="jumbotron">
-  <h2>Codelets <i class="fa fa-code"></i></h2>
-  <p class="lead"><strong>Codelets</strong> are special types of bookmarks where you save small pieces of code you
-    would want to recall later. At the present moment all codelets are <strong>private only</strong>.</p>
+  <h2>Code snippets <i class="fa fa-code"></i></h2>
+  <p class="lead"><strong>Code snippets</strong> are special types of bookmarks where you save one or more small pieces of code
+    in the same record. At the moment all code snippets are <strong>private only</strong>.</p>
 
-  <h3>Save codelets</h3>
+  <h3>Save code snippets</h3>
   When browsing the web the easiest way is to use the
   <app-add-codelet-bookmarklet></app-add-codelet-bookmarklet>
   bookmarklet:
-  <img class="mt-2 img-fluid" src="./assets/img/gif/save-codelet-1276x936.gif" alt="How to save and search a codelet"/>
+  <div class="image-container">
+
+    <img class="mt-2 img-fluid" src="./assets/img/gif/save-code-snippet-via-bookmarklet-900.gif"
+         alt="How to save and search a snippet"/>
+  </div>
 
   <div class="alert-info p-2 mt-2">
     The search at the end of the demo is configured with an AlfredApp custom query - <code
-    [innerHTML]="'https://www.bookmarks.dev/search?q={query}&sd=my-codelets'"></code>
+    [innerHTML]="'https://www.bookmarks.dev/search?q={query}&sd=my-snippets'"></code>
   </div>
 
   <hr/>
@@ -21,7 +25,7 @@
     <a
       href="https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev"
       target="_blank"
-      title="Plugin to save codelets from IntelliJ">
+      title="Plugin to save code snippets from IntelliJ">
       Save to Bookmarks.dev plugin
       <sup class="external-link-hint">
         <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
@@ -42,17 +46,17 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" routerLink="/personal/new"><i class="fa fa-bookmark"></i> Bookmark</a>
-        <a class="dropdown-item" routerLink="/my-codelets/new"><i class="fa fa-code"></i> Codelet</a>
+        <a class="dropdown-item" routerLink="/my-snippets/new"><i class="fa fa-code"></i> Snippet</a>
       </div>
     </div>
   </div>
 
   <div class="mt-4">
-    <h3>Search codelets</h3>
-    Searching for codelets works the same as the one for regular bookmarks. Just select the <strong>My codelets</strong>
+    <h3>Search code snippets</h3>
+    Searching code snippets  works the same as searching regular bookmarks. Just select the <strong>My Snippets</strong>
     option in the search bar:
     <img class="mt-2 img-fluid" src="./assets/img/gif/search-codelet-searchbar-1276x936.gif"
-         alt="How to save and search a codelet"/>
+         alt="How to save and search code snippets"/>
 
     <div class="alert-info p-2 mt-2">
       You can save searches to reuse later the same way as for regular bookmarks.

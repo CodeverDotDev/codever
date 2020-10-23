@@ -23,7 +23,7 @@ export class AsyncCodeletListComponent implements OnInit {
   }
 
   editCodelet(codelet: Codelet) {
-    const link = [`/my-codelets/${codelet._id}/edit`];
+    const link = [`/my-snippets/${codelet._id}/edit`];
     this.router.navigate(link, {state: {codelet: codelet}});
   }
 }

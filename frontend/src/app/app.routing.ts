@@ -20,8 +20,12 @@ const routes: Routes = [
     loadChildren: () => import('app/public/public.module').then(m => m.PublicBookmarksModule)
   },
   {
-    path: 'my-codelets',
+    path: 'my-snippets',
     loadChildren: () => import('app/codelet/codelet.module').then(m => m.CodeletModule)
+  },
+  {
+    path: 'my-codelets',
+    redirectTo: 'my-snippets',
   },
   {
     path: 'search',

@@ -72,11 +72,11 @@
           </a>
           <div class="dropdown-divider"></div>
           <a
-            title="How to use codelets"
+            title="How to save code snippets"
             class="dropdown-item"
-            routerLink="howto/codelets">
+            routerLink="howto/snippets">
             <i class="fas fa-info-circle"></i>
-            Codelets
+            Code snippets
             <i class="fa fa-code right-font-icon"></i>
           </a>
           <div class="dropdown-divider"></div>
@@ -106,12 +106,12 @@
             +Bookmark <i class="fas fa-arrows-alt  right-font-icon"></i>
           </a>
           <a
-            href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''}let t=document.title;let w,h;if(innerWidth>1400){w=930}else{w=(innerWidth*65)/100}if(innerHeight>1400){h=1150}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=${innerHeight-h},left=${innerWidth - w}`;open('https://www.bookmarks.dev/my-codelets/new?sourceUrl='+encodeURIComponent(l)+'&code='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();"
+            href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''}let t=document.title;let w,h;if(innerWidth>1400){w=930}else{w=(innerWidth*65)/100}if(innerHeight>1400){h=1150}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=${innerHeight-h},left=${innerWidth - w}`;open('https://www.bookmarks.dev/my-snippets/new?sourceUrl='+encodeURIComponent(l)+'&code='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();"
             target="_blank"
             title="Drag to browser toolbar"
             style="cursor: move"
             class="dropdown-item  cursor-move">
-            +Codelet <i class="fas fa-arrows-alt right-font-icon"></i>
+            +Snippet <i class="fas fa-arrows-alt right-font-icon"></i>
           </a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Chromium extensions <i class="fab fa-chrome"></i></h6>
@@ -143,9 +143,9 @@
           </a>
           <a
             class="dropdown-item"
-            routerLink="/my-codelets/new">
+            routerLink="/my-snippets/new">
             <i class="fa fa-code"></i>
-            Codelet
+            Code snippet
           </a>
         </div>
       </li>

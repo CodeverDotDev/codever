@@ -30,8 +30,12 @@ const howToRoutes: Routes = [
     component: HowToBookmarkletComponent
   },
   {
-    path: 'codelets',
+    path: 'snippets',
     component: HowToCodeletComponent
+  },
+  {
+    path: 'codelets',
+    redirectTo: 'snippets',
   },
   {
     path: 'hotkeys',

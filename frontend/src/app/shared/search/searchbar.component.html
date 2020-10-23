@@ -18,7 +18,7 @@
             aria-haspopup="true"
             aria-expanded="false"
       style="font-size: 15px">
-      {{searchDomain === 'my-codelets' ? 'My Codelets' : searchDomain === 'public-bookmarks' ? 'Public Bookmarks' : 'My Bookmarks'}}
+      {{searchDomain === 'my-snippets' ? 'My Snippets' : searchDomain === 'public-bookmarks' ? 'Public Bookmarks' : 'My Bookmarks'}}
     </button>
     <ng-template #toggleButton>
       <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
@@ -43,15 +43,15 @@
         </ng-template>
       </a>
       <a class="dropdown-item"  role="button"
-         title="Search in My Codelets"
-         (click)="onSearchDomainChange('my-codelets')">
-        My Codelets
-        <span *ngIf="searchDomain === 'my-codelets'; else uncheckedMyCodeletsSelection"
-              class="search-domain-selection my-codelets-selection float-right pl-1 pr-1">
+         title="Search in My Snippets"
+         (click)="onSearchDomainChange('my-snippets')">
+        My Snippets
+        <span *ngIf="searchDomain === 'my-snippets'; else uncheckedMyCodeletsSelection"
+              class="search-domain-selection my-snippets-selection float-right pl-1 pr-1">
             <i class="fas fa-check"></i>
           </span>
         <ng-template #uncheckedMyCodeletsSelection>
-            <span class="my-codelets-selection-unchecked  float-right">
+            <span class="my-snippets-selection-unchecked  float-right">
               <i class="fa fa-square fa-lg"></i>
             </span>
         </ng-template>
@@ -64,7 +64,7 @@
         <i *ngIf="searchDomain === 'public-bookmarks'; else  uncheckedPublicBookmarksSelection"
            class="fas fa-check ml-1"></i>
         <ng-template #uncheckedPublicBookmarksSelection>
-            <span class="my-codelets-selection-unchecked  float-right">
+            <span class="my-snippets-selection-unchecked  float-right">
               <i class="fa fa-square fa-lg ml-1 unchecked-public-bookmarks-selection"></i>
             </span>
         </ng-template>
@@ -78,11 +78,11 @@
     type="text"
     class="form-control"
     [formControl]="searchControl"
-    placeholder="Search{{ innerWidth <=1400 ? searchDomain === 'my-codelets' ? ' My Codelets' : searchDomain === 'public-bookmarks' ? ' Public Bookmarks' : ' My Bookmarks' : ''}}..."
+    placeholder="Search{{ innerWidth <=1400 ? searchDomain === 'my-snippets' ? ' My Code Snippets' : searchDomain === 'public-bookmarks' ? ' Public Bookmarks' : ' My Bookmarks' : ''}}..."
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
-    [class.my-codelets-selection]="searchDomain === 'my-codelets'"
+    [class.my-snippets-selection]="searchDomain === 'my-snippets'"
     [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
     (keyup.enter)="$event.target.blur(); autocompleteTrigger.closePanel();searchBookmarksFromSearchBox(publicSearchBox.value)"
   >

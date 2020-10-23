@@ -9,9 +9,9 @@ import { HowtoComponent } from './howto.component';
 import { HowtoGetStartedComponent } from './howto-get-started/howto-get-started.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AddBookmarkBookmarkletComponent } from './shared/add-bookmark-bookmarklet.component';
-import { AddBookmarkGoBackBookmarkletComponent } from './shared/add-bookmark-go-back-bookmarklet.component';
 import { AddCodeletBookmarkletComponent } from './shared/add-codelet-bookmarklet.component';
 import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -22,16 +22,16 @@ import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
     HowToBookmarkletComponent,
     HowToCodeletComponent,
     AddBookmarkBookmarkletComponent,
-    AddBookmarkGoBackBookmarkletComponent,
     AddCodeletBookmarkletComponent,
     HowtoHotkeysComponent
   ],
   exports: [
   ],
-  imports: [
-    HowtoRoutingModule,
-    CommonModule,
-    MatExpansionModule
-  ]
+    imports: [
+        HowtoRoutingModule,
+        CommonModule,
+        MatExpansionModule,
+        MatTabsModule
+    ]
 })
 export class HowtoModule { }

@@ -28,7 +28,7 @@
           </button>
           or
           <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets('all')">
-            <i class="fa fa-search"></i> My Codelets
+            <i class="fa fa-search"></i> My Snippets
           </button>
         </ng-template>
       </div>
@@ -68,7 +68,7 @@
           </button>
           or
           <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets('all')">
-            <i class="fa fa-search"></i> My Codelets
+            <i class="fa fa-search"></i> My Snippets
           </button>
         </ng-template>
       </div>
@@ -83,14 +83,14 @@
 
   <mat-tab>
     <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-search"></i> My Codelets</span>
+      <span class="app-tab-label"><i class="fa fa-search"></i> My Snippets</span>
     </ng-template>
     <ng-template matTabContent>
       <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
            class="alert alert-info no-search-results mt-2"
            role="alert">
         No results found for <strong>{{this.searchInclude}}</strong> of <em><code>{{searchText}}</code></em>
-        in <strong>My Codelets</strong>.
+        in <strong>My Snippets</strong>.
         <span *ngIf="searchInclude === 'all'; else searchPersonalAndPublic">
           Try searching for <strong>any</strong> of the terms -
           <button class="btn btn-outline-primary btn-sm"
@@ -110,7 +110,7 @@
           </button>
         </ng-template>
       </div>
-      <app-async-codelet-list *ngIf="this.searchDomain === 'my-codelets'"
+      <app-async-codelet-list *ngIf="this.searchDomain === 'my-snippets'"
                               [codelets$]="searchResults$"
                               [queryText]="searchText">
       </app-async-codelet-list>
