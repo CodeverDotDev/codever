@@ -31,16 +31,12 @@ export class UserDataHistoryStore {
 
 
   getHistory$(userId: string, page: number): Observable<Bookmark[]> {
-    if (this.loadedPage !== page || !this.historyHasBeenLoaded) {
-      if (!this.historyHasBeenLoaded) {
-        this.historyHasBeenLoaded = true;
-      }
-      this.userService.getLastVisitedBookmarks(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
-        this.historyHasBeenLoaded = true;
-        this.loadedPage = page;
-        this._history.next(data);
-      });
-    }
+
+    this.userService.getLastVisitedBookmarks(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
+      this.historyHasBeenLoaded = true;
+      this.loadedPage = page;
+      this._history.next(data);
+    });
 
     return this._history.asObservable();
   }
@@ -52,6 +48,7 @@ export class UserDataHistoryStore {
       lastVisitedBookmarks.unshift(bookmark);
 
       this._history.next(lastVisitedBookmarks);
+      // TODO - this.localStorageService.set('history', lastVisitedBookmarks);
     }
   }
 
