@@ -1,7 +1,3 @@
-<div *ngIf="!isUpdate" class="alert alert-info mt-2">
-  <i class="fas fa-info-circle"></i> To add more code snippets to the same record
-  use the <button type="button" class="btn btn-sm btn-primary mb-2"><i class="fa fa-plus"></i> Add</button> button
-</div>
 <div *ngIf="!isUpdate || (isUpdate && codelet$ | async)" class="navigation-space-buffer rounded bg-white shadow-sm">
   <form [formGroup]="codeletFormGroup" novalidate (ngSubmit)="saveCodelet(codeletFormGroup.value)">
     <div class="form-group pb-1">
@@ -97,10 +93,15 @@
             </div>
           </div>
         </div>
-        <button type="button" class="btn btn-sm btn-primary mb-2" (click)="addEmptyCodeSnippet(i)">
+        <button type="button"
+                class="btn btn-sm btn-primary mb-2"
+                title="Add another code section"
+                (click)="addEmptyCodeSnippet(i)">
           <i class="fa fa-plus"></i> Add
         </button>
-        <button type="button" class="btn btn-sm btn-danger mb-2 ml-2"
+        <button type="button"
+                class="btn btn-sm btn-danger mb-2 ml-2"
+                title="Remove code section"
                 [disabled]="codeSnippetsFormArray.controls.length < 2"
                 (click)="removeCodeSnippet(i)">
           <i class="far fa-trash-alt"></i> Remove
