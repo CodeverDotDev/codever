@@ -71,6 +71,9 @@ export class SaveBookmarkFormComponent implements OnInit {
   popup; // if present will go popup to the submitted url
 
   @Input()
+  popupExt; // if present will go popup to the submitted url
+
+  @Input()
   desc; // value of "desc" query parameter if present
 
   @Input()
@@ -430,6 +433,8 @@ export class SaveBookmarkFormComponent implements OnInit {
             if (this.url) {
               if (this.popup) {
                 this.navigateToBookmarkDetails(newBookmark);
+              } else if (this.popupExt) {
+                this.navigateToHomePageHistoryTab();
               } else {
                 window.location.href = this.url;
               }

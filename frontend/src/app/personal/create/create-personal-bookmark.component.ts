@@ -11,6 +11,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
 
   url; // value of "url" query parameter if present
   popup; // if present will go popup to the submitted url
+  popupExt; // set from the popup of the extension (firefox currently)}
   desc; // value of "desc" query parameter if present
   title; // value of "title" query parameter if present
 
@@ -25,6 +26,7 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     this.desc = this.route.snapshot.queryParamMap.get('desc');
     this.title = this.route.snapshot.queryParamMap.get('title');
     this.popup = this.route.snapshot.queryParamMap.get('popup');
+    this.popupExt = this.route.snapshot.queryParamMap.get('popupExt');
   }
 
 }
