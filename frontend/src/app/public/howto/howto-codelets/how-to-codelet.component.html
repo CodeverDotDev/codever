@@ -1,43 +1,14 @@
 <div id="howto-codelets-content" class="jumbotron">
   <h2>Code snippets <i class="fa fa-code"></i></h2>
-  <p class="lead"><strong>Code snippets</strong> are special types of bookmarks where you save one or more small pieces of code
+  <p class="lead"><strong>Code snippets</strong> are special types of bookmarks where you save one or more small pieces
+    of code
     in the same record. At the moment all code snippets are <strong>private only</strong>.</p>
 
   <h3>Save code snippets</h3>
-  When browsing the web the easiest way is to use the
-  <app-add-codelet-bookmarklet></app-add-codelet-bookmarklet>
-  bookmarklet:
-  <div class="image-container">
 
-    <img class="mt-2 img-fluid" src="./assets/img/gif/save-code-snippet-via-bookmarklet-900.gif"
-         alt="How to save and search a snippet"/>
-  </div>
-
-  <div class="alert-info p-2 mt-2">
-    The search at the end of the demo is configured with an AlfredApp custom query - <code
-    [innerHTML]="'https://www.bookmarks.dev/search?q={query}&sd=my-snippets'"></code>
-  </div>
-
-  <hr/>
-
-  <div>
-    If you use the IntelliJ Products use our -
-    <a
-      href="https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev"
-      target="_blank"
-      title="Plugin to save code snippets from IntelliJ">
-      Save to Bookmarks.dev plugin
-      <sup class="external-link-hint">
-        <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
-      </sup>
-    </a>
-    <img class="mt-2 img-fluid" src="./assets/img/gif/save-codelet-from-intellij-plugin-1440x900.gif"
-         alt="How to save codelet with IntelliJ plugin"/>
-  </div>
-
-  <div style="display: flex; align-items: center" class="mb-2">
-    <div class="mt-3">
-      For everything else use the <strong><i class="fa fa-code"></i> Codelet</strong> option in the menu bar
+  <div style="display: flex; align-items: center" class="mt-2 mb-2 alert-info p-2">
+    <div>
+      You can use the <strong><i class="fa fa-code"></i> Code snippet</strong> option in the menu bar
     </div>
     <div class="dropdown mt-1 ml-2">
       <button class="btn btn-sm btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -46,14 +17,102 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" routerLink="/personal/new"><i class="fa fa-bookmark"></i> Bookmark</a>
-        <a class="dropdown-item" routerLink="/my-snippets/new"><i class="fa fa-code"></i> Snippet</a>
+        <a class="dropdown-item" routerLink="/my-snippets/new"><i class="fa fa-code"></i> Code snippet</a>
       </div>
     </div>
   </div>
 
+  <div class="mb-3">
+    Or use any of the methods below for an even easier bookmarking experience:
+  </div>
+
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Browser Extension</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="mt-2">
+          <p>We have browser extension to save code snippets for:</p>
+          <table>
+            <thead>
+            <tr>
+              <th align="center"><a
+                href="https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne"
+                rel="nofollow"><img src="./assets/img/chrome-48.png" alt="Chrome" style="max-width:100%;"></a></th>
+              <th align="center"><a href="https://addons.mozilla.org/en-GB/firefox/addon/save-code-to-bookmarks-dev/"
+                                    rel="nofollow"><img src="./assets/img/firefox-48.png" alt="Firefox"
+                                                        style="max-width:100%;"></a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td align="center"><a
+                href="https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne"
+                rel="nofollow">Chrome</a></td>
+              <td align="center"><a href="https://addons.mozilla.org/en-GB/firefox/addon/save-code-to-bookmarks-dev/"
+                                    rel="nofollow">Firefox</a></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="image-container mt-2">
+            <img class="mt-2 img-fluid" src="./assets/img/gif/save-snippet-via-chrome-extension-1280x800-optimized.gif"
+                 alt="How to save and search a snippet"/>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Bookmarklet</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="mt-3">
+          Use our
+          <app-add-codelet-bookmarklet [withWindowDialog]="true"></app-add-codelet-bookmarklet>
+          bookmarklet, if you can't or don't want to use Browser Extensions
+
+          <div class="image-container mt-2">
+            <img class="mt-2 img-fluid" src="./assets/img/gif/save-code-snippet-via-bookmarklet-900.gif"
+                 alt="How to save and search a snippet"/>
+          </div>
+
+          <div class="alert-info p-2 mt-2">
+            The search at the end of the demo is configured with an AlfredApp custom query - <code
+            [innerHTML]="'https://www.bookmarks.dev/search?q={query}&sd=my-snippets'"></code>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">IntelliJ Plugin</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="mt-3">
+          If you use the IntelliJ Products use our -
+          <a
+            href="https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev"
+            target="_blank"
+            title="Plugin to save code snippets from IntelliJ">
+            Save to Bookmarks.dev plugin
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+          <img class="mt-2 img-fluid" src="./assets/img/gif/save-codelet-from-intellij-plugin-1440x900.gif"
+               alt="How to save codelet with IntelliJ plugin"/>
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+
+  <br/>
+  <hr>
+
   <div class="mt-4">
     <h3>Search code snippets</h3>
-    Searching code snippets  works the same as searching regular bookmarks. Just select the <strong>My Snippets</strong>
+    Searching code snippets works the same as searching regular bookmarks. Just select the <strong>My Snippets</strong>
     option in the search bar:
     <img class="mt-2 img-fluid" src="./assets/img/gif/search-codelet-searchbar-1276x936.gif"
          alt="How to save and search code snippets"/>
