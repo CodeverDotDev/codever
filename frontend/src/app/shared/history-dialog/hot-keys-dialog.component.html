@@ -1,5 +1,5 @@
 <h2 mat-dialog-title [innerHTML]="title"></h2>
-<div *ngIf="(bookmarks$ | async) as bookmarks" class="mt-2">
+<mat-dialog-content *ngIf="(bookmarks$ | async) as bookmarks" class="mt-2 pt-1 pb-1">
   <mat-accordion>
     <mat-expansion-panel *ngFor="let bookmark of bookmarks">
       <mat-expansion-panel-header>
@@ -20,4 +20,4 @@
       </ng-template>
     </mat-expansion-panel>
   </mat-accordion>
-</div>
+</mat-dialog-content>
