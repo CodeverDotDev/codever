@@ -30,9 +30,10 @@ export class UserDataHistoryStore {
   }
 
 
-  getHistory$(userId: string, page: number): Observable<Bookmark[]> {
+  getHistory$(userId: string, page: number, last?: number): Observable<Bookmark[]> {
 
-    this.userService.getLastVisitedBookmarks(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
+    const paginationSize = last || environment.PAGINATION_PAGE_SIZE;
+    this.userService.getLastVisitedBookmarks(userId, page, paginationSize ).subscribe(data => {
       this.historyHasBeenLoaded = true;
       this.loadedPage = page;
       this._history.next(data);
