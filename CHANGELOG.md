@@ -1,3 +1,15 @@
+# [2.6.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.5.0...2.6.0) (2020-11-15)
+
+
+### Features
+
+* **fe:** add popext option parameter when creating bookmark ([6ed31fc](https://github.com/BookmarksDev/bookmarks.dev/commit/6ed31fcd9f2c22195347bfd0563a828de41c71e0))
+* **fe:** always return fresh "history" ([74bae96](https://github.com/BookmarksDev/bookmarks.dev/commit/74bae96964bfcf1339339dfe753d7bfec57e64a6))
+* **fe:** extract add to history to new service ([521fd64](https://github.com/BookmarksDev/bookmarks.dev/commit/521fd640cf59ea75274d8629650a09aa1098f59b))
+* **fe:** show more entries (20) in history dialog and make it scrollable ([a9500be](https://github.com/BookmarksDev/bookmarks.dev/commit/a9500be781c36089319fbce4a63cbb2d3058c47c))
+
+
+
 # [2.5.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.4.0...2.5.0) (2020-10-23)
 
 ### Change codelets to (code) snippets only visually 
