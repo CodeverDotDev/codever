@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
+import { AddToHistoryService } from '../../core/user/add-to-history.service';
 
 @Component({
   selector: 'app-hotkeys-dialog',
@@ -15,6 +16,7 @@ export class HotKeysDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<HotKeysDialogComponent>,
+    public addToHistoryService: AddToHistoryService,
     @Inject(MAT_DIALOG_DATA) data
   ) {
     this.bookmarks$ = data.bookmarks$;

@@ -28,6 +28,7 @@ import { MarkdownService } from './markdown/markdown.service';
 import { SearchNotificationService } from './search-notification.service';
 import { StackoverflowHelper } from './stackoverflow.helper';
 import { LoginDialogHelperService } from './login-dialog-helper.service';
+import { AddToHistoryService } from './user/add-to-history.service';
 
 
 /**
@@ -73,7 +74,8 @@ import { LoginDialogHelperService } from './login-dialog-helper.service';
     MarkdownService,
     SearchNotificationService,
     StackoverflowHelper,
-    LoginDialogHelperService
+    LoginDialogHelperService,
+    AddToHistoryService
   ]
 })
 export class CoreModule {

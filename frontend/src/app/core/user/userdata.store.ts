@@ -12,6 +12,8 @@ import { UserInfoStore } from './user-info.store';
 import { RateBookmarkRequest, RatingActionType } from '../model/rate-bookmark.request';
 import { NotifyStoresService } from './notify-stores.service';
 import { Md5 } from 'ts-md5/dist/md5';
+import { UserDataHistoryStore } from './userdata.history.store';
+import { PersonalBookmarksService } from '../personal-bookmarks.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +37,8 @@ export class UserDataStore {
               private userInfoService: UserInfoService,
               private userInfoStore: UserInfoStore,
               private notifyStoresService: NotifyStoresService,
+              private userDataHistoryStore: UserDataHistoryStore,
+              private personalBookmarksService: PersonalBookmarksService
   ) {
   }
 
@@ -148,6 +152,10 @@ export class UserDataStore {
     const obs: Observable<any> = this.userService.updateUserDataHistory(this.userId, this.userData.history);
     obs.subscribe(
       () => {
+        this.userDataHistoryStore.publishHistoryStore(bookmark);
+        if (this.userId === bookmark.userId) {
+          this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
+        }
         this._userData.next(this.userData);
       }
     );
