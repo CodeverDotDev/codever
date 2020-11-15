@@ -19,7 +19,6 @@ export class UserDataHistoryStore {
   loadedPage: number;
 
   constructor(private userService: UserDataService,
-              private userDataStore: UserDataStore,
               private userInfoStore: UserInfoStore,
               private notifyStoresService: NotifyStoresService
   ) {

@@ -22,6 +22,7 @@ import { FeedStore } from '../../core/user/feed-store.service';
 import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
 import { Router } from '@angular/router';
 import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
+import { AddToHistoryService } from '../../core/user/add-to-history.service';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -66,7 +67,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private adminService: AdminService,
               private feedStore: FeedStore,
               private loginDialogHelperService: LoginDialogHelperService,
-              private myBookmarksStore: MyBookmarksStore) {
+              private myBookmarksStore: MyBookmarksStore,
+              public addToHistoryService: AddToHistoryService) {
     super(loginDialog, userDataWatchedTagsStore);
   }
 
@@ -106,10 +108,6 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     const dialogRef = this.playYoutubeDialog.open(PlayYoutubeVideoDialogComponent, dialogConfig);
   }
 
-  onBookmarkTitleClick(bookmark: Bookmark) {
-    this.promoteInHistoryIfLoggedIn(bookmark);
-  }
-
   addToPinned(bookmark: Bookmark) {
     if (!this.userIsLoggedIn) {
       const dialogConfig =
@@ -118,7 +116,6 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     } else {
       this.userDataPinnedStore.addToPinnedBookmarks(bookmark);
     }
-
   }
 
   removeFromPinned(bookmark: Bookmark) {
@@ -238,40 +235,6 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     } else {
       const link = ['./personal/bookmarks/copy-to-mine'];
       this.router.navigate(link, {state: {bookmark: bookmark}, queryParams: {id: bookmark._id}});
-    }
-  }
-
-  onClickInDescription($event: any, bookmark: Bookmark) {
-    if (this.isHtmlAnchorElement($event)) {
-      $event.target.setAttribute('target', '_blank');
-      this.promoteInHistoryIfLoggedIn(bookmark);
-    }
-  }
-
-  onRightClickInDescription($event: any, bookmark: Bookmark) {
-    if (this.isHtmlAnchorElement($event)) {
-      this.promoteInHistoryIfLoggedIn(bookmark);
-    }
-  }
-
-  onMiddleClickInDescription($event: any, bookmark: Bookmark) {
-    if (this.isHtmlAnchorElement($event)) {
-      this.promoteInHistoryIfLoggedIn(bookmark);
-    }
-  }
-
-  private isHtmlAnchorElement($event: any) {
-    return $event.target.matches('a');
-  }
-
-  private promoteInHistoryIfLoggedIn(bookmark: Bookmark) {
-    if (this.userIsLoggedIn) {
-      this.userDataStore.updateUserDataHistory$(bookmark).subscribe(() => {
-        this.userDataHistoryStore.publishHistoryStore(bookmark);
-        if (this.userId === bookmark.userId) {
-          this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
-        }
-      });
     }
   }
 
