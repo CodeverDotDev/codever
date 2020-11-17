@@ -1,3 +1,12 @@
+# [2.7.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.6.0...2.7.0) (2020-11-17)
+
+
+### Features
+
+* **fe:** add filter to hot-keys dialog and non-search results ([da6571d](https://github.com/BookmarksDev/bookmarks.dev/commit/da6571d53d81f1afb4d1d9c71529b964af9e1ae2))
+
+
+
 # [2.6.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.5.0...2.6.0) (2020-11-15)
 
 
