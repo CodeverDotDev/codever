@@ -97,6 +97,26 @@ ul.tags li:not(:last-child):after {
   padding: 0;
 }
 
+// filter search-box
+/* Bootstrap 4 text input with search icon */
+.has-search  {
+  width: 30%;
+  .form-control {
+    padding-left: 2.375rem;
+  }
+}
+
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
 
 .url-under-title {
   font-size: small;
@@ -138,6 +158,7 @@ pre {
 .highlight {
   background: yellow;
   color: black;
+  font-weight: bolder;
 }
 
 .star-group {

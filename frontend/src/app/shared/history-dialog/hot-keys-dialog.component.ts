@@ -13,6 +13,7 @@ export class HotKeysDialogComponent implements OnInit {
 
   bookmarks$: Observable<Bookmark[]>;
   title: string;
+  filterText: '';
 
   constructor(
     private dialogRef: MatDialogRef<HotKeysDialogComponent>,

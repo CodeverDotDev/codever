@@ -8,7 +8,7 @@
              title="Play video"></i>
           <i *ngIf="bookmark.stackoverflowQuestionId" class="fab fa-stack-overflow stackoverflow-icon"></i>
           <a href="{{bookmark.location}}"
-             target="_blank" [innerHtml]="bookmark.name | highlight: queryText"
+             target="_blank" [innerHtml]="bookmark.name | highlight: filterText | highlight: queryText"
              (click)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"
              (auxclick)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"
           ></a>
@@ -21,11 +21,11 @@
           </span>
           <i *ngIf="!bookmark.public" class="fas fa-lock fa-sm mr-1" title="private"></i>
           <span *ngIf="bookmark.location.length <= 100; else sliceLocation"
-                [innerHtml]="bookmark.location | highlight: queryText">
+                [innerHtml]="bookmark.location | highlight: filterText | highlight: queryText">
           </span>
           <ng-template #sliceLocation>
             <span
-              [innerHtml]="bookmark.location | slice:0:100 | highlight: queryText"></span>
+              [innerHtml]="bookmark.location | slice:0:100 | highlight: filterText | highlight: queryText"></span>
             <span>...</span>
           </ng-template>
         </h6>
@@ -91,7 +91,7 @@
         <a class="btn btn-secondary btn-sm"
            [routerLink]="['/tagged', tag]"
            title="Show bookmarks tagged {{tag}}"
-           [innerHtml]="tag | highlight: queryText">
+           [innerHtml]="tag | highlight: filterText | highlight: queryText">
           {{tag}}
         </a>
         <button
