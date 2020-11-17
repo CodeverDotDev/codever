@@ -3,6 +3,13 @@
   margin-left: 0.2rem;
 }
 
+.dialog-title {
+  display: flex;
+  justify-content: space-between;
+  input {
+    height: min-content;
+  }
+}
 .mat-expansion-panel-header {
   padding-left: 0;
   margin: 0.5rem 0;

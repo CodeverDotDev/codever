@@ -51,6 +51,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   @Input()
   isDetailsPage = false;
 
+  @Input()
+  filterText = '';
+
   constructor(private router: Router,
               private playYoutubeDialog: MatDialog,
               public loginDialog: MatDialog,

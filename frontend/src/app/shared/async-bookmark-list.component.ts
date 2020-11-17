@@ -47,6 +47,10 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
 
   Arr = Array; // Array type captured in a variable
 
+  @Input()
+  showFilterBox = true;
+  filterText = '';
+
   constructor(
     private injector: Injector,
     public userDataWatchedTagsStore: UserDataWatchedTagsStore,

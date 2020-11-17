@@ -22,6 +22,7 @@ import { BookmarkListElementComponent } from './bookmark-list-element/bookmark-l
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
+import { BookmarksFilterPipe } from './bookmarks-filter.pipe';
 
 
 /**
@@ -44,6 +45,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     HighLightPipe,
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
+    BookmarksFilterPipe,
     AsyncBookmarkListComponent,
     BookmarkTextComponent,
     TagsValidatorDirective,

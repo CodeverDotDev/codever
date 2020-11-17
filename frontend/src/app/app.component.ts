@@ -61,7 +61,7 @@ export class AppComponent implements OnInit {
       dialogConfig.disableClose = false;
       dialogConfig.autoFocus = true;
       dialogConfig.width = this.getRelativeWidth();
-
+      dialogConfig.height = this.getRelativeHeight();
       dialogConfig.data = {
         bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1),
         title: '<i class="fas fa-thumbtack"></i> Pinned'
@@ -85,6 +85,15 @@ export class AppComponent implements OnInit {
     return relativeWidth + 'px';
   }
 
+  private getRelativeHeight() {
+    let relativeHeight = (window.innerHeight * 80) / 100;
+    if (window.innerHeight > 1200) {
+      relativeHeight = (1200 * 80) / 100;
+    }
+
+    return relativeHeight + 'px';
+  }
+
   @HostListener('window:keydown.control.h', ['$event'])
   showHistory(event: KeyboardEvent) {
     if (!this.userIsLoggedIn) {
@@ -104,6 +113,7 @@ export class AppComponent implements OnInit {
       dialogConfig.disableClose = false;
       dialogConfig.autoFocus = true;
       dialogConfig.width = this.getRelativeWidth();
+      dialogConfig.height = this.getRelativeHeight();
       const lastNoBookmarksToShowInHistoryDialog = 20;
       dialogConfig.data = {
         bookmarks$: this.userDataHistoryStore.getHistory$(this.userId, 1, lastNoBookmarksToShowInHistoryDialog),
