@@ -5,9 +5,9 @@ import { Bookmark } from '../core/model/bookmark';
 @Pipe({name: 'bookmarkFilter'})
 export class BookmarksFilterPipe implements PipeTransform {
   /**
-   * Transform
+   * Bookmarks in, bookmarks out that contain all the terms in the filterText
    *
-   * @param {any[]} bookmarks
+   * @param {Bookmark[]} bookmarks
    * @param {string} filterText
    * @returns {Bookmark[]}
    */
