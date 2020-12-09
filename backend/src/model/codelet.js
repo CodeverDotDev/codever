@@ -22,6 +22,7 @@ const codeletSchema = new Schema({
     sourceUrl: String,
     lastAccessedAt: {type: Date, select: false},
     likeCount: Number,
+    copiedFromId: String,
     ownerVisitCount: {type:Number, select: false},
     __v: { type: Number, select: false}
 },

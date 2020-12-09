@@ -52,13 +52,6 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
     .lean()
     .exec();
 
-/* TODO - remove
-  for ( const term of nonSpecialSearchTerms ) {
-    bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
-  }
-  const startPoint =   ( page - 1 ) * limit;
-  bookmarks = bookmarks.slice(startPoint, startPoint + limit);*/
-
   return bookmarks;
 }
 

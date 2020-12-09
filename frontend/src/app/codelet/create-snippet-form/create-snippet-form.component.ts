@@ -16,21 +16,19 @@ import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 import { UserData } from '../../core/model/user-data';
 import { Codelet, CodeSnippet } from '../../core/model/codelet';
 import { PersonalCodeletsService } from '../../core/personal-codelets.service';
-import { DeleteCodeletDialogComponent } from '../delete-codelet-dialog/delete-codelet-dialog.component';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
 import { StackoverflowHelper } from '../../core/stackoverflow.helper';
 import { WebpageInfo } from '../../core/model/webpage-info';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-save-codelet-form',
-  templateUrl: './save-codelet-form.component.html',
-  styleUrls: ['./save-codelet-form.component.scss']
+  templateUrl: './create-snippet-form.component.html',
+  styleUrls: ['./create-snippet-form.component.scss']
 })
-export class SaveCodeletFormComponent implements OnInit {
+export class CreateSnippetFormComponent implements OnInit {
 
   codeletFormGroup: FormGroup;
   codeSnippetsFormArray: FormArray;
@@ -60,9 +58,6 @@ export class SaveCodeletFormComponent implements OnInit {
 
   @ViewChild('tagInput', {static: false})
   tagInput: ElementRef;
-
-  @Input()
-  isUpdate: boolean;
 
   codelet: Codelet;
 
@@ -95,7 +90,6 @@ export class SaveCodeletFormComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private errorService: ErrorService,
-    private deleteDialog: MatDialog,
     private webpageInfoService: WebpageInfoService,
     private stackoverflowHelper: StackoverflowHelper,
   ) {
@@ -104,10 +98,9 @@ export class SaveCodeletFormComponent implements OnInit {
       this.userDataStore.getUserData$().subscribe(userData => {
         this.userData = userData;
       });
+
       this.suggestedTagsStore.getSuggestedCodeletTags$(this.userId).subscribe(userTags => {
-
         this.autocompleteTags = userTags.concat(this.commonCodeletTags.filter((item => userTags.indexOf(item) < 0))).sort();
-
         this.filteredTags = this.tagsControl.valueChanges.pipe(
           startWith(null),
           map((tag: string | null) => {
@@ -116,34 +109,12 @@ export class SaveCodeletFormComponent implements OnInit {
         );
       });
     });
+
   }
 
   ngOnInit(): void {
     this.buildInitialForm();
     this.codeSnippetsFormArray = this.codeletFormGroup.get('codeSnippets') as FormArray;
-
-    if (this.isUpdate && this.codelet$) {
-      this.codelet$.subscribe(codelet => {
-        this.codelet = codelet;
-
-        this.codeletFormGroup.get('title').setValue(codelet.title);
-        this.codeletFormGroup.get('sourceUrl').setValue(codelet.sourceUrl);
-
-        for (let i = 0; i < this.codelet.tags.length; i++) {
-          this.formArrayTags.push(this.formBuilder.control(this.codelet.tags[i]));
-
-        }
-
-        this.codeSnippetsFormArray.removeAt(0); // there is an empty element created when building form - needs removing
-        for (let i = 0; i < codelet.codeSnippets.length; i++) {
-          // this.codeSnippetsFormArray.push(this.createCodeSnippet(codelet.codeSnippets[i]));
-          this.codeSnippetsFormArray.push(this.createCodeSnippet(codelet.codeSnippets[i]));
-        }
-
-        this.tagsControl.setValue(null);
-        this.formArrayTags.markAsDirty();
-      });
-    }
 
     if (this.sourceUrl) {
       const stackoverflowQuestionId = this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(this.sourceUrl);
@@ -184,7 +155,8 @@ export class SaveCodeletFormComponent implements OnInit {
       title: [this.title ? this.title : '', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       codeSnippets: new FormArray([this.createInitialCodeSnippet()]),
-      sourceUrl: this.sourceUrl ? this.sourceUrl : ''
+      sourceUrl: this.sourceUrl ? this.sourceUrl : '',
+      public: false
     });
 
   }
@@ -222,8 +194,8 @@ export class SaveCodeletFormComponent implements OnInit {
     const input = event.input;
     const value = event.value;
 
-    if ((value || '').trim()  && !this.autocompleteTagsOptionActivated) {
-    // if ((value || '').trim()) {
+    if ((value || '').trim() && !this.autocompleteTagsOptionActivated) {
+      // if ((value || '').trim()) {
       this.formArrayTags.push(this.formBuilder.control(value.trim().toLowerCase()));
     }
 
@@ -260,30 +232,6 @@ export class SaveCodeletFormComponent implements OnInit {
     this.autocompleteTagsOptionActivated = false;
   }
 
-  saveCodelet(codelet: Codelet) {
-    if (this.isUpdate) {
-      this.updateCodelet(codelet)
-    } else {
-      this.createCodelet(codelet);
-    }
-  }
-
-  updateCodelet(codelet: Codelet): void {
-    const now = new Date();
-    codelet.updatedAt = now;
-    codelet.lastAccessedAt = now;
-    codelet.userId = this.codelet.userId;
-    codelet._id = this.codelet._id;
-
-    this.personalCodeletsService.updateCodelet(codelet)
-      .subscribe(
-        () => {
-          this.navigateToCodeletDetails(codelet._id)
-        },
-        () => this.navigateToCodeletDetails(codelet._id)
-      );
-  }
-
   navigateToCodeletDetails(codeletId: string): void {
     this.router.navigate(
       [`/my-snippets/${codeletId}/details`],
@@ -295,7 +243,8 @@ export class SaveCodeletFormComponent implements OnInit {
 
   private createCodelet(codelet: Codelet) {
     codelet.userId = this.userId;
-    codelet.lastAccessedAt = new Date();
+    const now = new Date();
+    codelet.lastAccessedAt = now;
 
     this.personalCodeletsService.createCodelet(this.userId, codelet)
       .subscribe(
@@ -316,34 +265,6 @@ export class SaveCodeletFormComponent implements OnInit {
 
   get formArrayTags() {
     return <FormArray>this.codeletFormGroup.get('tags');
-  }
-
-  openDeleteDialog() {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      codeletTitle: this.codelet.title,
-    };
-
-    const dialogRef = this.deleteDialog.open(DeleteCodeletDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        if (data === 'DELETE_CONFIRMED') {
-          this.deleteCodelet(this.codelet._id);
-        }
-      }
-    );
-  }
-
-  deleteCodelet(codeletId: string) {
-    this.personalCodeletsService.deleteCodeletById(this.userId, codeletId).subscribe(() => {
-      console.log('Delete codelet with id - ' + codeletId);
-      this.router.navigate(
-        ['']
-      );
-    });
   }
 
 }

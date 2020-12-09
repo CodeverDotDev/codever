@@ -6,14 +6,14 @@ import { Codelet } from '../../core/model/codelet';
 import { PersonalCodeletsService } from '../../core/personal-codelets.service';
 
 @Component({
-  selector: 'app-update-bookmark',
+  selector: 'app-update-snippet',
   templateUrl: './update-codelet.component.html',
   styleUrls: ['./update-codelet.component.scss']
 })
 export class UpdateCodeletComponent implements OnInit {
 
-  codelet$: Observable<Codelet>;
-  codeletId: string;
+  snippet: Codelet;
+  snippetId: string;
   userId: string;
 
   constructor(private route: ActivatedRoute,
@@ -25,10 +25,12 @@ export class UpdateCodeletComponent implements OnInit {
   ngOnInit(): void {
     this.userInfoStore.getUserInfo$().subscribe(userInfo => {
       this.userId = userInfo.sub;
-      this.codelet$ = of(window.history.state.codelet);
+      this.snippet = window.history.state.codelet;
       if (!window.history.state.codelet) {
-        this.codeletId = this.route.snapshot.paramMap.get('id');
-        this.codelet$ = this.personalCodeletsService.getPersonalCodeletById(this.userId, this.codeletId);
+        this.snippetId = this.route.snapshot.paramMap.get('id');
+        this.personalCodeletsService.getPersonalCodeletById(this.userId, this.snippetId).subscribe(snippet =>
+          this.snippet = snippet
+        );
       }
     });
   }

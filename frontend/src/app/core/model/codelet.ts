@@ -10,6 +10,7 @@ export interface Codelet {
   updatedAt?: Date;
   lastAccessedAt?: Date;
   likeCount?: number;
+  copiedFromId?: string; // id of the snippet where this snippet was copied from
 }
 
 export interface CodeSnippet {

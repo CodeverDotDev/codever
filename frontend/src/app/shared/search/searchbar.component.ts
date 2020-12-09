@@ -21,256 +21,259 @@ import { PersonalCodeletsService } from '../../core/personal-codelets.service';
 import { SearchNotificationService } from '../../core/search-notification.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-
-export interface SearchDomainLocal {
-  value: string;
-  viewValue: string;
-}
+import { searchDomains } from '../../core/model/search-domains-map';
 
 @Component({
-  selector: 'app-searchbar',
-  templateUrl: './searchbar.component.html',
-  styleUrls: ['./searchbar.component.scss']
+    selector: 'app-searchbar',
+    templateUrl: './searchbar.component.html',
+    styleUrls: ['./searchbar.component.scss']
 })
 export class SearchbarComponent implements OnInit {
 
-  @Input()
-  context: string;
+    @Input()
+    context: string;
 
-  @Output()
-  searchTriggered = new EventEmitter<boolean>();
+    @Output()
+    searchTriggered = new EventEmitter<boolean>();
 
-  @Output()
-  searchTextCleared = new EventEmitter<boolean>();
+    @Output()
+    searchTextCleared = new EventEmitter<boolean>();
 
-  @ViewChild('publicSearchBox') searchBoxField: ElementRef;
+    @ViewChild('publicSearchBox') searchBoxField: ElementRef;
 
-  _userData: UserData;
+    _userData: UserData;
 
-  searchResults$: Observable<Bookmark[] | Codelet[]>;
+    searchControl = new FormControl();
+    searchBoxText: string; // holds the value in the search box
+    public showNotFound = false;
 
-  searchControl = new FormControl();
-  searchBoxText: string; // holds the value in the search box
-  public showNotFound = false;
+    userIsLoggedIn = false;
+    userId: string;
 
-  userIsLoggedIn = false;
-  userId: string;
+    autocompleteSearches: Search[] = [];
+    filteredSearches: Observable<Search[]>;
 
-  autocompleteSearches: Search[] = [];
-  filteredSearches: Observable<Search[]>;
+    isFocusOnSearchControl = false;
 
-  isFocusOnSearchControl = false;
+    showSearchResults = false;
+    hover = false;
 
-  showSearchResults = false;
-  hover = false;
+    public innerWidth: any;
 
-  public innerWidth: any;
+    searchDomain = SearchDomain.PUBLIC_BOOKMARKS.valueOf();
+    searchDomains = searchDomains;
 
-  searchDomain = SearchDomain.PUBLIC_BOOKMARKS.valueOf();
+    currentPage: number;
+    callerPaginationSearchResults = 'search-results';
 
-  searchDomains: SearchDomainLocal[] = [
-    {value: SearchDomain.MY_BOOKMARKS, viewValue: 'My bookmarks'},
-    {value: SearchDomain.PUBLIC_BOOKMARKS, viewValue: 'Public bookmarks'},
-    {value: SearchDomain.MY_SNIPPETS, viewValue: 'My snippets'}
-  ];
+    constructor(private router: Router,
+                private route: ActivatedRoute,
+                private searchNotificationService: SearchNotificationService,
+                private bookmarkStore: PublicBookmarksStore,
+                private publicBookmarksService: PublicBookmarksService,
+                private personalBookmarksService: PersonalBookmarksService,
+                private personalCodeletsService: PersonalCodeletsService,
+                private paginationNotificationService: PaginationNotificationService,
+                private keycloakService: KeycloakService,
+                private keycloakServiceWrapper: KeycloakServiceWrapper,
+                private userDataStore: UserDataStore,
+                private userInfoStore: UserInfoStore,
+                private loginDialog: MatDialog) {
+    }
 
-  currentPage: number;
-  callerPaginationSearchResults = 'search-results';
+    @Input()
+    set userData$(userData$: Observable<UserData>) {
+        if (userData$) {
+            userData$
+                .subscribe(userData => {
+                    this.userId = userData.userId;
+                    const emptyUserData = Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
+                    if (emptyUserData) {
+                        this._userData = userData; // = {}
+                    } else {
+                        this._userData = userData;
+                        this.autocompleteSearches = this._userData.searches;
+                        this.setFilteredSearches$(this.searchDomain);
+                    }
+                });
+        }
+    }
 
-  constructor(private router: Router,
-              private route: ActivatedRoute,
-              private searchNotificationService: SearchNotificationService,
-              private bookmarkStore: PublicBookmarksStore,
-              private publicBookmarksService: PublicBookmarksService,
-              private personalBookmarksService: PersonalBookmarksService,
-              private personalCodeletsService: PersonalCodeletsService,
-              private paginationNotificationService: PaginationNotificationService,
-              private keycloakService: KeycloakService,
-              private keycloakServiceWrapper: KeycloakServiceWrapper,
-              private userDataStore: UserDataStore,
-              private userInfoStore: UserInfoStore,
-              private loginDialog: MatDialog) {
-  }
+    private setFilteredSearches$(searchDomain: string) {
+        this.filteredSearches = this.searchControl.valueChanges
+            .pipe(
+                startWith(null),
+                map((searchText: string | null) => {
+                    return searchText ? this._filter(searchText) : this.autocompleteSearches.filter(item => item.searchDomain === searchDomain);
+                })
+            );
+    }
 
-  @Input()
-  set userData$(userData$: Observable<UserData>) {
-    if (userData$) {
-      userData$
-        .subscribe(userData => {
-          this.userId = userData.userId;
-          const emptyUserData = Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
-          if (emptyUserData) {
-            this._userData = userData; // = {}
-          } else {
-            this._userData = userData;
-            this.autocompleteSearches = this._userData.searches;
-            this.setFilteredSearches$(this.searchDomain);
-          }
+    private _filter(value: string): Search[] {
+        const filterValue = value.toLowerCase();
+
+        return this.autocompleteSearches.filter(item => item.text.toLowerCase().includes(filterValue) && item.searchDomain === this.searchDomain);
+    }
+
+    ngOnInit(): void {
+        this.innerWidth = window.innerWidth;
+
+        this.keycloakService.isLoggedIn().then(isLoggedIn => {
+            if (isLoggedIn) {
+                this.userIsLoggedIn = true;
+                this.searchDomain = SearchDomain.MY_BOOKMARKS;
+            }
+        });
+
+        this.searchNotificationService.searchTriggeredFromNavbar$.subscribe(searchData => {
+            this.searchDomain = searchData.searchDomain;
+            this.searchControl.setValue(searchData.searchText);
+        });
+
+        this.watchSearchBoxValueChanges();
+    }
+
+    private watchSearchBoxValueChanges() {
+        this.searchControl.valueChanges.subscribe(val => {
+            this.searchBoxText = val;
         });
     }
-  }
 
-  private setFilteredSearches$(searchDomain: string) {
-    this.filteredSearches = this.searchControl.valueChanges
-      .pipe(
-        startWith(null),
-        map((searchText: string | null) => {
-          return searchText ? this._filter(searchText) : this.autocompleteSearches.filter(item => item.searchDomain === searchDomain);
-        })
-      );
-  }
-
-  private _filter(value: string): Search[] {
-    const filterValue = value.toLowerCase();
-
-    return this.autocompleteSearches.filter(item => item.text.toLowerCase().includes(filterValue) && item.searchDomain === this.searchDomain);
-  }
-
-  ngOnInit(): void {
-    this.innerWidth = window.innerWidth;
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.searchDomain = SearchDomain.MY_BOOKMARKS;
-      }
-    });
-
-    this.searchNotificationService.searchTriggeredFromNavbar$.subscribe(searchData => {
-      this.searchDomain = searchData.searchDomain;
-      this.searchControl.setValue(searchData.searchText);
-    });
-
-    this.watchSearchBoxValueChanges();
-  }
-
-  private watchSearchBoxValueChanges() {
-    this.searchControl.valueChanges.subscribe(val => {
-      this.searchBoxText = val;
-    });
-  }
-
-  /*
-   This was used here homepage.component.html
-
-         <app-async-bookmark-list *ngIf="searchComponent.searchDomain !== 'my-codelets'; else showCodeletResults"
-                               [bookmarks$]="searchComponent.searchResults$"
-                               [queryText]="searchComponent.searchBoxText"
-                               [userData$]="userData$"
-                               [callerPagination]="searchComponent.callerPaginationSearchResults"
-                               (bookmarkDeleted)="searchComponent.onBookmarkDeleted($event)">
-   */
-  onBookmarkDeleted(deleted: boolean) {
-    if (deleted) {
-      this.searchControl.setValue(this.searchBoxText);
-    }
-  }
-
-  onSearchDomainChange(selectedSearchDomain) {
-    this.setFilteredSearches$(selectedSearchDomain);
-    if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_SNIPPETS) && !this.userIsLoggedIn) {
-      this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
-      this.showLoginRequiredDialog('You need to be logged in to search in your personal bookmarks');
-    } else {
-      this.searchDomain = selectedSearchDomain;
-      this.searchBoxField.nativeElement.focus();
-      this.searchBoxField.nativeElement.select();
-    }
-  }
-
-  private showLoginRequiredDialog(message: string) {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      message: message
-    };
-
-    const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-  }
-
-  /**
-   * It saves the current search with the current timestamp - it gets pushed
-   * at the "top" of saved searches so it will be displayed at the top in suggested searches
-   */
-  onSaveSearchClick() {
-    if (!this.userIsLoggedIn) {
-      this.showLoginRequiredDialog('You need to be logged in to save searches')
-    } else {
-      const now = new Date();
-      const newSearch: Search = {
-        text: this.searchBoxText,
-        createdAt: now,
-        lastAccessedAt: now,
-        searchDomain: this.searchDomain,
-        count: 1
-      }
-      const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
-      if (emptyUserData) {
-        this._userData = {
-          userId: this.userId,
-          searches: [newSearch]
+    onBookmarkDeleted(deleted: boolean) {
+        if (deleted) {
+            this.searchControl.setValue(this.searchBoxText);
         }
-      } else {
-        this._userData.searches = this._userData.searches.filter(item => item.text.trim().toLowerCase() !== this.searchBoxText.trim().toLowerCase());
-        this._userData.searches.unshift(newSearch);
-      }
-      this.userDataStore.updateUserData$(this._userData).subscribe();
     }
-  }
 
-  onAutocompleteSelectionChanged(event: MatAutocompleteSelectedEvent) {
-    const selectedValue = event.option.value;
-    const index = this._userData.searches.findIndex((search: Search) => search.text === selectedValue);
-    const updatedSearch: Search = this._userData.searches.splice(index, 1)[0];
-    updatedSearch.lastAccessedAt = new Date();
-    if (updatedSearch.count) {
-      updatedSearch.count++;
-    } else {
-      updatedSearch.count = 1;
+    onSearchDomainChange(selectedSearchDomain) {
+        this.searchDomain = selectedSearchDomain;
+        this.watchSearchBoxValueChanges();
+        this.setFilteredSearches$(selectedSearchDomain);
+        if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_SNIPPETS) && !this.userIsLoggedIn) {
+            this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
+            this.showLoginRequiredDialog('You need to be logged in to search in your personal bookmarks');
+        } else {
+            this.searchDomain = selectedSearchDomain;
+            this.searchBoxField.nativeElement.focus();
+            this.searchBoxField.nativeElement.select();
+        }
     }
-    this._userData.searches.unshift(updatedSearch);
 
-    this.userDataStore.updateUserData$(this._userData).subscribe();
-    this.triggerBookmarkSearch(selectedValue);
-  }
+    private showLoginRequiredDialog(message: string) {
+        const dialogConfig = new MatDialogConfig();
 
-  focusOnSearchControl() {
-    this.isFocusOnSearchControl = true;
-  }
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+            message: message
+        };
 
-  unFocusOnSearchControl() {
-    this.isFocusOnSearchControl = false;
-  }
-
-  searchBookmarksFromSearchBox(searchText: string) {
-    this.currentPage = 1;
-    this.triggerBookmarkSearch(searchText);
-  }
-
-  triggerBookmarkSearch(searchText: string) {
-    if (searchText.trim() !== '') {
-      this.router.navigate(['./search'],
-        {
-          queryParams: {q: searchText, sd: this.searchDomain, page: this.currentPage, include: 'all'}
-        }).then(() => {
-        this.searchNotificationService.triggerSearch(
-          {
-            searchText: this.searchBoxText,
-            searchDomain: this.searchDomain
-          });
-      });
+        const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     }
-  }
 
-  clearSearchBoxText() {
-    this.searchControl.patchValue('');
-  }
+    /**
+     * It saves the current search with the current timestamp - it gets pushed
+     * at the "top" of saved searches so it will be displayed at the top in suggested searches
+     */
+    onSaveSearchClick() {
+        if (!this.userIsLoggedIn) {
+            this.showLoginRequiredDialog('You need to be logged in to save searches')
+        } else {
+            const now = new Date();
+            const newSearch: Search = {
+                text: this.searchBoxText,
+                createdAt: now,
+                lastAccessedAt: now,
+                searchDomain: this.searchDomain,
+                count: 1
+            }
+            const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
+            if (emptyUserData) {
+                this._userData = {
+                    userId: this.userId,
+                    searches: [newSearch]
+                }
+            } else {
+                this._userData.searches = this._userData.searches.filter(item => item.text.trim().toLowerCase() !== this.searchBoxText.trim().toLowerCase());
+                this._userData.searches.unshift(newSearch);
+            }
+            this.userDataStore.updateUserData$(this._userData).subscribe();
+        }
+    }
 
-  @HostListener('window:keydown.control.s', ['$event'])
-  focusOnSearchBoxHotKey(event: KeyboardEvent) {
-    event.preventDefault();
-    this.searchBoxField.nativeElement.focus();
-    this.searchBoxField.nativeElement.select();
-  }
+    onAutocompleteSelectionChanged(event: MatAutocompleteSelectedEvent) {
+        const selectedValue = event.option.value;
+        const index = this._userData.searches.findIndex((search: Search) => search.text === selectedValue);
+        const updatedSearch: Search = this._userData.searches.splice(index, 1)[0];
+        updatedSearch.lastAccessedAt = new Date();
+        if (updatedSearch.count) {
+            updatedSearch.count++;
+        } else {
+            updatedSearch.count = 1;
+        }
+        this._userData.searches.unshift(updatedSearch);
+
+        this.userDataStore.updateUserData$(this._userData).subscribe();
+        this.triggerBookmarkSearch(selectedValue);
+    }
+
+    focusOnSearchControl() {
+        this.isFocusOnSearchControl = true;
+    }
+
+    unFocusOnSearchControl() {
+        this.isFocusOnSearchControl = false;
+    }
+
+    searchBookmarksFromSearchBox(searchText: string) {
+        this.currentPage = 1;
+        this.triggerBookmarkSearch(searchText);
+    }
+
+    triggerBookmarkSearch(searchText: string) {
+        const searchTextNotEmpty = searchText.trim() !== '';
+        if (searchTextNotEmpty) {
+            this.router.navigate(['./search'],
+                {
+                    queryParams: {q: searchText, sd: this.searchDomain, page: this.currentPage, include: 'all'}
+                }).then(() => {
+                this.searchNotificationService.triggerSearch(
+                    {
+                        searchText: this.searchBoxText,
+                        searchDomain: this.searchDomain
+                    });
+            });
+        }
+    }
+
+    clearSearchBoxText() {
+        this.searchControl.patchValue('');
+    }
+
+    @HostListener('window:keydown.control.s', ['$event'])
+    focusOnSearchBoxHotKey(event: KeyboardEvent) {
+        event.preventDefault();
+        this.searchBoxField.nativeElement.focus();
+        this.searchBoxField.nativeElement.select();
+    }
+
+    getPlaceholderTextForSearchbar() {
+        let response = 'Search';
+        if (this.innerWidth <= 1400) {
+            response += ' ' + this.searchDomains.get(this.searchDomain);
+        } else {
+            response += '...';
+        }
+
+        return response;
+    }
+
+    getButtonText(searchDomain: string) {
+        // searchDomain === 'my-snippets' ? 'My Snippets' : searchDomain === 'public-bookmarks' ? 'Public Bookmarks' : 'My Bookmarks'
+        switch (searchDomain) {
+            case  SearchDomain.MY_SNIPPETS.valueOf():
+                return 'My Snippets'
+                break;
+        }
+    }
 }

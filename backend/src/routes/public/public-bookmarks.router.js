@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const publicBookmarksSearchService = require('./public-bookmarks-search.service');
 const PublicBookmarksService = require('./public-bookmarks.service');

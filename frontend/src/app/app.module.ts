@@ -24,6 +24,7 @@ import { UserDataStore } from './core/user/userdata.store';
 import { AppService } from './app.service';
 import { HIGHLIGHT_OPTIONS, HighlightModule, HighlightOptions } from 'ngx-highlightjs';
 import { MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule } from '@angular/material/chips';
+import { SnippetNotFoundComponent } from './not-found/snippet-not-found.component';
 
 @NgModule({
   exports: [
@@ -76,6 +77,7 @@ import { MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule } from '@angular/material/chi
   declarations: [
     AppComponent,
     PageNotFoundComponent,
+    SnippetNotFoundComponent,
     LoaderComponent,
   ],
   bootstrap: [AppComponent]

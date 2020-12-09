@@ -43,7 +43,7 @@
         type="text"
         class="form-control"
         [formControl]="selectSavedSearchControl"
-        placeholder="Start typing to select saved search for {{searchDomainToViewValue(searchDomain)}}"
+        placeholder="Start typing to select saved search for {{searchDomains.get(searchDomain)}}"
         [matAutocomplete]="auto"
       >
       <mat-autocomplete #auto="matAutocomplete">

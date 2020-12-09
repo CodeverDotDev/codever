@@ -23,6 +23,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BookmarksFilterPipe } from './bookmarks-filter.pipe';
+import { SnippetDetailsComponent } from './snippet-details/snippet-details.component';
+import { CopySnippetButtonComponent } from './snippet-details/copy-snippet-button/copy-snippet-button.component';
+import { HighlightModule } from 'ngx-highlightjs';
+import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/snippet-card-body.component';
 
 
 /**
@@ -39,7 +43,8 @@ import { BookmarksFilterPipe } from './bookmarks-filter.pipe';
     MatProgressSpinnerModule,
     MatExpansionModule,
     MatDialogModule,
-    RouterModule
+    RouterModule,
+    HighlightModule
   ],
   declarations: [
     HighLightPipe,
@@ -57,7 +62,10 @@ import { BookmarksFilterPipe } from './bookmarks-filter.pipe';
     SearchbarComponent,
     NavigationComponent,
     HotKeysDialogComponent,
-    BookmarkListElementComponent
+    BookmarkListElementComponent,
+    SnippetDetailsComponent,
+    CopySnippetButtonComponent,
+    SnippetCardBodyComponent
   ],
   exports: [
     CommonModule,
@@ -71,7 +79,9 @@ import { BookmarksFilterPipe } from './bookmarks-filter.pipe';
     MatProgressSpinnerModule,
     NavigationComponent,
     SearchbarComponent,
-    BookmarkListElementComponent
+    BookmarkListElementComponent,
+    SnippetDetailsComponent,
+    CopySnippetButtonComponent
   ],
   entryComponents: [
     DeleteBookmarkDialogComponent,

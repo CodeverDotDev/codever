@@ -7,6 +7,7 @@ import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
 import { VersionComponent } from './version/version.component';
+import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details.component';
 
 const publicBookmarksRoutes: Routes = [
   {
@@ -71,6 +72,19 @@ const publicBookmarksRoutes: Routes = [
     component: TermsOfServiceComponent,
   },
   {
+    path: 'snippets/:id',
+    component: PublicSnippetDetailsComponent,
+    children: [
+      // This is a WILDCARD CATCH-ALL route that is scoped to the "/snippets/:snippetid"
+      // route prefix. It will only catch non-matching routes that live
+      // within this portion of the router tree.
+      {
+        path: '**',
+        component: PublicSnippetDetailsComponent
+      }
+    ]
+  },
+  {
     path: 'users/:userId',
     component: UserPublicProfileComponent,
     children: [
@@ -93,4 +107,5 @@ const publicBookmarksRoutes: Routes = [
   imports: [RouterModule.forChild(publicBookmarksRoutes)],
   exports: [RouterModule]
 })
-export class PublicBookmarksRoutingModule {}
+export class PublicBookmarksRoutingModule {
+}

@@ -6,8 +6,6 @@ const HttpStatus = require('http-status-codes/index');
 
 const UserDataService = require('../users/user-data.service');
 
-const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
-
 /**
  *  Returns the with query text
  */
