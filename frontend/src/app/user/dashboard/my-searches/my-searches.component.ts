@@ -7,7 +7,7 @@ import { DeleteSavedSearchDialogComponent } from './delete-saved-search-dialog/d
 import { Search, UserData } from '../../../core/model/user-data';
 import { UserDataStore } from '../../../core/user/userdata.store';
 import { SearchDomain } from '../../../core/model/search-domain.enum';
-import { SearchDomainLocal } from '../../../shared/search/searchbar.component';
+import { searchDomains } from '../../../core/model/search-domains-map';
 
 @Component({
   selector: 'app-saved-searches',
@@ -31,12 +31,7 @@ export class MySearchesComponent implements OnInit {
   buttonEnabled: boolean;
 
   searchDomain = SearchDomain.MY_BOOKMARKS.valueOf();
-
-  searchDomains: SearchDomainLocal[] = [
-    {value: SearchDomain.MY_BOOKMARKS, viewValue: 'My bookmarks'},
-    {value: SearchDomain.PUBLIC_BOOKMARKS, viewValue: 'Public bookmarks'},
-    {value: SearchDomain.MY_SNIPPETS, viewValue: 'My snippets'}
-  ];
+  searchDomains = searchDomains;
 
   constructor(
     private deleteDialog: MatDialog,
@@ -80,7 +75,7 @@ export class MySearchesComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
       savedSearchText: savedSearchText,
-      searchDomain: this.searchDomainToViewValue(this.searchDomain)
+      searchDomain: searchDomains.get(this.searchDomain)
     };
 
     const dialogRef = this.deleteDialog.open(DeleteSavedSearchDialogComponent, dialogConfig);
@@ -104,21 +99,6 @@ export class MySearchesComponent implements OnInit {
   onSearchDomainChange(selectedSearchDomain) {
     this.setFilteredSearches$(selectedSearchDomain);
     this.searchDomain = selectedSearchDomain;
-  }
-
-  searchDomainToViewValue(searchDomain): string {
-    switch (searchDomain) {
-      case SearchDomain.MY_BOOKMARKS : {
-        return 'My Bookmarks';
-      }
-      case SearchDomain.PUBLIC_BOOKMARKS : {
-        return 'Public Bookmarks'
-      }
-      case SearchDomain.MY_SNIPPETS : {
-        return 'My Codelets'
-      }
-    }
-
   }
 
 }

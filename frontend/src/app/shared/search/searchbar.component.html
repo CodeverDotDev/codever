@@ -18,7 +18,7 @@
             aria-haspopup="true"
             aria-expanded="false"
       style="font-size: 15px">
-      {{searchDomain === 'my-snippets' ? 'My Snippets' : searchDomain === 'public-bookmarks' ? 'Public Bookmarks' : 'My Bookmarks'}}
+      {{searchDomains.get(searchDomain)}}
     </button>
     <ng-template #toggleButton>
       <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
@@ -69,6 +69,20 @@
             </span>
         </ng-template>
       </a>
+      <a class="dropdown-item"  role="button"
+         title="Search in public snippets"
+         (click)="onSearchDomainChange('public-snippets')">
+        Public Snippets
+        <span *ngIf="searchDomain === 'public-snippets'; else uncheckedPublicSnippetsSelection"
+              class="search-domain-selection my-snippets-selection float-right pl-1 pr-1">
+            <i class="fas fa-check"></i>
+          </span>
+        <ng-template #uncheckedPublicSnippetsSelection>
+            <span class="my-snippets-selection-unchecked  float-right">
+              <i class="fa fa-square fa-lg ml-1 my-snippets-selection-unchecked"></i>
+            </span>
+        </ng-template>
+      </a>
     </div>
   </div>
   <input
@@ -78,11 +92,11 @@
     type="text"
     class="form-control"
     [formControl]="searchControl"
-    placeholder="Search{{ innerWidth <=1400 ? searchDomain === 'my-snippets' ? ' My Code Snippets' : searchDomain === 'public-bookmarks' ? ' Public Bookmarks' : ' My Bookmarks' : ''}}..."
+    placeholder="{{getPlaceholderTextForSearchbar()}}"
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
-    [class.my-snippets-selection]="searchDomain === 'my-snippets'"
+    [class.my-snippets-selection]="searchDomain === 'my-snippets' || searchDomain === 'public-snippets'"
     [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
     (keyup.enter)="$event.target.blur(); autocompleteTrigger.closePanel();searchBookmarksFromSearchBox(publicSearchBox.value)"
   >

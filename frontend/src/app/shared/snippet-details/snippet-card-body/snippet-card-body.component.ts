@@ -11,16 +11,19 @@ import { Codelet } from '../../../core/model/codelet';
 
 @Component({
   selector: 'app-codelet-card-body',
-  templateUrl: './codelet-card-body.component.html',
-    styleUrls: [ './codelet-card-body.component.scss' ]
+  templateUrl: './snippet-card-body.component.html',
+    styleUrls: [ './snippet-card-body.component.scss' ]
 })
-export class CodeletCardBodyComponent  implements  AfterViewInit, AfterViewChecked {
+export class SnippetCardBodyComponent  implements  AfterViewInit, AfterViewChecked {
 
   @Input()
   codelet: Codelet;
 
   @Input()
   queryText: string;
+
+  @Input()
+  inList = false;
 
   show = false; // add one more property
   public showMoreText = false;

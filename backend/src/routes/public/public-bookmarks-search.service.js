@@ -74,14 +74,6 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecial
     .lean()
     .exec();
 
-  /* TODO - remove
-   for ( const term of nonSpecialSearchTerms ) {
-      bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
-    }
-
-    const startPoint = (page - 1) * limit;
-    bookmarks = bookmarks.slice(startPoint, startPoint + limit);*/
-
   return bookmarks;
 }
 
@@ -120,14 +112,6 @@ let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, 
     .limit(limit)
     .lean()
     .exec();
-
-  /* TODO remove
-  for ( const term of nonSpecialSearchTerms ) {
-      bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
-    }
-  const startPoint = (page - 1) * limit;
-  bookmarks = bookmarks.slice(startPoint, startPoint + limit);
-*/
 
   return bookmarks;
 }

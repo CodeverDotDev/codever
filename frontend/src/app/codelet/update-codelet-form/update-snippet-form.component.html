@@ -1,4 +1,4 @@
-<div *ngIf="!isUpdate || (isUpdate && codelet$ | async)" class="navigation-space-buffer rounded bg-white shadow-sm">
+<div *ngIf="codelet" class="navigation-space-buffer rounded bg-white shadow-sm">
   <form [formGroup]="codeletFormGroup" novalidate (ngSubmit)="saveCodelet(codeletFormGroup.value)">
     <div class="form-group pb-1">
       <label for="title">Title*</label>
@@ -117,12 +117,35 @@
              formControlName="sourceUrl"
              placeholder='Where the code snippets are inspired from'>
     </div>
-    <button type="submit" class="btn btn-primary mr-2" [disabled]="!codeletFormGroup.valid">
-      Save <i class="far fa-save"></i>
+
+    <div *ngIf="!copyToMine && !codelet.public && !codelet.copiedFromId" class="form-check mb-4 mt-1">
+      <label class="form-check-label">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value="true"
+          formControlName="public"
+        >
+        <strong> Make Public </strong><span class="make-public-notes"> - visible and searchable for everyone (<em>spam will not be tolerated</em>)</span>
+      </label>
+    </div>
+
+    <input type="hidden" formControlName="copiedFromId">
+
+    <button *ngIf="codelet.public; else updatePrivateSnippetBtn" type="submit" class="btn btn-primary mr-2"
+            [disabled]="!codeletFormGroup.valid">
+      Update public snippet <i class="far fa-eye"></i>
     </button>
-    <button *ngIf="isUpdate" type="button" class="btn btn-danger" (click)="openDeleteDialog()">
+    <ng-template #updatePrivateSnippetBtn>
+      <button type="submit" class="btn btn-primary mr-2" [disabled]="!codeletFormGroup.valid">
+        <span *ngIf="copyToMine; else updateText">Create private snippet <i class="far fa-eye-slash"></i></span>
+        <ng-template #updateText>
+          <span>Update private snippet <i class="far fa-eye-slash"></i></span>
+        </ng-template>
+      </button>
+    </ng-template>
+    <button type="button" class="btn btn-danger" (click)="openDeleteDialog()">
       Delete <i class="far fa-trash-alt"></i>
     </button>
   </form>
 </div>
-

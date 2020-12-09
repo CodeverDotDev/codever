@@ -16,6 +16,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { VersionComponent } from './version/version.component';
+import { PublicSnippetsService } from './snippets/public-snippets.service';
+import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details.component';
 
 @NgModule({
   declarations : [
@@ -25,7 +27,8 @@ import { VersionComponent } from './version/version.component';
     HomepageComponent,
     UserPublicProfileComponent,
     TagComponent,
-    VersionComponent
+    VersionComponent,
+    PublicSnippetDetailsComponent
   ],
   imports: [
     SharedModule,
@@ -37,6 +40,7 @@ import { VersionComponent } from './version/version.component';
   ],
   providers: [
     PublicBookmarksService,
+    PublicSnippetsService,
     PublicBookmarksStore,
     UserPublicService,
     TagService

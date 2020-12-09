@@ -3,7 +3,44 @@
 
 <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="tabSelectionChanged($event)">
 
-  <mat-tab>
+  <mat-tab  *ngIf="searchDomain === 'public-bookmarks' || searchDomain === 'my-bookmarks'">
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-search"></i> My Bookmarks</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
+        <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+             class="alert alert-info no-search-results mt-2"
+             role="alert">
+          No results found for <strong>{{this.searchInclude}}</strong> of <em><code>{{searchText}}</code></em>
+          in <strong>My Bookmarks</strong>.
+          <span *ngIf="searchInclude === 'all'; else searchPublicBookmarks">
+                  Try searching for <strong>any</strong> of the terms -
+          <button class="btn btn-outline-primary btn-sm"
+                  (click)="tryPersonalBookmarks('any')">
+            <i class="fa fa-search"></i> Search any
+          </button>
+        </span>
+          <ng-template #searchPublicBookmarks>
+            Try searching in
+            <button class="btn btn-outline-primary btn-sm"
+                    (click)="tryPublicBookmarks('all')">
+              <i class="fa fa-search"></i> Public bookmarks
+            </button>
+          </ng-template>
+        </div>
+        <app-async-bookmark-list *ngIf="this.searchDomain === 'my-bookmarks'"
+                                 [callerPagination]="callerPaginationSearchResults"
+                                 [bookmarks$]="searchResults$"
+                                 [queryText]="searchText"
+                                 [userData$]="userData$"
+                                 [showFilterBox]="false">
+        </app-async-bookmark-list>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab *ngIf="searchDomain === 'public-bookmarks' || searchDomain === 'my-bookmarks'">
     <ng-template mat-tab-label>
       <span class="app-tab-label"><i class="fa fa-search"></i> Public Bookmarks</span>
     </ng-template>
@@ -14,7 +51,7 @@
         No results found for <strong>{{this.searchInclude}}</strong> of <em><code>{{searchText}}</code></em>
         in <strong>Public Bookmarks</strong>.
         <span *ngIf="searchInclude === 'all'; else searchPersonalAndCodelets">
-                    Try searching for <strong>any</strong> of the terms -
+                    Try a more permissive search (include <strong>any</strong> of the terms) -
           <button class="btn btn-outline-primary btn-sm"
                   (click)="tryPublicBookmarks('any')">
             <i class="fa fa-search"></i> Search any
@@ -25,10 +62,6 @@
           <button class="btn btn-outline-primary btn-sm"
                   (click)="tryPersonalBookmarks('all')">
             <i class="fa fa-search"></i> My Bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets('all')">
-            <i class="fa fa-search"></i> My Snippets
           </button>
         </ng-template>
       </div>
@@ -44,48 +77,50 @@
     </ng-template>
   </mat-tab>
 
-  <mat-tab>
+  <mat-tab *ngIf="searchDomain === 'public-snippets' || searchDomain === 'my-snippets'">
     <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-search"></i> My Bookmarks</span>
+      <span class="app-tab-label"><i class="fa fa-search"></i> My Snippets</span>
     </ng-template>
     <ng-template matTabContent>
-      <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
-           class="alert alert-info no-search-results mt-2"
-           role="alert">
-        No results found for <strong>{{this.searchInclude}}</strong> of <em><code>{{searchText}}</code></em>
-        in <strong>My Bookmarks</strong>.
-        <span *ngIf="searchInclude === 'all'; else searchPublicAndCodelets">
-                  Try searching for <strong>any</strong> of the terms -
+      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
+        <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+             class="alert alert-info no-search-results mt-2"
+             role="alert">
+          No results found for <strong>{{this.searchInclude}}</strong> of <em><code>{{searchText}}</code></em>
+          in <strong>My Snippets</strong>.
+          <span *ngIf="searchInclude === 'all'; else searchPublicSnippets">
+          Try a more permissive search (use <strong>any</strong> of the terms) -
           <button class="btn btn-outline-primary btn-sm"
-                  (click)="tryPersonalBookmarks('any')">
-            <i class="fa fa-search"></i> Search any
+                  (click)="tryMySnippets('any')">
+              <i class="fa fa-search"></i> Search any
           </button>
         </span>
-        <ng-template #searchPublicAndCodelets>
-          Try searching in
-          <button class="btn btn-outline-primary btn-sm"
-                  (click)="tryPublicBookmarks('all')">
-            <i class="fa fa-search"></i> Public bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets('all')">
-            <i class="fa fa-search"></i> My Snippets
-          </button>
-        </ng-template>
+          <ng-template #searchPublicSnippets>
+            Try searching in
+            <button class="btn btn-outline-primary btn-sm" (click)="tryPublicSnippets('all')">
+              <i class="fa fa-search"></i> Public Snippets
+            </button>
+          </ng-template>
+        </div>
+        <app-async-codelet-list *ngIf="this.searchDomain === 'my-snippets'"
+                                [codelets$]="searchResults$"
+                                [queryText]="searchText">
+        </app-async-codelet-list>
       </div>
-      <app-async-bookmark-list *ngIf="this.searchDomain === 'my-bookmarks'"
-                               [callerPagination]="callerPaginationSearchResults"
-                               [bookmarks$]="searchResults$"
-                               [queryText]="searchText"
-                               [userData$]="userData$"
-                               [showFilterBox]="false">
-      </app-async-bookmark-list>
     </ng-template>
   </mat-tab>
 
-  <mat-tab>
+  <ng-template #loggedInToSearchBookmarks>
+    <div class="mt-2 alert alert-info">
+      You need to
+      <button type="button" class="btn btn-primary btn-sm" (click)="keycloakServiceWrapper.login()">Login / Register</button>
+      to search your personal bookmarks and code snippets.
+    </div>
+  </ng-template>
+
+  <mat-tab *ngIf="searchDomain === 'public-snippets' || searchDomain === 'my-snippets'">
     <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-search"></i> My Snippets</span>
+      <span class="app-tab-label"><i class="fa fa-search"></i> Public Snippets</span>
     </ng-template>
     <ng-template matTabContent>
       <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
@@ -93,26 +128,21 @@
            role="alert">
         No results found for <strong>{{this.searchInclude}}</strong> of <em><code>{{searchText}}</code></em>
         in <strong>My Snippets</strong>.
-        <span *ngIf="searchInclude === 'all'; else searchPersonalAndPublic">
+        <span *ngIf="searchInclude === 'all'; else searchPersonalSnippets">
           Try searching for <strong>any</strong> of the terms -
           <button class="btn btn-outline-primary btn-sm"
-                  (click)="tryMyCodelets('any')">
+                  (click)="tryPublicSnippets('any')">
               <i class="fa fa-search"></i> Search any
           </button>
         </span>
-        <ng-template #searchPersonalAndPublic>
+        <ng-template #searchPersonalSnippets>
           Try searching in
-          <button class="btn btn-outline-primary btn-sm"
-                  (click)="tryPersonalBookmarks('all')">
-            <i class="fa fa-search"></i> My Bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="tryPublicBookmarks('all')">
-            <i class="fa fa-search"></i> Public Bookmarks
+          <button class="btn btn-outline-primary btn-sm" (click)="tryMySnippets('all')">
+            <i class="fa fa-search"></i> My Snippets
           </button>
         </ng-template>
       </div>
-      <app-async-codelet-list *ngIf="this.searchDomain === 'my-snippets'"
+      <app-async-codelet-list *ngIf="this.searchDomain === 'public-snippets'"
                               [codelets$]="searchResults$"
                               [queryText]="searchText">
       </app-async-codelet-list>

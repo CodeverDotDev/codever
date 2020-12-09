@@ -19,6 +19,7 @@ import { SearchDomain } from '../core/model/search-domain.enum';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LoginDialogHelperService } from '../core/login-dialog-helper.service';
 import { LoginRequiredDialogComponent } from '../shared/login-required-dialog/login-required-dialog.component';
+import { PublicSnippetsService } from '../public/snippets/public-snippets.service';
 
 @Component({
   selector: 'app-search-results',
@@ -39,12 +40,13 @@ export class SearchResultsComponent implements OnInit {
   searchResults$: Observable<Bookmark[] | Codelet[]>;
   private userData$: Observable<UserData>;
 
-  selectedTabIndex = 0; // default search in public bookmarks
+  selectedTabIndex = 1; // default search in public bookmarks
   private searchInclude: string;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private publicBookmarksService: PublicBookmarksService,
+              private publicSnippetsService: PublicSnippetsService,
               private personalBookmarksService: PersonalBookmarksService,
               private personalCodeletsService: PersonalCodeletsService,
               private keycloakService: KeycloakService,
@@ -81,16 +83,12 @@ export class SearchResultsComponent implements OnInit {
         });
       } else {
         switch (this.searchDomain) {
-          case SearchDomain.MY_BOOKMARKS: {
-            this.keycloakServiceWrapper.login();
-            break;
-          }
-          case SearchDomain.MY_SNIPPETS: {
-            this.keycloakServiceWrapper.login();
-            break;
-          }
           case SearchDomain.PUBLIC_BOOKMARKS: {
             this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS, 'all');
+            break;
+          }
+          case SearchDomain.PUBLIC_SNIPPETS: {
+            this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_SNIPPETS, 'all');
             break;
           }
         }
@@ -99,12 +97,11 @@ export class SearchResultsComponent implements OnInit {
     });
 
     this.searchNotificationService.searchTriggeredSource$.subscribe(searchData => {
-      if (searchData.searchDomain === SearchDomain.MY_BOOKMARKS) {
-        this.selectedTabIndex = 1;
-      } else if (searchData.searchDomain === SearchDomain.MY_SNIPPETS) {
-        this.selectedTabIndex = 2;
-      } else {
+      if (searchData.searchDomain === SearchDomain.MY_BOOKMARKS
+        || searchData.searchDomain === SearchDomain.MY_SNIPPETS) {
         this.selectedTabIndex = 0;
+      } else {
+        this.selectedTabIndex = 1;
       }
       this.searchBookmarks(searchData.searchText, searchData.searchDomain, 'all');
     });
@@ -126,10 +123,10 @@ export class SearchResultsComponent implements OnInit {
   }
 
   private initSelectedTabIndex(searchDomain: string) {
-    if (searchDomain === SearchDomain.MY_BOOKMARKS) {
+    if (searchDomain === SearchDomain.MY_BOOKMARKS || searchDomain === SearchDomain.MY_SNIPPETS) {
+      this.selectedTabIndex = 0;
+    } else {
       this.selectedTabIndex = 1;
-    } else if (searchDomain === SearchDomain.MY_SNIPPETS) {
-      this.selectedTabIndex = 2;
     }
   }
 
@@ -172,18 +169,28 @@ export class SearchResultsComponent implements OnInit {
         );
         break;
       }
+      case SearchDomain.PUBLIC_SNIPPETS : {
+        this.searchResults$ = this.publicSnippetsService.searchPublicSnippets(
+          searchText,
+          environment.PAGINATION_PAGE_SIZE,
+          this.currentPage,
+          'relevant',
+          searchInclude
+        );
+        break;
+      }
     }
   }
 
   private saveRecenSearch(searchText: string, searchDomain) {
-      if (this.userIsLoggedIn) {
-        this.userDataStore.saveRecentSearch(searchText, searchDomain);
+    if (this.userIsLoggedIn) {
+      this.userDataStore.saveRecentSearch(searchText, searchDomain);
     }
   }
 
-  private tryMyCodelets(searchInclude: string) {
+  private tryMySnippets(searchInclude: string) {
     if (this.userIsLoggedIn) {
-      this.selectedTabIndex = 2;
+      this.selectedTabIndex = 0;
       this.searchInclude = searchInclude;
       this.router.navigate(['.'],
         {
@@ -203,8 +210,26 @@ export class SearchResultsComponent implements OnInit {
 
   }
 
+  private tryPublicSnippets(searchInclude: string) {
+    this.selectedTabIndex = 1;
+    this.currentPage = 1;
+    this.searchInclude = searchInclude;
+    this.router.navigate(['.'],
+      {
+        relativeTo: this.route,
+        queryParams: {
+          sd: SearchDomain.PUBLIC_SNIPPETS,
+          page: '1',
+          include: searchInclude
+        },
+        queryParamsHandling: 'merge'
+      }
+    );
+    this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_SNIPPETS, searchInclude);
+  }
+
   private tryPublicBookmarks(searchInclude: string) {
-    this.selectedTabIndex = 0;
+    this.selectedTabIndex = 1;
     this.currentPage = 1;
     this.searchInclude = searchInclude;
     this.router.navigate(['.'],
@@ -223,7 +248,7 @@ export class SearchResultsComponent implements OnInit {
 
   private tryPersonalBookmarks(searchInclude) {
     if (this.userIsLoggedIn) {
-      this.selectedTabIndex = 1;
+      this.selectedTabIndex = 0;
       this.searchDomain = SearchDomain.MY_BOOKMARKS;
       this.currentPage = 1;
       this.searchInclude = searchInclude;
@@ -249,15 +274,27 @@ export class SearchResultsComponent implements OnInit {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
       case 0 : {
-        this.tryPublicBookmarks('all');
+        if (this.userIsLoggedIn) {
+          if (this.searchDomain === SearchDomain.PUBLIC_BOOKMARKS) {
+            this.searchDomain = SearchDomain.MY_BOOKMARKS;
+            this.tryPersonalBookmarks('all');
+          }
+          if (this.searchDomain === SearchDomain.PUBLIC_SNIPPETS) {
+            this.searchDomain = SearchDomain.MY_SNIPPETS;
+            this.tryMySnippets('all');
+          }
+        }
         break;
       }
       case 1 : {
-        this.tryPersonalBookmarks('all');
-        break;
-      }
-      case 2 : {
-        this.tryMyCodelets('all');
+        if (this.searchDomain === SearchDomain.MY_BOOKMARKS) {
+          this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
+          this.tryPublicBookmarks('all');
+        }
+        if (this.searchDomain === SearchDomain.MY_SNIPPETS) {
+          this.searchDomain = SearchDomain.PUBLIC_SNIPPETS
+          this.tryPublicSnippets('all');
+        }
         break;
       }
     }

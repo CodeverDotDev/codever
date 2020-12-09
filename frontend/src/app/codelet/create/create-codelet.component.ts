@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Logger } from '../../core/logger.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',

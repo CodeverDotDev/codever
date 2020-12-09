@@ -7,7 +7,7 @@ import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.
 @Component({
   selector: 'app-copy-to-mine-bookmark',
   templateUrl: './copy-to-mine-bookmark.component.html',
-  styleUrls: ['./copy-to-min-bookmark.component.scss']
+  styleUrls: ['./copy-to-mine-bookmark.component.scss']
 })
 export class CopyToMineBookmarkComponent implements OnInit {
 

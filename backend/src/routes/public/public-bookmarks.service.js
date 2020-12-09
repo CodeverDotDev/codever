@@ -1,6 +1,4 @@
-const request = require('superagent');
 const Bookmark = require('../../model/bookmark');
-
 const NotFoundError = require('../../error/not-found.error');
 
 let getPublicBookmarkByLocation = async (location) => {
@@ -54,7 +52,10 @@ let getBookmarksForTag = async (tag, orderBy, page, limit) => {
 
 /* GET bookmark by id. */
 let getBookmarkById = async function (bookmarkId) {
-  const bookmark = await Bookmark.findById(bookmarkId);
+  const bookmark = await Bookmark.find({
+    public: true,
+    _id: bookmarkId
+  });
   if ( !bookmark ) {
     throw new NotFoundError(`Bookmark data NOT_FOUND for id: ${bookmarkId}`);
   }

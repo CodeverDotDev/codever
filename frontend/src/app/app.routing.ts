@@ -1,6 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { PageNotFoundComponent } from './not-found.component';
+import { SnippetNotFoundComponent } from './not-found/snippet-not-found.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,7 @@ const routes: Routes = [
     redirectTo: 'public',
     pathMatch: 'full'
   },
+  {path: '404-snippet', component: SnippetNotFoundComponent},
   {path: '**', component: PageNotFoundComponent}
 ];
 

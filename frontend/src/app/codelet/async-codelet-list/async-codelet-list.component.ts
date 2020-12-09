@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Codelet } from '../../core/model/codelet';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-async-codelet-list',
@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./async-codelet-list.component.scss']
 })
 export class AsyncCodeletListComponent implements OnInit {
-
 
   @Input()
   codelets$: Observable<Codelet[]>;
@@ -22,8 +21,7 @@ export class AsyncCodeletListComponent implements OnInit {
   ngOnInit() {
   }
 
-  editCodelet(codelet: Codelet) {
-    const link = [`/my-snippets/${codelet._id}/edit`];
-    this.router.navigate(link, {state: {codelet: codelet}});
+  of(codelet: Codelet) {
+    return of(codelet);
   }
 }
