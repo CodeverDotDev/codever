@@ -24,7 +24,7 @@ Based on that a GUI is generated to test the API directly from browser:
 * [production](https://www.bookmarks.dev/api/docs)
 
 ## Deployment
-We currently use [pm2](https://pm2.keymetrics.io/) to start the project in production.
+We currently use [pm2](https://pm2.keymetrics.io/) to start the project in production
 
 Undo local changes if needed:
 ```
@@ -32,22 +32,40 @@ git fetch
 git reset --hard origin/master
 ```
 
-### Start
+### PM2
+
+#### Cluster
+
+```shell script
+## status
+pm2 status
+
+## start
+pm2 start pm2-process-cluster.json
+
+## restart - kills and restarts the process
+pm2 restart pm2-process-cluster.json
+
+## reload - in comparison with "restart", "reload" achieves 0-second-downtime reload
+pm2 reload pm2-process-cluster.json
+
+## stop
+pm2 stop pm2-process-cluster.json
+```
+
+#### Single instance
 ```shell
-pm2 start pm2-process.json --env production
+# start
+pm2 start pm2-process.json --env production --time
+
+# restart
+pm2 restart pm2-process.json --env production --time
+
+# stop
+pm2 stop pm2-process.json --env production
 ```
 
 > Commited is a [pm2-process.exammple.json](pm2-process.exammple.json) example file
-
-### Restart
-```shell
-pm2 restart pm2-process.json --env production
-```
-
-### Stop
-```shell
-pm2 stop pm2-process.json --env production
-```
 
 
 ## Troubleshooting
