@@ -33,8 +33,8 @@ export class SnippetDetailsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.popup = this.route.snapshot.queryParamMap.get('popup');
-    this.snippet$ = of(window.history.state.codelet);
-    if (!window.history.state.codelet) {
+    this.snippet$ = of(window.history.state.snippet);
+    if (!window.history.state.snippet) {
       this.userInfoStore.getUserInfo$().subscribe(userInfo => {
         this.userId = userInfo.sub;
         this.codeletId = this.route.snapshot.paramMap.get('id');
