@@ -19,6 +19,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CopyToMineSnippetComponent } from './copy-to-mine/copy-to-mine-snippet.component';
 import { UpdateSnippetFormComponent } from './update-codelet-form/update-snippet-form.component';
+import { SnippetFormBaseComponent } from './snippet-form-base/snippet-form.base.component';
 
 const codeletRoutes: Routes = [
   {
@@ -52,7 +53,8 @@ const codeletRoutes: Routes = [
     SnippetDetailsPageComponent,
     DeleteCodeletDialogComponent,
     AsyncCodeletListComponent,
-    CopyToMineSnippetComponent
+    CopyToMineSnippetComponent,
+    SnippetFormBaseComponent
   ],
   imports: [
     RouterModule.forChild(codeletRoutes),

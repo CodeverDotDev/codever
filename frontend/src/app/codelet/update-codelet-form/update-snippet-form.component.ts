@@ -1,55 +1,28 @@
-import { map, startWith } from 'rxjs/operators';
 import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { KeycloakService } from 'keycloak-angular';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Observable, throwError as observableThrowError } from 'rxjs';
-import { codelet_common_tags } from '../../shared/codelet-common-tags';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { tagsValidator } from '../../shared/tags-validation.directive';
-import { HttpResponse } from '@angular/common/http';
-import { UserDataStore } from '../../core/user/userdata.store';
 import { Logger } from '../../core/logger.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorService } from '../../core/error/error.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
-import { Codelet, CodeSnippet } from '../../core/model/codelet';
+import { Codelet } from '../../core/model/codelet';
 import { PersonalCodeletsService } from '../../core/personal-codelets.service';
 import { DeleteCodeletDialogComponent } from '../delete-codelet-dialog/delete-codelet-dialog.component';
-import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { PublicSnippetsService } from '../../public/snippets/public-snippets.service';
+import { SnippetFormBaseComponent } from '../snippet-form-base/snippet-form.base.component';
 
 @Component({
   selector: 'app-update-snippet-form',
   templateUrl: './update-snippet-form.component.html',
   styleUrls: ['./update-snippet-form.component.scss']
 })
-export class UpdateSnippetFormComponent implements OnInit, OnChanges {
+export class UpdateSnippetFormComponent extends SnippetFormBaseComponent implements OnInit, OnChanges {
 
   codeletFormGroup: FormGroup;
   codeSnippetsFormArray: FormArray;
   userId = null;
-
-  // chips
-  selectable = true;
-  removable = true;
-  addOnBlur = true;
-
-  autocompleteTagsOptionActivated = false;
-
-  // Enter, comma, space
-  separatorKeysCodes = [ENTER, COMMA];
-
-  commonCodeletTags = codelet_common_tags;
-
-  autocompleteTags = [];
-
-  tagsControl = new FormControl();
-
-  filteredTags: Observable<any[]>;
 
   @Input()
   codelet: Codelet;
@@ -64,23 +37,22 @@ export class UpdateSnippetFormComponent implements OnInit, OnChanges {
   copyToMine = false;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private keycloakService: KeycloakService,
-    private personalCodeletsService: PersonalCodeletsService,
+    protected formBuilder: FormBuilder,
+    protected personalCodeletsService: PersonalCodeletsService,
     private publicSnippetsService: PublicSnippetsService,
-    private suggestedTagsStore: SuggestedTagsStore,
-    private userInfoStore: UserInfoStore,
-    private userDataStore: UserDataStore,
+    protected suggestedTagsStore: SuggestedTagsStore,
+    protected userInfoStore: UserInfoStore,
     private logger: Logger,
-    private router: Router,
+    protected router: Router,
     private route: ActivatedRoute,
-    private errorService: ErrorService,
+    protected errorService: ErrorService,
     private deleteDialog: MatDialog
   ) {
+    super(formBuilder, personalCodeletsService, suggestedTagsStore, userInfoStore, router, errorService);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // only run when property "data" changed
+    // only run when property "codelet" changed
     if (this.codelet) {
       this.buildInitialForm();
       this.patchFormWithData(this.codelet);
@@ -88,20 +60,7 @@ export class UpdateSnippetFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-      this.userId = userInfo.sub;
-      this.suggestedTagsStore.getSuggestedCodeletTags$(this.userId).subscribe(userTags => {
-
-        this.autocompleteTags = userTags.concat(this.commonCodeletTags.filter((item => userTags.indexOf(item) < 0))).sort();
-
-        this.filteredTags = this.tagsControl.valueChanges.pipe(
-          startWith(null),
-          map((tag: string | null) => {
-            return tag ? this.filter(tag) : this.autocompleteTags.slice();
-          })
-        );
-      });
-    });
+    super.ngOnInit();
   }
 
   private patchFormWithData(codelet: Codelet) {
@@ -138,80 +97,9 @@ export class UpdateSnippetFormComponent implements OnInit, OnChanges {
     this.codeSnippetsFormArray = this.codeletFormGroup.get('codeSnippets') as FormArray;
   }
 
-  createCodeSnippet(codeSnippet: CodeSnippet): FormGroup {
-    return this.formBuilder.group({
-      code: [codeSnippet.code, textSizeValidator(5000, 500)],
-      comment: codeSnippet.comment
-    });
-  }
-
-  createInitialCodeSnippet(): FormGroup {
-    return this.formBuilder.group({
-      code: ['', textSizeValidator(5000, 500)],
-      comment: ['', textSizeValidator(1000, 30)]
-    });
-  }
-
-  createEmptyCodeSnippet(): FormGroup {
-    return this.formBuilder.group({
-      code: ['', textSizeValidator(5000, 500)],
-      comment: ['', textSizeValidator(1000, 30)]
-    });
-  }
-
-  addEmptyCodeSnippet(index: number): void {
-    this.codeSnippetsFormArray.insert(index + 1, this.createEmptyCodeSnippet());
-  }
-
-  removeCodeSnippet(index: number) {
-    this.codeSnippetsFormArray.removeAt(index);
-  }
-
-  addTag(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-
-    if ((value || '').trim() && !this.autocompleteTagsOptionActivated) {
-      // if ((value || '').trim()) {
-      this.formArrayTags.push(this.formBuilder.control(value.trim().toLowerCase()));
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-
-    this.tagsControl.setValue(null);
-    this.formArrayTags.markAsDirty();
-  }
-
-  removeTagByIndex(index: number): void {
-    if (index >= 0) {
-      this.formArrayTags.removeAt(index);
-    }
-    this.formArrayTags.markAsDirty();
-  }
-
-  filter(name: string) {
-    return this.autocompleteTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
-  }
-
-  optionActivated($event: MatAutocompleteActivatedEvent) {
-    if ($event.option) {
-      this.autocompleteTagsOptionActivated = true;
-    }
-  }
-
-  selectedTag(event: MatAutocompleteSelectedEvent): void {
-    this.formArrayTags.push(this.formBuilder.control(event.option.viewValue));
-    this.tagInput.nativeElement.value = '';
-    this.tagsControl.setValue(null);
-    this.autocompleteTagsOptionActivated = false;
-  }
-
   saveCodelet(codelet: Codelet) {
     if (this.copyToMine) {
-      this.createCodelet(codelet);
+      super.createCodelet(codelet, this.copyToMine, null);
     } else {
       this.updateCodelet(codelet);
     }
@@ -227,46 +115,10 @@ export class UpdateSnippetFormComponent implements OnInit, OnChanges {
     this.personalCodeletsService.updateCodelet(codelet)
       .subscribe(
         () => {
-          this.navigateToCodeletDetails(codelet._id)
+          super.navigateToCodeletDetails(codelet, {})
         },
-        () => this.navigateToCodeletDetails(codelet._id)
+        () => this.navigateToCodeletDetails(codelet, {})
       );
-  }
-
-  navigateToCodeletDetails(codeletId: string): void {
-    this.router.navigate(
-      [`/my-snippets/${codeletId}/details`]
-    );
-  }
-
-  private createCodelet(codelet: Codelet) {
-    codelet.userId = this.userId;
-    const now = new Date();
-    codelet.lastAccessedAt = now;
-    if (this.copyToMine) {
-      delete codelet['_id'];
-      codelet.createdAt = now
-    }
-
-    this.personalCodeletsService.createCodelet(this.userId, codelet)
-      .subscribe(
-        response => {
-          const headers = response.headers;
-          // get the codelet id, which lies in the "location" response header
-          const lastSlashIndex = headers.get('location').lastIndexOf('/');
-          const newCodeletId = headers.get('location').substring(lastSlashIndex + 1);
-
-          this.navigateToCodeletDetails(newCodeletId)
-        },
-        (error: HttpResponse<any>) => {
-          this.errorService.handleError(error.body.json());
-          return observableThrowError(error.body.json());
-        }
-      );
-  }
-
-  get formArrayTags() {
-    return <FormArray>this.codeletFormGroup.get('tags');
   }
 
   openDeleteDialog() {
