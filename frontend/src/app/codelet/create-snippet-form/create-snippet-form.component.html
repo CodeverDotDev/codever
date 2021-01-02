@@ -61,6 +61,7 @@
               class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
               supported</a></label>
             <textarea class="form-control"
+                      style="height: 5rem"
                       id="comment-{{i}}"
                       formControlName="comment"
                       placeholder='Appears before code snippet in details'>
@@ -73,7 +74,7 @@
                     id="code-{{i}}"
                     formControlName="code"
                     placeholder="Your code goes here..."
-                    style="height: 300px">
+                    style="height: 18rem">
           </textarea>
           <div
             class="description-chars-counter">{{codeSnippet.get('code').value ? codeSnippet.get('code').value.length : 0}}
@@ -110,12 +111,12 @@
     </div>
 
     <div class="form-group pt-2 pb-3">
-      <label for="sourceUrl">Source URL</label>
+      <label for="sourceUrl">Reference</label>
       <input type="url"
              class="form-control"
              id="sourceUrl"
              formControlName="sourceUrl"
-             placeholder='Where the code snippets are inspired from'>
+             placeholder='Where the code snippets are inspired from (source URL, project etc.)'>
     </div>
 
     <div class="form-check mb-4 mt-1">
