@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PublicSnippetsService } from './public-snippets.service';
 import { Observable } from 'rxjs';
 import { Codelet } from '../../core/model/codelet';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-public-snippet-details',
@@ -20,8 +21,12 @@ export class PublicSnippetDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.snippetId = this.route.snapshot.paramMap.get('id');
-    this.snippet$ = this.publicSnippetsService.getPublicSnippetById(this.snippetId);
+    this.snippet$ = this.route.paramMap.pipe(
+      switchMap(params => {
+        this.snippetId = params.get('id');
+        return this.publicSnippetsService.getPublicSnippetById(this.snippetId);
+      })
+    );
   }
 
 }
