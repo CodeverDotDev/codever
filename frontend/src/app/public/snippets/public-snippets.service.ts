@@ -19,12 +19,12 @@ export class PublicSnippetsService {
     this.publicSnippetsApiBaseUrl = environment.API_URL + '/public/snippets';
   }
 
-  getRecentPublicBookmarks(page: number, limit: number): Observable<Bookmark[]> {
+  getRecentPublicSnippets(page: number, limit: number): Observable<Codelet[]> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    return this.httpClient.get<Bookmark[]>(this.publicSnippetsApiBaseUrl, {params: params});
+    return this.httpClient.get<Codelet[]>(this.publicSnippetsApiBaseUrl, {params: params});
   }
 
   searchPublicSnippets(searchText: string, limit: number, page: number, sort: string, include: string): Observable<Bookmark[]> {

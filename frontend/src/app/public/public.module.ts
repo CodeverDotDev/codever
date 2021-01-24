@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { VersionComponent } from './version/version.component';
 import { PublicSnippetsService } from './snippets/public-snippets.service';
 import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details.component';
+import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
 
 @NgModule({
   declarations : [
@@ -28,7 +29,8 @@ import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details
     UserPublicProfileComponent,
     TagComponent,
     VersionComponent,
-    PublicSnippetDetailsComponent
+    PublicSnippetDetailsComponent,
+    PublicSnippetsComponent
   ],
   imports: [
     SharedModule,

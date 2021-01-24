@@ -8,6 +8,7 @@ import { TermsOfServiceComponent } from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
 import { VersionComponent } from './version/version.component';
 import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details.component';
+import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
 
 const publicBookmarksRoutes: Routes = [
   {
@@ -70,6 +71,10 @@ const publicBookmarksRoutes: Routes = [
   {
     path: 'terms-and-conditions',
     component: TermsOfServiceComponent,
+  },
+  {
+    path: 'snippets',
+    component: PublicSnippetsComponent,
   },
   {
     path: 'snippets/:id',

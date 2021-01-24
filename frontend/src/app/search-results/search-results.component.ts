@@ -33,6 +33,7 @@ export class SearchResultsComponent implements OnInit {
 
   currentPage: number;
   callerPaginationSearchResults = 'search-results';
+  // callerPaginationSearchResultsSnippets = 'search-results-snippets';
 
   userId: string;
   userIsLoggedIn = false;

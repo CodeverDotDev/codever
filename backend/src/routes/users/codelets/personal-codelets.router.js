@@ -44,8 +44,10 @@ personalCodeletsRouter.get('/suggested-tags', keycloak.protect(), async (request
   response.send(tags);
 });
 
-/* GET all personal codelets */
-personalCodeletsRouter.get('/', keycloak.protect(), async (request, response) => {
+/**
+ * Find personal snippets
+ */
+personalCodeletsRouter.get('/', keycloak.protect(), async (request, response, next) => {
   UserIdValidator.validateUserId(request);
 
   const searchText = request.query.q;
@@ -53,11 +55,30 @@ personalCodeletsRouter.get('/', keycloak.protect(), async (request, response) =>
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
 
   const {userId} = request.params;
-  const snippets = await SnippetsSearchService.findSnippets(userId, searchText, page, limit, searchInclude);
+  if ( searchText ) {
+    const snippets = await SnippetsSearchService.findSnippets(userId, searchText, page, limit, searchInclude);
+
+    return response.status(HttpStatus.OK).send(snippets);
+  } else {
+    next();
+  }
+});
+
+/*
+ * Different others filters in case search in not involved
+ */
+/**
+ * Find personal snippets
+ */
+personalCodeletsRouter.get('/', keycloak.protect(), async (request, response) => {
+  UserIdValidator.validateUserId(request);
+
+  const {userId} = request.params;
+  const {limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const snippets = await PersonalCodeletsService.getLatestSnippets(userId, limit || 30);
 
   return response.status(HttpStatus.OK).send(snippets);
 });
-
 
 /* GET codelet of user */
 personalCodeletsRouter.get('/:snippetId', keycloak.protect(), async (request, response) => {

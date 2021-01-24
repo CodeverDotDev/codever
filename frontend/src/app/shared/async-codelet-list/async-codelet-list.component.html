@@ -1,24 +1,17 @@
-<div *ngIf="(bookmarks$ | async) as bookmarks" class="mt-3">
-  <div *ngIf="showFilterBox" class="form-group has-search float-right filter-box">
-    <span class="fas fa-filter form-control-feedback"></span>
-    <input type="search" [(ngModel)]="filterText" class="form-control" placeholder="Filter...">
-  </div>
-  <div class="clear"></div>
-  <div class="mt-3" *ngFor="let bookmark of bookmarks | bookmarkFilter: filterText">
-    <app-bookmark-list-element
-      [bookmark]="bookmark"
-      [userData$]="userData$"
+<div *ngIf="(codelets$ | async) as codelets" class="mt-2">
+  <div *ngFor="let codelet of codelets">
+    <app-snippet-details
+      [snippet$]="of(codelet)"
       [queryText]="queryText"
-      [filterText]="filterText"
-    >
-    </app-bookmark-list-element>
+      [inlist]="true"
+    ></app-snippet-details>
   </div>
 
-  <nav *ngIf="showPagination && bookmarks" aria-label="Pagination navigation bar">
-    <div *ngIf="currentPage !== 1 && bookmarks.length === 0; else showPaginationBar"
+  <nav *ngIf="showPagination && codelets" aria-label="Pagination navigation bar">
+    <div *ngIf="currentPage !== 1 && codelets.length === 0; else showPaginationBar"
          class="tabs-headline-message alert alert-info"
          style="margin-top: 2rem; font-size: 1.2rem">
-      No bookmarks left for the selected criteria - go back to
+      No snippets left for the selected criteria - go back to
       <button type="button" class="btn btn-primary btn-sm" (click)="navigate(currentPage-1)">Previous</button>
       pages.
     </div>
@@ -34,13 +27,12 @@
         </li>
         <li class="page-item">
           <span class="page-link shadow-sm" (click)="navigate(currentPage + 1)"
-                [ngClass]="{'isDisabled': bookmarks.length < paginationSize}">Next</span>
+                [ngClass]="{'isDisabled': codelets.length < paginationSize}">Next</span>
         </li>
       </ul>
     </ng-template>
   </nav>
+
 </div>
-
-
 
 

@@ -44,6 +44,7 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
   environment = environment;
 
   currentPage: number;
+  paginationSize = environment.PAGINATION_PAGE_SIZE;
 
   Arr = Array; // Array type captured in a variable
 

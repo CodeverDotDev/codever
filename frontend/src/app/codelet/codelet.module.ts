@@ -9,7 +9,6 @@ import { AuthGuard } from '../core/auth/auth-guard.service';
 import { SnippetDetailsPageComponent } from './snippet-details-page/snippet-details-page.component';
 import { HIGHLIGHT_OPTIONS, HighlightModule, HighlightOptions } from 'ngx-highlightjs';
 import { DeleteCodeletDialogComponent } from './delete-codelet-dialog/delete-codelet-dialog.component';
-import { AsyncCodeletListComponent } from './async-codelet-list/async-codelet-list.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
@@ -52,7 +51,6 @@ const codeletRoutes: Routes = [
     UpdateCodeletComponent,
     SnippetDetailsPageComponent,
     DeleteCodeletDialogComponent,
-    AsyncCodeletListComponent,
     CopyToMineSnippetComponent,
     SnippetFormBaseComponent
   ],
@@ -79,9 +77,6 @@ const codeletRoutes: Routes = [
   ],
   entryComponents: [
     DeleteCodeletDialogComponent
-  ],
-  exports: [
-    AsyncCodeletListComponent
   ]
 })
 export class CodeletModule {

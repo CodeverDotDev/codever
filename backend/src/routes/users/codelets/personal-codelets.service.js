@@ -31,14 +31,13 @@ let getCodeletById = async (userId, codeletId) => {
   }
 };
 
-/* GET bookmark of user by bookmarkId */
-let getCodelets = async (userId) => {
+/* GET last created snippets of the user */
+let getLatestSnippets = async (userId, limit) => {
+  const snippets = await Codelet.find({userId: userId})
+    .sort({createdAt: -1})
+    .limit(limit);
 
-  const codelets = await Codelet.find({
-    userId: userId
-  });
-
-  return codelets;
+  return snippets;
 };
 
 /**
@@ -95,7 +94,7 @@ module.exports = {
   createCodelet: createCodelet,
   getSuggestedCodeletTags: getSuggestedCodeletTags,
   getCodeletById: getCodeletById,
-  getCodelets: getCodelets,
+  getLatestSnippets: getLatestSnippets,
   updateCodelet: updateCodelet,
   deleteCodeletById: deleteCodeletById,
 };

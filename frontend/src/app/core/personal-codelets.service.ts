@@ -58,9 +58,7 @@ export class PersonalCodeletsService {
       .pipe(shareReplay(1));
   }
 
-  /*
-   TODO finish this...
-   */
+
   getFilteredPersonalCodelets(searchText: string, limit: number, page: number, userId: string, include: string) {
     const params = new HttpParams()
       .set('q', searchText)
@@ -70,6 +68,11 @@ export class PersonalCodeletsService {
 
     return this.httpClient.get<Codelet[]>(`${this.personalCodeletsApiBaseUrl}/${userId}/codelets`,
       {params: params})
+      .pipe(shareReplay(1));
+  }
+
+  getLatestSnippets(userId: string) {
+    return this.httpClient.get<Codelet[]>(`${this.personalCodeletsApiBaseUrl}/${userId}/codelets`)
       .pipe(shareReplay(1));
   }
 }
