@@ -13,6 +13,18 @@ let getSnippetById = async function (snippetId) {
   return snippet;
 };
 
+let getLatestPublicSnippets = async (page, limit) => {
+
+  const bookmarks = await Codelet.find({'public': true})
+    .sort({createdAt: -1})
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .lean().exec();
+
+  return bookmarks;
+}
+
 module.exports = {
-  getSnippetById: getSnippetById
+  getSnippetById: getSnippetById,
+  getLatestPublicSnippets: getLatestPublicSnippets
 };

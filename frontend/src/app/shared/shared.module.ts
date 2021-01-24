@@ -27,6 +27,7 @@ import { SnippetDetailsComponent } from './snippet-details/snippet-details.compo
 import { CopySnippetButtonComponent } from './snippet-details/copy-snippet-button/copy-snippet-button.component';
 import { HighlightModule } from 'ngx-highlightjs';
 import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/snippet-card-body.component';
+import { AsyncCodeletListComponent } from './async-codelet-list/async-codelet-list.component';
 
 
 /**
@@ -52,6 +53,7 @@ import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/sn
     Markdown2HtmlPipe,
     BookmarksFilterPipe,
     AsyncBookmarkListComponent,
+    AsyncCodeletListComponent,
     BookmarkTextComponent,
     TagsValidatorDirective,
     DeleteBookmarkDialogComponent,
@@ -75,6 +77,7 @@ import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/sn
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
     AsyncBookmarkListComponent,
+    AsyncCodeletListComponent,
     BookmarkTextComponent,
     MatProgressSpinnerModule,
     NavigationComponent,

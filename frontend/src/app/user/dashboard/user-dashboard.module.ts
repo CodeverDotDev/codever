@@ -16,6 +16,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MySearchesTemplateComponent } from './my-searches/my-searches-template/my-searches-template.component';
+import { MySnippetsComponent } from './my-snippets/my-snippets.component';
 
 const userDashboardRoutes: Routes = [
   {
@@ -41,7 +42,8 @@ const userDashboardRoutes: Routes = [
     MySearchesComponent,
     FollowingComponent,
     FollowersComponent,
-    MySearchesTemplateComponent
+    MySearchesTemplateComponent,
+    MySnippetsComponent
   ],
   imports: [
     RouterModule.forChild(userDashboardRoutes),

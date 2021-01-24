@@ -104,6 +104,7 @@
         </div>
         <app-async-codelet-list *ngIf="this.searchDomain === 'my-snippets'"
                                 [codelets$]="searchResults$"
+                                [callerPagination]="callerPaginationSearchResults"
                                 [queryText]="searchText">
         </app-async-codelet-list>
       </div>
@@ -144,6 +145,7 @@
       </div>
       <app-async-codelet-list *ngIf="this.searchDomain === 'public-snippets'"
                               [codelets$]="searchResults$"
+                              [callerPagination]="callerPaginationSearchResults"
                               [queryText]="searchText">
       </app-async-codelet-list>
     </ng-template>

@@ -9,6 +9,14 @@
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fas fa-code"></i> My snippets</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <app-my-snippets [userId]="userId"></app-my-snippets>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
       <span class="app-tab-label"><i class="fas fa-tags"></i> My Tags</span>
     </ng-template>
     <ng-template matTabContent>

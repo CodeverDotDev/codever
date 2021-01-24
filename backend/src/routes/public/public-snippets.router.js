@@ -24,6 +24,17 @@ router.get('/', async (request, response, next) => {
 });
 
 /**
+ * When no filter send latest public bookmarks
+ */
+router.get('/', async (request, response) => {
+
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarks = await PublicSnippetsService.getLatestPublicSnippets(page, limit);
+
+  return response.send(bookmarks);
+});
+
+/**
  *  GET snippet by id
  *  This needs to be the last call to avoid to "tagged"
  */
