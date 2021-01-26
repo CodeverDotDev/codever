@@ -1,3 +1,12 @@
+# [2.9.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.8.0...2.9.0) (2021-01-26)
+
+
+### Features
+
+* **public-snippets-page:** public snippets page and my-snippets page in dashboard ([9f6ca7b](https://github.com/BookmarksDev/bookmarks.dev/commit/9f6ca7bfe3d16afdf5ed9e292db2785b6cdfbf3f))
+
+
+
 # [2.7.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.6.0...2.7.0) (2020-11-17)
 
 
