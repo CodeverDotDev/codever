@@ -24,7 +24,35 @@ let getLatestPublicSnippets = async (page, limit) => {
   return bookmarks;
 }
 
+let getPublicSnippetsForTag = async (tag, orderBy, page, limit) => {
+  let orderByFilter;
+  switch (orderBy) {
+    case  'LATEST':
+      orderByFilter = {createdAt: -1}
+      break;
+    case 'LIKE_COUNT':
+      orderByFilter = {likeCount: -1}
+      break;
+    default:
+      orderByFilter = {createdAt: -1}
+  }
+  const snippets = await Codelet.find({
+    public: true,
+    tags: tag
+  })
+    .sort(orderByFilter)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .lean()
+    .exec();
+
+  return snippets;
+
+};
+
+
 module.exports = {
   getSnippetById: getSnippetById,
-  getLatestPublicSnippets: getLatestPublicSnippets
+  getLatestPublicSnippets: getLatestPublicSnippets,
+  getPublicSnippetsForTag: getPublicSnippetsForTag
 };

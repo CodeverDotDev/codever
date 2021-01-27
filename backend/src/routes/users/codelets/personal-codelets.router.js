@@ -75,7 +75,7 @@ personalCodeletsRouter.get('/', keycloak.protect(), async (request, response) =>
 
   const {userId} = request.params;
   const {limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const snippets = await PersonalCodeletsService.getLatestSnippets(userId, limit || 30);
+  const snippets = await PersonalCodeletsService.getLatestSnippets(userId, limit || 20);
 
   return response.status(HttpStatus.OK).send(snippets);
 });
