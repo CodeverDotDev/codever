@@ -34,6 +34,15 @@ router.get('/', async (request, response) => {
   return response.send(bookmarks);
 });
 
+router.get('/tagged/:tag', async (request, response) => {
+  const orderBy = request.query.orderBy;
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+
+  const snippets = await PublicSnippetsService.getPublicSnippetsForTag(request.params.tag, orderBy, page, limit);
+
+  return response.send(snippets);
+});
+
 /**
  *  GET snippet by id
  *  This needs to be the last call to avoid to "tagged"

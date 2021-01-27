@@ -19,6 +19,8 @@ import { VersionComponent } from './version/version.component';
 import { PublicSnippetsService } from './snippets/public-snippets.service';
 import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details.component';
 import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
+import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component';
+import { SnippetTagService } from './snippets/tag/snippet-tag.service';
 
 @NgModule({
   declarations : [
@@ -30,7 +32,8 @@ import { PublicSnippetsComponent } from './public-snippets/public-snippets.compo
     TagComponent,
     VersionComponent,
     PublicSnippetDetailsComponent,
-    PublicSnippetsComponent
+    PublicSnippetsComponent,
+    SnippetTaggedComponent,
   ],
   imports: [
     SharedModule,
@@ -45,7 +48,8 @@ import { PublicSnippetsComponent } from './public-snippets/public-snippets.compo
     PublicSnippetsService,
     PublicBookmarksStore,
     UserPublicService,
-    TagService
+    TagService,
+    SnippetTagService
   ]
 })
 export class PublicBookmarksModule {}
