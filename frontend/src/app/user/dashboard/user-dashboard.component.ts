@@ -32,7 +32,7 @@ export class UserDashboardComponent implements OnInit {
           this.userData$ = this.userDataStore.getUserData$();
           const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
           if (tabQueryParam === 'tags') {
-            this.selectedTabIndex = 1;
+            this.selectedTabIndex = 2;
           }
         });
       }
