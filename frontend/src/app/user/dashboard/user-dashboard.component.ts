@@ -20,7 +20,7 @@ export class UserDashboardComponent implements OnInit {
   constructor(private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private userDataStore: UserDataStore,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
