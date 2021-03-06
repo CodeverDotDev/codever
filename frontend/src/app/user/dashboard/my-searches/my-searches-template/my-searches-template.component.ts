@@ -12,7 +12,10 @@ export class MySearchesTemplateComponent implements OnInit {
   searches: Search[];
 
   @Input()
-  showCount: false;
+  showCount = false;
+
+  @Input()
+  type: string;
 
   constructor() { }
 

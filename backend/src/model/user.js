@@ -5,7 +5,8 @@ const searchSchema = new Schema({
     text: String,
     lastAccessedAt: Date,
     searchDomain: String,
-    count: Number
+    count: Number,
+    saved: Boolean
   },
   {
     timestamps: true
