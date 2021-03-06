@@ -1,3 +1,18 @@
+# [2.11.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.9.0...2.11.0) (2021-03-06)
+
+
+### Bug Fixes
+
+* **fe:** select right tab when navigation to my tags in user dashboard ([351618a](https://github.com/BookmarksDev/bookmarks.dev/commit/351618a736bb35c79bc97919650c123a041a2fed))
+
+
+### Features
+
+* **search:** display in search bar also recent searches extra to saved searches ([421c6d7](https://github.com/BookmarksDev/bookmarks.dev/commit/421c6d7a051e8a3b908a59f7e521ef2b133b67d6))
+* **snippets:** Add public tagged page for snippets ([d0b23c3](https://github.com/BookmarksDev/bookmarks.dev/commit/d0b23c382ac3b9649bbcf1b93b2fbf5e7e7f700d))
+
+
+
 # [2.9.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.8.0...2.9.0) (2021-01-26)
 
 
