@@ -5,8 +5,8 @@
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
       <hr class="mt-0">
-      <ng-container *ngFor="let mySearch of searches">
-        <span *ngIf="mySearch.searchDomain === 'my-bookmarks' || !mySearch.searchDomain" class="my-saved-search mr-2">
+      <ng-container *ngFor="let mySearch of searches  | searchFilter: type : 'my-bookmarks'">
+        <span class="my-saved-search mr-2">
           <a
             [routerLink]="['/search']"
             [queryParams]="{q: mySearch.text, sd: 'my-bookmarks' }"
@@ -25,8 +25,8 @@
 
     <ng-template matExpansionPanelContent>
       <hr class="mt-0">
-      <ng-container *ngFor="let mySearch of searches">
-        <span *ngIf="mySearch.searchDomain === 'public-bookmarks'" class="my-saved-search mr-2">
+      <ng-container *ngFor="let mySearch of searches | searchFilter: type:'public-bookmarks'">
+        <span class="my-saved-search mr-2">
           <a [routerLink]="['/search']"
              [queryParams]="{q: mySearch.text, sd: 'public-bookmarks' }"
              class="badge badge-secondary mb-2"> <i class="fa fa-xs fa-search"></i>
@@ -44,8 +44,8 @@
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
       <hr class="mt-0">
-      <ng-container *ngFor="let mySearch of searches">
-        <span *ngIf="mySearch.searchDomain === 'my-snippets'" class="my-saved-search mr-2">
+      <ng-container *ngFor="let mySearch of searches | searchFilter: type:'my-snippets'">
+        <span class="my-saved-search mr-2">
         <a
           [routerLink]="['/search']"
           [queryParams]="{q: mySearch.text, sd: 'my-snippets' }"

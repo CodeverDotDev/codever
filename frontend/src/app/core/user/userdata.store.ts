@@ -14,6 +14,7 @@ import { NotifyStoresService } from './notify-stores.service';
 import { Md5 } from 'ts-md5/dist/md5';
 import { UserDataHistoryStore } from './userdata.history.store';
 import { PersonalBookmarksService } from '../personal-bookmarks.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -333,6 +334,7 @@ export class UserDataStore {
       const newSearch: Search = {
         text: searchText,
         createdAt: now,
+        saved: false,
         lastAccessedAt: now,
         searchDomain: searchDomain,
         count: 1
@@ -344,12 +346,34 @@ export class UserDataStore {
           recentSearches: [newSearch]
         }
       } else {
-        this.userData.recentSearches = this.userData.recentSearches
-          .filter(item => !(item.text.trim().toLowerCase() === searchText.trim().toLowerCase()
-            && item.searchDomain === searchDomain));
-        this.userData.recentSearches.unshift(newSearch);
+        const existingSearchIndex = this.userData.searches.findIndex(
+          element => element.searchDomain === searchDomain && element.text.trim().toLowerCase() === searchText.trim().toLowerCase());
+
+        if (existingSearchIndex !== -1) {
+          const existingSearch = this.userData.searches.splice(existingSearchIndex, 1)[0];
+          existingSearch.lastAccessedAt = now;
+          existingSearch.count++;
+          this.userData.searches.unshift(existingSearch);
+        } else {
+          const notSavedSearchesProDomainCount = this.userData.searches.reduce((total, element) => (!element.saved && element.searchDomain === searchDomain ? total + 1 : total), 0);
+          if (notSavedSearchesProDomainCount > environment.SAVED_RECENT_SEARCH_PRO_DOMAIN_SIZE) {
+            this.removeLastSearchNotSavedAndFromDomain(searchDomain);
+          }
+          this.userData.searches.unshift(newSearch);
+        }
       }
       this.updateUserData$(this.userData);
+    }
+  }
+
+  private removeLastSearchNotSavedAndFromDomain(searchDomain: any) {
+    for (let i = this.userData.searches.length - 1; i > 0; i--) {
+      const isNotSavedAndFromSearchDomain = this.userData.searches[i].saved === false
+        && this.userData.searches[i].searchDomain === searchDomain;
+      if (isNotSavedAndFromSearchDomain) {
+        this.userData.searches.splice(i, 1);
+        break;
+      }
     }
   }
 }

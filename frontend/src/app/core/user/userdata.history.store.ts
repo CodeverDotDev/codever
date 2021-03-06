@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
 import { UserInfoStore } from './user-info.store';
-import { UserDataStore } from './userdata.store';
 import { NotifyStoresService } from './notify-stores.service';
 import { environment } from '../../../environments/environment';
 

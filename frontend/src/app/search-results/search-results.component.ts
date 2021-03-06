@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
@@ -12,11 +12,11 @@ import { KeycloakService } from 'keycloak-angular';
 import { KeycloakServiceWrapper } from '../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../core/user/user-info.store';
 import { UserDataStore } from '../core/user/userdata.store';
-import { Search, UserData } from '../core/model/user-data';
+import { UserData } from '../core/model/user-data';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PaginationNotificationService } from '../core/pagination-notification.service';
 import { SearchDomain } from '../core/model/search-domain.enum';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogHelperService } from '../core/login-dialog-helper.service';
 import { LoginRequiredDialogComponent } from '../shared/login-required-dialog/login-required-dialog.component';
 import { PublicSnippetsService } from '../public/snippets/public-snippets.service';
@@ -26,14 +26,13 @@ import { PublicSnippetsService } from '../public/snippets/public-snippets.servic
   templateUrl: './search-results.component.html',
   styleUrls: ['./search-results.component.scss']
 })
-export class SearchResultsComponent implements OnInit {
+export class SearchResultsComponent implements OnInit, OnDestroy {
 
   searchText: string; // holds the value in the search box
   searchDomain: string;
 
   currentPage: number;
   callerPaginationSearchResults = 'search-results';
-  // callerPaginationSearchResultsSnippets = 'search-results-snippets';
 
   userId: string;
   userIsLoggedIn = false;
@@ -43,6 +42,8 @@ export class SearchResultsComponent implements OnInit {
 
   selectedTabIndex = 1; // default search in public bookmarks
   private searchInclude: string;
+
+  searchTriggeredSubscription: any;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -97,7 +98,7 @@ export class SearchResultsComponent implements OnInit {
       }
     });
 
-    this.searchNotificationService.searchTriggeredSource$.subscribe(searchData => {
+    this.searchTriggeredSubscription = this.searchNotificationService.searchTriggeredSource$.subscribe(searchData => {
       if (searchData.searchDomain === SearchDomain.MY_BOOKMARKS
         || searchData.searchDomain === SearchDomain.MY_SNIPPETS) {
         this.selectedTabIndex = 0;
@@ -140,7 +141,6 @@ export class SearchResultsComponent implements OnInit {
   private searchBookmarks(searchText: string, searchDomain: string, searchInclude: string) {
     this.searchDomain = searchDomain;
     this.searchText = searchText;
-    this.saveRecenSearch(searchText, searchDomain);
     switch (searchDomain) {
       case SearchDomain.MY_BOOKMARKS : {
         this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(
@@ -181,9 +181,14 @@ export class SearchResultsComponent implements OnInit {
         break;
       }
     }
+     this.searchResults$.subscribe(results => {
+      if (results && results.length > 0) {
+        this.saveRecentSearch(searchText, searchDomain);
+      }
+    });
   }
 
-  private saveRecenSearch(searchText: string, searchDomain) {
+  private saveRecentSearch(searchText: string, searchDomain) {
     if (this.userIsLoggedIn) {
       this.userDataStore.saveRecentSearch(searchText, searchDomain);
     }
@@ -299,6 +304,10 @@ export class SearchResultsComponent implements OnInit {
         break;
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.searchTriggeredSubscription.unsubscribe();
   }
 
 }

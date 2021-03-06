@@ -28,6 +28,7 @@ import { CopySnippetButtonComponent } from './snippet-details/copy-snippet-butto
 import { HighlightModule } from 'ngx-highlightjs';
 import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/snippet-card-body.component';
 import { AsyncCodeletListComponent } from './async-codelet-list/async-codelet-list.component';
+import { SearchFilterPipe } from './search-filter.pipe';
 
 
 /**
@@ -52,6 +53,7 @@ import { AsyncCodeletListComponent } from './async-codelet-list/async-codelet-li
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
     BookmarksFilterPipe,
+    SearchFilterPipe,
     AsyncBookmarkListComponent,
     AsyncCodeletListComponent,
     BookmarkTextComponent,
@@ -76,6 +78,7 @@ import { AsyncCodeletListComponent } from './async-codelet-list/async-codelet-li
     HighLightPipe,
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
+    SearchFilterPipe,
     AsyncBookmarkListComponent,
     AsyncCodeletListComponent,
     BookmarkTextComponent,

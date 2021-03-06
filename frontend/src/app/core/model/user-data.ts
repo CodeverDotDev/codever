@@ -37,5 +37,6 @@ export interface Search {
   lastAccessedAt?: Date;
   searchDomain?: string; // personal or public at the moment
   count?: number; // number of times search was used
+  saved?: boolean // whether it is a saved search, they are meant to live forever
 }
 

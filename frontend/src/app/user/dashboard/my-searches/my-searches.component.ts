@@ -33,6 +33,9 @@ export class MySearchesComponent implements OnInit {
   searchDomain = SearchDomain.MY_BOOKMARKS.valueOf();
   searchDomains = searchDomains;
 
+  saved = 'saved';
+  recent = 'recent';
+
   constructor(
     private deleteDialog: MatDialog,
     private userDataStore: UserDataStore) {
