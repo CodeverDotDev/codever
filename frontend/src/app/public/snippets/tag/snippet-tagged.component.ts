@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SnippetTagService } from './snippet-tag.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Codelet } from '../../../core/model/codelet';
+import { Snippet } from '../../../core/model/snippet';
 import { environment } from '../../../../environments/environment';
 import { PaginationNotificationService } from '../../../core/pagination-notification.service';
 
@@ -14,7 +14,7 @@ import { PaginationNotificationService } from '../../../core/pagination-notifica
 })
 export class SnippetTaggedComponent implements OnInit {
 
-  snippetsForTag$: Observable<Codelet[]>;
+  snippetsForTag$: Observable<Snippet[]>;
   tag: string;
   orderBy = 'LATEST';
   userIsLoggedIn = false;

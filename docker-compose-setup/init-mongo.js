@@ -54,7 +54,7 @@ db.bookmarks.insert(
       "description": "Bookmarks Manager for Developers & Co",
       "descriptionHtml": "<p>Bookmarks Manager for Developers &amp; Co</p>",
       "publishedOn": null,
-      "sourceCodeURL": "https://github.com/CodepediaOrg/bookmarks.dev",
+      "sourceCodeURL": "https://github.com/BookmarksDev/bookmarks.dev",
       "public": true,
       "lastAccessedAt": ISODate("2019-10-23T12:23:53.471Z"),
       "likeCount": 0,
@@ -70,14 +70,14 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Collection of public dev bookmarks, shared with from www.bookmarks.dev",
-      "location": "https://github.com/CodepediaOrg/bookmarks#readme",
+      "location": "https://github.com/BookmarksDev/bookmarks#readme",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
       "language": "en",
       "description": ":bookmark: :star: Collection of public dev bookmarks, shared with :heart: from www.bookmarks.dev  - CodepediaOrg/bookmarks",
       "descriptionHtml": "<p>:bookmark: :star: Collection of public dev bookmarks, shared with :heart: from www.bookmarks.dev  - CodepediaOrg/bookmarks</p>",
       "publishedOn": null,
-      "sourceCodeURL": "https://github.com/CodepediaOrg/bookmarks",
+      "sourceCodeURL": "https://github.com/BookmarksDev/bookmarks",
       "public": true,
       "lastAccessedAt": ISODate("2019-10-23T12:24:50.804Z"),
       "likeCount": 0,
@@ -98,9 +98,9 @@ db.bookmarks.insert(
       "userDisplayName": "Mock",
       "language": "en",
       "description": "How to save and search bookmarks, use bookmarklets and chrome extension",
-      "descriptionHtml": "<p>How to save and search bookmarks, use bookmarklets and chrome extension. Use codelets and more</p>",
+      "descriptionHtml": "<p>How to save and search bookmarks, use bookmarklets and chrome extension. Use snippets and more</p>",
       "publishedOn": null,
-      "sourceCodeURL": "https://github.com/CodepediaOrg/bookmarks",
+      "sourceCodeURL": "https://github.com/BookmarksDev/bookmarks",
       "public": true,
       "lastAccessedAt": ISODate("2020-03-23T12:24:50.804Z"),
       "likeCount": 0,
@@ -142,13 +142,13 @@ db.bookmarks.createIndex(
   }
 );
 
-// codelets indexes
+// snippets indexes
 
-db.codelets.createIndex(
+db.snippets.createIndex(
   {userId: 1}
 );
 
-db.codelets.createIndex(
+db.snippets.createIndex(
   {
     title: "text",
     tags: "text",

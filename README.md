@@ -1,12 +1,18 @@
 # Bookmarks Manager for Developers & Co
-[Bookmarks.dev](https://www.bookmarks.dev) is a **bookmarks and code-snippets manager** created and designed primarily for Developers & Co.
- It helps you [save time and nerves when managing your dev bookmarks](https://dev.to/ama/how-i-manage-my-dev-bookmarks-and-save-time-and-nerves-56ae)
-  and eases [bookmarking of code snippets via Codelets](https://dev.to/ama/bookmarking-code-snippets-with-codelets-3d44). Check our
+[Bookmarks.dev](https://www.bookmarks.dev) is a **bookmarks and code-snippets manager** for Developers & Co.
+ To help you [save time and nerves when managing your dev bookmarks](https://dev.to/ama/how-i-manage-my-dev-bookmarks-and-save-time-and-nerves-56ae)
+ we have
+ * [Chromium Extension](https://chrome.google.com/webstore/detail/save-link-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb)
+ * [Bookmarklet](https://www.bookmarks.dev/howto/bookmarklets)
+ * []
+ 
+ 
+  and eases [bookmarking ans searching of code snippets](https://dev.to/ama/bookmarking-code-snippets-with-codelets-3d44). Check our
 [HowTo](https://www.bookmarks.dev/howto) page to help you get started:
  
  [![Save to Bookmarks.dev chrome extension usage](documentation/gif/save-youtube-video-to-bookmarks.dev.gif)](https://www.bookmarks.dev/howto)
 
-> Most worthy public bookmarks are published regularly on Github in a [separate repository](https://github.com/CodepediaOrg/bookmarks).
+> Worthy public bookmarks are published regularly on Github in a [separate repository](https://github.com/BookmarksDev/bookmarks).
 
 ***
 
@@ -114,7 +120,7 @@ See [Node.js debugging in VS Code with Nodemon](https://github.com/microsoft/vsc
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/CodepediaOrg/bookmarks.dev/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/BookmarksDev/bookmarks.dev/tags).
 
 ## Changelog
 The changelog is available in [CHANGELOG.md](CHANGELOG.md)

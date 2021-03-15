@@ -45,7 +45,7 @@
 
 # [2.5.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.4.0...2.5.0) (2020-10-23)
 
-### Change codelets to (code) snippets only visually 
+### Change snippets to (code) snippets only visually 
 
 
 # [2.4.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.3.1...2.4.0) (2020-08-25)
@@ -99,7 +99,7 @@
 
 ### Bug Fixes
 
-* remove unused pipe in codelet-details.component.html ([8f94094](https://github.com/BookmarksDev/bookmarks.dev/commit/8f9409432829d2cc4a53544766714ff359fc3304))
+* remove unused pipe in snippet-details.component.html ([8f94094](https://github.com/BookmarksDev/bookmarks.dev/commit/8f9409432829d2cc4a53544766714ff359fc3304))
 
 
 ### Features
@@ -116,8 +116,8 @@
 
 * **fe:** more distances between saved searches in my dashboard ([684c7be](https://github.com/BookmarksDev/bookmarks.dev/commit/684c7be9963a3aeefd5de7a05ce143436d959553))
 * **fe:** overflow bootrap dropdown menu in angular expansion panel ([c996aec](https://github.com/BookmarksDev/bookmarks.dev/commit/c996aec0d3377ebabfc17ded70bbbeecc781e350))
-* **fe-codelets:** avoid double adding codelets tags reloaded ([52285dc](https://github.com/BookmarksDev/bookmarks.dev/commit/52285dcdae3305729890b8cacf2b4fe70fc5efce))
-* **fe-codelets:** avoid double adding of chip and text when selecting chip ([ef06639](https://github.com/BookmarksDev/bookmarks.dev/commit/ef06639cb97d4f1a300d46fd53fdd13f2247ed48))
+* **fe-snippets:** avoid double adding snippets tags reloaded ([52285dc](https://github.com/BookmarksDev/bookmarks.dev/commit/52285dcdae3305729890b8cacf2b4fe70fc5efce))
+* **fe-snippets:** avoid double adding of chip and text when selecting chip ([ef06639](https://github.com/BookmarksDev/bookmarks.dev/commit/ef06639cb97d4f1a300d46fd53fdd13f2247ed48))
 
 
 ### Features
@@ -136,7 +136,7 @@
 
 ### Bug Fixes
 
-* **fe-codelets:** avoid double adding of chip and text when selecting chip ([ef06639](https://github.com/BookmarksDev/bookmarks.dev/commit/ef06639cb97d4f1a300d46fd53fdd13f2247ed48))
+* **fe-snippets:** avoid double adding of chip and text when selecting chip ([ef06639](https://github.com/BookmarksDev/bookmarks.dev/commit/ef06639cb97d4f1a300d46fd53fdd13f2247ed48))
 
 
 
@@ -156,7 +156,7 @@
 * **github-link:** make github links point to the new BookmarksDev org ([9c2bdfa](https://github.com/BookmarksDev/bookmarks.dev/commit/9c2bdfa98f2018a2ecc30023293c0da41955f1d6))
 * **location-exists:** encode the whole url to make sure "+" signs don't get removed ([7dcbdb9](https://github.com/BookmarksDev/bookmarks.dev/commit/7dcbdb99001379666b5fd0fdb0020af23c60141d))
 * **mongo:** search domain for saved searches ([e04c58b](https://github.com/BookmarksDev/bookmarks.dev/commit/e04c58b5ef63ad9d00b459914331a082f6454f77))
-* **saved-searches-page:** add saved searches for my-codelets ([8f8e3b9](https://github.com/BookmarksDev/bookmarks.dev/commit/8f8e3b9cae9ccdaf00327eb5535132e188d4cd0b))
+* **saved-searches-page:** add saved searches for my-snippets ([8f8e3b9](https://github.com/BookmarksDev/bookmarks.dev/commit/8f8e3b9cae9ccdaf00327eb5535132e188d4cd0b))
 
 
 ### Features
@@ -173,7 +173,7 @@
 * **fe-save-bookmark-form:** add edit possibility when bookmark already present ([edf5caf](https://github.com/BookmarksDev/bookmarks.dev/commit/edf5cafdea101a842a1c8d309e119a7163c84003))
 * **fe-share-bookmark:** add possibility to share bookmark link via email ([e0a6210](https://github.com/BookmarksDev/bookmarks.dev/commit/e0a6210b71126a9fecc38933807dcb23001cb4a2))
 * **history-mgt:** add to history when link inside description clicked ([74cc43a](https://github.com/BookmarksDev/bookmarks.dev/commit/74cc43a6dc0b22ca7f2272b9ab5c663b841fa8e5))
-* **saving-codelets:** add tags and comment as input strings via query params ([ea1f819](https://github.com/BookmarksDev/bookmarks.dev/commit/ea1f819429e0e0b44965a528de93843863850e90))
+* **saving-snippets:** add tags and comment as input strings via query params ([ea1f819](https://github.com/BookmarksDev/bookmarks.dev/commit/ea1f819429e0e0b44965a528de93843863850e90))
 
 
 ### Performance Improvements

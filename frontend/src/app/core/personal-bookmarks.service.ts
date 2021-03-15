@@ -6,8 +6,7 @@ import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { environment } from 'environments/environment';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Codelet } from './model/codelet';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class PersonalBookmarksService {

@@ -6,7 +6,7 @@ import { Bookmark } from '../../core/model/bookmark';
 import { environment } from 'environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, shareReplay } from 'rxjs/operators';
-import { Codelet } from '../../core/model/codelet';
+import { Snippet } from '../../core/model/snippet';
 import { Router } from '@angular/router';
 
 @Injectable()
@@ -19,12 +19,12 @@ export class PublicSnippetsService {
     this.publicSnippetsApiBaseUrl = environment.API_URL + '/public/snippets';
   }
 
-  getRecentPublicSnippets(page: number, limit: number): Observable<Codelet[]> {
+  getRecentPublicSnippets(page: number, limit: number): Observable<Snippet[]> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    return this.httpClient.get<Codelet[]>(this.publicSnippetsApiBaseUrl, {params: params});
+    return this.httpClient.get<Snippet[]>(this.publicSnippetsApiBaseUrl, {params: params});
   }
 
   searchPublicSnippets(searchText: string, limit: number, page: number, sort: string, include: string): Observable<Bookmark[]> {
@@ -39,9 +39,9 @@ export class PublicSnippetsService {
   }
 
 
-  getPublicSnippetById(snippetId: string): Observable<Codelet> {
+  getPublicSnippetById(snippetId: string): Observable<Snippet> {
     return this.httpClient
-      .get<Codelet>(`${this.publicSnippetsApiBaseUrl}/${snippetId}`).pipe(
+      .get<Snippet>(`${this.publicSnippetsApiBaseUrl}/${snippetId}`).pipe(
         catchError(() => {
           this.router.navigate(['/404-snippet'],
             {

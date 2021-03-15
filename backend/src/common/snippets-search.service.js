@@ -1,4 +1,4 @@
-const Codelet = require('../model/codelet');
+const Snippet = require('../model/snippet');
 
 const bookmarksSearchHelper = require('./bookmarks-search.helper');
 
@@ -45,7 +45,7 @@ let getSnippetsForTagsAndTerms = async function (searchedTags, nonSpecialSearchT
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
 
-  let snippets = await Codelet.find(
+  let snippets = await Snippet.find(
     filter,
     {
       score: {$meta: "textScore"}
@@ -80,7 +80,7 @@ let getSnippetsForSearchedTerms = async function (userId, nonSpecialSearchTerms,
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
 
-  let snippets = await Codelet.find(
+  let snippets = await Snippet.find(
     filter,
     {
       score: {$meta: "textScore"}
@@ -111,7 +111,7 @@ let getSnippetsForSearchedTags = async function (userId, searchedTags, page, lim
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
 
-  let snippets = await Codelet.find(filter)
+  let snippets = await Snippet.find(filter)
     .sort({createdAt: -1})
     .skip((page - 1) * limit)
     .limit(limit)

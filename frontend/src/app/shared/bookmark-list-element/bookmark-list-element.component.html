@@ -89,7 +89,7 @@
       </div>
       <div *ngFor="let tag of bookmark.tags" class="btn-group tag-list  mr-2 mt-1">
         <a class="btn btn-secondary btn-sm"
-           [routerLink]="['/tagged', tag]"
+           [routerLink]="['/bookmarks/t', tag]"
            title="Go to bookmarks tagged {{tag}}"
            [innerHtml]="tag | highlight: filterText | highlight: queryText">
           {{tag}}

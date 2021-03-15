@@ -11,7 +11,7 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { UserPublicData } from '../../core/model/user-public-data';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
+import { LoginRequiredDialogComponent } from '../../shared/dialog/login-required-dialog/login-required-dialog.component';
 import { Meta } from '@angular/platform-browser';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';

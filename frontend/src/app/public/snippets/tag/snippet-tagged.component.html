@@ -1,6 +1,6 @@
 <br/>
 <div class="tagged_header_wrapper">
-  <h2>Snippets tagged [<em>{{tag}}</em>]</h2>
+  <h2>Public snippets tagged [<em>{{tag}}</em>]</h2>
 </div>
 <hr/>
 <!-- TODO uncomment when like is read for snippets too
@@ -21,9 +21,9 @@
 </div>
 -->
 
-<app-async-codelet-list
-  [codelets$]="snippetsForTag$"
+<app-async-snippet-list
+  [snippets$]="snippetsForTag$"
   [callerPagination]="taggedCallerPagination"
-  ></app-async-codelet-list>
+  ></app-async-snippet-list>
 
 

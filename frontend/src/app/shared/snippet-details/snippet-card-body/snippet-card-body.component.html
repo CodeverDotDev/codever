@@ -1,7 +1,7 @@
 <div #codeletCardBody>
   <div *ngIf="inList && viewHeight > 180 else wholeText">
     <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}">
-      <div *ngFor="let codeSnippet of codelet.codeSnippets; let isLast=last">
+      <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast=last">
           <p *ngIf="codeSnippet.comment" class="mb-0"
              [innerHtml]="codeSnippet.comment | md2html"></p>
         <div class="code-snippet-wrapper">
@@ -17,7 +17,7 @@
             class="toggle-show-more-button"></button>
   </div>
   <ng-template #wholeText>
-    <div *ngFor="let codeSnippet of codelet.codeSnippets; let isLast=last">
+    <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast=last">
       <p *ngIf="codeSnippet.comment" class="mb-1"
          [innerHtml]="codeSnippet.comment | md2html"></p>
       <div class="code-snippet-wrapper">

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchResultsComponent } from './search-results.component';
-import { CodeletModule } from '../codelet/codelet.module';
+import { MySnippetsModule } from '../my-snippets/my-snippets.module';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -18,7 +18,7 @@ const searchResultsRoutes: Routes = [
   imports: [
     RouterModule.forChild(searchResultsRoutes),
     CommonModule,
-    CodeletModule,
+    MySnippetsModule,
     SharedModule,
     MatTabsModule,
   ]

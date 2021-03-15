@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
-import { PersonalCodeletsService } from '../core/personal-codelets.service';
+import { PersonalSnippetsService } from '../core/personal-snippets.service';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../core/model/bookmark';
-import { Codelet } from '../core/model/codelet';
+import { Snippet } from '../core/model/snippet';
 import { SearchNotificationService } from '../core/search-notification.service';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakServiceWrapper } from '../core/keycloak-service-wrapper.service';
@@ -18,7 +18,7 @@ import { PaginationNotificationService } from '../core/pagination-notification.s
 import { SearchDomain } from '../core/model/search-domain.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogHelperService } from '../core/login-dialog-helper.service';
-import { LoginRequiredDialogComponent } from '../shared/login-required-dialog/login-required-dialog.component';
+import { LoginRequiredDialogComponent } from '../shared/dialog/login-required-dialog/login-required-dialog.component';
 import { PublicSnippetsService } from '../public/snippets/public-snippets.service';
 
 @Component({
@@ -37,7 +37,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   userId: string;
   userIsLoggedIn = false;
 
-  searchResults$: Observable<Bookmark[] | Codelet[]>;
+  searchResults$: Observable<Bookmark[] | Snippet[]>;
   private userData$: Observable<UserData>;
 
   selectedTabIndex = 1; // default search in public bookmarks
@@ -50,7 +50,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
               private publicBookmarksService: PublicBookmarksService,
               private publicSnippetsService: PublicSnippetsService,
               private personalBookmarksService: PersonalBookmarksService,
-              private personalCodeletsService: PersonalCodeletsService,
+              private personalCodeletsService: PersonalSnippetsService,
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,
               private userInfoStore: UserInfoStore,
@@ -152,7 +152,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
         break;
       }
       case SearchDomain.MY_SNIPPETS : {
-        this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(
+        this.searchResults$ = this.personalCodeletsService.getFilteredPersonalSnippets(
           searchText,
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
@@ -210,7 +210,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       );
       this.searchBookmarks(this.searchText, SearchDomain.MY_SNIPPETS, searchInclude);
     } else {
-      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through personal codelets');
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through personal snippets');
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     }
 

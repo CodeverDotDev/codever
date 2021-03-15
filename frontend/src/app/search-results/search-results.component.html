@@ -102,11 +102,11 @@
             </button>
           </ng-template>
         </div>
-        <app-async-codelet-list *ngIf="this.searchDomain === 'my-snippets'"
-                                [codelets$]="searchResults$"
+        <app-async-snippet-list *ngIf="this.searchDomain === 'my-snippets'"
+                                [snippets$]="searchResults$"
                                 [callerPagination]="callerPaginationSearchResults"
                                 [queryText]="searchText">
-        </app-async-codelet-list>
+        </app-async-snippet-list>
       </div>
     </ng-template>
   </mat-tab>
@@ -143,11 +143,11 @@
           </button>
         </ng-template>
       </div>
-      <app-async-codelet-list *ngIf="this.searchDomain === 'public-snippets'"
-                              [codelets$]="searchResults$"
+      <app-async-snippet-list *ngIf="this.searchDomain === 'public-snippets'"
+                              [snippets$]="searchResults$"
                               [callerPagination]="callerPaginationSearchResults"
                               [queryText]="searchText">
-      </app-async-codelet-list>
+      </app-async-snippet-list>
     </ng-template>
   </mat-tab>
 

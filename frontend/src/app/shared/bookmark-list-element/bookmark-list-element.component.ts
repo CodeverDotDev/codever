@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
-import { PlayYoutubeVideoDialogComponent } from '../play-youtube-video-dialog/play-youtube-video-dialog.component';
+import { PlayYoutubeVideoDialogComponent } from '../dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { KeycloakService } from 'keycloak-angular';
 import { UserInfoStore } from '../../core/user/user-info.store';
@@ -8,14 +8,14 @@ import { Observable } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
-import { LoginRequiredDialogComponent } from '../login-required-dialog/login-required-dialog.component';
+import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
-import { DeleteBookmarkDialogComponent } from '../delete-bookmark-dialog/delete-bookmark-dialog.component';
-import { SocialShareDialogComponent } from '../social-share-dialog/social-share-dialog.component';
+import { DeleteBookmarkDialogComponent } from '../dialog/delete-bookmark-dialog/delete-bookmark-dialog.component';
+import { SocialShareDialogComponent } from '../dialog/social-share-dialog/social-share-dialog.component';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { AdminService } from '../../core/admin/admin.service';
 import { FeedStore } from '../../core/user/feed-store.service';
@@ -220,7 +220,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   }
 
   editBookmark(bookmark: Bookmark): void {
-    const link = [`./personal/bookmarks/${bookmark._id}/edit`];
+    const link = [`./my-bookmarks/${bookmark._id}/edit`];
     this.router.navigate(link, {state: {bookmark: bookmark}});
   }
 
@@ -236,8 +236,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      const link = ['./personal/bookmarks/copy-to-mine'];
-      this.router.navigate(link, {state: {bookmark: bookmark}, queryParams: {id: bookmark._id}});
+      const link = [`./my-bookmarks/${bookmark._id}/copy-to-mine`];
+      this.router.navigate(link, {state: {bookmark: bookmark}});
     }
   }
 
