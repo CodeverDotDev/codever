@@ -3,7 +3,7 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { ActivatedRoute } from '@angular/router';
 import { PublicSnippetsService } from './public-snippets.service';
 import { Observable } from 'rxjs';
-import { Codelet } from '../../core/model/codelet';
+import { Snippet } from '../../core/model/snippet';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -12,7 +12,7 @@ import { switchMap } from 'rxjs/operators';
 })
 export class PublicSnippetDetailsComponent implements OnInit {
   snippetId: string;
-  snippet$: Observable<Codelet>;
+  snippet$: Observable<Snippet>;
 
   constructor(
     private publicSnippetsService: PublicSnippetsService,

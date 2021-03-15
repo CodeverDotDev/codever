@@ -3,11 +3,11 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import 'styles.scss';
 import { UserDataHistoryStore } from './core/user/userdata.history.store';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { HotKeysDialogComponent } from './shared/history-dialog/hot-keys-dialog.component';
+import { HotKeysDialogComponent } from './shared/dialog/history-dialog/hot-keys-dialog.component';
 import { UserDataPinnedStore } from './core/user/userdata.pinned.store';
 import { UserInfoStore } from './core/user/user-info.store';
 import { KeycloakService } from 'keycloak-angular';
-import { LoginRequiredDialogComponent } from './shared/login-required-dialog/login-required-dialog.component';
+import { LoginRequiredDialogComponent } from './shared/dialog/login-required-dialog/login-required-dialog.component';
 
 @Component({
   selector: 'app-root',

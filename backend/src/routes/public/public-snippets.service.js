@@ -1,8 +1,8 @@
-const Codelet = require('../../model/codelet');
+const Snippet = require('../../model/snippet');
 const NotFoundError = require('../../error/not-found.error');
 
 let getSnippetById = async function (snippetId) {
-  const snippet = await Codelet.findOne({
+  const snippet = await Snippet.findOne({
     public: true,
     _id: snippetId
   });
@@ -15,7 +15,7 @@ let getSnippetById = async function (snippetId) {
 
 let getLatestPublicSnippets = async (page, limit) => {
 
-  const bookmarks = await Codelet.find({'public': true})
+  const bookmarks = await Snippet.find({'public': true})
     .sort({createdAt: -1})
     .skip((page - 1) * limit)
     .limit(limit)
@@ -36,7 +36,7 @@ let getPublicSnippetsForTag = async (tag, orderBy, page, limit) => {
     default:
       orderByFilter = {createdAt: -1}
   }
-  const snippets = await Codelet.find({
+  const snippets = await Snippet.find({
     public: true,
     tags: tag
   })

@@ -1,6 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { TagComponent } from './tag/tag.component';
+import { BookmarksTaggedComponent } from './tag/bookmarks-tagged.component';
 import { AboutComponent } from './about/about.component';
 import { HomepageComponent } from './bookmarks/homepage.component';
 import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
@@ -11,7 +11,7 @@ import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details
 import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
 import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component';
 
-const publicBookmarksRoutes: Routes = [
+const publicRoutes: Routes = [
   {
     path: 'history',
     redirectTo: '/?tab=history',
@@ -39,15 +39,27 @@ const publicBookmarksRoutes: Routes = [
   },
   {
     path: 'tagged/:tag',
-    component: TagComponent
+    redirectTo: 'bookmarks/t/:tag'
   },
   {
     path: 'tags/:tag',
-    component: TagComponent
+    redirectTo: 'bookmarks/t/:tag'
   },
   {
     path: 't/:tag',
-    component: TagComponent
+    redirectTo: 'bookmarks/t/:tag'
+  },
+  {
+    path: 'bookmarks/tagged/:tag',
+    redirectTo: 'bookmarks/t/:tag'
+  },
+  {
+    path: 'bookmarks/tags/:tag',
+    redirectTo: 'bookmarks/t/:tag'
+  },
+  {
+    path: 'bookmarks/t/:tag',
+    component: BookmarksTaggedComponent
   },
   {
     path: 'about',
@@ -122,8 +134,8 @@ const publicBookmarksRoutes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(publicBookmarksRoutes)],
+  imports: [RouterModule.forChild(publicRoutes)],
   exports: [RouterModule]
 })
-export class PublicBookmarksRoutingModule {
+export class PublicRoutingModule {
 }

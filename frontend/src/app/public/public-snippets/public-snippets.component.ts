@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Codelet } from '../../core/model/codelet';
+import { Snippet } from '../../core/model/snippet';
 import { PublicSnippetsService } from '../snippets/public-snippets.service';
 import { ActivatedRoute } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-public-codelets',
+  selector: 'app-public-snippets',
   templateUrl: './public-snippets.component.html',
   styleUrls: ['./public-snippets.component.css']
 })
 export class PublicSnippetsComponent implements OnInit {
 
-  snippets$: Observable<Codelet[]>;
+  snippets$: Observable<Snippet[]>;
 
   currentPage = 1;
   callerPaginationPublicSnippets = 'public-snippets';

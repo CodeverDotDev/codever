@@ -1,12 +1,11 @@
 import { RouterModule, Routes, UrlSegment } from '@angular/router';
 import {NgModule} from '@angular/core';
-import { HowtoSearchComponent } from './howto-search/howto-search.component';
-import { HowtoSaveComponent } from './howto-save/howto-save.component';
 import { HowToBookmarkletComponent } from './howto-bookmarklets/how-to-bookmarklet.component';
-import { HowToCodeletComponent } from './howto-codelets/how-to-codelet.component';
+import { HowToSnippetComponent } from './howto-snippets/how-to-snippet.component';
 import { HowtoComponent } from './howto.component';
 import { HowtoGetStartedComponent } from './howto-get-started/howto-get-started.component';
 import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
+import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.component';
 
 const howToRoutes: Routes = [
   {
@@ -18,23 +17,19 @@ const howToRoutes: Routes = [
     component: HowtoGetStartedComponent,
   },
   {
-    path: 'search',
-    component: HowtoSearchComponent
-  },
-  {
-    path: 'save',
-    component: HowtoSaveComponent
-  },
-  {
     path: 'bookmarklets',
     component: HowToBookmarkletComponent
   },
   {
-    path: 'snippets',
-    component: HowToCodeletComponent
+    path: 'bookmarks',
+    component: HowToBookmarksComponent
   },
   {
-    path: 'codelets',
+    path: 'snippets',
+    component: HowToSnippetComponent
+  },
+  {
+    path: 'snippets',
     redirectTo: 'snippets',
   },
   {

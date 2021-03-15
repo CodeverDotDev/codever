@@ -7,17 +7,17 @@ import {
   Input,
   ViewChild
 } from '@angular/core';
-import { Codelet } from '../../../core/model/codelet';
+import { Snippet } from '../../../core/model/snippet';
 
 @Component({
-  selector: 'app-codelet-card-body',
+  selector: 'app-snippet-card-body',
   templateUrl: './snippet-card-body.component.html',
     styleUrls: [ './snippet-card-body.component.scss' ]
 })
 export class SnippetCardBodyComponent  implements  AfterViewInit, AfterViewChecked {
 
   @Input()
-  codelet: Codelet;
+  snippet: Snippet;
 
   @Input()
   queryText: string;

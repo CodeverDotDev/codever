@@ -30,7 +30,7 @@
            aria-haspopup="true" aria-expanded="false">
           How To
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown-howTo">
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown-howTo" style="width: 14rem">
           <a
             title="Helps you get startet on www.bookmarks.dev"
             class="dropdown-item"
@@ -47,19 +47,22 @@
             Get started
           </a>
           <a
-            title="How to save bookmarks on www.bookmarks.dev"
+            title="How to save and search code snippets"
             class="dropdown-item"
-            routerLink="howto/save">
+            routerLink="howto/bookmarks">
             <i class="fas fa-info-circle"></i>
-            Save Bookmarks
+            Bookmarks
+            <i class="fa fa-bookmark right-font-icon"></i>
           </a>
           <a
-            title="How to search on www.bookmarks.dev"
+            title="How to save code snippets"
             class="dropdown-item"
-            routerLink="howto/search">
+            routerLink="howto/snippets">
             <i class="fas fa-info-circle"></i>
-            Search Bookmarks
+            Code snippets
+            <i class="fa fa-code right-font-icon"></i>
           </a>
+
           <div class="dropdown-divider"></div>
           <a
             title="How to use bookmarklets"
@@ -69,15 +72,6 @@
             <i class="fas fa-info-circle"></i>
             Bookmarklets
             <i class="fas fa-bookmark right-font-icon"></i>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a
-            title="How to save code snippets"
-            class="dropdown-item"
-            routerLink="howto/snippets">
-            <i class="fas fa-info-circle"></i>
-            Code snippets
-            <i class="fa fa-code right-font-icon"></i>
           </a>
           <div class="dropdown-divider"></div>
           <a
@@ -95,7 +89,7 @@
            aria-haspopup="true" aria-expanded="false">
           Bookmarking
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown-bookmarklet">
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown-bookmarklet" style="width: 17rem">
           <h6 class="dropdown-header">Bookmarklets <i class="fas fa-bookmark"></i></h6>
           <a
             style="cursor: move"
@@ -114,13 +108,23 @@
             +Snippet <i class="fas fa-arrows-alt right-font-icon"></i>
           </a>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Chromium extensions <i class="fab fa-chrome"></i></h6>
+          <h6 class="dropdown-header">Chromium extens}ions <i class="fab fa-chrome"></i></h6>
           <a
             href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb"
             target="_blank"
             title="Chrome Extension URL"
             class="dropdown-item">
-            Save to Bookmarks.dev
+            Save link to Bookmarks.dev
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+          <a
+            href="https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne"
+            target="_blank"
+            title="Chrome Extension URL"
+            class="dropdown-item">
+            Save code to Bookmarks.dev
             <sup class="external-link-hint">
               <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
             </sup>

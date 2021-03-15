@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
-import { PublicBookmarksModule } from './public/public.module';
+import { PublicResourcesModule } from './public/public.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { initializer } from './app-init';
@@ -36,11 +36,11 @@ import { SnippetNotFoundComponent } from './not-found/snippet-not-found.componen
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule,
-    // app modules - notice that PersonalBookmarksModule is not listed, as it is lazy loaded
+    // app modules - notice that MyBookmarksModule is not listed, as it is lazy loaded
     SharedModule,
     CoreModule,
     KeycloakAngularModule,
-    PublicBookmarksModule,
+    PublicResourcesModule,
     SocialButtonsModule,
     OverlayModule,
     // routing module

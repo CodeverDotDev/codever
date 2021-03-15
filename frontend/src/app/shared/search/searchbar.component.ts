@@ -15,9 +15,9 @@ import { PersonalBookmarksService } from '../../core/personal-bookmarks.service'
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
-import { LoginRequiredDialogComponent } from '../login-required-dialog/login-required-dialog.component';
-import { Codelet } from '../../core/model/codelet';
-import { PersonalCodeletsService } from '../../core/personal-codelets.service';
+import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
+import { Snippet } from '../../core/model/snippet';
+import { PersonalSnippetsService } from '../../core/personal-snippets.service';
 import { SearchNotificationService } from '../../core/search-notification.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -72,7 +72,7 @@ export class SearchbarComponent implements OnInit {
               private bookmarkStore: PublicBookmarksStore,
               private publicBookmarksService: PublicBookmarksService,
               private personalBookmarksService: PersonalBookmarksService,
-              private personalCodeletsService: PersonalCodeletsService,
+              private personalCodeletsService: PersonalSnippetsService,
               private paginationNotificationService: PaginationNotificationService,
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,

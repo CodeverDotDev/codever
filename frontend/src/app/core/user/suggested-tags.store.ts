@@ -2,7 +2,7 @@ import { ReplaySubject } from 'rxjs';
 import { PersonalBookmarksService } from '../personal-bookmarks.service';
 import { Injectable } from '@angular/core';
 import { stringify } from 'querystring';
-import { PersonalCodeletsService } from '../personal-codelets.service';
+import { PersonalSnippetsService } from '../personal-snippets.service';
 
 @Injectable()
 export class SuggestedTagsStore {
@@ -13,7 +13,7 @@ export class SuggestedTagsStore {
   private suggestedTagsForCodeletsLoaded = false;
 
   constructor(private personalBookmarksService: PersonalBookmarksService,
-              private personalCodeletsService: PersonalCodeletsService) {
+              private personalCodeletsService: PersonalSnippetsService) {
   }
 
   getSuggestedTags$(userId: String) {
@@ -29,7 +29,7 @@ export class SuggestedTagsStore {
 
   getSuggestedCodeletTags$(userId: String) {
     if (!this.suggestedTagsForCodeletsLoaded) {
-      this.personalCodeletsService.getSuggestedCodeletTags(userId).subscribe(data => {
+      this.personalCodeletsService.getSuggestedSnippetTags(userId).subscribe(data => {
         this.suggestedTagsForCodeletsLoaded = true;
         this._suggestedTagsForCodelets.next(data);
       });

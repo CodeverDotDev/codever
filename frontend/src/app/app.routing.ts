@@ -5,28 +5,32 @@ import { SnippetNotFoundComponent } from './not-found/snippet-not-found.componen
 
 const routes: Routes = [
   {
+    path: 'my-bookmarks',
+    loadChildren: () => import('app/my-bookmarks/my-bookmarks.module').then(m => m.MyBookmarksModule)
+  },
+  {
     path: 'personal',
-    loadChildren: () => import('app/personal/personal-bookmarks.module').then(m => m.PersonalBookmarksModule)
+    redirectTo: 'my-bookmarks', // needed for already installed extension or bookmarklets
   },
   {
     path: 'dashboard',
-    loadChildren: () => import('app/user/dashboard/user-dashboard.module').then(m => m.UserDashboardModule)
+    loadChildren: () => import('app/user/user-dashboard/user-dashboard.module').then(m => m.UserDashboardModule)
   },
   {
     path: 'settings',
-    loadChildren: () => import('app/user-settings/user-settings.module').then(m => m.UserSettingsModule)
+    loadChildren: () => import('app/user/user-settings/user-settings.module').then(m => m.UserSettingsModule)
   },
   {
     path: 'public',
-    loadChildren: () => import('app/public/public.module').then(m => m.PublicBookmarksModule)
+    loadChildren: () => import('app/public/public.module').then(m => m.PublicResourcesModule)
   },
   {
     path: 'my-snippets',
-    loadChildren: () => import('app/codelet/codelet.module').then(m => m.CodeletModule)
+    loadChildren: () => import('app/my-snippets/my-snippets.module').then(m => m.MySnippetsModule)
   },
   {
     path: 'my-codelets',
-    redirectTo: 'my-snippets',
+    redirectTo: 'my-snippets', // needed for already installed extension or bookmarklets
   },
   {
     path: 'search',

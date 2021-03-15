@@ -53,12 +53,12 @@
       <ng-template matTabContent>
         <ul class="mt-3">
           <li>
-            <app-add-codelet-bookmarklet [withWindowDialog]="true"></app-add-codelet-bookmarklet>
+            <app-add-snippet-bookmarklet [withWindowDialog]="true"></app-add-snippet-bookmarklet>
             - when clicked a popup to save the current URL is displayed [<em>recommended for
             <strong>desktops</strong> and <strong>notebooks</strong> with good resolution</em>]
           </li>
           <li class="mt-2">
-            <app-add-codelet-bookmarklet [withWindowDialog]="false"></app-add-codelet-bookmarklet> - when clicked it redirects you to the <a href="{{environment.HOST}}/my-snippets/new">New Snippet
+            <app-add-snippet-bookmarklet [withWindowDialog]="false"></app-add-snippet-bookmarklet> - when clicked it redirects you to the <a href="{{environment.HOST}}/my-snippets/new">New Snippet
             Form</a> in the same window.
 
             Once added, you go back to the initial page [<em>recommended for <strong>phones</strong> or smaller
