@@ -1,3 +1,29 @@
+# [3.0.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.9.0...3.0.0) (2021-03-27)
+
+
+### Bug Fixes
+
+* **fe:** correct typo in menu entry in navigation.component.html ([4ffcc33](https://github.com/BookmarksDev/bookmarks.dev/commit/4ffcc338a7ff67ead50efe35378aede1f3ad4909))
+* **fe:** select right tab when navigation to my tags in user dashboard ([351618a](https://github.com/BookmarksDev/bookmarks.dev/commit/351618a736bb35c79bc97919650c123a041a2fed))
+
+
+### feature
+
+* **codelets:** rename codelets to snippets everywhere ([dc8ef03](https://github.com/BookmarksDev/bookmarks.dev/commit/dc8ef034f1ff95b71c1f9ee7b177a34088ea5c99))
+
+
+### Features
+
+* **search:** display in search bar also recent searches extra to saved searches ([421c6d7](https://github.com/BookmarksDev/bookmarks.dev/commit/421c6d7a051e8a3b908a59f7e521ef2b133b67d6))
+* **snippets:** Add public tagged page for snippets ([d0b23c3](https://github.com/BookmarksDev/bookmarks.dev/commit/d0b23c382ac3b9649bbcf1b93b2fbf5e7e7f700d))
+
+
+### BREAKING CHANGES
+
+* **codelets:** the api paths are also changing ("snippets" instead of "codelets")
+
+
+
 # [2.11.0](https://github.com/BookmarksDev/bookmarks.dev/compare/2.9.0...2.11.0) (2021-03-06)
 
 
