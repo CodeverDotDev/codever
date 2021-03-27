@@ -75,4 +75,9 @@ export class PersonalSnippetsService {
     return this.httpClient.get<Snippet[]>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets`)
       .pipe(shareReplay(1));
   }
+
+  getAllMySnippets(userId: string) {
+    return this.httpClient.get<Snippet[]>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets/export`)
+      .pipe(shareReplay(1));
+  }
 }

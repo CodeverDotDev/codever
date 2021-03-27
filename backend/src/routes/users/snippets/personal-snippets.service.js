@@ -40,6 +40,14 @@ let getLatestSnippets = async (userId, limit) => {
   return snippets;
 };
 
+/* GET last created snippets of the user */
+let getAllMySnippets = async (userId) => {
+  const snippets = await Snippet.find({userId: userId})
+    .sort({createdAt: -1});
+
+  return snippets;
+};
+
 /**
  * full UPDATE via PUT - that is the whole document is required and will be updated
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
@@ -91,10 +99,11 @@ let getSuggestedSnippetTags = async (userId) => {
 
 
 module.exports = {
-  createCodelet: createSnippet,
+  createSnippet: createSnippet,
   getSuggestedSnippetTags: getSuggestedSnippetTags,
   getSnippetById: getSnippetById,
   getLatestSnippets: getLatestSnippets,
+  getAllMySnippets: getAllMySnippets,
   updateSnippet: updateSnippet,
-  deleteCodeletById: deleteSnippetById,
+  deleteSnippetById: deleteSnippetById,
 };

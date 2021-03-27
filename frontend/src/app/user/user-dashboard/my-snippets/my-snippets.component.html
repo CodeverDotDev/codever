@@ -1,3 +1,13 @@
+<div class="btn-group my-bookmarks-btn-group mt-3" role="group">
+  <button type="button" class="btn  btn-secondary" [disabled]="true" title="Snippets you've created recently">
+    Latest snippets
+  </button>
+
+  <button type="button" class="btn btn-outline-primary" title="Export all my snippets"
+          (click)="exportMySnippets()">
+    Export my snippets
+  </button>
+</div>
 
 <app-async-snippet-list
   [snippets$]="mySnippets$"

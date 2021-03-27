@@ -47,6 +47,10 @@ export class PersonalBookmarksService {
     return this.httpClient.get<Bookmark>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/${bookmarkId}`).pipe(shareReplay(1));
   }
 
+  getAllMyBookmarks(userId: string): Observable<Bookmark[]> {
+    return this.httpClient.get<Bookmark[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks`).pipe(shareReplay(1));
+  }
+
   getPersonalBookmarkOrderedBy(userId: string, orderBy: string): Observable<Bookmark[]> {
     let params = new HttpParams();
     params = params.append('orderBy', orderBy);

@@ -2,7 +2,7 @@ const express = require('express');
 const personalSnippetsRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
-const PersonalCodeletsService = require('./personal-snippets.service');
+const PersonalSnippetsService = require('./personal-snippets.service');
 const SnippetsSearchService = require('../../../common/snippets-search.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
@@ -23,10 +23,10 @@ personalSnippetsRouter.post('/', keycloak.protect(), async (request, response) =
 
   UserIdValidator.validateUserId(request);
   const codeletData = request.body;
-  let newSnippet = await PersonalCodeletsService.createCodelet(request.params.userId, codeletData);
+  let newSnippet = await PersonalSnippetsService.createSnippet(request.params.userId, codeletData);
 
   response
-    .set('Location', `${config.basicApiUrl}/personal/users/${request.params.userId}/bookmarks/${newSnippet.id}`)
+    .set('Location', `${config.basicApiUrl}/personal/users/${request.params.userId}/snippets/${newSnippet.id}`)
     .status(HttpStatus.CREATED)
     .send({response: 'Snippet created for userId ' + request.params.userId});
 
@@ -39,9 +39,19 @@ personalSnippetsRouter.post('/', keycloak.protect(), async (request, response) =
  **/
 personalSnippetsRouter.get('/suggested-tags', keycloak.protect(), async (request, response) => {
   UserIdValidator.validateUserId(request);
-  const tags = await PersonalCodeletsService.getSuggestedSnippetTags(request.params.userId);
+  const tags = await PersonalSnippetsService.getSuggestedSnippetTags(request.params.userId);
 
   response.send(tags);
+});
+
+/**
+ * GET all snippets of a user, ordered by createdAt date descending
+ **/
+personalSnippetsRouter.get('/export', keycloak.protect(), async (request, response) => {
+  UserIdValidator.validateUserId(request);
+  const snippets = await PersonalSnippetsService.getAllMySnippets(request.params.userId);
+
+  response.send(snippets);
 });
 
 /**
@@ -75,7 +85,7 @@ personalSnippetsRouter.get('/', keycloak.protect(), async (request, response) =>
 
   const {userId} = request.params;
   const {limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const snippets = await PersonalCodeletsService.getLatestSnippets(userId, limit || 20);
+  const snippets = await PersonalSnippetsService.getLatestSnippets(userId, limit || 20);
 
   return response.status(HttpStatus.OK).send(snippets);
 });
@@ -85,7 +95,7 @@ personalSnippetsRouter.get('/:snippetId', keycloak.protect(), async (request, re
   UserIdValidator.validateUserId(request);
 
   const {userId, snippetId: snippetId} = request.params;
-  const snippet = await PersonalCodeletsService.getSnippetById(userId, snippetId);
+  const snippet = await PersonalSnippetsService.getSnippetById(userId, snippetId);
 
   return response.status(HttpStatus.OK).send(snippet);
 });
@@ -101,7 +111,7 @@ personalSnippetsRouter.put('/:snippetId', keycloak.protect(), async (request, re
   const codeletData = request.body;
 
   const {userId, snippetId} = request.params;
-  const updatedBookmark = await PersonalCodeletsService.updateSnippet(userId, snippetId, codeletData);
+  const updatedBookmark = await PersonalSnippetsService.updateSnippet(userId, snippetId, codeletData);
 
   return response.status(HttpStatus.OK).send(updatedBookmark);
 });
@@ -113,7 +123,7 @@ personalSnippetsRouter.delete('/:snippetId', keycloak.protect(), async (request,
 
   UserIdValidator.validateUserId(request);
   const {userId, snippetId} = request.params;
-  await PersonalCodeletsService.deleteCodeletById(userId, snippetId);
+  await PersonalSnippetsService.deleteSnippetById(userId, snippetId);
   return response.status(HttpStatus.NO_CONTENT).send();
 });
 
