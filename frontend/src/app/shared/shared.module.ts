@@ -29,6 +29,7 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/snippet-card-body.component';
 import { AsyncSnippetListComponent } from './async-snippet-list/async-snippet-list.component';
 import { SearchFilterPipe } from './pipe/search-filter.pipe';
+import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
 
 
 /**
@@ -62,6 +63,7 @@ import { SearchFilterPipe } from './pipe/search-filter.pipe';
     SocialShareDialogComponent,
     LoginRequiredDialogComponent,
     PlayYoutubeVideoDialogComponent,
+    BackupBookmarksDialogComponent,
     TagFollowingBaseComponent,
     SearchbarComponent,
     NavigationComponent,
@@ -94,7 +96,8 @@ import { SearchFilterPipe } from './pipe/search-filter.pipe';
     LoginRequiredDialogComponent,
     SocialShareDialogComponent,
     PlayYoutubeVideoDialogComponent,
-    HotKeysDialogComponent
+    HotKeysDialogComponent,
+    BackupBookmarksDialogComponent
   ]
 })
 export class SharedModule { }

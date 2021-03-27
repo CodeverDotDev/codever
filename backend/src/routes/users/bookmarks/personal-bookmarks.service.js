@@ -83,6 +83,15 @@ let getLastAccessedBookmarks = async (userId) => {
   return bookmarks;
 };
 
+/* GET all the bookmarks of the user*/
+let getAllMyBookmarks = async (userId) => {
+  const bookmarks = await Bookmark.find({userId: userId})
+    .select('-descriptionHtml')
+    .sort({createdAt: -1});
+
+  return bookmarks;
+};
+
 /* GET last created bookmarks of the user - currently there is a limit set to 100 */
 let getLastCreatedBookmarks = async (userId) => {
   const bookmarks = await Bookmark.find({userId: userId})
@@ -225,6 +234,7 @@ module.exports = {
   getBookmarkById: getBookmarkById,
   getPersonalBookmarkByLocation: getPersonalBookmarkByLocation,
   getLastAccessedBookmarks: getLastAccessedBookmarks,
+  getAllMyBookmarks: getAllMyBookmarks,
   getLastCreatedBookmarks: getLastCreatedBookmarks,
   getMostUsedBookmarks: getMostUsedBookmarks,
   getMostLikedBookmarks: getMostLikedBookmarks,

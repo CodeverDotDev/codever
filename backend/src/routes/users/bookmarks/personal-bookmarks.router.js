@@ -80,7 +80,7 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
       bookmarks = await PersonalBookmarksService.getMostUsedBookmarks(request.params.userId);
       break;
     default:
-      bookmarks = await PersonalBookmarksService.getLastAccessedBookmarks(request.params.userId);
+      bookmarks = await PersonalBookmarksService.getAllMyBookmarks(request.params.userId);
   }
 
   return response.send(bookmarks);
