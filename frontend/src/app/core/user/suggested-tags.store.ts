@@ -8,12 +8,12 @@ import { PersonalSnippetsService } from '../personal-snippets.service';
 export class SuggestedTagsStore {
 
   private _suggestedTags: ReplaySubject<string[]> = new ReplaySubject(1);
-  private _suggestedTagsForCodelets: ReplaySubject<string[]> = new ReplaySubject(1);
+  private _suggestedTagsForSnippet: ReplaySubject<string[]> = new ReplaySubject(1);
   private suggestedTagsLoaded = false;
-  private suggestedTagsForCodeletsLoaded = false;
+  private suggestedTagsForSnippetLoaded = false;
 
   constructor(private personalBookmarksService: PersonalBookmarksService,
-              private personalCodeletsService: PersonalSnippetsService) {
+              private personalSnippetsService: PersonalSnippetsService) {
   }
 
   getSuggestedTags$(userId: String) {
@@ -27,14 +27,14 @@ export class SuggestedTagsStore {
     return this._suggestedTags.asObservable();
   }
 
-  getSuggestedCodeletTags$(userId: String) {
-    if (!this.suggestedTagsForCodeletsLoaded) {
-      this.personalCodeletsService.getSuggestedSnippetTags(userId).subscribe(data => {
-        this.suggestedTagsForCodeletsLoaded = true;
-        this._suggestedTagsForCodelets.next(data);
+  getSuggestedSnippetTags$(userId: String) {
+    if (!this.suggestedTagsForSnippetLoaded) {
+      this.personalSnippetsService.getSuggestedSnippetTags(userId).subscribe(data => {
+        this.suggestedTagsForSnippetLoaded = true;
+        this._suggestedTagsForSnippet.next(data);
       });
     }
 
-    return this._suggestedTagsForCodelets.asObservable();
+    return this._suggestedTagsForSnippet.asObservable();
   }
 }
