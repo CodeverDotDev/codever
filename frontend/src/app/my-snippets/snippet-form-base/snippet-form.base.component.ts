@@ -64,7 +64,7 @@ export class SnippetFormBaseComponent implements OnInit {
   ngOnInit(): void {
     this.userInfoStore.getUserInfo$().subscribe(userInfo => {
       this.userId = userInfo.sub;
-      this.suggestedTagsStore.getSuggestedCodeletTags$(this.userId).subscribe(userTags => {
+      this.suggestedTagsStore.getSuggestedSnippetTags$(this.userId).subscribe(userTags => {
 
         this.autocompleteTags = userTags.concat(this.commonSnippetTags.filter((item => userTags.indexOf(item) < 0))).sort();
 
@@ -168,8 +168,8 @@ export class SnippetFormBaseComponent implements OnInit {
           const headers = response.headers;
           // get the snippet id, which lies in the "location" response header
           const lastSlashIndex = headers.get('location').lastIndexOf('/');
-          const newCodeletId = headers.get('location').substring(lastSlashIndex + 1);
-          snippet._id = newCodeletId;
+          const newSnippetId = headers.get('location').substring(lastSlashIndex + 1);
+          snippet._id = newSnippetId;
           const queryParmas = popup ? {popup: popup} : {};
           this.navigateToSnippetDetails(snippet, queryParmas)
         },
