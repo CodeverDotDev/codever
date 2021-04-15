@@ -15,6 +15,8 @@ const config = common.config();
 
 const HttpStatus = require('http-status-codes/index');
 
+const NodeCache = require('../../../cache-middleware');
+
 //add keycloak middleware
 const keycloak = new Keycloak({scope: 'openid'}, config.keycloak);
 personalBookmarksRouter.use(keycloak.middleware());
@@ -90,6 +92,13 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response) =
 personalBookmarksRouter.get('/suggested-tags', keycloak.protect(), async (request, response) => {
   UserIdValidator.validateUserId(request);
   const tags = await PersonalBookmarksService.getSuggestedTagsForUser(request.params.userId);
+
+  response.send(tags);
+});
+
+personalBookmarksRouter.get('/tags', keycloak.protect(), NodeCache.cacheMiddleware(240), async (request, response) => {
+  UserIdValidator.validateUserId(request);
+  const tags = await PersonalBookmarksService.getUserTags(request.params.userId);
 
   response.send(tags);
 });

@@ -8,6 +8,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, shareReplay } from 'rxjs/operators';
 import { Snippet } from '../../core/model/snippet';
 import { Router } from '@angular/router';
+import { UsedTag } from '../../core/model/used-tag';
 
 @Injectable()
 export class PublicSnippetsService {
@@ -49,6 +50,13 @@ export class PublicSnippetsService {
             });
           return throwError('Error 404');
         }));
+  }
+
+  getMostUsedPublicTagsForSnippets(limit: number): Observable<UsedTag> {
+    const params = new HttpParams()
+      .set('limit', limit.toString());
+    return this.httpClient
+      .get<UsedTag>(`${this.publicSnippetsApiBaseUrl}/tags`, {params: params});
   }
 
 }

@@ -30,6 +30,10 @@ import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/sn
 import { AsyncSnippetListComponent } from './async-snippet-list/async-snippet-list.component';
 import { SearchFilterPipe } from './pipe/search-filter.pipe';
 import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
+import { AddTagFilterToSearchDialogComponent } from './search/add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 
 
 /**
@@ -37,7 +41,7 @@ import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog
  * See - https://angular.io/guide/sharing-ngmodules
  */
 @NgModule({
-  imports:      [
+  imports: [
     SocialButtonsModule,
     CommonModule,
     FormsModule,
@@ -47,7 +51,10 @@ import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog
     MatExpansionModule,
     MatDialogModule,
     RouterModule,
-    HighlightModule
+    HighlightModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    MatIconModule
   ],
   declarations: [
     HighLightPipe,
@@ -71,7 +78,8 @@ import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog
     BookmarkListElementComponent,
     SnippetDetailsComponent,
     CopySnippetButtonComponent,
-    SnippetCardBodyComponent
+    SnippetCardBodyComponent,
+    AddTagFilterToSearchDialogComponent
   ],
   exports: [
     CommonModule,
@@ -97,7 +105,8 @@ import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog
     SocialShareDialogComponent,
     PlayYoutubeVideoDialogComponent,
     HotKeysDialogComponent,
-    BackupBookmarksDialogComponent
+    BackupBookmarksDialogComponent,
+    AddTagFilterToSearchDialogComponent
   ]
 })
 export class SharedModule { }

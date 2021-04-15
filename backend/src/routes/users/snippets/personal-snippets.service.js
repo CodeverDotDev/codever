@@ -97,10 +97,53 @@ let getSuggestedSnippetTags = async (userId) => {
   return tags;
 };
 
+let getUserSnippetTags = async (userId) => {
+
+  const aggregatedTags = await Snippet.aggregate([
+    //first stage - filter
+    {
+      $match: {
+        userId: userId
+      },
+    },
+
+    //second stage - unwind tags
+    {$unwind: "$tags"},
+
+    //third stage - group
+    {
+      $group: {
+        _id: {
+          tag: '$tags'
+        },
+        count: {
+          $sum: 1
+        }
+      }
+    },
+
+    //fourth stage - order by count desc
+    {
+      $sort: {count: -1}
+    }
+  ]);
+
+  const userTags = aggregatedTags.map(aggregatedTag => {
+    return {
+      name: aggregatedTag._id.tag,
+      count: aggregatedTag.count
+    }
+  });
+
+  return userTags;
+
+};
+
 
 module.exports = {
   createSnippet: createSnippet,
   getSuggestedSnippetTags: getSuggestedSnippetTags,
+  getUserSnippetTags: getUserSnippetTags,
   getSnippetById: getSnippetById,
   getLatestSnippets: getLatestSnippets,
   getAllMySnippets: getAllMySnippets,

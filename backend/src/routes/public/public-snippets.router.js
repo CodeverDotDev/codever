@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const NodeCache = require('../../cache-middleware');
 const SnippetsSearchService = require('../../common/snippets-search.service');
 const PublicSnippetsService = require('./public-snippets.service');
 
@@ -23,6 +24,7 @@ router.get('/', async (request, response, next) => {
   }
 });
 
+
 /**
  * When no filter send latest public bookmarks
  */
@@ -32,6 +34,17 @@ router.get('/', async (request, response) => {
   const bookmarks = await PublicSnippetsService.getLatestPublicSnippets(page, limit);
 
   return response.send(bookmarks);
+});
+
+/**
+ * Get most used public tags for snippets
+ */
+router.get('/tags', NodeCache.cacheMiddleware(1440), async (request, response) => {
+
+  const {limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const mostUsedPublicTagsForSnippets = await PublicSnippetsService.getMostUsedPublicTagsForSnippets(limit);
+
+  return response.send(mostUsedPublicTagsForSnippets);
 });
 
 router.get('/tagged/:tag', async (request, response) => {

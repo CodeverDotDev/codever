@@ -1,11 +1,12 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {Observable} from 'rxjs';
-import {Bookmark} from '../../core/model/bookmark';
+import { Observable } from 'rxjs';
+import { Bookmark } from '../../core/model/bookmark';
 
-import {environment} from 'environments/environment';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {shareReplay} from 'rxjs/operators';
+import { environment } from 'environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { shareReplay } from 'rxjs/operators';
+import { UsedTag } from '../../core/model/used-tag';
 
 @Injectable()
 export class PublicBookmarksService {
@@ -47,5 +48,11 @@ export class PublicBookmarksService {
       .get<Bookmark>(`${this.publicBookmarksApiBaseUrl}/${bookmarkId}`);
   }
 
+  getMostUsedPublicTags(limit: number): Observable<UsedTag> {
+    const params = new HttpParams()
+      .set('limit', limit.toString());
+    return this.httpClient
+      .get<UsedTag>(`${this.publicBookmarksApiBaseUrl}/tags`, {params: params});
+  }
 
 }

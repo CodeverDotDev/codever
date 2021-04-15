@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { UsedTag } from './model/used-tag';
 
 @Injectable()
 export class PersonalBookmarksService {
@@ -20,6 +21,11 @@ export class PersonalBookmarksService {
 
   getSuggestedTagsForUser(userId: String): Observable<string[]> {
     return this.httpClient.get<string[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/suggested-tags`)
+      .pipe(shareReplay(1));
+  }
+
+  getUserTags(userId: String): Observable<UsedTag[]> {
+    return this.httpClient.get<UsedTag[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/tags`)
       .pipe(shareReplay(1));
   }
 

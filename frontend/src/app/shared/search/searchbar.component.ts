@@ -4,7 +4,6 @@ import { map, startWith } from 'rxjs/operators';
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { KeycloakService } from 'keycloak-angular';
 import { Search, UserData } from '../../core/model/user-data';
@@ -16,12 +15,13 @@ import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.serv
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
-import { Snippet } from '../../core/model/snippet';
 import { PersonalSnippetsService } from '../../core/personal-snippets.service';
 import { SearchNotificationService } from '../../core/search-notification.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { searchDomains } from '../../core/model/search-domains-map';
+import { AddTagFilterToSearchDialogComponent } from './add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
+import { DialogMeasurementsHelper } from '../../core/helper/dialog-measurements.helper';
 
 @Component({
   selector: 'app-searchbar',
@@ -53,7 +53,12 @@ export class SearchbarComponent implements OnInit {
   autocompleteSearches: Search[] = [];
   filteredSearches: Observable<Search[]>;
 
+  options: Search[] = [{text: 'one'}, {text: 'two'}, {text: 'three'}];
+  filteredOptions: Observable<Search[]>;
+
   isFocusOnSearchControl = false;
+
+  autoSelector = 'auto';
 
   showSearchResults = false;
   hover = false;
@@ -78,6 +83,8 @@ export class SearchbarComponent implements OnInit {
               private keycloakServiceWrapper: KeycloakServiceWrapper,
               private userDataStore: UserDataStore,
               private userInfoStore: UserInfoStore,
+              private dialogMeasurementsHelper: DialogMeasurementsHelper,
+              private addTagsToSearchDialog: MatDialog,
               private loginDialog: MatDialog) {
   }
 
@@ -274,4 +281,34 @@ export class SearchbarComponent implements OnInit {
 
     return response;
   }
+
+  watchForTags(value: string) {
+    if (value === 'qq') {
+      this.filteredSearches = this.filteredOptions;
+    }
+
+    console.log('input value ', value);
+  }
+
+  addTagFilter() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = this.dialogMeasurementsHelper.getRelativeWidth(60);
+    dialogConfig.data = {
+      userId: this.userId,
+      searchDomain: this.searchDomain
+    };
+
+    const dialogRef = this.addTagsToSearchDialog.open(AddTagFilterToSearchDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(
+      tagsString => {
+        if (tagsString) {
+          const existingQueryValue = this.searchControl.value ? this.searchControl.value : '';
+          this.searchControl.patchValue(`${existingQueryValue} ${tagsString}`);
+          this.searchBoxField.nativeElement.focus();
+        }
+      }
+    );
+  }
+
 }

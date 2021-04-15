@@ -1,35 +1,38 @@
 $background-gray: rgb(240, 242, 245);
 
-.search-result{
-    border-bottom: 1px solid gray;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
-    width:195px;
-    height: 20px;
-    padding: 5px;
-    background-color: white;
-    cursor: pointer;
+.search-result {
+  border-bottom: 1px solid gray;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  width: 195px;
+  height: 20px;
+  padding: 5px;
+  background-color: white;
+  cursor: pointer;
 }
 
 .search-control input:focus {
   outline-width: 0;
 }
 
-.search-component{
+.search-component {
   min-width: 300px;
+
   input:focus {
     box-shadow: none;
   }
 }
 
 .lighter-gray {
-  color:gainsboro;
+  color: gainsboro;
 }
+
 // inspired from https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
-  .search-component{
-    min-width: 500px;
+  .search-component {
+    min-width: 510px;
+
     input:focus {
       box-shadow: none;
     }
@@ -37,8 +40,9 @@ $background-gray: rgb(240, 242, 245);
 }
 
 @media (min-width: 1200px) {
-  .search-component{
-    min-width: 675px;
+  .search-component {
+    min-width: 700px;
+
     input:focus {
       box-shadow: none;
     }
@@ -46,8 +50,9 @@ $background-gray: rgb(240, 242, 245);
 }
 
 @media (min-width: 1600px) {
-  .search-component{
-    min-width: 800px;
+  .search-component {
+    min-width: 850px;
+
     input:focus {
       box-shadow: none;
     }
@@ -55,7 +60,7 @@ $background-gray: rgb(240, 242, 245);
 }
 
 .focused {
-  background-color:#007bff;
+  background-color: #007bff;
   border-color: #007bff;
   color: white;
   cursor: pointer;
@@ -102,4 +107,14 @@ input {
 
 .unchecked-public-bookmarks-selection {
   color: $background-gray;
+}
+
+.search-history-clock {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.search-history-text {
+  color: #52188c;
+  font-size: 1.05rem
 }

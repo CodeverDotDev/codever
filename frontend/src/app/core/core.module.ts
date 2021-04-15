@@ -26,9 +26,10 @@ import { FeedStore } from './user/feed-store.service';
 import { PersonalSnippetsService } from './personal-snippets.service';
 import { MarkdownService } from './markdown/markdown.service';
 import { SearchNotificationService } from './search-notification.service';
-import { StackoverflowHelper } from './stackoverflow.helper';
+import { StackoverflowHelper } from './helper/stackoverflow.helper';
 import { LoginDialogHelperService } from './login-dialog-helper.service';
 import { AddToHistoryService } from './user/add-to-history.service';
+import { DialogMeasurementsHelper } from './helper/dialog-measurements.helper';
 
 
 /**
@@ -74,6 +75,7 @@ import { AddToHistoryService } from './user/add-to-history.service';
     MarkdownService,
     SearchNotificationService,
     StackoverflowHelper,
+    DialogMeasurementsHelper,
     LoginDialogHelperService,
     AddToHistoryService
   ]
