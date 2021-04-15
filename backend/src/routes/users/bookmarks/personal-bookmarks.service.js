@@ -36,11 +36,43 @@ let getSuggestedTagsForUser = async (userId) => {
 /* GET tags used by user */
 let getUserTags = async (userId) => {
 
-  const tags = await Bookmark.distinct("tags",
-    {userId: userId}
-  ); // sort does not work with distinct in mongoose - https://mongoosejs.com/docs/api.html#query_Query-sort
+  const aggregatedTags = await Bookmark.aggregate([
+    //first stage - filter
+    {
+      $match: {
+        userId: userId
+      },
+    },
 
-  return tags;
+    //second stage - unwind tags
+    {$unwind: "$tags"},
+
+    //third stage - group
+    {
+      $group: {
+        _id: {
+          tag: '$tags'
+        },
+        count: {
+          $sum: 1
+        }
+      }
+    },
+
+    //fourth stage - order by count desc
+    {
+      $sort: {count: -1}
+    }
+  ]);
+
+  const userTags = aggregatedTags.map(aggregatedTag => {
+    return {
+      name: aggregatedTag._id.tag,
+      count: aggregatedTag.count
+    }
+  });
+
+  return userTags;
 };
 
 
@@ -52,7 +84,7 @@ let getBookmarkById = async (userId, bookmarkId) => {
     userId: userId
   });
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError(`Bookmark NOT_FOUND the userId: ${userId} AND id: ${bookmarkId}`);
   } else {
     return bookmark;
@@ -67,7 +99,7 @@ let getPersonalBookmarkByLocation = async (userId, location) => {
     location: location
   }).lean().exec();
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     return [];
   } else {
     return [bookmark];
@@ -140,7 +172,7 @@ let updateBookmark = async (userId, bookmarkId, bookmark) => {
   );
 
   const bookmarkNotFound = !updatedBookmark;
-  if (bookmarkNotFound) {
+  if ( bookmarkNotFound ) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId + ' AND location: ' + bookmark.location);
   } else {
     return updatedBookmark;
@@ -169,7 +201,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
     userId: userId
   });
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId);
   } else {
     await User.update(
@@ -198,7 +230,7 @@ let deleteBookmarkByLocation = async (userId, location) => {
     userId: userId
   });
 
-  if (!bookmark) {
+  if ( !bookmark ) {
     throw new NotFoundError(`Bookmark NOT_FOUND the userId: ${userId} AND location: ${location}`);
   }
 

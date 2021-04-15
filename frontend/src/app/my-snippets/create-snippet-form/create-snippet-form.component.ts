@@ -12,7 +12,7 @@ import { Snippet } from '../../core/model/snippet';
 import { PersonalSnippetsService } from '../../core/personal-snippets.service';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
-import { StackoverflowHelper } from '../../core/stackoverflow.helper';
+import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { WebpageInfo } from '../../core/model/webpage-info';
 import { SnippetFormBaseComponent } from '../snippet-form-base/snippet-form.base.component';
 

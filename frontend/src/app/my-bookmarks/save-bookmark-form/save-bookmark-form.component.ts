@@ -30,7 +30,7 @@ import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store
 import { UserData } from '../../core/model/user-data';
 import { DatePipe } from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
-import { StackoverflowHelper } from '../../core/stackoverflow.helper';
+import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';

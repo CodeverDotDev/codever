@@ -45,6 +45,18 @@ personalSnippetsRouter.get('/suggested-tags', keycloak.protect(), async (request
 });
 
 /**
+ * GET tags used by user
+ *
+ * Order matters - needs to be GET snippet by id
+ **/
+personalSnippetsRouter.get('/tags', keycloak.protect(), async (request, response) => {
+  UserIdValidator.validateUserId(request);
+  const tags = await PersonalSnippetsService.getUserSnippetTags(request.params.userId);
+
+  response.send(tags);
+});
+
+/**
  * GET all snippets of a user, ordered by createdAt date descending
  **/
 personalSnippetsRouter.get('/export', keycloak.protect(), async (request, response) => {

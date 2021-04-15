@@ -28,6 +28,9 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./docs/openapi/openapi.yaml');
 
+const NodeCache = require( "node-cache" );
+const nodeCache = new NodeCache();
+
 const app = express();
 
 // Sets "Strict-Transport-Security: max-age=5184000; includeSubDomains".

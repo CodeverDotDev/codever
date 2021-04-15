@@ -50,9 +50,54 @@ let getPublicSnippetsForTag = async (tag, orderBy, page, limit) => {
 
 };
 
+let getMostUsedPublicTagsForSnippets = async function (limit) {
+
+  const aggregatedTags = await Snippet.aggregate([
+    //first stage - filter
+    {
+      $match: {
+        public: true
+      },
+    },
+
+    //second stage - unwind tags
+    {$unwind: "$tags"},
+
+    //third stage - group
+    {
+      $group: {
+        _id: {
+          tag: '$tags'
+        },
+        count: {
+          $sum: 1
+        }
+      }
+    },
+
+    //fourth stage - order by count desc
+    {
+      $sort: {count: -1}
+    },
+
+    //
+    { $limit : limit }
+  ]);
+
+  const usedTags = aggregatedTags.map(aggregatedTag => {
+    return {
+      name: aggregatedTag._id.tag,
+      count: aggregatedTag.count
+    }
+  });
+
+  return usedTags;
+}
+
 
 module.exports = {
   getSnippetById: getSnippetById,
   getLatestPublicSnippets: getLatestPublicSnippets,
-  getPublicSnippetsForTag: getPublicSnippetsForTag
+  getPublicSnippetsForTag: getPublicSnippetsForTag,
+  getMostUsedPublicTagsForSnippets: getMostUsedPublicTagsForSnippets
 };

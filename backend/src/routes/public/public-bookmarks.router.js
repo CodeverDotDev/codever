@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const NodeCache = require('../../cache-middleware');
 const publicBookmarksSearchService = require('./public-bookmarks-search.service');
 const PublicBookmarksService = require('./public-bookmarks.service');
 
@@ -46,6 +47,17 @@ router.get('/', async (request, response) => {
   const bookmarks = await PublicBookmarksService.getLatestPublicBookmarks(page, limit);
 
   return response.send(bookmarks);
+});
+
+/**
+ * Get most used public tags
+ */
+router.get('/tags', NodeCache.cacheMiddleware(1440), async (request, response) => {
+
+  const {limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const publicTags = await PublicBookmarksService.getMostUsedPublicTags(limit);
+
+  return response.send(publicTags);
 });
 
 router.get('/tagged/:tag', async (request, response) => {

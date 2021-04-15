@@ -23,6 +23,11 @@ export class PersonalSnippetsService {
     return this.httpClient.get<Snippet>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets/${codeletId}`).pipe(shareReplay(1));
   }
 
+  getUserTags(userId: String): Observable<string[]> {
+    return this.httpClient.get<string[]>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets/tags`)
+      .pipe(shareReplay(1));
+  }
+
   getSuggestedSnippetTags(userId: String): Observable<string[]> {
     return this.httpClient.get<string[]>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets/suggested-tags`)
       .pipe(shareReplay(1));

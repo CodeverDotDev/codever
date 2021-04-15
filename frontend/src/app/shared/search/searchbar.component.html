@@ -17,7 +17,7 @@
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-      style="font-size: 15px">
+            style="font-size: 15px">
       {{searchDomains.get(searchDomain)}}
     </button>
     <ng-template #toggleButton>
@@ -28,7 +28,7 @@
       </button>
     </ng-template>
     <div class="dropdown-menu">
-      <a class="dropdown-item"  role="button"
+      <a class="dropdown-item" role="button"
          title="Search in My Bookmarks"
          (click)="onSearchDomainChange('my-bookmarks')">
         My Bookmarks
@@ -42,7 +42,7 @@
             </span>
         </ng-template>
       </a>
-      <a class="dropdown-item"  role="button"
+      <a class="dropdown-item" role="button"
          title="Search in My Snippets"
          (click)="onSearchDomainChange('my-snippets')">
         My Snippets
@@ -57,7 +57,7 @@
         </ng-template>
       </a>
       <div role="separator" class="dropdown-divider"></div>
-      <a class="dropdown-item"  role="button"
+      <a class="dropdown-item" role="button"
          title="Search in public bookmarks"
          (click)="onSearchDomainChange('public-bookmarks')">
         Public Bookmarks
@@ -69,7 +69,7 @@
             </span>
         </ng-template>
       </a>
-      <a class="dropdown-item"  role="button"
+      <a class="dropdown-item" role="button"
          title="Search in public snippets"
          (click)="onSearchDomainChange('public-snippets')">
         Public Snippets
@@ -85,6 +85,7 @@
       </a>
     </div>
   </div>
+
   <input
     #publicSearchBox
     #autocompleteTrigger="matAutocompleteTrigger"
@@ -98,18 +99,36 @@
     (focusout)="unFocusOnSearchControl()"
     [class.my-snippets-selection]="searchDomain === 'my-snippets' || searchDomain === 'public-snippets'"
     [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
+    (keyup)="watchForTags(publicSearchBox.value)"
     (keyup.enter)="$event.target.blur(); autocompleteTrigger.closePanel();searchBookmarksFromSearchBox(publicSearchBox.value)"
   >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteSelectionChanged($event)">
-    <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">{{search.text}}</mat-option>
+    <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">
+      <i class="fas fa-history mr-2 search-history-clock"></i> <span
+      class="search-history-text"> {{search.text}} </span>
+    </mat-option>
   </mat-autocomplete>
-  <div class="input-group-append">
+  <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete">ß
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+      {{option}}
+    </mat-option>
+  </mat-autocomplete>
+  <div class="input-group-append dropdown">
     <button *ngIf="publicSearchBox.value" class="btn btn-sm btn-outline-secondary"
             type="button"
             (click)="clearSearchBoxText()"
             title="Clear"
     ><i class="fas fa-lg fa-times lighter-gray"></i>
     </button>
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" style="border-radius: 0">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu dropdown-menu-right">
+      <h6 class="dropdown-header">Add to search query </h6>
+      <a class="dropdown-item" role="button" (click)="addTagFilter()" text="Add tag filter"><i class="fas fa-tags"></i>
+        Tag(s)</a>
+    </div>
     <button class="btn btn-outline-secondary"
             type="button"
             (click)="onSaveSearchClick()"
@@ -117,6 +136,7 @@
             [disabled]="!searchBoxText"
     ><i class="fas fa-save lighter-gray"></i>
     </button>
+
   </div>
 </div>
 
