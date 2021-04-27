@@ -183,6 +183,18 @@ export class UserDataStore {
     return obs;
   }
 
+  updateFeedToggleOption$(showAllPublicInFeed: boolean): Observable<UserData> {
+    this.userData.showAllPublicInFeed = showAllPublicInFeed;
+    const obs: Observable<any> = this.userService.updateFeedToggleOption(this.userId, showAllPublicInFeed);
+    obs.subscribe(
+      () => {
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
+  }
+
   removeFromUserDataPinned$(bookmark: Bookmark): Observable<UserData> {
     this.userData.pinned = this.userData.pinned.filter(x => x !== bookmark._id);
     const obs: Observable<any> = this.userService.updateUserDataPinned(this.userId, this.userData.pinned);

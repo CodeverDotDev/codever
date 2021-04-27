@@ -56,6 +56,17 @@ let updateUserDataHistory = async function (history, userId) {
   return updatedUserData;
 }
 
+let updateUserDataFeedToggle = async function (showAllPublicInFeed, userId) {
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {
+      $set: {showAllPublicInFeed: showAllPublicInFeed}
+    }
+  );
+
+  return updatedUserData;
+}
+
 //hold max number of bookmarks in history or pinned
 let trimMaxAllowedStoreLength = function (storeItems) {
   if ( storeItems.length > constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE ) {
@@ -582,6 +593,7 @@ module.exports = {
   updateUserDataPinned: updateUserDataPinned,
   updateUserDataReadLater: updateUserDataReadLater,
   updateUserDataHistoryReadLaterPinned: updateUserDataHistoryReadLaterPinned,
+  updateUserDataFeedToggle: updateUserDataFeedToggle,
   createUserData: createUserData,
   getUserData: getUserData,
   deleteUserData: deleteUserData,

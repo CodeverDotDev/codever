@@ -210,6 +210,16 @@ usersRouter.patch('/:userId/history-readlater-pinned', keycloak.protect(), async
 });
 
 /*
+* Update toggle to display in landing page
+*/
+usersRouter.patch('/:userId/feed-toggle', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  await UserDataService.updateUserDataFeedToggle(request.body.showAllPublicInFeed, request.params.userId);
+
+  return response.status(HttpStatus.OK).send({dataFeedToggleUpdated: true});
+});
+
+/*
 * DELETE user
 */
 usersRouter.delete('/:userId', keycloak.protect(), async (request, response) => {

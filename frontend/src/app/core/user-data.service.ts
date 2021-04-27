@@ -51,6 +51,12 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
+  updateFeedToggleOption(userId: string, showAllPublicInFeed: boolean): Observable<UserData> {
+    return this.httpClient
+      .patch(`${this.usersApiBaseUrl}/${userId}/feed-toggle`, {showAllPublicInFeed: showAllPublicInFeed}, {headers: this.headers})
+      .pipe(shareReplay(1));
+  }
+
   updateUserDataHistoryReadLaterPinned(userId: string, history: string[], readLater: string[], pinned: string[]): Observable<UserData> {
     const request = {
       history: history,
