@@ -35,6 +35,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   pageNavigationSubscription: Subscription;
   tags: string[] = allTags;
   userData$: Observable<UserData>;
+  private userData: UserData;
 
   history$: Observable<Bookmark[]>;
   pinned$: Observable<Bookmark[]>;
@@ -54,7 +55,6 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   callerPaginationHistory = 'history';
   callerPaginationPinned = 'pinned';
   callerPaginationReadLater = 'read-later';
-  seeAllPublicToggle = false;
 
   constructor(private appService: AppService,
               private publicBookmarksStore: PublicBookmarksStore,
@@ -82,8 +82,11 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
           this.userId = userInfo.sub;
-          this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn); // this method is called twice to avoid autmatically executing changeTab events
           this.userData$ = this.userDataStore.getUserData$();
+          this.userData$.subscribe(userData => {
+            this.userData = userData;
+            this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn); // this method is called twice to avoid autmatically executing changeTab events
+          });
         });
       } else {
         this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn);
@@ -116,12 +119,16 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
       }
       default: {
         this.selectedTabIndex = 0;
-        if (isLoggedIn && !this.seeAllPublicToggle) {
-          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, this.FIRST_PAGE);
-        } else {
-          this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.FIRST_PAGE);
-        }
+        this.setFeedBookmarks$(isLoggedIn, this.FIRST_PAGE);
       }
+    }
+  }
+
+  private setFeedBookmarks$(isLoggedIn: boolean, page: number) {
+    if (isLoggedIn && !this.userData?.showAllPublicInFeed) {
+      this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, page);
+    } else {
+      this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(page);
     }
   }
 
@@ -147,11 +154,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
     this.appService.logoClicked.subscribe(logoClicked => {
       if (logoClicked) {
         this.currentPageFeed = this.FIRST_PAGE;
-        if (isLoggedIn && !this.seeAllPublicToggle) {
-          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, this.currentPageFeed);
-        } else {
-          this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageFeed);
-        }
+        this.setFeedBookmarks$(isLoggedIn, this.currentPageFeed);
       }
     });
   }
@@ -160,11 +163,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
     this.pageNavigationSubscription = this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
       if (paginationAction.caller === this.callerPaginationFeed && this.selectedTabIndex === TabIndex.Feed) {
         this.currentPageFeed = paginationAction.page;
-        if (isLoggedIn && !this.seeAllPublicToggle) {
-          this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, paginationAction.page)
-        } else {
-          this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(paginationAction.page);
-        }
+        this.setFeedBookmarks$(isLoggedIn, this.currentPageFeed);
       }
       if (paginationAction.caller === this.callerPaginationHistory && this.selectedTabIndex === TabIndex.History) {
         this.currentPageHistory = paginationAction.page;
@@ -186,11 +185,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
     if (this.userIsLoggedIn) {
       switch (event.index) {
         case TabIndex.Feed:
-          if (this.userIsLoggedIn && !this.seeAllPublicToggle) {
-            this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, this.currentPageFeed);
-          } else {
-            this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.currentPageFeed);
-          }
+          this.setFeedBookmarks$(this.userIsLoggedIn, this.currentPageFeed);
           break;
         case TabIndex.History:
           this.history$ = this.userDataHistoryStore.getHistory$(this.userId, this.currentPageHistory);
@@ -245,17 +240,6 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
 
   ngOnDestroy(): void {
     this.pageNavigationSubscription.unsubscribe();
-  }
-
-  seeAllPublic(seeAllPublicToggle: boolean) {
-    if (seeAllPublicToggle) {
-      this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(this.FIRST_PAGE);
-      this.seeAllPublicToggle = true;
-    } else {
-      this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, this.FIRST_PAGE);
-      this.seeAllPublicToggle = false;
-    }
-
   }
 
   searchPublicBookmarksByTag(tag: string) {

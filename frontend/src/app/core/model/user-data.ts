@@ -13,6 +13,7 @@ export interface UserData {
   history?: string[]; // ids of last visited bookmarks, order is important
   following?: Following;
   followers?: string[];
+  showAllPublicInFeed?: boolean;
 }
 
 export interface Profile {

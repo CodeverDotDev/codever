@@ -3,9 +3,9 @@
                  (selectedTabChange)="tabSelectionChanged($event)">
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label"><i class="fas fa-share-alt"></i> Feed</span>
+        <span class="app-tab-label"><i class="fas fa-home"></i> Feed</span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedIn$ | async)">
+      <div *ngIf="!(userIsLoggedIn$ | async); else showFollowedTags">
         <div class="alert alert-info mt-2">
           <button type="button" class="btn btn-primary btn-sm mr-2" (click)="login('feed')"><i
             class="fas fa-unlock"></i> Login / Register
@@ -13,82 +13,70 @@
           to see posts with your favorite topics in your feed
         </div>
       </div>
-      <div *ngIf="(userData$ | async) as userData">
-        <div *ngIf="userData.watchedTags.length > 0; else startWatchingTags" class="mt-2 mb-3">
-          <button *ngIf="!seeAllPublicToggle; else seeOnlyFeed"
-                  class="btn btn-outline-primary btn-sm  mr-3 mt-2 tag-list-header"
-                  title="Click to see all public posts except ignored"
-                  (click)="seeAllPublic(true)"
-          >
-            All public <i class="fas fa-toggle-off"></i>
-          </button>
-          <ng-template #seeOnlyFeed>
-            <button
-              class="btn btn-success btn-sm  mr-3 mt-2 tag-list-header shadow-sm"
-              title="Click to see only my feed"
-              (click)="seeAllPublic(false)"
+      <ng-template #showFollowedTags>
+        <div *ngIf="(userData$ | async) as userData">
+          <div *ngIf="userData.watchedTags.length > 0; else startWatchingTags" class="mt-2 mb-3">
+            <a
+              [routerLink]="['/dashboard']"
+              [queryParams]="{tab: 'tags'}"
+              class="btn btn-outline-secondary btn-sm  mr-3 mt-2 tag-list-header shadow-sm"
+              title="Go to My Tags in dashboard"
             >
-              All public <i class="fas fa-toggle-on"></i>
-            </button>
-          </ng-template>
-          <a
-            [routerLink]="['/dashboard']"
-            [queryParams]="{tab: 'tags'}"
-            class="btn btn-outline-secondary btn-sm  mr-3 mt-2 tag-list-header shadow-sm"
-            title="Go to My Tags in dashboard"
-          >
-            Watching <i class="fas fa-eye"></i>
-          </a>
-          <div *ngFor="let tag of userData.watchedTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
-            <a type="button"
-               class="btn btn-secondary btn-sm text-white"
-               (click)="searchPublicBookmarksByTag(tag)"
-               title="Show public bookmarks tagged {{tag}}"
-            >
-              {{tag}}
+              Watching <i class="fas fa-eye"></i>
             </a>
-            <button
-              type=" button"
-              class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              (click)="onDropDownClick(tag)">
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <div class="dropdown-menu">
-              <a
-                *ngIf="(verifyForWatchedTag | async) === tag && userData?.watchedTags.includes(tag); else watchTagOption"
-                class="dropdown-item"
-                (click)="unwatchTag(tag)"><i class="fas fa-eye-slash"></i> Unwatch tag
+            <div *ngFor="let tag of userData.watchedTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
+              <a type="button"
+                 class="btn btn-secondary btn-sm text-white"
+                 (click)="searchPublicBookmarksByTag(tag)"
+                 title="Show public bookmarks tagged {{tag}}"
+              >
+                {{tag}}
               </a>
-              <ng-template #watchTagOption>
-                <a (click)="watchTag(tag, userIsLoggedIn)"><i class="fas fa-eye"></i> Watch tag</a>
-              </ng-template>
-              <a
-                *ngIf="(verifyForWatchedTag | async) === tag && (userData$ | async)?.ignoredTags.includes(tag); else ignoreTagOption"
-                class="dropdown-item"
-                (click)="unignoreTag(tag)"><i class="fas fa-ban"></i> Unignore tag
-              </a>
-              <ng-template #ignoreTagOption>
-                <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag
+              <button
+                type=" button"
+                class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                (click)="onDropDownClick(tag)">
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <div class="dropdown-menu">
+                <a
+                  *ngIf="(verifyForWatchedTag | async) === tag && userData?.watchedTags.includes(tag); else watchTagOption"
+                  class="dropdown-item"
+                  (click)="unwatchTag(tag)"><i class="fas fa-eye-slash"></i> Unwatch tag
                 </a>
-              </ng-template>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Tag's page </a>
+                <ng-template #watchTagOption>
+                  <a (click)="watchTag(tag, userIsLoggedIn)"><i class="fas fa-eye"></i> Watch tag</a>
+                </ng-template>
+                <a
+                  *ngIf="(verifyForWatchedTag | async) === tag && (userData$ | async)?.ignoredTags.includes(tag); else ignoreTagOption"
+                  class="dropdown-item"
+                  (click)="unignoreTag(tag)"><i class="fas fa-ban"></i> Unignore tag
+                </a>
+                <ng-template #ignoreTagOption>
+                  <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore
+                    tag
+                  </a>
+                </ng-template>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Tag's page </a>
+              </div>
+
             </div>
 
           </div>
 
         </div>
-
-      </div>
-      <ng-template #startWatchingTags>
-        <div class="alert alert-info mt-3">
-          <strong>Watch tags <i class="fas fa-eye"></i></strong> to see more posts with your favorite topics in your
-          feed
-        </div>
+        <ng-template #startWatchingTags>
+          <div class="alert alert-info mt-3">
+            <strong>Watch tags <i class="fas fa-eye"></i></strong> to see more posts with your favorite topics in your
+            feed
+          </div>
+        </ng-template>
       </ng-template>
+
       <app-async-bookmark-list
         [bookmarks$]="feedBookmarks$"
         [userData$]="userData$"
@@ -200,5 +188,6 @@
         </ng-template>
       </ng-template>
     </mat-tab>
+
   </mat-tab-group>
 </div>

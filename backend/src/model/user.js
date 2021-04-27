@@ -43,6 +43,7 @@ const userSchema = new Schema({
     history: [String],
     following: followingSchema,
     followers: {type: [String], select: false},
+    showAllPublicInFeed: Boolean,
     __v: {type: Number, select: false}
   },
   {

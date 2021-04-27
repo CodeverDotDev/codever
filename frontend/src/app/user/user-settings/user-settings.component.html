@@ -19,6 +19,15 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
+        <span class="app-tab-label">Feed <i class="fas fa-home"></i></span>
+      </ng-template>
+
+      <ng-template matTabContent>
+        <app-user-feed-setup [userData$]="userData$"></app-user-feed-setup>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
       <span class="app-tab-label">
       <a class="dropdown-item" href="{{environment.keycloak.url}}/realms/bookmarks/account/">
         Account

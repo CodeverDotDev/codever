@@ -9,6 +9,8 @@ import { CoreModule } from 'keycloak-angular';
 import { MatTabsModule } from '@angular/material/tabs';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ImageUploadService } from './user-profile/image-upload.service';
+import { UserFeedComponent } from './user-feed/user-feed.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 const userSettingsRoutes: Routes = [
@@ -22,7 +24,8 @@ const userSettingsRoutes: Routes = [
 @NgModule({
   declarations: [
     UserSettingsComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    UserFeedComponent
   ],
   imports: [
     RouterModule.forChild(userSettingsRoutes),
@@ -31,6 +34,8 @@ const userSettingsRoutes: Routes = [
     CoreModule,
     CommonModule,
     MatTabsModule,
+    MatRadioModule,
+
   ],
   providers: [
     ImageUploadService
