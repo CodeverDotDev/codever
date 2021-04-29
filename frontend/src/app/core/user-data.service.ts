@@ -10,6 +10,8 @@ import { shareReplay } from 'rxjs/operators';
 import { RateBookmarkRequest } from './model/rate-bookmark.request';
 import { UsedTags } from './model/used-tag';
 import { UserDataProfile } from './model/user-data-profile';
+import { HttpClientLocalStorageService, HttpOptions } from './cache/http-client-local-storage.service';
+import { localStorageKeys } from './model/localstorage.cache-keys';
 
 @Injectable()
 export class UserDataService {
@@ -17,7 +19,8 @@ export class UserDataService {
   private usersApiBaseUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private httpClientLocalStorageService: HttpClientLocalStorageService) {
     this.usersApiBaseUrl = environment.API_URL + '/personal/users';
   }
 
@@ -54,6 +57,12 @@ export class UserDataService {
   updateFeedToggleOption(userId: string, showAllPublicInFeed: boolean): Observable<UserData> {
     return this.httpClient
       .patch(`${this.usersApiBaseUrl}/${userId}/feed-toggle`, {showAllPublicInFeed: showAllPublicInFeed}, {headers: this.headers})
+      .pipe(shareReplay(1));
+  }
+
+  updateLocalStorageOption(userId: string, enableLocalStorage: boolean): Observable<UserData> {
+    return this.httpClient
+      .patch(`${this.usersApiBaseUrl}/${userId}/local-storage`, {enableLocalStorage: enableLocalStorage}, {headers: this.headers})
       .pipe(shareReplay(1));
   }
 
@@ -126,7 +135,7 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
-  getLastVisitedBookmarks(userId: string, page: number, limit: number): Observable<Bookmark[]> {
+  getHistory$(userId: string, page: number, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
@@ -134,6 +143,20 @@ export class UserDataService {
       .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`, {params: params})
       .pipe(shareReplay(1));
   }
+
+  getAllHistory$(userId: string): Observable<Bookmark[]> {
+    const options: HttpOptions = {
+      url: `${this.usersApiBaseUrl}/${userId}/history`,
+      key: localStorageKeys.userHistoryBookmarks,
+      cacheHours: 24,
+      isSensitive: true
+    }; // cache it for a day
+
+    return this.httpClientLocalStorageService
+      .get<Bookmark[]>(options)
+      .pipe(shareReplay(1));
+  }
+
 
   getUsedTags(userId: string): Observable<UsedTags> {
     return this.httpClient

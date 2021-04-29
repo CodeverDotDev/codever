@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 import { AppService } from '../../app.service';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
+import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
+import { LocalStorageService } from '../../core/cache/local-storage.service';
 
 @Component({
   selector: 'app-navigation',
@@ -25,6 +27,7 @@ export class NavigationComponent implements OnInit {
               private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private userDataStore: UserDataStore,
+              private localStorageService: LocalStorageService,
               private keycloakServiceWrapper: KeycloakServiceWrapper) {
   }
 
@@ -41,6 +44,7 @@ export class NavigationComponent implements OnInit {
   }
 
   async doLogout() {
+    this.localStorageService.cleanUserRelatedData();
     await this.keycloakService.logout(environment.APP_HOME_URL);
   }
 
@@ -52,4 +56,10 @@ export class NavigationComponent implements OnInit {
     this.appService.clickLogo(true);
   }
 
+  /**
+   * Proactively clear userinfo cache entry when user selects entry
+   */
+  clearAccountCacheEntry() {
+    this.localStorageService.cleanCachedKey(localStorageKeys.userInfoOidc);
+  }
 }

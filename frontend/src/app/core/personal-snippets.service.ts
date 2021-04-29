@@ -8,6 +8,9 @@ import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Snippet } from './model/snippet';
+import { UsedTag } from './model/used-tag';
+import { HttpClientLocalStorageService, HttpOptions } from './cache/http-client-local-storage.service';
+import { localStorageKeys } from './model/localstorage.cache-keys';
 
 @Injectable()
 export class PersonalSnippetsService {
@@ -15,7 +18,8 @@ export class PersonalSnippetsService {
   private personalSnippetsApiBaseUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private httpClientLocalStorageService: HttpClientLocalStorageService) {
     this.personalSnippetsApiBaseUrl = environment.API_URL + '/personal/users';
   }
 
@@ -23,9 +27,17 @@ export class PersonalSnippetsService {
     return this.httpClient.get<Snippet>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets/${codeletId}`).pipe(shareReplay(1));
   }
 
-  getUserTags(userId: String): Observable<string[]> {
-    return this.httpClient.get<string[]>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets/tags`)
-      .pipe(shareReplay(1));
+  getUserTagsForSnippets(userId: String): Observable<UsedTag[]> {
+    const options: HttpOptions = {
+      url: `${this.personalSnippetsApiBaseUrl}/${userId}/snippets/tags`,
+      key: localStorageKeys.personalTagsSnippets,
+      cacheHours: 24,
+      isSensitive: true
+    }; // cache it for a day
+
+    return this.httpClientLocalStorageService
+      .get<UsedTag[]>(options)
+      .pipe(shareReplay());
   }
 
   getSuggestedSnippetTags(userId: String): Observable<string[]> {

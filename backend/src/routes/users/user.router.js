@@ -144,7 +144,12 @@ usersRouter.get('/:userId/favorites', keycloak.protect(), async (request, respon
 usersRouter.get('/:userId/history', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const bookmarksFromHistory = await UserDataService.getBookmarksFromHistory(request.params.userId, page, limit);
+  let bookmarksFromHistory;
+  if (page) {
+    bookmarksFromHistory = await UserDataService.getBookmarksFromHistory(request.params.userId, page, limit);
+  } else {
+    bookmarksFromHistory = await UserDataService.getAllBookmarksFromHistory(request.params.userId, page, limit);
+  }
 
   response.send(bookmarksFromHistory);
 });
@@ -217,6 +222,16 @@ usersRouter.patch('/:userId/feed-toggle', keycloak.protect(), async (request, re
   await UserDataService.updateUserDataFeedToggle(request.body.showAllPublicInFeed, request.params.userId);
 
   return response.status(HttpStatus.OK).send({dataFeedToggleUpdated: true});
+});
+
+/*
+* Update local storage setup
+*/
+usersRouter.patch('/:userId/local-storage', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  await UserDataService.updateLocalStorageOption(request.body.enableLocalStorage, request.params.userId);
+
+  return response.status(HttpStatus.OK).send({localStorageOptionUpdated: true});
 });
 
 /*

@@ -51,12 +51,12 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
   ngOnInit() {
     switch (this.searchDomain) {
       case SearchDomain.MY_BOOKMARKS : {
-        this.personalBookmarksService.getUserTags(this.userId).subscribe(this.setTags());
+        this.personalBookmarksService.getUserTagsForBookmarks(this.userId).subscribe(this.setTags());
       }
         break;
 
       case SearchDomain.MY_SNIPPETS : {
-        this.personalSnippetsService.getUserTags(this.userId).subscribe(this.setTags());
+        this.personalSnippetsService.getUserTagsForSnippets(this.userId).subscribe(this.setTags());
       }
         break;
 

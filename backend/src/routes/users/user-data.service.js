@@ -45,7 +45,7 @@ let updateUserData = async function (userData, userId) {
 }
 
 let updateUserDataHistory = async function (history, userId) {
-  history = trimMaxAllowedStoreLength(history);
+  history = trimMaxAllowedStoreLength(history, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
   const updatedUserData = await User.findOneAndUpdate(
     {userId: userId},
     {
@@ -67,16 +67,27 @@ let updateUserDataFeedToggle = async function (showAllPublicInFeed, userId) {
   return updatedUserData;
 }
 
+let updateLocalStorageOption = async function (enableLocalStorage, userId) {
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {
+      $set: {enableLocalStorage: enableLocalStorage}
+    }
+  );
+
+  return updatedUserData;
+}
+
 //hold max number of bookmarks in history or pinned
-let trimMaxAllowedStoreLength = function (storeItems) {
-  if ( storeItems.length > constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE ) {
-    return storeItems.slice(0, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
+let trimMaxAllowedStoreLength = function (storeItems, limit) {
+  if ( storeItems.length > limit ) {
+    return storeItems.slice(0, limit);
   }
   return storeItems;
 };
 
 let updateUserDataPinned = async function (pinned, userId) {
-  pinned = trimMaxAllowedStoreLength(pinned);
+  pinned = trimMaxAllowedStoreLength(pinned, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
   const updatedUserData = await User.findOneAndUpdate(
     {userId: userId},
     {
@@ -102,7 +113,7 @@ let updateUserDataHistoryReadLaterPinned = async function (input, userId) {
 
   let {history, readLater, pinned} = input;
 
-  history = trimMaxAllowedStoreLength(history);
+  history = trimMaxAllowedStoreLength(history, constants.MA);
   let updateInput = {history: history};
 
   if(Array.isArray(readLater) && readLater.length){
@@ -110,7 +121,7 @@ let updateUserDataHistoryReadLaterPinned = async function (input, userId) {
   }
 
   if(Array.isArray(pinned) && pinned.length){
-    pinned = trimMaxAllowedStoreLength(pinned);
+    pinned = trimMaxAllowedStoreLength(pinned, constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE);
     updateInput.pinned = pinned;
   }
 
@@ -362,6 +373,27 @@ let getBookmarksFromHistory = async function (userId, page, limit) {
   }
 }
 
+let getAllBookmarksFromHistory = async function (userId) {
+
+  const userData = await User.findOne({
+    userId: userId
+  });
+  if ( !userData ) {
+    throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
+  } else {
+    const bookmarks = await Bookmark.find({"_id": {$in: userData.history}});
+
+    //we need to order the bookmarks to correspond the one in the userData.history array
+    const allBookmarksOrderedFromHistory = bookmarks.sort(function (a, b) {
+      return userData.history.indexOf(a._id) - userData.history.indexOf(b._id);
+    });
+
+    //check for "potentially" deleted bookmarks via "delete all private for tag"
+    //return orderedBookmarksAsInHistory.filter(bookmark => bookmark !== undefined);
+    return allBookmarksOrderedFromHistory;
+  }
+}
+
 let rateBookmark = async function (receivedUserData, userId, bookmarkId) {
 
   validateInputForBookmarkRating(receivedUserData, userId);
@@ -594,6 +626,7 @@ module.exports = {
   updateUserDataReadLater: updateUserDataReadLater,
   updateUserDataHistoryReadLaterPinned: updateUserDataHistoryReadLaterPinned,
   updateUserDataFeedToggle: updateUserDataFeedToggle,
+  updateLocalStorageOption: updateLocalStorageOption,
   createUserData: createUserData,
   getUserData: getUserData,
   deleteUserData: deleteUserData,
@@ -604,6 +637,7 @@ module.exports = {
   getPinnedBookmarks: getPinnedBookmarks,
   getFavoriteBookmarks: getFavoriteBookmarks,
   getBookmarksFromHistory: getBookmarksFromHistory,
+  getAllBookmarksFromHistory: getAllBookmarksFromHistory,
   rateBookmark: rateBookmark,
   followUser: followUser,
   unfollowUser: unfollowUser,

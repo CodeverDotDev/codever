@@ -14,6 +14,7 @@ export interface UserData {
   following?: Following;
   followers?: string[];
   showAllPublicInFeed?: boolean;
+  enableLocalStorage?: boolean;
 }
 
 export interface Profile {

@@ -33,7 +33,7 @@ import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -52,6 +52,8 @@ export class SaveBookmarkFormComponent implements OnInit {
   // chips
   selectable = true;
   removable = true;
+
+  autocompleteTagsOptionActivated = false;
 
   // Enter, comma, space
   separatorKeysCodes = [ENTER, COMMA, SPACE];
@@ -123,8 +125,8 @@ export class SaveBookmarkFormComponent implements OnInit {
       this.userDataStore.getUserData$().subscribe(userData => {
         this.userData = userData;
       });
-      this.suggestedTagsStore.getSuggestedTags$(this.userId).subscribe(tags => {
-        this.autocompleteTags = tags.sort();
+      this.suggestedTagsStore.getSuggestedBookmarkTags$(this.userId).subscribe(tags => {
+        this.autocompleteTags = tags;
 
         this.filteredTags = this.tagsControl.valueChanges.pipe(
           startWith(null),
@@ -190,7 +192,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     if (isNewBookmark) {
       this.bookmarkForm.get('location').valueChanges.pipe(
         debounceTime(1000),
-        distinctUntilChanged(), )
+        distinctUntilChanged(),)
         .subscribe(location => {
           this.verifyExistenceInPersonalBookmarks(location);
         });
@@ -301,7 +303,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     const value = event.value;
 
     // Add our tag (avoid double adding in angular material 9 see - https://stackoverflow.com/questions/52608700/angular-material-mat-chips-autocomplete-bug-matchipinputtokenend-executed-befo)
-    if ((value || '').trim()) {
+    if ((value || '').trim() && !this.autocompleteTagsOptionActivated) {
       const tags = this.bookmarkForm.get('tags') as FormArray;
       tags.push(this.formBuilder.control(value.trim().toLowerCase()));
     }
@@ -315,11 +317,18 @@ export class SaveBookmarkFormComponent implements OnInit {
     this.tags.markAsDirty();
   }
 
+  optionActivated($event: MatAutocompleteActivatedEvent) {
+    if ($event.option) {
+      this.autocompleteTagsOptionActivated = true;
+    }
+  }
+
   selectedTag(event: MatAutocompleteSelectedEvent): void {
     const tags = this.bookmarkForm.get('tags') as FormArray;
     tags.push(this.formBuilder.control(event.option.viewValue));
     this.tagInput.nativeElement.value = '';
     this.tagsControl.setValue(null);
+    this.autocompleteTagsOptionActivated = false;
   }
 
   removeTagByIndex(index: number): void {
@@ -368,7 +377,6 @@ export class SaveBookmarkFormComponent implements OnInit {
         concatMap((updatedBookmark) => this.userDataStore.updateUserDataHistory$(updatedBookmark))
       ).subscribe(
         () => {
-          this.userdataHistoryStore.publishHistoryStore(bookmark);
           this.navigateToHomePageHistoryTab()
         },
         () => this.navigateToHomePageHistoryTab() // TODO add error handling - popover
@@ -429,8 +437,9 @@ export class SaveBookmarkFormComponent implements OnInit {
           const pinned = this.bookmarkForm.controls['pinned'].value;
           this.userDataStore.updateHistoryReadLaterAndPinned$(newBookmark, readLater, pinned).subscribe(() => {
             this.publishInUserDataStores(newBookmark, readLater, pinned);
+            this.navigateToBookmarkDetails(newBookmark);
 
-            if (this.url) {
+/*            if (this.url) {
               if (this.popup) {
                 this.navigateToBookmarkDetails(newBookmark);
               } else if (this.popupExt) {
@@ -440,7 +449,7 @@ export class SaveBookmarkFormComponent implements OnInit {
               }
             } else {
               this.navigateToHomePageHistoryTab();
-            }
+            }*/
           });
         },
         (error: HttpResponse<any>) => {
@@ -460,7 +469,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   private publishInUserDataStores(bookmark: Bookmark, readLater, pinned) {
-    this.userdataHistoryStore.publishHistoryStore(bookmark);
+    this.userdataHistoryStore.updateHistoryStore(bookmark);
     if (readLater) {
       this.userDataReadLaterStore.publishReadLaterAfterCreation(bookmark);
     }

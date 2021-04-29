@@ -14,3 +14,7 @@
   padding-left: 0;
   margin: 0.5rem 0;
 }
+
+::ng-deep .mat-dialog-container {
+  overflow-y: hidden !important;
+}

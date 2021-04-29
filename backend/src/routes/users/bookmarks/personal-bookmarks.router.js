@@ -98,10 +98,11 @@ personalBookmarksRouter.get('/suggested-tags', keycloak.protect(), async (reques
 
 personalBookmarksRouter.get('/tags', keycloak.protect(), NodeCache.cacheMiddleware(240), async (request, response) => {
   UserIdValidator.validateUserId(request);
-  const tags = await PersonalBookmarksService.getUserTags(request.params.userId);
+  const tags = await PersonalBookmarksService.getUserTagsAggregated(request.params.userId);
 
   response.send(tags);
 });
+
 
 
 /* GET bookmark of user */

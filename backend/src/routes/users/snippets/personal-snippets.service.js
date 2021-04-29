@@ -136,7 +136,6 @@ let getUserSnippetTags = async (userId) => {
   });
 
   return userTags;
-
 };
 
 

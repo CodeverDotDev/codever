@@ -15,6 +15,8 @@ import { Md5 } from 'ts-md5/dist/md5';
 import { UserDataHistoryStore } from './userdata.history.store';
 import { PersonalBookmarksService } from '../personal-bookmarks.service';
 import { environment } from '../../../environments/environment';
+import { LocalStorageService } from '../cache/local-storage.service';
+import { localStorageKeys } from '../model/localstorage.cache-keys';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +41,8 @@ export class UserDataStore {
               private userInfoStore: UserInfoStore,
               private notifyStoresService: NotifyStoresService,
               private userDataHistoryStore: UserDataHistoryStore,
-              private personalBookmarksService: PersonalBookmarksService
+              private personalBookmarksService: PersonalBookmarksService,
+              private localStorageService: LocalStorageService
   ) {
   }
 
@@ -53,7 +56,10 @@ export class UserDataStore {
             : b.lastAccessedAt == null ? -1 : a.lastAccessedAt < b.lastAccessedAt ? 1 : a.lastAccessedAt > b.lastAccessedAt ? -1 : 0;
           return result;
         });
-        this._userData.next(this.userData)
+        if (this.userData.enableLocalStorage) {
+          this.localStorageService.save({key: localStorageKeys.userLocalStorageConsent, data: true});
+        }
+        this._userData.next(this.userData);
       },
       (errorResponse: HttpErrorResponse) => {
         const userDataNotCreated = errorResponse.status === 404 && errorResponse.error.message === `User data NOT_FOUND for userId: ${this.userId}`;
@@ -122,8 +128,8 @@ export class UserDataStore {
 
   updateHistoryReadLaterAndPinned$(bookmark: Bookmark, readLater: boolean, pinned: boolean): Observable<UserData> {
     // history
-    this.removeFromUserDataHistoryIfPresent(bookmark);
-    this.userData.history.unshift(bookmark._id);
+    this.placeOnTopOfUserHistoryIds(bookmark._id);
+
     let readLaterList = [];
     if (readLater) {
       this.userData.readLater.push(bookmark._id);
@@ -148,12 +154,12 @@ export class UserDataStore {
 
   updateUserDataHistory$(bookmark: Bookmark): Observable<UserData> {
     // history
-    this.removeFromUserDataHistoryIfPresent(bookmark);
-    this.userData.history.unshift(bookmark._id);
+    this.placeOnTopOfUserHistoryIds(bookmark._id);
+
     const obs: Observable<any> = this.userService.updateUserDataHistory(this.userId, this.userData.history);
     obs.subscribe(
       () => {
-        this.userDataHistoryStore.publishHistoryStore(bookmark);
+        this.userDataHistoryStore.updateHistoryStore(bookmark);
         if (this.userId === bookmark.userId) {
           this.personalBookmarksService.increaseOwnerVisitCount(bookmark).subscribe();
         }
@@ -164,11 +170,12 @@ export class UserDataStore {
     return obs;
   }
 
-  private removeFromUserDataHistoryIfPresent(bookmark: Bookmark) {
-    const index = this.userData.history.indexOf(bookmark._id);
+  private placeOnTopOfUserHistoryIds(bookmarkId: string) {
+    const index = this.userData.history.indexOf(bookmarkId);
     if (index !== -1) {
       this.userData.history.splice(index, 1);
     }
+    this.userData.history.unshift(bookmarkId);
   }
 
   addToUserDataPinned$(bookmark: Bookmark): Observable<UserData> {
@@ -186,6 +193,18 @@ export class UserDataStore {
   updateFeedToggleOption$(showAllPublicInFeed: boolean): Observable<UserData> {
     this.userData.showAllPublicInFeed = showAllPublicInFeed;
     const obs: Observable<any> = this.userService.updateFeedToggleOption(this.userId, showAllPublicInFeed);
+    obs.subscribe(
+      () => {
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
+  }
+
+  updateLocalStorageOption$(enableLocalStorage: boolean): Observable<UserData> {
+    this.userData.enableLocalStorage = enableLocalStorage;
+    const obs: Observable<any> = this.userService.updateLocalStorageOption(this.userId, enableLocalStorage);
     obs.subscribe(
       () => {
         this._userData.next(this.userData);

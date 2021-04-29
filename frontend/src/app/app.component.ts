@@ -114,9 +114,8 @@ export class AppComponent implements OnInit {
       dialogConfig.autoFocus = true;
       dialogConfig.width = this.getRelativeWidth();
       dialogConfig.height = this.getRelativeHeight();
-      const lastNoBookmarksToShowInHistoryDialog = 20;
       dialogConfig.data = {
-        bookmarks$: this.userDataHistoryStore.getHistory$(this.userId, 1, lastNoBookmarksToShowInHistoryDialog),
+        bookmarks$: this.userDataHistoryStore.getAllHistory$(this.userId),
         title: '<i class="fas fa-history"></i> History'
       };
 

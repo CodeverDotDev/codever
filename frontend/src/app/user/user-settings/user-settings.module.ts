@@ -11,6 +11,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ImageUploadService } from './user-profile/image-upload.service';
 import { UserFeedComponent } from './user-feed/user-feed.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { UserLocalStorageSetupComponent } from './local-storage/user-local-storage-setup.component';
 
 
 const userSettingsRoutes: Routes = [
@@ -25,7 +26,8 @@ const userSettingsRoutes: Routes = [
   declarations: [
     UserSettingsComponent,
     UserProfileComponent,
-    UserFeedComponent
+    UserFeedComponent,
+    UserLocalStorageSetupComponent
   ],
   imports: [
     RouterModule.forChild(userSettingsRoutes),
