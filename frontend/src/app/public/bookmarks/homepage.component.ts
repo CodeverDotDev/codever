@@ -82,10 +82,10 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
           this.userId = userInfo.sub;
+          this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn); // this method is called twice to avoid autmatically executing changeTab events
           this.userData$ = this.userDataStore.getUserData$();
           this.userData$.subscribe(userData => {
             this.userData = userData;
-            this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn); // this method is called twice to avoid autmatically executing changeTab events
           });
         });
       } else {
