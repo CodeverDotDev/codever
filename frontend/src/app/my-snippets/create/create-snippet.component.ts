@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-new-personal-bookmark-form',
+  selector: 'app-new-personal-snippet-form',
   templateUrl: './create-snippet.component.html',
   styleUrls: ['./create-snippet.component.scss']
 })

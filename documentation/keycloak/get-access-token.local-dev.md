@@ -36,6 +36,6 @@ curl  \
   -d 'client_id=keycloak-realm-admin-service-account' \
   -d 'client_secret=faa0b469-1d3d-45fe-9b9b-9813f32aa8c7' \
   -d 'grant_type=client_credentials' \
-  'https://www.bookmarks.dev/auth/realms/bookmarks/protocol/openid-connect/token' \
+  'https://www.codever.land/auth/realms/bookmarks/protocol/openid-connect/token' \
 | jq -r '.access_token'
 ```

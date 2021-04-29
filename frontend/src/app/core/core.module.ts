@@ -33,6 +33,7 @@ import { DialogMeasurementsHelper } from './helper/dialog-measurements.helper';
 import { LocalStorageService } from './cache/local-storage.service';
 import { HttpClientLocalStorageService } from './cache/http-client-local-storage.service';
 import { SystemService } from './cache/system.service';
+import { CookieService } from './cookies/cookie.service';
 
 
 /**
@@ -83,7 +84,8 @@ import { SystemService } from './cache/system.service';
     AddToHistoryService,
     LocalStorageService,
     HttpClientLocalStorageService,
-    SystemService
+    SystemService,
+    CookieService
   ]
 })
 export class CoreModule {

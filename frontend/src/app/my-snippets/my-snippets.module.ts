@@ -20,7 +20,7 @@ import { CopyToMineSnippetComponent } from './copy-to-mine/copy-to-mine-snippet.
 import { UpdateSnippetFormComponent } from './update-snippet-form/update-snippet-form.component';
 import { SnippetFormBaseComponent } from './snippet-form-base/snippet-form.base.component';
 
-const codeletRoutes: Routes = [
+const snippetRoutes: Routes = [
   {
     path: 'new',
     canActivate: [AuthGuard],
@@ -55,7 +55,7 @@ const codeletRoutes: Routes = [
     SnippetFormBaseComponent
   ],
   imports: [
-    RouterModule.forChild(codeletRoutes),
+    RouterModule.forChild(snippetRoutes),
     SharedModule,
     MatTabsModule,
     MatAutocompleteModule,

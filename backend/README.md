@@ -1,5 +1,5 @@
 # Backend
-Back-end REST API for [www.bookmarks.dev](http://www.bookmarks.dev).
+Back-end REST API for [www.codever.land](http://www.codever.land).
 
 ## Development
 This section concerns about the local developemnt
@@ -21,7 +21,7 @@ The API has an OpenAPI specification available at [docs/openapi/openapi.yaml](do
 
 Based on that a GUI is generated to test the API directly from browser:
 * [local](http://localhost:3000/api/docs)
-* [production](https://www.bookmarks.dev/api/docs)
+* [production](https://www.codever.land/api/docs)
 
 ## Deployment
 We currently use [pm2](https://pm2.keymetrics.io/) to start the project in production

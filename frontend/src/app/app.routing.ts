@@ -2,8 +2,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { PageNotFoundComponent } from './not-found.component';
 import { SnippetNotFoundComponent } from './not-found/snippet-not-found.component';
+import { NewEntryComponent } from './new-entry/new-entry.component';
+import { AuthGuard } from './core/auth/auth-guard.service';
 
 const routes: Routes = [
+  {
+    path: 'new-entry',
+    canActivate: [AuthGuard],
+    component: NewEntryComponent
+  },
   {
     path: 'my-bookmarks',
     loadChildren: () => import('app/my-bookmarks/my-bookmarks.module').then(m => m.MyBookmarksModule)

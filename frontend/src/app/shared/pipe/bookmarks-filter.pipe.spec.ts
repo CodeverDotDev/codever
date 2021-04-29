@@ -48,7 +48,7 @@ describe('BookmarkFilter Pipe', () => {
         'mongodb'
       ],
       'publishedOn': new Date(),
-      'sourceCodeURL': 'https://github.com/BookmarksDev/bookmarks.dev',
+      'sourceCodeURL': 'https://github.com/codeverland/codever',
       'description': 'Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs',
       'descriptionHtml': '<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>',
       'userId': 'testUserId',

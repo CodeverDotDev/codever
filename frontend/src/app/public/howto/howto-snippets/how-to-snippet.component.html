@@ -22,7 +22,7 @@
               <i class="fa fa-lg fa-plus"></i>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" routerLink="/personal/new"><i class="fa fa-bookmark"></i> Bookmark</a>
+              <a class="dropdown-item" routerLink="/my-bookmarks/new"><i class="fa fa-bookmark"></i> Bookmark</a>
               <a class="dropdown-item" routerLink="/my-snippets/new"><i class="fa fa-code"></i> Code snippet</a>
             </div>
           </div>
@@ -86,7 +86,7 @@
 
                 <div class="alert-info p-2 mt-2">
                   The search at the end of the demo is configured with an AlfredApp custom query - <code
-                  [innerHTML]="'https://www.bookmarks.dev/search?q={query}&sd=my-snippets'"></code>
+                  [innerHTML]="'https://www.codever.land/search?q={query}&sd=my-snippets'"></code>
                 </div>
               </div>
             </ng-template>
@@ -102,7 +102,7 @@
                   href="https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev"
                   target="_blank"
                   title="Plugin to save code snippets from IntelliJ">
-                  Save to Bookmarks.dev plugin
+                  Save to Codever plugin
                   <sup class="external-link-hint">
                     <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
                   </sup>

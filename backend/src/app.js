@@ -11,6 +11,7 @@ const userRouter = require('./routes/users/user.router');
 const webPageInfoRouter = require('./routes/webpage-info/webpage-info.router');
 const adminRouter = require('./routes/admin/admin.router');
 const publicBookmarksRouter = require('./routes/public/public-bookmarks.router');
+const feedbackRouter = require('./routes/public/feedback/feedback.router');
 const publicSnippetsRouter = require('./routes/public/public-snippets.router');
 const publicUsersRouter = require('./routes/public/public-users.router');
 const {MongoError} = require('mongodb');
@@ -27,9 +28,6 @@ const HttpStatus = require('http-status-codes/index');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./docs/openapi/openapi.yaml');
-
-const NodeCache = require( "node-cache" );
-const nodeCache = new NodeCache();
 
 const app = express();
 
@@ -94,6 +92,7 @@ app.use('/api', apiBasePathRouter);
 app.use('/api/version', versionRouter);
 app.use('/api/public/users', publicUsersRouter);
 app.use('/api/public/bookmarks', publicBookmarksRouter);
+app.use('/api/public/feedback', feedbackRouter);
 app.use('/api/public/snippets', publicSnippetsRouter);
 app.use('/api/personal/users', userRouter);
 app.use('/api/webpage-info', webPageInfoRouter);

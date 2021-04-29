@@ -20,7 +20,7 @@
               <i class="fa fa-lg fa-plus"></i>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton-save-bookmark">
-              <a class="dropdown-item" routerLink="/personal/new"><i class="fa fa-bookmark"></i> Bookmark</a>
+              <a class="dropdown-item" routerLink="/my-bookmarks/new"><i class="fa fa-bookmark"></i> Bookmark</a>
               <a class="dropdown-item" routerLink="/my-snippets/new"><i class="fa fa-code"></i> Code snippet</a>
             </div>
           </div>
@@ -79,7 +79,7 @@
                         </li>
                         <li>
                           <app-add-bookmark-bookmarklet [withWindowDialog]="false"></app-add-bookmark-bookmarklet>
-                          - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
+                          - when clicked it redirects you to the <a href="https://www.codever.land/my-bookmarks/new">New
                           Bookmark</a> form.
                           Once added you go back to the initial page [<em>recommended for <strong>phones</strong> or
                           smaller
@@ -99,8 +99,8 @@
 
 
           <p class="note_normal mt-4">Worthy public bookmarks are regularly published on Github
-            at <a href="https://github.com/BookmarksDev/bookmarks#readme">
-              https://github.com/BookmarksDev/bookmarks</a>
+            at <a href="https://github.com/CodeverLand/bookmarks#readme">
+              https://github.com/CodeverLand/bookmarks</a>
           </p>
 
         </div>
@@ -151,7 +151,7 @@
           <p class="alert-info p-2 mt-2">
             The search at the end of the demo is configured in <a href="https://www.alfredapp.com/">AlfredApp</a>
             with a custom query - <code
-            [innerHTML]="'https://www.bookmarks.dev/search?q={query}&sd=my-bookmarks'"></code>
+            [innerHTML]="'https://www.codever.land/search?q={query}&sd=my-bookmarks'"></code>
           </p>
 
           <p class="alert-info p-2 mt-2"> You can change <strong>where</strong> you want to search by selecting other
@@ -200,7 +200,7 @@
 
             You can trigger the same search as above by calling the following URL:
 
-            <a href="https://www.bookmarks.dev/search?q=exception [java]&sd=my-bookmarks">https://www.bookmarks.dev/search?q=exception
+            <a href="https://www.codever.land/search?q=exception [java]&sd=my-bookmarks">https://www.codever.land/search?q=exception
               [java]&sd=personal</a>
             <ul>
               <li><strong>q</strong> - here is your input search text</li>
@@ -234,7 +234,7 @@
       <ng-template matTabContent>
         <div class="mt-4">
           <h5>Export bookmarks from favorite browsers</h5>
-          You can import your browser bookmarks to Bookmarks.dev. First you need to export the bookmarks as a html file
+          You can import your browser bookmarks to Codever. First you need to export the bookmarks as a html file
           from your favourite browser:
           <ul>
             <li>
@@ -252,7 +252,7 @@
             </li>
           </ul>
 
-          <h5>Import bookmarks to Bookmarks.dev</h5>
+          <h5>Import bookmarks to Codever</h5>
           To import the bookmarks html file <em>navigate to</em> your <a [routerLink]="['/dashboard']">
           <i class="fas fa-tachometer-alt"></i> Dashboard </a> and
           select

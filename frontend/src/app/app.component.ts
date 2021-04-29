@@ -8,6 +8,10 @@ import { UserDataPinnedStore } from './core/user/userdata.pinned.store';
 import { UserInfoStore } from './core/user/user-info.store';
 import { KeycloakService } from 'keycloak-angular';
 import { LoginRequiredDialogComponent } from './shared/dialog/login-required-dialog/login-required-dialog.component';
+import iziToast, { IziToastSettings } from 'izitoast';
+import { Feedback } from './core/model/feedback';
+import { CookieService } from './core/cookies/cookie.service';
+import { FeedbackService } from './public/feedback/feedback.service';
 
 @Component({
   selector: 'app-root',
@@ -16,22 +20,31 @@ import { LoginRequiredDialogComponent } from './shared/dialog/login-required-dia
 })
 export class AppComponent implements OnInit {
 
-  url = 'https://www.bookmarks.dev';
+  url = 'https://www.codever.land';
   innerWidth: any;
 
   userIsLoggedIn = false;
   userId: string;
+
+  showAcknowledgeMigrationHeader = false;
 
   constructor(private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private userDataHistoryStore: UserDataHistoryStore,
               private userDataPinnedStore: UserDataPinnedStore,
               private historyDialog: MatDialog,
-              private loginDialog: MatDialog) {
+              private loginDialog: MatDialog,
+              private cookieService: CookieService,
+              private feedbackService: FeedbackService) {
     this.innerWidth = 100;
   }
 
   ngOnInit(): void {
+    const acknowledgedCodeverMigration = this.cookieService.readCookie('acknowledge-codever-migration');
+    if (acknowledgedCodeverMigration !== 'true') {
+      this.showAcknowledgeMigrationHeader = true;
+    }
+
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
@@ -126,5 +139,26 @@ export class AppComponent implements OnInit {
         }
       );
     }
+  }
+
+  public acknowledgeCodeverRebranding(response: string) {
+    this.cookieService.createCookie('acknowledge-codever-migration', 'true', 365);
+    this.showAcknowledgeMigrationHeader = false;
+
+    const iziToastSettings: IziToastSettings = {
+      title: 'Thank you for your feedback',
+      timeout: 3000,
+      position: 'topRight'
+    }
+    iziToast.success(iziToastSettings);
+
+    const feedback: Feedback = {
+      question: 'Bookmarks.dev rebranding to Codever',
+      userResponse: response,
+      userId: this.userId ? this.userId : null,
+      userAgent: navigator.userAgent
+    }
+
+    this.feedbackService.createBookmark(feedback).subscribe();
   }
 }

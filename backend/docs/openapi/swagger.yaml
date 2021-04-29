@@ -2,8 +2,8 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: Bookmarks.dev api
-  description: API supporting the bookmarks.dev website
+  title: Codever api
+  description: API supporting the Codever
   contact:
     name: Adrian Matei
     email: ama@codingpedia.org

@@ -46,7 +46,7 @@ describe('Test scrape functionality', function () {
   it('should should fail trying to scrape without authorization', async function () {
     const response = await request(app)
       .get(basePathApiWebPageInfo + '/scrape')
-      .query({location: 'https://www.bookmarks.dev'});
+      .query({location: 'https://www.codever.land'});
 
     expect(response.statusCode).to.equal(HttpStatus.FORBIDDEN);
   });
@@ -54,7 +54,7 @@ describe('Test scrape functionality', function () {
   it('should succeed scraping website', async function () {
     const response = await request(app)
       .get(basePathApiWebPageInfo + '/scrape')
-      .query({location: 'https://www.bookmarks.dev'})
+      .query({location: 'https://www.codever.land'})
       .set('Authorization', bearerToken);
 
     expect(response.statusCode).to.equal(HttpStatus.OK);
