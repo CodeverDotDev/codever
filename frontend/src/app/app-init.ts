@@ -2,11 +2,13 @@ import { KeycloakEventType, KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environment';
 import { UserInfoStore } from './core/user/user-info.store';
 import { UserDataStore } from './core/user/userdata.store';
+import { SystemService } from './core/cache/system.service';
 
-export function initializer(keycloak: KeycloakService, userInfoStore: UserInfoStore, userDataStore: UserDataStore): () => Promise<any> {
+export function initializer(keycloak: KeycloakService, userInfoStore: UserInfoStore, userDataStore: UserDataStore, _systemService: SystemService): () => Promise<any> {
   return (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       try {
+        _systemService.checkVersion();
         keycloak.keycloakEvents$.subscribe(event => {
           if (event.type === KeycloakEventType.OnAuthSuccess) {
             userInfoStore.getUserInfo$().subscribe( userInfo => {

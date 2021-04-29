@@ -7,13 +7,16 @@ import { environment } from 'environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { shareReplay } from 'rxjs/operators';
 import { UsedTag } from '../../core/model/used-tag';
+import { HttpClientLocalStorageService } from '../../core/cache/http-client-local-storage.service';
+
+import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
 
 @Injectable()
 export class PublicBookmarksService {
 
   private publicBookmarksApiBaseUrl = '';  // URL to web api
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private cacheHttpClient: HttpClientLocalStorageService) {
     this.publicBookmarksApiBaseUrl = environment.API_URL + '/public/bookmarks';
   }
 
@@ -48,11 +51,18 @@ export class PublicBookmarksService {
       .get<Bookmark>(`${this.publicBookmarksApiBaseUrl}/${bookmarkId}`);
   }
 
-  getMostUsedPublicTags(limit: number): Observable<UsedTag> {
+  getMostUsedPublicTags(limit: number): Observable<UsedTag[]> {
     const params = new HttpParams()
       .set('limit', limit.toString());
-    return this.httpClient
-      .get<UsedTag>(`${this.publicBookmarksApiBaseUrl}/tags`, {params: params});
+    const options = {
+      url: `${this.publicBookmarksApiBaseUrl}/tags`,
+      key: localStorageKeys.mostUsedPublicTagsBookmarks,
+      cacheHours: 24 * 7,
+      params: params
+    };
+
+    return this.cacheHttpClient
+      .get<UsedTag[]>(options);
   }
 
 }

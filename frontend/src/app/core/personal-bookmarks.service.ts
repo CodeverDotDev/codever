@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { UsedTag } from './model/used-tag';
+import { HttpClientLocalStorageService, HttpOptions } from './cache/http-client-local-storage.service';
+import { localStorageKeys } from './model/localstorage.cache-keys';
 
 @Injectable()
 export class PersonalBookmarksService {
@@ -15,18 +17,22 @@ export class PersonalBookmarksService {
   private personalBookmarksApiBaseUrl = '';  // URL to web api
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private httpClientLocalStorageService: HttpClientLocalStorageService) {
     this.personalBookmarksApiBaseUrl = environment.API_URL + '/personal/users';
   }
 
-  getSuggestedTagsForUser(userId: String): Observable<string[]> {
-    return this.httpClient.get<string[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/suggested-tags`)
-      .pipe(shareReplay(1));
-  }
+  getUserTagsForBookmarks(userId: String): Observable<UsedTag[]> {
+    const options: HttpOptions = {
+      url: `${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/tags`,
+      key: localStorageKeys.personalTagsBookmarks,
+      cacheHours: 24,
+      isSensitive: true
+    }; // cache it for a day
 
-  getUserTags(userId: String): Observable<UsedTag[]> {
-    return this.httpClient.get<UsedTag[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/tags`)
-      .pipe(shareReplay(1));
+    return this.httpClientLocalStorageService
+      .get<UsedTag[]>(options)
+      .pipe(shareReplay());
   }
 
   getFilteredPersonalBookmarks(searchText: string, limit: number, page: number, userId: string, include: string): Observable<Bookmark[]> {

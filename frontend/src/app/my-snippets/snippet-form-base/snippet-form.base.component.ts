@@ -64,9 +64,9 @@ export class SnippetFormBaseComponent implements OnInit {
   ngOnInit(): void {
     this.userInfoStore.getUserInfo$().subscribe(userInfo => {
       this.userId = userInfo.sub;
-      this.suggestedTagsStore.getSuggestedSnippetTags$(this.userId).subscribe(userTags => {
+      this.suggestedTagsStore.getSuggestedSnippetTags$(this.userId).subscribe(suggestedSnippetTags => {
 
-        this.autocompleteTags = userTags.concat(this.commonSnippetTags.filter((item => userTags.indexOf(item) < 0))).sort();
+        this.autocompleteTags = suggestedSnippetTags;
 
         this.filteredTags = this.tagsControl.valueChanges.pipe(
           startWith(null),

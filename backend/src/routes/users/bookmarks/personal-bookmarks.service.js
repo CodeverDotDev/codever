@@ -34,7 +34,7 @@ let getSuggestedTagsForUser = async (userId) => {
 
 
 /* GET tags used by user */
-let getUserTags = async (userId) => {
+let getUserTagsAggregated = async (userId) => {
 
   const aggregatedTags = await Bookmark.aggregate([
     //first stage - filter
@@ -275,6 +275,6 @@ module.exports = {
   deleteBookmarkById: deleteBookmarkById,
   deleteBookmarkByLocation: deleteBookmarkByLocation,
   deletePrivateBookmarksByTag: deletePrivateBookmarksByTag,
-  getUserTags: getUserTags,
+  getUserTagsAggregated: getUserTagsAggregated,
   updateDisplayNameInBookmarks: updateDisplayNameInBookmarks
 };

@@ -8,8 +8,8 @@
 </div>
 <mat-dialog-content *ngIf="(bookmarks$ | async) as bookmarks" class="mt-2 pt-1 pb-1">
   <mat-accordion>
-    <mat-expansion-panel *ngFor="let bookmark of bookmarks | bookmarkFilter: filterText">
-      <mat-expansion-panel-header>
+    <mat-expansion-panel *ngFor="let bookmark of bookmarks | bookmarkFilter: filterText; index as i">
+      <mat-expansion-panel-header *ngIf="i<15">
         <div class="p-3">
           <h5 class="card-title">
             <a href="{{bookmark.location}}"

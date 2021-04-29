@@ -25,6 +25,7 @@ import { AppService } from './app.service';
 import { HIGHLIGHT_OPTIONS, HighlightModule, HighlightOptions } from 'ngx-highlightjs';
 import { MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule } from '@angular/material/chips';
 import { SnippetNotFoundComponent } from './not-found/snippet-not-found.component';
+import { SystemService } from './core/cache/system.service';
 
 @NgModule({
   exports: [
@@ -53,7 +54,7 @@ import { SnippetNotFoundComponent } from './not-found/snippet-not-found.componen
       provide: APP_INITIALIZER,
       useFactory: initializer,
       multi: true,
-      deps: [KeycloakService, UserInfoStore, UserDataStore]
+      deps: [KeycloakService, UserInfoStore, UserDataStore, SystemService]
     },
     {
       provide: MAT_CHIPS_DEFAULT_OPTIONS,

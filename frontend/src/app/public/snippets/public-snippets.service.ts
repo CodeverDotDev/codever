@@ -9,6 +9,8 @@ import { catchError, shareReplay } from 'rxjs/operators';
 import { Snippet } from '../../core/model/snippet';
 import { Router } from '@angular/router';
 import { UsedTag } from '../../core/model/used-tag';
+import { HttpClientLocalStorageService } from '../../core/cache/http-client-local-storage.service';
+import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
 
 @Injectable()
 export class PublicSnippetsService {
@@ -16,7 +18,7 @@ export class PublicSnippetsService {
   private publicSnippetsApiBaseUrl = '';  // URL to web api
 
   constructor(private router: Router,
-              private httpClient: HttpClient) {
+              private httpClient: HttpClient, private cacheHttpClient: HttpClientLocalStorageService) {
     this.publicSnippetsApiBaseUrl = environment.API_URL + '/public/snippets';
   }
 
@@ -52,11 +54,18 @@ export class PublicSnippetsService {
         }));
   }
 
-  getMostUsedPublicTagsForSnippets(limit: number): Observable<UsedTag> {
+  getMostUsedPublicTagsForSnippets(limit: number): Observable<UsedTag[]> {
     const params = new HttpParams()
       .set('limit', limit.toString());
-    return this.httpClient
-      .get<UsedTag>(`${this.publicSnippetsApiBaseUrl}/tags`, {params: params});
+    const options = {
+      url: `${this.publicSnippetsApiBaseUrl}/tags`,
+      key: localStorageKeys.mostUsedPublicTagsSnippets,
+      cacheHours: 24 * 7,
+      params: params
+    };
+
+    return this.cacheHttpClient
+      .get<UsedTag[]>(options);
   }
 
 }

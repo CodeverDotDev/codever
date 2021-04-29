@@ -30,6 +30,9 @@ import { StackoverflowHelper } from './helper/stackoverflow.helper';
 import { LoginDialogHelperService } from './login-dialog-helper.service';
 import { AddToHistoryService } from './user/add-to-history.service';
 import { DialogMeasurementsHelper } from './helper/dialog-measurements.helper';
+import { LocalStorageService } from './cache/local-storage.service';
+import { HttpClientLocalStorageService } from './cache/http-client-local-storage.service';
+import { SystemService } from './cache/system.service';
 
 
 /**
@@ -77,7 +80,10 @@ import { DialogMeasurementsHelper } from './helper/dialog-measurements.helper';
     StackoverflowHelper,
     DialogMeasurementsHelper,
     LoginDialogHelperService,
-    AddToHistoryService
+    AddToHistoryService,
+    LocalStorageService,
+    HttpClientLocalStorageService,
+    SystemService
   ]
 })
 export class CoreModule {
