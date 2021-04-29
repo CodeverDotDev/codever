@@ -8,8 +8,6 @@
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
  See deployment for notes on how to deploy the project on a live system.
  
-> To test against a local backend follow the instructions for the [API-Backend](https://github.com/BookmarksDev/bookmarks.dev-api#readme) (docker based)
- 
 ## Development setup
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli)

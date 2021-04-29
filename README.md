@@ -1,28 +1,36 @@
-# Bookmarks and Snippets Manager for Developers & Co
+<div align="center">
+	<img width="560" src="documentation/img/codever-readme-header-560x120.png" alt="Codever">
+</div>
 
-Use our [**HowTo pages**](https://www.bookmarks.dev/howto) to get you going
-and [start saving time and nerves](https://dev.to/ama/how-i-manage-my-dev-bookmarks-and-save-time-and-nerves-56ae) when managing
+<div align="center" style="font-size: large">
+    <h2> ⚡🔖️ Bookmarks and snippets manager for developers & co 🔖⚡️ </h2>
+</div>
+
+<br />
+
+:point_right: &nbsp; Use our [**HowTo pages**](https://www.codever.land/howto)
+ to get you going and [start saving time and nerves](https://dev.to/ama/how-i-manage-my-dev-bookmarks-and-save-time-and-nerves-56ae) when managing
 your bookmarks and code snippets. The following extensions will assist you along the way:
 
 ## Extensions
 
 ### Bookmarks
 
-| [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/save-link-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.bookmarks.dev/howto/bookmarklets) |
+| [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/save-link-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) |
 |:---:|:---:|
-| [Extension](https://chrome.google.com/webstore/detail/save-link-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb) | [Bookmarklet](https://www.bookmarks.dev/howto/bookmarklets) |
+| [Extension](https://chrome.google.com/webstore/detail/save-link-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb) | [Bookmarklet](https://www.codever.land/howto/bookmarklets) |
 
 ### Snippets
 
-| [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne) | [![Firefox](documentation/img/fx-24.png)](https://addons.mozilla.org/en-GB/firefox/addon/save-code-to-bookmarks-dev/) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.bookmarks.dev/howto/bookmarklets) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev) |
+| [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne) | [![Firefox](documentation/img/fx-24.png)](https://addons.mozilla.org/en-GB/firefox/addon/save-code-to-bookmarks-dev/) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev) |
 |:---:|:---:|:---:|:---:|
-| [Extension](https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne) | [Extension](https://addons.mozilla.org/en-GB/firefox/addon/save-code-to-bookmarks-dev/) | [Bookmarklet](https://www.bookmarks.dev/howto/bookmarklets) | [Plugin](https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev) |
+| [Extension](https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne) | [Extension](https://addons.mozilla.org/en-GB/firefox/addon/save-code-to-bookmarks-dev/) | [Bookmarklet](https://www.codever.land/howto/bookmarklets) | [Plugin](https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev) |
 
 **Chrome extension usage example**
- [![Save to Bookmarks.dev chrome extension usage](documentation/gif/save-youtube-video-to-bookmarks.dev.gif)](https://www.bookmarks.dev/howto)
+ [![Save to Codever chrome extension usage](documentation/gif/save-youtube-video-to-bookmarks.dev.gif)](https://www.codever.land/howto)
 
 *******************************************************************************************************************************
-> Worthy public bookmarks are published regularly on Github in a [separate repository](https://github.com/BookmarksDev/bookmarks).
+> Worthy public bookmarks are published regularly on Github in a [separate repository](https://github.com/CodeverLand/bookmarks).
 *******************************************************************************************************************************
 
 ## Setup (development or self hosting)
@@ -35,7 +43,7 @@ The project is developed with the MEAN stack and [Keycloak](http://www.keycloak.
 The project contains two parts
 
 * [frontend](frontend) which makes up the User Interface. This uses with Angular and Angular CLI.
-* [backend](backend) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.bookmarks.dev/api/docs)
+* [backend](backend) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.codever.land/api/docs)
 
 ### Prerequisites
 
@@ -150,7 +158,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/BookmarksDev/bookmarks.dev/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/codeverland/codever/tags).
 
 ## Changelog
 

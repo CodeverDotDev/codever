@@ -21,6 +21,7 @@ import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details
 import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
 import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component';
 import { SnippetTagService } from './snippets/tag/snippet-tag.service';
+import { FeedbackService } from './feedback/feedback.service';
 
 @NgModule({
   declarations : [
@@ -49,7 +50,8 @@ import { SnippetTagService } from './snippets/tag/snippet-tag.service';
     PublicBookmarksStore,
     UserPublicService,
     BookmarksTaggedService,
-    SnippetTagService
+    SnippetTagService,
+    FeedbackService
   ]
 })
 export class PublicResourcesModule {}

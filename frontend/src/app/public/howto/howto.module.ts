@@ -11,6 +11,7 @@ import { AddSnippetBookmarkletComponent } from './shared/add-snippet-bookmarklet
 import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.component';
+import { CodeverBookmarkletComponent } from './shared/codever-bookmarklet/codever-bookmarklet.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.comp
     HowToSnippetComponent,
     AddBookmarkBookmarkletComponent,
     AddSnippetBookmarkletComponent,
+    CodeverBookmarkletComponent,
     HowtoHotkeysComponent
   ],
   exports: [

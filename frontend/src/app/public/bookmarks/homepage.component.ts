@@ -75,6 +75,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   }
 
   ngOnInit(): void {
+
     const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
     const page = this.route.snapshot.queryParamMap.get('page');
     this.userIsLoggedIn$ = this.keycloakService.isLoggedIn();
@@ -251,7 +252,6 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
         queryParams: {q: '[' + tag + ']', sd: SearchDomain.PUBLIC_BOOKMARKS, page: this.FIRST_PAGE}
       });
   }
-
 }
 
 export interface TabSwitchQueryParams {

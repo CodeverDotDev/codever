@@ -29,7 +29,7 @@ export class TweetComponent implements AfterViewInit {
   @Input() text = '';
   @Input() url = location.href;
   @Input() hashTags = '';
-  @Input() via = 'BookmarksDev';
+  @Input() via = 'CodeverLand';
   @Input() related = '';
 
 

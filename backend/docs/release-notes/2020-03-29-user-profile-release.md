@@ -1,5 +1,5 @@
 ## Backup - DONE
-- Mongo 
+- Mongo
 
 ## Set `displayName`
 
@@ -14,7 +14,7 @@ Client - `keycloak-realm-admin-service-account`
 ### Set display name for `user` via admin api call - DONE
 Get Access Token and Call admin api
 ```
-PUT https://www.bookmarks.dev/api/admin/users/profile/display-name
+PUT https://www.codever.land/api/admin/users/profile/display-name
 ```
 
 ### Set displayName for bookmarks - DONE
@@ -24,7 +24,7 @@ PUT https://www.bookmarks.dev/api/admin/users/profile/display-name
 
 Get Access Token and Call admin api
 ```
-PUT https://www.bookmarks.dev/api/admin/users/profile/image-url
+PUT https://www.codever.land/api/admin/users/profile/image-url
 ```
 
 ### set AWS env variables in pm2 for prod - DONE
