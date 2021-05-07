@@ -4,9 +4,11 @@ import { Bookmark } from '../../../core/model/bookmark';
 import { UserData } from '../../../core/model/user-data';
 import { MyBookmarksStore } from '../../../core/user/my-bookmarks.store';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
-import { Snippet } from '../../../core/model/snippet';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BackupBookmarksDialogComponent } from '../../../shared/dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
+import { ImportBookmarksDialogComponent } from '../../../shared/dialog/import-bookmarks-dialog/import-bookmarks-dialog.component';
+import { UserDataHistoryStore } from '../../../core/user/userdata.history.store';
+import { UserDataStore } from '../../../core/user/userdata.store';
 
 @Component({
   selector: 'app-user-bookmarks',
@@ -26,6 +28,9 @@ export class UserBookmarksComponent implements OnChanges {
 
   constructor(private myBookmarksStore: MyBookmarksStore,
               private personalBookmarksService: PersonalBookmarksService,
+              private userDataHistoryStore: UserDataHistoryStore,
+              private userDataStore: UserDataStore,
+              private importBookmarksDialog: MatDialog,
               private backupBookmarksDialog: MatDialog) {
   }
 
@@ -67,6 +72,22 @@ export class UserBookmarksComponent implements OnChanges {
     };
 
     this.backupBookmarksDialog.open(BackupBookmarksDialogComponent, dialogConfig);
+  }
+
+  public importBookmarks() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      userId: this.userId
+    };
+
+    const dialogRef = this.backupBookmarksDialog.open(ImportBookmarksDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+      const addToHistory = result.created.sort((a, b) => (a.createdAt > b.createdAt) ? -1 : ((b.createdAt > a.createdAt) ? 1 : 0));
+      this.userDataStore.updateUserDataHistoryBulk$(addToHistory.slice(0, 50));
+      this.myBookmarksStore.addToLastCreatedBulk(addToHistory.slice(0, 30));
+    });
   }
 
 }

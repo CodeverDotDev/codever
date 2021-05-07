@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { PlayYoutubeVideoDialogComponent } from '../dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { KeycloakService } from 'keycloak-angular';
 import { UserInfoStore } from '../../core/user/user-info.store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
@@ -20,7 +20,7 @@ import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookma
 import { AdminService } from '../../core/admin/admin.service';
 import { FeedStore } from '../../core/user/feed-store.service';
 import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
 import { AddToHistoryService } from '../../core/user/add-to-history.service';
 
@@ -29,7 +29,7 @@ import { AddToHistoryService } from '../../core/user/add-to-history.service';
   templateUrl: './bookmark-list-element.component.html',
   styleUrls: ['./bookmark-list-element.component.scss']
 })
-export class BookmarkListElementComponent extends TagFollowingBaseComponent implements OnInit {
+export class BookmarkListElementComponent extends TagFollowingBaseComponent implements OnInit, OnDestroy {
 
   @Input()
   bookmark: Bookmark;
@@ -54,6 +54,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   @Input()
   filterText = '';
 
+  private navigationSubscription: Subscription;
+
   constructor(private router: Router,
               private playYoutubeDialog: MatDialog,
               public loginDialog: MatDialog,
@@ -73,6 +75,22 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private myBookmarksStore: MyBookmarksStore,
               public addToHistoryService: AddToHistoryService) {
     super(loginDialog, userDataWatchedTagsStore);
+
+    // START force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
+    this.router.routeReuseStrategy.shouldReuseRoute = function(){
+      return false;
+    }
+
+    this.navigationSubscription = this.router.events.subscribe((evt) => {
+      if (evt instanceof NavigationEnd) {
+        // trick the Router into believing it's last link wasn't previously loaded
+        this.router.navigated = false;
+        // if you need to scroll back to top, here is the right place
+        window.scrollTo(0, 0);
+      }
+    });
+    // END force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
+    // apparently still an issue around the topic - need to keep an eye on it - https://github.com/angular/angular/issues/21115
   }
 
   ngOnInit(): void {
@@ -238,6 +256,12 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     } else {
       const link = [`./my-bookmarks/${bookmark._id}/copy-to-mine`];
       this.router.navigate(link, {state: {bookmark: bookmark}});
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
     }
   }
 

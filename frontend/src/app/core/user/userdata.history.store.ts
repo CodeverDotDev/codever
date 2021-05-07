@@ -31,20 +31,29 @@ export class UserDataHistoryStore {
   }
 
 
-  getHistory$(userId: string, page: number, last?: number): Observable<Bookmark[]> {
-
-    const paginationSize = last || environment.PAGINATION_PAGE_SIZE;
-    this.userService.getHistory$(userId, page, paginationSize).subscribe(data => {
-      this.historyHasBeenLoaded = true;
-      this.loadedPage = page;
-      this._history.next(data);
-    });
+  getHistory$(userId: string, page: number): Observable<Bookmark[]> {
+    if (this.loadedPage !== page || !this.historyHasBeenLoaded) {
+      if (!this.historyHasBeenLoaded) {
+        this.historyHasBeenLoaded = true;
+      }
+      this.userService.getHistory$(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
+        this.historyHasBeenLoaded = true;
+        this.loadedPage = page;
+        this._history.next(data);
+      });
+    }
 
     return this._history.asObservable();
   }
 
   getAllHistory$(userId: string): Observable<Bookmark[]> {
     return this.userService.getAllHistory$(userId);
+  }
+
+  public updateHistoryStoreBulk(bookmarks: Bookmark[]) {
+    for (const bookmark of bookmarks) {
+      this.updateHistoryStore(bookmark);
+    }
   }
 
   public updateHistoryStore(bookmark: Bookmark) {
@@ -66,7 +75,7 @@ export class UserDataHistoryStore {
 
       const options: LocalStorageSaveOptions = {
         key: localStorageKeys.userHistoryBookmarks,
-        data: bookmarks,
+        data: bookmarks.slice(0, 100), // in "backend" are max 50 stored
         expirationHours: 24
       };
       this.localStorageService.save(options);

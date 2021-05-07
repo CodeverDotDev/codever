@@ -1,11 +1,11 @@
 <div id="howto-snippets-content" class="jumbotron">
   <h2>Bookmarks <i class="fa fa-bookmark"></i></h2>
-  <p class="lead"><strong>Custom-made bookmarks management</strong> for developers & co.</p>
+  <p class="lead"><strong>Bookmarks management</strong> tailored for Developers & Co.</p>
 
   <mat-tab-group>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label"><i class="fas fa-save"></i> Save bookmarks</span>
+        <span class="app-tab-label"><i class="fas fa-save"></i> Save</span>
       </ng-template>
       <ng-template matTabContent>
         <div style="display: flex; align-items: center" class="mt-3 mb-2 alert-info p-2">
@@ -81,11 +81,13 @@
                           <app-add-bookmark-bookmarklet [withWindowDialog]="false"></app-add-bookmark-bookmarklet>
                           - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
                           Bookmark</a> form.
-                          Once added you go back to the initial page [<em>recommended for <strong>phones</strong> or smaller
+                          Once added you go back to the initial page [<em>recommended for <strong>phones</strong> or
+                          smaller
                           resolution devices</em>]
                         </li>
                       </ul>
-                      <p class="note_normal">You can <strong>select the text on page</strong> that you want to be added to the
+                      <p class="note_normal">You can <strong>select the text on page</strong> that you want to be added
+                        to the
                         description of the bookmark
                         before you click the bookmarklet's link </p>
                     </li>
@@ -106,7 +108,7 @@
     </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label"><i class="fa fa-search"></i> Search bookmarks</span>
+        <span class="app-tab-label"><i class="fa fa-search"></i> Search</span>
       </ng-template>
       <ng-template matTabContent>
         <div class="mt-4">
@@ -222,6 +224,69 @@
               Mac
             </p>
           </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"><i class="fas fa-file-upload"></i> Import</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="mt-4">
+          <h5>Export bookmarks from favorite browsers</h5>
+          You can import your browser bookmarks to Bookmarks.dev. First you need to export the bookmarks as a html file
+          from your favourite browser:
+          <ul>
+            <li>
+              <a href="https://support.google.com/chrome/answer/96816?hl=en"><b>Chrome</b> - Move bookmarks to another
+                browser</a>
+            </li>
+            <li>
+              <a
+                href="https://support.mozilla.org/en-US/kb/export-firefox-bookmarks-to-backup-or-transfer"><b>Firefox</b>
+                - Export Firefox bookmarks to an HTML file to back up or transfer bookmarks</a>
+            </li>
+            <li>
+              <a href="https://support.apple.com/en-gb/guide/safari/ibrw1015/mac#ibrw52131fd9"><b>Safari</b> - Import
+                and export bookmarks in Safari on Mac</a>
+            </li>
+          </ul>
+
+          <h5>Import bookmarks to Bookmarks.dev</h5>
+          To import the bookmarks html file <em>navigate to</em> your <a [routerLink]="['/dashboard']">
+          <i class="fas fa-tachometer-alt"></i> Dashboard </a> and
+          select
+          <button type="button" class="btn btn-sm btn-outline-primary" title="Export my bookmarks">
+            Import <i class="fas fa-file-upload"></i></button>
+          button under <b>My Bookmarks</b>
+
+          <div class="alert alert-info mt-4">
+            <h5>Note:</h5>
+            <ul>
+              <li> all imported browser bookmarks are <b>private</b></li>
+              <li> all imported browser bookmarks are tagged with <b>imported-browser</b> plus folders they
+                were found on (space characters in folder names are transformed in "-" - e.g. "Java tutorials" becomes
+                "java-tutorials")
+              </li>
+            </ul>
+          </div>
+
+
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"> <i class="fas fa-file-download"></i> Export</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="mt-4">
+          You can export your personal bookmarks if you <em>navigate to</em> your <a [routerLink]="['/dashboard']">
+          <i class="fas fa-tachometer-alt"></i> Dashboard </a> and
+          select
+          <button type="button" class="btn btn-sm btn-outline-primary" title="Export my bookmarks">
+            Export <i class="fas fa-file-download"></i></button>
+          button under <b>My Bookmarks</b>
         </div>
       </ng-template>
     </mat-tab>

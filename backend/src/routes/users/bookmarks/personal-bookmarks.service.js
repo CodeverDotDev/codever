@@ -241,13 +241,32 @@ let deleteBookmarkByLocation = async (userId, location) => {
 * DELETE private bookmarks for user by "tag"
 */
 let deletePrivateBookmarksByTag = async (userId, tag) => {
-  await Bookmark.deleteMany({
+  const bookmarksToBeDeleted = await Bookmark.find({
     userId: userId,
     public: false,
     tags: tag
   });
 
-  return true;
+  const bookmarksToBeDeleteIds = bookmarksToBeDeleted.map(bookmark => bookmark._id.toString());
+
+  const deletedResponse = await Bookmark.deleteMany({
+    userId: userId,
+    public: false,
+    tags: tag
+  });
+
+  await User.updateOne(
+    {userId: userId},
+    {
+      $pull: {
+        history: {$in: bookmarksToBeDeleteIds},
+        pinned: {$in: bookmarksToBeDeleteIds},
+        readLater: {$in: bookmarksToBeDeleteIds}
+      }
+    }
+  );
+
+  return deletedResponse.deletedCount;
 };
 
 /*

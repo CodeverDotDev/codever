@@ -23,7 +23,7 @@ module.exports = {
       userDisplayName: req.body.userDisplayName,
       public: req.body.public,
       lastAccessedAt: req.body.lastAccessedAt,
-      likeCount: req.body.likeCount,
+      likeCount: req.body.likeCount || 0,
       youtubeVideoId: youtubeVideoId ? youtubeVideoId : null,
       stackoverflowQuestionId: stackoverflowQuestionId ? stackoverflowQuestionId : null
     });

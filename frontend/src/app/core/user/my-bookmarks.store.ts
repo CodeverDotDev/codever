@@ -15,7 +15,8 @@ export class MyBookmarksStore {
   private _mostLiked: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private mostLikedBeenLoaded = false;
 
-  constructor(private personalBookmarksService: PersonalBookmarksService) {}
+  constructor(private personalBookmarksService: PersonalBookmarksService) {
+  }
 
   getLastCreated$(userId, orderBy): Observable<Bookmark[]> {
     if (!this.lastCreatedHaveBeenLoaded) {
@@ -27,12 +28,18 @@ export class MyBookmarksStore {
     return this._lastCreated.asObservable();
   }
 
+  addToLastCreatedBulk(bookmarks: Bookmark[]): void {
+    for (const bookmark of bookmarks) {
+      this.addToLastCreated(bookmark);
+    }
+  }
+
   addToLastCreated(bookmark: Bookmark): void {
     if (this.lastCreatedHaveBeenLoaded) {
       const lastCreated = this._lastCreated.getValue();
       lastCreated.unshift(bookmark);
 
-      this._lastCreated.next(lastCreated);
+      this._lastCreated.next(lastCreated.slice(0, 30));
     }
   }
 

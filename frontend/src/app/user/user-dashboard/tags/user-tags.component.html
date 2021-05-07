@@ -49,7 +49,7 @@
                 <a (click)="ignoreTag(tag, true)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag </a>
               </ng-template>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Tag's page </a>
+              <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Public page </a>
             </div>
           </div>
         </ng-template>
@@ -103,7 +103,7 @@
                 <a (click)="ignoreTag(tag, true)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag </a>
               </ng-template>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Tag's page </a>
+              <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Public page </a>
             </div>
           </div>
         </ng-template>
@@ -162,7 +162,7 @@
                 [queryParams]="{q: '[' + tag.name + '] user:' + userId, sd: 'public-bookmarks'}"
                 class="dropdown-item">
                 <i class="fas fa-history"></i> My public posts </a>
-              <a class="dropdown-item" [routerLink]="['/tagged', tag.name]"><i class="fas fa-tag"></i> Tag's page </a>
+              <a class="dropdown-item" [routerLink]="['/tagged', tag.name]"><i class="fas fa-tag"></i> Public page </a>
             </div>
           </div>
         </ng-template>
@@ -215,7 +215,7 @@
                 [queryParams]="{q: 'private:only [' + tag.name + ']', sd: 'my-bookmarks'}"
                 class="dropdown-item">
                 <i class="fas fa-history"></i> My private posts </a>
-              <a class="dropdown-item" [routerLink]="['/tagged', tag.name]"><i class="fas fa-tag"></i> Tag's page </a>
+              <a class="dropdown-item" [routerLink]="['/tagged', tag.name]"><i class="fas fa-tag"></i> Public page </a>
             </div>
           </div>
         </ng-template>

@@ -19,9 +19,11 @@ export class BookmarksFilterPipe implements PipeTransform {
       return bookmarks;
     }
 
-    return bookmarks.filter(bookmark => {
+    const filteredBookmarks = bookmarks.filter(bookmark => {
       return this.bookmarkContainsFilterText(bookmark, filterText);
     });
+
+    return filteredBookmarks;
   }
 
   private bookmarkContainsFilterText(bookmark: Bookmark, filterText): boolean {
@@ -50,7 +52,7 @@ export class BookmarksFilterPipe implements PipeTransform {
   private bookmarkContainsFilterTerm(bookmark: Bookmark, filterTerm: string) {
     return bookmark.name.toLocaleLowerCase().includes(filterTerm)
       || bookmark.location.toLocaleLowerCase().includes(filterTerm)
-      || bookmark.description.toLocaleLowerCase().includes(filterTerm)
+      || bookmark.description?.toLocaleLowerCase().includes(filterTerm)
       || this.tagsHaveFilterText(bookmark.tags, filterTerm);
   }
 }

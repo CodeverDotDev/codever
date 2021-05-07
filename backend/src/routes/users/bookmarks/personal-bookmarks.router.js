@@ -181,8 +181,8 @@ personalBookmarksRouter.delete('/', keycloak.protect(), async (request, response
 
   const {tag, type} = request.query;
   if ( tag && type === 'private' ) {
-    await PersonalBookmarksService.deletePrivateBookmarksByTag(request.params.userId, tag);
-    return response.status(HttpStatus.NO_CONTENT).send();
+    const deletedCount = await PersonalBookmarksService.deletePrivateBookmarksByTag(request.params.userId, tag);
+    return response.status(HttpStatus.OK).send({deletedCount: deletedCount});
   } else {
     next();
   }
