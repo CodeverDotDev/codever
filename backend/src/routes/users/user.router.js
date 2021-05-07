@@ -1,16 +1,19 @@
 const express = require('express');
 const usersRouter = express.Router();
 
+const cheerio = require('cheerio');
+
 const personalBookmarksRouter = require('./bookmarks/personal-bookmarks.router');
 const personalCodeletsRouter = require('./snippets/personal-snippets.router');
 
 const Keycloak = require('keycloak-connect');
 
+const browserBookmarksImportService = require('./browser-bookmarks-import.service');
 
 const UserDataService = require('./user-data.service');
 const userIdTokenValidator = require('./userid.validator');
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
-const ImageValidationHelper = require('./image-validation.helper');
+const FileTypeValidationHelper = require('./file-type-validation.helper');
 
 const common = require('../../common/config');
 const config = common.config();
@@ -37,7 +40,7 @@ const upload = multer({
   limits: {
     fileSize: 1048576 // 1MB
   },
-  fileFilter: ImageValidationHelper.imageFilter,
+  fileFilter: FileTypeValidationHelper.imageFilter,
   storage: multerS3({
     s3: s3,
     bucket: 'bookmarks.dev',
@@ -52,6 +55,11 @@ const upload = multer({
       cb(null, key);
     }
   })
+});
+
+const uploadBookmarks = multer({
+  fileFilter: FileTypeValidationHelper.htmlFileFilter,
+  storage: multer.memoryStorage()
 });
 
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
@@ -74,6 +82,19 @@ usersRouter.post('/:userId/profile-picture', keycloak.protect(),
       url: request.file.location
     });
   });
+
+/* upload bookmarks */
+usersRouter.post('/:userId/bookmarks/upload', keycloak.protect(),
+  uploadBookmarks.single("bookmarks" /* name attribute of <file> element in your form */),
+  async (request, response) => {
+    userIdTokenValidator.validateUserId(request);
+
+    const userDisplayName = request.body.userDisplayName;
+    const importResponse = await browserBookmarksImportService.importBrowserBookmarks(request.params.userId, request.file.buffer, userDisplayName);
+
+    return response.status(HttpStatus.OK).send(importResponse);
+  }
+);
 
 /* GET list of bookmarks to be read later for the user */
 usersRouter.get('/:userId/read-later', keycloak.protect(), async (request, response) => {
@@ -145,7 +166,7 @@ usersRouter.get('/:userId/history', keycloak.protect(), async (request, response
   userIdTokenValidator.validateUserId(request);
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
   let bookmarksFromHistory;
-  if (page) {
+  if ( page ) {
     bookmarksFromHistory = await UserDataService.getBookmarksFromHistory(request.params.userId, page, limit);
   } else {
     bookmarksFromHistory = await UserDataService.getAllBookmarksFromHistory(request.params.userId, page, limit);
@@ -254,7 +275,7 @@ usersRouter.patch('/:userId/bookmarks/likes/:bookmarkId', keycloak.protect(), as
   return response.status(HttpStatus.OK).send(bookmark);
 });
 
-usersRouter.patch('/:userId/following/users/:followedUserId', keycloak.protect(), async  (request, response) => {
+usersRouter.patch('/:userId/following/users/:followedUserId', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
   const {userId, followedUserId} = request.params;
   const updatedUserData = await UserDataService.followUser(userId, followedUserId);
@@ -262,7 +283,7 @@ usersRouter.patch('/:userId/following/users/:followedUserId', keycloak.protect()
   return response.status(HttpStatus.OK).send(updatedUserData);
 });
 
-usersRouter.patch('/:userId/unfollowing/users/:followedUserId', keycloak.protect(), async  (request, response) => {
+usersRouter.patch('/:userId/unfollowing/users/:followedUserId', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
   const {userId, followedUserId} = request.params;
   const updatedUserData = await UserDataService.unfollowUser(userId, followedUserId);
@@ -270,20 +291,19 @@ usersRouter.patch('/:userId/unfollowing/users/:followedUserId', keycloak.protect
   return response.status(HttpStatus.OK).send(updatedUserData);
 });
 
-usersRouter.get('/:userId/following/users', keycloak.protect(), async  (request, response) => {
+usersRouter.get('/:userId/following/users', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
   const followedUsersData = await UserDataService.getFollowedUsersData(request.params.userId);
 
   return response.status(HttpStatus.OK).send(followedUsersData);
 });
 
-usersRouter.get('/:userId/followers', keycloak.protect(), async  (request, response) => {
+usersRouter.get('/:userId/followers', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
   const followers = await UserDataService.getFollowers(request.params.userId);
 
   return response.status(HttpStatus.OK).send(followers);
 });
-
 
 
 module.exports = usersRouter;

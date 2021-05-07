@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable, of, Subscription} from 'rxjs';
 import {LoaderService} from '../../core/loader/loader.service';
 import {debounceTime} from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class LoaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.loaderService.isLoading.pipe(
-      debounceTime(1000) // if every all requests are done within a second no loader will be shown
+      debounceTime(environment.LOADER_SHOWN_DELAY) // if every all requests are done within a second no loader will be shown
     )
       .subscribe(isLoading => {
         this.isLoading = of(isLoading)

@@ -76,34 +76,38 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
 
   ngOnInit(): void {
     const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
+    const page = this.route.snapshot.queryParamMap.get('page');
     this.userIsLoggedIn$ = this.keycloakService.isLoggedIn();
+
     this.userIsLoggedIn$.then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.userId = userInfo.sub;
-          this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn); // this method is called twice to avoid autmatically executing changeTab events
-          this.userData$ = this.userDataStore.getUserData$();
-          this.userData$.subscribe(userData => {
-            this.userData = userData;
-          });
+        this.userData$ = this.userDataStore.getUserData$();
+        this.userData$.subscribe(userData => {
+          this.userId = userData.userId;
+          this.userData = userData;
+          this.setSelectedTabIndexFromQueryParam(tabQueryParam);
+          this.setCurrentPageFromQueryParam(page, this.selectedTabIndex);
+          if (this.selectedTabIndex === TabIndex.Feed) {
+            this.setFeedBookmarks$(true, this.currentPageFeed);
+          }
         });
       } else {
-        this.setTabIndexFromQueryParam(tabQueryParam, isLoggedIn);
+        this.setSelectedTabIndexFromQueryParam(tabQueryParam);
+        this.setCurrentPageFromQueryParam(page, this.selectedTabIndex);
+        if (this.selectedTabIndex === TabIndex.Feed) {
+          this.setFeedBookmarks$(false, this.currentPageFeed);
+        }
       }
-
-      const page = this.route.snapshot.queryParamMap.get('page');
-      this.setCurrentPageFromQueryParam(page);
 
       this.listenToClickOnLogoEvent(isLoggedIn);
 
       this.listenToPaginationNavigationEvents(isLoggedIn);
-
     });
 
   }
 
-  private setTabIndexFromQueryParam(tabQueryParam, isLoggedIn: boolean) {
+  private setSelectedTabIndexFromQueryParam(tabQueryParam) {
     switch (tabQueryParam) {
       case 'history': {
         this.selectedTabIndex = TabIndex.History;
@@ -118,8 +122,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
         break;
       }
       default: {
-        this.selectedTabIndex = 0;
-        this.setFeedBookmarks$(isLoggedIn, this.FIRST_PAGE);
+        this.selectedTabIndex = TabIndex.Feed;
       }
     }
   }
@@ -132,9 +135,9 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
     }
   }
 
-  private setCurrentPageFromQueryParam(page: string) {
+  private setCurrentPageFromQueryParam(page: string, selectedTabIndex: number) {
     if (page) {
-      switch (this.selectedTabIndex) {
+      switch (selectedTabIndex) {
         case TabIndex.Feed:
           this.currentPageFeed = parseInt(page, 0);
           break;
@@ -199,8 +202,8 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
       }
     }
 
-    const queryParamsFromIndex = this.getQueryParamsForTabIndex(this.selectedTabIndex);
-    this.router.navigate(['.'],
+    const queryParamsFromIndex = this.getQueryParamsForSelectedTab(this.selectedTabIndex);
+    this.router.navigate([],
       {
         relativeTo: this.route,
         queryParams: {
@@ -218,7 +221,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
     this.keycloakService.login(options);
   }
 
-  private getQueryParamsForTabIndex(tabIndex: number): TabSwitchQueryParams {
+  private getQueryParamsForSelectedTab(tabIndex: number): TabSwitchQueryParams {
     switch (tabIndex) {
       case TabIndex.History: {
         return {tab: 'history', page: this.currentPageHistory}

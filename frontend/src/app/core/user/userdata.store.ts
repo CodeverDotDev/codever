@@ -170,6 +170,24 @@ export class UserDataStore {
     return obs;
   }
 
+  public updateUserDataHistoryBulk$(bookmarks: Bookmark[]): Observable<UserData> {
+    for (let i = bookmarks.length - 1; i >= 0; i--) {
+      this.placeOnTopOfUserHistoryIds(bookmarks[i]._id);
+    }
+
+
+    const obs: Observable<any> = this.userService.updateUserDataHistory(this.userId, this.userData.history);
+    obs.subscribe(
+      () => {
+        this.userDataHistoryStore.updateHistoryStoreBulk(bookmarks);
+
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
+  }
+
   private placeOnTopOfUserHistoryIds(bookmarkId: string) {
     const index = this.userData.history.indexOf(bookmarkId);
     if (index !== -1) {

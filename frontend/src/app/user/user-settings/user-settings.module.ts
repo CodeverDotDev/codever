@@ -27,7 +27,7 @@ const userSettingsRoutes: Routes = [
     UserSettingsComponent,
     UserProfileComponent,
     UserFeedComponent,
-    UserLocalStorageSetupComponent
+    UserLocalStorageSetupComponent,
   ],
   imports: [
     RouterModule.forChild(userSettingsRoutes),
@@ -37,7 +37,6 @@ const userSettingsRoutes: Routes = [
     CommonModule,
     MatTabsModule,
     MatRadioModule,
-
   ],
   providers: [
     ImageUploadService

@@ -90,6 +90,14 @@ export class UserDataService {
     return this.httpClient.post(`${this.usersApiBaseUrl}/${userId}/profile-picture`, formData);
   }
 
+  uploadBookmarks(userId: String, bookmarks: File, userDisplayName: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('bookmarks', bookmarks);
+    formData.append('userDisplayName', userDisplayName);
+
+    return this.httpClient.post(`${this.usersApiBaseUrl}/${userId}/bookmarks/upload`, formData);
+  }
+
   getReadLater(userId: string, page: number, limit: number): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('page', page.toString())

@@ -100,7 +100,7 @@ export class PersonalBookmarksService {
       .pipe(shareReplay(1));
   }
 
-  deletePrivateBookmarksForTag(userId: string, tag: string) {
+  deletePrivateBookmarksForTag(userId: string, tag: string): Observable<any> {
     const params = new HttpParams()
       .set('tag', tag)
       .set('type', 'private');

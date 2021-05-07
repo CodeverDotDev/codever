@@ -23,8 +23,8 @@
             ],
             "styles": [
               "src/styles.scss",
-               "./node_modules/highlight.js/styles/dracula.css"
-               // "./node_modules/highlight.js/styles/androidstudio.css"
+               "./node_modules/highlight.js/styles/dracula.css",
+              "./node_modules/izitoast/dist/css/iziToast.min.css"
               // "./node_modules/highlight.js/styles/github.css"
             ],
             "scripts": []

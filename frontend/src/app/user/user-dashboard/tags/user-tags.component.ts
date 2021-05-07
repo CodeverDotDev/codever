@@ -10,6 +10,9 @@ import { PersonalBookmarksService } from '../../../core/personal-bookmarks.servi
 import { UserData } from '../../../core/model/user-data';
 import { UserDataWatchedTagsStore } from '../../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../../../shared/tag-following-base-component/tag-following-base.component';
+import { LocalStorageService } from '../../../core/cache/local-storage.service';
+import { localStorageKeys } from '../../../core/model/localstorage.cache-keys';
+import iziToast, { IziToastSettings } from 'izitoast';
 
 @Component({
   selector: 'app-user-tags',
@@ -38,8 +41,10 @@ export class UserTagsComponent extends TagFollowingBaseComponent implements OnIn
     private userDataService: UserDataService,
     public userDataWatchedTagsStore: UserDataWatchedTagsStore,
     public loginDialog: MatDialog,
-    private personaBookmarksService: PersonalBookmarksService) {
-      super(loginDialog, userDataWatchedTagsStore);
+    private personaBookmarksService: PersonalBookmarksService,
+    private localStorageService: LocalStorageService,
+  ) {
+    super(loginDialog, userDataWatchedTagsStore);
   }
 
   ngOnInit() {
@@ -97,9 +102,18 @@ export class UserTagsComponent extends TagFollowingBaseComponent implements OnIn
   }
 
   deletePrivateBookmarksForTag(tag: string): void {
-    this.personaBookmarksService.deletePrivateBookmarksForTag(this.userId, tag).subscribe(() => {
+    this.personaBookmarksService.deletePrivateBookmarksForTag(this.userId, tag).subscribe((response) => {
       console.log('Private bookmarks deleted for tag - ', tag);
-      window.location.reload();
+      this.localStorageService.cleanCachedKey(localStorageKeys.userHistoryBookmarks);
+      const iziToastSettings: IziToastSettings = {
+        title: `${response.deletedCount} bookmarks successfully deleted`,
+        timeout: 3000,
+        message: 'Page will reload shortly'
+      }
+      iziToast.success(iziToastSettings);
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000)
     });
   }
 

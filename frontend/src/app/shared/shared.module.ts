@@ -34,6 +34,7 @@ import { AddTagFilterToSearchDialogComponent } from './search/add-tag-filter-dia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { ImportBookmarksDialogComponent } from './dialog/import-bookmarks-dialog/import-bookmarks-dialog.component';
 
 
 /**
@@ -71,6 +72,7 @@ import { MatIconModule } from '@angular/material/icon';
     LoginRequiredDialogComponent,
     PlayYoutubeVideoDialogComponent,
     BackupBookmarksDialogComponent,
+    ImportBookmarksDialogComponent,
     TagFollowingBaseComponent,
     SearchbarComponent,
     NavigationComponent,
