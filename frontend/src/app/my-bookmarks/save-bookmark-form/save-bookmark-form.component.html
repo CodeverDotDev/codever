@@ -2,7 +2,7 @@
      [ngClass]="makePublic === false ? 'private-bookmark': 'bg-white'">
   <form [formGroup]="bookmarkForm" novalidate (ngSubmit)="saveBookmark(bookmarkForm.value)">
     <div class="form-group">
-      <label for="location">Location*</label>
+      <label for="location" class="space-btw-wrapper"><span>Location*</span> <span><i class="fas fa-lg fa-bookmark"></i></span></label>
       <div class="input-group">
         <input type="text" class="form-control" id="location"
                required

@@ -97,6 +97,11 @@ ul.tags li:not(:last-child):after {
   padding: 0;
 }
 
+.space-btw-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
 // filter search-box
 /* Bootstrap 4 text input with search icon */
 .has-search  {
