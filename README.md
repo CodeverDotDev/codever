@@ -8,29 +8,27 @@
 
 <br />
 
-:point_right: &nbsp; Use our [**HowTo pages**](https://www.codever.land/howto)
+:point_right: Use our [**HowTo pages**](https://www.codever.land/howto)
  to get you going and [start saving time and nerves](https://dev.to/ama/how-i-manage-my-dev-bookmarks-and-save-time-and-nerves-56ae) when managing
 your bookmarks and code snippets. The following extensions will assist you along the way:
 
 ## Extensions
 
-### Bookmarks
-
-| [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/save-link-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) |
-|:---:|:---:|
-| [Extension](https://chrome.google.com/webstore/detail/save-link-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb) | [Bookmarklet](https://www.codever.land/howto/bookmarklets) |
-
-### Snippets
-
-| [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne) | [![Firefox](documentation/img/fx-24.png)](https://addons.mozilla.org/en-GB/firefox/addon/save-code-to-bookmarks-dev/) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev) |
+| [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
 |:---:|:---:|:---:|:---:|
-| [Extension](https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne) | [Extension](https://addons.mozilla.org/en-GB/firefox/addon/save-code-to-bookmarks-dev/) | [Bookmarklet](https://www.codever.land/howto/bookmarklets) | [Plugin](https://plugins.jetbrains.com/plugin/14456-save-to-bookmarks-dev) |
+| [Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [Bookmarklet](https://www.codever.land/howto/bookmarklets) | [Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
 
-**Chrome extension usage example**
- [![Save to Codever chrome extension usage](documentation/gif/save-youtube-video-to-bookmarks.dev.gif)](https://www.codever.land/howto)
+### Chrome extension usage example - save snippet
+ 
+ ![Save to Codever chrome extension usage](documentation/gif/codever-save-snippet-800x454.gif)
+ 
+> The other extension function more or less after the same principle
+
+
+## Public bookmarks
 
 *******************************************************************************************************************************
-> Worthy public bookmarks are published regularly on Github in a [separate repository](https://github.com/CodeverLand/bookmarks).
+> Worthy public bookmarks are published regularly on Github at [codeverland/bookmarks](https://github.com/codeverland/bookmarks).
 *******************************************************************************************************************************
 
 ## Setup (development or self hosting)
