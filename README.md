@@ -15,7 +15,7 @@ your bookmarks and code snippets. The following extensions will assist you along
 ## Extensions
 
 | [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
-|:---:|:---:|:---:|:---:|
+|:---:|:---:|:---:|
 | [Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [Bookmarklet](https://www.codever.land/howto/bookmarklets) | [Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
 
 ### Chrome extension usage example - save snippet
@@ -28,7 +28,7 @@ your bookmarks and code snippets. The following extensions will assist you along
 ## Public bookmarks
 
 *******************************************************************************************************************************
-> Worthy public bookmarks are published regularly on Github at [codeverland/bookmarks](https://github.com/codeverland/bookmarks).
+Worthy public bookmarks are published regularly on Github at [codeverland/bookmarks](https://github.com/codeverland/bookmarks).
 *******************************************************************************************************************************
 
 ## Setup (development or self hosting)
