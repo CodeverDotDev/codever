@@ -58,15 +58,16 @@ What you need to run this app:
 
 #### Start MongoDB and Keycloak server
 
-For the **first time** uncomment the following line:
+:warning: &nbsp; When you run `docker compose` for the **first time** uncomment the following `-Dkeycloak.migration.action=import` line :
 
 ```yaml
     #command: -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=IGNORE_EXISTING
 ```
 
-in the [docker-compose](docker-compose.yml) file, so that the initial Keycloak setup (realm and users) is loaded.
+in the [docker-compose](docker-compose.yml) file, **so that the initial Keycloak setup (realm and users) is loaded**.
 
-> For further startups of docker-compose you should comment back this line, as it starts faster
+> :warning: &nbsp; For further startups of docker-compose you should **comment back this line**, as it starts faster
+
 
 ```bash
 docker-compose up
@@ -97,8 +98,8 @@ This starts
 
 * the API with [nodemon](http://nodemon.io) at [http://localhost:3000/api](http://localhost:3000/api)
  and will watch for code changes in backend and automatically redeploy.
-* the frontend available at [http://localhost:4200](http://localhost:4200). Login the user/password `mock/mock` configured
-  for you in the initial Keycloak setup. Some bookmarks are initially loaded with your account so you can start playing with them.
+* the frontend available at [http://localhost:4200](http://localhost:4200). Login the user/password **`mock/mock`** configured
+  for you in the initial Keycloak setup. Some bookmarks are initially loaded with your account, so you can start playing with them.
 
 > You can create your own test user, or any other extra users by following the screenshots in
 > [Add a Keycloak user](documentation/keycloak/add-keycloak-user.md) to create it.
@@ -131,7 +132,7 @@ A report will be generated.
 
 You can use the Dev Tools in Chromium based browsers (e.g. Chrome, Brave). Navigate to **Sources** and the file you want to set your break points, like in the following example:
 
-![chrome-dev-tools-debugging](documentation/debugging/frontend/debug-frontend-chrome-dev-tools.png)
+![chrome-dev-tools-debugging](documentation/debugging/frontend/debug-frontend-chrome-dev-tools-800x574.png)
 
 #### IntelliJ
 
@@ -143,7 +144,7 @@ In IntelliJ you add Javascript Debug configuration as shown below:
 
 #### IntelliJ / Webstorm (Node.js plugin is required)
 
-The ``npm run debug`` starts nodemon with the `--inspect` parameter so you can attach to this process, by using the following configuration:
+The `npm run debug` starts nodemon with the `--inspect` parameter so you can attach to this process, by using the following configuration:
 ![nodejs-remote-debugging](documentation/debugging/backend/attach-to-nodemon-process.png)
 
 #### Visual Studio Code
