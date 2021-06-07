@@ -22,7 +22,7 @@ your bookmarks and code snippets. The following helpers and extensions will assi
  
  ![Save to Codever chrome extension usage](documentation/gif/codever-save-snippet-800x454.gif)
  
-> The other extension function more or less after the same principle
+> The other extensions function more or less after the same principle
 
 
 ## Public bookmarks
