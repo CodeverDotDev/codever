@@ -20,7 +20,7 @@ your bookmarks and code snippets. The following helpers and extensions will assi
 
 ### Chrome extension usage example - save snippet
  
- ![Save to Codever chrome extension usage](documentation/gif/codever-save-snippet-800x454.gif)
+ ![Save to Codever chrome extension usage](documentation/gif/codever-browser-extension-save-snippet-800x454.gif)
  
 > The other extensions function more or less after the same principle
 
