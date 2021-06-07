@@ -10,13 +10,13 @@
 
 :point_right: Use our [**HowTo pages**](https://www.codever.land/howto)
  to get you going and [start saving time and nerves](https://dev.to/ama/how-i-manage-my-dev-bookmarks-and-save-time-and-nerves-56ae) when managing
-your bookmarks and code snippets. The following extensions will assist you along the way:
+your bookmarks and code snippets. The following helpers and extensions will assist you along the way:
 
 ## Extensions
 
-| [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
-|:---:|:---:|:---:|
-| [Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [Bookmarklet](https://www.codever.land/howto/bookmarklets) | [Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
+| [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [![Firefox](documentation/img/fx-24.png)](https://addons.mozilla.org/addon/codever/) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
+|:---:|:---:|:---:|:---:|
+| [Bookmarklet](https://www.codever.land/howto/bookmarklets) |  [Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) |  [Addon](https://addons.mozilla.org/addon/codever/) | [Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
 
 ### Chrome extension usage example - save snippet
  
