@@ -1,11 +1,53 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h2>Get started</h2>
-    <p class="lead">Codever is a bookmark and code snippets manager created and designed for Developers & Co. Find out more
-      at our <a href="{{environment.HOST}}/about">About</a> page.
-    <p>
+    <p class="lead">Codever is a bookmark and code snippets manager created and designed for Developers & Co.
+      The following helpers and extensions will assist you along the way:
+    <table class="extensions-table">
+      <thead>
+      <tr>
+        <th align="center"><a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow"><img src="./assets/img/bookmark-48.png" alt="Bookmark" ></a>
+        </th>
+        <th align="center" ><a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow"><img src="./assets/img/chrome-48.png" alt="Chrome logo" ></a>
+        </th>
+        <th align="center" ><a
+          href="https://addons.mozilla.org/addon/codever/"
+          rel="nofollow"><img src="./assets/img/firefox-48.png" alt="Firefox logo" ></a>
+        </th>
+        <th align="center" ><a
+          href="https://addons.mozilla.org/addon/codever/"
+          rel="nofollow"><img src="./assets/img/intellij-48.png" alt="IntelliJ Logo" ></a>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td align="center" ><a
+          [routerLink]="['/howto/bookmarklets']"
+          rel="nofollow">Bookmarklet</a></td>
+        <td align="center" ><a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow">Chrome</a></td>
+        <td align="center" class="ml-2"><a
+          href="https://addons.mozilla.org/addon/codever/"
+          rel="nofollow">Firefox</a></td>
+        <td align="center" class="ml-2"><a
+          href="https://plugins.jetbrains.com/plugin/14456-codever-snippets/"
+          rel="nofollow">IntelliJ plugin</a></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <p class="mt-2">
       Create an <strong><a type="button" title="Go To Login/Registration Form" (click)="login()"> account</a></strong>
-      and save your first <strong><a routerLink="/howto/bookmarks">bookmark</a></strong> or <a routerLink="/howto/snippets">snippet</a> .
+      and save your first <strong><a routerLink="/howto/bookmarks">bookmark</a></strong> or <a
+      routerLink="/howto/snippets">snippet</a> .
       You can choose to connect via <strong>email/username and password</strong>, or
       via one of the many identity providers supported
     <ul>
@@ -16,20 +58,17 @@
         <i class="fab fa-google"></i> Google
       </li>
       <li>
-        <i class="fab fa-twitter"></i> Twitter
+        <i class="fab fa-twitter"></i> Gitlab
       </li>
       <li>
         <i class="fab fa-stack-overflow"></i> StackOverflow
       </li>
-      <li>
-        <i class="fab fa-linkedin"></i> LinkedIn
-      </li>
-      <li>
-        <i class="fab fa-facebook"></i> Facebook
-      </li>
     </ul>
 
-    <img class="mt-2 img-fluid" src="./assets/img/gif/save-bookmark-with-extension-1276x936.gif"
-         alt="How to save and search a snippet"/>
+    <div class="image-container mt-2">
+      <img class="mt-2 img-fluid"
+           src="./assets/img/gif/codever-browser-extension-save-snippet-800x454.gif"
+           alt="How to save snippet viw browser extension"/>
+    </div>
   </div>
 </div>
