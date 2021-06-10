@@ -12,6 +12,7 @@ import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.component';
 import { CodeverBookmarkletComponent } from './shared/codever-bookmarklet/codever-bookmarklet.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -27,11 +28,12 @@ import { CodeverBookmarkletComponent } from './shared/codever-bookmarklet/codeve
   ],
   exports: [
   ],
-    imports: [
-        HowtoRoutingModule,
-        CommonModule,
-        MatExpansionModule,
-        MatTabsModule
-    ]
+  imports: [
+    HowtoRoutingModule,
+    CommonModule,
+    MatExpansionModule,
+    MatTabsModule,
+    SharedModule
+  ]
 })
 export class HowtoModule { }
