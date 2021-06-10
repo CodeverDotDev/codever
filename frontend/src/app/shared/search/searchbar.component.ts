@@ -276,7 +276,12 @@ export class SearchbarComponent implements OnInit {
     if (this.innerWidth <= 1400) {
       response += ' ' + this.searchDomains.get(this.searchDomain);
     } else {
-      response += '...';
+      if (this.userIsLoggedIn) {
+        response += '...';
+      } else {
+        response += ' Codever';
+      }
+
     }
 
     return response;

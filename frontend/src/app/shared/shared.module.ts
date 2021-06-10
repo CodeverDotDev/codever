@@ -35,6 +35,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { ImportBookmarksDialogComponent } from './dialog/import-bookmarks-dialog/import-bookmarks-dialog.component';
+import { ExtensionsComponent } from './extensions/extensions.component';
 
 
 /**
@@ -81,7 +82,8 @@ import { ImportBookmarksDialogComponent } from './dialog/import-bookmarks-dialog
     SnippetDetailsComponent,
     CopySnippetButtonComponent,
     SnippetCardBodyComponent,
-    AddTagFilterToSearchDialogComponent
+    AddTagFilterToSearchDialogComponent,
+    ExtensionsComponent
   ],
   exports: [
     CommonModule,
@@ -99,7 +101,8 @@ import { ImportBookmarksDialogComponent } from './dialog/import-bookmarks-dialog
     SearchbarComponent,
     BookmarkListElementComponent,
     SnippetDetailsComponent,
-    CopySnippetButtonComponent
+    CopySnippetButtonComponent,
+    ExtensionsComponent
   ],
   entryComponents: [
     DeleteBookmarkDialogComponent,
