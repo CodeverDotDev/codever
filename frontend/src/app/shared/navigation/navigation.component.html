@@ -25,6 +25,75 @@
           <i class="fab fa-lg fa-github"></i>
         </a>
       </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-why" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          Why Codever?
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown-howTo" style="width: 14rem">
+          <a
+            title="Helps you get started on www.codever.land"
+            class="dropdown-item"
+            href="https://dev.to/ama/how-i-manage-my-dev-bookmarks-and-save-time-and-nerves-56ae"
+            target="_blank">
+            Save time and nerves
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a
+            title="How to get started on www.codever.land"
+            class="dropdown-item"
+            [routerLink]="['/howto']">
+            <i class="fas fa-info-circle"></i>
+            Easy start
+          </a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header" >Tools <i class="fas fa-wrench"></i></h6>
+          <a
+            style="cursor: move"
+            href="javascript:(function(){let l=location.href;let s=document.getSelection().toString();let t=document.title;let w,h;if(innerWidth>1400){w=930}else{w=(innerWidth*65)/100}if(innerHeight>1400){h=1150}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=${innerHeight-h},left=${innerWidth - w}`;if(s === '') {open('https://www.codever.land/my-bookmarks/new?url='+encodeURIComponent(l)+'&title='+encodeURIComponent(t)+'&popup=true','Codever',features);} else {open('https://www.codever.land/new-entry?url='+encodeURIComponent(l)+'&selection='+encodeURIComponent(s)+'&title='+encodeURIComponent(t)+'&popup=true','Codever',features);}})();"
+            title="Drag bookmarklet to browser toolbar"
+            class="dropdown-item">
+            +Bookmarklet <i class="fas fa-arrows-alt  right-font-icon"></i>
+          </a>
+          <a
+            href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+            target="_blank"
+            title="Chrome Extension URL"
+            class="dropdown-item">
+            <i class="fab fa-chrome fa-sm"></i>
+            Chromium extension
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+          <a
+            href="https://addons.mozilla.org/addon/codever/"
+            target="_blank"
+            title="Chrome Extension URL"
+            class="dropdown-item">
+            <i class="fab fa-firefox fa-sm"></i>
+            Firefox addon
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+          <a
+            href="https://plugins.jetbrains.com/plugin/14456-codever-snippets/"
+            target="_blank"
+            title="IntelliJ Plugin"
+            class="dropdown-item">
+            <i class="fas fa-laptop-code fa-sm"></i>
+            IntelliJ Plugin
+            <sup class="external-link-hint">
+              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
+            </sup>
+          </a>
+        </div>
+      </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-howTo" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
@@ -81,53 +150,6 @@
             <i class="fas fa-info-circle"></i>
             Hot keys
             <i class="fa fa-keyboard right-font-icon"></i>
-          </a>
-        </div>
-      </li>
-      <li class="nav-item dropdown large-displays" title="Fork me on Github">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-bookmarklet" role="button" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false">
-          Bookmarking
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown-bookmarklet" style="width: 17rem">
-          <h6 class="dropdown-header">Bookmarklets <i class="fas fa-bookmark"></i></h6>
-          <a
-            style="cursor: move"
-            href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''};let t=document.title;let w,h;if(innerWidth>1400){w=930}else{w=(innerWidth*65)/100}if(innerHeight>1400){h=1150}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=${innerHeight-h},left=${innerWidth - w}`;open('https://www.codever.land/my-bookmarks/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Codever',features);})();"
-            target="_blank"
-            title="Drag to browser toolbar"
-            class="dropdown-item">
-            +Bookmark <i class="fas fa-arrows-alt  right-font-icon"></i>
-          </a>
-          <a
-            href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''}let t=document.title;let w,h;if(innerWidth>1400){w=930}else{w=(innerWidth*65)/100}if(innerHeight>1400){h=1150}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=${innerHeight-h},left=${innerWidth - w}`;open('https://www.codever.land/my-snippets/new?sourceUrl='+encodeURIComponent(l)+'&code='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Codever',features);})();"
-            target="_blank"
-            title="Drag to browser toolbar"
-            style="cursor: move"
-            class="dropdown-item  cursor-move">
-            +Snippet <i class="fas fa-arrows-alt right-font-icon"></i>
-          </a>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Chromium extensions <i class="fab fa-chrome"></i></h6>
-          <a
-            href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb"
-            target="_blank"
-            title="Chrome Extension URL"
-            class="dropdown-item">
-            Save link to Codever
-            <sup class="external-link-hint">
-              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
-            </sup>
-          </a>
-          <a
-            href="https://chrome.google.com/webstore/detail/save-code-to-bookmarksdev/mibimnflfgnaealndgnamblppebdngne"
-            target="_blank"
-            title="Chrome Extension URL"
-            class="dropdown-item">
-            Save code to Codever
-            <sup class="external-link-hint">
-              <i class="fas fa-external-link-alt" style="font-size: smaller"></i>
-            </sup>
           </a>
         </div>
       </li>
