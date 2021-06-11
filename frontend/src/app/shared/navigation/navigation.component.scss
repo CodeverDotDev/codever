@@ -22,6 +22,10 @@
     margin-left: 0.5rem;
   }
 }
+.logo-text {
+  font-size: smaller;
+  margin-bottom: 10px;
+}
 
 .logo-image {
   margin-top: -10px;
@@ -32,8 +36,10 @@
   display: none;
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 1400px) {
   .large-displays {
     display: block ;
   }
 }
+
+
