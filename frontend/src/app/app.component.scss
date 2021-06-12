@@ -24,7 +24,7 @@
 }
 
 #sidebar-wrapper .list-group {
-  width: 10rem;
+  width: 12.5rem;
 }
 
 #page-content-wrapper {
@@ -65,4 +65,33 @@ footer {
 .header-notification-wrapper {
   display: flex;
   justify-content: space-between;
+}
+
+.my-snippets-last-search{
+  background: black;
+  color: white;
+}
+
+.last-search-border {
+  border-width: 0.05rem;
+  border-style: solid;
+  border-color: #495057;
+}
+
+.public-bookmarks-last-search {
+  @extend .last-search-border;
+  background: #f0f2f5;
+  color: black;
+}
+
+.public-snippets-last-search {
+  @extend .last-search-border;
+  background: darkgray;
+  color: white;
+}
+
+.my-bookmarks-last-search {
+  @extend .last-search-border;
+  background: linen;
+  color: #495057;
 }

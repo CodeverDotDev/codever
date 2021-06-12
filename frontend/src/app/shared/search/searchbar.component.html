@@ -64,7 +64,7 @@
         <i *ngIf="searchDomain === 'public-bookmarks'; else  uncheckedPublicBookmarksSelection"
            class="fas fa-check ml-1"></i>
         <ng-template #uncheckedPublicBookmarksSelection>
-            <span class="my-snippets-selection-unchecked  float-right">
+            <span class="public-snippets-selection-unchecked  float-right">
               <i class="fa fa-square fa-lg ml-1 unchecked-public-bookmarks-selection"></i>
             </span>
         </ng-template>
@@ -74,12 +74,12 @@
          (click)="onSearchDomainChange('public-snippets')">
         Public Snippets
         <span *ngIf="searchDomain === 'public-snippets'; else uncheckedPublicSnippetsSelection"
-              class="search-domain-selection my-snippets-selection float-right pl-1 pr-1">
+              class="search-domain-selection public-snippets-selection float-right pl-1 pr-1">
             <i class="fas fa-check"></i>
           </span>
         <ng-template #uncheckedPublicSnippetsSelection>
-            <span class="my-snippets-selection-unchecked  float-right">
-              <i class="fa fa-square fa-lg ml-1 my-snippets-selection-unchecked"></i>
+            <span class="public-snippets-selection-unchecked  float-right">
+              <i class="fa fa-square fa-lg ml-1 public-snippets-selection-unchecked"></i>
             </span>
         </ng-template>
       </a>
@@ -97,8 +97,9 @@
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
-    [class.my-snippets-selection]="searchDomain === 'my-snippets' || searchDomain === 'public-snippets'"
+    [class.my-snippets-selection]="searchDomain === 'my-snippets'"
     [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
+    [class.public-snippets-selection]="searchDomain === 'public-snippets'"
     (keyup)="watchForTags(publicSearchBox.value)"
     (keyup.enter)="$event.target.blur(); autocompleteTrigger.closePanel();searchBookmarksFromSearchBox(publicSearchBox.value)"
   >

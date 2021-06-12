@@ -45,6 +45,36 @@
         >
           <i class="fas fa-cog mr-1"></i> Settings
         </a>
+
+        <ng-container *ngIf="(latestSearches$ | async) as latestSearches">
+          <span class="list-group-item list-group-item-action bg-light"><i class="fa fa-search mr-1"></i> Last searches</span>
+          <div class="mt-1">
+            <ng-container *ngFor="let mySearch of latestSearches; let i = index" class="mt-1">
+            <span class="mt-1 mr-2">
+                <a
+                  (mouseover)="hoveringLastSearches[i]=true"
+                  (mouseout)="hoveringLastSearches[i]=false"
+                  [routerLink]="['/search']"
+                  [queryParams]="{q: mySearch.text, sd: mySearch.searchDomain }"
+                  class="badge badge-secondary mb-1  ml-2"
+                  [class.my-snippets-last-search]="mySearch.searchDomain === 'my-snippets'"
+                  [class.public-snippets-last-search]="mySearch.searchDomain === 'public-snippets'"
+                  [class.my-bookmarks-last-search]="mySearch.searchDomain === 'my-bookmarks'"
+                  [class.public-bookmarks-last-search]="mySearch.searchDomain === 'public-bookmarks'"
+                  title="{{'Search in ' + mySearch.searchDomain + ': ' + mySearch.text}}"
+                >  <i class="fa fa-xs fa-search mr-1"></i>
+                  <span
+                    *ngIf="!hovering(i); else longVersion">{{mySearch.text.length > 20 ? mySearch.text.substring(0, 20) + '...' : mySearch.text}}</span>
+                  <ng-template #longVersion>{{mySearch.text}}</ng-template>
+                  <i *ngIf="mySearch.searchDomain === 'my-snippets' || mySearch.searchDomain === 'public-snippets'"
+                     class="fa fa-xs fa-code ml-1"></i>
+                  <i *ngIf="mySearch.searchDomain === 'my-bookmarks' || mySearch.searchDomain === 'public-bookmarks'"
+                     class="fa fa-xs fa-bookmark ml-1"></i>
+                </a>
+            </span>
+            </ng-container>
+          </div>
+        </ng-container>
       </div>
     </div>
     <div class="container">
@@ -55,10 +85,12 @@
             <i class="fas fa-exclamation-circle fa-lg mr-1"></i> <b>Bookmarks.dev</b> has rebranded to <b>Codever</b>
           </div>
           <div>
-            <button type="button" class="ml-2 btn btn-primary btn-sm mr-2" (click)="acknowledgeCodeverRebranding('cool')">
+            <button type="button" class="ml-2 btn btn-primary btn-sm mr-2"
+                    (click)="acknowledgeCodeverRebranding('cool')">
               Cool <i class="fas fa-thumbs-up"></i>
             </button>
-            <button type="button" class="ml-2 btn btn-primary btn-sm mr-2" (click)="acknowledgeCodeverRebranding('ook')">
+            <button type="button" class="ml-2 btn btn-primary btn-sm mr-2"
+                    (click)="acknowledgeCodeverRebranding('ook')">
               Ok <i class="fas fa-check-circle"></i>
             </button>
           </div>
