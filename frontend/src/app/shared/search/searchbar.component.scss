@@ -81,8 +81,17 @@ $background-gray: rgb(240, 242, 245);
   color: white;
 }
 
+.public-snippets-selection {
+  background-color: darkgray; //same color as dracula background for highlight.js
+  color: white;
+}
+
 .my-snippets-selection-unchecked {
   color: #282a36;
+}
+
+.public-snippets-selection-unchecked {
+  color: darkgray;
 }
 
 .my-bookmarks-selection {

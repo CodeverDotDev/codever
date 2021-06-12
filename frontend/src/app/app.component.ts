@@ -12,6 +12,10 @@ import iziToast, { IziToastSettings } from 'izitoast';
 import { Feedback } from './core/model/feedback';
 import { CookieService } from './core/cookies/cookie.service';
 import { FeedbackService } from './public/feedback/feedback.service';
+import { UserDataStore } from './core/user/userdata.store';
+import { Search, UserData } from './core/model/user-data';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -27,9 +31,13 @@ export class AppComponent implements OnInit {
   userId: string;
 
   showAcknowledgeMigrationHeader = false;
+  latestSearches$: Observable<Search[]>;
+
+  private hoveringLastSearches: boolean[] = [];
 
   constructor(private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
+              private userDataStore: UserDataStore,
               private userDataHistoryStore: UserDataHistoryStore,
               private userDataPinnedStore: UserDataPinnedStore,
               private historyDialog: MatDialog,
@@ -51,6 +59,14 @@ export class AppComponent implements OnInit {
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
           this.userId = userInfo.sub;
         });
+        this.latestSearches$ = this.userDataStore.getUserData$().pipe(
+          map(userData => {
+            for (let i = 0; i < 10; i++) {
+              this.hoveringLastSearches.push(false);
+            }
+            return userData.searches.slice(0, 10);
+          })
+        )
       }
     });
   }
@@ -161,4 +177,9 @@ export class AppComponent implements OnInit {
 
     this.feedbackService.createBookmark(feedback).subscribe();
   }
+
+  hovering(i: number): boolean {
+    return this.hoveringLastSearches[i];
+  }
+
 }
