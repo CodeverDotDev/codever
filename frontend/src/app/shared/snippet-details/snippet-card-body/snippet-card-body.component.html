@@ -6,8 +6,14 @@
              [innerHtml]="codeSnippet.comment | md2html"></p>
         <div class="code-snippet-wrapper">
           <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
+          <button
+            class="btn btn-sm btn-light float-right mr-1"
+            (click)="toggleFullScreen(codePart)"
+            placeholder="Click to copy code snippet" >
+            Fullscreen <i class="fas fa-expand"></i>
+          </button>
           <div class="clear"></div>
-          <pre class="mb-0"><code [highlight]="codeSnippet.code"></code></pre>
+          <pre class="mb-0"><code [highlight]="codeSnippet.code" #codePart></code></pre>
         </div>
         <hr *ngIf="!isLast">
       </div>
@@ -22,8 +28,14 @@
          [innerHtml]="codeSnippet.comment | md2html"></p>
       <div class="code-snippet-wrapper">
         <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
+        <button
+          class="btn btn-sm btn-light float-right mr-1"
+          (click)="toggleFullScreen(codePart)"
+          placeholder="Click to copy code snippet" >
+           Fullscreen <i class="fas fa-expand"></i>
+        </button>
         <div class="clear"></div>
-        <pre class="mb-0"><code [highlight]="codeSnippet.code"></code></pre>
+        <pre class="mb-0"><code [highlight]="codeSnippet.code" #codePart></code></pre>
       </div>
       <hr *ngIf="!isLast">
     </div>
