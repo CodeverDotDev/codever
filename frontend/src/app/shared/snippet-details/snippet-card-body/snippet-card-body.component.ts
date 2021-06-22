@@ -8,6 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { Snippet } from '../../../core/model/snippet';
+import * as screenfull from 'screenfull';
 
 @Component({
   selector: 'app-snippet-card-body',
@@ -45,4 +46,9 @@ export class SnippetCardBodyComponent  implements  AfterViewInit, AfterViewCheck
     }
   }
 
+  toggleFullScreen(codePart: HTMLElement) {
+    if (screenfull.isEnabled) {
+      screenfull.toggle(codePart);
+    }
+  }
 }

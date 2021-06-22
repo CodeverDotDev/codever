@@ -35,6 +35,7 @@
     "ngx-bootstrap": "^4.3.0",
     "ngx-highlightjs": "^4.0.2",
     "rxjs": "^6.5.3",
+    "screenfull": "^5.1.0",
     "showdown": "^1.9.1",
     "ts-md5": "^1.2.7",
     "zone.js": "^0.10.3"
