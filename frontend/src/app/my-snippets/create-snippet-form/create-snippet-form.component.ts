@@ -27,9 +27,6 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
   codeSnippetsFormArray: FormArray;
   userId = null;
 
-  @Input()
-  codelet$: Observable<Snippet>;
-
   @ViewChild('tagInput', {static: false})
   tagInput: ElementRef;
 
@@ -52,6 +49,9 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
 
   @Input()
   popup; // if it's popup window
+
+  @Input()
+  ext; // there the call is coming fron
 
   constructor(
     protected formBuilder: FormBuilder,
@@ -110,7 +110,7 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
 
   buildInitialForm(): void {
     this.snippetFormGroup = this.formBuilder.group({
-      title: [this.title ? this.title : '', Validators.required],
+      title: [this.title ? this.ext === 'vscode' ? this.decodeTextVsCode(this.title) : this.title  : '', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       codeSnippets: new FormArray([this.createInitialCodeSnippet()]),
       sourceUrl: this.sourceUrl ? this.sourceUrl : '',
@@ -121,9 +121,16 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
 
   createInitialCodeSnippet(): FormGroup {
     return this.formBuilder.group({
-      code: [this.code ? this.code : '', textSizeValidator(5000, 500)],
+      code: [this.code ? this.ext === 'vscode' ? this.decodeTextVsCode(this.code) : this.code : '', textSizeValidator(5000, 500)],
       comment: [this.comment ? this.comment : '', textSizeValidator(1000, 30)]
     });
+  }
+
+  decodeTextVsCode(text: string): string {
+    let response = text.replace(/ampc;/gi, '&');
+    response = response.replace(/qmc;/gi, '?');
+
+    return response;
   }
 
 }
