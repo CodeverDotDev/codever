@@ -1,6 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { tagsValidator } from '../../shared/directive/tags-validation.directive';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { Logger } from '../../core/logger.service';
@@ -110,7 +109,7 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
 
   buildInitialForm(): void {
     this.snippetFormGroup = this.formBuilder.group({
-      title: [this.title ? this.ext === 'vscode' ? this.decodeTextVsCode(this.title) : this.title  : '', Validators.required],
+      title: [this.title ? this.ext === 'vscode' ? this.decodeTextVsCode(this.title) : this.title : '', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       codeSnippets: new FormArray([this.createInitialCodeSnippet()]),
       sourceUrl: this.sourceUrl ? this.sourceUrl : '',
@@ -120,6 +119,10 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
   }
 
   createInitialCodeSnippet(): FormGroup {
+    if (this.code) {
+      this.code = this.removeLeadingWhitespaces(this.code);
+    }
+
     return this.formBuilder.group({
       code: [this.code ? this.ext === 'vscode' ? this.decodeTextVsCode(this.code) : this.code : '', textSizeValidator(5000, 500)],
       comment: [this.comment ? this.comment : '', textSizeValidator(1000, 30)]
@@ -129,10 +132,28 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
   decodeTextVsCode(text: string): string {
     let response = text.replace(/ampc;/gi, '&');
     response = response.replace(/qmc;/gi, '?');
+    response = response.replace(/hashc;/gi, '#');
 
     return response;
   }
 
+  /**
+   * Remove leading whitespaces - max number removed is given by the number of white spaces of the first line
+   */
+  removeLeadingWhitespaces(code: string): string {
+    const LINE_EXPRESSION = /\r\n|\n\r|\n|\r/g; // expression symbols order is very important
+    const lines = code.split(LINE_EXPRESSION);
+    const firstLineNumberSpaces = lines[0].length - lines[0].trimLeft().length;
+    if (firstLineNumberSpaces > 0) {
+      let response = '';
+      for (let i = 0; i < lines.length - 1; i++) {
+        response += lines[i].substring(firstLineNumberSpaces, lines[i].length).trimRight() + '\r\n';
+      }
+      response += lines[lines.length - 1].substring(firstLineNumberSpaces, lines[lines.length - 1].length).trimRight();
+      return response;
+    } else {
+      return code;
+    }
+  }
 }
-
 
