@@ -15,6 +15,7 @@ export interface UserData {
   followers?: string[];
   showAllPublicInFeed?: boolean;
   enableLocalStorage?: boolean;
+  welcomeAck?: boolean; // acknowledges the welcome dialog
 }
 
 export interface Profile {

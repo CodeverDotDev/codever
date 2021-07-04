@@ -22,10 +22,12 @@ import { PublicSnippetsComponent } from './public-snippets/public-snippets.compo
 import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component';
 import { SnippetTagService } from './snippets/tag/snippet-tag.service';
 import { FeedbackService } from './feedback/feedback.service';
+import { ExtensionsPageComponent } from './extensions/extensions-page.component';
 
 @NgModule({
   declarations : [
     AboutComponent,
+    ExtensionsPageComponent,
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     HomepageComponent,

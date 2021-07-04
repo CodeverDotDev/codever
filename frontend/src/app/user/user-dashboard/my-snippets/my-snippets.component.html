@@ -10,6 +10,15 @@
 </div>
 
 <app-async-snippet-list
+  *ngIf="(mySnippets$ | async) && (mySnippets$ | async).length > 0; else showSnippetsMessage"
   [snippets$]="mySnippets$"
   [showPagination]="false">
 </app-async-snippet-list>
+
+<ng-template #showSnippetsMessage>
+  <div class="alert alert-info mt-4">
+    👉 &nbsp;See our <strong>snippets </strong> <a [routerLink]="['/howto/snippets']"> <i
+    class="fas fa-info-circle"></i> HowTo guide</a>
+    to find out how you can easily save your <strong>first snippet</strong>.
+  </div>
+</ng-template>

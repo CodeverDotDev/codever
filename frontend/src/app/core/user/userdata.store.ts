@@ -92,7 +92,8 @@ export class UserDataStore {
       favorites: [],
       history: [],
       followers: [],
-      following: following
+      following: following,
+      welcomeAck: false
     }
 
     this.userService.createInitialUserData(initialUserData).subscribe((data) => {
@@ -425,4 +426,18 @@ export class UserDataStore {
       }
     }
   }
+
+
+  updateWelcomeAcknowledge$(): Observable<UserData> {
+    const obs: Observable<any> = this.userService.updateAcknowledgeWelcome(this.userId);
+    obs.subscribe(
+      () => {
+        this.userData.welcomeAck = true;
+        this._userData.next(this.userData);
+      }
+    );
+
+    return obs;
+  }
+
 }

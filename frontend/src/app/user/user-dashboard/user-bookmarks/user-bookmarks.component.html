@@ -34,7 +34,16 @@
 </div>
 
 <app-async-bookmark-list
+  *ngIf="(userBookmarks$ | async) && (userBookmarks$ | async).length > 0; else showBookmarksMessage"
   [bookmarks$]="userBookmarks$"
   [userData$]="userData$"
   [showPagination]="false">
 </app-async-bookmark-list>
+
+<ng-template #showBookmarksMessage>
+  <div class="alert alert-info mt-4">
+    👉 &nbsp;See our <strong>bookmarks </strong> <a [routerLink]="['/howto/bookmarks']"> <i
+    class="fas fa-info-circle"></i> HowTo guide</a>
+    to find out how you can easily save your <strong>first bookmark</strong>.
+  </div>
+</ng-template>

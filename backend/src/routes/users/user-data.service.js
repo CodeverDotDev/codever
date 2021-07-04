@@ -67,6 +67,17 @@ let updateUserDataFeedToggle = async function (showAllPublicInFeed, userId) {
   return updatedUserData;
 }
 
+let updateUserDataWelcomeAck = async function ( userId) {
+  const updatedUserData = await User.findOneAndUpdate(
+    {userId: userId},
+    {
+      $set: {welcomeAck: true}
+    }
+  );
+
+  return updatedUserData;
+}
+
 let updateLocalStorageOption = async function (enableLocalStorage, userId) {
   const updatedUserData = await User.findOneAndUpdate(
     {userId: userId},
@@ -627,6 +638,7 @@ module.exports = {
   updateUserDataHistoryReadLaterPinned: updateUserDataHistoryReadLaterPinned,
   updateUserDataFeedToggle: updateUserDataFeedToggle,
   updateLocalStorageOption: updateLocalStorageOption,
+  updateUserDataWelcomeAck: updateUserDataWelcomeAck,
   createUserData: createUserData,
   getUserData: getUserData,
   deleteUserData: deleteUserData,

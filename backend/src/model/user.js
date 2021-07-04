@@ -45,6 +45,7 @@ const userSchema = new Schema({
     followers: {type: [String], select: false},
     showAllPublicInFeed: Boolean,
     enableLocalStorage: Boolean,
+    welcomeAck: Boolean,
     __v: {type: Number, select: false}
   },
   {

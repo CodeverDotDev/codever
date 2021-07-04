@@ -1,8 +1,6 @@
 const express = require('express');
 const usersRouter = express.Router();
 
-const cheerio = require('cheerio');
-
 const personalBookmarksRouter = require('./bookmarks/personal-bookmarks.router');
 const personalCodeletsRouter = require('./snippets/personal-snippets.router');
 
@@ -253,6 +251,16 @@ usersRouter.patch('/:userId/local-storage', keycloak.protect(), async (request, 
   await UserDataService.updateLocalStorageOption(request.body.enableLocalStorage, request.params.userId);
 
   return response.status(HttpStatus.OK).send({localStorageOptionUpdated: true});
+});
+
+/*
+* Update welcomeAck flag
+*/
+usersRouter.patch('/:userId/welcome-acknowledge', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  await UserDataService.updateUserDataWelcomeAck(request.params.userId);
+
+  return response.status(HttpStatus.OK).send({welcomeAck: true});
 });
 
 /*

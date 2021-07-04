@@ -6,3 +6,10 @@
     text-align: center;
   }
 }
+
+.identity-providers-list {
+  margin-left: -2rem;
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+}

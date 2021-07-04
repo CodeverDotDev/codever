@@ -80,20 +80,19 @@
     <div class="container">
 
       <div class="main-body">
-        <div *ngIf="showAcknowledgeMigrationHeader" class="alert alert-warning header-notification-wrapper shadow-sm">
+        <div *ngIf="(userData$ | async) && !(userData$ | async).welcomeAck" class="alert alert-warning shadow-sm">
           <div>
-            <i class="fas fa-exclamation-circle fa-lg mr-1"></i> <b>Bookmarks.dev</b> has rebranded to <b>Codever</b>
+            <h4>Welcome to Codever 🙏 !!!</h4>
+            <ul style="list-style-type: none; margin-left: -1.5rem">
+              <li>👉 &nbsp;Go to <a [routerLink]="['/dashboard']"><i class="fas fa-tachometer-alt"></i> My Dashboard</a>
+                where you can <strong>import</strong> your browser bookmarks, view your latest activity and your used
+              tags or searches</li>
+              <li class="mt-1">👉 &nbsp;See our <a [routerLink]="['/howto']"><i class="fas fa-info-circle"></i> HowTo Guides</a> and use <a [routerLink]="['/extensions']">one of our many extensions <i class="fas fa-wrench"></i></a> to help you easily manage your bookmarks and snippets
+                from your favorite browser or IDE </li>
+            </ul>
           </div>
-          <div>
-            <button type="button" class="ml-2 btn btn-primary btn-sm mr-2"
-                    (click)="acknowledgeCodeverRebranding('cool')">
-              Cool <i class="fas fa-thumbs-up"></i>
-            </button>
-            <button type="button" class="ml-2 btn btn-primary btn-sm mr-2"
-                    (click)="acknowledgeCodeverRebranding('ook')">
-              Ok <i class="fas fa-check-circle"></i>
-            </button>
-          </div>
+
+          <button class="ml-2 btn btn-primary btn-sm" (click)="acknowledgeWelcomeMessage()">Got it <i class="fas fa-check-circle"></i></button>
         </div>
         <app-loader></app-loader>
         <router-outlet></router-outlet>
