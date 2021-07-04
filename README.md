@@ -20,6 +20,7 @@ your bookmarks and code snippets. The following helpers and extensions will assi
 
 ## Extensions table
 
+    <div style="margin-left: auto;margin-right: auto">
    <table style="margin-left: auto;margin-right: auto">
       <thead>
       <tr>
@@ -58,6 +59,8 @@ your bookmarks and code snippets. The following helpers and extensions will assi
       </tr>
       </tbody>
     </table>
+    </div>
+    
 ### Chrome extension usage example - save snippet
  
  ![Save to Codever chrome extension usage](documentation/gif/codever-browser-extension-save-snippet-800x454.gif)
