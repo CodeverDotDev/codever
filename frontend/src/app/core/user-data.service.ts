@@ -204,4 +204,11 @@ export class UserDataService {
       .get<UserDataProfile[]>(`${this.usersApiBaseUrl}/${userId}/followers`)
       .pipe(shareReplay(1));
   }
+
+  updateAcknowledgeWelcome(userId: string): Observable<UserData> {
+    return this.httpClient
+      .patch(`${this.usersApiBaseUrl}/${userId}/welcome-acknowledge`, {headers: this.headers})
+      .pipe(shareReplay(1));
+  }
+
 }

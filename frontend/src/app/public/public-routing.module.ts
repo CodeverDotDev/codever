@@ -10,6 +10,7 @@ import { VersionComponent } from './version/version.component';
 import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details.component';
 import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
 import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component';
+import { ExtensionsPageComponent } from './extensions/extensions-page.component';
 
 const publicRoutes: Routes = [
   {
@@ -64,6 +65,10 @@ const publicRoutes: Routes = [
   {
     path: 'about',
     component: AboutComponent
+  },
+  {
+    path: 'extensions',
+    component: ExtensionsPageComponent
   },
   {
     path: 'howto',

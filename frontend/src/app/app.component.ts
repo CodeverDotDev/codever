@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   userIsLoggedIn = false;
   userId: string;
 
+  userData$: Observable<UserData>;
   showAcknowledgeMigrationHeader = false;
   latestSearches$: Observable<Search[]>;
 
@@ -59,7 +60,8 @@ export class AppComponent implements OnInit {
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
           this.userId = userInfo.sub;
         });
-        this.latestSearches$ = this.userDataStore.getUserData$().pipe(
+        this.userData$ = this.userDataStore.getUserData$();
+        this.latestSearches$ = this.userData$.pipe(
           map(userData => {
             for (let i = 0; i < 10; i++) {
               this.hoveringLastSearches.push(false);
@@ -175,11 +177,15 @@ export class AppComponent implements OnInit {
       userAgent: navigator.userAgent
     }
 
-    this.feedbackService.createBookmark(feedback).subscribe();
+    this.feedbackService.createFeedback(feedback).subscribe();
   }
 
   hovering(i: number): boolean {
     return this.hoveringLastSearches[i];
+  }
+
+  acknowledgeWelcomeMessage() {
+    this.userDataStore.updateWelcomeAcknowledge$();
   }
 
 }

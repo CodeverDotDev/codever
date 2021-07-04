@@ -14,7 +14,7 @@ export class FeedbackService {
     this.publicBookmarksApiBaseUrl = environment.API_URL + '/public/feedback';
   }
 
-  createBookmark(feedback: Feedback): Observable<any> {
+  createFeedback(feedback: Feedback): Observable<any> {
     return this.httpClient
       .post(this.publicBookmarksApiBaseUrl, JSON.stringify(feedback), {headers: this.headers});
   }
