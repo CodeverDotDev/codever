@@ -14,10 +14,10 @@ your bookmarks and code snippets. The following helpers and extensions will assi
 
 ## Extensions
 
-| [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [![Firefox](documentation/img/fx-24.png)](https://addons.mozilla.org/addon/codever/) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
-|:---:|:---:|:---:|:---:|
-| [Bookmarklet](https://www.codever.land/howto/bookmarklets) |  [Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) |  [Addon](https://addons.mozilla.org/addon/codever/) | [Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
-
+| [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [![Firefox](documentation/img/fx-24.png)](https://addons.mozilla.org/addon/codever/) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) | [![VSCode extension](documentation/img/vscode-24.png)](https://marketplace.visualstudio.com/items?itemName=codever.vscode-codever) |
+|:---:|:---:|:---:|:---:|:---:|
+| [Bookmarklet](https://www.codever.land/howto/bookmarklets) |  [Chromium Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) |  [Firefox Addon](https://addons.mozilla.org/addon/codever/) | [IntelliJ Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) | [VSCode Extension](https://marketplace.visualstudio.com/items?itemName=codever.vscode-codever) |
+    
 ### Chrome extension usage example - save snippet
  
  ![Save to Codever chrome extension usage](documentation/gif/codever-browser-extension-save-snippet-800x454.gif)

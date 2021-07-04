@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -9,6 +9,12 @@ import { environment } from '../../../environments/environment';
 export class ExtensionsComponent implements OnInit {
 
   environment = environment;
+
+  @Input()
+  logoSize = 48;
+
+  @Input()
+  showEntryParagraph = true;
 
   ngOnInit() {}
 

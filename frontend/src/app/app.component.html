@@ -87,10 +87,12 @@
               <li>👉 &nbsp;Go to <a [routerLink]="['/dashboard']"><i class="fas fa-tachometer-alt"></i> My Dashboard</a>
                 where you can <strong>import</strong> your browser bookmarks, view your latest activity and your used
               tags or searches</li>
-              <li class="mt-1">👉 &nbsp;See our <a [routerLink]="['/howto']"><i class="fas fa-info-circle"></i> HowTo Guides</a> and use <a [routerLink]="['/extensions']">one of our many extensions <i class="fas fa-wrench"></i></a> to help you easily manage your bookmarks and snippets
+              <li class="mt-1">👉 &nbsp;See our <a [routerLink]="['/howto']"><i class="fas fa-info-circle"></i> HowTo Guides</a>
+                and use <a [routerLink]="['/extensions']">one of our extensions <i class="fas fa-wrench"></i></a> to help you easily manage your bookmarks and snippets
                 from your favorite browser or IDE </li>
             </ul>
           </div>
+          <app-extensions [logoSize]="32" [showEntryParagraph]="false"></app-extensions>
 
           <button class="ml-2 btn btn-primary btn-sm" (click)="acknowledgeWelcomeMessage()">Got it <i class="fas fa-check-circle"></i></button>
         </div>
