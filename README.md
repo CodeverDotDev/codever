@@ -18,6 +18,46 @@ your bookmarks and code snippets. The following helpers and extensions will assi
 |:---:|:---:|:---:|:---:|
 | [Bookmarklet](https://www.codever.land/howto/bookmarklets) |  [Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) |  [Addon](https://addons.mozilla.org/addon/codever/) | [Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) |
 
+## Extensions table
+
+   <table style="margin-left: auto;margin-right: auto">
+      <thead>
+      <tr>
+        <th align="center" style="width: 8rem;text-align: center"><a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow"><img src="https://raw.githubusercontent.com/codeverland/codever/master/documentation/img/bookmark-24.png" alt="Bookmark" ></a>
+        </th>
+        <th align="center"  style="width: 8rem;text-align: center"><a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow"><img src="https://raw.githubusercontent.com/codeverland/codever/master/documentation/img/chrome-24.png" alt="Chrome logo" ></a>
+        </th>
+        <th align="center"  style="width: 8rem;text-align: center"><a
+          href="https://addons.mozilla.org/addon/codever/"
+          rel="nofollow"><img src="https://raw.githubusercontent.com/codeverland/codever/master/documentation/img/fx-24.png" alt="Firefox logo" ></a>
+        </th>
+        <th align="center"  style="width: 8rem;text-align: center"><a
+          href="https://addons.mozilla.org/addon/codever/"
+          rel="nofollow"><img src="https://raw.githubusercontent.com/codeverland/codever/master/documentation/img/intellij-24.png" alt="IntelliJ Logo" ></a>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td align="center"  style="width: 8rem;text-align: center"><a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow">Bookmarklet</a></td>
+        <td align="center"  style="width: 8rem;text-align: center"><a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow">Chrome</a></td>
+        <td align="center" class="ml-2" style="width: 8rem;text-align: center"><a
+          href="https://addons.mozilla.org/addon/codever/"
+          rel="nofollow">Firefox</a></td>
+        <td align="center" class="ml-2" style="width: 8rem;text-align: center"><a
+          href="https://plugins.jetbrains.com/plugin/14456-codever-snippets/"
+          rel="nofollow">IntelliJ plugin</a></td>
+      </tr>
+      </tbody>
+    </table>
 ### Chrome extension usage example - save snippet
  
  ![Save to Codever chrome extension usage](documentation/gif/codever-browser-extension-save-snippet-800x454.gif)
