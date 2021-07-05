@@ -151,6 +151,11 @@ The `npm run debug` starts nodemon with the `--inspect` parameter so you can att
 
 See [Node.js debugging in VS Code with Nodemon](https://github.com/microsoft/vscode-recipes/tree/master/nodemon)
 
+## Blog
+
+Blog posts related to Codever features and implementation details can be found on [Codepedia.org](https://www.codepedia.org/tags/#codever)
+and [Dev.to](https://dev.to/codever)
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
