@@ -172,4 +172,6 @@ standard-changelog
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+> All media materials used in the project fall under the copyright law
