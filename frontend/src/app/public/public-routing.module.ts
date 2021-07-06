@@ -1,7 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { BookmarksTaggedComponent } from './tag/bookmarks-tagged.component';
-import { AboutComponent } from './about/about.component';
 import { HomepageComponent } from './bookmarks/homepage.component';
 import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms/terms-of-service.component';
@@ -11,6 +10,8 @@ import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details
 import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
 import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component';
 import { ExtensionsPageComponent } from './extensions/extensions-page.component';
+import { AboutComponent } from './about/about.component';
+import { RegisterComponent } from './register/register.component';
 
 const publicRoutes: Routes = [
   {
@@ -65,6 +66,10 @@ const publicRoutes: Routes = [
   {
     path: 'about',
     component: AboutComponent
+  },
+  {
+    path: 'register',
+    component: RegisterComponent
   },
   {
     path: 'extensions',
