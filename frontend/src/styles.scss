@@ -102,10 +102,24 @@ ul.tags li:not(:last-child):after {
   justify-content: space-between;
 }
 
+.identity-providers-list {
+  display: flex;
+  ul {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    list-style: none;
+    li {
+      margin-right: 2rem;
+    }
+  }
+}
+
 // filter search-box
 /* Bootstrap 4 text input with search icon */
-.has-search  {
+.has-search {
   width: 30%;
+
   .form-control {
     padding-left: 2.375rem;
   }

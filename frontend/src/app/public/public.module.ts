@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
-import { AboutComponent } from './about/about.component';
 import { BookmarksTaggedService } from './tag/bookmarks-tagged.service';
 import { BookmarksTaggedComponent } from './tag/bookmarks-tagged.component';
 import { PublicRoutingModule } from './public-routing.module';
@@ -23,10 +22,13 @@ import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component'
 import { SnippetTagService } from './snippets/tag/snippet-tag.service';
 import { FeedbackService } from './feedback/feedback.service';
 import { ExtensionsPageComponent } from './extensions/extensions-page.component';
+import { AboutComponent } from './about/about.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations : [
     AboutComponent,
+    RegisterComponent,
     ExtensionsPageComponent,
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
