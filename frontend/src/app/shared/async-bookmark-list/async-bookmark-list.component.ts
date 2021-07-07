@@ -34,6 +34,9 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
   @Input()
   showPagination = true;
 
+  @Input()
+  isSearchResultsPage = false;
+
   @Output()
   bookmarkDeleted = new EventEmitter<boolean>();
 

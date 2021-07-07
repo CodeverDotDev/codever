@@ -52,6 +52,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   isDetailsPage = false;
 
   @Input()
+  isSearchResultsPage = false;
+
+  @Input()
   filterText = '';
 
   private navigationSubscription: Subscription;
@@ -77,7 +80,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     super(loginDialog, userDataWatchedTagsStore);
 
     // START force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
-    this.router.routeReuseStrategy.shouldReuseRoute = function(){
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     }
 
@@ -198,16 +201,23 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
         this.bookmarkDeleted.emit(true);
         this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
         this.feedStore.removeFromFeedBookmarks(bookmark);
+        if (this.isSearchResultsPage) {
+          location.reload();
+        }
       });
     } else {
       this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
-        this.bookmarkDeleted.emit(true);
-        this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-        this.userDataStore.removeFromStoresAtDeletion(bookmark);
-        this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
-        this.feedStore.removeFromFeedBookmarks(bookmark);
-        if (this.isDetailsPage) {
-          this.navigateToHomePage();
+        if (this.isSearchResultsPage) {
+          location.reload();
+        } else {
+          this.bookmarkDeleted.emit(true);
+          this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+          this.userDataStore.removeFromStoresAtDeletion(bookmark);
+          this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
+          this.feedStore.removeFromFeedBookmarks(bookmark);
+          if (this.isDetailsPage) {
+            this.navigateToHomePage();
+          }
         }
       });
     }
