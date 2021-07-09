@@ -22,6 +22,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { searchDomains } from '../../core/model/search-domains-map';
 import { AddTagFilterToSearchDialogComponent } from './add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
 import { DialogMeasurementsHelper } from '../../core/helper/dialog-measurements.helper';
+import iziToast, { IziToastSettings } from 'izitoast';
 
 @Component({
   selector: 'app-searchbar',
@@ -76,8 +77,6 @@ export class SearchbarComponent implements OnInit {
               private searchNotificationService: SearchNotificationService,
               private bookmarkStore: PublicBookmarksStore,
               private publicBookmarksService: PublicBookmarksService,
-              private personalBookmarksService: PersonalBookmarksService,
-              private personalCodeletsService: PersonalSnippetsService,
               private paginationNotificationService: PaginationNotificationService,
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,
@@ -209,9 +208,7 @@ export class SearchbarComponent implements OnInit {
           searches: [newSearch]
         }
       } else {
-        const existingSavedSearchIndex = this._userData.searches.findIndex(
-          element => element.searchDomain === this.searchDomain
-            && element.text.trim().toLowerCase() === this.searchBoxText.trim().toLowerCase());
+        const existingSavedSearchIndex = this.getIndexSavedSearch(this.searchDomain, this.searchBoxText);
         if (existingSavedSearchIndex !== -1) {
           const existingSavedSearch: Search = this._userData.searches.splice(existingSavedSearchIndex, 1)[0];
           existingSavedSearch.lastAccessedAt = now;
@@ -224,6 +221,12 @@ export class SearchbarComponent implements OnInit {
       }
       this.userDataStore.updateUserData$(this._userData).subscribe();
     }
+  }
+
+  private getIndexSavedSearch(searchDomain: string, searchText: string) {
+    return this._userData.searches.findIndex(
+      element => element.searchDomain === searchDomain
+        && element.text.trim().toLowerCase() === searchText.trim().toLowerCase());
   }
 
   onAutocompleteSelectionChanged(event: MatAutocompleteSelectedEvent) {
@@ -314,6 +317,24 @@ export class SearchbarComponent implements OnInit {
         }
       }
     );
+  }
+
+  removeSearch(search: Search, e: MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const indexSavedSearch = this.getIndexSavedSearch(search.searchDomain, search.text);
+
+    const deletedSearch = this._userData.searches.splice(indexSavedSearch, 1)[0];
+    this.userDataStore.updateUserData$(this._userData).subscribe(() => {
+      console.log('Removed search ' + search.text + ' from domain ' + search.searchDomain);
+      const iziToastSettings: IziToastSettings = {
+        title: `"${deletedSearch.text}" deleted from "${deletedSearch.searchDomain}" search history `,
+        timeout: 3000,
+        position: 'bottomRight'
+      }
+      iziToast.success(iziToastSettings);
+    });
   }
 
 }
