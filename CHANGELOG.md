@@ -1,3 +1,17 @@
+# [4.5.0](https://github.com/codeverland/codever/compare/4.4.0...4.5.0) (2021-07-09)
+
+
+### Bug Fixes
+
+* **fe-bookmarks-delete:** when delete from bookmarks search results force page reload ([eb44c04](https://github.com/codeverland/codever/commit/eb44c04a4550ca5cd2aabf3ce57c5eafe24615c8))
+
+
+### Features
+
+* **search-history:** can delete history from search history for bigger screens ([1e650a5](https://github.com/codeverland/codever/commit/1e650a54342077e7df5354d46a2414a0abca4027))
+
+
+
 # [3.0.0](https://github.com/codeverland/codever/compare/2.9.0...3.0.0) (2021-03-27)
 
 
