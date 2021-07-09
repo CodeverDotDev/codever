@@ -16,7 +16,8 @@ $background-gray: rgb(240, 242, 245);
 }
 
 .search-component {
-  min-width: 300px;
+  margin: 0.3rem 0rem;
+  min-width: 320px;
 
   input:focus {
     box-shadow: none;
@@ -27,11 +28,16 @@ $background-gray: rgb(240, 242, 245);
   color: gainsboro;
 }
 
+.rm-search-trashbin {
+  display: none;
+}
+
 // inspired from https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
   .search-component {
-    min-width: 510px;
+    margin: inherit;
+    min-width: 550px;
 
     input:focus {
       box-shadow: none;
@@ -41,16 +47,26 @@ $background-gray: rgb(240, 242, 245);
 
 @media (min-width: 1250px) {
   .search-component {
-    min-width: 700px;
+    margin: inherit;
+    min-width: 720px;
 
     input:focus {
       box-shadow: none;
+    }
+  }
+
+  .rm-search-trashbin {
+    display: inherit;
+    &:hover {
+      color: red;
+      font-weight: bolder;
     }
   }
 }
 
 @media (min-width: 1600px) {
   .search-component {
+    margin: inherit;
     min-width: 850px;
 
     input:focus {
@@ -127,3 +143,4 @@ input {
   color: #52188c;
   font-size: 1.05rem
 }
+

@@ -105,8 +105,12 @@
   >
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAutocompleteSelectionChanged($event)">
     <mat-option *ngFor="let search of filteredSearches | async" [value]="search.text">
-      <i class="fas fa-history mr-2 search-history-clock"></i> <span
-      class="search-history-text"> {{search.text}} </span>
+      <i class="fas fa-history mr-2 search-history-clock"></i>
+      <span class="search-history-text">
+        {{search.text}}
+        <span class="float-right rm-search-trashbin" (click)="removeSearch(search, $event)" title="Remove search from history"><i
+          class="far fa-trash-alt fa-sm"></i></span>
+    </span>
     </mat-option>
   </mat-autocomplete>
   <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete">ß
