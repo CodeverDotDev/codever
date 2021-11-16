@@ -8,7 +8,7 @@
     "integration-tests": "NODE_ENV=test nyc mocha '**/*.spec.js' --exit"
   },
   "dependencies": {
-    "aws-sdk": "^2.640.0",
+    "aws-sdk": "^2.814.0",
     "body-parser": "^1.18.3",
     "cheerio": "latest",
     "cookie-parser": "~1.4.3",
