@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {WebpageInfo} from '../model/webpage-info';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { WebpageInfo } from '../model/webpage-info';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class WebpageInfoService {
@@ -19,6 +19,7 @@ export class WebpageInfoService {
     return this.httpClient
       .get<WebpageInfo>(`${this.webPageInfoApiBaseUrl}/scrape`, {params: params});
   }
+
 
   getYoutubeVideoData(youtubeVideoId: string) {
     const params = new HttpParams()

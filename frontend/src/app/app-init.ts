@@ -34,7 +34,7 @@ export function initializer(keycloak: KeycloakService, userInfoStore: UserInfoSt
             '/api/public'
           ]
         });
-        resolve();
+        resolve('true');
       } catch (error) {
         reject(error);
       }

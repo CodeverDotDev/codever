@@ -192,7 +192,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     if (isNewBookmark) {
       this.bookmarkForm.get('location').valueChanges.pipe(
         debounceTime(1000),
-        distinctUntilChanged(),)
+        distinctUntilChanged(), )
         .subscribe(location => {
           this.verifyExistenceInPersonalBookmarks(location);
         });

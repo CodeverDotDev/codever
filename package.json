@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "fs-extra": "^9.0.1",
-    "git-describe": "^4.0.4"
+    "git-describe": "^4.0.4",
+    "tslib": "^2.3.1"
   }
 }
