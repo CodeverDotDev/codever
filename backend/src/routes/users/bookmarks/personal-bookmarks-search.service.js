@@ -1,7 +1,7 @@
 const Bookmark = require('../../../model/bookmark');
 const bookmarksSearchHelper = require('../../../common/bookmarks-search.helper');
 
-let findPersonalBookmarks = async function (query, page, limit, userId, searchInclude) {
+let findPersonalBookmarks = async function (userId, query, page, limit, searchInclude) {
   //split in text and tags
   const searchedTermsAndTags = bookmarksSearchHelper.splitSearchQuery(query);
   let searchedTerms = searchedTermsAndTags.terms;
@@ -11,17 +11,17 @@ let findPersonalBookmarks = async function (query, page, limit, userId, searchIn
   const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude);
+    bookmarks = await getPersonalBookmarksForTagsAndTerms( userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForSearchedTerms(nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude);
+    bookmarks = await getPersonalBookmarksForSearchedTerms(userId, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude);
   } else {
-    bookmarks = await getPersonalBookmarksForSearchedTags(searchedTags, page, limit, userId, specialSearchFilters);
+    bookmarks = await getPersonalBookmarksForSearchedTags(userId, searchedTags, page, limit, specialSearchFilters);
   }
 
   return bookmarks;
 }
 
-let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude) {
+let getPersonalBookmarksForTagsAndTerms = async function (userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude) {
   let filter = {
     userId: userId,
     tags:
@@ -56,7 +56,7 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
 }
 
 
-let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude) {
+let getPersonalBookmarksForSearchedTerms = async function ( userId, nonSpecialSearchTerms, page, limit,specialSearchFilters, searchInclude) {
 
   let filter = {userId: userId };
   if ( nonSpecialSearchTerms.length > 0 ) {
@@ -84,7 +84,7 @@ let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms
 }
 
 
-let getPersonalBookmarksForSearchedTags = async function (searchedTags, page, limit, userId, specialSearchFilters) {
+let getPersonalBookmarksForSearchedTags = async function (userId, searchedTags, page, limit, specialSearchFilters) {
   let filter = {
     userId: userId,
     tags:

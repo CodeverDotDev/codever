@@ -36,6 +36,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { ImportBookmarksDialogComponent } from './dialog/import-bookmarks-dialog/import-bookmarks-dialog.component';
 import { ExtensionsComponent } from './extensions/extensions.component';
+import { AsyncSearchResultListComponent } from './async-search-result-list/async-search-result-list.component';
 
 
 /**
@@ -66,6 +67,7 @@ import { ExtensionsComponent } from './extensions/extensions.component';
     SearchFilterPipe,
     AsyncBookmarkListComponent,
     AsyncSnippetListComponent,
+    AsyncSearchResultListComponent,
     BookmarkTextComponent,
     TagsValidatorDirective,
     DeleteBookmarkDialogComponent,
@@ -95,6 +97,7 @@ import { ExtensionsComponent } from './extensions/extensions.component';
     SearchFilterPipe,
     AsyncBookmarkListComponent,
     AsyncSnippetListComponent,
+    AsyncSearchResultListComponent,
     BookmarkTextComponent,
     MatProgressSpinnerModule,
     NavigationComponent,

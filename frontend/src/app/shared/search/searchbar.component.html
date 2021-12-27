@@ -56,6 +56,20 @@
             </span>
         </ng-template>
       </a>
+      <a class="dropdown-item" role="button"
+         title="Search in My Bookmarks & Snippets"
+         (click)="onSearchDomainChange('all-mine')">
+        All mine
+        <span *ngIf="searchDomain === 'my-snippets'; else uncheckedMyCodeletsSelection"
+              class="search-domain-selection my-snippets-selection float-right pl-1 pr-1">
+            <i class="fas fa-check"></i>
+          </span>
+        <ng-template #uncheckedMyCodeletsSelection>
+            <span class="my-snippets-selection-unchecked  float-right">
+              <i class="fa fa-square fa-lg"></i>
+            </span>
+        </ng-template>
+      </a>
       <div role="separator" class="dropdown-divider"></div>
       <a class="dropdown-item" role="button"
          title="Search in public bookmarks"

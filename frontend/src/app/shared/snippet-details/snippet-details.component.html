@@ -22,6 +22,7 @@
             <ng-template #linkToPrivateSnippet>
               <i class="fas fa-eye-slash fa-xs mr-1" title="Private snippet"></i>
             </ng-template>
+            
             {{snippet.title}} <span *ngIf="snippet.public === false; else publicPill"
                                     class="badge badge-pill badge-light ml-3 font-weight-normal">Private</span>
             <ng-template #publicPill>

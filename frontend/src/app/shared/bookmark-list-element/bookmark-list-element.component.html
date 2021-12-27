@@ -19,7 +19,6 @@
             Posted by <a
             [routerLink]="['/users', bookmark.userId, bookmark.userDisplayName]">{{bookmark.userDisplayName}}</a> -
           </span>
-          <i *ngIf="!bookmark.public" class="fas fa-lock fa-sm mr-1" title="private"></i>
           <span *ngIf="bookmark.location.length <= 100; else sliceLocation"
                 [innerHtml]="bookmark.location | highlight: filterText | highlight: queryText">
           </span>
@@ -76,16 +75,20 @@
   <div class="card-footer" style="padding-right: 0.3rem">
     <div class="tags-group">
       <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-            <span *ngIf="userIsLoggedIn && (userData$ | async)?.likes?.indexOf(bookmark._id) !== -1 else likeOption"
-                  title="UnLike" class="mr-1" (click)="unLikeBookmark(bookmark)" style="cursor:pointer">
+        <span *ngIf="!bookmark.public else showLikeButton"><i class="fas fa-eye-slash " title="Private bookmark"></i></span>
+        <ng-template #showLikeButton>
+                      <span
+                        *ngIf="userIsLoggedIn && (userData$ | async)?.likes?.indexOf(bookmark._id) !== -1 else likeOption"
+                        title="UnLike" class="mr-1" (click)="unLikeBookmark(bookmark)" style="cursor:pointer">
                <i class="fas fa-thumbs-up fa-lg"></i>
             </span>
-        <ng-template #likeOption>
+          <ng-template #likeOption>
               <span class="mr-1" title="Like" (click)="likeBookmark(bookmark)" style="cursor:pointer">
                 <i class="far fa-thumbs-up"></i>
               </span>
+          </ng-template>
+          <span>{{bookmark.likeCount}}</span>
         </ng-template>
-        <span>{{bookmark.likeCount}}</span>
       </div>
       <div *ngFor="let tag of bookmark.tags" class="btn-group tag-list  mr-2 mt-1">
 

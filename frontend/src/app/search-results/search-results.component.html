@@ -3,6 +3,24 @@
 
 <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="tabSelectionChanged($event)">
 
+  <mat-tab  *ngIf="searchDomain === 'all-mine'">
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-search"></i> All mine</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
+        <app-async-search-result-list *ngIf="this.searchDomain === 'all-mine'"
+                                 [callerPagination]="callerPaginationSearchResults"
+                                 [searchResults$]="searchResults$"
+                                 [queryText]="searchText"
+                                 [userData$]="userData$"
+                                 [isSearchResultsPage]="true"
+                                 [showFilterBox]="false">
+        </app-async-search-result-list>
+      </div>
+    </ng-template>
+  </mat-tab>
+
   <mat-tab  *ngIf="searchDomain === 'public-bookmarks' || searchDomain === 'my-bookmarks'">
     <ng-template mat-tab-label>
       <span class="app-tab-label"><i class="fa fa-search"></i> My Bookmarks</span>
