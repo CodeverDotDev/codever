@@ -10,12 +10,10 @@ import { Search, UserData } from '../../core/model/user-data';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
-import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
-import { PersonalSnippetsService } from '../../core/personal-snippets.service';
 import { SearchNotificationService } from '../../core/search-notification.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -162,9 +160,11 @@ export class SearchbarComponent implements OnInit {
     this.searchDomain = selectedSearchDomain;
     this.watchSearchBoxValueChanges();
     this.setFilteredSearches$(selectedSearchDomain);
-    if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_SNIPPETS) && !this.userIsLoggedIn) {
+    if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS
+      || selectedSearchDomain === SearchDomain.ALL_MINE
+      || selectedSearchDomain === SearchDomain.MY_SNIPPETS) && !this.userIsLoggedIn) {
       this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
-      this.showLoginRequiredDialog('You need to be logged in to search in your personal bookmarks');
+      this.showLoginRequiredDialog('You need to be logged in to search in your personal assets');
     } else {
       this.searchDomain = selectedSearchDomain;
       this.searchBoxField.nativeElement.focus();

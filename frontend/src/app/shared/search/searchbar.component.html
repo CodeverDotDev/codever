@@ -60,15 +60,9 @@
          title="Search in My Bookmarks & Snippets"
          (click)="onSearchDomainChange('all-mine')">
         All mine
-        <span *ngIf="searchDomain === 'my-snippets'; else uncheckedMyCodeletsSelection"
-              class="search-domain-selection my-snippets-selection float-right pl-1 pr-1">
+        <span *ngIf="searchDomain === 'all-mine'" class="float-right">
             <i class="fas fa-check"></i>
-          </span>
-        <ng-template #uncheckedMyCodeletsSelection>
-            <span class="my-snippets-selection-unchecked  float-right">
-              <i class="fa fa-square fa-lg"></i>
-            </span>
-        </ng-template>
+        </span>
       </a>
       <div role="separator" class="dropdown-divider"></div>
       <a class="dropdown-item" role="button"
@@ -122,7 +116,8 @@
       <i class="fas fa-history mr-2 search-history-clock"></i>
       <span class="search-history-text">
         {{search.text}}
-        <span class="float-right rm-search-trashbin" (click)="removeSearch(search, $event)" title="Remove search from history"><i
+        <span class="float-right rm-search-trashbin" (click)="removeSearch(search, $event)"
+              title="Remove search from history"><i
           class="far fa-trash-alt fa-sm"></i></span>
     </span>
     </mat-option>
