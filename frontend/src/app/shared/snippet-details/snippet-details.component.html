@@ -4,12 +4,12 @@
       <div class="titles">
         <h4 *ngIf='inlist; else hyperLinkTitle' class="card-title">
              <span *ngIf="snippet.public; else linkToPrivateSnippet">
-                <i class="fas fa-eye fa-xs mr-2" title="Public snippet"></i>
+                <i class="fas fa-code fa-xs mr-2 " title="Public snippet"  style="color: #6c757d"></i>
                 <a routerLink="/snippets/{{snippet._id}}/details"
                    [innerHtml]="snippet.title | highlight: queryText"></a> </span>
           <ng-template #linkToPrivateSnippet>
                 <span>
-                  <i class="fas fa-eye-slash fa-xs mr-2" title="Private snippet"></i>
+                  <i class="fas fa-code fa-xs mr-2 anthracite-gray" title="Private snippet"></i>
                   <a routerLink="/my-snippets/{{snippet._id}}/details"
                      [innerHtml]="snippet.title | highlight: queryText"></a>
                 </span>
@@ -22,7 +22,7 @@
             <ng-template #linkToPrivateSnippet>
               <i class="fas fa-eye-slash fa-xs mr-1" title="Private snippet"></i>
             </ng-template>
-            
+
             {{snippet.title}} <span *ngIf="snippet.public === false; else publicPill"
                                     class="badge badge-pill badge-light ml-3 font-weight-normal">Private</span>
             <ng-template #publicPill>
@@ -53,6 +53,16 @@
 
   <div class="card-footer" style="padding-right: 0.3rem">
     <div class="tags-group">
+      <div class="input-group-sm  mb-2 mb-sm-0 star-group">
+      <span *ngIf="snippet.public; else showPrivateIcon">
+        <i class="fas fa-eye anthracite-gray" title="Public snippet"></i>
+      </span>
+        <ng-template #showPrivateIcon>
+        <span>
+          <i class="fas fa-eye-slash anthracite-gray" title="Private snippet"></i>
+        </span>
+        </ng-template>
+      </div>
       <div *ngFor="let tag of snippet.tags" class="btn-group tag-list  mr-2 mt-1">
         <a class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
            [routerLink]="['/snippets/t', tag]"

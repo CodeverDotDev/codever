@@ -3,6 +3,7 @@
     <div class="header-wrapper">
       <div class="titles">
         <h5 class="card-title">
+          <i class="fa fa-bookmark fa-sm mr-2 anthracite-gray"></i>
           <i *ngIf="bookmark.youtubeVideoId" class="fab fa-youtube youtube-icon"
              (click)="playYoutubeVideo(bookmark)"
              title="Play video"></i>
@@ -75,7 +76,7 @@
   <div class="card-footer" style="padding-right: 0.3rem">
     <div class="tags-group">
       <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-        <span *ngIf="!bookmark.public else showLikeButton"><i class="fas fa-eye-slash " title="Private bookmark"></i></span>
+        <span *ngIf="!bookmark.public else showLikeButton"><i class="fas fa-eye-slash anthracite-gray" title="Private bookmark"></i></span>
         <ng-template #showLikeButton>
                       <span
                         *ngIf="userIsLoggedIn && (userData$ | async)?.likes?.indexOf(bookmark._id) !== -1 else likeOption"
