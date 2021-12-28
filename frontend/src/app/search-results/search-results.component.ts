@@ -41,10 +41,12 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   searchResults$: Observable<Bookmark[] | Snippet[] | (Bookmark | Snippet)[]>;
   private userData$: Observable<UserData>;
 
-  selectedTabIndex = 1; // default search in public bookmarks
+  selectedTabIndex = 3; // default search in public bookmarks
   private searchInclude: string;
 
   searchTriggeredSubscription: any;
+
+  searchInOtherCategoriesTip = 'You can also try looking in other categories 👆👆';
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -64,6 +66,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.searchText = this.route.snapshot.queryParamMap.get('q');
     this.searchDomain = this.route.snapshot.queryParamMap.get('sd') || SearchDomain.PUBLIC_BOOKMARKS;
     this.searchInclude = this.route.snapshot.queryParamMap.get('include') || 'all';
@@ -103,15 +106,23 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     this.searchTriggeredSubscription = this.searchNotificationService.searchTriggeredSource$.subscribe(searchData => {
       switch (this.searchDomain) {
         case SearchDomain.ALL_MINE: {
-          this.selectedTabIndex = 1;
+          this.selectedTabIndex = 0;
           break;
         }
         case SearchDomain.MY_BOOKMARKS: {
-          this.selectedTabIndex = 2;
+          this.selectedTabIndex = 1;
           break;
         }
         case SearchDomain.MY_SNIPPETS: {
           this.selectedTabIndex = 2;
+          break;
+        }
+        case SearchDomain.PUBLIC_BOOKMARKS: {
+          this.selectedTabIndex = 3;
+          break;
+        }
+        case SearchDomain.PUBLIC_SNIPPETS: {
+          this.selectedTabIndex = 4;
           break;
         }
         default : {
@@ -139,10 +150,27 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   }
 
   private initSelectedTabIndex(searchDomain: string) {
-    if (searchDomain === SearchDomain.MY_BOOKMARKS || searchDomain === SearchDomain.MY_SNIPPETS || SearchDomain.ALL_MINE) {
-      this.selectedTabIndex = 0;
-    } else {
-      this.selectedTabIndex = 1;
+    switch (searchDomain) {
+      case SearchDomain.ALL_MINE : {
+        this.selectedTabIndex = 0;
+        break;
+      }
+      case SearchDomain.MY_BOOKMARKS : {
+        this.selectedTabIndex = 1;
+        break;
+      }
+      case SearchDomain.MY_SNIPPETS : {
+        this.selectedTabIndex = 2;
+        break;
+      }
+      case SearchDomain.PUBLIC_BOOKMARKS : {
+        this.selectedTabIndex = 3;
+        break
+      }
+      case SearchDomain.PUBLIC_SNIPPETS : {
+        this.selectedTabIndex = 4;
+        break
+      }
     }
   }
 
@@ -225,13 +253,33 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
         {
           relativeTo: this.route,
           queryParams: {
+            q: this.searchText,
             sd: SearchDomain.MY_SNIPPETS,
             include: searchInclude
           },
-          queryParamsHandling: 'merge'
         }
       );
-      this.searchResults(this.searchText, SearchDomain.MY_SNIPPETS, searchInclude);
+    } else {
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through personal snippets');
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    }
+
+  }
+
+  private tryAllMine(searchInclude: string) {
+    if (this.userIsLoggedIn) {
+      this.selectedTabIndex = 0;
+      this.searchInclude = searchInclude;
+      this.router.navigate(['.'],
+        {
+          relativeTo: this.route,
+          queryParams: {
+            q: this.searchText,
+            sd: SearchDomain.ALL_MINE,
+            include: searchInclude
+          },
+        }
+      );
     } else {
       const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through personal snippets');
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
@@ -247,14 +295,13 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       {
         relativeTo: this.route,
         queryParams: {
+          q: this.searchText,
           sd: SearchDomain.PUBLIC_SNIPPETS,
           page: '1',
           include: searchInclude
         },
-        queryParamsHandling: 'merge'
       }
     );
-    this.searchResults(this.searchText, SearchDomain.PUBLIC_SNIPPETS, searchInclude);
   }
 
   private tryPublicBookmarks(searchInclude: string) {
@@ -265,17 +312,16 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       {
         relativeTo: this.route,
         queryParams: {
+          q: this.searchText,
           sd: SearchDomain.PUBLIC_BOOKMARKS,
           page: '1',
           include: searchInclude
         },
-        queryParamsHandling: 'merge'
       }
     );
-    this.searchResults(this.searchText, SearchDomain.PUBLIC_BOOKMARKS, searchInclude);
   }
 
-  private tryPersonalBookmarks(searchInclude) {
+  private tryMyBookmarks(searchInclude) {
     if (this.userIsLoggedIn) {
       this.selectedTabIndex = 0;
       this.searchDomain = SearchDomain.MY_BOOKMARKS;
@@ -285,14 +331,13 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
         {
           relativeTo: this.route,
           queryParams: {
+            q: this.searchText,
             sd: SearchDomain.MY_BOOKMARKS,
             page: '1',
             include: searchInclude
           },
-          queryParamsHandling: 'merge'
         }
       );
-      this.searchResults(this.searchText, SearchDomain.MY_BOOKMARKS, searchInclude);
     } else {
       const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through personal bookmarks');
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
@@ -303,27 +348,23 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
       case 0 : {
-        if (this.userIsLoggedIn) {
-          if (this.searchDomain === SearchDomain.PUBLIC_BOOKMARKS) {
-            this.searchDomain = SearchDomain.MY_BOOKMARKS;
-            this.tryPersonalBookmarks('all');
-          }
-          if (this.searchDomain === SearchDomain.PUBLIC_SNIPPETS) {
-            this.searchDomain = SearchDomain.MY_SNIPPETS;
-            this.tryMySnippets('all');
-          }
-        }
+            this.tryAllMine('all');
         break;
       }
       case 1 : {
-        if (this.searchDomain === SearchDomain.MY_BOOKMARKS) {
-          this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
+          this.tryMyBookmarks('all');
+        break;
+      }
+      case 2 : {
+          this.tryMySnippets('all');
+        break;
+      }
+      case 3 : {
           this.tryPublicBookmarks('all');
-        }
-        if (this.searchDomain === SearchDomain.MY_SNIPPETS) {
-          this.searchDomain = SearchDomain.PUBLIC_SNIPPETS
+        break;
+      }
+      case 4 : {
           this.tryPublicSnippets('all');
-        }
         break;
       }
     }
