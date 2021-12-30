@@ -17,6 +17,7 @@ import { Search, UserData } from './core/model/user-data';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Bookmark } from './core/model/bookmark';
+import { AddToHistoryService } from './core/user/add-to-history.service';
 
 @Component({
     selector: 'app-root',
@@ -47,7 +48,8 @@ export class AppComponent implements OnInit {
                 private historyDialog: MatDialog,
                 private loginDialog: MatDialog,
                 private cookieService: CookieService,
-                private feedbackService: FeedbackService) {
+                private feedbackService: FeedbackService,
+                private addToHistoryService: AddToHistoryService) {
         this.innerWidth = 100;
     }
 

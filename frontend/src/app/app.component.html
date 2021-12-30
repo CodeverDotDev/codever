@@ -50,7 +50,7 @@
           title="History"
           [routerLink]="['/history']"
         >
-          <i class="fas fa-history mr-1"></i> Last visited:
+          <i class="fas fa-history mr-1"></i> History bookmarks:
         </a>
         <div *ngIf="(latestVisitedBookmarks$ | async) as latestVisitedBookmarks" class="mt-1" (mouseout)="resetHoveringLastVisited()">
           <ng-container *ngFor="let bookmark of latestVisitedBookmarks; let i = index" class="mt-1">
@@ -63,6 +63,8 @@
                     [class.public-bookmarks-last-search]="bookmark.public === true"
                     href="{{bookmark.location}}}"
                     title="Go to {{bookmark.name}}"
+                    (click)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"
+                    (auxclick)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"
                     target="_blank">
                     <i class="fa fa-xs fa-bookmark mr-1"></i>
                     <span
@@ -91,12 +93,17 @@
                     title="{{'Search in ' + mySearch.searchDomain + ': ' + mySearch.text}}"
                   >  <i class="fa fa-xs fa-search mr-1"></i>
                     <span
-                      *ngIf="!hoveringLastSearches[i]; else longVersion">{{mySearch.text.length > 20 ? mySearch.text.substring(0, 20) + '...' : mySearch.text}}</span>
+                      *ngIf="!hoveringLastSearches[i]; else longVersion">{{mySearch.text.length > 30 ? mySearch.text.substring(0, 30) + '...' : mySearch.text}}</span>
                     <ng-template #longVersion>{{mySearch.text}}</ng-template>
                     <i *ngIf="mySearch.searchDomain === 'my-snippets' || mySearch.searchDomain === 'public-snippets'"
                        class="fa fa-xs fa-code ml-1"></i>
                     <i *ngIf="mySearch.searchDomain === 'my-bookmarks' || mySearch.searchDomain === 'public-bookmarks'"
                        class="fa fa-xs fa-bookmark ml-1"></i>
+                    <span *ngIf="mySearch.searchDomain === 'all-mine'">
+                      <i  class="fa fa-xs fa-bookmark ml-1"></i>
+                      <i  class="fa fa-xs fa-code ml-1"></i>
+                    </span>
+
                   </a>
               </span>
             </ng-container>
