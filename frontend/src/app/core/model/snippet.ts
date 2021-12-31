@@ -16,4 +16,5 @@ export interface Snippet {
 export interface CodeSnippet {
   code: string;
   comment: string;
+  commentAfter: string;
 }

@@ -57,7 +57,7 @@
       <div [formGroupName]="i" class="border rounded pt-1 pl-3 pr-3 mb-3">
         <div class="form-group mb-0">
           <div class="form-group">
-            <label for="comment-{{i}}">Comment (optional)- <i class="fab fa-markdown"></i> <a
+            <label for="comment-{{i}}">Comment before (optional)- <i class="fab fa-markdown"></i> <a
               class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
               supported</a></label>
             <textarea class="form-control"
@@ -80,6 +80,17 @@
             class="description-chars-counter">{{codeSnippet.get('code').value ? codeSnippet.get('code').value.length : 0}}
             / 5000
           </div>
+          <div class="form-group">
+            <label for="commentAfter-{{i}}">Comment after (optional) - <i class="fab fa-markdown"></i> <a
+              class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
+              supported</a></label>
+            <textarea class="form-control"
+                      style="height: 5rem"
+                      id="commentAfter-{{i}}"
+                      formControlName="commentAfter"
+                      placeholder='Appears after code snippet in details'>
+            </textarea>
+          </div>
           <div class="clear"></div>
           <div *ngIf="codeSnippet.invalid && (codeSnippet.dirty || codeSnippet.touched)" class="alert alert-danger">
             <div *ngIf="codeSnippet.get('code').errors.tooManyLines">
@@ -98,7 +109,7 @@
                 class="btn btn-sm btn-primary mb-2"
                 title="Add another code section"
                 (click)="addEmptyCodeSnippet(i)">
-          <i class="fa fa-plus"></i> Add
+          <i class="fa fa-plus"></i> Add code section
         </button>
         <button type="button"
                 class="btn btn-sm btn-danger mb-2 ml-2"
@@ -108,6 +119,7 @@
           <i class="far fa-trash-alt"></i> Remove
         </button>
       </div>
+
     </div>
 
     <div class="form-group pt-2 pb-3">
