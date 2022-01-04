@@ -120,12 +120,12 @@ personalSnippetsRouter.put('/:snippetId', keycloak.protect(), async (request, re
 
   UserIdValidator.validateUserId(request);
 
-  const codeletData = request.body;
+  const snippetData = request.body;
 
   const {userId, snippetId} = request.params;
-  const updatedBookmark = await PersonalSnippetsService.updateSnippet(userId, snippetId, codeletData);
+  const updatedSnippet = await PersonalSnippetsService.updateSnippet(userId, snippetId, snippetData);
 
-  return response.status(HttpStatus.OK).send(updatedBookmark);
+  return response.status(HttpStatus.OK).send(updatedSnippet);
 });
 
 /*

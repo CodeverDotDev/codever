@@ -2,13 +2,13 @@ const Snippet = require('../../../model/snippet');
 
 const NotFoundError = require('../../../error/not-found.error');
 
-const CodeletInputValidator = require('./snippet-input.validator');
+const SnippetInputValidator = require('./snippet-input.validator');
 
 /**
  * CREATE snippet for user
  */
 let createSnippet = async function (userId, snippetData) {
-  CodeletInputValidator.validateSnippetInput(userId, snippetData);
+  SnippetInputValidator.validateSnippetInput(userId, snippetData);
 
   const snippet = new Snippet(snippetData);
   let newSnippet = await snippet.save();
@@ -52,24 +52,24 @@ let getAllMySnippets = async (userId) => {
  * full UPDATE via PUT - that is the whole document is required and will be updated
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
-let updateSnippet = async (userId, codeletId, codeletData) => {
+let updateSnippet = async (userId, codeletId, snippetData) => {
 
-  CodeletInputValidator.validateSnippetInput(userId, codeletData);
+  SnippetInputValidator.validateSnippetInput(userId, snippetData);
 
-  const updatedCodelet = await Snippet.findOneAndUpdate(
+  const updatedSnippet = await Snippet.findOneAndUpdate(
     {
       _id: codeletId,
       userId: userId
     },
-    codeletData,
+    snippetData,
     {new: true}
   );
 
-  const codeletNotFound = !updatedCodelet;
-  if ( codeletNotFound ) {
-    throw new NotFoundError('Snippet NOT_FOUND with id: ' + codeletId + ' AND title: ' + codeletData.title);
+  const snippetNotFound = !updatedSnippet;
+  if ( snippetNotFound ) {
+    throw new NotFoundError('Snippet NOT_FOUND with id: ' + codeletId + ' AND title: ' + snippetData.title);
   } else {
-    return updatedCodelet;
+    return updatedSnippet;
   }
 };
 
