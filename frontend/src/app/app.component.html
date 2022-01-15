@@ -61,7 +61,7 @@
                     class="badge badge-secondary mb-1  ml-2"
                     [class.my-bookmarks-last-search]="bookmark.public === false"
                     [class.public-bookmarks-last-search]="bookmark.public === true"
-                    href="{{bookmark.location}}}"
+                    href="{{bookmark.location}}"
                     title="Go to {{bookmark.name}}"
                     (click)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"
                     (auxclick)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"
