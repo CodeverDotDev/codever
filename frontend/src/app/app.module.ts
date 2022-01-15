@@ -70,10 +70,10 @@ import { NewEntryComponent } from './new-entry/new-entry.component';
     },
     {
       provide: HIGHLIGHT_OPTIONS,
-      useValue: <HighlightOptions>{
-        lineNumbers: true
+      useValue: {
+        fullLibraryLoader: () => import('highlight.js'),
       }
-    }   ,
+    },
     AppService
   ],
   declarations: [
