@@ -54,7 +54,7 @@
         </a>
         <div *ngIf="(latestVisitedBookmarks$ | async) as latestVisitedBookmarks" class="mt-1" (mouseout)="resetHoveringLastVisited()">
           <ng-container *ngFor="let bookmark of latestVisitedBookmarks; let i = index" class="mt-1">
-              <span class="mt-1 mr-2">
+              <span class="mt-1 mr-2 on-top">
                   <a
                     (mouseover)="hoveringLastVisited[i]=true"
                     (mouseout)="hoveringLastVisited[i]=false"
@@ -79,7 +79,7 @@
           <span class="list-group-item list-group-item-action bg-light"><i class="fa fa-search mr-1"></i> Latest searches:</span>
           <div class="mt-1" (mouseout)="resetHoveringLastSearches()">
             <ng-container *ngFor="let mySearch of latestSearches; let i = index" class="mt-1">
-              <span class="mt-1 mr-2">
+              <span class="mt-1 mr-2 on-top">
                   <a
                     (mouseover)="hoveringLastSearches[i]=true"
                     (mouseout)="hoveringLastSearches[i]=false"

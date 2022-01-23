@@ -95,3 +95,8 @@ footer {
   background: linen;
   color: #495057;
 }
+
+.on-top {
+  position:relative;
+  z-index: 1000;
+}
