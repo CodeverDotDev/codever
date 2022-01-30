@@ -5,7 +5,7 @@
       <ng-template mat-tab-label>
         <span class="app-tab-label"><i class="fas fa-home"></i> Feed</span>
       </ng-template>
-      <div *ngIf="!(userIsLoggedIn$ | async); else showFollowedTags">
+      <div *ngIf="!userIsLoggedIn && showLoginButton; else showFollowedTags">
         <div class="alert alert-info mt-2">
           <button type="button" class="btn btn-primary btn-sm mr-2" (click)="login('feed')"><i
             class="fas fa-unlock"></i> Login / Register
