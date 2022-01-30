@@ -1,10 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Snippet } from '../../core/model/snippet';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { PaginationAction } from '../../core/model/pagination-action';
-import { PaginationNotificationService } from '../../core/pagination-notification.service';
-import { environment } from '../../../environments/environment';
 import { Bookmark } from '../../core/model/bookmark';
 
 @Component({
@@ -27,11 +24,8 @@ export class AsyncSnippetListComponent implements OnInit, OnChanges {
   showPagination = true;
 
   currentPage = 1;
-  paginationSize = environment.PAGINATION_PAGE_SIZE;
 
-  Arr = Array; // Array type captured in a variable
-
-  constructor(private router: Router, private paginationNotificationService: PaginationNotificationService, private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -51,23 +45,4 @@ export class AsyncSnippetListComponent implements OnInit, OnChanges {
     return of(searchResult);
   }
 
-  navigate(page: number) {
-    const paginationAction: PaginationAction = {
-      caller: this.callerPagination,
-      page: page
-    }
-    this.currentPage = page;
-    this.syncPageQueryParam();
-    this.paginationNotificationService.clickPageNavigation(paginationAction);
-  }
-
-  syncPageQueryParam() {
-    this.router.navigate(['.'],
-      {
-        relativeTo: this.route,
-        queryParams: {page: this.currentPage},
-        queryParamsHandling: 'merge'
-      }
-    );
-  }
 }

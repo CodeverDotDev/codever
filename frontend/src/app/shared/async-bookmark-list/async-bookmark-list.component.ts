@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Injector,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -40,14 +50,9 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
   @Output()
   bookmarkDeleted = new EventEmitter<boolean>();
 
-  private router: Router;
   readonly route: ActivatedRoute;
-  private paginationNotificationService: PaginationNotificationService;
-
-  environment = environment;
 
   currentPage: number;
-  paginationSize = environment.PAGINATION_PAGE_SIZE;
 
   Arr = Array; // Array type captured in a variable
 
@@ -61,9 +66,7 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
     public loginDialog: MatDialog,
   ) {
     super(loginDialog, userDataWatchedTagsStore);
-    this.router = <Router>this.injector.get(Router);
     this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
-    this.paginationNotificationService = <PaginationNotificationService>this.injector.get(PaginationNotificationService);
   }
 
   ngOnInit(): void {
@@ -76,25 +79,5 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
     } else {
       this.currentPage = 1;
     }
-  }
-
-  navigate(page: number) {
-    const paginationAction: PaginationAction = {
-      caller: this.callerPagination,
-      page: page
-    }
-    this.currentPage = page;
-    this.syncPageQueryParam();
-    this.paginationNotificationService.clickPageNavigation(paginationAction);
-  }
-
-  syncPageQueryParam() {
-    this.router.navigate(['.'],
-      {
-        relativeTo: this.route,
-        queryParams: {page: this.currentPage},
-        queryParamsHandling: 'merge'
-      }
-    );
   }
 }
