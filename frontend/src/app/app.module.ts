@@ -7,7 +7,7 @@ import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
 import { PublicResourcesModule } from './public/public.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { KeycloakAngularModule, KeycloakEventType, KeycloakService } from 'keycloak-angular';
 import { initializer } from './app-init';
 import { RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './not-found.component';
@@ -27,6 +27,45 @@ import { MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule } from '@angular/material/chi
 import { SnippetNotFoundComponent } from './not-found/snippet-not-found.component';
 import { SystemService } from './core/cache/system.service';
 import { NewEntryComponent } from './new-entry/new-entry.component';
+
+function initializeKeycloak(keycloak: KeycloakService, userInfoStore: UserInfoStore, userDataStore: UserDataStore,
+                            _systemService: SystemService) {
+  return () => {
+    _systemService.checkVersion();
+    keycloak.keycloakEvents$.subscribe(event => {
+      if (event.type === KeycloakEventType.OnAuthSuccess) {
+        userInfoStore.getUserInfo$().subscribe(userInfo => {
+          userDataStore.loadInitialUserData(userInfo.sub, userInfo.given_name, userInfo.email);
+          console.log('load initial userInfo');
+        });
+      }
+      if (event.type === KeycloakEventType.OnAuthLogout) {
+        this.userDataStore.resetUserDataStore();
+      }
+      if (event.type === KeycloakEventType.OnTokenExpired) {
+        keycloak.updateToken(20);
+      }
+    });
+
+    keycloak.init({
+      config: {
+        url: environment.keycloak.url, // .ie: http://localhost:8080/auth/
+        realm: environment.keycloak.realm, // .ie: master
+        clientId: environment.keycloak.clientId // .ie: account
+      },
+      initOptions: {
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/assets/silent-check-sso.html'
+      },
+      bearerExcludedUrls: [
+        '/api/public',
+        '/assets'
+      ]
+    });
+  }
+
+}
 
 @NgModule({
   exports: [
