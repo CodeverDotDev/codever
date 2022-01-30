@@ -47,7 +47,7 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
   const searchInclude = request.query.include;
   if ( searchText ) {
-    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(searchText, page, limit, request.params.userId, searchInclude);
+    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(request.params.userId, searchText, page, limit, searchInclude);
     return response.send(bookmarks);
   } else {
     next();

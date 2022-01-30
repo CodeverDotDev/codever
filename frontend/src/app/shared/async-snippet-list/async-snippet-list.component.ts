@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { PaginationAction } from '../../core/model/pagination-action';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 import { environment } from '../../../environments/environment';
+import { Bookmark } from '../../core/model/bookmark';
 
 @Component({
   selector: 'app-async-snippet-list',
@@ -46,8 +47,8 @@ export class AsyncSnippetListComponent implements OnInit, OnChanges {
     }
   }
 
-  of(snippet: Snippet) {
-    return of(snippet);
+  of(searchResult: Snippet | Bookmark) {
+    return of(searchResult);
   }
 
   navigate(page: number) {

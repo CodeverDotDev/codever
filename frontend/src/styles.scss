@@ -1,3 +1,5 @@
+@import 'scss/colors';
+
 // styles in src/style directory are applied to the whole page
 body {
   background: #FFFFFF;
@@ -261,4 +263,8 @@ label {
 
 .snippet-comment-txt {
   height: 6rem;
+}
+
+#sidebar-wrapper .list-group {
+  width: 18rem;
 }

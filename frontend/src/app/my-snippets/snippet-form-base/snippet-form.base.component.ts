@@ -127,21 +127,24 @@ export class SnippetFormBaseComponent implements OnInit {
   createCodeSnippet(codeSnippet: CodeSnippet): FormGroup {
     return this.formBuilder.group({
       code: [codeSnippet.code, textSizeValidator(5000, 500)],
-      comment: codeSnippet.comment
+      comment: codeSnippet.comment,
+      commentAfter: codeSnippet.commentAfter
     });
   }
 
   createInitialCodeSnippet(): FormGroup {
     return this.formBuilder.group({
       code: ['', textSizeValidator(5000, 500)],
-      comment: ['', textSizeValidator(1000, 30)]
+      comment: ['', textSizeValidator(1000, 30)],
+      commentAfter: ['', textSizeValidator(1000, 30)]
     });
   }
 
   createEmptyCodeSnippet(): FormGroup {
     return this.formBuilder.group({
       code: ['', textSizeValidator(5000, 500)],
-      comment: ['', textSizeValidator(1000, 30)]
+      comment: ['', textSizeValidator(1000, 30)],
+      commentAfter: ['', textSizeValidator(1000, 30)]
     });
   }
 
@@ -170,8 +173,8 @@ export class SnippetFormBaseComponent implements OnInit {
           const lastSlashIndex = headers.get('location').lastIndexOf('/');
           const newSnippetId = headers.get('location').substring(lastSlashIndex + 1);
           snippet._id = newSnippetId;
-          const queryParmas = popup ? {popup: popup} : {};
-          this.navigateToSnippetDetails(snippet, queryParmas)
+          const queryParams = popup ? {popup: popup} : {};
+          this.navigateToSnippetDetails(snippet, queryParams)
         },
         (error: HttpResponse<any>) => {
           this.errorService.handleError(error.body.json());

@@ -125,7 +125,8 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
 
     return this.formBuilder.group({
       code: [this.code ? this.ext === 'vscode' ? this.decodeTextVsCode(this.code) : this.code : '', textSizeValidator(5000, 500)],
-      comment: [this.comment ? this.comment : '', textSizeValidator(1000, 30)]
+      comment: [this.comment ? this.comment : '', textSizeValidator(1000, 30)],
+      commentAfter: [ '', textSizeValidator(1000, 30)]
     });
   }
 

@@ -24,7 +24,7 @@
 }
 
 #sidebar-wrapper .list-group {
-  width: 12.5rem;
+  width: 16.5rem;
 }
 
 #page-content-wrapper {
@@ -94,4 +94,9 @@ footer {
   @extend .last-search-border;
   background: linen;
   color: #495057;
+}
+
+.on-top {
+  position:relative;
+  z-index: 900;
 }

@@ -15,6 +15,8 @@
           <div class="clear"></div>
           <pre class="mb-0"><code [highlight]="codeSnippet.code" #codePart></code></pre>
         </div>
+        <p *ngIf="codeSnippet.commentAfter" class="mb-0 mt-2"
+           [innerHtml]="codeSnippet.commentAfter | md2html"></p>
         <hr *ngIf="!isLast">
       </div>
     </div>
@@ -37,6 +39,8 @@
         <div class="clear"></div>
         <pre class="mb-0"><code [highlight]="codeSnippet.code" #codePart></code></pre>
       </div>
+      <p *ngIf="codeSnippet.commentAfter" class="mb-1 mt-2"
+         [innerHtml]="codeSnippet.commentAfter | md2html"></p>
       <hr *ngIf="!isLast">
     </div>
   </ng-template>

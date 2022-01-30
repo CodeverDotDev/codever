@@ -34,6 +34,7 @@ import { LocalStorageService } from './cache/local-storage.service';
 import { HttpClientLocalStorageService } from './cache/http-client-local-storage.service';
 import { SystemService } from './cache/system.service';
 import { CookieService } from './cookies/cookie.service';
+import { PersonalSearchService } from './personal-search.service';
 
 
 /**
@@ -59,6 +60,7 @@ import { CookieService } from './cookies/cookie.service';
     AuthGuard,
     PersonalBookmarksService,
     PersonalSnippetsService,
+    PersonalSearchService,
     AdminService,
     UserDataService,
     UserDataStore,

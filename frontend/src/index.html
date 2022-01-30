@@ -3,7 +3,24 @@
 <head>
   <meta charset="utf-8">
   <title>Codever</title>
-  <link rel="icon" type="image/x-icon" href="assets/logo/logo-black.svg">
+  <link id="favicon" rel="icon" type="image/x-icon" href="assets/logo/logo-black.svg">
+  <script type="text/javascript">
+    if ( window.matchMedia && window.matchMedia('(prefers-color-scheme: no-preference)').matches ) {
+      document.getElementById("favicon").href = "assets/logo/logo-blue.svg";
+    }
+    if ( window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ) {
+      document.getElementById("favicon").href = "assets/logo/logo-white.svg";
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      const newColorScheme = e.matches ? "dark" : "light";
+      if ( newColorScheme == "dark" ) {
+        document.getElementById("favicon").href = "assets/logo/logo-white.svg";
+      }
+      if ( newColorScheme == "light" ) {
+        document.getElementById("favicon").href = "assets/logo/logo-black.svg";
+      }
+    });
+  </script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
         integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 

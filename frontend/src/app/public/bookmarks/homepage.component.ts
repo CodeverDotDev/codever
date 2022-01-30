@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,7 +27,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss']
 })
-export class HomepageComponent extends TagFollowingBaseComponent implements OnInit, OnDestroy {
+export class HomepageComponent extends TagFollowingBaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly FIRST_PAGE = 1;
 
@@ -42,6 +42,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   readLater$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
+  showLoginButton = false;
   userId: string;
   userIsLoggedIn$: Promise<boolean>;
 
@@ -251,6 +252,14 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
       {
         queryParams: {q: '[' + tag + ']', sd: SearchDomain.PUBLIC_BOOKMARKS, page: this.FIRST_PAGE}
       });
+  }
+
+  ngAfterViewInit(): void {
+    this.userIsLoggedIn$.then(isLoggedIn => {
+      if (!isLoggedIn) {
+        this.showLoginButton = true;
+      }
+    });
   }
 }
 

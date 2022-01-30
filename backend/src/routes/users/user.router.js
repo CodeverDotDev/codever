@@ -9,6 +9,7 @@ const Keycloak = require('keycloak-connect');
 const browserBookmarksImportService = require('./browser-bookmarks-import.service');
 
 const UserDataService = require('./user-data.service');
+const PersonalSearchService = require('./personal-search.service');
 const userIdTokenValidator = require('./userid.validator');
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
 const FileTypeValidationHelper = require('./file-type-validation.helper');
@@ -171,6 +172,17 @@ usersRouter.get('/:userId/history', keycloak.protect(), async (request, response
   }
 
   response.send(bookmarksFromHistory);
+});
+
+/* GET search results from user's both bookmarks and snippets */
+usersRouter.get('/:userId/search-results', keycloak.protect(), async (request, response) => {
+  userIdTokenValidator.validateUserId(request);
+  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const searchText = request.query.q;
+  const searchInclude = request.query.include || 'all';
+  const  personalSearchResults = await PersonalSearchService.getPersonalSearchResults(request.params.userId, searchText, page, limit, searchInclude);
+
+  response.send(personalSearchResults);
 });
 
 /*

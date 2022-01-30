@@ -56,6 +56,14 @@
             </span>
         </ng-template>
       </a>
+      <a class="dropdown-item" role="button"
+         title="Search in My Bookmarks & Snippets"
+         (click)="onSearchDomainChange('all-mine')">
+        All Mine
+        <span *ngIf="searchDomain === 'all-mine'" class="float-right">
+            <i class="fas fa-check"></i>
+        </span>
+      </a>
       <div role="separator" class="dropdown-divider"></div>
       <a class="dropdown-item" role="button"
          title="Search in public bookmarks"
@@ -108,7 +116,8 @@
       <i class="fas fa-history mr-2 search-history-clock"></i>
       <span class="search-history-text">
         {{search.text}}
-        <span class="float-right rm-search-trashbin" (click)="removeSearch(search, $event)" title="Remove search from history"><i
+        <span class="float-right rm-search-trashbin" (click)="removeSearch(search, $event)"
+              title="Remove search from history"><i
           class="far fa-trash-alt fa-sm"></i></span>
     </span>
     </mat-option>

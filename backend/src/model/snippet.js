@@ -9,6 +9,7 @@ const CodeSnippetSchema = new Schema({
   code: String,
   language: String,
   comment: String,
+  commentAfter: String,
 });
 
 const snippetSchema = new Schema({

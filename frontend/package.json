@@ -33,7 +33,7 @@
     "keycloak-angular": "^8.3.x",
     "keycloak-js": "10.x.x",
     "ngx-bootstrap": "^4.3.0",
-    "ngx-highlightjs": "^4.0.2",
+    "ngx-highlightjs": "^6.1.1",
     "rxjs": "^6.5.3",
     "screenfull": "^5.1.0",
     "showdown": "^1.9.1",
