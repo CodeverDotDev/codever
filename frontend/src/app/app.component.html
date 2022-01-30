@@ -45,14 +45,14 @@
         >
           <i class="fas fa-cog mr-1"></i> Settings
         </a>
-        <a
-          class="list-group-item list-group-item-action bg-light"
-          title="History"
-          [routerLink]="['/history']"
-        >
-          <i class="fas fa-history mr-1"></i> History bookmarks:
-        </a>
         <div *ngIf="(latestVisitedBookmarks$ | async) as latestVisitedBookmarks" class="mt-1" (mouseout)="resetHoveringLastVisited()">
+          <a
+            class="list-group-item list-group-item-action bg-light"
+            title="Ctrl+H for quick access"
+            [routerLink]="['/history']"
+          >
+            <i class="fas fa-history mr-1"></i> History bookmarks
+          </a>
           <ng-container *ngFor="let bookmark of latestVisitedBookmarks; let i = index" class="mt-1">
               <span class="mt-1 mr-2 on-top">
                   <a
@@ -76,7 +76,7 @@
         </div>
 
         <ng-container *ngIf="(latestSearches$ | async) as latestSearches">
-          <span class="list-group-item list-group-item-action bg-light"><i class="fa fa-search mr-1"></i> Latest searches:</span>
+          <span class="list-group-item list-group-item-action bg-light"><i class="fa fa-search mr-1"></i> Latest searches</span>
           <div class="mt-1" (mouseout)="resetHoveringLastSearches()">
             <ng-container *ngFor="let mySearch of latestSearches; let i = index" class="mt-1">
               <span class="mt-1 mr-2 on-top">

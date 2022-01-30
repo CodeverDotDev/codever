@@ -9,7 +9,8 @@
         <div class="alert alert-info mt-2">
           <button type="button" class="btn btn-primary btn-sm mr-2" (click)="login('feed')"><i
             class="fas fa-unlock"></i> Login / Register
-          </button> to <strong>Codever</strong>
+          </button>
+          to <strong>Codever</strong>
           to see posts from your favorite topics in your feed
         </div>
       </div>
@@ -99,18 +100,13 @@
         to access this functionality.
       </div>
       <ng-template #isLoggedInLastVisited>
-        <div *ngIf="(history$ | async)?.length === 0 && currentPageHistory === 1; else historyQuickAccess"
+        <div *ngIf="(history$ | async)?.length === 0 && currentPageHistory === 1"
              class="tabs-headline-message mt-2 alert alert-info">
           <p>
             In <strong>History</strong> you have a list of your last visited, created or updated bookmarks. Quick access
             with <strong>Ctrl + H</strong>
           </p>
         </div>
-        <ng-template #historyQuickAccess>
-          <div class="mt-2 lead alert alert-info">
-            <strong>Ctrl + H</strong> hot key for quick access
-          </div>
-        </ng-template>
         <app-async-bookmark-list
           [bookmarks$]="history$"
           [userData$]="userData$"
@@ -137,17 +133,12 @@
           to access this functionality.
         </div>
         <ng-template #isLoggedInToPin>
-          <div *ngIf="(pinned$ | async)?.length === 0 && currentPagePinned === 1; else pinnedQuickAccess"
+          <div *ngIf="(pinned$ | async)?.length === 0 && currentPagePinned === 1"
                class="tabs-headline-message mt-2 alert alert-info">
             Got some bookmarks you will use a lot today? Just pin it <i
             class="fas fa-thumbtack"></i>
             and it will appear in the <strong>Pinned</strong> list. Quick access with <strong>Ctrl + P</strong>
           </div>
-          <ng-template #pinnedQuickAccess>
-            <div class="mt-2 lead alert alert-info">
-              <strong>Ctrl + P</strong> hot key for quick access
-            </div>
-          </ng-template>
           <app-async-bookmark-list
             [bookmarks$]="pinned$"
             [userData$]="userData$"

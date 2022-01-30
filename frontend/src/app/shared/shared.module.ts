@@ -37,6 +37,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ImportBookmarksDialogComponent } from './dialog/import-bookmarks-dialog/import-bookmarks-dialog.component';
 import { ExtensionsComponent } from './extensions/extensions.component';
 import { AsyncSearchResultListComponent } from './async-search-result-list/async-search-result-list.component';
+import { PageNavigationBarComponent } from './page-navigation-bar/page-navigation-bar.component';
 
 
 /**
@@ -79,6 +80,7 @@ import { AsyncSearchResultListComponent } from './async-search-result-list/async
     TagFollowingBaseComponent,
     SearchbarComponent,
     NavigationComponent,
+    PageNavigationBarComponent,
     HotKeysDialogComponent,
     BookmarkListElementComponent,
     SnippetDetailsComponent,

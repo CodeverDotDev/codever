@@ -1,0 +1,27 @@
+<nav *ngIf="showPagination && showPaginationDelayExpired && results " aria-label="Pagination navigation bar">
+  <div *ngIf="currentPage !== 1 && results.length === 0; else showPaginationBar"
+       class="tabs-headline-message alert alert-info"
+       style="margin-top: 2rem; font-size: 1.2rem">
+    No entries left for the selected criteria - go back to
+    <button type="button" class="btn btn-primary btn-sm" (click)="navigate(currentPage-1)">Previous</button>
+    pages.
+  </div>
+  <ng-template #showPaginationBar>
+    <!-- show pagination navigation if enough results -->
+    <ul *ngIf="!(currentPage===1 && results.length < environment.PAGINATION_PAGE_SIZE )"
+        class="pagination justify-content-center" style="cursor: pointer;">
+      <li class="page-item">
+          <span class="page-link shadow-sm" (click)="navigate(currentPage - 1)"
+                [ngClass]="{'isDisabled': currentPage === 1}">Previous</span>
+      </li>
+      <li *ngFor="let page of Arr.from(Arr(currentPage).keys());  let i = index;" class="page-item"
+          [ngClass]="{'active': currentPage === page + 1}">
+        <span class="page-link shadow-sm" (click)="navigate(page + 1)">{{page + 1}}</span>
+      </li>
+      <li class="page-item">
+          <span class="page-link shadow-sm" (click)="navigate(currentPage + 1)"
+                [ngClass]="{'isDisabled': results.length < environment.PAGINATION_PAGE_SIZE}">Next</span>
+      </li>
+    </ul>
+  </ng-template>
+</nav>

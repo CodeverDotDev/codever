@@ -7,14 +7,14 @@
   <div class="mt-3" *ngFor="let searchResult of searchResults | bookmarkFilter: filterText">
 
     <app-bookmark-list-element *ngIf="isBookmark(searchResult) else showSnippet"
-      [bookmark]="searchResult"
-      [userData$]="userData$"
-      [queryText]="queryText"
-      [filterText]="filterText"
-      [isSearchResultsPage]="isSearchResultsPage"
+                               [bookmark]="searchResult"
+                               [userData$]="userData$"
+                               [queryText]="queryText"
+                               [filterText]="filterText"
+                               [isSearchResultsPage]="isSearchResultsPage"
     >
     </app-bookmark-list-element>
-    <ng-template  #showSnippet>
+    <ng-template #showSnippet>
       <app-snippet-details
         [snippet$]="of(searchResult)"
         [queryText]="queryText"
@@ -24,31 +24,13 @@
 
   </div>
 
-  <nav *ngIf="showPagination && searchResults" aria-label="Pagination navigation bar">
-    <div *ngIf="currentPage !== 1 && searchResults.length === 0; else showPaginationBar"
-         class="tabs-headline-message alert alert-info"
-         style="margin-top: 2rem; font-size: 1.2rem">
-      No results left for the selected criteria - go back to
-      <button type="button" class="btn btn-primary btn-sm" (click)="navigate(currentPage-1)">Previous</button>
-      pages.
-    </div>
-    <ng-template #showPaginationBar>
-      <ul class="pagination justify-content-center" style="cursor: pointer;">
-        <li class="page-item">
-          <span class="page-link shadow-sm" (click)="navigate(currentPage - 1)"
-                [ngClass]="{'isDisabled': currentPage === 1}">Previous</span>
-        </li>
-        <li *ngFor="let page of Arr.from(Arr(currentPage).keys());  let i = index;" class="page-item"
-            [ngClass]="{'active': currentPage === page + 1}">
-          <span class="page-link shadow-sm" (click)="navigate(page + 1)">{{page + 1}}</span>
-        </li>
-        <li class="page-item">
-          <span class="page-link shadow-sm" (click)="navigate(currentPage + 1)"
-                [ngClass]="{'isDisabled': searchResults.length < paginationSize}">Next</span>
-        </li>
-      </ul>
-    </ng-template>
-  </nav>
+  <app-page-navigation-bar
+    [showPagination]="showPagination"
+    [results]="searchResults"
+    [currentPage]="currentPage"
+    [callerPagination]="callerPagination"
+  ></app-page-navigation-bar>
+
 </div>
 
 
