@@ -13,7 +13,7 @@ import { Snippet } from '../../core/model/snippet';
   templateUrl: './async-search-result-list.component.html',
   styleUrls: ['./async-search-result-list.component.scss']
 })
-export class AsyncSearchResultListComponent extends TagFollowingBaseComponent implements OnInit, OnChanges {
+export class AsyncSearchResultListComponent extends TagFollowingBaseComponent implements OnInit {
 
   verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
@@ -56,15 +56,6 @@ export class AsyncSearchResultListComponent extends TagFollowingBaseComponent im
   }
 
   ngOnInit(): void {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const page = this.route.snapshot.queryParamMap.get('page');
-    if (page) {
-      this.currentPage = parseInt(page, 0);
-    } else {
-      this.currentPage = 1;
-    }
   }
 
 

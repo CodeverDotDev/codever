@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Bookmark } from '../../core/model/bookmark';
 import { Snippet } from '../../core/model/snippet';
@@ -11,7 +11,7 @@ import { PaginationNotificationService } from '../../core/pagination-notificatio
   templateUrl: './page-navigation-bar.component.html',
   styleUrls: ['./page-navigation-bar.component.scss']
 })
-export class PageNavigationBarComponent implements OnInit, AfterViewInit {
+export class PageNavigationBarComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input()
   showPagination: boolean;
@@ -65,6 +65,15 @@ export class PageNavigationBarComponent implements OnInit, AfterViewInit {
       setTimeout(() => this.showPaginationDelayExpired = true, 1000);
     } else {
       setTimeout(() => this.showPaginationDelayExpired = true, 0);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const page = this.route.snapshot.queryParamMap.get('page');
+    if (page) {
+      this.currentPage = parseInt(page, 0);
+    } else {
+      this.currentPage = 1;
     }
   }
 

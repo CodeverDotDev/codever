@@ -9,7 +9,7 @@ import { Bookmark } from '../../core/model/bookmark';
   templateUrl: './async-snippet-list.component.html',
   styleUrls: ['./async-snippet-list.component.scss']
 })
-export class AsyncSnippetListComponent implements OnInit, OnChanges {
+export class AsyncSnippetListComponent implements OnInit {
 
   @Input()
   snippets$: Observable<Snippet[]>;
@@ -30,15 +30,6 @@ export class AsyncSnippetListComponent implements OnInit, OnChanges {
 
   ngOnInit() {
 
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const page = this.route.snapshot.queryParamMap.get('page');
-    if (page) {
-      this.currentPage = parseInt(page, 0);
-    } else {
-      this.currentPage = 1;
-    }
   }
 
   of(searchResult: Snippet | Bookmark) {

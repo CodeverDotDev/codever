@@ -25,7 +25,7 @@ import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-f
   templateUrl: './async-bookmark-list.component.html',
   styleUrls: ['./async-bookmark-list.component.scss']
 })
-export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implements OnInit, OnChanges {
+export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implements OnInit {
 
   verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
@@ -70,14 +70,5 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent implem
   }
 
   ngOnInit(): void {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const page = this.route.snapshot.queryParamMap.get('page');
-    if (page) {
-      this.currentPage = parseInt(page, 0);
-    } else {
-      this.currentPage = 1;
-    }
   }
 }

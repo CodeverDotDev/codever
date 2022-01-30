@@ -1,45 +1,5 @@
-.add-new-bookmark {
-  margin-top: 0.3rem;
+.isDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
 }
-
-.navbar-brand {
-  line-height:12px;
-  padding-top:10px;
-
-  font-size: 25px;
-}
-
-.navbar-brand small {
-  font-size:11px;
-}
-
-.app-brand {
-  display: flex;
-  padding-right: 15px;
-  align-items: center;
-
-  .app-brand-text {
-    margin-left: 0.5rem;
-  }
-}
-.logo-text {
-  font-size: smaller;
-  margin-bottom: 10px;
-}
-
-.logo-image {
-  margin-top: -10px;
-  margin-bottom: -5px;
-}
-
-.large-displays {
-  display: none;
-}
-
-@media (min-width: 1400px) {
-  .large-displays {
-    display: block ;
-  }
-}
-
-
