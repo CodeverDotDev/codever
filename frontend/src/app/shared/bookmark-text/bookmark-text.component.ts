@@ -23,6 +23,8 @@ export class BookmarkTextComponent  implements  AfterViewInit, AfterViewChecked 
   queryText: string;
 
   show = false; // add one more property
+
+  @Input()
   public showMoreText = false;
 
   @ViewChild('bookmarkText', {static: false}) elementView: ElementRef;

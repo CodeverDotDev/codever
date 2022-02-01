@@ -12,6 +12,7 @@ import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component'
 import { ExtensionsPageComponent } from './extensions/extensions-page.component';
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
+import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
 
 const publicRoutes: Routes = [
   {
@@ -121,6 +122,19 @@ const publicRoutes: Routes = [
       {
         path: '**',
         component: PublicSnippetDetailsComponent
+      }
+    ]
+  },
+  {
+    path: 'bookmarks/:id',
+    component: PublicBookmarkDetailsComponent,
+    children: [
+      // This is a WILDCARD CATCH-ALL route that is scoped to the "/snippets/:snippetid"
+      // route prefix. It will only catch non-matching routes that live
+      // within this portion of the router tree.
+      {
+        path: '**',
+        component: PublicBookmarkDetailsComponent
       }
     ]
   },

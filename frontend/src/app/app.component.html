@@ -61,10 +61,9 @@
                     class="badge badge-secondary mb-1  ml-2"
                     [class.my-bookmarks-last-search]="bookmark.public === false"
                     [class.public-bookmarks-last-search]="bookmark.public === true"
-                    href="{{bookmark.location}}"
-                    title="Go to {{bookmark.name}}"
-                    (click)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"
-                    (auxclick)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"
+                    title="See bookmark details. Right click to go directly to main link - {{bookmark.location}}"
+                    (click)="navigateToBookmarkDetails(bookmark)"
+                    (auxclick)="goToMainLink(bookmark)"
                     target="_blank">
                     <i class="fa fa-xs fa-bookmark mr-1"></i>
                     <span

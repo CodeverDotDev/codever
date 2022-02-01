@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { UserDataStore } from '../../core/user/userdata.store';
@@ -14,7 +14,7 @@ import { PersonalBookmarksService } from '../../core/personal-bookmarks.service'
 })
 export class BookmarkDetailsComponent implements OnInit {
 
-  bookmark: Bookmark;
+  bookmark$: Observable<Bookmark>;
   userData$: Observable<UserData>;
   popup: string;
 
@@ -31,12 +31,11 @@ export class BookmarkDetailsComponent implements OnInit {
 
     this.userInfoStore.getUserInfo$().subscribe(userInfo => {
       this.userData$ = this.userDataStore.getUserData$();
-      this.bookmark = window.history.state.bookmark;
       if (!window.history.state.bookmark) {
         const bookmarkId = this.route.snapshot.paramMap.get('id');
-        this.personalBookmarksService.getPersonalBookmarkById(userInfo.sub, bookmarkId).subscribe((response) => {
-          this.bookmark = response;
-        });
+        this.bookmark$ = this.personalBookmarksService.getPersonalBookmarkById(userInfo.sub, bookmarkId);
+      } else {
+        this.bookmark$ = of(window.history.state.bookmark);
       }
     });
 

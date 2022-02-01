@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
-import { PlayYoutubeVideoDialogComponent } from '../dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
+import {
+  PlayYoutubeVideoDialogComponent
+} from '../dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { KeycloakService } from 'keycloak-angular';
 import { UserInfoStore } from '../../core/user/user-info.store';
@@ -53,6 +55,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   @Input()
   isSearchResultsPage = false;
+
+  @Input()
+  showMoreText = false;
 
   @Input()
   filterText = '';

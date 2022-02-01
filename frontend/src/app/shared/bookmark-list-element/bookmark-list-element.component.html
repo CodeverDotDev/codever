@@ -53,6 +53,7 @@
     <div *ngIf="bookmark.description">
       <hr class="title-content-separator">
       <app-bookmark-text
+        [showMoreText]="showMoreText"
         [bookmark]="bookmark"
         [queryText]="queryText"
         (click)="addToHistoryService.onClickInDescription(userIsLoggedIn, $event, bookmark)"

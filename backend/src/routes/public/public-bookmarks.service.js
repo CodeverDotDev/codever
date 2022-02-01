@@ -52,7 +52,7 @@ let getBookmarksForTag = async (tag, orderBy, page, limit) => {
 
 /* GET bookmark by id. */
 let getBookmarkById = async function (bookmarkId) {
-  const bookmark = await Bookmark.find({
+  const bookmark = await Bookmark.findOne({
     public: true,
     _id: bookmarkId
   });

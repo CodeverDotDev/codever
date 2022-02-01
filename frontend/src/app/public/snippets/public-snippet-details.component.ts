@@ -16,7 +16,6 @@ export class PublicSnippetDetailsComponent implements OnInit {
 
   constructor(
     private publicSnippetsService: PublicSnippetsService,
-    private userInfoStore: UserInfoStore,
     private route: ActivatedRoute) {
   }
 

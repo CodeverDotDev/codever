@@ -24,6 +24,7 @@ import { FeedbackService } from './feedback/feedback.service';
 import { ExtensionsPageComponent } from './extensions/extensions-page.component';
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
+import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
 
 @NgModule({
   declarations : [
@@ -38,6 +39,7 @@ import { RegisterComponent } from './register/register.component';
     VersionComponent,
     PublicSnippetDetailsComponent,
     PublicSnippetsComponent,
+    PublicBookmarkDetailsComponent,
     SnippetTaggedComponent,
   ],
   imports: [
