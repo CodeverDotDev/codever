@@ -1,7 +1,17 @@
 import { Observable } from 'rxjs';
 
 import { map, startWith } from 'rxjs/operators';
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
@@ -16,7 +26,7 @@ import { PaginationNotificationService } from '../../core/pagination-notificatio
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 import { SearchNotificationService } from '../../core/search-notification.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { searchDomains } from '../../core/model/search-domains-map';
 import { AddTagFilterToSearchDialogComponent } from './add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
 import { DialogMeasurementsHelper } from '../../core/helper/dialog-measurements.helper';
@@ -27,7 +37,7 @@ import iziToast, { IziToastSettings } from 'izitoast';
   templateUrl: './searchbar.component.html',
   styleUrls: ['./searchbar.component.scss']
 })
-export class SearchbarComponent implements OnInit {
+export class SearchbarComponent implements OnInit, AfterViewInit {
 
   @Input()
   context: string;
@@ -39,6 +49,7 @@ export class SearchbarComponent implements OnInit {
   searchTextCleared = new EventEmitter<boolean>();
 
   @ViewChild('publicSearchBox') searchBoxField: ElementRef;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
   _userData: UserData;
 
@@ -335,6 +346,11 @@ export class SearchbarComponent implements OnInit {
       }
       iziToast.success(iziToastSettings);
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.searchBoxField.nativeElement.focus();
+    this.autocompleteTrigger.closePanel();
   }
 
 }
