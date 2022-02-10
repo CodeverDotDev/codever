@@ -18,6 +18,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Bookmark } from './core/model/bookmark';
 import { Router } from '@angular/router';
+import { AddToHistoryService } from './core/user/add-to-history.service';
 
 @Component({
   selector: 'app-root',
@@ -49,7 +50,8 @@ export class AppComponent implements OnInit {
               private loginDialog: MatDialog,
               private cookieService: CookieService,
               private feedbackService: FeedbackService,
-              protected router: Router) {
+              protected router: Router,
+              private addToHistoryService: AddToHistoryService) {
     this.innerWidth = 100;
   }
 
@@ -206,6 +208,7 @@ export class AppComponent implements OnInit {
     this.router.navigate(link, {
       state: {bookmark: bookmark}
     });
+    this.addToHistoryService.promoteInHistoryIfLoggedIn(this.userIsLoggedIn, bookmark);
   }
 
   goToMainLink(bookmark: Bookmark) {
