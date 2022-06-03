@@ -22,7 +22,9 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 import { WebpageInfo } from '../../core/model/webpage-info';
 import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
-import { PublicBookmarkPresentDialogComponent } from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
+import {
+  PublicBookmarkPresentDialogComponent
+} from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
 import { AdminService } from '../../core/admin/admin.service';
 import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
@@ -34,6 +36,7 @@ import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import iziToast, { IziToastSettings } from 'izitoast';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -192,7 +195,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     if (isNewBookmark) {
       this.bookmarkForm.get('location').valueChanges.pipe(
         debounceTime(1000),
-        distinctUntilChanged(), )
+        distinctUntilChanged(),)
         .subscribe(location => {
           this.verifyExistenceInPersonalBookmarks(location);
         });
@@ -377,9 +380,18 @@ export class SaveBookmarkFormComponent implements OnInit {
         concatMap((updatedBookmark) => this.userDataStore.updateUserDataHistory$(updatedBookmark))
       ).subscribe(
         () => {
-          this.navigateToHomePageHistoryTab()
+          this.navigateToHomePageHistoryTab();
         },
-        () => this.navigateToHomePageHistoryTab() // TODO add error handling - popover
+        (response) => {
+          const iziToastSettings: IziToastSettings = {
+            title: `Error when updating ${bookmark.name}`,
+            messageLineHeight: '5',
+            timeout: false,
+            message: response.message + ' ' + response?.validationErrors
+          }
+          iziToast.error(iziToastSettings);
+          this.navigateToHomePageHistoryTab()
+        } // TODO add error handling - popover}
       );
     }
   }
@@ -439,17 +451,17 @@ export class SaveBookmarkFormComponent implements OnInit {
             this.publishInUserDataStores(newBookmark, readLater, pinned);
             this.navigateToBookmarkDetails(newBookmark);
 
-/*            if (this.url) {
-              if (this.popup) {
-                this.navigateToBookmarkDetails(newBookmark);
-              } else if (this.popupExt) {
-                this.navigateToHomePageHistoryTab();
-              } else {
-                window.location.href = this.url;
-              }
-            } else {
-              this.navigateToHomePageHistoryTab();
-            }*/
+            /*            if (this.url) {
+                          if (this.popup) {
+                            this.navigateToBookmarkDetails(newBookmark);
+                          } else if (this.popupExt) {
+                            this.navigateToHomePageHistoryTab();
+                          } else {
+                            window.location.href = this.url;
+                          }
+                        } else {
+                          this.navigateToHomePageHistoryTab();
+                        }*/
           });
         },
         (error: HttpResponse<any>) => {

@@ -126,7 +126,7 @@ export class SnippetFormBaseComponent implements OnInit {
 
   createCodeSnippet(codeSnippet: CodeSnippet): FormGroup {
     return this.formBuilder.group({
-      code: [codeSnippet.code, textSizeValidator(5000, 500)],
+      code: [codeSnippet.code, textSizeValidator(10000, 1000)],
       comment: codeSnippet.comment,
       commentAfter: codeSnippet.commentAfter
     });
@@ -134,7 +134,7 @@ export class SnippetFormBaseComponent implements OnInit {
 
   createInitialCodeSnippet(): FormGroup {
     return this.formBuilder.group({
-      code: ['', textSizeValidator(5000, 500)],
+      code: ['', textSizeValidator(10000, 1000)],
       comment: ['', textSizeValidator(1000, 30)],
       commentAfter: ['', textSizeValidator(1000, 30)]
     });
@@ -142,7 +142,7 @@ export class SnippetFormBaseComponent implements OnInit {
 
   createEmptyCodeSnippet(): FormGroup {
     return this.formBuilder.group({
-      code: ['', textSizeValidator(5000, 500)],
+      code: ['', textSizeValidator(10000, 1000)],
       comment: ['', textSizeValidator(1000, 30)],
       commentAfter: ['', textSizeValidator(1000, 30)]
     });

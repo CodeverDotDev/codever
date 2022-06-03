@@ -79,7 +79,7 @@
           </textarea>
           <div
             class="description-chars-counter">{{codeSnippet.get('code').value ? codeSnippet.get('code').value.length : 0}}
-            / 5000
+            / 10000
           </div>
           <div class="form-group">
             <label for="commentAfter-{{i}}">Comment after (optional) - <i class="fab fa-markdown"></i> <a
@@ -100,7 +100,7 @@
               allowed.
             </div>
             <div *ngIf="codeSnippet.get('code').errors.tooManyCharacters">
-              Your code snippet has {{codeSnippet.get('code').errors.tooManyCharacters.value}} characters. Maximum 5000
+              Your code snippet has {{codeSnippet.get('code').errors.tooManyCharacters.value}} characters. Maximum 10000
               characters
               are
               allowed.
