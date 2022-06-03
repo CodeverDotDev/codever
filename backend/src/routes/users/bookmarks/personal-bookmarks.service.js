@@ -196,12 +196,12 @@ let increaseOwnerVisitCount = async (userId, bookmarkId) => {
 * DELETE bookmark for user
 */
 let deleteBookmarkById = async (userId, bookmarkId) => {
-  const bookmark = await Bookmark.findOneAndRemove({
+  const response = await Bookmark.deleteOne({
     _id: bookmarkId,
     userId: userId
   });
 
-  if ( !bookmark ) {
+  if ( response.deletedCount !== 1 ) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId);
   } else {
     await User.update(
