@@ -5,6 +5,7 @@ import { MySnippetsModule } from '../my-snippets/my-snippets.module';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
+import { FindElsewhereComponent } from './find-elsewhere/find-elsewhere.component';
 
 const searchResultsRoutes: Routes = [
   {
@@ -14,7 +15,7 @@ const searchResultsRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [SearchResultsComponent],
+  declarations: [SearchResultsComponent, FindElsewhereComponent],
   imports: [
     RouterModule.forChild(searchResultsRoutes),
     CommonModule,

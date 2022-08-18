@@ -117,7 +117,7 @@
         </button>
         </span>
         <br/>
-        You can also try looking in other categories 👆👆
+        {{searchInOtherCategoriesTip}}
       </div>
       <ng-template #showPubliBookmarksResults>
         <app-async-bookmark-list
@@ -170,3 +170,6 @@
   </mat-tab>
 
 </mat-tab-group>
+
+<app-find-elsewhere *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1" [searchText]="searchText">
+</app-find-elsewhere>
