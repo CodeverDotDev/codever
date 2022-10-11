@@ -1,6 +1,6 @@
 {
   "name": "Codever",
-  "version": "4.8.1",
+  "version": "4.9.1",
   "description": "Codever - bookmarks and snippets manager for developers & co",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

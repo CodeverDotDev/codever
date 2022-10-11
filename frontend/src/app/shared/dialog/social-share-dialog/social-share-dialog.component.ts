@@ -16,6 +16,7 @@ export class SocialShareDialogComponent implements OnInit {
   userData: UserData;
   tagsStr: string;
   tweetText: string;
+  copyLinkButtonText = 'Link';
 
   constructor(
     private datePipe: DatePipe,
@@ -43,7 +44,6 @@ export class SocialShareDialogComponent implements OnInit {
   }
 
   onShareButtonClick() {
-    console.log('share button cliecked')
     this.dialogRef.close('SHARE_BUTTON_CLICKED');
   }
 
@@ -57,5 +57,23 @@ export class SocialShareDialogComponent implements OnInit {
     return tag.split('-').map(word => {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     }).join('');
+  }
+
+  copyToClipboard(location: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = location;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    const copyResult = document.execCommand('copy');
+    if (copyResult) {
+      this.copyLinkButtonText = 'Copied';
+      setTimeout(() => this.copyLinkButtonText = 'Link', 1300);
+    }
+    document.body.removeChild(selBox);
   }
 }
