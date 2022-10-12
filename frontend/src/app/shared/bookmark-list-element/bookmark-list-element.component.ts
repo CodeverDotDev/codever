@@ -25,6 +25,7 @@ import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
 import { NavigationEnd, Router } from '@angular/router';
 import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
 import { AddToHistoryService } from '../../core/user/add-to-history.service';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -64,6 +65,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   private navigationSubscription: Subscription;
 
+  copyLinkButtonText = '';
+
   constructor(private router: Router,
               private playYoutubeDialog: MatDialog,
               public loginDialog: MatDialog,
@@ -81,7 +84,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private feedStore: FeedStore,
               private loginDialogHelperService: LoginDialogHelperService,
               private myBookmarksStore: MyBookmarksStore,
-              public addToHistoryService: AddToHistoryService) {
+              public addToHistoryService: AddToHistoryService,
+              private clipboard: Clipboard) {
     super(loginDialog, userDataWatchedTagsStore);
 
     // START force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
@@ -280,4 +284,11 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     }
   }
 
+  copyToClipboard(location: string) {
+    const copied = this.clipboard.copy(location);
+    if (copied) {
+      this.copyLinkButtonText = ' Copied';
+      setTimeout(() => this.copyLinkButtonText = '', 1300);
+    }
+  }
 }
