@@ -28,7 +28,7 @@
               [innerHtml]="bookmark.location | slice:0:100 | highlight: filterText | highlight: queryText"></span>
             <span>...</span>
           </ng-template>
-          <span class="btn-light btn-sm" (click)="copyToClipboard(bookmark.location)" title="Copy link to clipboard">
+          <span class="btn-light btn-sm copy-btn" (click)="copyToClipboard(bookmark.location)" title="Copy link to clipboard">
             <i class="far fa-copy copy-link"></i><span class="copy-btn-text">{{copyLinkButtonText}}</span>
           </span>
         </h6>
