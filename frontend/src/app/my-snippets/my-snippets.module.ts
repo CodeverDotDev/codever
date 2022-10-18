@@ -44,40 +44,37 @@ const snippetRoutes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    CreateSnippetFormComponent,
-    UpdateSnippetFormComponent,
-    CreateSnippetComponent,
-    UpdateSnippetComponent,
-    SnippetDetailsPageComponent,
-    DeleteSnippetDialogComponent,
-    CopyToMineSnippetComponent,
-    SnippetFormBaseComponent
-  ],
-  imports: [
-    RouterModule.forChild(snippetRoutes),
-    SharedModule,
-    MatTabsModule,
-    MatAutocompleteModule,
-    MatSelectModule,
-    MatChipsModule,
-    MatIconModule,
-    MatDialogModule,
-    MatTooltipModule,
-    HighlightModule
-  ],
-  providers: [
-    PersonalSnippetsService,
-    {
-      provide: HIGHLIGHT_OPTIONS,
-      useValue: <HighlightOptions>{
-        lineNumbers: true
-      }
-    }
-  ],
-  entryComponents: [
-    DeleteSnippetDialogComponent
-  ]
+    declarations: [
+        CreateSnippetFormComponent,
+        UpdateSnippetFormComponent,
+        CreateSnippetComponent,
+        UpdateSnippetComponent,
+        SnippetDetailsPageComponent,
+        DeleteSnippetDialogComponent,
+        CopyToMineSnippetComponent,
+        SnippetFormBaseComponent
+    ],
+    imports: [
+        RouterModule.forChild(snippetRoutes),
+        SharedModule,
+        MatTabsModule,
+        MatAutocompleteModule,
+        MatSelectModule,
+        MatChipsModule,
+        MatIconModule,
+        MatDialogModule,
+        MatTooltipModule,
+        HighlightModule
+    ],
+    providers: [
+        PersonalSnippetsService,
+        {
+            provide: HIGHLIGHT_OPTIONS,
+            useValue: <HighlightOptions>{
+                lineNumbers: true
+            }
+        }
+    ]
 })
 export class MySnippetsModule {
 }

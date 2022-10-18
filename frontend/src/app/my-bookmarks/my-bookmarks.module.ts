@@ -21,33 +21,30 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
-  declarations : [
-    CreatePersonalBookmarkComponent,
-    UpdatePersonalBookmarkComponent,
-    CopyToMineBookmarkComponent,
-    MyBookmarksEntryPointComponent,
-    PublicBookmarkPresentDialogComponent,
-    SaveBookmarkFormComponent,
-    BookmarkDetailsComponent
-  ],
-  imports: [
-    SharedModule,
-    RouterModule,
-    OverlayModule,
-    MatChipsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatAutocompleteModule,
-    MatTabsModule,
-    MatDialogModule,
-    MyBookmarksRoutingModule
-  ],
-  providers: [
-    DatePipe
-  ],
-  entryComponents: [
-    PublicBookmarkPresentDialogComponent
-  ]
+    declarations: [
+        CreatePersonalBookmarkComponent,
+        UpdatePersonalBookmarkComponent,
+        CopyToMineBookmarkComponent,
+        MyBookmarksEntryPointComponent,
+        PublicBookmarkPresentDialogComponent,
+        SaveBookmarkFormComponent,
+        BookmarkDetailsComponent
+    ],
+    imports: [
+        SharedModule,
+        RouterModule,
+        OverlayModule,
+        MatChipsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatAutocompleteModule,
+        MatTabsModule,
+        MatDialogModule,
+        MyBookmarksRoutingModule
+    ],
+    providers: [
+        DatePipe
+    ]
 })
 export class MyBookmarksModule {}

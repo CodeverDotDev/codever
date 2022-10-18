@@ -305,8 +305,6 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
     if (value === 'qq') {
       this.filteredSearches = this.filteredOptions;
     }
-
-    console.log('input value ', value);
   }
 
   addTagFilter() {
