@@ -33,35 +33,31 @@ const userDashboardRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    UserTagsComponent,
-    UserDashboardComponent,
-    UserBookmarksComponent,
-    DeleteBookmarksByTagDialogComponent,
-    DeleteSavedSearchDialogComponent,
-    MySearchesComponent,
-    FollowingComponent,
-    FollowersComponent,
-    MySearchesTemplateComponent,
-    MySnippetsComponent
-  ],
-  imports: [
-    RouterModule.forChild(userDashboardRoutes),
-    SharedModule,
-    MatTabsModule,
-    MatAutocompleteModule,
-    MatExpansionModule,
-    MatDialogModule,
-    CommonModule
-  ],
-  providers: [
-    AuthGuard
-  ],
-  entryComponents: [
-    DeleteBookmarksByTagDialogComponent,
-    DeleteSavedSearchDialogComponent
-  ],
-  exports: [RouterModule]
+    declarations: [
+        UserTagsComponent,
+        UserDashboardComponent,
+        UserBookmarksComponent,
+        DeleteBookmarksByTagDialogComponent,
+        DeleteSavedSearchDialogComponent,
+        MySearchesComponent,
+        FollowingComponent,
+        FollowersComponent,
+        MySearchesTemplateComponent,
+        MySnippetsComponent
+    ],
+    imports: [
+        RouterModule.forChild(userDashboardRoutes),
+        SharedModule,
+        MatTabsModule,
+        MatAutocompleteModule,
+        MatExpansionModule,
+        MatDialogModule,
+        CommonModule
+    ],
+    providers: [
+        AuthGuard
+    ],
+    exports: [RouterModule]
 })
 export class UserDashboardModule {
 }
