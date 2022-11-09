@@ -35,6 +35,7 @@ import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { Location } from '@angular/common';
 import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import iziToast, { IziToastSettings } from 'izitoast';
 
@@ -118,6 +119,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     private userDataPinnedStore: UserDataPinnedStore,
     private stackoverflowHelper: StackoverflowHelper,
     private datePipe: DatePipe,
+    private _location: Location,
     private logger: Logger,
     private router: Router,
     private route: ActivatedRoute,
@@ -583,6 +585,11 @@ export class SaveBookmarkFormComponent implements OnInit {
   editExistingBookmark(): void {
     const link = [`./my-bookmarks/${this.existingPersonalBookmark._id}/edit`];
     this.router.navigate(link, {state: {bookmark: this.existingPersonalBookmark}});
+  }
+
+  cancelUpdate() {
+    this._location.back();
+    console.log('goBAck()...');
   }
 }
 

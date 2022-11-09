@@ -12,6 +12,7 @@ import { DeleteSnippetDialogComponent } from '../delete-snippet-dialog/delete-sn
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PublicSnippetsService } from '../../public/snippets/public-snippets.service';
 import { SnippetFormBaseComponent } from '../snippet-form-base/snippet-form.base.component';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-update-snippet-form',
@@ -46,7 +47,8 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
     protected router: Router,
     private route: ActivatedRoute,
     protected errorService: ErrorService,
-    private deleteDialog: MatDialog
+    private deleteDialog: MatDialog,
+    private _location: Location
   ) {
     super(formBuilder, personalSnippetsService, suggestedTagsStore, userInfoStore, router, errorService);
   }
@@ -149,6 +151,10 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
     });
   }
 
+  cancelUpdate() {
+    this._location.back();
+    console.log('goBAck()...');
+  }
 }
 
 

@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: password
   keycloak:
     container_name: codever-keycloak
-    image: jboss/keycloak:6.0.1
+    image: jboss/keycloak:7.0.0
     networks:
       - backend
     environment:

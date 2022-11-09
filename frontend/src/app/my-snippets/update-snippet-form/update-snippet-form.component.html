@@ -58,8 +58,8 @@
         <div class="form-group mb-0">
           <div class="form-group">
             <label for="comment-{{i}}">Comment before (optional)- <i class="fab fa-markdown"></i> <a
-              class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
-              supported</a></label>
+              class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown
+              support</a></label>
             <textarea class="form-control"
                       style="height: 5rem"
                       id="comment-{{i}}"
@@ -116,7 +116,7 @@
                 title="Remove code section"
                 [disabled]="codeSnippetsFormArray.controls.length < 2"
                 (click)="removeCodeSnippet(i)">
-          <i class="far fa-trash-alt"></i> Remove
+          <i class="far fa-trash-alt"></i> Remove code section
         </button>
       </div>
 
@@ -157,8 +157,11 @@
         </ng-template>
       </button>
     </ng-template>
-    <button type="button" class="btn btn-danger" (click)="openDeleteDialog()">
-      Delete <i class="far fa-trash-alt"></i>
+    <button type="button" class="btn btn-secondary" title="Cancel update" (click)="cancelUpdate()">
+      Cancel <i class="far fa-times-circle"></i>
+    </button>
+    <button type="button" class="btn btn-danger float-right" title="Delete snippet" (click)="openDeleteDialog()">
+      Delete <i class="fas fa-trash-alt"></i>
     </button>
   </form>
 </div>
