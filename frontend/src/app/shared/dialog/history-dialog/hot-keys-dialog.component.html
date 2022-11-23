@@ -8,7 +8,10 @@
 </div>
 <mat-dialog-content *ngIf="(bookmarks$ | async) as bookmarks" class="mt-2 pt-1 pb-1">
   <mat-accordion>
-    <mat-expansion-panel *ngFor="let bookmark of bookmarks | bookmarkFilter: filterText; index as i">
+    <mat-expansion-panel
+      *ngFor="let bookmark of bookmarks | bookmarkFilter: filterText as filteredBookmarks; index as i"
+      [expanded]="filteredBookmarks.length === 1">
+
       <mat-expansion-panel-header *ngIf="i<15">
         <div class="p-3">
           <h5 class="card-title">
@@ -31,7 +34,7 @@
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
-        <app-bookmark-text [bookmark]="bookmark"
+        <app-bookmark-text [bookmark]="bookmark" [showMoreText]="true"
                            (click)="addToHistoryService.onClickInDescription(true, $event, bookmark)"
                            (auxclick)="addToHistoryService.onMiddleClickInDescription(true, $event, bookmark)">
         </app-bookmark-text>
