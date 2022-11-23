@@ -31,7 +31,7 @@
     "izitoast": "^1.4.0",
     "jquery": "^3.5.1",
     "keycloak-angular": "^9.x.x",
-    "keycloak-js": "10.x.x",
+    "keycloak-js": "12.x.x",
     "ngx-highlightjs": "^6.1.1",
     "rxjs": "^6.5.3",
     "screenfull": "^5.1.0",
