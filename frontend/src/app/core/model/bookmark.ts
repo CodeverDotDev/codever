@@ -1,5 +1,6 @@
 export interface Bookmark {
   _id?: string;
+  shareableId?: string;
   name: string;
   location: string;
   description?: string;

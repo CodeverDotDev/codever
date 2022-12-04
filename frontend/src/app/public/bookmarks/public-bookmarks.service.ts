@@ -51,6 +51,11 @@ export class PublicBookmarksService {
       .get<Bookmark>(`${this.publicBookmarksApiBaseUrl}/${bookmarkId}`);
   }
 
+  getSharedBookmarkBySharableId(shareableId: string): Observable<Bookmark> {
+    return this.httpClient
+      .get<Bookmark>(`${this.publicBookmarksApiBaseUrl}/shared/${shareableId}`);
+  }
+
   getMostUsedPublicTags(limit: number): Observable<UsedTag[]> {
     const params = new HttpParams()
       .set('limit', limit.toString());

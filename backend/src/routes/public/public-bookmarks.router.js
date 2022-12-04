@@ -16,7 +16,7 @@ router.get('/', async (request, response, next) => {
   const sort = request.query.sort;
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
 
-  if (searchText) {
+  if ( searchText ) {
     const bookmarks = await publicBookmarksSearchService.findPublicBookmarks(searchText, page, limit, sort, searcMode);
     response.send(bookmarks);
   } else {
@@ -29,7 +29,7 @@ router.get('/', async (request, response, next) => {
  */
 router.get('/', async (request, response, next) => {
   const location = request.query.location;
-  if (location) {
+  if ( location ) {
     const bookmarksForLocation = await PublicBookmarksService.getPublicBookmarkByLocation(location);
 
     return response.send(bookmarksForLocation);
@@ -39,10 +39,19 @@ router.get('/', async (request, response, next) => {
 });
 
 /**
+ * Get Bookmark by shareableId
+ */
+router.get('/shared/:shareableId', async (request, response, next) => {
+  const shareableId = request.params.shareableId;
+  const sharedBookmark = await PublicBookmarksService.getBookmarkBySharableId(shareableId);
+
+  return response.json(sharedBookmark);
+});
+
+/**
  * When no filter send latest public bookmarks
  */
 router.get('/', async (request, response) => {
-
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
   const bookmarks = await PublicBookmarksService.getLatestPublicBookmarks(page, limit);
 
@@ -71,7 +80,7 @@ router.get('/tagged/:tag', async (request, response) => {
 /* GET title of bookmark given its url - might be moved to front-end */
 router.get('/scrape', async function (request, response, next) {
   const location = request.query.location;
-  if (location) {
+  if ( location ) {
     const webpageData = await PublicBookmarksService.getScrapedDataForLocation(location);
 
     return response.send(webpageData);

@@ -25,6 +25,9 @@ import { ExtensionsPageComponent } from './extensions/extensions-page.component'
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
+import {
+  ShareableBookmarkDetailsComponent
+} from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
 
 @NgModule({
   declarations : [
@@ -41,6 +44,7 @@ import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-deta
     PublicSnippetsComponent,
     PublicBookmarkDetailsComponent,
     SnippetTaggedComponent,
+    ShareableBookmarkDetailsComponent
   ],
   imports: [
     SharedModule,

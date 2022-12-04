@@ -236,7 +236,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     this.router.navigate(['/']);
   }
 
-  shareBookmark(bookmark: Bookmark) {
+  shareBookmarkDialog(bookmark: Bookmark) {
 
     const dialogConfig = new MatDialogConfig();
 
@@ -245,6 +245,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     dialogConfig.minWidth = 380;
     dialogConfig.data = {
       bookmark: bookmark,
+      userIsLoggedIn: this.userIsLoggedIn,
+      userOwnsBookmark: this.bookmark.userId === this.userId,
+      userId: this.userId
     };
 
     const dialogRef = this.deleteDialog.open(SocialShareDialogComponent, dialogConfig);

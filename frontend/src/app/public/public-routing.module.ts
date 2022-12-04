@@ -13,6 +13,9 @@ import { ExtensionsPageComponent } from './extensions/extensions-page.component'
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
+import {
+  ShareableBookmarkDetailsComponent
+} from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
 
 const publicRoutes: Routes = [
   {
@@ -126,6 +129,10 @@ const publicRoutes: Routes = [
     ]
   },
   {
+    path: 'bookmarks/shared/:shareableId',
+    component: ShareableBookmarkDetailsComponent
+  },
+  {
     path: 'bookmarks/:id',
     component: PublicBookmarkDetailsComponent,
     children: [
@@ -138,6 +145,7 @@ const publicRoutes: Routes = [
       }
     ]
   },
+
   {
     path: 'users/:userId',
     component: UserPublicProfileComponent,

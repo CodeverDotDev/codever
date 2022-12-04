@@ -31,6 +31,7 @@
     "showdown": "^1.9.1",
     "superagent": "^4.1.0",
     "swagger-ui-express": "^4.3.0",
+    "uuid": "^9.0.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {

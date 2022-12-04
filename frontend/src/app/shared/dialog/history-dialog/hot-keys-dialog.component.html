@@ -11,7 +11,6 @@
     <mat-expansion-panel
       *ngFor="let bookmark of bookmarks | bookmarkFilter: filterText as filteredBookmarks; index as i"
       [expanded]="filteredBookmarks.length === 1">
-
       <mat-expansion-panel-header *ngIf="i<15">
         <div class="p-3">
           <h5 class="card-title">

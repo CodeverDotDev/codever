@@ -62,8 +62,20 @@ let getBookmarkById = async function (bookmarkId) {
   return bookmark;
 };
 
-let getMostUsedPublicTags = async function (limit) {
+/* GET bookmark of user by shareableId */
+let getBookmarkBySharableId = async (shareableId) => {
+  const bookmark = await Bookmark.findOne({
+    shareableId: shareableId
+  }).select('+shareableId');
 
+  if ( !bookmark ) {
+    throw new NotFoundError(`Bookmark NOT_FOUND for shareableId: ${shareableId}`);
+  } else {
+    return bookmark;
+  }
+};
+
+let getMostUsedPublicTags = async function (limit) {
   const aggregatedTags = await Bookmark.aggregate([
     //first stage - filter
     {
@@ -112,5 +124,6 @@ module.exports = {
   getLatestPublicBookmarks: getLatestPublicBookmarks,
   getBookmarksForTag: getBookmarksForTag,
   getBookmarkById: getBookmarkById,
+  getBookmarkBySharableId: getBookmarkBySharableId,
   getMostUsedPublicTags: getMostUsedPublicTags
 };

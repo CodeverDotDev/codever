@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const bookmarkSchema = new Schema({
+    shareableId: {type:String, select: false},
     name: {type:String, required: true},
     location: {type:String, required: true},
     description: String,

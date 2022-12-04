@@ -115,6 +115,16 @@ personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, 
   return response.status(HttpStatus.OK).send(bookmark);
 });
 
+/* GET sharableId for bookmark */
+personalBookmarksRouter.get('/shareable/:bookmarkId', keycloak.protect(), async (request, response) => {
+  UserIdValidator.validateUserId(request);
+
+  const {userId, bookmarkId} = request.params;
+  const shareableId = await PersonalBookmarksService.getOrCreateSharableId(userId, bookmarkId);
+  const sharableIdResponse = {"shareableId": shareableId}
+  return response.json(sharableIdResponse);
+});
+
 /**
  * full UPDATE via PUT - that is the whole document is required and will be updated
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)

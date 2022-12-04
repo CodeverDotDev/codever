@@ -4,6 +4,9 @@ const User = require('../../../model/user');
 const NotFoundError = require('../../../error/not-found.error');
 
 const BookmarkInputValidator = require('../../../common/bookmark-input.validator');
+const {
+  v4: uuidv4,
+} = require('uuid');
 
 /**
  * CREATE bookmark for user
@@ -191,6 +194,32 @@ let increaseOwnerVisitCount = async (userId, bookmarkId) => {
   );
 }
 
+let getOrCreateShareableId = async (userId, bookmarkId) => {
+  const bookmark = await Bookmark.findOne(
+    {
+      _id: bookmarkId,
+      userId: userId
+    }).select('+shareableId');
+
+  if ( bookmark.shareableId ) {
+    return bookmark.shareableId
+  } else {
+    const uuid = uuidv4();
+    const updatedBookmark = await Bookmark.findOneAndUpdate(
+      {
+        _id: bookmarkId,
+        userId: userId
+      },
+      {
+        $set: {shareableId: uuid}
+      },
+      {new: true}
+    ).select('+shareableId');
+
+    return updatedBookmark.shareableId;
+  }
+}
+
 
 /*
 * DELETE bookmark for user
@@ -295,5 +324,6 @@ module.exports = {
   deleteBookmarkByLocation: deleteBookmarkByLocation,
   deletePrivateBookmarksByTag: deletePrivateBookmarksByTag,
   getUserTagsAggregated: getUserTagsAggregated,
-  updateDisplayNameInBookmarks: updateDisplayNameInBookmarks
+  updateDisplayNameInBookmarks: updateDisplayNameInBookmarks,
+  getOrCreateSharableId: getOrCreateShareableId
 };

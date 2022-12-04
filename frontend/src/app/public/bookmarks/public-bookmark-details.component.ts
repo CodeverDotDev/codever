@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { UserInfoStore } from '../../core/user/user-info.store';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
@@ -15,7 +14,6 @@ export class PublicBookmarkDetailsComponent implements OnInit {
 
   constructor(
     private publicBookmarksService: PublicBookmarksService,
-    private userInfoStore: UserInfoStore,
     private route: ActivatedRoute) {
   }
 
