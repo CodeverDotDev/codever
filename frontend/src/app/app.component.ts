@@ -19,6 +19,7 @@ import { map } from 'rxjs/operators';
 import { Bookmark } from './core/model/bookmark';
 import { Router } from '@angular/router';
 import { AddToHistoryService } from './core/user/add-to-history.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -41,6 +42,9 @@ export class AppComponent implements OnInit {
   private hoveringLastSearches: boolean[] = [];
   private hoveringLastVisited: boolean[] = [false, false, false, false, false, false, false, false, false, false];
 
+  favIcon: HTMLLinkElement = document.querySelector('#favicon');
+  readonly environment = environment;
+
   constructor(private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private userDataStore: UserDataStore,
@@ -56,6 +60,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (environment.production === false) {
+      this.favIcon.href = 'assets/logo/logo-green.svg';
+    }
     const acknowledgedCodeverMigration = this.cookieService.readCookie('acknowledge-codever-migration');
     if (acknowledgedCodeverMigration !== 'true') {
       this.showAcknowledgeMigrationHeader = true;
