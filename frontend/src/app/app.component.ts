@@ -20,6 +20,9 @@ import { Bookmark } from './core/model/bookmark';
 import { Router } from '@angular/router';
 import { AddToHistoryService } from './core/user/add-to-history.service';
 import { environment } from '../environments/environment';
+import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
+import { LoginDialogHelperService } from './core/login-dialog-helper.service';
 
 @Component({
   selector: 'app-root',
@@ -45,6 +48,8 @@ export class AppComponent implements OnInit {
   favIcon: HTMLLinkElement = document.querySelector('#favicon');
   readonly environment = environment;
 
+  scrollStrategy: ScrollStrategy;
+
   constructor(private keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private userDataStore: UserDataStore,
@@ -52,10 +57,12 @@ export class AppComponent implements OnInit {
               private userDataPinnedStore: UserDataPinnedStore,
               private historyDialog: MatDialog,
               private loginDialog: MatDialog,
+              private loginDialogHelperService: LoginDialogHelperService,
               private cookieService: CookieService,
               private feedbackService: FeedbackService,
               protected router: Router,
-              private addToHistoryService: AddToHistoryService) {
+              private addToHistoryService: AddToHistoryService,
+              private readonly  scrollStrategyOptions: ScrollStrategyOptions) {
     this.innerWidth = 100;
   }
 
@@ -86,18 +93,13 @@ export class AppComponent implements OnInit {
         )
       }
     });
+    this.scrollStrategy = this.scrollStrategyOptions.noop();
   }
 
   @HostListener('window:keydown.control.p', ['$event'])
   showPinned(event: KeyboardEvent) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to see the Pinned Bookmarks popup'
-      };
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to see the Pinned Bookmarks popup');
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
@@ -108,6 +110,7 @@ export class AppComponent implements OnInit {
       dialogConfig.autoFocus = true;
       dialogConfig.width = this.getRelativeWidth();
       dialogConfig.height = this.getRelativeHeight();
+      dialogConfig.scrollStrategy = this.scrollStrategy;
       dialogConfig.data = {
         bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1),
         title: '<i class="fas fa-thumbtack"></i> Pinned'
@@ -143,13 +146,7 @@ export class AppComponent implements OnInit {
   @HostListener('window:keydown.control.h', ['$event'])
   showHistory(event: KeyboardEvent) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to see the History Bookmarks popup'
-      };
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to see the History Bookmarks popup');
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
@@ -160,6 +157,7 @@ export class AppComponent implements OnInit {
       dialogConfig.autoFocus = true;
       dialogConfig.width = this.getRelativeWidth();
       dialogConfig.height = this.getRelativeHeight();
+      dialogConfig.scrollStrategy = this.scrollStrategy;
       dialogConfig.data = {
         bookmarks$: this.userDataHistoryStore.getAllHistory$(this.userId),
         title: '<i class="fas fa-history"></i> History'

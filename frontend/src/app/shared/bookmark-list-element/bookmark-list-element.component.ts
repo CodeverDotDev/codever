@@ -26,6 +26,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
 import { AddToHistoryService } from '../../core/user/add-to-history.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
+import { ScrollStrategyOptions } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -67,6 +69,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   copyLinkButtonText = '';
 
+  scrollStrategy: ScrollStrategy;
+
   constructor(private router: Router,
               private playYoutubeDialog: MatDialog,
               public loginDialog: MatDialog,
@@ -85,7 +89,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private loginDialogHelperService: LoginDialogHelperService,
               private myBookmarksStore: MyBookmarksStore,
               public addToHistoryService: AddToHistoryService,
-              private clipboard: Clipboard) {
+              private clipboard: Clipboard,
+              private readonly  scrollStrategyOptions: ScrollStrategyOptions) {
     super(loginDialog, userDataWatchedTagsStore);
 
     // START force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
@@ -103,6 +108,8 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     });
     // END force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
     // apparently still an issue around the topic - need to keep an eye on it - https://github.com/angular/angular/issues/21115
+
+    this.scrollStrategy = this.scrollStrategyOptions.noop();
   }
 
   ngOnInit(): void {
@@ -123,16 +130,17 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
 
-    let relativeWidth = (this.innerWidth * 80) / 100; // take up to 80% of the screen size
+    let relativeWidth = (this.innerWidth * 70) / 100; // take up to 80% of the screen size
     if (this.innerWidth > 1500) {
-      relativeWidth = (1500 * 80) / 100;
+      relativeWidth = (1500 * 70) / 100;
     } else {
-      relativeWidth = (this.innerWidth * 80) / 100;
+      relativeWidth = (this.innerWidth * 70) / 100;
     }
 
     const relativeHeight = (relativeWidth * 9) / 16 + 120; // 16:9 to which we add 120 px for the dialog action buttons ("close")
     dialogConfig.width = relativeWidth + 'px';
     dialogConfig.height = relativeHeight + 'px';
+    dialogConfig.scrollStrategy = this.scrollStrategy;
 
     dialogConfig.data = {
       bookmark: bookmark,
@@ -187,6 +195,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
+    dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
       bookmark: bookmark,
       userData$: this.userData$
@@ -243,6 +252,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.minWidth = 380;
+    dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
       bookmark: bookmark,
       userIsLoggedIn: this.userIsLoggedIn,
