@@ -47,7 +47,7 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Bookmarks and Snippets Manager for Developers & Co",
-      "location": "https://www.codever.land/",
+      "location": "https://www.codever.dev/",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
       "language": "en",
@@ -93,7 +93,7 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Getting started with www.codever.land",
-      "location": "https://www.codever.land/howto",
+      "location": "https://www.codever.dev/howto",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
       "language": "en",

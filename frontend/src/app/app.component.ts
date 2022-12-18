@@ -31,7 +31,7 @@ import { LoginDialogHelperService } from './core/login-dialog-helper.service';
 })
 export class AppComponent implements OnInit {
 
-  url = 'https://www.codever.land';
+  url = 'https://www.codever.dev';
   innerWidth: any;
 
   userIsLoggedIn = false;

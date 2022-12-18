@@ -8,15 +8,15 @@
 
 <br />
 
-:point_right: Use our [**HowTo pages**](https://www.codever.land/howto)
+:point_right: Use our [**HowTo pages**](https://www.codever.dev/howto)
  to get you going and [start saving time and nerves](https://dev.to/ama/how-i-manage-my-dev-bookmarks-and-save-time-and-nerves-56ae) when managing
 your bookmarks and code snippets. The following helpers and extensions will assist you along the way:
 
 ## Extensions
 
-| [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.land/howto/bookmarklets) | [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [![Firefox](documentation/img/fx-24.png)](https://addons.mozilla.org/addon/codever/) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) | [![VSCode extension](documentation/img/vscode-24.png)](https://marketplace.visualstudio.com/items?itemName=codever.vscode-codever) |
+| [![Bookmarklet](documentation/img/bookmark-24.png)](https://www.codever.dev/howto/bookmarklets) | [![Chrome](documentation/img/chrome-24.png)](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) | [![Firefox](documentation/img/fx-24.png)](https://addons.mozilla.org/addon/codever/) | [![IntelliJ Plugin](documentation/img/intellij-24.png)](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) | [![VSCode extension](documentation/img/vscode-24.png)](https://marketplace.visualstudio.com/items?itemName=codever.vscode-codever) |
 |:---:|:---:|:---:|:---:|:---:|
-| [Bookmarklet](https://www.codever.land/howto/bookmarklets) |  [Chromium Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) |  [Firefox Addon](https://addons.mozilla.org/addon/codever/) | [IntelliJ Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) | [VSCode Extension](https://marketplace.visualstudio.com/items?itemName=codever.vscode-codever) |
+| [Bookmarklet](https://www.codever.dev/howto/bookmarklets) |  [Chromium Extension](https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb) |  [Firefox Addon](https://addons.mozilla.org/addon/codever/) | [IntelliJ Plugin](https://plugins.jetbrains.com/plugin/14456-codever-snippets/) | [VSCode Extension](https://marketplace.visualstudio.com/items?itemName=codever.vscode-codever) |
     
 ### Chrome extension usage example - save snippet
  
@@ -41,7 +41,7 @@ The project is developed with the MEAN stack and [Keycloak](http://www.keycloak.
 The project contains two parts
 
 * [frontend](frontend) which makes up the User Interface. This uses with Angular and Angular CLI.
-* [backend](backend) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.codever.land/api/docs)
+* [backend](backend) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.codever.dev/api/docs)
 
 ### Prerequisites
 

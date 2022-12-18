@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Codever API
-  description: API supporting the [www.codever.land](https://www.codever.land)
+  description: API supporting the [www.codever.land](https://www.codever.dev)
   contact:
     name: Adrian Matei
     url: https://github.com/adrianmatei-me
@@ -14,7 +14,7 @@ info:
 servers:
   - url: http://localhost:3000/api
     description: Local server for development
-  - url: https://www.codever.land/api
+  - url: https://www.codever.dev/api
     description: Main (production) server
 
 tags:

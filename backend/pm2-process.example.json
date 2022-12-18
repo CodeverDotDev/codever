@@ -22,7 +22,7 @@
       "MONGODB_HOST": "localhost",
       "MONGODB_PORT": "27017",
       "KEYCLOAK_REALM": "bookmarks",
-      "KEYCLOAK_SERVER_URL": "https://www.codever.land/auth"
+      "KEYCLOAK_SERVER_URL": "https://www.codever.dev/auth"
     }
   }]
 }

@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
-  APP_HOME_URL: 'https://www.codever.land',
-  API_URL: 'https://www.codever.land/api',
-  HOST: 'https://www.codever.land',
+  APP_HOME_URL: 'https://www.codever.dev',
+  API_URL: 'https://www.codever.dev/api',
+  HOST: 'https://www.codever.dev',
   keycloak:  {
     'realm': 'bookmarks',
-    'url': 'https://www.codever.land/auth',
+    'url': 'https://www.codever.dev/auth',
     'clientId': 'bookmarks'
   },
   PAGINATION_PAGE_SIZE: 10,
