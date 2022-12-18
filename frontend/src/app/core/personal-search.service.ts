@@ -11,6 +11,7 @@ import { UsedTag } from './model/used-tag';
 import { HttpClientLocalStorageService, HttpOptions } from './cache/http-client-local-storage.service';
 import { localStorageKeys } from './model/localstorage.cache-keys';
 import { Snippet } from './model/snippet';
+import { Note } from './model/note';
 
 @Injectable()
 export class PersonalSearchService {
@@ -24,7 +25,7 @@ export class PersonalSearchService {
   }
 
 
-  getSearchResults(userId: string, searchText: string, limit: number, page: number, include: string): Observable<(Bookmark | Snippet)[]> {
+  getSearchResults(userId: string, searchText: string, limit: number, page: number, include: string): Observable<(Bookmark | Snippet | Note)[]> {
     const params = new HttpParams()
       .set('q', searchText)
       .set('page', page.toString())

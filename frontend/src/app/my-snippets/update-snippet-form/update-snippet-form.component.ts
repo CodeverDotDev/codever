@@ -8,11 +8,16 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 import { Snippet } from '../../core/model/snippet';
 import { PersonalSnippetsService } from '../../core/personal-snippets.service';
-import { DeleteSnippetDialogComponent } from '../delete-snippet-dialog/delete-snippet-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PublicSnippetsService } from '../../public/snippets/public-snippets.service';
 import { SnippetFormBaseComponent } from '../snippet-form-base/snippet-form.base.component';
 import { Location } from '@angular/common';
+import {
+  DeleteResourceDialogComponent
+} from '../../shared/dialog/delete-bookmark-dialog/delete-resource-dialog.component';
+import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
+import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
 
 @Component({
   selector: 'app-update-snippet-form',
@@ -37,6 +42,8 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
   @Input()
   copyToMine = false;
 
+  scrollStrategy: ScrollStrategy;
+
   constructor(
     protected formBuilder: FormBuilder,
     protected personalSnippetsService: PersonalSnippetsService,
@@ -48,9 +55,12 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
     private route: ActivatedRoute,
     protected errorService: ErrorService,
     private deleteDialog: MatDialog,
-    private _location: Location
+    private _location: Location,
+    private readonly scrollStrategyOptions: ScrollStrategyOptions,
+    private deleteNotificationService: DeleteNotificationService
   ) {
     super(formBuilder, personalSnippetsService, suggestedTagsStore, userInfoStore, router, errorService);
+    this.scrollStrategy = this.scrollStrategyOptions.noop();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -125,30 +135,36 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
 
   openDeleteDialog() {
     const dialogConfig = new MatDialogConfig();
-
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
+    dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
-      codeletTitle: this.snippet.title,
+      resourceName: this.snippet.title,
+      type: 'snippet',
+      isPublic: this.snippet.public
     };
 
-    const dialogRef = this.deleteDialog.open(DeleteSnippetDialogComponent, dialogConfig);
+    const dialogRef = this.deleteDialog.open(DeleteResourceDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(
       data => {
         if (data === 'DELETE_CONFIRMED') {
-          this.deleteCodelet(this.snippet._id);
+          this.deleteSnippet(this.snippet._id);
         }
       }
     );
   }
 
-  deleteCodelet(codeletId: string) {
-    this.personalSnippetsService.deleteSnippetById(this.userId, codeletId).subscribe(() => {
-      console.log('Delete snippet with id - ' + codeletId);
-      this.router.navigate(
-        ['']
-      );
-    });
+  deleteSnippet(snippetId: string) {
+    this.personalSnippetsService.deleteSnippetById(this.userId, snippetId).subscribe(() => {
+        this.router.navigate(
+          ['']
+        );
+        this.deleteNotificationService.showSuccessNotification(`Snippet - "${this.snippet.title}" was deleted`);
+      },
+      () => {
+        this.deleteNotificationService.showErrorNotification('Snippet could not be deleted. Please try again later!');
+      }
+    );
   }
 
   cancelUpdate() {

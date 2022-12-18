@@ -62,7 +62,7 @@ export class BookmarksTaggedComponent implements OnInit {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
           this.userData$ = this.userDataStore.getUserData$();
         });
       }

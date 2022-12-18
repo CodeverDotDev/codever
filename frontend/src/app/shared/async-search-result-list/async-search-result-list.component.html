@@ -6,7 +6,7 @@
   <div class="clear"></div>
   <div class="mt-3" *ngFor="let searchResult of searchResults | bookmarkFilter: filterText">
 
-    <app-bookmark-list-element *ngIf="isBookmark(searchResult) else showSnippet"
+    <app-bookmark-list-element *ngIf="isBookmark(searchResult)"
                                [bookmark]="searchResult"
                                [userData$]="userData$"
                                [queryText]="queryText"
@@ -14,13 +14,16 @@
                                [isSearchResultsPage]="isSearchResultsPage"
     >
     </app-bookmark-list-element>
-    <ng-template #showSnippet>
-      <app-snippet-details
-        [snippet$]="of(searchResult)"
-        [queryText]="queryText"
-        [inlist]="true"
-      ></app-snippet-details>
-    </ng-template>
+    <app-snippet-details *ngIf="isSnippet(searchResult)"
+                         [snippet$]="of(searchResult)"
+                         [queryText]="queryText"
+                         [inlist]="true"
+    ></app-snippet-details>
+    <app-note-details *ngIf="isNote(searchResult)"
+                      [note$]="of(searchResult)"
+                      [queryText]="queryText"
+                      [inSearchResults]="true"
+    ></app-note-details>
 
   </div>
 

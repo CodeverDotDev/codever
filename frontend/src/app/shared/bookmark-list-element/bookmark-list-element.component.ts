@@ -16,7 +16,7 @@ import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store
 import { UserDataStore } from '../../core/user/userdata.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
-import { DeleteBookmarkDialogComponent } from '../dialog/delete-bookmark-dialog/delete-bookmark-dialog.component';
+import { DeleteResourceDialogComponent } from '../dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { SocialShareDialogComponent } from '../dialog/social-share-dialog/social-share-dialog.component';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { AdminService } from '../../core/admin/admin.service';
@@ -28,6 +28,7 @@ import { AddToHistoryService } from '../../core/user/add-to-history.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
 import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -90,7 +91,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private myBookmarksStore: MyBookmarksStore,
               public addToHistoryService: AddToHistoryService,
               private clipboard: Clipboard,
-              private readonly  scrollStrategyOptions: ScrollStrategyOptions) {
+              private readonly scrollStrategyOptions: ScrollStrategyOptions,
+              private deleteNotificationService: DeleteNotificationService,
+  ) {
     super(loginDialog, userDataWatchedTagsStore);
 
     // START force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
@@ -117,7 +120,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
           this.userId = userInfo.sub;
         });
       }
@@ -197,11 +200,12 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     dialogConfig.autoFocus = true;
     dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
-      bookmark: bookmark,
-      userData$: this.userData$
+      resourceName: bookmark.name,
+      type: 'bookmark',
+      isPublic: bookmark.public
     };
 
-    const dialogRef = this.deleteDialog.open(DeleteBookmarkDialogComponent, dialogConfig);
+    const dialogRef = this.deleteDialog.open(DeleteResourceDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(
       data => {
         console.log('Dialog output:', data);
@@ -222,6 +226,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
         if (this.isSearchResultsPage) {
           location.reload();
         }
+        this.deleteNotificationService.showSuccessNotification(`Bookmark "${bookmark.name}" was deleted`);
+      }, () => {
+        this.deleteNotificationService.showErrorNotification(`Bookmark "${bookmark.name}" could not be deleted`);
       });
     } else {
       this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
@@ -237,6 +244,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
             this.navigateToHomePage();
           }
         }
+        this.deleteNotificationService.showSuccessNotification(`Bookmark "${bookmark.name}" was deleted`);
+      }, () => {
+        this.deleteNotificationService.showErrorNotification(`Bookmark "${bookmark.name}" could not be deleted`);
       });
     }
   }

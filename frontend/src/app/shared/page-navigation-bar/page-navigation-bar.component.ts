@@ -5,6 +5,7 @@ import { Snippet } from '../../core/model/snippet';
 import { PaginationAction } from '../../core/model/pagination-action';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
+import { Note } from '../../core/model/note';
 
 @Component({
   selector: 'app-page-navigation-bar',
@@ -23,7 +24,7 @@ export class PageNavigationBarComponent implements OnInit, AfterViewInit, OnChan
   callerPagination: string;
 
   @Input()
-  results: (Bookmark | Snippet)[];
+  results: (Bookmark | Snippet | Note)[];
 
   showPaginationDelayExpired = false;
 

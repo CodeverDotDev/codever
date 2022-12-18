@@ -22,7 +22,7 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
       this.userId = userInfo.sub;
       this.bookmark$ = of(window.history.state.bookmark);
       if (!window.history.state.bookmark) {

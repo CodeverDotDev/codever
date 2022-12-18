@@ -47,14 +47,14 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Bookmarks and Snippets Manager for Developers & Co",
-      "location": "https://www.codever.land/",
+      "location": "https://www.codever.dev/",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
       "language": "en",
       "description": "Bookmarks Manager for Developers & Co",
       "descriptionHtml": "<p>Bookmarks Manager for Developers &amp; Co</p>",
       "publishedOn": null,
-      "sourceCodeURL": "https://github.com/codeverland/codever",
+      "sourceCodeURL": "https://github.com/CodeverDotDev/codever",
       "public": true,
       "lastAccessedAt": ISODate("2019-10-23T12:23:53.471Z"),
       "likeCount": 0,
@@ -70,14 +70,14 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Collection of public dev bookmarks, shared with love from www.codever.land",
-      "location": "https://github.com/codeverland/bookmarks#readme",
+      "location": "https://github.com/CodeverDotDev/bookmarks#readme",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
       "language": "en",
       "description": ":bookmark: :star: Collection of public dev bookmarks, shared with :heart: from www.codever.land  - CodepediaOrg/bookmarks",
       "descriptionHtml": "<p>:bookmark: :star: Collection of public dev bookmarks, shared with :heart: from www.codever.land  - CodepediaOrg/bookmarks</p>",
       "publishedOn": null,
-      "sourceCodeURL": "https://github.com/codeverland/bookmarks",
+      "sourceCodeURL": "https://github.com/CodeverDotDev/bookmarks",
       "public": true,
       "lastAccessedAt": ISODate("2019-10-23T12:24:50.804Z"),
       "likeCount": 0,
@@ -93,14 +93,14 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Getting started with www.codever.land",
-      "location": "https://www.codever.land/howto",
+      "location": "https://www.codever.dev/howto",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
       "language": "en",
       "description": "How to save and search bookmarks, use bookmarklets and chrome extension",
       "descriptionHtml": "<p>How to save and search bookmarks, use bookmarklets and chrome extension. Use snippets and more</p>",
       "publishedOn": null,
-      "sourceCodeURL": "https://github.com/codeverland/bookmarks",
+      "sourceCodeURL": "https://github.com/CodeverDotDev/bookmarks",
       "public": true,
       "lastAccessedAt": ISODate("2020-03-23T12:24:50.804Z"),
       "likeCount": 0,
@@ -122,11 +122,11 @@ db.bookmarks.createIndex(
   },
   {
     weights: {
-      name: 2,
-      location: 5,
-      description: 1,
-      tags: 3,
-      sourceCodeURL: 1
+      name: 13,
+      location: 8,
+      description: 5,
+      tags: 21,
+      sourceCodeURL: 3
     },
     name: "full_text_search",
     default_language: "none",
@@ -168,4 +168,24 @@ db.snippets.createIndex(
     default_language: "none",
     language_override: "none"
   }
+);
+
+db.notes.createIndex(
+    {
+      title: "text",
+      reference: "text",
+      content: "text",
+      tags: "text"
+    },
+    {
+      weights: {
+        title: 13,
+        reference: 3,
+        content: 5,
+        tags: 21
+      },
+      name: "notes_full_text_search",
+      default_language: "none",
+      language_override: "none"
+    }
 );

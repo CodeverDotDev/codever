@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeleteBookmarkDialogComponent } from './delete-bookmark-dialog.component';
+import { DeleteResourceDialogComponent } from './delete-resource-dialog.component';
 
 describe('LoginRequiredDialogComponent', () => {
-  let component: DeleteBookmarkDialogComponent;
-  let fixture: ComponentFixture<DeleteBookmarkDialogComponent>;
+  let component: DeleteResourceDialogComponent;
+  let fixture: ComponentFixture<DeleteResourceDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeleteBookmarkDialogComponent ]
+      declarations: [ DeleteResourceDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeleteBookmarkDialogComponent);
+    fixture = TestBed.createComponent(DeleteResourceDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -32,6 +32,10 @@ const routes: Routes = [
     loadChildren: () => import('app/public/public.module').then(m => m.PublicResourcesModule)
   },
   {
+    path: 'my-notes',
+    loadChildren: () => import('app/my-notes/my-notes.module').then(m => m.MyNotesModule)
+  },
+  {
     path: 'my-snippets',
     loadChildren: () => import('app/my-snippets/my-snippets.module').then(m => m.MySnippetsModule)
   },

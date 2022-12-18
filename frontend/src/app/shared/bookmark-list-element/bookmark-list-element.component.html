@@ -8,8 +8,8 @@
              (click)="playYoutubeVideo(bookmark)"
              title="Play video"></i>
           <i *ngIf="bookmark.stackoverflowQuestionId" class="fab fa-stack-overflow stackoverflow-icon"></i>
-          <i *ngIf="bookmark.location.startsWith('https://github.com', 0)" class="fab fa-github  stackoverflow-icon"></i>
-          <i *ngIf="bookmark.location.startsWith('https://dev.to/', 0)" class="fab fa-dev  stackoverflow-icon"></i>
+          <i *ngIf="bookmark.location?.startsWith('https://github.com', 0)" class="fab fa-github  stackoverflow-icon"></i>
+          <i *ngIf="bookmark.location?.startsWith('https://dev.to/', 0)" class="fab fa-dev  stackoverflow-icon"></i>
           <a href="{{bookmark.location}}"
              target="_blank" [innerHtml]="bookmark.name | highlight: filterText | highlight: queryText"
              (click)="addToHistoryService.promoteInHistoryIfLoggedIn(userIsLoggedIn, bookmark)"

@@ -125,7 +125,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     private route: ActivatedRoute,
     private errorService: ErrorService
   ) {
-    this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
       this.userId = userInfo.sub;
       this.userDataStore.getUserData$().subscribe(userData => {
         this.userData = userData;
@@ -409,6 +409,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   private createBookmark(bookmark: Bookmark) {
     const newBookmark: Bookmark = {
+      type: 'bookmark',
       name: bookmark.name,
       location: bookmark.location,
       language: bookmark.language,

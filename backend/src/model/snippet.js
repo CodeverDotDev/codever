@@ -14,6 +14,7 @@ const CodeSnippetSchema = new Schema({
 
 const snippetSchema = new Schema({
     title: {type:String, required: true},
+    type: {type:String, required: true, default: 'snippet'},
     codeSnippets: [CodeSnippetSchema],
     tags: [String],
     userId: {type: String, ref:'User'},

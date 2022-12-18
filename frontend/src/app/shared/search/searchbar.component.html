@@ -57,6 +57,20 @@
         </ng-template>
       </a>
       <a class="dropdown-item" role="button"
+         title="Search in My Notes"
+         (click)="onSearchDomainChange('my-notes')">
+        My Notes
+        <span *ngIf="searchDomain === 'my-notes'; else uncheckedMyNotesSelection"
+              class="search-domain-selection note-bg float-right pl-1 pr-1">
+            <i class="fas fa-check"></i>
+          </span>
+        <ng-template #uncheckedMyNotesSelection>
+            <span class="my-notes-selection-unchecked float-right">
+              <i class="fa fa-square fa-lg"></i>
+            </span>
+        </ng-template>
+      </a>
+      <a class="dropdown-item" role="button"
          title="Search in My Bookmarks & Snippets"
          (click)="onSearchDomainChange('all-mine')">
         All Mine
@@ -107,6 +121,7 @@
     (focusout)="unFocusOnSearchControl()"
     [class.my-snippets-selection]="searchDomain === 'my-snippets'"
     [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
+    [class.my-notes-selection]="searchDomain === 'my-notes'"
     [class.public-snippets-selection]="searchDomain === 'public-snippets'"
     (keyup)="watchForTags(publicSearchBox.value)"
     (keyup.enter)="$event.target.blur(); autocompleteTrigger.closePanel();searchBookmarksFromSearchBox(publicSearchBox.value)"

@@ -12,6 +12,7 @@ import { SearchDomain } from '../../../core/model/search-domain.enum';
 import { PublicBookmarksService } from '../../../public/bookmarks/public-bookmarks.service';
 import { UsedTag } from '../../../core/model/used-tag';
 import { PublicSnippetsService } from '../../../public/snippets/public-snippets.service';
+import { PersonalNotesService } from '../../../core/personal-notes.service';
 
 @Component({
   selector: 'app-delete-bookmark-dialog',
@@ -39,6 +40,7 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
 
   constructor(private personalBookmarksService: PersonalBookmarksService,
               private personalSnippetsService: PersonalSnippetsService,
+              private personalNotesService: PersonalNotesService,
               private publicBookmarksService: PublicBookmarksService,
               private publicSnippetsService: PublicSnippetsService,
               private dialogRef: MatDialogRef<AddTagFilterToSearchDialogComponent>,
@@ -57,6 +59,11 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
 
       case SearchDomain.MY_SNIPPETS : {
         this.personalSnippetsService.getUserTagsForSnippets(this.userId).subscribe(this.setTags());
+      }
+        break;
+
+      case SearchDomain.MY_NOTES : {
+        this.personalNotesService.getSuggestedNoteTags(this.userId).subscribe(this.setTags());
       }
         break;
 
