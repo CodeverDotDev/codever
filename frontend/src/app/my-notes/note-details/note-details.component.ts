@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Note } from '../../core/model/note';
 import { Observable, of } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 
@@ -24,7 +24,8 @@ export class NoteDetailsComponent implements OnInit {
   constructor(
     private personalNotesService: PersonalNotesService,
     private userInfoStore: UserInfoStore,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private router: Router) {
   }
 
   ngOnInit(): void {
@@ -39,5 +40,10 @@ export class NoteDetailsComponent implements OnInit {
         })
       );
     }
+  }
+
+  editNote(note: Note) {
+    const link = [`/my-notes/${note._id}/edit`];
+    this.router.navigate(link, {state: {note: note}});
   }
 }

@@ -18,4 +18,32 @@
 
   </div>
 
+  <div class="card-footer" style="padding-right: 0.3rem">
+    <div class="tags-group">
+      <div class="input-group-sm  mb-2 mb-sm-0 star-group">
+        <span>
+          <i class="fas fa-eye-slash anthracite-gray" title="Private snippet"></i>
+        </span>
+      </div>
+      <div *ngFor="let tag of note.tags" class="btn-group tag-list  mr-2 mt-1">
+        <a class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
+           [routerLink]="['/snippets/t', tag]"
+           title="Go to snippets tagged [{{tag}}]"
+           [innerHtml]="tag | highlight: queryText">
+          {{tag}}
+        </a>
+      </div>
+      <div class="float-right mt-1">
+        <button
+          *ngIf="userId && note.userId === userId"
+          type="button" class="btn btn-light btn-sm"
+          (click)="editNote(note)"
+          title="Edit code snippet">
+          <i class="far fa-edit"></i> Edit
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </div>

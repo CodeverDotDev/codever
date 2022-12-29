@@ -4,7 +4,7 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { Note } from '../../core/model/note';
 import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -23,14 +23,15 @@ export class UpdatePersonalNoteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfo$().pipe(tap(userInfo => {
-      this.userId = userInfo.sub;
-      if (window.history.state.note) {
-        this.note$ = of(window.history.state.note)
-      } else {
-        this.note$ = this.personalNotesService.getPersonalNoteById(this.userId, this.noteId)
-      }
-    }));
+    if (window.history.state.note) {
+      this.note$ = of(window.history.state.note)
+    } else {
+     this.note$ = this.userInfoStore.getUserInfo$().pipe(switchMap(userInfo => {
+        this.userId = userInfo.sub;
+        this.noteId = this.route.snapshot.paramMap.get('id');
+        return this.personalNotesService.getPersonalNoteById(this.userId, this.noteId);
+      }));
+    }
   }
 }
 

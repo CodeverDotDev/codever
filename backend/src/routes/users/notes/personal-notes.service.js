@@ -54,7 +54,7 @@ let getAllMyNotes = async (userId) => {
  */
 let updateNote = async (userId, noteId, noteData) => {
 
-  NoteInputValidator.validateSnippetInput(userId, noteData);
+  NoteInputValidator.validateNoteInput(userId, noteData);
 
   const updatedNote = await Note.findOneAndUpdate(
     {

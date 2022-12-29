@@ -211,10 +211,10 @@ export class NoteEditorComponent implements OnInit, OnChanges, OnDestroy {
     note.updatedAt = now;
     note.userId = this.userId;
     this.personalNotesService.createNote(this.userId, note).subscribe(
-      (createdNote => {
-          this.navigateToSnippetDetails(createdNote, {})
-        }
-      ));
+      createdNote => {
+        this.navigateToSnippetDetails(createdNote, {})
+      }
+    );
   }
 
   navigateToSnippetDetails(note: Note, queryParams: Params): void {
