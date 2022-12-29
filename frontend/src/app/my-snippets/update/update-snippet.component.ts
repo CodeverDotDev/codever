@@ -16,7 +16,7 @@ export class UpdateSnippetComponent implements OnInit {
   userId: string;
 
   constructor(private route: ActivatedRoute,
-              private personalCodeletsService: PersonalSnippetsService,
+              private personalSnippetsService: PersonalSnippetsService,
               private userInfoStore: UserInfoStore) {
 
   }
@@ -27,7 +27,7 @@ export class UpdateSnippetComponent implements OnInit {
       this.snippet = window.history.state.snippet;
       if (!window.history.state.snippet) {
         this.snippetId = this.route.snapshot.paramMap.get('id');
-        this.personalCodeletsService.getPersonalSnippetById(this.userId, this.snippetId).subscribe(snippet =>
+        this.personalSnippetsService.getPersonalSnippetById(this.userId, this.snippetId).subscribe(snippet =>
           this.snippet = snippet
         );
       }

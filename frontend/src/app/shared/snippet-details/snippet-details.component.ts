@@ -26,7 +26,7 @@ export class SnippetDetailsComponent implements OnInit {
   source: string; // "public" or "personal"
 
   @Input()
-  queryText: string; // used for highlighting search terms in the bookmarks list
+  queryText: string;
 
   @Input()
   inlist = false; // whether it is displayed in list (search results) or singular (details)
@@ -68,7 +68,7 @@ export class SnippetDetailsComponent implements OnInit {
     document.body.removeChild(selBox);
   }
 
-  editCodelet(snippet: Snippet) {
+  editSnippet(snippet: Snippet) {
     const link = [`/my-snippets/${snippet._id}/edit`];
     this.router.navigate(link, {state: {snippet: snippet}});
   }

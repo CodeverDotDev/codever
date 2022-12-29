@@ -1,0 +1,21 @@
+<div *ngIf="(note$ | async) as note" class="card">
+  <div class="card-body show-hide">
+    <h4 class="card-title">{{note.title}}</h4>
+    <h6 class="card-subtitle mb-2 text-muted url-under-title">
+      <span *ngIf="note.reference"><strong>Ref</strong> -
+        <span
+          *ngIf="note.reference.startsWith('http:') || note.reference.startsWith('https:'); else justText">
+          <a href="{{note.reference}}" target="_blank">{{note.reference}}</a>
+          <sup class="ml-1"><i class="fas fa-external-link-alt"></i></sup>
+        </span>
+        <ng-template #justText>
+          <span>{{note.reference}}</span>
+        </ng-template>
+      </span>
+    </h6>
+
+    <app-note-content [note]="note" [queryText]="queryText"></app-note-content>
+
+  </div>
+
+</div>

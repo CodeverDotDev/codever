@@ -1,0 +1,13 @@
+<div #noteContentDiv>
+  <div *ngIf="inList && viewHeight > 180 else wholeText">
+    <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}">
+      <p [innerHtml]="note.content | md2html"></p>
+    </div>
+    <button (click)="showMoreText = !showMoreText"
+            [ngClass]="{show_less_button: showMoreText, show_more_button: !showMoreText}"
+            class="toggle-show-more-button"></button>
+  </div>
+  <ng-template #wholeText>
+    <p [innerHtml]="note.content | md2html"></p>
+  </ng-template>
+</div>
