@@ -35,7 +35,7 @@ import { Snippet } from '../../core/model/snippet';
   selector: 'app-note-editor',
   templateUrl: './note-editor.component.html'
 })
-export class NoteEditorComponent implements OnInit, OnChanges, OnDestroy {
+export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   noteForm: FormGroup;
   userId = null;
@@ -62,7 +62,7 @@ export class NoteEditorComponent implements OnInit, OnChanges, OnDestroy {
   title; // value of "title" query parameter if present
 
   @Input()
-  isUpdate = false;
+  isEditMode = false;
 
   @ViewChild('tagInput', {static: false})
   tagInput: ElementRef;
@@ -115,17 +115,26 @@ export class NoteEditorComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   ngOnInit(): void {
-    this.buildForm();
+    if (!this.isEditMode) {
+      this.buildForm();
+    }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.note) {
+  buildForm(): void {
+    this.noteForm = this.formBuilder.group({
+      title: [this.title ? this.title : '', Validators.required],
+      reference: '',
+      tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
+      content: ['', textSizeValidator(5000, 500)],
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.noteForm) {
+      this.buildForm();
+    }
+    if (this.isEditMode && this.note) {
       this.noteForm.patchValue({
         title: this.note.title,
         content: this.note.content,
@@ -141,15 +150,10 @@ export class NoteEditorComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  buildForm(): void {
-    this.noteForm = this.formBuilder.group({
-      title: [this.title ? this.title : '', Validators.required],
-      reference: '',
-      tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
-      content: ['', textSizeValidator(5000, 500)],
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
-
 
   addTag(event: MatChipInputEvent): void {
     const input = event.input;
@@ -198,7 +202,7 @@ export class NoteEditorComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   saveNote(note: Note) {
-    if (this.isUpdate) {
+    if (this.isEditMode) {
       this.updateNote(note);
     } else {
       this.createNote(note);
