@@ -1,5 +1,5 @@
 <div *ngIf="(note$ | async) as note" class="card">
-  <div class="card-body show-hide">
+  <div class="card-body show-hide note-bg">
     <h4 class="card-title">{{note.title}}</h4>
     <h6 class="card-subtitle mb-2 text-muted url-under-title">
       <span *ngIf="note.reference"><strong>Ref</strong> -
