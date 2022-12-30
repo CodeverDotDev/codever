@@ -29,7 +29,6 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Note } from '../../core/model/note';
 import { PersonalNotesService } from '../../core/personal-notes.service';
-import { Snippet } from '../../core/model/snippet';
 
 @Component({
   selector: 'app-note-editor',

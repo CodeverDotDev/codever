@@ -203,6 +203,12 @@
             <i class="fa fa-code"></i>
             Snippet
           </a>
+          <a
+            class="dropdown-item"
+            routerLink="/my-notes/new">
+            <i class="fas fa-sticky-note"></i>
+            Note
+          </a>
         </div>
       </li>
       <li *ngIf="(userInfoOidc$ | async); else notLoggedIn" class="nav-item dropdown ml-auto">
