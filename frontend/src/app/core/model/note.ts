@@ -1,5 +1,6 @@
 export interface Note {
   _id?: string;
+  type: string; // should always by 'note'
   userId?: String;
   title: string;
   reference?: string;

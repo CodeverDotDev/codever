@@ -409,6 +409,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   private createBookmark(bookmark: Bookmark) {
     const newBookmark: Bookmark = {
+      type: 'bookmark',
       name: bookmark.name,
       location: bookmark.location,
       language: bookmark.language,

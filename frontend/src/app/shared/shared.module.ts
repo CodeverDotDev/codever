@@ -11,7 +11,9 @@ import { DeleteBookmarkDialogComponent } from './dialog/delete-bookmark-dialog/d
 import { LoginRequiredDialogComponent } from './dialog/login-required-dialog/login-required-dialog.component';
 import { SocialShareDialogComponent } from './dialog/social-share-dialog/social-share-dialog.component';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
-import { PlayYoutubeVideoDialogComponent } from './dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
+import {
+  PlayYoutubeVideoDialogComponent
+} from './dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
 import { Markdown2HtmlPipe } from './pipe/markdown2html.pipe';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -30,7 +32,9 @@ import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/sn
 import { AsyncSnippetListComponent } from './async-snippet-list/async-snippet-list.component';
 import { SearchFilterPipe } from './pipe/search-filter.pipe';
 import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
-import { AddTagFilterToSearchDialogComponent } from './search/add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
+import {
+  AddTagFilterToSearchDialogComponent
+} from './search/add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
@@ -38,6 +42,9 @@ import { ImportBookmarksDialogComponent } from './dialog/import-bookmarks-dialog
 import { ExtensionsComponent } from './extensions/extensions.component';
 import { AsyncSearchResultListComponent } from './async-search-result-list/async-search-result-list.component';
 import { PageNavigationBarComponent } from './page-navigation-bar/page-navigation-bar.component';
+import { NoteDetailsComponent } from './note-details/note-details.component';
+import { NoteContentComponent } from './note-details/note-card-body/note-content.component';
+import { AsyncNoteListComponent } from './async-note-list/async-note-list.component';
 
 
 /**
@@ -45,69 +52,75 @@ import { PageNavigationBarComponent } from './page-navigation-bar/page-navigatio
  * See - https://angular.io/guide/sharing-ngmodules
  */
 @NgModule({
-    imports: [
-        SocialButtonsModule,
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatAutocompleteModule,
-        MatProgressSpinnerModule,
-        MatExpansionModule,
-        MatDialogModule,
-        RouterModule,
-        HighlightModule,
-        MatFormFieldModule,
-        MatChipsModule,
-        MatIconModule
-    ],
-    declarations: [
-        HighLightPipe,
-        HighLightHtmlPipe,
-        Markdown2HtmlPipe,
-        BookmarksFilterPipe,
-        SearchFilterPipe,
-        AsyncBookmarkListComponent,
-        AsyncSnippetListComponent,
-        AsyncSearchResultListComponent,
-        BookmarkTextComponent,
-        TagsValidatorDirective,
-        DeleteBookmarkDialogComponent,
-        SocialShareDialogComponent,
-        LoginRequiredDialogComponent,
-        PlayYoutubeVideoDialogComponent,
-        BackupBookmarksDialogComponent,
-        ImportBookmarksDialogComponent,
-        TagFollowingBaseComponent,
-        SearchbarComponent,
-        NavigationComponent,
-        PageNavigationBarComponent,
-        HotKeysDialogComponent,
-        BookmarkListElementComponent,
-        SnippetDetailsComponent,
-        CopySnippetButtonComponent,
-        SnippetCardBodyComponent,
-        AddTagFilterToSearchDialogComponent,
-        ExtensionsComponent
-    ],
-    exports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        HighLightPipe,
-        HighLightHtmlPipe,
-        Markdown2HtmlPipe,
-        SearchFilterPipe,
-        AsyncBookmarkListComponent,
-        AsyncSnippetListComponent,
-        AsyncSearchResultListComponent,
-        BookmarkTextComponent,
-        MatProgressSpinnerModule,
-        NavigationComponent,
-        SearchbarComponent,
-        BookmarkListElementComponent,
-        SnippetDetailsComponent,
-        CopySnippetButtonComponent,
-        ExtensionsComponent
-    ]
+  imports: [
+    SocialButtonsModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatProgressSpinnerModule,
+    MatExpansionModule,
+    MatDialogModule,
+    RouterModule,
+    HighlightModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    MatIconModule
+  ],
+  declarations: [
+    HighLightPipe,
+    HighLightHtmlPipe,
+    Markdown2HtmlPipe,
+    BookmarksFilterPipe,
+    SearchFilterPipe,
+    AsyncBookmarkListComponent,
+    AsyncSnippetListComponent,
+    AsyncSearchResultListComponent,
+    BookmarkTextComponent,
+    TagsValidatorDirective,
+    DeleteBookmarkDialogComponent,
+    SocialShareDialogComponent,
+    LoginRequiredDialogComponent,
+    PlayYoutubeVideoDialogComponent,
+    BackupBookmarksDialogComponent,
+    ImportBookmarksDialogComponent,
+    TagFollowingBaseComponent,
+    SearchbarComponent,
+    NavigationComponent,
+    PageNavigationBarComponent,
+    HotKeysDialogComponent,
+    BookmarkListElementComponent,
+    SnippetDetailsComponent,
+    CopySnippetButtonComponent,
+    SnippetCardBodyComponent,
+    AddTagFilterToSearchDialogComponent,
+    ExtensionsComponent,
+    NoteDetailsComponent,
+    NoteContentComponent,
+    AsyncNoteListComponent,
+  ],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HighLightPipe,
+    HighLightHtmlPipe,
+    Markdown2HtmlPipe,
+    SearchFilterPipe,
+    AsyncBookmarkListComponent,
+    AsyncSnippetListComponent,
+    AsyncSearchResultListComponent,
+    BookmarkTextComponent,
+    MatProgressSpinnerModule,
+    NavigationComponent,
+    SearchbarComponent,
+    BookmarkListElementComponent,
+    SnippetDetailsComponent,
+    CopySnippetButtonComponent,
+    ExtensionsComponent,
+    NoteDetailsComponent,
+    AsyncNoteListComponent,
+  ]
 })
-export class SharedModule { }
+export class SharedModule {
+}

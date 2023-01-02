@@ -97,6 +97,10 @@ $background-gray: rgb(240, 242, 245);
   color: white;
 }
 
+.my-notes-selection {
+  background-color: lightgoldenrodyellow;
+}
+
 .public-snippets-selection {
   background-color: darkgray; //same color as dracula background for highlight.js
   color: white;
@@ -116,6 +120,10 @@ $background-gray: rgb(240, 242, 245);
 
 .my-bookmarks-selection-unchecked {
   color: linen;
+}
+
+.my-notes-selection-unchecked {
+  color: lightgoldenrodyellow;
 }
 
 //overwrite bootsrap's class for local usage only

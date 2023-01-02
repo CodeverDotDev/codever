@@ -173,7 +173,9 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
     this.setFilteredSearches$(selectedSearchDomain);
     if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS
       || selectedSearchDomain === SearchDomain.ALL_MINE
-      || selectedSearchDomain === SearchDomain.MY_SNIPPETS) && !this.userIsLoggedIn) {
+      || selectedSearchDomain === SearchDomain.MY_SNIPPETS
+      || selectedSearchDomain === SearchDomain.MY_NOTES
+    ) && !this.userIsLoggedIn) {
       this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
       this.showLoginRequiredDialog('You need to be logged in to search in your personal assets');
     } else {

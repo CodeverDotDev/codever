@@ -16,12 +16,11 @@ import { Note } from './model/note';
 @Injectable()
 export class PersonalNotesService {
 
-  private personalNotesApiBaseUrl = '';  // URL to web api
+  readonly personalNotesApiBaseUrl = environment.API_URL + '/personal/users';
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient,
               private httpClientLocalStorageService: HttpClientLocalStorageService) {
-    this.personalNotesApiBaseUrl = environment.API_URL + '/personal/users';
   }
 
   getPersonalNoteById(userId: string, noteId: string): Observable<Note> {
@@ -31,7 +30,7 @@ export class PersonalNotesService {
   getUserTagsForNotes(userId: String): Observable<UsedTag[]> {
     const options: HttpOptions = {
       url: `${this.personalNotesApiBaseUrl}/${userId}/notes/tags`,
-      key: localStorageKeys.personalTagsSnippets,
+      key: localStorageKeys.personalTagsNotes,
       cacheHours: 24,
       isSensitive: true
     }; // cache it for a day
@@ -77,13 +76,13 @@ export class PersonalNotesService {
       .set('limit', limit.toString())
       .set('include', include);
 
-    return this.httpClient.get<Snippet[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes`,
+    return this.httpClient.get<Note[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes`,
       {params: params})
       .pipe(shareReplay(1));
   }
 
   getLatestNotes(userId: string) {
-    return this.httpClient.get<Snippet[]>(`${this.personalNotesApiBaseUrl}/${userId}/snippets`)
+    return this.httpClient.get<Note[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes`)
       .pipe(shareReplay(1));
   }
 }

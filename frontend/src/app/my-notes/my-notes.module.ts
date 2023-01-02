@@ -13,8 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreatePersonalNoteComponent } from './create-note/create-personal-note.component';
 import { UpdatePersonalNoteComponent } from './update-note/update-personal-note.component';
 import { NoteEditorComponent } from './save-note-form/note-editor.component';
-import { NoteDetailsComponent } from './note-details/note-details.component';
-import { NoteContentComponent } from './note-details/note-card-body/note-content.component';
+import { NoteDetailsComponent } from '../shared/note-details/note-details.component';
 import { PersonalNotesService } from '../core/personal-notes.service';
 
 const snippetRoutes: Routes = [
@@ -39,8 +38,6 @@ const snippetRoutes: Routes = [
   declarations: [
     CreatePersonalNoteComponent,
     UpdatePersonalNoteComponent,
-    NoteDetailsComponent,
-    NoteContentComponent,
     NoteEditorComponent
   ],
   imports: [
@@ -54,6 +51,9 @@ const snippetRoutes: Routes = [
     MatDialogModule,
     MatTooltipModule,
     HighlightModule
+  ],
+  exports: [
+    NoteDetailsComponent
   ],
   providers: [
     PersonalNotesService,

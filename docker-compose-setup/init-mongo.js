@@ -122,11 +122,11 @@ db.bookmarks.createIndex(
   },
   {
     weights: {
-      name: 2,
-      location: 5,
-      description: 1,
-      tags: 3,
-      sourceCodeURL: 1
+      name: 13,
+      location: 8,
+      description: 5,
+      tags: 21,
+      sourceCodeURL: 3
     },
     name: "full_text_search",
     default_language: "none",
@@ -168,4 +168,24 @@ db.snippets.createIndex(
     default_language: "none",
     language_override: "none"
   }
+);
+
+db.notes.createIndex(
+    {
+      title: "text",
+      reference: "text",
+      content: "text",
+      tags: "text"
+    },
+    {
+      weights: {
+        title: 13,
+        reference: 3,
+        content: 5,
+        tags: 21
+      },
+      name: "notes_full_text_search",
+      default_language: "none",
+      language_override: "none"
+    }
 );

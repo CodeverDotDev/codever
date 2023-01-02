@@ -21,13 +21,15 @@ import { LoginDialogHelperService } from '../core/login-dialog-helper.service';
 import { LoginRequiredDialogComponent } from '../shared/dialog/login-required-dialog/login-required-dialog.component';
 import { PublicSnippetsService } from '../public/snippets/public-snippets.service';
 import { PersonalSearchService } from '../core/personal-search.service';
+import { PersonalNotesService } from '../core/personal-notes.service';
+import { Note } from '../core/model/note';
 
 @Component({
   selector: 'app-search-results',
-  templateUrl: './search-results.component.html',
-  styleUrls: ['./search-results.component.scss']
+  templateUrl: './search-results-page.component.html',
+  styleUrls: ['./search-results-page.component.scss']
 })
-export class SearchResultsComponent implements OnInit, OnDestroy {
+export class SearchResultsPageComponent implements OnInit, OnDestroy {
 
   searchText: string; // holds the value in the search box
   searchDomain: string;
@@ -38,10 +40,10 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   userId: string;
   userIsLoggedIn = false;
 
-  searchResults$: Observable<Bookmark[] | Snippet[] | (Bookmark | Snippet)[]>;
+  searchResults$: Observable<Bookmark[] | Snippet[] | Note[] | (Bookmark | Snippet | Note)[]>;
   private userData$: Observable<UserData>;
 
-  selectedTabIndex = 3; // default search in public bookmarks
+  selectedTabIndex = 4; // default search in public bookmarks
   private searchInclude: string;
 
   searchTriggeredSubscription: any;
@@ -55,6 +57,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
               private personalSearchService: PersonalSearchService,
               private personalBookmarksService: PersonalBookmarksService,
               private personalSnippetsService: PersonalSnippetsService,
+              private personalNotesService: PersonalNotesService,
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,
               private userInfoStore: UserInfoStore,
@@ -117,16 +120,20 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
           this.selectedTabIndex = 2;
           break;
         }
-        case SearchDomain.PUBLIC_BOOKMARKS: {
+        case SearchDomain.MY_NOTES: {
           this.selectedTabIndex = 3;
           break;
         }
-        case SearchDomain.PUBLIC_SNIPPETS: {
+        case SearchDomain.PUBLIC_BOOKMARKS: {
           this.selectedTabIndex = 4;
           break;
         }
+        case SearchDomain.PUBLIC_SNIPPETS: {
+          this.selectedTabIndex = 5;
+          break;
+        }
         default : {
-          this.selectedTabIndex = 3;
+          this.selectedTabIndex = 4;
         }
       }
 
@@ -163,12 +170,16 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
         this.selectedTabIndex = 2;
         break;
       }
-      case SearchDomain.PUBLIC_BOOKMARKS : {
+      case SearchDomain.MY_NOTES : {
         this.selectedTabIndex = 3;
+        break;
+      }
+      case SearchDomain.PUBLIC_BOOKMARKS : {
+        this.selectedTabIndex = 4;
         break
       }
       case SearchDomain.PUBLIC_SNIPPETS : {
-        this.selectedTabIndex = 4;
+        this.selectedTabIndex = 5;
         break
       }
     }
@@ -204,6 +215,15 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       }
       case SearchDomain.MY_SNIPPETS : {
         this.searchResults$ = this.personalSnippetsService.getFilteredPersonalSnippets(
+          searchText,
+          environment.PAGINATION_PAGE_SIZE,
+          this.currentPage,
+          this.userId,
+          searchInclude);
+        break;
+      }
+      case SearchDomain.MY_NOTES : {
+        this.searchResults$ = this.personalNotesService.getFilteredPersonalNotes(
           searchText,
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
@@ -266,7 +286,28 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
 
   }
 
-  private tryAllMine(searchInclude: string) {
+  private tryMyNotes(searchInclude: string) {
+    if (this.userIsLoggedIn) {
+      this.selectedTabIndex = 0;
+      this.searchInclude = searchInclude;
+      this.router.navigate(['.'],
+        {
+          relativeTo: this.route,
+          queryParams: {
+            q: this.searchText,
+            sd: SearchDomain.MY_NOTES,
+            include: searchInclude
+          },
+        }
+      );
+    } else {
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to search through your notes');
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    }
+
+  }
+
+  tryAllMine(searchInclude: string) {
     if (this.userIsLoggedIn) {
       this.selectedTabIndex = 0;
       this.searchInclude = searchInclude;
@@ -348,23 +389,27 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
       case 0 : {
-            this.tryAllMine('all');
+        this.tryAllMine('all');
         break;
       }
       case 1 : {
-          this.tryMyBookmarks('all');
+        this.tryMyBookmarks('all');
         break;
       }
       case 2 : {
-          this.tryMySnippets('all');
+        this.tryMySnippets('all');
         break;
       }
       case 3 : {
-          this.tryPublicBookmarks('all');
+        this.tryMyNotes('all');
         break;
       }
       case 4 : {
-          this.tryPublicSnippets('all');
+        this.tryPublicBookmarks('all');
+        break;
+      }
+      case 5 : {
+        this.tryPublicSnippets('all');
         break;
       }
     }

@@ -6,13 +6,13 @@
       <input type="text" class="form-control" id="title"
              required
              formControlName="title"
-             placeholder="Title of code snippet(s) to recognize later">
+             placeholder="Note title to recognize later">
       <div [hidden]="noteForm.get('title').valid || (noteForm.get('title').pristine)"
            class="alert alert-danger">
         Title is required
       </div>
       <!-- tags -->
-      <div id="tags" class="mb-4 border rounded p-2">
+      <div id="tags" class="mb-3 border rounded p-2 mt-3">
         <mat-form-field class="full-width">
           <mat-chip-list #chipList>
             <mat-chip *ngFor="let tag of formArrayTags.controls; let i = index;" [selectable]="selectable"
@@ -53,14 +53,14 @@
       </div>
 
       <div class="form-group">
-        <label for="content" style="width: 100%">Content - <i class="fab fa-markdown"></i> <a
-          class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank">Markdown is
-          supported</a></label>
+        <label for="content" style="width: 100%">Content* - <i class="fab fa-markdown"></i> <a
+          class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank"><span class="ml-1">Markdown is
+          supported</span></a></label>
         <textarea class="form-control"
                   id="content"
                   formControlName="content"
-                  placeholder="Content of your note - searchable"
-                  style="height: 250px">
+                  placeholder="Note text (searchable)"
+                  style="height: 300px">
       </textarea>
         <div class="description-chars-counter">{{content.value ? content.value.length : 0}} / 5000</div>
         <div class="clear"></div>

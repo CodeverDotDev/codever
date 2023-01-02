@@ -18,6 +18,9 @@ export class NoteDetailsComponent implements OnInit {
   @Input()
   queryText: string;
 
+  @Input()
+  inSearchResults = false;
+
   userId: string;
   noteId: string;
 
@@ -29,16 +32,18 @@ export class NoteDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (window.history.state.note) {
-      this.note$ = of(window.history.state.snippet);
-    } else {
-      this.note$ = this.userInfoStore.getUserInfo$().pipe(
-        switchMap(userInfo => {
-          this.userId = userInfo.sub;
-          this.noteId = this.route.snapshot.paramMap.get('id');
-          return this.personalNotesService.getPersonalNoteById(this.userId, this.noteId);
-        })
-      );
+    if (!this.inSearchResults) {
+      if (window.history.state.note) {
+        this.note$ = of(window.history.state.snippet);
+      } else {
+        this.note$ = this.userInfoStore.getUserInfo$().pipe(
+          switchMap(userInfo => {
+            this.userId = userInfo.sub;
+            this.noteId = this.route.snapshot.paramMap.get('id');
+            return this.personalNotesService.getPersonalNoteById(this.userId, this.noteId);
+          })
+        );
+      }
     }
   }
 

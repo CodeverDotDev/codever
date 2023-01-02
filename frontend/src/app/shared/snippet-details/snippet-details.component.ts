@@ -43,7 +43,6 @@ export class SnippetDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;

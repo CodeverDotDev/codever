@@ -32,7 +32,8 @@ export class UserDataStore {
   private userFirstName: string;
 
   // userData is initialized here to avoid some nasty undefined exceptions before the actual data is loaded
-  userData: UserData = {profile: {displayName: 'changeMe'}, searches: [], recentSearches: []};
+  // userData: UserData = {profile: {displayName: 'changeMe'}, searches: [], recentSearches: []};
+  userData: UserData;
 
   constructor(private userService: UserDataService,
               private logger: Logger,

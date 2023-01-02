@@ -2,6 +2,7 @@ export interface Bookmark {
   _id?: string;
   shareableId?: string;
   name: string;
+  type: string; // should always by 'bookmark'
   location: string;
   description?: string;
   descriptionHtml?: string;

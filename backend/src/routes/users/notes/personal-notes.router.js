@@ -99,7 +99,7 @@ personalNotesRouter.get('/', keycloak.protect(), async (request, response) => {
   return response.status(HttpStatus.OK).send(notes);
 });
 
-/* GET snippet of user */
+/* GET note of user */
 personalNotesRouter.get('/:noteId', keycloak.protect(), async (request, response) => {
   UserIdValidator.validateUserId(request);
 
