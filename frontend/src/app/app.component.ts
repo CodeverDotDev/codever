@@ -78,7 +78,7 @@ export class AppComponent implements OnInit {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
           this.userId = userInfo.sub;
           this.latestVisitedBookmarks$ = this.userDataHistoryStore.getHistory$(this.userId, 1);
         });

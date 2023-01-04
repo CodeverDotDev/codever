@@ -27,7 +27,7 @@ export class UserDashboardComponent implements OnInit {
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
           this.userId = userInfo.sub;
           this.userData$ = this.userDataStore.getUserData$();
           const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');

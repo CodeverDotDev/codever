@@ -34,7 +34,7 @@ export class NavigationComponent implements OnInit {
   ngOnInit() {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.userInfoOidc$ = this.userInfoStore.getUserInfo$();
+        this.userInfoOidc$ = this.userInfoStore.getUserInfoOidc$();
         this.isLoggedIn = true;
         this.userData$ = this.userDataStore.getUserData$();
       } else {

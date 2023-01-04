@@ -19,16 +19,16 @@ export class UserInfoStore {
   ) {
   }
 
-  private loadInitialData() {
-    this.userInfoService.getUserInfo().subscribe(data => {
+  private loadInitialOidcData() {
+    this.userInfoService.getUserInfoOidc().subscribe(data => {
         this._userInfo.next(data);
       }
     );
   }
 
-  public getUserInfo$(): Observable<UserInfoOidc> {
+  public getUserInfoOidc$(): Observable<UserInfoOidc> {
     if (!this.userInfoLoaded) {
-      this.loadInitialData();
+      this.loadInitialOidcData();
       this.userInfoLoaded = true;
     }
     return this._userInfo.asObservable();

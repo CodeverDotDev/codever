@@ -95,7 +95,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     private errorService: ErrorService
   ) {
 
-    combineLatest([this.userInfoStore.getUserInfo$(), this.userDataStore.getUserData$()]).pipe(
+    combineLatest([this.userInfoStore.getUserInfoOidc$(), this.userDataStore.getUserData$()]).pipe(
       takeUntil(this.destroy$),
       switchMap(([userInfo, userData]) => {
           this.userId = userInfo.sub;

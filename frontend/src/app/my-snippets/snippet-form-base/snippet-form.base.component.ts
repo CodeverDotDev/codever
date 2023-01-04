@@ -62,7 +62,7 @@ export class SnippetFormBaseComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
       this.userId = userInfo.sub;
       this.suggestedTagsStore.getSuggestedSnippetTags$(this.userId).subscribe(suggestedSnippetTags => {
 

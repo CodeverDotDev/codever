@@ -36,7 +36,7 @@ export class UserDataFavoritesStore {
     this.loadedPage = 1;
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {
-        this.userInfoStore. getUserInfo$().subscribe(userInfo => {
+        this.userInfoStore. getUserInfoOidc$().subscribe(userInfo => {
           this.userId = userInfo.sub;
           this.userDataStore.getUserData$().subscribe(userData => {
             this.userData = userData;

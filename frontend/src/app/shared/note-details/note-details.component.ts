@@ -36,7 +36,7 @@ export class NoteDetailsComponent implements OnInit {
       if (window.history.state.note) {
         this.note$ = of(window.history.state.snippet);
       } else {
-        this.note$ = this.userInfoStore.getUserInfo$().pipe(
+        this.note$ = this.userInfoStore.getUserInfoOidc$().pipe(
           switchMap(userInfo => {
             this.userId = userInfo.sub;
             this.noteId = this.route.snapshot.paramMap.get('id');

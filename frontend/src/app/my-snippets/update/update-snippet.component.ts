@@ -22,7 +22,7 @@ export class UpdateSnippetComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
       this.userId = userInfo.sub;
       this.snippet = window.history.state.snippet;
       if (!window.history.state.snippet) {
