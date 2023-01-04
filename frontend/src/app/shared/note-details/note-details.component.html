@@ -38,7 +38,7 @@
       </div>
       <div class="float-right mt-1">
         <button
-          *ngIf="userId && note.userId === userId"
+          *ngIf="(userId$ | async) && note.userId === (userId$ | async)"
           type="button" class="btn btn-light btn-sm"
           (click)="editNote(note)"
           title="Edit note">

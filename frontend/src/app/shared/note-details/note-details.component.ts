@@ -21,7 +21,7 @@ export class NoteDetailsComponent implements OnInit {
   @Input()
   inSearchResults = false;
 
-  userId: string;
+  userId$: Observable<string>;
   noteId: string;
 
   constructor(
@@ -32,19 +32,20 @@ export class NoteDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userId$ = this.userInfoStore.getUserId$();
     if (!this.inSearchResults) {
       if (window.history.state.note) {
         this.note$ = of(window.history.state.snippet);
       } else {
-        this.note$ = this.userInfoStore.getUserInfoOidc$().pipe(
-          switchMap(userInfo => {
-            this.userId = userInfo.sub;
+        this.note$ = this.userId$.pipe(
+          switchMap(userId => {
             this.noteId = this.route.snapshot.paramMap.get('id');
-            return this.personalNotesService.getPersonalNoteById(this.userId, this.noteId);
+            return this.personalNotesService.getPersonalNoteById(userId, this.noteId);
           })
         );
       }
     }
+
   }
 
   editNote(note: Note) {
