@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Bookmark } from './model/bookmark';
 
 import { shareReplay } from 'rxjs/operators';
 
@@ -7,7 +6,6 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Snippet } from './model/snippet';
 import { UsedTag } from './model/used-tag';
 import { HttpClientLocalStorageService, HttpOptions } from './cache/http-client-local-storage.service';
 import { localStorageKeys } from './model/localstorage.cache-keys';

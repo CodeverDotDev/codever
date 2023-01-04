@@ -22,7 +22,7 @@ let findNotes = async function (userId, query, page, limit, searchInclude) {
   return notes;
 }
 
-let getNotesForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude) {
+let getNotesForTagsAndTerms = async function (userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude) {
   let filter = {
     tags:
       {

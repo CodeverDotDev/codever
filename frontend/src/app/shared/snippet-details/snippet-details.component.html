@@ -2,9 +2,9 @@
   <div class="card-body show-hide">
     <div class="header-wrapper">
       <div class="titles">
-        <h4 *ngIf='inlist; else hyperLinkTitle' class="card-title">
+        <h5 *ngIf='inlist; else hyperLinkTitle' class="card-title">
              <span *ngIf="snippet.public; else linkToPrivateSnippet">
-                <i class="fas fa-code fa-xs mr-2 " title="Public snippet"  style="color: #6c757d"></i>
+                <i class="fas fa-code fa-xs mr-2" title="Public snippet"  style="color: #6c757d"></i>
                 <a routerLink="/snippets/{{snippet._id}}/details"
                    [innerHtml]="snippet.title | highlight: queryText"></a> </span>
           <ng-template #linkToPrivateSnippet>
@@ -14,7 +14,7 @@
                      [innerHtml]="snippet.title | highlight: queryText"></a>
                 </span>
           </ng-template>
-        </h4>
+        </h5>
         <ng-template #hyperLinkTitle>
           <h4 class="card-title">
             <i *ngIf="snippet.public; else linkToPrivateSnippet" class="fas fa-eye fa-xs mr-1"

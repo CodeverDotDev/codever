@@ -214,8 +214,13 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     note.updatedAt = now;
     note.userId = this.userId;
     this.personalNotesService.createNote(this.userId, note).subscribe(
-      createdNote => {
-        this.navigateToSnippetDetails(createdNote, {})
+      response => {
+        const headers = response.headers;
+        // get the snippet id, which lies in the "location" response header
+        const lastSlashIndex = headers.get('location').lastIndexOf('/');
+        const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
+        note._id = newNoteId;
+        this.navigateToSnippetDetails(note, {})
       }
     );
   }

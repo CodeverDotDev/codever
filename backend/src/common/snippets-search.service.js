@@ -22,7 +22,7 @@ let findSnippets = async function (userId, query, page, limit, searchInclude) {
   return snippets;
 }
 
-let getSnippetsForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchInclude) {
+let getSnippetsForTagsAndTerms = async function (userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude) {
   let filter = {
     tags:
       {
