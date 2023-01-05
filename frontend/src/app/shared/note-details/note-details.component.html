@@ -30,8 +30,9 @@
       </div>
       <div *ngFor="let tag of note.tags" class="btn-group tag-list  mr-2 mt-1">
         <a class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
-           [routerLink]="['/snippets/t', tag]"
-           title="Go to snippets tagged [{{tag}}]"
+           [routerLink]="['/search']"
+           [queryParams]="{q: '[' + tag + '] user:' + (userId$ | async), sd: 'my-notes'}"
+           title="Search my notes tagged [{{tag}}]"
            [innerHtml]="tag | highlight: queryText">
           {{tag}}
         </a>
