@@ -7,7 +7,7 @@ import { AsyncBookmarkListComponent } from './async-bookmark-list/async-bookmark
 import { TagsValidatorDirective } from './directive/tags-validation.directive';
 import { BookmarkTextComponent } from './bookmark-text/bookmark-text.component';
 import { RouterModule } from '@angular/router';
-import { DeleteBookmarkDialogComponent } from './dialog/delete-bookmark-dialog/delete-bookmark-dialog.component';
+import { DeleteResourceDialogComponent } from './dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { LoginRequiredDialogComponent } from './dialog/login-required-dialog/login-required-dialog.component';
 import { SocialShareDialogComponent } from './dialog/social-share-dialog/social-share-dialog.component';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
@@ -78,7 +78,7 @@ import { AsyncNoteListComponent } from './async-note-list/async-note-list.compon
     AsyncSearchResultListComponent,
     BookmarkTextComponent,
     TagsValidatorDirective,
-    DeleteBookmarkDialogComponent,
+    DeleteResourceDialogComponent,
     SocialShareDialogComponent,
     LoginRequiredDialogComponent,
     PlayYoutubeVideoDialogComponent,

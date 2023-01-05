@@ -16,7 +16,7 @@ import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store
 import { UserDataStore } from '../../core/user/userdata.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
-import { DeleteBookmarkDialogComponent } from '../dialog/delete-bookmark-dialog/delete-bookmark-dialog.component';
+import { DeleteResourceDialogComponent } from '../dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { SocialShareDialogComponent } from '../dialog/social-share-dialog/social-share-dialog.component';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { AdminService } from '../../core/admin/admin.service';
@@ -197,11 +197,12 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     dialogConfig.autoFocus = true;
     dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
-      bookmark: bookmark,
-      userData$: this.userData$
+      resourceName: bookmark.name,
+      type: 'bookmark',
+      isPublic: bookmark.public
     };
 
-    const dialogRef = this.deleteDialog.open(DeleteBookmarkDialogComponent, dialogConfig);
+    const dialogRef = this.deleteDialog.open(DeleteResourceDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(
       data => {
         console.log('Dialog output:', data);

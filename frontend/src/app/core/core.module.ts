@@ -36,6 +36,7 @@ import { SystemService } from './cache/system.service';
 import { CookieService } from './cookies/cookie.service';
 import { PersonalSearchService } from './personal-search.service';
 import { PersonalNotesService } from './personal-notes.service';
+import { DeleteNotificationService } from './notifications/delete-notification.service';
 
 
 /**
@@ -89,7 +90,8 @@ import { PersonalNotesService } from './personal-notes.service';
     LocalStorageService,
     HttpClientLocalStorageService,
     SystemService,
-    CookieService
+    CookieService,
+    DeleteNotificationService
   ]
 })
 export class CoreModule {

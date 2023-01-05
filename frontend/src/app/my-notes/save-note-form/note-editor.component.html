@@ -80,5 +80,11 @@
             [disabled]="!noteForm.valid">
       Save note
     </button>
+    <button type="button" class="btn btn-secondary" title="Cancel update" (click)="cancelUpdate()">
+      Cancel <i class="far fa-times-circle"></i>
+    </button>
+    <button *ngIf="isEditMode" type="button" class="btn btn-danger float-right" title="Delete snippet" (click)="openDeleteDialog(note)">
+      Delete <i class="fas fa-trash-alt"></i>
+    </button>
   </form>
 </div>
