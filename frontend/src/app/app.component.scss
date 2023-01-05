@@ -96,6 +96,12 @@ footer {
   color: #495057;
 }
 
+.my-notes-last-search {
+  @extend .last-search-border;
+  background: lightgoldenrodyellow;
+  color: #495057;
+}
+
 .on-top {
   position:relative;
   z-index: 900;
