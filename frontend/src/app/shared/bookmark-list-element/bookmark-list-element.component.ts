@@ -28,6 +28,7 @@ import { AddToHistoryService } from '../../core/user/add-to-history.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
 import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -90,7 +91,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private myBookmarksStore: MyBookmarksStore,
               public addToHistoryService: AddToHistoryService,
               private clipboard: Clipboard,
-              private readonly  scrollStrategyOptions: ScrollStrategyOptions) {
+              private readonly scrollStrategyOptions: ScrollStrategyOptions,
+              private deleteNotificationService: DeleteNotificationService,
+  ) {
     super(loginDialog, userDataWatchedTagsStore);
 
     // START force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
@@ -223,6 +226,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
         if (this.isSearchResultsPage) {
           location.reload();
         }
+        this.deleteNotificationService.showSuccessNotification(`Bookmark "${bookmark.name}" was deleted`);
+      }, () => {
+        this.deleteNotificationService.showErrorNotification(`Bookmark "${bookmark.name}" could not be deleted`);
       });
     } else {
       this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
@@ -238,6 +244,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
             this.navigateToHomePage();
           }
         }
+        this.deleteNotificationService.showSuccessNotification(`Bookmark "${bookmark.name}" was deleted`);
+      }, () => {
+        this.deleteNotificationService.showErrorNotification(`Bookmark "${bookmark.name}" could not be deleted`);
       });
     }
   }
