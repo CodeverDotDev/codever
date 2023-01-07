@@ -1,14 +1,12 @@
-import { Pipe } from '@angular/core';
-import { PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
+import * as DOMPurify from 'dompurify';
 
-import * as showdown from 'showdown';
-
-const converter = new showdown.Converter();
+import { marked } from 'marked';
 
 @Pipe({name: 'md2html'})
 export class Markdown2HtmlPipe implements PipeTransform {
   transform(text: string): string {
-    return converter.makeHtml(text)
+    return DOMPurify.sanitize(marked.parse(text));
   }
 }
 
