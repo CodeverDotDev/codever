@@ -18,7 +18,7 @@ github - https://www.keycloak.org/docs/latest/server_admin/#github
  - twitter (removed)
  - linkedin (removed - until app is created)
  - stackoverflow https://stackapps.com/apps/oauth/view/20327 (done) (todo - change icon)
- - gitlab - https://gitlab.com/groups/codeverland/-/settings/applications/191746 (done)
+ - gitlab - https://gitlab.com/groups/CodeverDotDev/-/settings/applications/191746 (done)
  
 ## Email
 - change email account in keycloak from bookmarks@codepedia.org to codever@codepedia.org 

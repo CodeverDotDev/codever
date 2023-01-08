@@ -44,7 +44,7 @@ describe('Admin API Tests', function () {
         "mongodb"
       ],
       "publishedOn": "2017-11-05",
-      "sourceCodeURL": "https://github.com/CodeverDev/codever",
+      "sourceCodeURL": "https://github.com/CodeverDotDev/codever",
       "description": "Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs",
       "descriptionHtml": "<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>",
       "userId": "some-user-id-for-admin-api-tests",

@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CodeverDev/codever.git"
+    "url": "git+https://github.com/CodeverDotDev/codever.git"
   },
   "keywords": [
     "bookmarks-manager",
@@ -26,9 +26,9 @@
   "author": "Adrian Matei",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CodeverDev/codever/issues"
+    "url": "https://github.com/CodeverDotDev/codever/issues"
   },
-  "homepage": "https://github.com/CodeverDev/codever#readme",
+  "homepage": "https://github.com/CodeverDotDev/codever#readme",
   "devDependencies": {
     "npm-run-all": "^4.1.5"
   },

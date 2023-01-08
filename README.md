@@ -28,7 +28,7 @@ your bookmarks and code snippets. The following helpers and extensions will assi
 ## Public bookmarks
 
 *******************************************************************************************************************************
-Worthy public bookmarks are published regularly on Github at [codeverland/bookmarks](https://github.com/CodeverDev/bookmarks).
+Worthy public bookmarks are published regularly on Github at [CodeverDotDev/bookmarks](https://github.com/CodeverDotDev/bookmarks).
 *******************************************************************************************************************************
 
 ## Setup (development or self hosting)
@@ -162,7 +162,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/CodeverDev/codever/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/CodeverDotDev/codever/tags).
 
 ## Changelog
 
