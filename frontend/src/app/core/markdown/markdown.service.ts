@@ -1,15 +1,14 @@
 import {Injectable} from '@angular/core';
 
-import * as showdown from 'showdown';
+import * as DOMPurify from 'dompurify';
 
-// const showdown = require('showdown');
-const converter = new showdown.Converter();
+import { marked } from 'marked';
 
 @Injectable()
 export class MarkdownService {
   // converter object is not typescript
 
   toHtml(text: string) {
-    return converter.makeHtml(text);
+    return DOMPurify.sanitize(marked.parse(text));
   }
 }

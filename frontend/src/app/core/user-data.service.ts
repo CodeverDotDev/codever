@@ -16,12 +16,11 @@ import { localStorageKeys } from './model/localstorage.cache-keys';
 @Injectable()
 export class UserDataService {
 
-  private usersApiBaseUrl = '';  // URL to web api
+  readonly usersApiBaseUrl = environment.API_URL + '/personal/users';
   private headers = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private httpClient: HttpClient,
               private httpClientLocalStorageService: HttpClientLocalStorageService) {
-    this.usersApiBaseUrl = environment.API_URL + '/personal/users';
   }
 
   createInitialUserData(userData: UserData): Observable<UserData> {

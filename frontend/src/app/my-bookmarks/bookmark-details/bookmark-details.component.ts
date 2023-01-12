@@ -29,7 +29,7 @@ export class BookmarkDetailsComponent implements OnInit {
   ngOnInit() {
     this.popup = this.route.snapshot.queryParamMap.get('popup');
 
-    this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
       this.userData$ = this.userDataStore.getUserData$();
       if (!window.history.state.bookmark) {
         const bookmarkId = this.route.snapshot.paramMap.get('id');

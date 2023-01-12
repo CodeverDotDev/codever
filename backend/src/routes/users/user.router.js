@@ -2,7 +2,8 @@ const express = require('express');
 const usersRouter = express.Router();
 
 const personalBookmarksRouter = require('./bookmarks/personal-bookmarks.router');
-const personalCodeletsRouter = require('./snippets/personal-snippets.router');
+const personalSnippetsRouter = require('./snippets/personal-snippets.router');
+const personalNotesRouter = require('./notes/personal-notes.router');
 
 const Keycloak = require('keycloak-connect');
 
@@ -62,7 +63,8 @@ const uploadBookmarks = multer({
 });
 
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
-usersRouter.use('/:userId/snippets', personalCodeletsRouter);
+usersRouter.use('/:userId/snippets', personalSnippetsRouter);
+usersRouter.use('/:userId/notes', personalNotesRouter);
 
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
@@ -180,7 +182,7 @@ usersRouter.get('/:userId/search-results', keycloak.protect(), async (request, r
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
   const searchText = request.query.q;
   const searchInclude = request.query.include || 'all';
-  const  personalSearchResults = await PersonalSearchService.getPersonalSearchResults(request.params.userId, searchText, page, limit, searchInclude);
+  const personalSearchResults = await PersonalSearchService.getPersonalSearchResults(request.params.userId, searchText, page, limit, searchInclude);
 
   response.send(personalSearchResults);
 });

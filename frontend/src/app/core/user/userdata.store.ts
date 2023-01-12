@@ -17,6 +17,7 @@ import { PersonalBookmarksService } from '../personal-bookmarks.service';
 import { environment } from '../../../environments/environment';
 import { LocalStorageService } from '../cache/local-storage.service';
 import { localStorageKeys } from '../model/localstorage.cache-keys';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,8 @@ export class UserDataStore {
   private userFirstName: string;
 
   // userData is initialized here to avoid some nasty undefined exceptions before the actual data is loaded
-  userData: UserData = {profile: {displayName: 'changeMe'}, searches: [], recentSearches: []};
+  // userData: UserData = {profile: {displayName: 'changeMe'}, searches: [], recentSearches: []};
+  userData: UserData;
 
   constructor(private userService: UserDataService,
               private logger: Logger,
@@ -46,7 +48,7 @@ export class UserDataStore {
   ) {
   }
 
-  public loadInitialUserData(userId: string, userFirstName: string, email: string) {
+  public loadInitialUserDataFromDb(userId: string, userFirstName: string, email: string) {
     this.userId = userId;
     this.userFirstName = userFirstName;
     this.userService.getUserData(userId).subscribe(data => {
@@ -379,7 +381,7 @@ export class UserDataStore {
   }
 
   saveRecentSearch(searchText: string, searchDomain: any) {
-    if (this.userId !== undefined) {
+    this.getUserData$().pipe(take(1)).subscribe(userData => {
       const now = new Date();
       const newSearch: Search = {
         text: searchText,
@@ -389,31 +391,24 @@ export class UserDataStore {
         searchDomain: searchDomain,
         count: 1
       }
-      const emptyUserData = Object.keys(this.userData).length === 0 && this.userData.constructor === Object;
-      if (emptyUserData) {
-        this.userData = {
-          userId: this.userId,
-          recentSearches: [newSearch]
-        }
-      } else {
-        const existingSearchIndex = this.userData.searches.findIndex(
-          element => element.searchDomain === searchDomain && element.text.trim().toLowerCase() === searchText.trim().toLowerCase());
 
-        if (existingSearchIndex !== -1) {
-          const existingSearch = this.userData.searches.splice(existingSearchIndex, 1)[0];
-          existingSearch.lastAccessedAt = now;
-          existingSearch.count++;
-          this.userData.searches.unshift(existingSearch);
-        } else {
-          const notSavedSearchesProDomainCount = this.userData.searches.reduce((total, element) => (!element.saved && element.searchDomain === searchDomain ? total + 1 : total), 0);
-          if (notSavedSearchesProDomainCount > environment.SAVED_RECENT_SEARCH_PRO_DOMAIN_SIZE) {
-            this.removeLastSearchNotSavedAndFromDomain(searchDomain);
-          }
-          this.userData.searches.unshift(newSearch);
+      const existingSearchIndex = userData.searches.findIndex(
+        element => element.searchDomain === searchDomain && element.text.trim().toLowerCase() === searchText.trim().toLowerCase());
+
+      if (existingSearchIndex !== -1) {
+        const existingSearch = userData.searches.splice(existingSearchIndex, 1)[0];
+        existingSearch.lastAccessedAt = now;
+        existingSearch.count++;
+        userData.searches.unshift(existingSearch);
+      } else {
+        const notSavedSearchesProDomainCount = userData.searches.reduce((total, element) => (!element.saved && element.searchDomain === searchDomain ? total + 1 : total), 0);
+        if (notSavedSearchesProDomainCount > environment.SAVED_RECENT_SEARCH_PRO_DOMAIN_SIZE) {
+          this.removeLastSearchNotSavedAndFromDomain(searchDomain);
         }
+        userData.searches.unshift(newSearch);
       }
-      this.updateUserData$(this.userData);
-    }
+      this.updateUserData$(userData);
+    });
   }
 
   private removeLastSearchNotSavedAndFromDomain(searchDomain: any) {

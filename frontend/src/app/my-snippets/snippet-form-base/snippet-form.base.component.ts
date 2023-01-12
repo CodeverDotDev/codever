@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { snippet_common_tags } from '../../shared/constants/snippet-common-tags';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Snippet, CodeSnippet } from '../../core/model/snippet';
-import { map, startWith } from 'rxjs/operators';
+import { CodeSnippet, Snippet } from '../../core/model/snippet';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
@@ -62,19 +62,19 @@ export class SnippetFormBaseComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-      this.userId = userInfo.sub;
-      this.suggestedTagsStore.getSuggestedSnippetTags$(this.userId).subscribe(suggestedSnippetTags => {
-
-        this.autocompleteTags = suggestedSnippetTags;
-
-        this.filteredTags = this.tagsControl.valueChanges.pipe(
-          startWith(null),
-          map((tag: string | null) => {
-            return tag ? this.filter(tag) : this.autocompleteTags.slice();
-          })
-        );
-      });
+    this.userInfoStore.getUserInfoOidc$().pipe(
+      switchMap((userInfoOidc) => {
+        this.userId = userInfoOidc.sub;
+        return this.suggestedTagsStore.getSuggestedSnippetTags$(this.userId)
+      })
+    ).subscribe(suggestedSnippetTags => {
+      this.autocompleteTags = suggestedSnippetTags;
+      this.filteredTags = this.tagsControl.valueChanges.pipe(
+        startWith(null),
+        map((tag: string | null) => {
+          return tag ? this.filter(tag) : this.autocompleteTags.slice();
+        })
+      );
     });
   }
 

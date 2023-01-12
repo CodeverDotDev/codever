@@ -5,6 +5,7 @@ import { Logger } from '../logger.service';
 import { ErrorService } from '../error/error.service';
 import { UserInfoService } from './user-info.service';
 import { UserInfoOidc } from '../model/user-info.oidc';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class UserInfoStore {
@@ -19,19 +20,25 @@ export class UserInfoStore {
   ) {
   }
 
-  private loadInitialData() {
-    this.userInfoService.getUserInfo().subscribe(data => {
+  private loadInitialOidcData() {
+    this.userInfoService.getUserInfoOidc().subscribe(data => {
         this._userInfo.next(data);
       }
     );
   }
 
-  public getUserInfo$(): Observable<UserInfoOidc> {
+  public getUserInfoOidc$(): Observable<UserInfoOidc> {
     if (!this.userInfoLoaded) {
-      this.loadInitialData();
+      this.loadInitialOidcData();
       this.userInfoLoaded = true;
     }
     return this._userInfo.asObservable();
+  }
+
+  public getUserId$(): Observable<string> {
+    return this.getUserInfoOidc$().pipe(
+      map(userInfo => userInfo.sub)
+    )
   }
 
 }

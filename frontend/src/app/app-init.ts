@@ -12,8 +12,8 @@ export function initializer(keycloak: KeycloakService, userInfoStore: UserInfoSt
         _systemService.checkVersion();
         keycloak.keycloakEvents$.subscribe(event => {
           if (event.type === KeycloakEventType.OnAuthSuccess) {
-            userInfoStore.getUserInfo$().subscribe(userInfo => {
-              userDataStore.loadInitialUserData(userInfo.sub, userInfo.given_name, userInfo.email);
+            userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
+              userDataStore.loadInitialUserDataFromDb(userInfo.sub, userInfo.given_name, userInfo.email);
               console.log('load initial userInfo');
             });
           }

@@ -101,6 +101,36 @@
 
   <mat-tab>
     <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-code"></i> My Notes</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
+        <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+             class="alert alert-info no-search-results mt-2"
+             role="alert">
+          No results found for <strong>{{this.searchInclude}}</strong> of <em><code>{{searchText}}</code></em>
+          in <strong>My Notes</strong>.
+          <span *ngIf="searchInclude === 'all'">
+            Try a more permissive search (use <strong>any</strong> of the terms) -
+            <button class="btn btn-outline-primary btn-sm"
+                    (click)="tryMyNotes('any')">
+                <i class="fa fa-search"></i> Search any
+              </button>
+          </span>
+          <br/>
+          {{searchInOtherCategoriesTip}}
+        </div>
+        <app-async-note-list
+          [notes$]="searchResults$"
+          [callerPagination]="callerPaginationSearchResults"
+          [queryText]="searchText">
+        </app-async-note-list>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
       <span class="app-tab-label"><i class="fa fa-bookmark"></i> Public Bookmarks</span>
     </ng-template>
     <ng-template matTabContent>

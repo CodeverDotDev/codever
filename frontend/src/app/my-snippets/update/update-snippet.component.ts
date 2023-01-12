@@ -16,18 +16,18 @@ export class UpdateSnippetComponent implements OnInit {
   userId: string;
 
   constructor(private route: ActivatedRoute,
-              private personalCodeletsService: PersonalSnippetsService,
+              private personalSnippetsService: PersonalSnippetsService,
               private userInfoStore: UserInfoStore) {
 
   }
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
       this.userId = userInfo.sub;
       this.snippet = window.history.state.snippet;
       if (!window.history.state.snippet) {
         this.snippetId = this.route.snapshot.paramMap.get('id');
-        this.personalCodeletsService.getPersonalSnippetById(this.userId, this.snippetId).subscribe(snippet =>
+        this.personalSnippetsService.getPersonalSnippetById(this.userId, this.snippetId).subscribe(snippet =>
           this.snippet = snippet
         );
       }

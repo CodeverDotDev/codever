@@ -1,20 +1,20 @@
 openapi: 3.0.3
 info:
   title: Codever API
-  description: API supporting the [www.codever.land](https://www.codever.land)
+  description: API supporting the [www.codever.land](https://www.codever.dev)
   contact:
     name: Adrian Matei
     url: https://github.com/adrianmatei-me
     email: ama@codepedia.org
   license:
     name: License MIT
-    url: https://github.com/codeverland/codever/LICENSE
+    url: https://github.com/CodeverDotDev/codever/LICENSE
   version: 2.0.0
 
 servers:
   - url: http://localhost:3000/api
     description: Local server for development
-  - url: https://www.codever.land/api
+  - url: https://www.codever.dev/api
     description: Main (production) server
 
 tags:
@@ -191,7 +191,7 @@ paths:
                   language: en
                   tags: [nodejs, error-handling, expressjs]
                   publishedOn: 2019-12-02,
-                  sourceCodeURL: https://github.com/codeverland/codever-api
+                  sourceCodeURL: https://github.com/CodeverDotDev/codever-api
                   description: Shows how you can make your backend ExpressJS REST API cleaner by using custom error handling middleware. Code snippets of before and after refactoring are presented to make the point
                   descriptionHtml: <p>Shows how you can make your backend ExpressJS REST API cleaner by using custom error handling middleware. Code snippets of before and after refactoring are presented to make the point</p>
                   userId: 4c617f2b-2bad-498b-a9c6-4e9a8c303798

@@ -12,13 +12,12 @@ import { localStorageKeys } from '../model/localstorage.cache-keys';
 @Injectable()
 export class UserInfoService {
 
-  private usersInfoEndpoint = '';  // URL to web api
+  readonly usersInfoEndpoint = environment.keycloak.url + '/realms/' + environment.keycloak.realm + '/protocol/openid-connect/userinfo';
 
   constructor(private httpClientLocalStorageService: HttpClientLocalStorageService) {
-    this.usersInfoEndpoint = environment.keycloak.url + '/realms/' + environment.keycloak.realm + '/protocol/openid-connect/userinfo';
   }
 
-  getUserInfo(): Observable<UserInfoOidc> {
+  getUserInfoOidc(): Observable<UserInfoOidc> {
     const options: HttpOptions = {
       url: this.usersInfoEndpoint,
       key: localStorageKeys.userInfoOidc,

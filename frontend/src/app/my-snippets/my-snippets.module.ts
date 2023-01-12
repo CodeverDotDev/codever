@@ -8,7 +8,6 @@ import { UpdateSnippetComponent } from './update/update-snippet.component';
 import { AuthGuard } from '../core/auth/auth-guard.service';
 import { SnippetDetailsPageComponent } from './snippet-details-page/snippet-details-page.component';
 import { HIGHLIGHT_OPTIONS, HighlightModule, HighlightOptions } from 'ngx-highlightjs';
-import { DeleteSnippetDialogComponent } from './delete-snippet-dialog/delete-snippet-dialog.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
@@ -50,7 +49,6 @@ const snippetRoutes: Routes = [
         CreateSnippetComponent,
         UpdateSnippetComponent,
         SnippetDetailsPageComponent,
-        DeleteSnippetDialogComponent,
         CopyToMineSnippetComponent,
         SnippetFormBaseComponent
     ],
