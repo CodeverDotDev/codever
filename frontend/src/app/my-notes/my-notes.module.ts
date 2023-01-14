@@ -15,6 +15,7 @@ import { UpdatePersonalNoteComponent } from './update-note/update-personal-note.
 import { NoteEditorComponent } from './save-note-form/note-editor.component';
 import { NoteDetailsComponent } from '../shared/note-details/note-details.component';
 import { PersonalNotesService } from '../core/personal-notes.service';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 const snippetRoutes: Routes = [
   {
@@ -50,7 +51,8 @@ const snippetRoutes: Routes = [
     MatIconModule,
     MatDialogModule,
     MatTooltipModule,
-    HighlightModule
+    HighlightModule,
+    MatButtonToggleModule
   ],
   exports: [
     NoteDetailsComponent

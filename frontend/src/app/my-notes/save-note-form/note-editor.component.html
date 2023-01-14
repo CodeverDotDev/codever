@@ -1,8 +1,12 @@
 <div class="navigation-space-buffer rounded shadow-sm note-bg">
   <form [formGroup]="noteForm" novalidate (ngSubmit)="saveNote(noteForm.value)">
     <div class="form-group pb-1">
-      <label for="title" class="space-btw-wrapper"><span>Title*</span> <span><i
-        class="fa fa-sticky-note fa-lg"></i></span></label>
+      <label for="title" class="space-btw-wrapper"><span>Title*</span>
+        <span>
+          <i *ngIf="template === 'note'" class="fa fa-sticky-note fa-lg"></i>
+          <i *ngIf="template === 'checklist'" class="fas fa-tasks fa-lg"></i>
+        </span>
+      </label>
       <input type="text" class="form-control" id="title"
              required
              formControlName="title"
@@ -11,6 +15,68 @@
            class="alert alert-danger">
         Title is required
       </div>
+
+      <section class="mt-3">
+        <h6>Template*</h6>
+        <mat-button-toggle-group aria-label="Font Style" value="note" formControlName="template">
+          <mat-button-toggle value="note" title="Use note template" (change)="onTemplateValChange($event.value)">Note <i class="fa fa-sticky-note"></i></mat-button-toggle>
+          <mat-button-toggle value="checklist" title="Use checklist template" (change)="onTemplateValChange($event.value)">Checklist <i class="fas fa-tasks fa-lg"></i></mat-button-toggle>
+        </mat-button-toggle-group> <span class="ml-1">Checklist coming soon</span>
+      </section>
+
+      <div #noteMain class="note-main">
+        <ng-container
+          [ngTemplateOutlet]="template === 'checklist' ? checkListTemplate : noteTemplate"
+        >
+<!--        <ng-container-->
+<!--          [ngTemplateOutlet]="false ? checkListTemplate : noteTemplate"-->
+<!--        >-->
+        </ng-container>
+      </div>
+      <ng-template #noteTemplate>
+        <div class="form-group mt-4">
+          <label for="content" style="width: 100%">Content* - <i class="fab fa-markdown"></i> <a
+            class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank"><span
+            class="ml-1">Markdown is
+          supported</span></a></label>
+          <textarea class="form-control"
+                    id="content"
+                    formControlName="content"
+                    placeholder="Note text (searchable)"
+                    style="height: 300px">
+      </textarea>
+          <div class="description-chars-counter">{{content.value ? content.value.length : 0}} / 5000</div>
+          <div class="clear"></div>
+          <div *ngIf="content.invalid && (content.dirty || content.touched)" class="alert alert-danger">
+            <div *ngIf="content.errors.tooManyLines">
+              Your description has {{content.errors.tooManyLines.value}} lines. Maximum 300 lines are allowed.
+            </div>
+            <div *ngIf="content.errors.tooManyCharacters">
+              Your description has {{content.errors.tooManyCharacters.value}} characters. Maximum 5000 characters are
+              allowed.
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template #checkListTemplate>
+        <table class="table table-bordered" formArrayName="quantities">
+          <tr>
+            <th colspan="2">Add Multiple lis items:</th>
+            <th width="150px"><button type="button" (click)="addChecklistItem()" class="btn btn-primary">Add More</button></th>
+          </tr>
+          <tr *ngFor="let quantity of checklistItems().controls; let i=index" [formGroupName]="i">
+            <td>
+              List item :
+              <input type="text" formControlName="qty" class="form-control">
+            </td>
+            <td>
+              <button (click)="removeChecklistItem(i)" class="btn btn-danger">Remove</button>
+            </td>
+          </tr>
+        </table>
+      </ng-template>
+
       <!-- tags -->
       <div id="tags" class="mb-3 border rounded p-2 mt-3">
         <mat-form-field class="full-width">
@@ -51,30 +117,8 @@
         </mat-error>
       </span>
       </div>
-
-      <div class="form-group">
-        <label for="content" style="width: 100%">Content* - <i class="fab fa-markdown"></i> <a
-          class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank"><span class="ml-1">Markdown is
-          supported</span></a></label>
-        <textarea class="form-control"
-                  id="content"
-                  formControlName="content"
-                  placeholder="Note text (searchable)"
-                  style="height: 300px">
-      </textarea>
-        <div class="description-chars-counter">{{content.value ? content.value.length : 0}} / 5000</div>
-        <div class="clear"></div>
-        <div *ngIf="content.invalid && (content.dirty || content.touched)" class="alert alert-danger">
-          <div *ngIf="content.errors.tooManyLines">
-            Your description has {{content.errors.tooManyLines.value}} lines. Maximum 300 lines are allowed.
-          </div>
-          <div *ngIf="content.errors.tooManyCharacters">
-            Your description has {{content.errors.tooManyCharacters.value}} characters. Maximum 5000 characters are
-            allowed.
-          </div>
-        </div>
-      </div>
     </div>
+
 
     <button type="submit" class="btn btn-primary mr-2"
             [disabled]="!noteForm.valid">
@@ -83,7 +127,8 @@
     <button type="button" class="btn btn-secondary" title="Cancel update" (click)="cancelUpdate()">
       Cancel <i class="far fa-times-circle"></i>
     </button>
-    <button *ngIf="isEditMode" type="button" class="btn btn-danger float-right" title="Delete snippet" (click)="openDeleteDialog(note)">
+    <button *ngIf="isEditMode" type="button" class="btn btn-danger float-right" title="Delete snippet"
+            (click)="openDeleteDialog(note)">
       Delete <i class="fas fa-trash-alt"></i>
     </button>
   </form>

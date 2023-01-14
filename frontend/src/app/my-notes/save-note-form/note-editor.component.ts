@@ -67,6 +67,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   title; // value of "title" query parameter if present
 
+  template = 'note';
+
   @Input()
   isEditMode = false;
 
@@ -136,11 +138,33 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   buildForm(): void {
     this.noteForm = this.formBuilder.group({
       title: [this.title ? this.title : '', Validators.required],
+      template: 'note',
       reference: '',
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       content: ['', textSizeValidator(5000, 500)],
+      checklistItems: this.formBuilder.array([])
     });
   }
+
+  checklistItems(): FormArray {
+    return this.noteForm.get('checklistItems') as FormArray;
+  }
+
+  newChecklistItem(): FormGroup {
+    return this.formBuilder.group({
+      item: ''
+    });
+  }
+
+  addChecklistItem() {
+    this.checklistItems().push(this.newChecklistItem());
+  }
+
+  removeChecklistItem(i: number) {
+    this.checklistItems().removeAt(i);
+  }
+
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.noteForm) {
@@ -151,6 +175,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         title: this.note.title,
         content: this.note.content,
         reference: this.note.reference,
+        template: this.note.template || 'note',
       });
       for (let i = 0; i < this.note.tags.length; i++) {
         const formTags = this.noteForm.get('tags') as FormArray;
@@ -314,6 +339,10 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         this.deleteNotificationService.showErrorNotification('Note could not be deleted. Please try again later!');
       }
     );
+  }
+
+  onTemplateValChange(value: any) {
+    this.template = value;
   }
 }
 

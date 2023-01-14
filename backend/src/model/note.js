@@ -7,7 +7,7 @@ const noteSchema = new Schema({
     content: String,
     reference: String,
     tags: [String],
-    public: Boolean,
+    template: {type:String, enum: ['note', 'checklist']},
     userId: {type: String, ref:'User'},
     __v: { type: Number, select: false}
 },
