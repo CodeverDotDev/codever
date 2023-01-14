@@ -1,7 +1,6 @@
-<div *ngIf="(snippet$ | async) as snippet" class="mt-3">
-
+<div class="mt-3">
   <app-snippet-details
-    [snippet$]="snippet$"
+    [snippet]="snippet$ | async"
     [queryText]="queryText">
   </app-snippet-details>
 

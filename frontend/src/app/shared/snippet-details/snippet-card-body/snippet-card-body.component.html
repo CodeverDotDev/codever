@@ -22,7 +22,7 @@
     </div>
     <button (click)="showMoreText = !showMoreText"
             [ngClass]="{show_less_button: showMoreText, show_more_button: !showMoreText}"
-            class="toggle-show-more-button"></button>
+            class="toggle-show-more-button" title="Show more"></button>
   </div>
   <ng-template #wholeText>
     <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast=last">

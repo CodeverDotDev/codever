@@ -15,7 +15,7 @@
     >
     </app-bookmark-list-element>
     <app-snippet-details *ngIf="isSnippet(searchResult)"
-                         [snippet$]="of(searchResult)"
+                         [snippet]="searchResult"
                          [queryText]="queryText"
                          [inlist]="true"
     ></app-snippet-details>

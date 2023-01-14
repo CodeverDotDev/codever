@@ -45,6 +45,7 @@ export class PublicSnippetsService {
   getPublicSnippetById(snippetId: string): Observable<Snippet> {
     return this.httpClient
       .get<Snippet>(`${this.publicSnippetsApiBaseUrl}/${snippetId}`).pipe(
+        shareReplay(1),
         catchError(() => {
           this.router.navigate(['/404-snippet'],
             {

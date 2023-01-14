@@ -4,6 +4,10 @@ import { Snippet } from '../../core/model/snippet';
 import { ActivatedRoute } from '@angular/router';
 import { PersonalSnippetsService } from '../../core/personal-snippets.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
+import { last, map, mergeMap, switchMap, take, withLatestFrom } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { Meta, Title } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-snippet-details-page',
@@ -13,8 +17,6 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 export class SnippetDetailsPageComponent implements OnInit {
 
   snippet$: Observable<Snippet>;
-  snippetId: string;
-  userId: string;
 
   popup: string;
 
@@ -24,22 +26,30 @@ export class SnippetDetailsPageComponent implements OnInit {
   @Input()
   showCloseWindowBtn: boolean;
 
+  environment = environment;
+
+  snippetTitle: string;
+
   constructor(
     private personalSnippetsService: PersonalSnippetsService,
     private userInfoStore: UserInfoStore,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    ) {
 
   }
 
   ngOnInit(): void {
     this.popup = this.route.snapshot.queryParamMap.get('popup');
-    this.snippet$ = of(window.history.state.snippet);
-    if (!window.history.state.snippet) {
-      this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
-        this.userId = userInfo.sub;
-        this.snippetId = this.route.snapshot.paramMap.get('id');
-        this.snippet$ = this.personalSnippetsService.getPersonalSnippetById(this.userId, this.snippetId);
-      });
+    if (window.history.state.snippet) {
+      this.snippetTitle = window.history.state.snippet.title;
+      this.snippet$ = of(window.history.state.snippet);
+    } else {
+      this.snippet$ = combineLatest([this.userInfoStore.getUserId$(), this.route.paramMap] ).pipe(
+        take(1),
+        switchMap(([userId, paramMap]) => {
+          return this.personalSnippetsService.getPersonalSnippetById(userId, paramMap.get('id'));
+        })
+      );
     }
   }
 

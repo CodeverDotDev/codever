@@ -23,7 +23,7 @@ export class UserInfoService {
       key: localStorageKeys.userInfoOidc,
       cacheHours: 24,
       isSensitive: true
-    }; // cache it for a day
+    }; // cache it for a day, it gets cleaned when user logs out
 
     return this.httpClientLocalStorageService
       .get<UserInfoOidc>(options)
