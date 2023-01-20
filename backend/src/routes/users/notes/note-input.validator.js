@@ -17,9 +17,12 @@ let validateNoteInput = function(userId, note) {
     validationErrorMessages.push('Missing required attribute - title');
   }
 
-  if (!note.content) {
-    validationErrorMessages.push('Missing required attribute - content');
+  if(note.template === 'note') {
+    if (!note.content) {
+      validationErrorMessages.push('Missing required attribute - content');
+    }
   }
+
 
   if(validationErrorMessages.length > 0){
     throw new ValidationError('The snippet you submitted is not valid', validationErrorMessages);

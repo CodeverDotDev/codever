@@ -60,15 +60,15 @@
       </ng-template>
 
       <ng-template #checkListTemplate>
-        <table class="table table-bordered" formArrayName="quantities">
+        <table class="table table-bordered" formArrayName="checklistItems">
           <tr>
             <th colspan="2">Add Multiple lis items:</th>
             <th width="150px"><button type="button" (click)="addChecklistItem()" class="btn btn-primary">Add More</button></th>
           </tr>
-          <tr *ngFor="let quantity of checklistItems().controls; let i=index" [formGroupName]="i">
+          <tr *ngFor="let checklistItem of checklistItems().controls; let i=index" [formGroupName]="i">
             <td>
               List item :
-              <input type="text" formControlName="qty" class="form-control">
+              <input type="text" formControlName="checklistItem" class="form-control">
             </td>
             <td>
               <button (click)="removeChecklistItem(i)" class="btn btn-danger">Remove</button>
