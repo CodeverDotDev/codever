@@ -68,7 +68,7 @@
           <tr *ngFor="let checklistItem of checklistItems().controls; let i=index" [formGroupName]="i">
             <td>
               List item :
-              <input type="text" formControlName="checklistItem" class="form-control">
+              <input type="text" formControlName="text" class="form-control">
             </td>
             <td>
               <button (click)="removeChecklistItem(i)" class="btn btn-danger">Remove</button>

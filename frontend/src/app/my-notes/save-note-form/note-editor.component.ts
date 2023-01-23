@@ -152,7 +152,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   newChecklistItem(): FormGroup {
     return this.formBuilder.group({
-      checklistItem: ''
+      text: ''
     });
   }
 
