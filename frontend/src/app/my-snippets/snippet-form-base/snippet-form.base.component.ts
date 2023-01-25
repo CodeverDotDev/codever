@@ -158,6 +158,7 @@ export class SnippetFormBaseComponent implements OnInit {
 
   createSnippet(snippet: Snippet, copyToMine: boolean, popup: any) {
     snippet.userId = this.userId;
+    snippet.shareableId = undefined;
     const now = new Date();
     snippet.lastAccessedAt = now;
     if (copyToMine) {

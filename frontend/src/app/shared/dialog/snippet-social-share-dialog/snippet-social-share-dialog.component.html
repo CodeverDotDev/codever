@@ -1,0 +1,14 @@
+<ng-container *ngIf="snippet.public else privateSnippet">
+  <h2 mat-dialog-title>Share <b>public</b> snippet</h2>
+  <app-snippet-social-share-dialog-content [snippet]="snippet" [shareableUrl]="environment.HOST + '/snippets/' + snippet._id">
+  </app-snippet-social-share-dialog-content>
+</ng-container>
+<ng-template #privateSnippet>
+  <h2 mat-dialog-title><i class="fas fa-eye-slash"></i> Share <b>private</b> snippet</h2>
+  <app-snippet-social-share-dialog-content *ngIf="(shareableId$ | async)?.shareableId as shareableId" [snippet]="snippet" [shareableUrl]="environment.HOST + '/snippets/shared/' + shareableId">
+  </app-snippet-social-share-dialog-content>
+</ng-template>
+
+<mat-dialog-actions class="app-dialog-actions" align="end">
+  <button type="button" class="btn btn-primary" (click)="close()">Close</button>
+</mat-dialog-actions>

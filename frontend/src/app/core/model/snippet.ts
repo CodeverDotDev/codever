@@ -1,5 +1,6 @@
 export interface Snippet {
   _id?: string;
+  shareableId?: string;
   type: string; // should always by 'snippet'
   title: string;
   codeSnippets: CodeSnippet[];

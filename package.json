@@ -1,7 +1,7 @@
 {
   "name": "Codever",
-  "version": "7.1.2",
-  "description": "Codever - bookmarks and snippets manager for developers & co",
+  "version": "7.2.0",
+  "description": "Codever - bookmarks, snippets and notes manager for developers & co",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "frontend": "cd frontend && npm start",

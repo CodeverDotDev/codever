@@ -97,4 +97,10 @@ export class PersonalSnippetsService {
     return this.httpClient.get<Snippet[]>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets/export`)
       .pipe(shareReplay(1));
   }
+
+  createOrGetShareableId(userId: string, snippetId: string): Observable<any> {
+    return this.httpClient
+      .get<string>(`${this.personalSnippetsApiBaseUrl}/${userId}/snippets/shareable/${snippetId}`)
+      .pipe(shareReplay(1));
+  }
 }

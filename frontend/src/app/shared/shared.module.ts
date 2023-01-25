@@ -46,6 +46,12 @@ import { NoteDetailsComponent } from './note-details/note-details.component';
 import { NoteContentComponent } from './note-details/note-card-body/note-content.component';
 import { AsyncNoteListComponent } from './async-note-list/async-note-list.component';
 import { MarkedImageWidthDirective } from './directive/marked-image-width.directive';
+import {
+  SnippetSocialShareDialogComponent
+} from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
+import {
+  SnippetSocialShareDialogContentComponent
+} from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
 
 
 /**
@@ -82,6 +88,8 @@ import { MarkedImageWidthDirective } from './directive/marked-image-width.direct
     MarkedImageWidthDirective,
     DeleteResourceDialogComponent,
     SocialShareDialogComponent,
+    SnippetSocialShareDialogComponent,
+    SnippetSocialShareDialogContentComponent,
     LoginRequiredDialogComponent,
     PlayYoutubeVideoDialogComponent,
     BackupBookmarksDialogComponent,

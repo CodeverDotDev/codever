@@ -66,6 +66,16 @@ personalSnippetsRouter.get('/export', keycloak.protect(), async (request, respon
   response.send(snippets);
 });
 
+/* GET sharableId for bookmark */
+personalSnippetsRouter.get('/shareable/:snippetId', keycloak.protect(), async (request, response) => {
+  UserIdValidator.validateUserId(request);
+
+  const {userId, snippetId} = request.params;
+  const shareableId = await PersonalSnippetsService.getOrCreateShareableId(userId, snippetId);
+  const sharableIdResponse = {"shareableId": shareableId}
+  return response.json(sharableIdResponse);
+});
+
 /**
  * Find personal snippets
  */

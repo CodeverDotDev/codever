@@ -3,14 +3,16 @@ const Snippet = require('../../../model/snippet');
 const NotFoundError = require('../../../error/not-found.error');
 
 const SnippetInputValidator = require('./snippet-input.validator');
+const {v4: uuidv4} = require("uuid");
 
 /**
  * CREATE snippet for user
  */
 let createSnippet = async function (userId, snippetData) {
   SnippetInputValidator.validateSnippetInput(userId, snippetData);
-
+  snippetData.shareableId = undefined;
   const snippet = new Snippet(snippetData);
+
   let newSnippet = await snippet.save();
 
   return newSnippet;
@@ -138,6 +140,35 @@ let getUserSnippetTags = async (userId) => {
   return userTags;
 };
 
+let getOrCreateShareableId = async (userId, snippetId) => {
+  const snippet = await Snippet.findOne(
+    {
+      _id: snippetId,
+      userId: userId
+    }).select('+shareableId');
+
+  if ( snippet ) {
+    if ( snippet.shareableId ) {
+      return snippet.shareableId
+    } else {
+      const uuid = uuidv4();
+      const updatedSnippet = await Snippet.findOneAndUpdate(
+        {
+          _id: snippetId,
+          userId: userId
+        },
+        {
+          $set: {shareableId: uuid}
+        },
+        {new: true}
+      ).select('+shareableId');
+
+      return updatedSnippet.shareableId;
+    }
+  } else {
+    throw new NotFoundError(`Snippet NOT_FOUND the userId: ${userId} AND id: ${snippetId}`);
+  }
+}
 
 module.exports = {
   createSnippet: createSnippet,
@@ -148,4 +179,5 @@ module.exports = {
   getAllMySnippets: getAllMySnippets,
   updateSnippet: updateSnippet,
   deleteSnippetById: deleteSnippetById,
+  getOrCreateShareableId: getOrCreateShareableId
 };
