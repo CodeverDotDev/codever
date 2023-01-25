@@ -87,19 +87,17 @@
           </button>
 
           <button
-            *ngIf="snippet.public && snippet.userId !== observables.userId"
+            *ngIf="snippet.userId !== observables.userId"
             type="button" class="btn btn-light btn-sm"
             (click)="copyToMine(observables.userIsLoggedIn, snippet)"
             title="Save to my snippets">
             <i class="far fa-copy"></i> Copy to mine
           </button>
-          <a
-            *ngIf="snippet.public"
-            type="button" class="btn btn-light btn-sm float-right"
-            href="mailto:?subject={{'Code snippet: ' + snippet.title}}&body={{'https://www.codever.dev/snippets/' + snippet._id + '/details'}}"
-            title="Share link to snippet via Email">
-            <i class="far fa-envelope"></i> Email
-          </a>
+          <button *ngIf="snippet.public || (!snippet.public && snippet.userId === observables.userId)"
+            class="btn btn-light btn-sm float-right"
+            title="Share via email or on social media"
+            (click)="shareSnippetDialog(snippet, observables.userIsLoggedIn, observables.userId)"><i class="fas fa-share"></i> Share
+          </button>
         </div>
 
       </div>

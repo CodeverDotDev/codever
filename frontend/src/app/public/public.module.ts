@@ -28,6 +28,9 @@ import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-deta
 import {
   ShareableBookmarkDetailsComponent
 } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
+import {
+  ShareableSnippetDetailsComponent
+} from './snippets/shareable-snippet-details/shareable-snippet-details.component';
 
 @NgModule({
   declarations : [
@@ -44,7 +47,8 @@ import {
     PublicSnippetsComponent,
     PublicBookmarkDetailsComponent,
     SnippetTaggedComponent,
-    ShareableBookmarkDetailsComponent
+    ShareableBookmarkDetailsComponent,
+    ShareableSnippetDetailsComponent
   ],
   imports: [
     SharedModule,

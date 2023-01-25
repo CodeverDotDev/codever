@@ -10,7 +10,6 @@ import { environment } from 'environments/environment';
 @Component({
   selector: 'app-social-share-dialog',
   templateUrl: './social-share-dialog.component.html',
-  styleUrls: ['./social-share-dialog.component.scss'],
   providers: [DatePipe]
 })
 export class SocialShareDialogComponent implements OnInit {

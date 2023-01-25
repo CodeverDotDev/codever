@@ -13,6 +13,7 @@ const {
  */
 let createBookmark = async function (userId, bookmark) {
   BookmarkInputValidator.validateBookmarkInput(userId, bookmark);
+  bookmark.shareableId = undefined;
 
   await BookmarkInputValidator.verifyPublicBookmarkExistenceOnCreation(bookmark);
 
@@ -201,23 +202,28 @@ let getOrCreateShareableId = async (userId, bookmarkId) => {
       userId: userId
     }).select('+shareableId');
 
-  if ( bookmark.shareableId ) {
-    return bookmark.shareableId
-  } else {
-    const uuid = uuidv4();
-    const updatedBookmark = await Bookmark.findOneAndUpdate(
-      {
-        _id: bookmarkId,
-        userId: userId
-      },
-      {
-        $set: {shareableId: uuid}
-      },
-      {new: true}
-    ).select('+shareableId');
+  if ( bookmark ) {
+    if ( bookmark.shareableId ) {
+      return bookmark.shareableId
+    } else {
+      const uuid = uuidv4();
+      const updatedBookmark = await Bookmark.findOneAndUpdate(
+        {
+          _id: bookmarkId,
+          userId: userId
+        },
+        {
+          $set: {shareableId: uuid}
+        },
+        {new: true}
+      ).select('+shareableId');
 
-    return updatedBookmark.shareableId;
+      return updatedBookmark.shareableId;
+    }
+  } else {
+    throw new NotFoundError(`Bookmark NOT_FOUND the userId: ${userId} AND id: ${bookmarkId}`);
   }
+
 }
 
 

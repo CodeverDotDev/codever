@@ -13,6 +13,7 @@ const CodeSnippetSchema = new Schema({
 });
 
 const snippetSchema = new Schema({
+    shareableId: {type:String, select: false},
     title: {type:String, required: true},
     type: {type:String, required: true, default: 'snippet'},
     codeSnippets: [CodeSnippetSchema],

@@ -45,6 +45,6 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 I use an alias for that
 ```shell
-alias bookmarks-build-aot='cd ~/projects/dev/personal/bookmarks/bookmarks.dev/frontend; rm -rf dist*; nvm use; npm run build:aot'
+alias codever-build-aot='cd ~/projects/dev/personal/codever/codever/frontend; rm -rf dist*; nvm use; npm run build:aot'
 ```
 

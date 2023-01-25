@@ -69,4 +69,8 @@ export class PublicSnippetsService {
       .get<UsedTag[]>(options);
   }
 
+  getSharedSnippetBySharableId(shareableId: string): Observable<Snippet> {
+    return this.httpClient
+      .get<Snippet>(`${this.publicSnippetsApiBaseUrl}/shared/${shareableId}`);
+  }
 }

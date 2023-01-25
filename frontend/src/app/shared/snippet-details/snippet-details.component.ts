@@ -11,6 +11,11 @@ import { Meta, Title } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
+import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
+import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+import {
+  SnippetSocialShareDialogComponent
+} from '../dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
 
 @Component({
   selector: 'app-snippet-details',
@@ -22,7 +27,6 @@ export class SnippetDetailsComponent implements OnInit, OnChanges {
   @Input()
   snippet: Snippet;
 
-  userId: string;
   userId$: Observable<string>;
   userIsLoggedIn$: Observable<boolean>;
 
@@ -34,17 +38,21 @@ export class SnippetDetailsComponent implements OnInit, OnChanges {
   @Input()
   inlist = false; // whether it is displayed in list (search results) or singular (details)
 
+  scrollStrategy: ScrollStrategy;
+
   constructor(
     public loginDialog: MatDialog,
+    private snippetShareDialog: MatDialog,
     private personalCodeletsService: PersonalSnippetsService,
     private publicSnippetsService: PublicSnippetsService,
     private keycloakService: KeycloakService,
     private userInfoStore: UserInfoStore,
     private route: ActivatedRoute,
     private router: Router,
-    private metaService: Meta, private titleService: Title
+    private metaService: Meta, private titleService: Title,
+    private readonly scrollStrategyOptions: ScrollStrategyOptions,
   ) {
-
+    this.scrollStrategy = this.scrollStrategyOptions.noop();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -100,5 +108,23 @@ export class SnippetDetailsComponent implements OnInit, OnChanges {
       const link = [`./my-snippets/${snippet._id}/copy-to-mine`];
       this.router.navigate(link, {state: {snippet: snippet}});
     }
+  }
+
+  shareSnippetDialog(snippet: Snippet, userIsLoggedIn: boolean, userId: string) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.minWidth = 380;
+    dialogConfig.scrollStrategy = this.scrollStrategy;
+    dialogConfig.data = {
+      snippet: snippet,
+      userIsLoggedIn: userIsLoggedIn,
+      userOwnsSnippet: this.snippet.userId === userId,
+      userId: userId
+    };
+
+    this.snippetShareDialog.open(SnippetSocialShareDialogComponent, dialogConfig);
+
   }
 }

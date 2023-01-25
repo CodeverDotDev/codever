@@ -81,7 +81,7 @@ let getMostUsedPublicTagsForSnippets = async function (limit) {
     },
 
     //
-    { $limit : limit }
+    {$limit: limit}
   ]);
 
   const usedTags = aggregatedTags.map(aggregatedTag => {
@@ -94,10 +94,24 @@ let getMostUsedPublicTagsForSnippets = async function (limit) {
   return usedTags;
 }
 
+/* GET snippet of user by shareableId */
+let getSnippetBySharableId = async (shareableId) => {
+  const snippet = await Snippet.findOne({
+    shareableId: shareableId
+  }).select('+shareableId');
+
+  if ( !snippet ) {
+    throw new NotFoundError(`Snippet NOT_FOUND for shareableId: ${shareableId}`);
+  } else {
+    return snippet;
+  }
+};
+
 
 module.exports = {
   getSnippetById: getSnippetById,
   getLatestPublicSnippets: getLatestPublicSnippets,
   getPublicSnippetsForTag: getPublicSnippetsForTag,
-  getMostUsedPublicTagsForSnippets: getMostUsedPublicTagsForSnippets
+  getMostUsedPublicTagsForSnippets: getMostUsedPublicTagsForSnippets,
+  getSnippetBySharableId: getSnippetBySharableId
 };

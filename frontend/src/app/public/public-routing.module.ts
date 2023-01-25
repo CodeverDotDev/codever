@@ -16,6 +16,9 @@ import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-deta
 import {
   ShareableBookmarkDetailsComponent
 } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
+import {
+  ShareableSnippetDetailsComponent
+} from './snippets/shareable-snippet-details/shareable-snippet-details.component';
 
 const publicRoutes: Routes = [
   {
@@ -114,6 +117,10 @@ const publicRoutes: Routes = [
   {
     path: 'snippets/t/:tag',
     component: SnippetTaggedComponent
+  },
+  {
+    path: 'snippets/shared/:shareableId',
+    component: ShareableSnippetDetailsComponent
   },
   {
     path: 'snippets/:id',

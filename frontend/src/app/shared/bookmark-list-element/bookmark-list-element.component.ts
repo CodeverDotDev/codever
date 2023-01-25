@@ -76,6 +76,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
               private playYoutubeDialog: MatDialog,
               public loginDialog: MatDialog,
               private deleteDialog: MatDialog,
+              private shareDialog: MatDialog,
               public keycloakService: KeycloakService,
               private userInfoStore: UserInfoStore,
               private userDataHistoryStore: UserDataHistoryStore,
@@ -270,13 +271,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
       userId: this.userId
     };
 
-    const dialogRef = this.deleteDialog.open(SocialShareDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        if (data === 'DELETE_CONFIRMED') {
-        }
-      }
-    );
+    this.shareDialog.open(SocialShareDialogComponent, dialogConfig);
   }
 
   editBookmark(bookmark: Bookmark): void {
