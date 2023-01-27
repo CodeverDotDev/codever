@@ -101,8 +101,10 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
             this.searchResults(this.searchText, SearchDomain.PUBLIC_SNIPPETS, 'all');
             break;
           }
+          default : {
+            this.searchPublicBookmarks_when_SearchText_but_No_SearchDomain();
+          }
         }
-        this.searchPublicBookmarks_when_SearchText_but_No_SearchDomain();
       }
     });
 
