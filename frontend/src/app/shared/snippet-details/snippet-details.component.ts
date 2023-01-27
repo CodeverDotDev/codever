@@ -28,7 +28,7 @@ export class SnippetDetailsComponent implements OnInit, OnChanges {
   snippet: Snippet;
 
   userId$: Observable<string>;
-  userIsLoggedIn$: Observable<boolean>;
+  userIsLoggedIn = false;
 
   source: string; // "public" or "personal"
 
@@ -64,8 +64,13 @@ export class SnippetDetailsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.userIsLoggedIn$ = fromPromise(this.keycloakService.isLoggedIn());
-    this.userId$ = this.userInfoStore.getUserId$();
+    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+      if (isLoggedIn) {
+        this.userIsLoggedIn = true;
+        this.userId$ = this.userInfoStore.getUserId$();
+      }
+    });
+    // this.userId$ = this.userInfoStore.getUserId$();
 
     this.metaService.updateTag({
       property: 'og:image',
