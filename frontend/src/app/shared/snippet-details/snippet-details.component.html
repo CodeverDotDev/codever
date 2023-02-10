@@ -53,8 +53,7 @@
 
   <ng-container *ngIf="
   {
-    userId: userId$ | async,
-    userIsLoggedIn: userIsLoggedIn$ | async
+    userId: userId$ | async
   } as observables">
 
     <div class="card-footer" style="padding-right: 0.3rem">
@@ -89,14 +88,14 @@
           <button
             *ngIf="snippet.userId !== observables.userId"
             type="button" class="btn btn-light btn-sm"
-            (click)="copyToMine(observables.userIsLoggedIn, snippet)"
+            (click)="copyToMine(userIsLoggedIn, snippet)"
             title="Save to my snippets">
             <i class="far fa-copy"></i> Copy to mine
           </button>
           <button *ngIf="snippet.public || (!snippet.public && snippet.userId === observables.userId)"
             class="btn btn-light btn-sm float-right"
             title="Share via email or on social media"
-            (click)="shareSnippetDialog(snippet, observables.userIsLoggedIn, observables.userId)"><i class="fas fa-share"></i> Share
+            (click)="shareSnippetDialog(snippet, userIsLoggedIn, observables.userId)"><i class="fas fa-share"></i> Share
           </button>
         </div>
 

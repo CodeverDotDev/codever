@@ -8,7 +8,9 @@
       <span *ngIf="note.reference"><strong>Ref</strong> -
         <span
           *ngIf="note.reference.startsWith('http:') || note.reference.startsWith('https:'); else justText">
-          <a href="{{note.reference}}" target="_blank">{{note.reference}}</a>
+          <a href="{{note.reference}}" target="_blank">
+            {{ note.reference.length > 55 ? note.reference.substring(0, 55) + '...' :note.reference }}
+          </a>
           <sup class="ml-1"><i class="fas fa-external-link-alt"></i></sup>
         </span>
         <ng-template #justText>

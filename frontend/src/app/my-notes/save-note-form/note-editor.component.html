@@ -76,6 +76,15 @@
       </div>
     </div>
 
+    <div class="form-group pb-2">
+      <label for="reference">Reference</label>
+      <input type="url"
+             class="form-control"
+             id="reference"
+             formControlName="reference"
+             placeholder='Optional reference (web url, project, topic etc.)'>
+    </div>
+
     <button type="submit" class="btn btn-primary mr-2"
             [disabled]="!noteForm.valid">
       Save note
