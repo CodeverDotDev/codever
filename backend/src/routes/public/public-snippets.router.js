@@ -6,7 +6,6 @@ const SnippetsSearchService = require('../../common/snippets-search.service');
 const PublicSnippetsService = require('./public-snippets.service');
 
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
-const PublicBookmarksService = require("./public-bookmarks.service");
 
 /**
  * Get snippet by shareableId

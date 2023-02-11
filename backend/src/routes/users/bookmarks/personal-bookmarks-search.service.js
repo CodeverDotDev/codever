@@ -1,14 +1,14 @@
 const Bookmark = require('../../../model/bookmark');
-const bookmarksSearchHelper = require('../../../common/bookmarks-search.helper');
+const searchUtils = require('../../../common/search.utils');
 
 let findPersonalBookmarks = async function (userId, query, page, limit, searchInclude) {
   //split in text and tags
-  const searchedTermsAndTags = bookmarksSearchHelper.splitSearchQuery(query);
+  const searchedTermsAndTags = searchUtils.splitSearchQuery(query);
   let searchedTerms = searchedTermsAndTags.terms;
   const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
 
-  const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
+  const {specialSearchFilters, nonSpecialSearchTerms} = searchUtils.extractSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
     bookmarks = await getPersonalBookmarksForTagsAndTerms( userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude);
@@ -34,7 +34,7 @@ let getPersonalBookmarksForTagsAndTerms = async function (userId, searchedTags, 
     if(searchInclude === 'any') {
       filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
     }
   }
 
@@ -63,7 +63,7 @@ let getPersonalBookmarksForSearchedTerms = async function ( userId, nonSpecialSe
     if(searchInclude === 'any') {
       filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
     }
   }
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);

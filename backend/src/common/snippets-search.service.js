@@ -1,15 +1,15 @@
 const Snippet = require('../model/snippet');
 
-const bookmarksSearchHelper = require('./bookmarks-search.helper');
+const searchUtils = require('./search.utils');
 
 let findSnippets = async function (userId, query, page, limit, searchInclude) {
   //split in text and tags
-  const searchedTermsAndTags = bookmarksSearchHelper.splitSearchQuery(query);
+  const searchedTermsAndTags = searchUtils.splitSearchQuery(query);
   let searchedTerms = searchedTermsAndTags.terms;
   const searchedTags = searchedTermsAndTags.tags;
   let snippets = [];
 
-  const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
+  const {specialSearchFilters, nonSpecialSearchTerms} = searchUtils.extractSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
     snippets = await getSnippetsForTagsAndTerms(userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude);
@@ -39,7 +39,7 @@ let getSnippetsForTagsAndTerms = async function (userId, searchedTags, nonSpecia
     if ( searchInclude === 'any' ) {
       filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
     }
   }
 
@@ -74,7 +74,7 @@ let getSnippetsForSearchedTerms = async function (userId, nonSpecialSearchTerms,
     if ( searchInclude === 'any' ) {
       filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
     }
   }
 
@@ -124,7 +124,6 @@ let getSnippetsForSearchedTags = async function (userId, searchedTags, page, lim
 let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
   if ( specialSearchFilters.userId ) {
     filter.userId = specialSearchFilters.userId;
-    filter.public = true;
   } else if ( specialSearchFilters.privateOnly ) {
     filter.public = false;
   }

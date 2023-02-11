@@ -98,8 +98,7 @@
         </ng-template>
       </div>
       <div *ngFor="let tag of bookmark.tags" class="btn-group tag-list  mr-2 mt-1">
-
-        <a *ngIf="bookmark.public; else linkToMyTagged" class="btn btn-secondary btn-sm"
+        <a *ngIf="bookmark.public && bookmark.userId !== userId; else linkToMyTagged" class="btn btn-secondary btn-sm"
            [routerLink]="['/bookmarks/t', tag]"
            title="Go to public bookmarks tagged {{tag}}"
            [innerHtml]="tag | highlight: filterText | highlight: queryText">
@@ -108,7 +107,7 @@
         <ng-template #linkToMyTagged>
           <a class="btn btn-secondary btn-sm"
              [routerLink]="['/search']"
-             [queryParams]="{q: '[' + tag + '] user:' + userId, sd: 'my-bookmarks'}"
+             [queryParams]="{q: '[' + tag + ']', sd: 'my-bookmarks'}"
              title="Search my bookmarks tagged {{tag}}"
              [innerHtml]="tag | highlight: filterText | highlight: queryText">
             {{tag}}
@@ -142,18 +141,20 @@
             <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore tag
             </a>
           </ng-template>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item"
-             [routerLink]="['/tagged', tag]"
-             title='Public bookmarks tagged "{{tag}}"'>
-            <i class="fas fa-tag"></i> Public
-          </a>
-          <a *ngIf="userIsLoggedIn" class="dropdown-item"
-             [routerLink]="['/search']"
-             [queryParams]="{q: '[' + tag + '] user:' + userId, sd: 'my-bookmarks'}"
-             title='Search my bookmarks tagged "{{tag}}"'>
-            <i class="fas fa-tag"></i> Personal
-          </a>
+          <ng-container *ngIf="userIsLoggedIn">
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item"
+               [routerLink]="['/tagged', tag]"
+               title='Public bookmarks tagged "{{tag}}"'>
+              <i class="fas fa-tag"></i> Public
+            </a>
+            <a class="dropdown-item"
+               [routerLink]="['/search']"
+               [queryParams]="{q: '[' + tag + ']', sd: 'my-bookmarks'}"
+               title='Search my bookmarks tagged "{{tag}}"'>
+              <i class="fas fa-tag"></i> Personal
+            </a>
+          </ng-container>
         </div>
       </div>
 

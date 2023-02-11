@@ -52,7 +52,6 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
   } else {
     next();
   }
-
 });
 
 /* GET bookmark of user by location*/

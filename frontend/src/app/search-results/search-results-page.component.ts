@@ -48,7 +48,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
 
   searchTriggeredSubscription: any;
 
-  searchInOtherCategoriesTip = 'You can also try looking in other sections 👆👆 OR ';
+  searchInOtherCategoriesTip = 'You can also try looking in other sections 👆👆 OR find elsewhere 👇👇';
 
   constructor(private route: ActivatedRoute,
               private router: Router,

@@ -3,7 +3,7 @@ const personalNotesRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
 const PersonalNotesService = require('./personal-notes.service');
-const NotesSearchService = require('../../../common/notes-search.service');
+const NotesSearchService = require('./notes-search.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
 

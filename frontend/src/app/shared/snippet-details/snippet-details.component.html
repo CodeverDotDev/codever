@@ -69,12 +69,22 @@
           </ng-template>
         </div>
         <div *ngFor="let tag of snippet.tags" class="btn-group tag-list  mr-2 mt-1">
-          <a class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
+          <a *ngIf="snippet.public && snippet.userId !== observables.userId; else linkToMyTagged"
+             class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
              [routerLink]="['/snippets/t', tag]"
              title="Go to snippets tagged [{{tag}}]"
              [innerHtml]="tag | highlight: queryText">
             {{tag}}
           </a>
+          <ng-template #linkToMyTagged>
+            <a class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
+               [routerLink]="['/search']"
+               [queryParams]="{q: '[' + tag + ']', sd: 'my-snippets'}"
+               title="Search my bookmarks tagged {{tag}}"
+               [innerHtml]="tag | highlight: queryText">
+              {{tag}}
+            </a>
+          </ng-template>
         </div>
         <div class="float-right mt-1">
           <button
@@ -93,9 +103,10 @@
             <i class="far fa-copy"></i> Copy to mine
           </button>
           <button *ngIf="snippet.public || (!snippet.public && snippet.userId === observables.userId)"
-            class="btn btn-light btn-sm float-right"
-            title="Share via email or on social media"
-            (click)="shareSnippetDialog(snippet, userIsLoggedIn, observables.userId)"><i class="fas fa-share"></i> Share
+                  class="btn btn-light btn-sm float-right"
+                  title="Share via email or on social media"
+                  (click)="shareSnippetDialog(snippet, userIsLoggedIn, observables.userId)"><i class="fas fa-share"></i>
+            Share
           </button>
         </div>
 
