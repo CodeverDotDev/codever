@@ -9,12 +9,12 @@ let findNotes = async function (userId, query, page, limit, searchInclude) {
   const searchedTags = searchedTermsAndTags.tags;
   let notes = [];
 
-  const {specialSearchFilters, nonSpecialSearchTerms} = searchUtils.extractSpecialSearchTerms(searchedTerms);
+  const {specialSearchFilters, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    notes = await getNotesForTagsAndTerms(userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    notes = await getNotesForTagsAndTerms(userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    notes = await getNotesForSearchedTerms(userId, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    notes = await getNotesForSearchedTerms(userId, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
   } else {
     notes = await getNotesForSearchedTags(userId, searchedTags, page, limit, specialSearchFilters);
   }
@@ -22,7 +22,7 @@ let findNotes = async function (userId, query, page, limit, searchInclude) {
   return notes;
 }
 
-let getNotesForTagsAndTerms = async function (userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude) {
+let getNotesForTagsAndTerms = async function (userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude) {
   let filter = {
     tags:
       {
@@ -32,11 +32,11 @@ let getNotesForTagsAndTerms = async function (userId, searchedTags, nonSpecialSe
 
   filter['userId'] = userId;
 
-  if ( nonSpecialSearchTerms.length > 0 ) {
+  if ( fulltextSearchTerms.length > 0 ) {
     if ( searchInclude === 'any' ) {
-      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+      filter.$text = {$search: fulltextSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(fulltextSearchTerms)};
     }
   }
 
@@ -56,16 +56,16 @@ let getNotesForTagsAndTerms = async function (userId, searchedTags, nonSpecialSe
 }
 
 
-let getNotesForSearchedTerms = async function (userId, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude) {
+let getNotesForSearchedTerms = async function (userId, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude) {
 
   let filter = {};
   filter['userId'] = userId;
 
-  if ( nonSpecialSearchTerms.length > 0 ) {
+  if ( fulltextSearchTerms.length > 0 ) {
     if ( searchInclude === 'any' ) {
-      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+      filter.$text = {$search: fulltextSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(fulltextSearchTerms)};
     }
   }
 

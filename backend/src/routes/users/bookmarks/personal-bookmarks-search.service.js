@@ -8,12 +8,12 @@ let findPersonalBookmarks = async function (userId, query, page, limit, searchIn
   const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
 
-  const {specialSearchFilters, nonSpecialSearchTerms} = searchUtils.extractSpecialSearchTerms(searchedTerms);
+  const {specialSearchFilters, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForTagsAndTerms( userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    bookmarks = await getPersonalBookmarksForTagsAndTerms( userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForSearchedTerms(userId, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    bookmarks = await getPersonalBookmarksForSearchedTerms(userId, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
   } else {
     bookmarks = await getPersonalBookmarksForSearchedTags(userId, searchedTags, page, limit, specialSearchFilters);
   }
@@ -21,7 +21,7 @@ let findPersonalBookmarks = async function (userId, query, page, limit, searchIn
   return bookmarks;
 }
 
-let getPersonalBookmarksForTagsAndTerms = async function (userId, searchedTags, nonSpecialSearchTerms, page, limit, specialSearchFilters, searchInclude) {
+let getPersonalBookmarksForTagsAndTerms = async function (userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude) {
   let filter = {
     userId: userId,
     tags:
@@ -30,11 +30,11 @@ let getPersonalBookmarksForTagsAndTerms = async function (userId, searchedTags, 
       }
   }
 
-  if ( nonSpecialSearchTerms.length > 0 ) {
+  if ( fulltextSearchTerms.length > 0 ) {
     if(searchInclude === 'any') {
-      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+      filter.$text = {$search: fulltextSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(fulltextSearchTerms)};
     }
   }
 
@@ -56,14 +56,14 @@ let getPersonalBookmarksForTagsAndTerms = async function (userId, searchedTags, 
 }
 
 
-let getPersonalBookmarksForSearchedTerms = async function ( userId, nonSpecialSearchTerms, page, limit,specialSearchFilters, searchInclude) {
+let getPersonalBookmarksForSearchedTerms = async function ( userId, fulltextSearchTerms, page, limit,specialSearchFilters, searchInclude) {
 
   let filter = {userId: userId };
-  if ( nonSpecialSearchTerms.length > 0 ) {
+  if ( fulltextSearchTerms.length > 0 ) {
     if(searchInclude === 'any') {
-      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+      filter.$text = {$search: fulltextSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(fulltextSearchTerms)};
     }
   }
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);

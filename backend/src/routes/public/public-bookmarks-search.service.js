@@ -10,12 +10,12 @@ let findPublicBookmarks = async function (query, page, limit, sort, searchInclud
   const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
 
-  const {specialSearchFilters, nonSpecialSearchTerms} = searchUtils.extractSpecialSearchTerms(searchedTerms);
+  const {specialSearchFilters, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchInclude);
+    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, fulltextSearchTerms, page, limit, sort, specialSearchFilters, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTerms(nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchInclude);
+    bookmarks = await getPublicBookmarksForSearchedTerms(fulltextSearchTerms, page, limit, sort, specialSearchFilters, searchInclude);
   } else if ( searchedTags.length > 0 ) {
     bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, page, limit, specialSearchFilters);
   }
@@ -38,7 +38,7 @@ let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filte
 };
 
 
-let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchInclude) {
+let getPublicBookmarksForTagsAndTerms = async function (searchedTags, fulltextSearchTerms, page, limit, sort, specialSearchFilters, searchInclude) {
   let filter = {
     public: true,
     tags:
@@ -47,11 +47,11 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecial
       }
   }
 
-  if ( nonSpecialSearchTerms.length > 0 ) {
+  if ( fulltextSearchTerms.length > 0 ) {
     if(searchInclude === 'any') {
-      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+      filter.$text = {$search: fulltextSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(fulltextSearchTerms)};
     }
   }
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -78,17 +78,17 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecial
 }
 
 
-let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchInclude) {
+let getPublicBookmarksForSearchedTerms = async function (fulltextSearchTerms, page, limit, sort, specialSearchFilters, searchInclude) {
 
   let filter = {
     public: true
   }
 
-  if ( nonSpecialSearchTerms.length > 0 ) {
+  if ( fulltextSearchTerms.length > 0 ) {
     if(searchInclude === 'any') {
-      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+      filter.$text = {$search: fulltextSearchTerms.join(' ')}
     } else {
-      filter.$text = {$search: searchUtils.generateFullSearchText(nonSpecialSearchTerms)};
+      filter.$text = {$search: searchUtils.generateFullSearchText(fulltextSearchTerms)};
     }
   }
 
