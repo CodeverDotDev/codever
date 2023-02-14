@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const NodeCache = require('../../cache-middleware');
-const SnippetsSearchService = require('../../common/snippets-search.service');
+const SnippetsSearchService = require('../../common/searching/snippets-search.service');
 const PublicSnippetsService = require('./public-snippets.service');
 
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
@@ -27,7 +27,7 @@ router.get('/', async (request, response, next) => {
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
 
   if (searchText) {
-    const snippets = await SnippetsSearchService.findSnippets(null, searchText, page, limit, sort, searchInclude);
+    const snippets = await SnippetsSearchService.findPublicSnippets(searchText, page, limit, sort, searchInclude);
     response.send(snippets);
   } else {
     next()

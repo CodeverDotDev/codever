@@ -2,8 +2,8 @@ const express = require('express');
 const personalBookmarksRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
-const bookmarkHelper = require('../../../common/bookmark-helper');
-const personalBookmarksSearchService = require('./personal-bookmarks-search.service');
+const bookmarkRequestMapper = require('../../../common/mappers/bookmark-request.mapper');
+const personalBookmarksSearchService = require('../../../common/searching/bookmarks-search.service');
 const PersonalBookmarksService = require('./personal-bookmarks.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
@@ -28,7 +28,7 @@ personalBookmarksRouter.use(keycloak.middleware());
 personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) => {
 
   UserIdValidator.validateUserId(request);
-  const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
+  const bookmark = bookmarkRequestMapper.toBookmark(request);
   let newBookmark = await PersonalBookmarksService.createBookmark(request.params.userId, bookmark);
 
   response
@@ -47,7 +47,8 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
   const searchInclude = request.query.include;
   if ( searchText ) {
-    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(request.params.userId, searchText, page, limit, searchInclude);
+    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(
+      request.params.userId, searchText, page, limit, searchInclude);
     return response.send(bookmarks);
   } else {
     next();
@@ -103,7 +104,6 @@ personalBookmarksRouter.get('/tags', keycloak.protect(), NodeCache.cacheMiddlewa
 });
 
 
-
 /* GET bookmark of user */
 personalBookmarksRouter.get('/:bookmarkId', keycloak.protect(), async (request, response) => {
   UserIdValidator.validateUserId(request);
@@ -132,7 +132,7 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
 
   UserIdValidator.validateUserId(request);
 
-  const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
+  const bookmark = bookmarkRequestMapper.toBookmark(request);
 
   const {userId, bookmarkId} = request.params;
   const updatedBookmark = await PersonalBookmarksService.updateBookmark(userId, bookmarkId, bookmark);
