@@ -10,20 +10,20 @@ let findPublicBookmarks = async function (query, page, limit, sort, searchInclud
   const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
 
-  const {specialSearchFilters, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
+  const {specialSearchTerms, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, fulltextSearchTerms, page, limit, sort, specialSearchFilters, searchInclude);
+    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, fulltextSearchTerms, page, limit, sort, specialSearchTerms, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTerms(fulltextSearchTerms, page, limit, sort, specialSearchFilters, searchInclude);
+    bookmarks = await getPublicBookmarksForSearchedTerms(fulltextSearchTerms, page, limit, sort, specialSearchTerms, searchInclude);
   } else if ( searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, page, limit, specialSearchFilters);
+    bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, page, limit, specialSearchTerms);
   }
 
   return bookmarks;
 }
 
-let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
+let setSpecialSearchTermsFilter = function (specialSearchFilters, filter) {
   if ( specialSearchFilters.userId ) {
     filter.userId = specialSearchFilters.userId;
   }
@@ -54,7 +54,7 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, fulltextSe
       filter.$text = {$search: searchUtils.generateFullSearchText(fulltextSearchTerms)};
     }
   }
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
   let sortBy = {};
   if ( sort === 'newest' ) {
     sortBy.createdAt = -1;
@@ -92,7 +92,7 @@ let getPublicBookmarksForSearchedTerms = async function (fulltextSearchTerms, pa
     }
   }
 
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
 
   let sortBy = {};
   if ( sort === 'newest' ) {
@@ -125,7 +125,7 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, page, limi
       }
   }
 
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
 
   let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})

@@ -9,14 +9,14 @@ let findNotes = async function (userId, query, page, limit, searchInclude) {
   const searchedTags = searchedTermsAndTags.tags;
   let notes = [];
 
-  const {specialSearchFilters, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
+  const {specialSearchTerms, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    notes = await getNotesForTagsAndTerms(userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    notes = await getNotesForTagsAndTerms(userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchTerms, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    notes = await getNotesForSearchedTerms(userId, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    notes = await getNotesForSearchedTerms(userId, fulltextSearchTerms, page, limit, specialSearchTerms, searchInclude);
   } else {
-    notes = await getNotesForSearchedTags(userId, searchedTags, page, limit, specialSearchFilters);
+    notes = await getNotesForSearchedTags(userId, searchedTags, page, limit, specialSearchTerms);
   }
 
   return notes;

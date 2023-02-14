@@ -9,14 +9,14 @@ let findItems = async function (type, isPublic, userId, query, page, limit, sear
   const searchedTags = searchedTermsAndTags.tags;
   let snippets = [];
 
-  const {specialSearchFilters, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
+  const {specialSearchTerms, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    snippets = await getItemsForTagsAndTerms(type, isPublic, userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    snippets = await getItemsForTagsAndTerms(type, isPublic, userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchTerms, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    snippets = await getItemsForSearchedTerms(type, isPublic, userId, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    snippets = await getItemsForSearchedTerms(type, isPublic, userId, fulltextSearchTerms, page, limit, specialSearchTerms, searchInclude);
   } else {
-    snippets = await getItemsForSearchedTags(type, isPublic, userId, searchedTags, page, limit, specialSearchFilters);
+    snippets = await getItemsForSearchedTags(type, isPublic, userId, searchedTags, page, limit, specialSearchTerms);
   }
 
   return snippets;
@@ -36,9 +36,9 @@ let getItemsForTagsAndTerms = async function (type, isPublic, userId, searchedTa
     filter['public'] = true;
   }
 
-  filter = searchUtils.includeFulltextSearchTermsInFilter(fulltextSearchTerms, filter);
+  filter = searchUtils.setFulltextSearchTermsFilter(fulltextSearchTerms, filter);
 
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
 
   let snippets = await Snippet.find(
     filter,
@@ -73,7 +73,7 @@ let getItemsForSearchedTerms = async function (type, isPublic, userId, fulltextS
     }
   }
 
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
 
   let snippets = await Snippet.find(
     filter,
@@ -104,7 +104,7 @@ let getItemsForSearchedTags = async function (type, isPublic, userId, searchedTa
     filter['public'] = true;
   }
 
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
 
   let snippets = await Snippet.find(filter)
     .sort({createdAt: -1})
@@ -116,7 +116,7 @@ let getItemsForSearchedTags = async function (type, isPublic, userId, searchedTa
   return snippets;
 }
 
-let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
+let setSpecialSearchTermsFilter = function (specialSearchFilters, filter) {
   if ( specialSearchFilters.userId ) {
     filter.userId = specialSearchFilters.userId;
   } else if ( specialSearchFilters.privateOnly ) {

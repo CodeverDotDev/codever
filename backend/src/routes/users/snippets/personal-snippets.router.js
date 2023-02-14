@@ -82,13 +82,13 @@ personalSnippetsRouter.get('/shareable/:snippetId', keycloak.protect(), async (r
 personalSnippetsRouter.get('/', keycloak.protect(), async (request, response, next) => {
   UserIdValidator.validateUserId(request);
 
-  const searchText = request.query.q;
+  const query = request.query.q;
   const searchInclude = request.query.include || 'all';
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
 
   const {userId} = request.params;
-  if ( searchText ) {
-    const snippets = await SnippetsSearchService.findSnippets(userId, searchText, page, limit, searchInclude);
+  if ( query ) {
+    const snippets = await SnippetsSearchService.findPersonalSnippets(userId, query, page, limit, searchInclude);
 
     return response.status(HttpStatus.OK).send(snippets);
   } else {

@@ -1,3 +1,4 @@
+const ValidationError = require("../error/validation.error");
 let splitSearchQuery = function (query) {
 
   const result = {};
@@ -92,7 +93,7 @@ let extractFulltextAndSpecialSearchTerms = function (searchedTerms) {
   }
 
   return {
-    specialSearchFilters: specialSearchFilters,
+    specialSearchTerms: specialSearchFilters,
     fulltextSearchTerms: fulltextSearchTerms
   }
 }
@@ -114,7 +115,7 @@ let generateFullSearchText = function (fulltextSearchTerms) {
   return termsQuery.trim();
 };
 
-let includeFulltextSearchTermsInFilter = function (fulltextSearchTerms, filter, searchInclude) {
+let setFulltextSearchTermsFilter = function (fulltextSearchTerms, filter, searchInclude) {
   let newFilter = {...filter};
   if ( fulltextSearchTerms.length > 0 ) {
     let searchText = '';
@@ -129,9 +130,59 @@ let includeFulltextSearchTermsInFilter = function (fulltextSearchTerms, filter, 
   return newFilter;
 }
 
+let setTagsToFilter = function (searchTags, filter) {
+  if ( searchTags.length > 0 ) {
+    return {
+      ...filter,
+      tags: {$all: searchTags}
+    };
+  } else {
+    return filter;
+  }
+};
+
+let setPublicOrPersonalFilter = function (isPublic, filter, userId) {
+  if ( isPublic ) {
+    return {
+      ...filter,
+      public: true
+    }
+  } else if ( userId ) {
+    return {
+      ...filter,
+      userId: userId
+    }
+  } else {
+    throw new ValidationError('Snippet must be either public or personal (public or userId must be provided)');
+  }
+};
+
+
+let setSpecialSearchTermsFilter = function (isPublic, userId, specialSearchFilters, filter) {
+  let newFilter = {...filter};
+
+  //one is not entitled to see private bookmarks of another user
+  if ( specialSearchFilters.userId && (isPublic || specialSearchFilters.userId === userId) ) {
+    newFilter.userId = specialSearchFilters.userId;
+  }
+
+  if ( specialSearchFilters.privateOnly ) { //
+    newFilter.public = false;
+  }
+
+  if ( specialSearchFilters.site ) {
+    newFilter.sourceUrl = new RegExp(specialSearchFilters.site, 'i');//TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
+  }
+
+  return newFilter;
+};
+
 module.exports = {
   splitSearchQuery: splitSearchQuery,
   extractFulltextAndSpecialSearchTerms: extractFulltextAndSpecialSearchTerms,
   generateFullSearchText: generateFullSearchText,
-  includeFulltextSearchTermsInFilter: includeFulltextSearchTermsInFilter
+  setFulltextSearchTermsFilter: setFulltextSearchTermsFilter,
+  setPublicOrPersonalFilter: setPublicOrPersonalFilter,
+  setTagsToFilter: setTagsToFilter,
+  setSpecialSearchTermsFilter: setSpecialSearchTermsFilter
 }

@@ -8,14 +8,14 @@ let findPersonalBookmarks = async function (userId, query, page, limit, searchIn
   const searchedTags = searchedTermsAndTags.tags;
   let bookmarks = [];
 
-  const {specialSearchFilters, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
+  const {specialSearchTerms, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForTagsAndTerms( userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    bookmarks = await getPersonalBookmarksForTagsAndTerms( userId, searchedTags, fulltextSearchTerms, page, limit, specialSearchTerms, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPersonalBookmarksForSearchedTerms(userId, fulltextSearchTerms, page, limit, specialSearchFilters, searchInclude);
+    bookmarks = await getPersonalBookmarksForSearchedTerms(userId, fulltextSearchTerms, page, limit, specialSearchTerms, searchInclude);
   } else {
-    bookmarks = await getPersonalBookmarksForSearchedTags(userId, searchedTags, page, limit, specialSearchFilters);
+    bookmarks = await getPersonalBookmarksForSearchedTags(userId, searchedTags, page, limit, specialSearchTerms);
   }
 
   return bookmarks;
@@ -38,7 +38,7 @@ let getPersonalBookmarksForTagsAndTerms = async function (userId, searchedTags, 
     }
   }
 
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
 
   let bookmarks = await Bookmark.find(
     filter,
@@ -66,7 +66,7 @@ let getPersonalBookmarksForSearchedTerms = async function ( userId, fulltextSear
       filter.$text = {$search: searchUtils.generateFullSearchText(fulltextSearchTerms)};
     }
   }
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
 
   let bookmarks = await Bookmark.find(
     filter,
@@ -93,7 +93,7 @@ let getPersonalBookmarksForSearchedTags = async function (userId, searchedTags, 
       }
   }
 
-  addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
+  setSpecialSearchTermsFilter(specialSearchFilters, filter);
 
   let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})
@@ -105,7 +105,7 @@ let getPersonalBookmarksForSearchedTags = async function (userId, searchedTags, 
   return bookmarks;
 }
 
-let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filter) {
+let setSpecialSearchTermsFilter = function (specialSearchFilters, filter) {
   if ( specialSearchFilters.privateOnly ) {
     filter.public = false;
   }

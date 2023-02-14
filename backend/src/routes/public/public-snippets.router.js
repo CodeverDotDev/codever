@@ -27,7 +27,7 @@ router.get('/', async (request, response, next) => {
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
 
   if (searchText) {
-    const snippets = await SnippetsSearchService.findSnippets(null, searchText, page, limit, sort, searchInclude);
+    const snippets = await SnippetsSearchService.findPublicSnippets(searchText, page, limit, sort, searchInclude);
     response.send(snippets);
   } else {
     next()

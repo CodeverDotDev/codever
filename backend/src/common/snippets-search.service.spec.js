@@ -19,6 +19,7 @@ jest.mock('../model/snippet', () => {
 
 describe('findSnippets to have been called with', () => {
   const input = {
+    isPublic: false,
     userId: 'user1',
     page: 1,
     limit: 10,
@@ -40,6 +41,7 @@ describe('findSnippets to have been called with', () => {
       {
         ...input,
         userId: undefined,
+        isPublic: true,
         query: 'codever testing'
       },
       {
@@ -111,7 +113,7 @@ describe('findSnippets to have been called with', () => {
       }
     ],
   ])('given input params %p , should use filter %p ', async (input, expectedFilter) => {
-    await snippetsSearchService.findSnippets(input.userId, input.query, input.page, input.limit, input.searchInclude);
+    await snippetsSearchService.findSnippets(input.isPublic, input.userId, input.query, input.page, input.limit, input.searchInclude);
     expect(Snippet.find).toHaveBeenCalledWith(expectedFilter, {score: {$meta: 'textScore'}});
   });
 });
