@@ -3,7 +3,7 @@ const personalBookmarksRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
 const bookmarkHelper = require('../../../common/bookmark-helper');
-const personalBookmarksSearchService = require('./personal-bookmarks-search.service');
+const personalBookmarksSearchService = require('../../../common/bookmarks-search.service');
 const PersonalBookmarksService = require('./personal-bookmarks.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
@@ -47,7 +47,8 @@ personalBookmarksRouter.get('/', keycloak.protect(), async (request, response, n
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
   const searchInclude = request.query.include;
   if ( searchText ) {
-    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(request.params.userId, searchText, page, limit, searchInclude);
+    const bookmarks = await personalBookmarksSearchService.findPersonalBookmarks(
+      request.params.userId, searchText, page, limit, searchInclude);
     return response.send(bookmarks);
   } else {
     next();
@@ -101,7 +102,6 @@ personalBookmarksRouter.get('/tags', keycloak.protect(), NodeCache.cacheMiddlewa
 
   response.send(tags);
 });
-
 
 
 /* GET bookmark of user */

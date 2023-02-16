@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const NodeCache = require('../../cache-middleware');
-const publicBookmarksSearchService = require('./public-bookmarks-search.service');
+const bookmarksSearchService = require('../../common/bookmarks-search.service');
 const PublicBookmarksService = require('./public-bookmarks.service');
 
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
@@ -12,12 +12,12 @@ const PaginationQueryParamsHelper = require('../../common/pagination-query-param
  */
 router.get('/', async (request, response, next) => {
   const searchText = request.query.q;
-  const searcMode = request.query.include;
+  const searchInclude = request.query.include;
   const sort = request.query.sort;
   const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
 
   if ( searchText ) {
-    const bookmarks = await publicBookmarksSearchService.findPublicBookmarks(searchText, page, limit, sort, searcMode);
+    const bookmarks = await bookmarksSearchService.findPublicBookmarks(searchText, page, limit, searchInclude, sort);
     response.send(bookmarks);
   } else {
     next()

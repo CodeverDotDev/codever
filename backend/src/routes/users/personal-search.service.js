@@ -1,4 +1,4 @@
-const personalBookmarksSearchService = require('./bookmarks/personal-bookmarks-search.service');
+const personalBookmarksSearchService = require('../../common/bookmarks-search.service');
 const personalSnippetsSearchService = require('../../common/snippets-search.service');
 const personalNotesSearchService = require('./notes/notes-search.service');
 
@@ -6,7 +6,7 @@ let getPersonalSearchResults = async function (userId, query, page, limit, searc
 
   const foundBookmarks = await personalBookmarksSearchService.findPersonalBookmarks(userId, query, page, limit, searchInclude);
   const foundSnippets = await personalSnippetsSearchService.findPersonalSnippets(userId, query, page, limit, searchInclude);
-  const foundNotes = await personalNotesSearchService.findNotes(userId, query, page, limit, searchInclude);
+  const foundNotes = await personalNotesSearchService.findPersonalNotes(userId, query, page, limit, searchInclude);
 
   return merge([foundBookmarks, foundSnippets, foundNotes], scoreDescending);
 }

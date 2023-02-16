@@ -23,21 +23,6 @@ let findPublicBookmarks = async function (query, page, limit, sort, searchInclud
   return bookmarks;
 }
 
-let setSpecialSearchTermsFilter = function (specialSearchFilters, filter) {
-  if ( specialSearchFilters.userId ) {
-    filter.userId = specialSearchFilters.userId;
-  }
-
-  if ( specialSearchFilters.lang ) {
-    filter.language = specialSearchFilters.lang
-  }
-
-  if ( specialSearchFilters.site ) {
-    filter.location = new RegExp(specialSearchFilters.site, 'i');
-  }
-};
-
-
 let getPublicBookmarksForTagsAndTerms = async function (searchedTags, fulltextSearchTerms, page, limit, sort, specialSearchFilters, searchInclude) {
   let filter = {
     public: true,
@@ -136,7 +121,19 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, page, limi
 
   return bookmarks;
 }
+let setSpecialSearchTermsFilter = function (specialSearchFilters, filter) {
+  if ( specialSearchFilters.userId ) {
+    filter.userId = specialSearchFilters.userId;
+  }
 
+  if ( specialSearchFilters.lang ) {
+    filter.language = specialSearchFilters.lang
+  }
+
+  if ( specialSearchFilters.site ) {
+    filter.location = new RegExp(specialSearchFilters.site, 'i');
+  }
+};
 module.exports = {
   findPublicBookmarks: findPublicBookmarks
 }
