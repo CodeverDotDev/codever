@@ -1,16 +1,11 @@
 const app = require('../../app');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes/index');
-const jwt = require('jsonwebtoken');
-
-const common = require('../../common/config');
-const config = common.config();
-
-const superagent = require('superagent');
 
 const basePathApiPublicBookmarks = '/api/public/bookmarks/';
 
 const { faker } = require('@faker-js/faker');
+const {getAccessToken, getBearerToken, getTestUserId, getBookmarkId} = require("../../common/testing/test.utils");
 
 
 let generateBookmark = function (verySpecialTitle, verySpecialLocation, verySpecialTag, verySpecialSourceCodeUrl, testUserId, isPublic) {
@@ -72,18 +67,10 @@ describe('Public API Tests', () => {
 
     beforeAll(async () => {
       try {
-        const userBearerTokenResponse = await
-          superagent
-            .post(config.integration_tests.token_endpoint)
-            .send('client_id=' + config.integration_tests.client_id)
-            .send('client_secret=' + config.integration_tests.client_secret)
-            .send('grant_type=client_credentials')
-            .set('Accept', 'application/json');
+        const accessToken = await getAccessToken();
+        bearerToken = getBearerToken(accessToken);
+        testUserId = getTestUserId(accessToken);
 
-        const accessToken = userBearerTokenResponse.body.access_token;
-        bearerToken = 'Bearer ' + accessToken;
-        const decoded = jwt.decode(accessToken);
-        testUserId = decoded.sub;
         publicBookmarkExample.userId = testUserId;
         try {
           await request(app)
@@ -95,15 +82,7 @@ describe('Public API Tests', () => {
             .post(`${basePathApiPersonalUsers}${testUserId}/bookmarks`)
             .set('Authorization', bearerToken)
             .send(publicBookmarkExample);
-
-          if ( createBookmarkResponse.statusCode !== HttpStatus.CREATED ) {
-            throw new Error("Sample bookmark not properly created");
-          }
-          const locationHeaderValue = createBookmarkResponse.header['location']
-
-          //set the id of the bookmarkexample now that it is created
-          const lastSlashIndex = locationHeaderValue.lastIndexOf('/');
-          createdBookmarkId = locationHeaderValue.substring(lastSlashIndex + 1);
+          createdBookmarkId = getBookmarkId(createBookmarkResponse);
         } catch (err) {
           console.error("Error creating test bookmark", err);
           throw  err;
@@ -204,7 +183,6 @@ describe('Public API Tests', () => {
       expect(foundBookmark.name).toEqual(verySpecialTitle);
     });
 
-
     it('should find bookmark with with very-special-tag in query param only as tag and user', async function () {
       const queryText = `[${verySpecialTag}] user:${testUserId}`
       const response = await request(app)
@@ -219,7 +197,6 @@ describe('Public API Tests', () => {
       expect(foundBookmark.name).toEqual(verySpecialTitle);
     });
 
-
     it('should find bookmark with with very-special-tag in query param as tag and word plus user', async function () {
       const queryText = `${verySpecialTag} [${verySpecialTag}] user:${testUserId}`;
       const response = await request(app)
@@ -233,7 +210,6 @@ describe('Public API Tests', () => {
       expect(filteredBookmarks.length).toEqual(1);
       expect(foundBookmark.name).toEqual(verySpecialTitle);
     });
-
 
   });
 });
