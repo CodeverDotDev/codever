@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "debug": "nodemon --inspect ./bin/www --watch src --watch docs/openapi/openapi.yaml",
     "integration-tests": "NODE_ENV=test nyc mocha '**/*.spec.js' --exit",
-    "test": "jest --config ./jest.config.js"
+    "test": "jest --config ./jest.config.js",
+    "test:integration": "jest --config jest.config.integration.js"
   },
   "dependencies": {
     "aws-sdk": "^2.1048.0",

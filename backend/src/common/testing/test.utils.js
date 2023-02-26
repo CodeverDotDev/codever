@@ -39,9 +39,21 @@ const getBookmarkId = httpResponse => {
   return locationHeaderValue.substring(lastSlashIndex + 1);
 }
 
+const generateTextWithNumberLines = numberLines => {
+  const line = 'oneline\n';
+  let longText = line;
+  for ( let i = 0; i < numberLines; i++ ) {
+    longText += line;
+  }
+
+  return longText;
+}
+
+
 module.exports = {
   getTestUserId: getTestUserId,
   getAccessToken: getAccessToken,
   getBearerToken: getBearerToken,
-  getBookmarkId: getBookmarkId
+  getBookmarkId: getBookmarkId,
+  generateTextWithNumberLines: generateTextWithNumberLines
 }
