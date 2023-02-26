@@ -1,20 +1,21 @@
 const app = require('../../app');
-const chai = require('chai');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes/index');
-const expect = chai.expect;
 
 const common = require('../../common/config');
 const config = common.config();
 
 const superagent = require('superagent');
 
-describe('Test scrape functionality', function () {
+const {toInclude} = require('jest-extended');
+expect.extend({toInclude});
+
+describe('Test scrape functionality',  () => {
 
   const basePathApiWebPageInfo = '/api/webpage-info/';
   let bearerToken;
 
-  before(async function () {
+  beforeAll(async () => {
     try {
       const userBearerTokenResponse = await
         superagent
@@ -38,9 +39,9 @@ describe('Test scrape functionality', function () {
       .get(basePathApiWebPageInfo + '/scrape')
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-    expect(response.body.message).to.equal('Missing parameters - url or youtubeVideoId');
-    expect(response.body.validationErrors).to.include('You need to provide the url to scrape for or the youtubeVideoId');
+    expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toEqual('Missing parameters - url or youtubeVideoId');
+    expect(response.body.validationErrors).toInclude('You need to provide the url to scrape for or the youtubeVideoId');
   });
 
   it('should should fail trying to scrape without authorization', async function () {
@@ -48,7 +49,7 @@ describe('Test scrape functionality', function () {
       .get(basePathApiWebPageInfo + '/scrape')
       .query({location: 'https://www.codever.dev'});
 
-    expect(response.statusCode).to.equal(HttpStatus.FORBIDDEN);
+    expect(response.statusCode).toEqual(HttpStatus.FORBIDDEN);
   });
 
   it('should succeed scraping website', async function () {
@@ -57,9 +58,9 @@ describe('Test scrape functionality', function () {
       .query({location: 'https://www.codever.dev'})
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.OK);
-    expect(response.body.title).to.equal('Dev Bookmarks');
-    expect(response.body.metaDescription).to.contain('Bookmarking for Developers & Co');
+    expect(response.statusCode).toEqual(HttpStatus.OK);
+    expect(response.body.title).toEqual('Codever');
+    expect(response.body.metaDescription).toInclude('Open source Bookmarks and Code Snippets Manager for Developers & Co');
   });
 });
 
