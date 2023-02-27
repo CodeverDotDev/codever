@@ -1,15 +1,13 @@
 const app = require('../../app');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes/index');
-const jwt = require('jsonwebtoken');
 
 
 const common = require('../../common/config');
-const config = common.config();
 
-const superagent = require('superagent');
 
 const {toInclude} = require('jest-extended');
+const {getAccessToken, getBearerToken, getTestUserId} = require("../../common/testing/test.utils");
 expect.extend({toInclude});
 
 /**
@@ -28,18 +26,9 @@ describe('User Data tests',  () => {
 
   beforeAll(async () => {
     try {
-      const userBearerTokenResponse = await
-        superagent
-          .post(config.integration_tests.token_endpoint)
-          .send('client_id=' + config.integration_tests.client_id)
-          .send('client_secret=' + config.integration_tests.client_secret)
-          .send('grant_type=client_credentials')
-          .set('Accept', 'application/json');
-
-      const accessToken = userBearerTokenResponse.body.access_token;
-      bearerToken = 'Bearer ' + accessToken;
-      const decoded = jwt.decode(accessToken);
-      testUserId = decoded.sub;
+      const accessToken = await getAccessToken();
+      bearerToken = getBearerToken(accessToken);
+      testUserId = getTestUserId(accessToken);
 
       userExample = {
         "userId": testUserId,
@@ -69,7 +58,7 @@ describe('User Data tests',  () => {
     expect(response.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
   });
 
-  it('should fail trying to GET data for unexisting user', async function () {
+  it('should fail trying to GET data for not existing user', async function () {
     const response = await request(app)
       .get(`${baseApiUrlUnderTest}/${testUserId}`)
       .set('Authorization', bearerToken);
