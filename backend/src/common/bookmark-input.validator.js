@@ -115,8 +115,6 @@ const BookmarkValidationErrorMessages = {
   MISSING_TAGS: 'Missing required attribute - tags',
   TOO_MANY_TAGS: `Too many tags - max ${BookmarkValidationRules.MAX_NUMBER_OF_TAGS} allowed`,
   DESCRIPTION_TOO_LONG: `The description is too long. Only ${BookmarkValidationRules.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION} allowed`,
-  MISSING_CODE_SNIPPETS: 'Missing required attribute - codeSnippets',
-  CODE_SNIPPET_TOO_LONG: `The code snippet is too long. Max ${constants.MAX_NUMBER_OF_CHARS_FOR_CODE_SNIPPET} allowed`,
   DESCRIPTION_TOO_MANY_LINES: `The description has too many lines. Only ${BookmarkValidationRules.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION} allowed`
 }
 

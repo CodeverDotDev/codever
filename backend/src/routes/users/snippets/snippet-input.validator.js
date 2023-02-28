@@ -21,14 +21,14 @@ let validateSnippetInput = function(userId, snippet) {
   }
   if (snippet.codeSnippets && snippet.codeSnippets.length > 0) {
     for(let codeSnippet of snippet.codeSnippets) {
-      const codeSnippetIsTooLong = codeSnippet.code.length > constants.MAX_NUMBER_OF_CHARS_FOR_CODE_SNIPPET;
+      const codeSnippetIsTooLong = codeSnippet.code.length > SnippetValidationRules.MAX_NUMBER_OF_CHARS_FOR_CODE_SNIPPET;
       if (codeSnippetIsTooLong) {
         validationErrorMessages.push(SnippetValidationMessages.CODE_SNIPPET_TOO_LONG);
       }
 
-      const codeSnippetHasTooManyLines = codeSnippet.code.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_CODE_SNIPPET;
+      const codeSnippetHasTooManyLines = codeSnippet.code.split('\n').length > SnippetValidationRules.MAX_NUMBER_OF_LINES_FOR_CODE_SNIPPET;
       if (codeSnippetHasTooManyLines) {
-        validationErrorMessages.push('The code snippet hast too many lines. Max ' + constants.MAX_NUMBER_OF_LINES_FOR_CODE_SNIPPET + ' allowed');
+        validationErrorMessages.push('The code snippet hast too many lines. Max ' + SnippetValidationRules.MAX_NUMBER_OF_LINES_FOR_CODE_SNIPPET + ' allowed');
       }
     }
   }
@@ -45,7 +45,9 @@ let validateSnippetInput = function(userId, snippet) {
 }
 
 const SnippetValidationRules = {
-  MAX_NUMBER_OF_TAGS: 8
+  MAX_NUMBER_OF_TAGS: 8,
+  MAX_NUMBER_OF_CHARS_FOR_CODE_SNIPPET: 10000,
+  MAX_NUMBER_OF_LINES_FOR_CODE_SNIPPET: 1000
 }
 const SnippetValidationMessages = {
   SNIPPET_NOT_VALID: 'The snippet you submitted is not valid',
@@ -53,7 +55,7 @@ const SnippetValidationMessages = {
   USER_ID_NOT_MATCHING: 'The userId of the snippet does not match the userId parameter',
   MISSING_TITLE: 'Missing required attribute - title',
   MISSING_CODE_SNIPPETS: 'Missing required attribute - codeSnippets',
-  CODE_SNIPPET_TOO_LONG: `The code snippet is too long. Max ${constants.MAX_NUMBER_OF_CHARS_FOR_CODE_SNIPPET} allowed`,
+  CODE_SNIPPET_TOO_LONG: `The code snippet is too long. Max ${SnippetValidationRules.MAX_NUMBER_OF_CHARS_FOR_CODE_SNIPPET} allowed`,
 }
 
 module.exports = {
