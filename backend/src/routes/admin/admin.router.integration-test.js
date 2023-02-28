@@ -10,9 +10,10 @@ const constants = require('../../common/constants');
 const superagent = require('superagent');
 
 const {toInclude} = require('jest-extended');
+const {BookmarkValidationErrorMessages} = require("../../common/bookmark-input.validator");
 expect.extend({toInclude});
 
-describe('Admin API Tests',  () => {
+describe('Admin API Tests', () => {
 
   let adminBearerToken;
   const baseApiUnderTestUrl = '/api/admin/bookmarks/';
@@ -55,7 +56,7 @@ describe('Admin API Tests',  () => {
     }
   });
 
-  describe('Get bookmarks functionality',  () => {
+  describe('Get bookmarks functionality', () => {
 
     it('should find some bookmarks', async () => {
       const response = await request(app)
@@ -138,21 +139,8 @@ describe('Admin API Tests',  () => {
     });
   });
 
-  describe('invalid bookmark attributes at CREATION', function () {
+  describe('failed at CREATION', function () {
 
-    it('should fail trying to CREATE bookmark without a name', async function () {
-      let bookmarkWithoutName = JSON.parse(JSON.stringify(bookmarkExample));
-      bookmarkWithoutName.name = '';
-
-      const response = await request(app)
-        .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', adminBearerToken)
-        .send(bookmarkWithoutName);
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Missing required attribute - name');
-    });
 
     it('should fail trying to CREATE bookmark without a userId', async function () {
       let bookmarkdWithoutUserId = JSON.parse(JSON.stringify(bookmarkExample));
@@ -164,8 +152,8 @@ describe('Admin API Tests',  () => {
         .send(bookmarkdWithoutUserId);
 
       expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Missing required attribute - userId');
+      expect(response.body.message).toEqual(BookmarkValidationErrorMessages.BOOKMARK_NOT_VALID);
+      expect(response.body.validationErrors).toInclude(BookmarkValidationErrorMessages.MISSING_USER_ID);
     });
 
     it('should fail trying to CREATE bookmark without a location', async function () {
@@ -178,37 +166,11 @@ describe('Admin API Tests',  () => {
         .send(bookmarkWithoutLocation);
 
       expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Missing required attribute - location');
+      expect(response.body.message).toEqual(BookmarkValidationErrorMessages.BOOKMARK_NOT_VALID);
+      expect(response.body.validationErrors).toInclude(BookmarkValidationErrorMessages.MISSING_LOCATION);
     });
 
-    it('should fail trying to CREATE bookmark without tags', async function () {
-      let bookmarkWithoutTags = JSON.parse(JSON.stringify(bookmarkExample));
-      bookmarkWithoutTags.tags = [];
 
-      const response = await request(app)
-        .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', adminBearerToken)
-        .send(bookmarkWithoutTags);
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Missing required attribute - tags');
-    });
-
-    it('should fail trying to CREATE bookmark with too many tags', async function () {
-      let bookmark_with_too_many_tags = JSON.parse(JSON.stringify(bookmarkExample));
-      bookmark_with_too_many_tags.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
-
-      const response = await request(app)
-        .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', adminBearerToken)
-        .send(bookmark_with_too_many_tags);
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Too many tags have been submitted - max allowed 8');
-    });
 
   });
 
@@ -279,33 +241,17 @@ describe('Admin API Tests',  () => {
 
     });
 
-    it('should fail trying to add bookmark with existent location for same user', async function () {
-      const response = await request(app)
-        .post(`${baseApiUnderTestUrl}`)
-        .set('Authorization', adminBearerToken)
-        .send(bookmarkExample);
+    describe('failed UPDATE', function () {
 
-      expect(response.statusCode).toEqual(HttpStatus.CONFLICT);
-      expect(response.body.message).toEqual(`Create: A public bookmark with this location is already present - location: ${bookmarkExample.location}`);
-    });
-
-
-    describe('invalid bookmark attributes at UPDATE', function () {
-
-      it('should fail trying to UPDATE bookmark without a title', async function () {
-        let bookmark_without_title = JSON.parse(JSON.stringify(createdBookmark));
-        bookmark_without_title.name = '';
-
+      it('should fail trying to add bookmark with existent location for same user', async function () {
         const response = await request(app)
-          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
+          .post(`${baseApiUnderTestUrl}`)
           .set('Authorization', adminBearerToken)
-          .send(bookmark_without_title);
+          .send(bookmarkExample);
 
-        expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-        expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-        expect(response.body.validationErrors).toInclude('Missing required attribute - name');
+        expect(response.statusCode).toEqual(HttpStatus.CONFLICT);
+        expect(response.body.message).toEqual(`Create: A public bookmark with this location is already present - location: ${bookmarkExample.location}`);
       });
-
 
       it('should fail trying to UPDATE bookmark without a location', async function () {
         let bookmark_without_location = JSON.parse(JSON.stringify(createdBookmark));
@@ -320,49 +266,6 @@ describe('Admin API Tests',  () => {
         expect(response.body.message).toEqual('The bookmark you submitted is not valid');
         expect(response.body.validationErrors).toInclude('Missing required attribute - location');
       });
-
-      it('should fail trying to UPDATE bookmark without userId', async function () {
-        let bookmark_without_userid = JSON.parse(JSON.stringify(createdBookmark));
-        bookmark_without_userid.userId = '';
-
-        const response = await request(app)
-          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', adminBearerToken)
-          .send(bookmark_without_userid);
-
-        expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-        expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-        expect(response.body.validationErrors).toInclude('Missing required attribute - userId');
-      });
-
-      it('should fail trying to UPDATE bookmark without tags', async function () {
-        let bookmark_without_tags = JSON.parse(JSON.stringify(createdBookmark));
-        bookmark_without_tags.tags = [];
-
-        const response = await request(app)
-          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', adminBearerToken)
-          .send(bookmark_without_tags);
-
-        expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-        expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-        expect(response.body.validationErrors).toInclude('Missing required attribute - tags');
-      });
-
-      it('should fail trying to UPDATE bookmark with too many tags', async function () {
-        let bookmark_with_too_many_tags = JSON.parse(JSON.stringify(createdBookmark));
-        bookmark_with_too_many_tags.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
-
-        const response = await request(app)
-          .put(`${baseApiUnderTestUrl}${createdBookmark._id}`)
-          .set('Authorization', adminBearerToken)
-          .send(bookmark_with_too_many_tags);
-
-        expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-        expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-        expect(response.body.validationErrors).toInclude('Too many tags have been submitted - max allowed 8');
-      });
-
     });
 
 

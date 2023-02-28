@@ -24,8 +24,8 @@ const {
 } = require("../../../common/testing/test.utils");
 
 
-
 const {faker} = require('@faker-js/faker');
+const {BookmarkValidationRules, BookmarkValidationErrorMessages} = require("../../../common/bookmark-input.validator");
 
 describe('Personal Bookmarks tests', () => {
 
@@ -104,7 +104,7 @@ describe('Personal Bookmarks tests', () => {
     });
   });
 
-  describe('invalid bookmark attributes at CREATION', function () {
+  describe('fails at CREATION', function () {
     it('should fail trying to CREATE bookmark without a name', async function () {
       let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
       invalidBookmark.name = '';
@@ -115,104 +115,9 @@ describe('Personal Bookmarks tests', () => {
         .send(invalidBookmark);
 
       expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Missing required attribute - name');
+      expect(response.body.message).toEqual(BookmarkValidationErrorMessages.BOOKMARK_NOT_VALID);
+      expect(response.body.validationErrors).toInclude(BookmarkValidationErrorMessages.MISSING_TITLE);
     });
-
-    it('should fail trying to CREATE bookmark without a location', async function () {
-      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
-      invalidBookmark.location = '';
-
-      const response = await request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
-        .set('Authorization', bearerToken)
-        .send(invalidBookmark);
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Missing required attribute - location');
-    });
-
-    it('should fail trying to CREATE bookmark without tags', async function () {
-      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
-      invalidBookmark.tags = [];
-
-      const response = await request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
-        .set('Authorization', bearerToken)
-        .send(invalidBookmark)
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Missing required attribute - tags');
-    });
-
-    it('should fail trying to CREATE bookmark with too many tags', async function () {
-      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
-      invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9'];
-
-      const response = await request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
-        .set('Authorization', bearerToken)
-        .send(invalidBookmark);
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('Too many tags have been submitted - max allowed 8');
-    });
-
-    it('should fail trying to CREATE bookmark with blocked tags', async function () {
-      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
-      invalidBookmark.tags = ['tag1', 'tag2', 'tag3', 'tag4', 'awesome', 'awesome-java'];
-
-      const response = await request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
-        .set('Authorization', bearerToken)
-        .send(invalidBookmark);
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('The following tags are blocked: awesome awesome-java');
-    });
-
-    it('should fail trying to CREATE bookmark with a too big description', async function () {
-      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
-      const textSnippet = "long text in the making";
-      let longText = textSnippet;
-      for ( var i = 0; i < 500; i++ ) {
-        longText += textSnippet;
-      }
-      invalidBookmark.description = longText;
-
-      const response = await request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
-        .set('Authorization', bearerToken)
-        .send(invalidBookmark)
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed');
-    });
-
-    it('should fail trying to CREATE bookmark with a description with too many lines', async function () {
-      let invalidBookmark = JSON.parse(JSON.stringify(bookmarkExample));
-      const line = "oneline\n";
-      let longText = line;
-      for ( var i = 0; i < 1001; i++ ) {
-        longText += line;
-      }
-      invalidBookmark.description = longText;
-
-      const response = await request(app)
-        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
-        .set('Authorization', bearerToken)
-        .send(invalidBookmark);
-
-      expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-      expect(response.body.validationErrors).toInclude('The description has too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed');
-    });
-
   });
 
   describe('inexistent bookmark id tests', function () {
@@ -288,17 +193,17 @@ describe('Personal Bookmarks tests', () => {
         [
           'should fail trying to UPDATE bookmark without a name',
           {name: '', location: 'https://www.google.com'},
-          'Missing required attribute - name'
+          BookmarkValidationErrorMessages.MISSING_TITLE
         ],
         [
           'should fail trying to UPDATE bookmark without a location',
           {name: 'Google', location: ''},
-          'Missing required attribute - location'
+          BookmarkValidationErrorMessages.MISSING_LOCATION
         ],
         [
           'should fail trying to UPDATE bookmark without tags',
           {name: 'Google', location: 'https://www.google.com', tags: []},
-          'Missing required attribute - tags'
+          BookmarkValidationErrorMessages.MISSING_TAGS
         ],
         [
           'should fail trying to UPDATE bookmark with too many tags',
@@ -307,7 +212,7 @@ describe('Personal Bookmarks tests', () => {
             location: 'https://www.google.com',
             tags: ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6', 'tag7', 'tag8', 'tag9']
           },
-          'Too many tags have been submitted - max allowed 8'
+          BookmarkValidationErrorMessages.TOO_MANY_TAGS
         ],
         [
           'should fail trying to UPDATE bookmark with blocked tags',
@@ -324,9 +229,9 @@ describe('Personal Bookmarks tests', () => {
             name: 'Google',
             location: 'https://www.google.com',
             tags: ['tag1', 'tag2', 'tag3'],
-            description: faker.random.alpha(constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + 1)
+            description: faker.random.alpha(BookmarkValidationRules.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + 1)
           },
-          `The description is too long. Only ${constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION} allowed`
+          BookmarkValidationErrorMessages.DESCRIPTION_TOO_LONG
         ],
         [
           'should fail trying to UPDATE bookmark with a description with too many lines',
@@ -335,7 +240,6 @@ describe('Personal Bookmarks tests', () => {
             location: 'https://www.google.com',
             tags: ['tag1', 'tag2', 'tag3'],
             description: generateTextWithNumberLines(constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + 1)
-
           },
           `The description has too many lines. Only ${constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION} allowed`
         ]
