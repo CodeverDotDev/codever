@@ -19,8 +19,7 @@ const {
   getTestUserId,
   getAccessToken,
   getBearerToken,
-  getBookmarkId,
-  generateTextWithNumberLines
+  getBookmarkId
 } = require("../../../common/testing/test.utils");
 
 
@@ -239,9 +238,9 @@ describe('Personal Bookmarks tests', () => {
             name: 'Google',
             location: 'https://www.google.com',
             tags: ['tag1', 'tag2', 'tag3'],
-            description: generateTextWithNumberLines(constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + 1)
+            description: 'a\n'.repeat(BookmarkValidationRules.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + 1)
           },
-          `The description has too many lines. Only ${constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION} allowed`
+          BookmarkValidationErrorMessages.DESCRIPTION_TOO_MANY_LINES
         ]
       ])('%s', async (testName, bookmarkData, expectedError) => {
         const response = await request(app)

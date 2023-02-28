@@ -35,7 +35,7 @@ let validateSnippetInput = function(userId, snippet) {
 
   if (!snippet.tags || snippet.tags.length === 0) {
     validationErrorMessages.push('Missing required attribute - tags');
-  } else if (snippet.tags.length > constants.MAX_NUMBER_OF_TAGS) {
+  } else if (snippet.tags.length > SnippetValidationRules.MAX_NUMBER_OF_TAGS) {
     validationErrorMessages.push('Too many tags have been submitted - max allowed 8');
   }
 
@@ -44,6 +44,9 @@ let validateSnippetInput = function(userId, snippet) {
   }
 }
 
+const SnippetValidationRules = {
+  MAX_NUMBER_OF_TAGS: 8
+}
 const SnippetValidationMessages = {
   SNIPPET_NOT_VALID: 'The snippet you submitted is not valid',
   MISSING_USER_ID: 'Missing required attribute - userId',

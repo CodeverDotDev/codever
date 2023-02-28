@@ -41,7 +41,7 @@ describe('validateBookmarkInput', () => {
       name: 'My Bookmark',
       location: 'https://www.codever.dev',
       tags: ['productivity'],
-      description: 'a\n'.repeat(constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + 1),
+      description: 'a\n'.repeat(BookmarkValidationRules.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + 1),
     }, [BookmarkValidationErrorMessages.DESCRIPTION_TOO_MANY_LINES]],
     // Missing tags
     ['should fail trying to validate bookmark without tags',

@@ -31,7 +31,7 @@ function validateInputExceptUserId(bookmark) {
   }
   if (!bookmark.tags || bookmark.tags.length === 0) {
     validationErrorMessages.push(BookmarkValidationErrorMessages.MISSING_TAGS);
-  } else if (bookmark.tags.length > constants.MAX_NUMBER_OF_TAGS) {
+  } else if (bookmark.tags.length > BookmarkValidationRules.MAX_NUMBER_OF_TAGS) {
     validationErrorMessages.push(BookmarkValidationErrorMessages.TOO_MANY_TAGS);
   }
 
@@ -53,7 +53,7 @@ function validateInputExceptUserId(bookmark) {
       validationErrorMessages.push(BookmarkValidationErrorMessages.DESCRIPTION_TOO_LONG);
     }
 
-    const descriptionHasTooManyLines = bookmark.description.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    const descriptionHasTooManyLines = bookmark.description.split('\n').length > BookmarkValidationRules.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
     if (descriptionHasTooManyLines) {
       validationErrorMessages.push(BookmarkValidationErrorMessages.DESCRIPTION_TOO_MANY_LINES);
     }
@@ -102,6 +102,7 @@ let verifyPublicBookmarkExistenceOnUpdate = async function(bookmark, userId) {
 
 const BookmarkValidationRules = {
   MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION: 5000,
+  MAX_NUMBER_OF_LINES_FOR_DESCRIPTION: 500,
   MAX_NUMBER_OF_TAGS: 8
 }
 
@@ -116,7 +117,7 @@ const BookmarkValidationErrorMessages = {
   DESCRIPTION_TOO_LONG: `The description is too long. Only ${BookmarkValidationRules.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION} allowed`,
   MISSING_CODE_SNIPPETS: 'Missing required attribute - codeSnippets',
   CODE_SNIPPET_TOO_LONG: `The code snippet is too long. Max ${constants.MAX_NUMBER_OF_CHARS_FOR_CODE_SNIPPET} allowed`,
-  DESCRIPTION_TOO_MANY_LINES: `The description has too many lines. Only ${constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION} allowed`
+  DESCRIPTION_TOO_MANY_LINES: `The description has too many lines. Only ${BookmarkValidationRules.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION} allowed`
 }
 
 module.exports = {
