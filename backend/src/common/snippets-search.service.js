@@ -1,6 +1,6 @@
 const Snippet = require('../model/snippet');
 
-const searchUtils = require('./search.utils');
+const searchUtils = require('./searching/search.utils');
 const {OrderBy} = require("./searching/constant/orderby.constant");
 
 let findPublicSnippets = async function (query, page, limit, searchInclude) {

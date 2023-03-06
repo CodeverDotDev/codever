@@ -2,10 +2,10 @@
 const showdown = require('showdown'),
   converter = new showdown.Converter();
 
-const Bookmark = require('../model/bookmark');
+const Bookmark = require('../../model/bookmark');
 
 module.exports = {
-  buildBookmarkFromRequest: function (req) {
+  toBookmark: function (req) {
     const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml : converter.makeHtml(req.body.description);
     const youtubeVideoId = req.body.youtubeVideoId;
     const stackoverflowQuestionId = req.body.stackoverflowQuestionId;

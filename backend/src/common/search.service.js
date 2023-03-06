@@ -1,6 +1,6 @@
 const Snippet = require('../model/snippet');
 
-const searchUtils = require('./search.utils');
+const searchUtils = require('./searching/search.utils');
 
 let findItems = async function (type, isPublic, userId, query, page, limit, searchInclude) {
   //split in text and tags

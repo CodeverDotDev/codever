@@ -1,5 +1,5 @@
 const Bookmark = require('../../../model/bookmark');
-const searchUtils = require('../../../common/search.utils');
+const searchUtils = require('../../../common/searching/search.utils');
 
 let findPersonalBookmarks = async function (userId, query, page, limit, searchInclude) {
   //split in text and tags

@@ -2,7 +2,7 @@ const express = require('express');
 const personalBookmarksRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
-const bookmarkHelper = require('../../../common/bookmark-helper');
+const bookmarkRequestMapper = require('../../../common/mappers/bookmark-request.mapper');
 const personalBookmarksSearchService = require('../../../common/bookmarks-search.service');
 const PersonalBookmarksService = require('./personal-bookmarks.service');
 const UserIdValidator = require('../userid.validator');
@@ -28,7 +28,7 @@ personalBookmarksRouter.use(keycloak.middleware());
 personalBookmarksRouter.post('/', keycloak.protect(), async (request, response) => {
 
   UserIdValidator.validateUserId(request);
-  const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
+  const bookmark = bookmarkRequestMapper.toBookmark(request);
   let newBookmark = await PersonalBookmarksService.createBookmark(request.params.userId, bookmark);
 
   response
@@ -132,7 +132,7 @@ personalBookmarksRouter.put('/:bookmarkId', keycloak.protect(), async (request, 
 
   UserIdValidator.validateUserId(request);
 
-  const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
+  const bookmark = bookmarkRequestMapper.toBookmark(request);
 
   const {userId, bookmarkId} = request.params;
   const updatedBookmark = await PersonalBookmarksService.updateBookmark(userId, bookmarkId, bookmark);

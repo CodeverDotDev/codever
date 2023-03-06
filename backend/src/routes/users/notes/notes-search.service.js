@@ -1,6 +1,6 @@
 const Note = require('../../../model/note');
 
-const searchUtils = require('../../../common/search.utils');
+const searchUtils = require('../../../common/searching/search.utils');
 
 let findPersonalNotes = async function (userId, query, page, limit, searchInclude) {
   //split in text and tags
