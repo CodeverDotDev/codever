@@ -4,7 +4,7 @@ const NotFoundError = require('../../error/not-found.error');
 const ValidationError = require('../../error/validation.error');
 const crypto = require('crypto');
 
-const BookmarkInputValidator = require('../../common/bookmark-input.validator');
+const BookmarkInputValidator = require('../../common/validation/bookmark-input.validator');
 
 /* GET all bookmarks */
 let getBookmarksWithFilter = async (isPublic, location, userId) => {

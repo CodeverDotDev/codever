@@ -24,7 +24,7 @@ const {
 
 
 const {faker} = require('@faker-js/faker');
-const {BookmarkValidationRules, BookmarkValidationErrorMessages} = require("../../../common/bookmark-input.validator");
+const {BookmarkValidationRules, BookmarkValidationErrorMessages} = require("../../../common/validation/bookmark-input.validator");
 
 describe('Personal Bookmarks tests', () => {
 

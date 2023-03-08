@@ -1,7 +1,6 @@
 const bookmarkInputValidator = require('./bookmark-input.validator')
-const ValidationError = require("../error/validation.error");
+const ValidationError = require("../../error/validation.error");
 const {BookmarkValidationErrorMessages, BookmarkValidationRules} = require("./bookmark-input.validator");
-const constants = require('./constants');
 
 describe('validateBookmarkInput', () => {
   test.each([

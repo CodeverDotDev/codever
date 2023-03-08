@@ -10,7 +10,7 @@ const constants = require('../../common/constants');
 const superagent = require('superagent');
 
 const {toInclude} = require('jest-extended');
-const {BookmarkValidationErrorMessages} = require("../../common/bookmark-input.validator");
+const {BookmarkValidationErrorMessages} = require("../../common/validation/bookmark-input.validator");
 expect.extend({toInclude});
 
 describe('Admin API Tests', () => {

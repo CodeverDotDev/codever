@@ -1,7 +1,6 @@
-const constants = require('./constants');
-const ValidationError = require('../error/validation.error');
-const PublicBookmarkExistentError = require('../error/public-bookmark-existent.error');
-const Bookmark = require('../model/bookmark');
+const ValidationError = require('../../error/validation.error');
+const PublicBookmarkExistentError = require('../../error/public-bookmark-existent.error');
+const Bookmark = require('../../model/bookmark');
 
 let validateBookmarkInput = function(userId, bookmark) {
 
