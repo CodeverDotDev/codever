@@ -11,8 +11,8 @@ describe('splitSearchQuery', () => {
   it('should split search query into terms and tags', () => {
     const query = 'term1 [tag1] term2 [tag2]';
     const expectedResult = {
-      terms: ['term1', 'term2'],
-      tags: ['tag1', 'tag2']
+      searchTerms: ['term1', 'term2'],
+      searchTags: ['tag1', 'tag2']
     };
     expect(searchUtils.splitSearchQuery(query)).toEqual(expectedResult);
   });

@@ -12,9 +12,7 @@ let findPersonalBookmarks = async function (userId, query, page, limit, searchIn
 
 let findBookmarks = async function (isPublic, userId, query, page, limit, searchInclude, sort = 'textScore') {
   //split in text and tags
-  const searchTermsAndTags = searchUtils.splitSearchQuery(query);
-  const searchTerms = searchTermsAndTags.terms;
-  const searchTags = searchTermsAndTags.tags;
+  const {searchTerms, searchTags} = searchUtils.splitSearchQuery(query);
 
   const {specialSearchTerms, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchTerms);
 
@@ -49,7 +47,7 @@ let setSpecialSearchTermsFilter = function (isPublic, userId, specialSearchTerms
     newFilter.userId = specialSearchTerms.userId;
   }
 
-  if ( specialSearchTerms.privateOnly && !isPublic) { //
+  if ( specialSearchTerms.privateOnly && !isPublic ) { //
     newFilter.public = false;
   }
 

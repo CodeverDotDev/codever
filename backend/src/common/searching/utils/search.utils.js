@@ -2,10 +2,8 @@ const ValidationError = require("../../../error/validation.error");
 const {OrderBy} = require("../constant/orderby.constant");
 const {SearchInclude} = require("../constant/searchInclude.constant");
 const {SpecialSearchTerm} = require("../constant/specialSearchTerm.constant");
+
 let splitSearchQuery = function (query) {
-
-  const result = {};
-
   const terms = [];
   let term = '';
   const tags = [];
@@ -56,10 +54,10 @@ let splitSearchQuery = function (query) {
     terms.push(term);
   }
 
-  result.terms = terms;
-  result.tags = tags;
-
-  return result;
+  return {
+    searchTerms: terms,
+    searchTags: tags
+  }
 }
 
 

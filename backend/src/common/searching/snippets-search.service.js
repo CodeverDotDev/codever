@@ -13,10 +13,7 @@ let findPersonalSnippets = async function (userId, query, page, limit, searchInc
 
 let findSnippets = async function (isPublic, userId, query, page, limit, searchInclude, sort = 'textScore') {
   //split in text and tags
-  const searchTermsAndTags = searchUtils.splitSearchQuery(query);
-  const searchTerms = searchTermsAndTags.terms;
-  const searchTags = searchTermsAndTags.tags;
-
+  const {searchTerms, searchTags}  = searchUtils.splitSearchQuery(query);
   const {specialSearchTerms, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchTerms);
 
   let filter = {}
