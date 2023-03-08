@@ -3,7 +3,7 @@ const personalSnippetsRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
 const PersonalSnippetsService = require('./personal-snippets.service');
-const SnippetsSearchService = require('../../../common/snippets-search.service');
+const SnippetsSearchService = require('../../../common/searching/snippets-search.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
 

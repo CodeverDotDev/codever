@@ -3,7 +3,7 @@ const personalBookmarksRouter = express.Router({mergeParams: true});
 const Keycloak = require('keycloak-connect');
 
 const bookmarkRequestMapper = require('../../../common/mappers/bookmark-request.mapper');
-const personalBookmarksSearchService = require('../../../common/bookmarks-search.service');
+const personalBookmarksSearchService = require('../../../common/searching/bookmarks-search.service');
 const PersonalBookmarksService = require('./personal-bookmarks.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');

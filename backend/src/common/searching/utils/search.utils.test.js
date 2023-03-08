@@ -2,9 +2,9 @@ const searchUtils = require('./search.utils');
 const {toBeEmpty} = require('jest-extended');
 expect.extend({toBeEmpty});
 
-const ValidationError = require("../../error/validation.error");
-const {OrderBy} = require("./constant/orderby.constant");
-const {CreatedAt} = require("./constant/createtAt.constant");
+const ValidationError = require("../../../error/validation.error");
+const {OrderBy} = require("../constant/orderby.constant");
+const {CreatedAt} = require("../constant/createtAt.constant");
 
 
 describe('splitSearchQuery', () => {

@@ -1,5 +1,5 @@
-const personalBookmarksSearchService = require('../../common/bookmarks-search.service');
-const personalSnippetsSearchService = require('../../common/snippets-search.service');
+const personalBookmarksSearchService = require('../../common/searching/bookmarks-search.service');
+const personalSnippetsSearchService = require('../../common/searching/snippets-search.service');
 const personalNotesSearchService = require('./notes/notes-search.service');
 
 let getPersonalSearchResults = async function (userId, query, page, limit, searchInclude) {

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const NodeCache = require('../../cache-middleware');
-const bookmarksSearchService = require('../../common/bookmarks-search.service');
+const bookmarksSearchService = require('../../common/searching/bookmarks-search.service');
 const PublicBookmarksService = require('./public-bookmarks.service');
 
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');

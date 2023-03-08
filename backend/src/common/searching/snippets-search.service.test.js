@@ -1,7 +1,7 @@
 const snippetsSearchService = require('./snippets-search.service');
 
-const Snippet = require('../model/snippet');
-jest.mock('../model/snippet', () => {
+const Snippet = require('../../model/snippet');
+jest.mock('../../model/snippet', () => {
   return {
     find: jest.fn(() => ({
       sort: jest.fn(() => ({

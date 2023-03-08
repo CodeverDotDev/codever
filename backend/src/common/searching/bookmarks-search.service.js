@@ -1,6 +1,6 @@
-const Bookmark = require('../model/bookmark');
-const searchUtils = require('./searching/search.utils');
-const {OrderBy} = require("./searching/constant/orderby.constant");
+const Bookmark = require('../../model/bookmark');
+const searchUtils = require('./utils/search.utils');
+const {OrderBy} = require("./constant/orderby.constant");
 
 let findPublicBookmarks = async function (query, page, limit, searchInclude, sort) {
   return findBookmarks(true, null, query, page, limit, searchInclude, sort);

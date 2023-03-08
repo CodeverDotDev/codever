@@ -1,7 +1,7 @@
 const Bookmark = require('../../model/bookmark');
 // TODO - remove
 //  const escapeStringRegexp = require('escape-string-regexp');
-const searchUtils = require('../../common/searching/search.utils');
+const searchUtils = require('../../common/searching/utils/search.utils');
 
 let findPublicBookmarks = async function (query, page, limit, sort, searchInclude) {
   //split in text and tags

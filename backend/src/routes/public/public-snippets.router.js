@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const NodeCache = require('../../cache-middleware');
-const SnippetsSearchService = require('../../common/snippets-search.service');
+const SnippetsSearchService = require('../../common/searching/snippets-search.service');
 const PublicSnippetsService = require('./public-snippets.service');
 
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
