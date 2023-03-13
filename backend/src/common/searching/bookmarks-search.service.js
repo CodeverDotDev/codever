@@ -12,20 +12,10 @@ let findPersonalBookmarks = async function (userId, query, page, limit, searchIn
 }
 
 let findBookmarks = async function (isPublic, userId, query, page, limit, searchInclude, sort = 'textScore') {
-  //split in text and tags
-  const {searchTerms, searchTags} = searchUtils.splitSearchQuery(query);
+  const {filter, sortBy}
+    = searchUtils.generateSearchFilterAndSortBy(DocType.BOOKMARK, isPublic, userId, query, searchInclude, sort);
 
-  const {specialSearchTerms, fulltextSearchTerms} = searchUtils.extractFulltextAndSpecialSearchTerms(searchTerms);
-
-  let filter = {}
-  filter = searchUtils.setPublicOrPersonalFilter(isPublic, filter, userId);
-  filter = searchUtils.setTagsToFilter(searchTags, filter);
-  filter = searchUtils.setFulltextSearchTermsFilter(fulltextSearchTerms, filter, searchInclude);
-  filter = searchUtils.setSpecialSearchTermsFilter(DocType.BOOKMARK, isPublic, userId, specialSearchTerms, filter);
-
-  const sortBy = searchUtils.getSortByObject(sort, fulltextSearchTerms);
-
-  let bookmarks = await Bookmark.find(
+  const bookmarks = await Bookmark.find(
     filter,
     {
       score: {$meta: OrderBy.TEXT_SCORE}

@@ -201,6 +201,24 @@ function getSortByObject(sort, fulltextSearchTerms) {
   return Object.freeze(sortBy);
 }
 
+const generateSearchFilterAndSortBy = (docType, isPublic, userId, query, searchInclude, sort) => {
+  const {searchTerms, searchTags} = splitSearchQuery(query);
+
+  const {specialSearchTerms, fulltextSearchTerms} = extractFulltextAndSpecialSearchTerms(searchTerms);
+
+  let filter = {}
+  filter = setPublicOrPersonalFilter(isPublic, filter, userId);
+  filter = setTagsToFilter(searchTags, filter);
+  filter = setFulltextSearchTermsFilter(fulltextSearchTerms, filter, searchInclude);
+  filter = setSpecialSearchTermsFilter(docType, isPublic, userId, specialSearchTerms, filter);
+  const sortBy = getSortByObject(sort, fulltextSearchTerms);
+
+  return {
+    filter: filter,
+    sortBy: sortBy
+  }
+
+}
 
 module.exports = {
   splitSearchQuery: splitSearchQuery,
@@ -211,4 +229,5 @@ module.exports = {
   setTagsToFilter: setTagsToFilter,
   setSpecialSearchTermsFilter: setSpecialSearchTermsFilter,
   getSortByObject: getSortByObject,
+  generateSearchFilterAndSortBy: generateSearchFilterAndSortBy
 }

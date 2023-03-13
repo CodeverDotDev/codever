@@ -214,5 +214,215 @@ describe('getSortByObject', () => {
   });
 });
 
+describe('generateSearchFilterAndSortBy', () => {
+  const input = {
+    isPublic: false,
+    userId: 'user1',
+    searchInclude: 'any'
+  }
+
+  test.each([
+    [
+      DocType.SNIPPET,
+      {
+        ...input,
+        query: 'codever testing'
+      },
+      {
+        userId: input.userId,
+        $text: {$search: 'codever testing'}
+      },
+      {
+        score: {$meta: OrderBy.TEXT_SCORE}
+      }
+    ],
+    [
+      DocType.SNIPPET,
+      {
+        ...input,
+        userId: undefined,
+        isPublic: true,
+        query: 'codever testing'
+      },
+      {
+        public: true,
+        $text: {$search: 'codever testing'}
+      },
+      {
+        score: {$meta: OrderBy.TEXT_SCORE}
+      }
+    ],
+    [
+      DocType.SNIPPET,
+      {
+        ...input,
+        searchInclude: undefined,
+        query: 'codever testing'
+      },
+      {
+        userId: input.userId,
+        $text: {$search: '"codever" "testing"'}
+      },
+      {
+        score: {$meta: OrderBy.TEXT_SCORE}
+      }
+    ],
+    [
+      DocType.SNIPPET,
+      {
+        ...input,
+        searchInclude: undefined,
+        query: 'codever testing -javascript'
+      },
+      {
+        userId: input.userId,
+        $text: {$search: '"codever" "testing" -javascript'}
+      },
+      {
+        score: {$meta: OrderBy.TEXT_SCORE}
+      }
+    ],
+    [
+      DocType.SNIPPET,
+      {
+        ...input,
+        query: '[javascript]'
+      },
+      {
+        userId: input.userId,
+        tags:
+          {
+            $all: ['javascript']
+          }
+      },
+      {
+        "createdAt": -1
+      }
+    ],
+    [
+      DocType.SNIPPET,
+      {
+        ...input,
+        query: '[javascript] jest testing'
+      },
+      {
+        userId: input.userId,
+        $text: {$search: 'jest testing'},
+        tags:
+          {
+            $all: ['javascript']
+          }
+      },
+      {
+        score: {$meta: OrderBy.TEXT_SCORE}
+      }
+    ],
+    [
+      DocType.SNIPPET,
+      {
+        ...input,
+        query: '[javascript] jest testing site:codever.dev'
+      },
+      {
+        userId: input.userId,
+        $text: {$search: 'jest testing'},
+        sourceUrl: new RegExp("codever.dev", 'i'),
+        tags:
+          {
+            $all: ['javascript']
+          }
+      },
+      {
+        score: {$meta: OrderBy.TEXT_SCORE}
+      }
+    ],
+    [
+      DocType.BOOKMARK,
+      {
+        ...input,
+        query: '[javascript] jest testing site:codever.dev'
+      },
+      {
+        userId: input.userId,
+        $text: {$search: 'jest testing'},
+        location: new RegExp("codever.dev", 'i'),
+        tags:
+          {
+            $all: ['javascript']
+          }
+      },
+      {
+        score: {$meta: OrderBy.TEXT_SCORE}
+      }
+    ],
+    [
+      DocType.BOOKMARK,
+      {
+        ...input,
+        sort: OrderBy.NEWEST,
+        query: '[javascript] jest testing site:codever.dev'
+      },
+      {
+        userId: input.userId,
+        $text: {$search: 'jest testing'},
+        location: new RegExp("codever.dev", 'i'),
+        tags:
+          {
+            $all: ['javascript']
+          }
+      },
+      {
+        "createdAt": -1
+      }
+    ],
+    [
+      DocType.BOOKMARK,
+      {
+        ...input,
+        query: '[javascript] jest testing site:codever.dev lang:en'
+      },
+      {
+        userId: input.userId,
+        $text: {$search: 'jest testing'},
+        location: new RegExp("codever.dev", 'i'),
+        language: 'en',
+        tags:
+          {
+            $all: ['javascript']
+          }
+      },
+      {
+        score: {$meta: OrderBy.TEXT_SCORE}
+      }
+    ],
+    [
+      DocType.BOOKMARK,
+      {
+        ...input,
+        query: '[javascript] lang:en'
+      },
+      {
+        userId: input.userId,
+        language: 'en',
+        tags:
+          {
+            $all: ['javascript']
+          }
+      },
+      {
+        "createdAt": -1
+      }
+    ],
+  ])('for %p, given input params %p , should generate filter %p and sortBy %p', async (docType, input, expectedFilter, expectedSortBy) => {
+    const {
+      filter,
+      sortBy
+    } = searchUtils.generateSearchFilterAndSortBy(docType, input.isPublic, input.userId, input.query, input.searchInclude, input.sort);
+    expect(filter).toEqual(expectedFilter);
+    expect(sortBy).toEqual(expectedSortBy);
+  });
+
+});
+
 
 
