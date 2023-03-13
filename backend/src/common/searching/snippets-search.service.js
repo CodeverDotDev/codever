@@ -2,6 +2,7 @@ const Snippet = require('../../model/snippet');
 
 const searchUtils = require('./utils/search.utils');
 const {OrderBy} = require("./constant/orderby.constant");
+const {DocType} = require("../constants");
 
 let findPublicSnippets = async function (query, page, limit, searchInclude) {
   return findSnippets(true, null, query, page, limit, searchInclude)
@@ -20,7 +21,7 @@ let findSnippets = async function (isPublic, userId, query, page, limit, searchI
   filter = searchUtils.setPublicOrPersonalFilter(isPublic, filter, userId);
   filter = searchUtils.setTagsToFilter(searchTags, filter);
   filter = searchUtils.setFulltextSearchTermsFilter(fulltextSearchTerms, filter, searchInclude);
-  filter = searchUtils.setSpecialSearchTermsFilter(isPublic, userId, specialSearchTerms, filter);
+  filter = searchUtils.setSpecialSearchTermsFilter(DocType.SNIPPET, isPublic, userId, specialSearchTerms, filter);
 
   const sortBy = searchUtils.getSortByObject(sort, fulltextSearchTerms);
 

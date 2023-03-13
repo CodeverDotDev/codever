@@ -2,6 +2,7 @@ const ValidationError = require("../../../error/validation.error");
 const {OrderBy} = require("../constant/orderby.constant");
 const {SearchInclude} = require("../constant/searchInclude.constant");
 const {SpecialSearchTerm} = require("../constant/specialSearchTerm.constant");
+const {DocType} = require("../../constants");
 
 let splitSearchQuery = function (query) {
   const terms = [];
@@ -161,7 +162,7 @@ let setPublicOrPersonalFilter = function (isPublic, filter, userId) {
 };
 
 
-let setSpecialSearchTermsFilter = function (isPublic, userId, specialSearchFilters, filter) {
+let setSpecialSearchTermsFilter = function (docType, isPublic, userId, specialSearchFilters, filter) {
   let newFilter = {...filter};
 
   //one is not entitled to see private bookmarks of another user
@@ -173,8 +174,18 @@ let setSpecialSearchTermsFilter = function (isPublic, userId, specialSearchFilte
     newFilter.public = false;
   }
 
+  if ( specialSearchFilters.lang ) {
+    newFilter.language = specialSearchFilters.lang
+  }
+
   if ( specialSearchFilters.site ) {
-    newFilter.sourceUrl = new RegExp(specialSearchFilters.site, 'i');//TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
+    if(docType === DocType.BOOKMARK) {
+      newFilter.location = new RegExp(specialSearchFilters.site, 'i');
+    } else if (docType === DocType.SNIPPET) {
+      newFilter.sourceUrl = new RegExp(specialSearchFilters.site, 'i');//TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
+    } else {
+      throw new Error(`${docType} is not supported as document type`)
+    }
   }
 
   return newFilter;

@@ -1,6 +1,7 @@
 const Bookmark = require('../../model/bookmark');
 const searchUtils = require('./utils/search.utils');
 const {OrderBy} = require("./constant/orderby.constant");
+const {DocType} = require("../constants");
 
 let findPublicBookmarks = async function (query, page, limit, searchInclude, sort) {
   return findBookmarks(true, null, query, page, limit, searchInclude, sort);
@@ -20,7 +21,7 @@ let findBookmarks = async function (isPublic, userId, query, page, limit, search
   filter = searchUtils.setPublicOrPersonalFilter(isPublic, filter, userId);
   filter = searchUtils.setTagsToFilter(searchTags, filter);
   filter = searchUtils.setFulltextSearchTermsFilter(fulltextSearchTerms, filter, searchInclude);
-  filter = setSpecialSearchTermsFilter(isPublic, userId, specialSearchTerms, filter);
+  filter = searchUtils.setSpecialSearchTermsFilter(DocType.BOOKMARK, isPublic, userId, specialSearchTerms, filter);
 
   const sortBy = searchUtils.getSortByObject(sort, fulltextSearchTerms);
 
@@ -38,29 +39,6 @@ let findBookmarks = async function (isPublic, userId, query, page, limit, search
 
   return bookmarks;
 }
-
-let setSpecialSearchTermsFilter = function (isPublic, userId, specialSearchTerms, filter) {
-  let newFilter = {...filter};
-
-  //one is not entitled to see private bookmarks of another user
-  if ( specialSearchTerms.userId && (isPublic || specialSearchTerms.userId === userId) ) {
-    newFilter.userId = specialSearchTerms.userId;
-  }
-
-  if ( specialSearchTerms.privateOnly && !isPublic ) { //
-    newFilter.public = false;
-  }
-
-  if ( specialSearchTerms.lang ) {
-    newFilter.language = specialSearchTerms.lang
-  }
-
-  if ( specialSearchTerms.site ) {
-    newFilter.location = new RegExp(specialSearchTerms.site, 'i');//TODO when performance becomes an issue extract domains from URLs
-  }
-
-  return newFilter;
-};
 
 module.exports = {
   findPublicBookmarks: findPublicBookmarks,

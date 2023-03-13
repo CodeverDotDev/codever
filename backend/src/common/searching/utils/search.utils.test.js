@@ -5,6 +5,7 @@ expect.extend({toBeEmpty});
 const ValidationError = require("../../../error/validation.error");
 const {OrderBy} = require("../constant/orderby.constant");
 const {CreatedAt} = require("../constant/createtAt.constant");
+const {DocType} = require("../../constants");
 
 
 describe('splitSearchQuery', () => {
@@ -65,40 +66,95 @@ describe('generateFullSearchText', () => {
   });
 });
 
+
+describe('setSpecialSearchTermsFilter', () => {
+  describe('set the filter correctly', () => {
+    test.each([
+      [
+        'should set the userId filter when specialSearchTerms.userId is present and isPublic is true',
+        {}, DocType.SNIPPET, {userId: '123'}, true, '123', {userId: '123'}
+      ],
+      [
+        'should set the userId filter when specialSearchTerms.userId is present and matches the userId',
+        {}, DocType.SNIPPET, {userId: '123'}, false, '123', {userId: '123'}
+      ],
+      [
+        'should not set the userId filter when specialSearchTerms.userId is present and does not match the userId',
+        {}, DocType.SNIPPET, {userId: '456'}, false, '123', {}
+      ],
+      [
+        'should set the public filter to false when specialSearchTerms.privateOnly is present',
+        {}, DocType.SNIPPET, {privateOnly: true}, false, '123', {public: false}
+      ],
+      [
+        'should set the sourceUrl filter when specialSearchTerms.site is present for snippets',
+        {}, DocType.SNIPPET, {site: 'example.com'}, false, '123', {sourceUrl: /example.com/i}
+      ],
+      [
+        'should set the location filter when specialSearchTerms.site is present for bookmarks',
+        {}, DocType.BOOKMARK, {site: 'example.com'}, false, '123', {location: /example.com/i}
+      ]
+    ])('%s', (testName, filter, docType, specialSearchTerms, isPublic, userId, expected) => {
+      const result = searchUtils.setSpecialSearchTermsFilter(docType, isPublic, userId, specialSearchTerms, filter);
+      expect(result).toEqual(expected);
+    });
+  });
+
+  it('should throw error when document type not known', () => {
+    const filter = {};
+    const specialSearchTerms = {site: 'example.com'};
+    expect(() => searchUtils.setSpecialSearchTermsFilter('unknown', false, '123', specialSearchTerms, filter)).toThrow(Error);
+  });
+});
+
+
 describe('setSpecialSearchTermsFilter', () => {
   it('should set the userId filter when specialSearchTerms.userId is present and isPublic is true', () => {
     const filter = {};
     const specialSearchTerms = {userId: '123'};
-    const result = searchUtils.setSpecialSearchTermsFilter(true, '123', specialSearchTerms, filter);
+    const result = searchUtils.setSpecialSearchTermsFilter(DocType.SNIPPET, true, '123', specialSearchTerms, filter);
     expect(result).toEqual({userId: '123'});
   });
 
   it('should set the userId filter when specialSearchTerms.userId is present and matches the userId', () => {
     const filter = {};
     const specialSearchTerms = {userId: '123'};
-    const result = searchUtils.setSpecialSearchTermsFilter(false, '123', specialSearchTerms, filter);
+    const result = searchUtils.setSpecialSearchTermsFilter(DocType.SNIPPET, false, '123', specialSearchTerms, filter);
     expect(result).toEqual({userId: '123'});
   });
 
   it('should not set the userId filter when specialSearchTerms.userId is present and does not match the userId', () => {
     const filter = {};
     const specialSearchTerms = {userId: '456'};
-    const result = searchUtils.setSpecialSearchTermsFilter(false, '123', specialSearchTerms, filter);
+    const result = searchUtils.setSpecialSearchTermsFilter(DocType.SNIPPET, false, '123', specialSearchTerms, filter);
     expect(result).toEqual({});
   });
 
   it('should set the public filter to false when specialSearchTerms.privateOnly is present', () => {
     const filter = {};
     const specialSearchTerms = {privateOnly: true};
-    const result = searchUtils.setSpecialSearchTermsFilter(false, '123', specialSearchTerms, filter);
+    const result = searchUtils.setSpecialSearchTermsFilter(DocType.SNIPPET, false, '123', specialSearchTerms, filter);
     expect(result).toEqual({public: false});
   });
 
-  it('should set the sourceUrl filter when specialSearchTerms.site is present', () => {
+  it('should set the sourceUrl filter when specialSearchTerms.site is present for snippets', () => {
     const filter = {};
     const specialSearchTerms = {site: 'example.com'};
-    const result = searchUtils.setSpecialSearchTermsFilter(false, '123', specialSearchTerms, filter);
+    const result = searchUtils.setSpecialSearchTermsFilter(DocType.SNIPPET, false, '123', specialSearchTerms, filter);
     expect(result).toEqual({sourceUrl: /example.com/i});
+  });
+
+  it('should set the location filter when specialSearchTerms.site is present for bookmarks', () => {
+    const filter = {};
+    const specialSearchTerms = {site: 'example.com'};
+    const result = searchUtils.setSpecialSearchTermsFilter(DocType.BOOKMARK, false, '123', specialSearchTerms, filter);
+    expect(result).toEqual({location: /example.com/i});
+  });
+
+  it('should set the location filter when specialSearchTerms.site is present for bookmarks', () => {
+    const filter = {};
+    const specialSearchTerms = {site: 'example.com'};
+    expect(() => searchUtils.setSpecialSearchTermsFilter('unknown', false, '123', specialSearchTerms, filter)).toThrow(Error);
   });
 });
 
