@@ -1,7 +1,6 @@
-const constants = require('./constants');
-const ValidationError = require('../error/validation.error');
-const PublicBookmarkExistentError = require('../error/public-bookmark-existent.error');
-const Bookmark = require('../model/bookmark');
+const ValidationError = require('../../error/validation.error');
+const PublicBookmarkExistentError = require('../../error/public-bookmark-existent.error');
+const Bookmark = require('../../model/bookmark');
 
 let validateBookmarkInput = function(userId, bookmark) {
 
@@ -12,7 +11,7 @@ let validateBookmarkInput = function(userId, bookmark) {
   }
 
   if(validationErrorMessages.length > 0){
-    throw new ValidationError('The bookmark you submitted is not valid', validationErrorMessages);
+    throw new ValidationError(BookmarkValidationErrorMessages.BOOKMARK_NOT_VALID, validationErrorMessages);
   }
 }
 
@@ -20,23 +19,23 @@ function validateInputExceptUserId(bookmark) {
   let validationErrorMessages = [];
 
   if (!bookmark.userId) {
-    validationErrorMessages.push('Missing required attribute - userId');
+    validationErrorMessages.push(BookmarkValidationErrorMessages.MISSING_USER_ID);
   }
 
   if (!bookmark.name) {
-    validationErrorMessages.push('Missing required attribute - name');
+    validationErrorMessages.push(BookmarkValidationErrorMessages.MISSING_TITLE);
   }
   if (!bookmark.location) {
-    validationErrorMessages.push('Missing required attribute - location');
+    validationErrorMessages.push(BookmarkValidationErrorMessages.MISSING_LOCATION);
   }
   if (!bookmark.tags || bookmark.tags.length === 0) {
-    validationErrorMessages.push('Missing required attribute - tags');
-  } else if (bookmark.tags.length > constants.MAX_NUMBER_OF_TAGS) {
-    validationErrorMessages.push('Too many tags have been submitted - max allowed 8');
+    validationErrorMessages.push(BookmarkValidationErrorMessages.MISSING_TAGS);
+  } else if (bookmark.tags.length > BookmarkValidationRules.MAX_NUMBER_OF_TAGS) {
+    validationErrorMessages.push(BookmarkValidationErrorMessages.TOO_MANY_TAGS);
   }
 
   let blockedTags = '';
-  for (let i = 0; i < bookmark.tags.length; i++) {
+  for (let i = 0; i < bookmark.tags?.length; i++) {
     const tag = bookmark.tags[i];
     if (tag.startsWith('awesome')) {
       blockedTags = blockedTags.concat(' ' + tag);
@@ -48,14 +47,14 @@ function validateInputExceptUserId(bookmark) {
   }
 
   if (bookmark.description) {
-    const descriptionIsTooLong = bookmark.description.length > constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
+    const descriptionIsTooLong = bookmark.description.length > BookmarkValidationRules.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION;
     if (descriptionIsTooLong) {
-      validationErrorMessages.push('The description is too long. Only ' + constants.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION + ' allowed');
+      validationErrorMessages.push(BookmarkValidationErrorMessages.DESCRIPTION_TOO_LONG);
     }
 
-    const descriptionHasTooManyLines = bookmark.description.split('\n').length > constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
+    const descriptionHasTooManyLines = bookmark.description.split('\n').length > BookmarkValidationRules.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION;
     if (descriptionHasTooManyLines) {
-      validationErrorMessages.push('The description hast too many lines. Only ' + constants.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION + ' allowed');
+      validationErrorMessages.push(BookmarkValidationErrorMessages.DESCRIPTION_TOO_MANY_LINES);
     }
   }
 
@@ -100,9 +99,29 @@ let verifyPublicBookmarkExistenceOnUpdate = async function(bookmark, userId) {
   return 1;
 }
 
+const BookmarkValidationRules = {
+  MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION: 5000,
+  MAX_NUMBER_OF_LINES_FOR_DESCRIPTION: 500,
+  MAX_NUMBER_OF_TAGS: 8
+}
+
+const BookmarkValidationErrorMessages = {
+  BOOKMARK_NOT_VALID: 'The bookmark you submitted is not valid',
+  MISSING_USER_ID: 'Missing required attribute - userId',
+  USER_ID_NOT_MATCHING: 'The userId of the bookmark does not match the userId parameter',
+  MISSING_TITLE: 'Missing required attribute - title',
+  MISSING_LOCATION: 'Missing required attribute - location',
+  MISSING_TAGS: 'Missing required attribute - tags',
+  TOO_MANY_TAGS: `Too many tags - max ${BookmarkValidationRules.MAX_NUMBER_OF_TAGS} allowed`,
+  DESCRIPTION_TOO_LONG: `The description is too long. Only ${BookmarkValidationRules.MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION} allowed`,
+  DESCRIPTION_TOO_MANY_LINES: `The description has too many lines. Only ${BookmarkValidationRules.MAX_NUMBER_OF_LINES_FOR_DESCRIPTION} allowed`
+}
+
 module.exports = {
   validateBookmarkInput: validateBookmarkInput,
   validateBookmarkInputForAdmin: validateBookmarkInputForAdmin,
   verifyPublicBookmarkExistenceOnCreation: verifyPublicBookmarkExistenceOnCreation,
   verifyPublicBookmarkExistenceOnUpdate: verifyPublicBookmarkExistenceOnUpdate,
+  BookmarkValidationErrorMessages: BookmarkValidationErrorMessages,
+  BookmarkValidationRules: BookmarkValidationRules
 };

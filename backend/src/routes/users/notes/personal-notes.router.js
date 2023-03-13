@@ -75,7 +75,7 @@ personalNotesRouter.get('/', keycloak.protect(), async (request, response, next)
 
   const {userId} = request.params;
   if ( searchText ) {
-    const notes = await NotesSearchService.findNotes(userId, searchText, page, limit, searchInclude);
+    const notes = await NotesSearchService.findPersonalNotes(userId, searchText, page, limit, searchInclude);
 
     return response.status(HttpStatus.OK).send(notes);
   } else {

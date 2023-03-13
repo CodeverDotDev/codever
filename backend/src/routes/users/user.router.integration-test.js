@@ -1,20 +1,19 @@
 const app = require('../../app');
-const chai = require('chai');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes/index');
-const expect = chai.expect;
-const jwt = require('jsonwebtoken');
 
 
 const common = require('../../common/config');
-const config = common.config();
 
-const superagent = require('superagent');
+
+const {toInclude} = require('jest-extended');
+const {getAccessToken, getBearerToken, getTestUserId} = require("../../common/testing/test.utils");
+expect.extend({toInclude});
 
 /**
  * Order of tests is important (example user will be first created/updated to eventually be deleted)
  */
-describe('User Data tests', function () {
+describe('User Data tests',  () => {
 
   let bearerToken;
   let testUserId;
@@ -25,20 +24,11 @@ describe('User Data tests', function () {
   const searchTextExample = 'nodejs rocks';
   let userExample;
 
-  before(async function () {
+  beforeAll(async () => {
     try {
-      const userBearerTokenResponse = await
-        superagent
-          .post(config.integration_tests.token_endpoint)
-          .send('client_id=' + config.integration_tests.client_id)
-          .send('client_secret=' + config.integration_tests.client_secret)
-          .send('grant_type=client_credentials')
-          .set('Accept', 'application/json');
-
-      const accessToken = userBearerTokenResponse.body.access_token;
-      bearerToken = 'Bearer ' + accessToken;
-      const decoded = jwt.decode(accessToken);
-      testUserId = decoded.sub;
+      const accessToken = await getAccessToken();
+      bearerToken = getBearerToken(accessToken);
+      testUserId = getTestUserId(accessToken);
 
       userExample = {
         "userId": testUserId,
@@ -65,15 +55,15 @@ describe('User Data tests', function () {
       .get(baseApiUrlUnderTest + '/invalid-user-id')
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+    expect(response.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
   });
 
-  it('should fail trying to GET data for unexisting user', async function () {
+  it('should fail trying to GET data for not existing user', async function () {
     const response = await request(app)
       .get(`${baseApiUrlUnderTest}/${testUserId}`)
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.NOT_FOUND);
+    expect(response.statusCode).toEqual(HttpStatus.NOT_FOUND);
   });
 
   it('should fail trying to UPDATE user without userId in the body', async function () {
@@ -84,8 +74,8 @@ describe('User Data tests', function () {
       .put(`${baseApiUrlUnderTest}/${testUserId}`)
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-    expect(response.body.validationErrors).to.include('Missing or invalid userId in provided user data');
+    expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+    expect(response.body.validationErrors).toInclude('Missing or invalid userId in provided user data');
   });
 
   it('should fail trying to UPDATE with invalid user Id in the body', async function () {
@@ -96,8 +86,8 @@ describe('User Data tests', function () {
       .put(`${baseApiUrlUnderTest}/${testUserId}`)
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-    expect(response.body.validationErrors).to.include('Missing or invalid userId in provided user data');
+    expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+    expect(response.body.validationErrors).toInclude('Missing or invalid userId in provided user data');
   });
 
   it('should successfully UPDATE example user without searches', async function () {
@@ -109,9 +99,9 @@ describe('User Data tests', function () {
       .set('Authorization', bearerToken)
       .send(newUser);
 
-    expect(response.statusCode).to.equal(HttpStatus.OK);
-    expect(response.body.userId).to.equal(testUserId);
-    expect(response.body.searches.length).to.equal(0);
+    expect(response.statusCode).toEqual(HttpStatus.OK);
+    expect(response.body.userId).toEqual(testUserId);
+    expect(response.body.searches.length).toEqual(0);
   });
 
   it('should fail trying to UPDATE example user with invalid searches', async function () {
@@ -123,8 +113,8 @@ describe('User Data tests', function () {
       .set('Authorization', bearerToken)
       .send(userWithInvalidSearches);
 
-    expect(response.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-    expect(response.body.validationErrors).to.include('Searches are not valid - search text is required');
+    expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+    expect(response.body.validationErrors).toInclude('Searches are not valid - search text is required');
 
   });
 
@@ -134,10 +124,10 @@ describe('User Data tests', function () {
       .set('Authorization', bearerToken)
       .send(userExample);
 
-    expect(response.statusCode).to.equal(HttpStatus.OK);
-    expect(response.body.userId).to.equal(testUserId);
-    expect(response.body.searches).to.have.lengthOf(1);
-    expect(response.body.searches[0].text).to.equal(searchTextExample);
+    expect(response.statusCode).toEqual(HttpStatus.OK);
+    expect(response.body.userId).toEqual(testUserId);
+    expect(response.body.searches).toHaveLength(1);
+    expect(response.body.searches[0].text).toEqual(searchTextExample);
   });
 
   it('should successfully UPDATE example user new starred bookmark', async function () {
@@ -149,10 +139,10 @@ describe('User Data tests', function () {
       .set('Authorization', bearerToken)
       .send(userExampleWithStars);
 
-    expect(response.statusCode).to.equal(HttpStatus.OK);
-    expect(response.body.userId).to.equal(testUserId);
-    expect(response.body.likes).to.have.lengthOf(1);
-    expect(response.body.likes[0]).to.equal(starredBookmarkId);
+    expect(response.statusCode).toEqual(HttpStatus.OK);
+    expect(response.body.userId).toEqual(testUserId);
+    expect(response.body.likes).toHaveLength(1);
+    expect(response.body.likes[0]).toEqual(starredBookmarkId);
   });
 
   it('should now successfully READ created/updated user', async function () {
@@ -160,11 +150,11 @@ describe('User Data tests', function () {
       .get(`${baseApiUrlUnderTest}/${testUserId}`)
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.OK);
-    expect(response.body.userId).to.equal(testUserId);
-    expect(response.body.searches).to.have.lengthOf(1);
-    expect(response.body.searches[0].text).to.equal(searchTextExample);
-    expect(response.body.likes[0]).to.equal(starredBookmarkId);
+    expect(response.statusCode).toEqual(HttpStatus.OK);
+    expect(response.body.userId).toEqual(testUserId);
+    expect(response.body.searches).toHaveLength(1);
+    expect(response.body.searches[0].text).toEqual(searchTextExample);
+    expect(response.body.likes[0]).toEqual(starredBookmarkId);
 
   });
 
@@ -173,7 +163,7 @@ describe('User Data tests', function () {
       .delete(`${baseApiUrlUnderTest}/${testUserId}`)
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.NO_CONTENT);
+    expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
   });
 
 
@@ -182,7 +172,7 @@ describe('User Data tests', function () {
       .delete(`${baseApiUrlUnderTest}/${testUserId}`)
       .set('Authorization', bearerToken);
 
-    expect(response.statusCode).to.equal(HttpStatus.NOT_FOUND);
+    expect(response.statusCode).toEqual(HttpStatus.NOT_FOUND);
   });
 
 

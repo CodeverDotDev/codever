@@ -3,7 +3,7 @@ const adminRouter = express.Router();
 
 const Keycloak = require('keycloak-connect');
 
-const bookmarkHelper = require('../../common/bookmark-helper');
+const bookmarkRequestMapper = require('../../common/mappers/bookmark-request.mapper');
 
 const common = require('../../common/config');
 const config = common.config();
@@ -71,7 +71,7 @@ adminRouter.get('/bookmarks/:bookmarkId', keycloak.protect(), async (request, re
  * create bookmark
  */
 adminRouter.post('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
-  const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
+  const bookmark = bookmarkRequestMapper.toBookmark(request);
   let newBookmark = await AdminService.createBookmark(bookmark);
 
   response
@@ -86,7 +86,7 @@ adminRouter.post('/bookmarks', keycloak.protect('realm:ROLE_ADMIN'), async (requ
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 adminRouter.put('/bookmarks/:bookmarkId', keycloak.protect('realm:ROLE_ADMIN'), async (request, response) => {
-  const bookmark = bookmarkHelper.buildBookmarkFromRequest(request);
+  const bookmark = bookmarkRequestMapper.toBookmark(request);
   const updatedBookmark = await AdminService.updateBookmark(bookmark);
 
   return response.status(HttpStatus.OK).send(updatedBookmark);

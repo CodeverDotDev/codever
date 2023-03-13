@@ -16,6 +16,28 @@ kill -9 xxx # where xxx is the process number from the command above
 npm run debug # restart the backend server as usual
 ```
 
+## Testing
+
+### Unit tests
+
+Run the `test` npm task
+
+```
+npm run test
+```
+
+### Integration tests
+
+To run the integration you have to prepare and start the local docker image and node for backend as specified
+ in the main [README](../README.md) file.
+
+When ready run the following command
+
+```
+npm run test:integration
+```
+
+
 ## OpenAPI Docs
 The API has an OpenAPI specification available at [docs/openapi/openapi.yaml](docs/openapi/openapi.yaml)
 

@@ -3,7 +3,7 @@ const User = require('../../../model/user');
 
 const NotFoundError = require('../../../error/not-found.error');
 
-const BookmarkInputValidator = require('../../../common/bookmark-input.validator');
+const BookmarkInputValidator = require('../../../common/validation/bookmark-input.validator');
 const {
   v4: uuidv4,
 } = require('uuid');
