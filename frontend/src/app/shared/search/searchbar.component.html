@@ -17,13 +17,18 @@
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-            style="font-size: 15px">
+      style="font-size: 15px"
+      data-test="search-selection-dropdown-large"
+    >
       {{searchDomains.get(searchDomain)}}
     </button>
     <ng-template #toggleButton>
       <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
               data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
+        aria-haspopup="true"
+        aria-expanded="false"
+        data-test="search-selection-dropdown-small"
+      >
         <span class="sr-only">Toggle Dropdown</span>
       </button>
     </ng-template>

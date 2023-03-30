@@ -7,7 +7,10 @@
       </ng-template>
       <div *ngIf="!userIsLoggedIn && showLoginButton; else showFollowedTags">
         <div class="alert alert-info mt-2">
-          <button type="button" class="btn btn-primary btn-sm mr-2" (click)="login('feed')"><i
+          <button type="button" class="btn btn-primary btn-sm mr-2"
+                  (click)="login('feed')"
+                  data-test="login-register-btn"
+          ><i
             class="fas fa-unlock"></i> Login / Register
           </button>
           to <strong>Codever</strong>
@@ -91,7 +94,9 @@
         <span class="app-tab-label" title="Ctrl+H for quick access"><i class="fas fa-history"></i> History</span>
       </ng-template>
       <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInLastVisited"
-           class="tabs-headline-message mt-2 alert alert-info">
+        class="tabs-headline-message mt-2 alert alert-info"
+        data-test="history-tab-alert"
+      >
         <p>In <strong>History</strong> you have a list of your last visited, created or updated bookmarks.
           Quick access with <strong>Ctrl + H</strong>
         </p>
@@ -122,7 +127,9 @@
       </ng-template>
       <ng-template matTabContent>
         <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToPin"
-             class="tabs-headline-message mt-2 alert alert-info">
+          class="tabs-headline-message mt-2 alert alert-info"
+          data-test="pinned-tab-alert"
+        >
           <p>
             Got some bookmarks you will use a lot today? Just pin them <i
             class="fas fa-thumbtack"></i>
@@ -154,7 +161,9 @@
       </ng-template>
       <ng-template matTabContent>
         <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToReadLater"
-             class="tabs-headline-message mt-2 alert alert-info">
+          class="tabs-headline-message mt-2 alert alert-info"
+          data-test="readlater-tab-alert"
+        >
           <p>
             Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
             class="fas fa-clock"></i>

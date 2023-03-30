@@ -5,3 +5,4 @@ dist.zip
 keycloak-theme/keycloak-original-themes/*
 documentation/keycloak-upgrade/*
 /documentation/keycloak-upgrade/
+/frontend/cypress/videos/
