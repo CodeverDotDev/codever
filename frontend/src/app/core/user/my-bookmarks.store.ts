@@ -5,7 +5,6 @@ import { PersonalBookmarksService } from '../personal-bookmarks.service';
 
 @Injectable()
 export class MyBookmarksStore {
-
   private _lastCreated: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private lastCreatedHaveBeenLoaded = false;
 
@@ -15,15 +14,16 @@ export class MyBookmarksStore {
   private _mostLiked: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private mostLikedBeenLoaded = false;
 
-  constructor(private personalBookmarksService: PersonalBookmarksService) {
-  }
+  constructor(private personalBookmarksService: PersonalBookmarksService) {}
 
   getLastCreated$(userId, orderBy): Observable<Bookmark[]> {
     if (!this.lastCreatedHaveBeenLoaded) {
-      this.personalBookmarksService.getPersonalBookmarkOrderedBy(userId, orderBy).subscribe(data => {
-        this.lastCreatedHaveBeenLoaded = true;
-        this._lastCreated.next(data);
-      });
+      this.personalBookmarksService
+        .getPersonalBookmarkOrderedBy(userId, orderBy)
+        .subscribe((data) => {
+          this.lastCreatedHaveBeenLoaded = true;
+          this._lastCreated.next(data);
+        });
     }
     return this._lastCreated.asObservable();
   }
@@ -46,7 +46,9 @@ export class MyBookmarksStore {
   removeFromLastCreated(deleted: Bookmark): void {
     if (this.lastCreatedHaveBeenLoaded) {
       const bookmarks: Bookmark[] = this._lastCreated.getValue();
-      const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+      const index = bookmarks.findIndex(
+        (bookmark) => bookmark._id === deleted._id
+      );
       bookmarks.splice(index, 1);
       this._lastCreated.next(bookmarks);
     }
@@ -54,10 +56,12 @@ export class MyBookmarksStore {
 
   getMostLiked$(userId, orderBy): Observable<Bookmark[]> {
     if (!this.mostLikedBeenLoaded) {
-      this.personalBookmarksService.getPersonalBookmarkOrderedBy(userId, orderBy).subscribe(data => {
-        this.mostLikedBeenLoaded = true;
-        this._mostLiked.next(data);
-      });
+      this.personalBookmarksService
+        .getPersonalBookmarkOrderedBy(userId, orderBy)
+        .subscribe((data) => {
+          this.mostLikedBeenLoaded = true;
+          this._mostLiked.next(data);
+        });
     }
     return this._mostLiked.asObservable();
   }
@@ -65,7 +69,9 @@ export class MyBookmarksStore {
   removeFromMostLiked(deleted: Bookmark): void {
     if (this.mostLikedBeenLoaded) {
       const bookmarks: Bookmark[] = this._mostLiked.getValue();
-      const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+      const index = bookmarks.findIndex(
+        (bookmark) => bookmark._id === deleted._id
+      );
       bookmarks.splice(index, 1);
       this._mostLiked.next(bookmarks);
     }
@@ -73,10 +79,12 @@ export class MyBookmarksStore {
 
   getMostUsed$(userId, orderBy): Observable<Bookmark[]> {
     if (!this.mostUsedHaveBeenLoaded) {
-      this.personalBookmarksService.getPersonalBookmarkOrderedBy(userId, orderBy).subscribe(data => {
-        this.mostUsedHaveBeenLoaded = true;
-        this._mostUsed.next(data);
-      });
+      this.personalBookmarksService
+        .getPersonalBookmarkOrderedBy(userId, orderBy)
+        .subscribe((data) => {
+          this.mostUsedHaveBeenLoaded = true;
+          this._mostUsed.next(data);
+        });
     }
     return this._mostUsed.asObservable();
   }
@@ -84,8 +92,10 @@ export class MyBookmarksStore {
   removeFromMostUsed(deleted: Bookmark): void {
     if (this.mostUsedHaveBeenLoaded) {
       const bookmarks: Bookmark[] = this._mostUsed.getValue();
-      const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
-      bookmarks.splice(index, 1)
+      const index = bookmarks.findIndex(
+        (bookmark) => bookmark._id === deleted._id
+      );
+      bookmarks.splice(index, 1);
       this._mostUsed.next(bookmarks);
     }
   }

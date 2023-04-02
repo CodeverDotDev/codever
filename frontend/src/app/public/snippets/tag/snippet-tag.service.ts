@@ -9,20 +9,24 @@ import { Snippet } from '../../../core/model/snippet';
 
 @Injectable()
 export class SnippetTagService {
-
-  private snippetsUrl = '';  // URL to web api
+  private snippetsUrl = ''; // URL to web api
 
   constructor(private httpClient: HttpClient) {
     this.snippetsUrl = environment.API_URL + '/public/snippets';
   }
 
-  getPublicSnippetsForTag(tag: string, orderBy: string, page: number, limit: number): Observable<Snippet[]> {
+  getPublicSnippetsForTag(
+    tag: string,
+    orderBy: string,
+    page: number,
+    limit: number
+  ): Observable<Snippet[]> {
     const params = new HttpParams()
       .set('orderBy', orderBy)
       .set('page', page.toString())
       .set('limit', limit.toString());
-    return this.httpClient.get<Snippet[]>(`${this.snippetsUrl}/tagged/${tag}`, {params: params})
+    return this.httpClient
+      .get<Snippet[]>(`${this.snippetsUrl}/tagged/${tag}`, { params: params })
       .pipe(shareReplay(1));
-  };
-
+  }
 }

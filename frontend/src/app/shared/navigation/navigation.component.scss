@@ -3,14 +3,14 @@
 }
 
 .navbar-brand {
-  line-height:12px;
-  padding-top:10px;
+  line-height: 12px;
+  padding-top: 10px;
 
   font-size: 25px;
 }
 
 .navbar-brand small {
-  font-size:11px;
+  font-size: 11px;
 }
 
 .app-brand {
@@ -38,12 +38,10 @@
 
 @media (min-width: 1400px) {
   .large-displays {
-    display: block ;
+    display: block;
   }
 }
 
 .navbar-dev {
   background-color: darkgreen !important;
 }
-
-

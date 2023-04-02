@@ -1,10 +1,19 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
 import { map, startWith } from 'rxjs/operators';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {
+  MatAutocomplete,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { PersonalSnippetsService } from '../../../core/personal-snippets.service';
@@ -17,10 +26,9 @@ import { PersonalNotesService } from '../../../core/personal-notes.service';
 @Component({
   selector: 'app-delete-bookmark-dialog',
   templateUrl: './add-tag-filter-to-search-dialog.component.html',
-  styleUrls: ['./add-tag-filter-to-search-dialog.component.scss']
+  styleUrls: ['./add-tag-filter-to-search-dialog.component.scss'],
 })
 export class AddTagFilterToSearchDialogComponent implements OnInit {
-
   userId: string;
   searchDomain: string;
 
@@ -38,13 +46,15 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(private personalBookmarksService: PersonalBookmarksService,
-              private personalSnippetsService: PersonalSnippetsService,
-              private personalNotesService: PersonalNotesService,
-              private publicBookmarksService: PublicBookmarksService,
-              private publicSnippetsService: PublicSnippetsService,
-              private dialogRef: MatDialogRef<AddTagFilterToSearchDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) data) {
+  constructor(
+    private personalBookmarksService: PersonalBookmarksService,
+    private personalSnippetsService: PersonalSnippetsService,
+    private personalNotesService: PersonalNotesService,
+    private publicBookmarksService: PublicBookmarksService,
+    private publicSnippetsService: PublicSnippetsService,
+    private dialogRef: MatDialogRef<AddTagFilterToSearchDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) data
+  ) {
     this.userId = data.userId;
     this.tagsLabel = data.searchDomain + ' tags';
     this.searchDomain = data.searchDomain;
@@ -52,35 +62,48 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
 
   ngOnInit() {
     switch (this.searchDomain) {
-      case SearchDomain.MY_BOOKMARKS : {
-        this.personalBookmarksService.getUserTagsForBookmarks(this.userId).subscribe(this.setTags());
-      }
+      case SearchDomain.MY_BOOKMARKS:
+        {
+          this.personalBookmarksService
+            .getUserTagsForBookmarks(this.userId)
+            .subscribe(this.setTags());
+        }
         break;
 
-      case SearchDomain.MY_SNIPPETS : {
-        this.personalSnippetsService.getUserTagsForSnippets(this.userId).subscribe(this.setTags());
-      }
+      case SearchDomain.MY_SNIPPETS:
+        {
+          this.personalSnippetsService
+            .getUserTagsForSnippets(this.userId)
+            .subscribe(this.setTags());
+        }
         break;
 
-      case SearchDomain.MY_NOTES : {
-        this.personalNotesService.getSuggestedNoteTags(this.userId).subscribe(this.setTags());
-      }
+      case SearchDomain.MY_NOTES:
+        {
+          this.personalNotesService
+            .getSuggestedNoteTags(this.userId)
+            .subscribe(this.setTags());
+        }
         break;
 
-      case SearchDomain.PUBLIC_BOOKMARKS : {
-        this.publicBookmarksService.getMostUsedPublicTags(300).subscribe(this.setTags());
-      }
+      case SearchDomain.PUBLIC_BOOKMARKS:
+        {
+          this.publicBookmarksService
+            .getMostUsedPublicTags(300)
+            .subscribe(this.setTags());
+        }
         break;
 
-      case SearchDomain.PUBLIC_SNIPPETS : {
-        this.publicSnippetsService.getMostUsedPublicTagsForSnippets(300).subscribe(this.setTags());
+      case SearchDomain.PUBLIC_SNIPPETS: {
+        this.publicSnippetsService
+          .getMostUsedPublicTagsForSnippets(300)
+          .subscribe(this.setTags());
       }
     }
-
   }
 
   private setTags() {
-    return tags => {
+    return (tags) => {
       this.myTags = tags;
 
       this.filteredTags = this.tagCtrl.valueChanges.pipe(
@@ -97,9 +120,8 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
     const value = event.value;
 
     // Add our tag
-    if ((value || '').trim()
-    ) {
-      this.tags.push(this.myTags.filter(tag => tag.name === value)[0]);
+    if ((value || '').trim()) {
+      this.tags.push(this.myTags.filter((tag) => tag.name === value)[0]);
     }
 
     // Reset the input value
@@ -111,10 +133,9 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
   }
 
   remove(tag: UsedTag): void {
-    const index = this.tags.findIndex(i => i.name === tag.name);
+    const index = this.tags.findIndex((i) => i.name === tag.name);
 
-    if (index >= 0
-    ) {
+    if (index >= 0) {
       this.tags.splice(index, 1);
     }
   }
@@ -129,7 +150,9 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
     if (typeof value === 'string' && value.trim() !== '') {
       const filterValue = value.toLowerCase();
 
-      return this.myTags.filter(tag => tag.name.toLowerCase().indexOf(filterValue) === 0);
+      return this.myTags.filter(
+        (tag) => tag.name.toLowerCase().indexOf(filterValue) === 0
+      );
     }
   }
 
@@ -138,8 +161,7 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
   }
 
   addTagsToSearch() {
-    const tagsAsString = this.tags.map(tag => `[${tag.name}]`).join(' ')
+    const tagsAsString = this.tags.map((tag) => `[${tag.name}]`).join(' ');
     this.dialogRef.close(tagsAsString);
   }
-
 }

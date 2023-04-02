@@ -3,22 +3,30 @@
   <mat-radio-group
     aria-labelledby="example-radio-group-label"
     class="example-radio-group"
-    [(ngModel)]="feedTopic">
-    <mat-radio-button class="example-radio-button" [value]="'my-watched-tags'" (change)="selectionChange($event)">
-      From my           <a
-      [routerLink]="['/dashboard']"
-      [queryParams]="{tab: 'tags'}"
-      title="Go to My Tags in dashboard"
+    [(ngModel)]="feedTopic"
+  >
+    <mat-radio-button
+      class="example-radio-button"
+      [value]="'my-watched-tags'"
+      (change)="selectionChange($event)"
     >
-      watched tags
-    </a>
+      From my
+      <a
+        [routerLink]="['/dashboard']"
+        [queryParams]="{ tab: 'tags' }"
+        title="Go to My Tags in dashboard"
+      >
+        watched tags
+      </a>
     </mat-radio-button>
-    <mat-radio-button class="example-radio-button" [value]="'all-public'" (change)="selectionChange($event)">
+    <mat-radio-button
+      class="example-radio-button"
+      [value]="'all-public'"
+      (change)="selectionChange($event)"
+    >
       All public
     </mat-radio-button>
   </mat-radio-group>
 </div>
 
-<ng-template #loading>
-  Loading Feed settings...
-</ng-template>
+<ng-template #loading> Loading Feed settings... </ng-template>

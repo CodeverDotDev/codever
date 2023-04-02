@@ -5,16 +5,15 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 
 @Component({
-  template: ''
+  template: '',
 })
 export class TagFollowingBaseComponent {
-
   verifyForWatchedTag: Observable<string>;
 
   constructor(
     public loginDialog: MatDialog,
-    public userDataWatchedTagsStore: UserDataWatchedTagsStore) { }
-
+    public userDataWatchedTagsStore: UserDataWatchedTagsStore
+  ) {}
 
   onDropDownClick(tag: string) {
     this.verifyForWatchedTag = of(tag);
@@ -27,7 +26,7 @@ export class TagFollowingBaseComponent {
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
       dialogConfig.data = {
-        message: 'You need to be logged in to follow tags'
+        message: 'You need to be logged in to follow tags',
       };
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
@@ -47,7 +46,7 @@ export class TagFollowingBaseComponent {
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
       dialogConfig.data = {
-        message: 'You need to be logged in to ignore tags'
+        message: 'You need to be logged in to ignore tags',
       };
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
@@ -59,5 +58,4 @@ export class TagFollowingBaseComponent {
   unignoreTag(tag: string) {
     this.userDataWatchedTagsStore.unignoreTag(tag);
   }
-
 }

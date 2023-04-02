@@ -6,10 +6,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Component({
   selector: 'app-delete-bookmark-dialog',
   templateUrl: './backup-bookmarks-dialog.component.html',
-  styleUrls: ['./backup-bookmarks-dialog.component.scss']
+  styleUrls: ['./backup-bookmarks-dialog.component.scss'],
 })
 export class BackupBookmarksDialogComponent implements OnInit {
-
   backupType: string; // 'bookmarks' | 'snippets';
   blobUrl: any;
   sanitizedBlobUrl: any;
@@ -28,15 +27,13 @@ export class BackupBookmarksDialogComponent implements OnInit {
     this.filename = `${this.backupType}_${currentDate.toISOString()}.json`;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   close() {
     this.dialogRef.close();
   }
 
-  download() {
-  }
+  download() {}
 
   viewInBrowser() {
     window.open(this.blobUrl);

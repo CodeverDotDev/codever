@@ -4,10 +4,9 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-extensions',
   templateUrl: './extensions.component.html',
-  styleUrls: ['./extensions.component.scss']
+  styleUrls: ['./extensions.component.scss'],
 })
 export class ExtensionsComponent implements OnInit {
-
   environment = environment;
 
   @Input()
@@ -17,5 +16,4 @@ export class ExtensionsComponent implements OnInit {
   showEntryParagraph = true;
 
   ngOnInit() {}
-
 }

@@ -9,13 +9,13 @@
 }
 
 #sidebar-wrapper {
-  margin-top:100px;
+  margin-top: 100px;
   //min-height: 100vh;
   margin-left: -15rem;
-  -webkit-transition: margin .25s ease-out;
-  -moz-transition: margin .25s ease-out;
-  -o-transition: margin .25s ease-out;
-  transition: margin .25s ease-out;
+  -webkit-transition: margin 0.25s ease-out;
+  -moz-transition: margin 0.25s ease-out;
+  -o-transition: margin 0.25s ease-out;
+  transition: margin 0.25s ease-out;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -67,7 +67,7 @@ footer {
   justify-content: space-between;
 }
 
-.my-snippets-last-search{
+.my-snippets-last-search {
   background: black;
   color: white;
 }
@@ -103,6 +103,6 @@ footer {
 }
 
 .on-top {
-  position:relative;
+  position: relative;
   z-index: 900;
 }

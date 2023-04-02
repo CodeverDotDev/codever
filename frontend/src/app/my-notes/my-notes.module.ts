@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../core/auth/auth-guard.service';
-import { HIGHLIGHT_OPTIONS, HighlightModule, HighlightOptions } from 'ngx-highlightjs';
+import {
+  HIGHLIGHT_OPTIONS,
+  HighlightModule,
+  HighlightOptions,
+} from 'ngx-highlightjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,14 +35,14 @@ const snippetRoutes: Routes = [
     path: ':id/details',
     canActivate: [AuthGuard],
     component: NoteDetailsComponent,
-  }
-]
+  },
+];
 
 @NgModule({
   declarations: [
     CreatePersonalNoteComponent,
     UpdatePersonalNoteComponent,
-    NoteEditorComponent
+    NoteEditorComponent,
   ],
   imports: [
     RouterModule.forChild(snippetRoutes),
@@ -50,20 +54,17 @@ const snippetRoutes: Routes = [
     MatIconModule,
     MatDialogModule,
     MatTooltipModule,
-    HighlightModule
+    HighlightModule,
   ],
-  exports: [
-    NoteDetailsComponent
-  ],
+  exports: [NoteDetailsComponent],
   providers: [
     PersonalNotesService,
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: <HighlightOptions>{
-        lineNumbers: true
-      }
-    }
-  ]
+        lineNumbers: true,
+      },
+    },
+  ],
 })
-export class MyNotesModule {
-}
+export class MyNotesModule {}

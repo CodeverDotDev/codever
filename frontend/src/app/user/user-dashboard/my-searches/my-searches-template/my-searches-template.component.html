@@ -4,16 +4,22 @@
       <h5><i class="fa fa-xs fa-search"></i> in My Bookmarks</h5>
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
-      <hr class="mt-0">
-      <ng-container *ngFor="let mySearch of searches  | searchFilter: type : 'my-bookmarks'">
+      <hr class="mt-0" />
+      <ng-container
+        *ngFor="let mySearch of searches | searchFilter : type : 'my-bookmarks'"
+      >
         <span class="my-saved-search mr-2">
           <a
             [routerLink]="['/search']"
-            [queryParams]="{q: mySearch.text, sd: 'my-bookmarks' }"
-            class="badge badge-secondary mb-2"> <i class="fa fa-xs fa-search"></i>
-            {{mySearch.text}} <span *ngIf="showCount" class="badge badge-light">{{mySearch.count}}</span>
+            [queryParams]="{ q: mySearch.text, sd: 'my-bookmarks' }"
+            class="badge badge-secondary mb-2"
+          >
+            <i class="fa fa-xs fa-search"></i> {{ mySearch.text }}
+            <span *ngIf="showCount" class="badge badge-light">{{
+              mySearch.count
+            }}</span>
           </a>
-          </span>
+        </span>
       </ng-container>
       <div class="clear"></div>
     </ng-template>
@@ -24,13 +30,22 @@
     </mat-expansion-panel-header>
 
     <ng-template matExpansionPanelContent>
-      <hr class="mt-0">
-      <ng-container *ngFor="let mySearch of searches | searchFilter: type:'public-bookmarks'">
+      <hr class="mt-0" />
+      <ng-container
+        *ngFor="
+          let mySearch of searches | searchFilter : type : 'public-bookmarks'
+        "
+      >
         <span class="my-saved-search mr-2">
-          <a [routerLink]="['/search']"
-             [queryParams]="{q: mySearch.text, sd: 'public-bookmarks' }"
-             class="badge badge-secondary mb-2"> <i class="fa fa-xs fa-search"></i>
-            {{mySearch.text}} <span *ngIf="showCount" class="badge badge-light">{{mySearch.count}}</span>
+          <a
+            [routerLink]="['/search']"
+            [queryParams]="{ q: mySearch.text, sd: 'public-bookmarks' }"
+            class="badge badge-secondary mb-2"
+          >
+            <i class="fa fa-xs fa-search"></i> {{ mySearch.text }}
+            <span *ngIf="showCount" class="badge badge-light">{{
+              mySearch.count
+            }}</span>
           </a>
         </span>
       </ng-container>
@@ -43,16 +58,22 @@
       <h5><i class="fa fa-xs fa-search"></i> in My Snippets</h5>
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
-      <hr class="mt-0">
-      <ng-container *ngFor="let mySearch of searches | searchFilter: type:'my-snippets'">
+      <hr class="mt-0" />
+      <ng-container
+        *ngFor="let mySearch of searches | searchFilter : type : 'my-snippets'"
+      >
         <span class="my-saved-search mr-2">
-        <a
-          [routerLink]="['/search']"
-          [queryParams]="{q: mySearch.text, sd: 'my-snippets' }"
-          class="badge badge-secondary mb-2">  <i class="fa fa-xs fa-search"></i>
-          {{mySearch.text}}
-          <span *ngIf="showCount" class="badge badge-light">{{mySearch.count}}</span>
-        </a>
+          <a
+            [routerLink]="['/search']"
+            [queryParams]="{ q: mySearch.text, sd: 'my-snippets' }"
+            class="badge badge-secondary mb-2"
+          >
+            <i class="fa fa-xs fa-search"></i>
+            {{ mySearch.text }}
+            <span *ngIf="showCount" class="badge badge-light">{{
+              mySearch.count
+            }}</span>
+          </a>
         </span>
       </ng-container>
       <div class="clear"></div>

@@ -7,10 +7,9 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-delete-bookmark-dialog',
   templateUrl: './delete-resource-dialog.component.html',
-  styleUrls: ['./delete-resource-dialog.component.scss']
+  styleUrls: ['./delete-resource-dialog.component.scss'],
 })
 export class DeleteResourceDialogComponent implements OnInit {
-
   resourceName: string;
   isPublic = false;
   type: 'bookmark' | 'snippet' | 'note';
@@ -24,8 +23,7 @@ export class DeleteResourceDialogComponent implements OnInit {
     this.resourceName = data.resourceName;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   delete() {
     this.dialogRef.close('DELETE_CONFIRMED');
@@ -34,5 +32,4 @@ export class DeleteResourceDialogComponent implements OnInit {
   close() {
     this.dialogRef.close('DELETE_CANCELED');
   }
-
 }

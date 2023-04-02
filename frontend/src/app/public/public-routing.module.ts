@@ -13,82 +13,79 @@ import { ExtensionsPageComponent } from './extensions/extensions-page.component'
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
-import {
-  ShareableBookmarkDetailsComponent
-} from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
-import {
-  ShareableSnippetDetailsComponent
-} from './snippets/shareable-snippet-details/shareable-snippet-details.component';
+import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
+import { ShareableSnippetDetailsComponent } from './snippets/shareable-snippet-details/shareable-snippet-details.component';
 
 const publicRoutes: Routes = [
   {
     path: 'history',
     redirectTo: '/?tab=history',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'pinned',
     redirectTo: '/?tab=pinned',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'readlater',
     redirectTo: '/?tab=read-later',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'favorites',
     redirectTo: '/?tab=favorites',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'watched-tags',
     redirectTo: '/?tab=watched-tags',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'tagged/:tag',
-    redirectTo: 'bookmarks/t/:tag'
+    redirectTo: 'bookmarks/t/:tag',
   },
   {
     path: 'tags/:tag',
-    redirectTo: 'bookmarks/t/:tag'
+    redirectTo: 'bookmarks/t/:tag',
   },
   {
     path: 't/:tag',
-    redirectTo: 'bookmarks/t/:tag'
+    redirectTo: 'bookmarks/t/:tag',
   },
   {
     path: 'bookmarks/tagged/:tag',
-    redirectTo: 'bookmarks/t/:tag'
+    redirectTo: 'bookmarks/t/:tag',
   },
   {
     path: 'bookmarks/tags/:tag',
-    redirectTo: 'bookmarks/t/:tag'
+    redirectTo: 'bookmarks/t/:tag',
   },
   {
     path: 'bookmarks/t/:tag',
-    component: BookmarksTaggedComponent
+    component: BookmarksTaggedComponent,
   },
   {
     path: 'about',
-    component: AboutComponent
+    component: AboutComponent,
   },
   {
     path: 'register',
-    component: RegisterComponent
+    component: RegisterComponent,
   },
   {
     path: 'extensions',
-    component: ExtensionsPageComponent
+    component: ExtensionsPageComponent,
   },
   {
     path: 'howto',
-    loadChildren: () => import('app/public/howto/howto.module').then(m => m.HowtoModule)
+    loadChildren: () =>
+      import('app/public/howto/howto.module').then((m) => m.HowtoModule),
   },
   {
     path: 'bookmarklets',
-    redirectTo: 'howto/bookmarklets'
+    redirectTo: 'howto/bookmarklets',
   },
   {
     path: 'privacy-policy',
@@ -108,19 +105,19 @@ const publicRoutes: Routes = [
   },
   {
     path: 'snippets/tagged/:tag',
-    redirectTo: 'snippets/t/:tag'
+    redirectTo: 'snippets/t/:tag',
   },
   {
     path: 'snippets/tags/:tag',
-    redirectTo: 'snippets/t/:tag'
+    redirectTo: 'snippets/t/:tag',
   },
   {
     path: 'snippets/t/:tag',
-    component: SnippetTaggedComponent
+    component: SnippetTaggedComponent,
   },
   {
     path: 'snippets/shared/:shareableId',
-    component: ShareableSnippetDetailsComponent
+    component: ShareableSnippetDetailsComponent,
   },
   {
     path: 'snippets/:id',
@@ -131,13 +128,13 @@ const publicRoutes: Routes = [
       // within this portion of the router tree.
       {
         path: '**',
-        component: PublicSnippetDetailsComponent
-      }
-    ]
+        component: PublicSnippetDetailsComponent,
+      },
+    ],
   },
   {
     path: 'bookmarks/shared/:shareableId',
-    component: ShareableBookmarkDetailsComponent
+    component: ShareableBookmarkDetailsComponent,
   },
   {
     path: 'bookmarks/:id',
@@ -148,9 +145,9 @@ const publicRoutes: Routes = [
       // within this portion of the router tree.
       {
         path: '**',
-        component: PublicBookmarkDetailsComponent
-      }
-    ]
+        component: PublicBookmarkDetailsComponent,
+      },
+    ],
   },
 
   {
@@ -162,19 +159,18 @@ const publicRoutes: Routes = [
       // within this portion of the router tree.
       {
         path: '**',
-        component: UserPublicProfileComponent
-      }
-    ]
+        component: UserPublicProfileComponent,
+      },
+    ],
   },
   {
     path: '',
-    component: HomepageComponent
-  }
+    component: HomepageComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(publicRoutes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class PublicRoutingModule {
-}
+export class PublicRoutingModule {}

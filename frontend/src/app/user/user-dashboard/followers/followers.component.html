@@ -1,22 +1,56 @@
-
-<div *ngIf="(followers$ | async) as followers; else loading" style="display: flex">
+<div
+  *ngIf="followers$ | async as followers; else loading"
+  style="display: flex"
+>
   <div *ngIf="followers.length > 0; else noFollowers" style="display: flex">
-    <div *ngFor="let follower of followers" class="card user-profile-card" style="width:200px">
-      <img class="card-img-top" src="{{follower.profile.imageUrl}}" alt="User profile image">
+    <div
+      *ngFor="let follower of followers"
+      class="card user-profile-card"
+      style="width: 200px"
+    >
+      <img
+        class="card-img-top"
+        src="{{ follower.profile.imageUrl }}"
+        alt="User profile image"
+      />
       <div class="card-body">
-        <h4 class="card-title">{{follower.profile.displayName}}</h4>
+        <h4 class="card-title">{{ follower.profile.displayName }}</h4>
         <p class="card-text social">
-          <a *ngIf="follower.profile.websiteLink" href="{{follower.profile.websiteLink}}"
-             title="Website"><i class="fas fa-external-link-alt"></i></a>
-          <a *ngIf="follower.profile.githubLink" href="{{follower.profile.githubLink}}"
-             title="Github link"><i class="fab fa-github"></i></a>
-          <a *ngIf="follower.profile.twitterLink" href="{{follower.profile.twitterLink}}"
-             title="Twitter link"><i class="fab fa-twitter"></i></a>
-          <a *ngIf="follower.profile.linkedinLink" href="{{follower.profile.linkedinLink}}"
-             title="LinkedIn link"><i class="fab fa-linkedin"></i></a>
+          <a
+            *ngIf="follower.profile.websiteLink"
+            href="{{ follower.profile.websiteLink }}"
+            title="Website"
+            ><i class="fas fa-external-link-alt"></i
+          ></a>
+          <a
+            *ngIf="follower.profile.githubLink"
+            href="{{ follower.profile.githubLink }}"
+            title="Github link"
+            ><i class="fab fa-github"></i
+          ></a>
+          <a
+            *ngIf="follower.profile.twitterLink"
+            href="{{ follower.profile.twitterLink }}"
+            title="Twitter link"
+            ><i class="fab fa-twitter"></i
+          ></a>
+          <a
+            *ngIf="follower.profile.linkedinLink"
+            href="{{ follower.profile.linkedinLink }}"
+            title="LinkedIn link"
+            ><i class="fab fa-linkedin"></i
+          ></a>
         </p>
         <div id="see-profile-link">
-          <a [routerLink]="['/users', follower.userId, follower.profile.userDisplayName]" class="btn btn-primary">See Profile</a>
+          <a
+            [routerLink]="[
+              '/users',
+              follower.userId,
+              follower.profile.userDisplayName
+            ]"
+            class="btn btn-primary"
+            >See Profile</a
+          >
         </div>
       </div>
     </div>
@@ -24,11 +58,11 @@
   <ng-template #noFollowers>
     <div class="alert alert-info" style="margin-top: 1rem; width: 100%">
       <h3>No followers</h3>
-      <p>You have currently no followers. Start following some people and they might follow you back.</p>
+      <p>
+        You have currently no followers. Start following some people and they
+        might follow you back.
+      </p>
     </div>
   </ng-template>
 </div>
-<ng-template #loading>
-  Loading...
-</ng-template>
-
+<ng-template #loading> Loading... </ng-template>

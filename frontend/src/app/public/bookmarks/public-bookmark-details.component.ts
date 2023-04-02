@@ -6,7 +6,7 @@ import { PublicBookmarksService } from './public-bookmarks.service';
 
 @Component({
   selector: 'app-public-bookmark-details',
-  templateUrl: './public-bookmark-details.component.html'
+  templateUrl: './public-bookmark-details.component.html',
 })
 export class PublicBookmarkDetailsComponent implements OnInit {
   showMoreText = false;
@@ -14,16 +14,16 @@ export class PublicBookmarkDetailsComponent implements OnInit {
 
   constructor(
     private publicBookmarksService: PublicBookmarksService,
-    private route: ActivatedRoute) {
-  }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     if (!window.history.state.bookmark) {
       const bookmarkId = this.route.snapshot.paramMap.get('id');
-      this.bookmark$ = this.publicBookmarksService.getPublicBookmarkById(bookmarkId);
+      this.bookmark$ =
+        this.publicBookmarksService.getPublicBookmarkById(bookmarkId);
     } else {
       this.bookmark$ = of(window.history.state.bookmark);
     }
   }
-
 }

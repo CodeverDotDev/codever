@@ -6,23 +6,26 @@ import { Bookmark } from '../model/bookmark';
 import { UserInfoStore } from './user-info.store';
 import { NotifyStoresService } from './notify-stores.service';
 import { environment } from '../../../environments/environment';
-import { LocalStorageSaveOptions, LocalStorageService } from '../cache/local-storage.service';
+import {
+  LocalStorageSaveOptions,
+  LocalStorageService,
+} from '../cache/local-storage.service';
 import { localStorageKeys } from '../model/localstorage.cache-keys';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserDataHistoryStore {
-
   private _history: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private historyHasBeenLoaded = false;
 
   loadedPage: number;
 
-  constructor(private userService: UserDataService,
-              private userInfoStore: UserInfoStore,
-              private notifyStoresService: NotifyStoresService,
-              private  localStorageService: LocalStorageService
+  constructor(
+    private userService: UserDataService,
+    private userInfoStore: UserInfoStore,
+    private notifyStoresService: NotifyStoresService,
+    private localStorageService: LocalStorageService
   ) {
     this.loadedPage = 1;
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
@@ -30,17 +33,18 @@ export class UserDataHistoryStore {
     });
   }
 
-
   getHistory$(userId: string, page: number): Observable<Bookmark[]> {
     if (this.loadedPage !== page || !this.historyHasBeenLoaded) {
       if (!this.historyHasBeenLoaded) {
         this.historyHasBeenLoaded = true;
       }
-      this.userService.getHistory$(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
-        this.historyHasBeenLoaded = true;
-        this.loadedPage = page;
-        this._history.next(data);
-      });
+      this.userService
+        .getHistory$(userId, page, environment.PAGINATION_PAGE_SIZE)
+        .subscribe((data) => {
+          this.historyHasBeenLoaded = true;
+          this.loadedPage = page;
+          this._history.next(data);
+        });
     }
 
     return this._history.asObservable();
@@ -59,7 +63,9 @@ export class UserDataHistoryStore {
   public updateHistoryStore(bookmark: Bookmark) {
     if (this.historyHasBeenLoaded) {
       let lastVisitedBookmarks: Bookmark[] = this._history.getValue();
-      lastVisitedBookmarks = lastVisitedBookmarks.filter(item => item._id !== bookmark._id);
+      lastVisitedBookmarks = lastVisitedBookmarks.filter(
+        (item) => item._id !== bookmark._id
+      );
       lastVisitedBookmarks.unshift(bookmark);
 
       this._history.next(lastVisitedBookmarks);
@@ -68,25 +74,28 @@ export class UserDataHistoryStore {
   }
 
   private updateEntryLocalStorage(bookmark: Bookmark) {
-    let bookmarks = this.localStorageService.load(localStorageKeys.userHistoryBookmarks);
+    let bookmarks = this.localStorageService.load(
+      localStorageKeys.userHistoryBookmarks
+    );
     if (bookmarks) {
-      bookmarks = bookmarks.filter(item => item._id !== bookmark._id);
+      bookmarks = bookmarks.filter((item) => item._id !== bookmark._id);
       bookmarks.unshift(bookmark);
 
       const options: LocalStorageSaveOptions = {
         key: localStorageKeys.userHistoryBookmarks,
         data: bookmarks.slice(0, 100), // in "backend" are max 50 stored
-        expirationHours: 24
+        expirationHours: 24,
       };
       this.localStorageService.save(options);
     }
-
   }
 
   public deleteFromHistoryStore(bookmark: Bookmark) {
     if (this.historyHasBeenLoaded) {
       const lastVisitedBookmarks: Bookmark[] = this._history.getValue();
-      const indexHistory = lastVisitedBookmarks.findIndex((lastVisitedBookmark) => bookmark._id === lastVisitedBookmark._id);
+      const indexHistory = lastVisitedBookmarks.findIndex(
+        (lastVisitedBookmark) => bookmark._id === lastVisitedBookmark._id
+      );
       if (indexHistory !== -1) {
         lastVisitedBookmarks.splice(indexHistory, 1);
         this._history.next(lastVisitedBookmarks);
@@ -97,20 +106,22 @@ export class UserDataHistoryStore {
   }
 
   private deleteEntryFromLocalStorage(bookmark: Bookmark) {
-    const bookmarks = this.localStorageService.load(localStorageKeys.userHistoryBookmarks);
+    const bookmarks = this.localStorageService.load(
+      localStorageKeys.userHistoryBookmarks
+    );
     if (bookmarks) {
-      const indexHistory = bookmarks.findIndex((lastVisitedBookmark) => bookmark._id === lastVisitedBookmark._id);
+      const indexHistory = bookmarks.findIndex(
+        (lastVisitedBookmark) => bookmark._id === lastVisitedBookmark._id
+      );
       if (indexHistory !== -1) {
         bookmarks.splice(indexHistory, 1);
         const options: LocalStorageSaveOptions = {
           key: localStorageKeys.userHistoryBookmarks,
           data: bookmarks,
-          expirationHours: 24
+          expirationHours: 24,
         };
         this.localStorageService.save(options);
       }
     }
-
   }
 }
-

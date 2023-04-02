@@ -8,7 +8,7 @@ import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-public-snippet-details',
-  templateUrl: './public-snippet-details.component.html'
+  templateUrl: './public-snippet-details.component.html',
 })
 export class PublicSnippetDetailsComponent implements OnInit {
   snippetId: string;
@@ -16,16 +16,15 @@ export class PublicSnippetDetailsComponent implements OnInit {
 
   constructor(
     private publicSnippetsService: PublicSnippetsService,
-    private route: ActivatedRoute) {
-  }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.snippet$ = this.route.paramMap.pipe(
-      switchMap(params => {
+      switchMap((params) => {
         this.snippetId = params.get('id');
         return this.publicSnippetsService.getPublicSnippetById(this.snippetId);
       })
     );
   }
-
 }

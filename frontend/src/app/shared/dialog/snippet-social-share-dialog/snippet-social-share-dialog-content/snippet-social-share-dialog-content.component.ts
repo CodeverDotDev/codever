@@ -6,10 +6,9 @@ import { Clipboard } from '@angular/cdk/clipboard';
 @Component({
   selector: 'app-snippet-social-share-dialog-content',
   templateUrl: './snippet-social-share-dialog-content.component.html',
-  providers: [DatePipe]
+  providers: [DatePipe],
 })
 export class SnippetSocialShareDialogContentComponent implements OnChanges {
-
   @Input()
   shareableUrl: string;
 
@@ -20,22 +19,21 @@ export class SnippetSocialShareDialogContentComponent implements OnChanges {
   tagsStr: string;
   copyLinkButtonText = 'Copy shareable link';
 
-  constructor(private clipboard: Clipboard) {
-  }
+  constructor(private clipboard: Clipboard) {}
 
   ngOnChanges() {
     if (this.snippet) {
       if (this.snippet.public) {
-        this.tagsStr = this.snippet.tags.map(tag => {
-          return this.prepareTagForTweet(tag);
-        }).join(',');
+        this.tagsStr = this.snippet.tags
+          .map((tag) => {
+            return this.prepareTagForTweet(tag);
+          })
+          .join(',');
         this.tweetText = this.snippet.title + '\n';
         this.copyLinkButtonText = 'Copy link';
       }
-
     }
   }
-
 
   /**
    * Multiple word tagsStr are "-" separated for resources. To make them twitter conform we will camel case them
@@ -44,16 +42,19 @@ export class SnippetSocialShareDialogContentComponent implements OnChanges {
    * @param tag
    */
   private prepareTagForTweet(tag: string): string {
-    return tag.split('-').map(word => {
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    }).join('');
+    return tag
+      .split('-')
+      .map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join('');
   }
 
   copyToClipboard(location: string) {
     const copied = this.clipboard.copy(location);
     if (copied) {
       this.copyLinkButtonText = 'Copied';
-      setTimeout(() => this.copyLinkButtonText = 'Link', 1300);
+      setTimeout(() => (this.copyLinkButtonText = 'Link'), 1300);
     }
   }
 }

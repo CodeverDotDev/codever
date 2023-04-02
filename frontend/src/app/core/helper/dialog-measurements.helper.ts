@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DialogMeasurementsHelper {
-
   public getRelativeWidth(widthPercent: number) {
     let relativeWidth = (window.innerWidth * widthPercent) / 100;
     if (window.innerWidth > 1500) {
@@ -20,5 +19,4 @@ export class DialogMeasurementsHelper {
 
     return relativeHeight + 'px';
   }
-
 }

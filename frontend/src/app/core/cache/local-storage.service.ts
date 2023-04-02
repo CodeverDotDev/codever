@@ -1,48 +1,54 @@
-import { Injectable } from '@angular/core'
+import { Injectable } from '@angular/core';
 import { localStorageKeys } from '../model/localstorage.cache-keys';
 
 @Injectable()
 export class LocalStorageService {
-  constructor() {
-  }
+  constructor() {}
 
   save(options: LocalStorageSaveOptions) {
     // Set default values for optionals
-    options.expirationHours = options.expirationHours || 0
+    options.expirationHours = options.expirationHours || 0;
 
     // Set expiration date in milliseconds
-    const expirationMS = options.expirationHours !== 0 ? options.expirationHours * 60 * 60 * 1000 : 0
+    const expirationMS =
+      options.expirationHours !== 0
+        ? options.expirationHours * 60 * 60 * 1000
+        : 0;
 
     const record = {
-      value: typeof options.data === 'string' ? options.data : JSON.stringify(options.data),
-      expiration: expirationMS !== 0 ? new Date().getTime() + expirationMS : null,
-      hasExpiration: expirationMS !== 0 ? true : false
-    }
-    localStorage.setItem(options.key, JSON.stringify(record))
+      value:
+        typeof options.data === 'string'
+          ? options.data
+          : JSON.stringify(options.data),
+      expiration:
+        expirationMS !== 0 ? new Date().getTime() + expirationMS : null,
+      hasExpiration: expirationMS !== 0 ? true : false,
+    };
+    localStorage.setItem(options.key, JSON.stringify(record));
   }
 
   load(key: string) {
     // Get cached data from localstorage
-    const item = localStorage.getItem(key)
+    const item = localStorage.getItem(key);
     if (item !== null) {
-      const record = JSON.parse(item)
-      const now = new Date().getTime()
+      const record = JSON.parse(item);
+      const now = new Date().getTime();
       // Expired data will return null
       if (!record || (record.hasExpiration && record.expiration <= now)) {
-        return null
+        return null;
       } else {
-        return JSON.parse(record.value)
+        return JSON.parse(record.value);
       }
     }
-    return null
+    return null;
   }
 
   remove(key: string) {
-    localStorage.removeItem(key)
+    localStorage.removeItem(key);
   }
 
   cleanLocalStorage() {
-    localStorage.clear()
+    localStorage.clear();
   }
 
   cleanUserRelatedData() {
@@ -51,14 +57,13 @@ export class LocalStorageService {
       localStorageKeys.userInfoOidc,
       localStorageKeys.personalTagsBookmarks,
       localStorageKeys.personalTagsSnippets,
-      localStorageKeys.userHistoryBookmarks
+      localStorageKeys.userHistoryBookmarks,
     ]);
   }
 
-
   cleanCachedKeys(keys: string[]) {
     for (const key of keys) {
-      localStorage.removeItem(key)
+      localStorage.removeItem(key);
     }
   }
 
@@ -67,17 +72,16 @@ export class LocalStorageService {
   }
 
   cleanCachedQueries(queries: any) {
-    queries = Object.values(queries)
+    queries = Object.values(queries);
 
     for (const query of queries) {
-      localStorage.removeItem(query)
+      localStorage.removeItem(query);
     }
   }
-
 }
 
 export class LocalStorageSaveOptions {
-  key: string
-  data: any
-  expirationHours?: number
+  key: string;
+  data: any;
+  expirationHours?: number;
 }

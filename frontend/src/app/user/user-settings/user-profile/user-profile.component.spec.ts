@@ -8,9 +8,8 @@ describe('UserPublicProfileEditComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserProfileComponent ]
-    })
-    .compileComponents();
+      declarations: [UserProfileComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

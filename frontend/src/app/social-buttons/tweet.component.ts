@@ -2,17 +2,17 @@ import { Component, ElementRef, AfterViewInit, Input } from '@angular/core';
 
 @Component({
   selector: 'tweet',
-  template: `<a class="twitter-share-button"
-                href="https://twitter.com/intent/tweet"
-
-                [attr.data-size]="'large'"
-                [attr.data-text]="text"
-                [attr.data-url]="url"
-                [attr.data-hashtags]="hashTags"
-                [attr.data-via]="via"
-                [attr.related]="related"
-                >
-            </a>`
+  template: `<a
+    class="twitter-share-button"
+    href="https://twitter.com/intent/tweet"
+    [attr.data-size]="'large'"
+    [attr.data-text]="text"
+    [attr.data-url]="url"
+    [attr.data-hashtags]="hashTags"
+    [attr.data-via]="via"
+    [attr.related]="related"
+  >
+  </a>`,
 })
 
 /**
@@ -32,7 +32,6 @@ export class TweetComponent implements AfterViewInit {
   @Input() via = 'CodeverDotDev';
   @Input() related = '';
 
-
   constructor() {
     // load twitter sdk if required
     const url = 'https://platform.twitter.com/widgets.js';
@@ -48,4 +47,3 @@ export class TweetComponent implements AfterViewInit {
     window['twttr'] && window['twttr'].widgets.load();
   }
 }
-

@@ -4,9 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class ImageUploadService {
-
   constructor(private httpClient: HttpClient) {}
-
 
   public uploadImage(image: File): Observable<any> {
     const formData = new FormData();
@@ -14,6 +12,5 @@ export class ImageUploadService {
     formData.append('image', image);
 
     return this.httpClient.post('/api/v1/image-upload', formData);
-
   }
 }

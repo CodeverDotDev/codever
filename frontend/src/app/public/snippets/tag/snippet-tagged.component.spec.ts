@@ -8,9 +8,8 @@ xdescribe('TagComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SnippetTaggedComponent ]
-    })
-    .compileComponents();
+      declarations: [SnippetTaggedComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

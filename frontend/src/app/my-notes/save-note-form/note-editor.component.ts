@@ -1,6 +1,21 @@
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MarkdownService } from '../../core/markdown/markdown.service';
 import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
@@ -26,23 +41,23 @@ import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteActivatedEvent,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 import { Note } from '../../core/model/note';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import {
-  DeleteResourceDialogComponent
-} from '../../shared/dialog/delete-bookmark-dialog/delete-resource-dialog.component';
+import { DeleteResourceDialogComponent } from '../../shared/dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
 import { ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
 
 @Component({
   selector: 'app-note-editor',
-  templateUrl: './note-editor.component.html'
+  templateUrl: './note-editor.component.html',
 })
 export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
-
   noteForm: FormGroup;
   userId = null;
   private userData: UserData;
@@ -70,7 +85,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   isEditMode = false;
 
-  @ViewChild('tagInput', {static: false})
+  @ViewChild('tagInput', { static: false })
   tagInput: ElementRef;
 
   @Input()
@@ -106,23 +121,27 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     private deleteDialog: MatDialog,
     private deleteNotificationService: DeleteNotificationService
   ) {
-    combineLatest([this.userInfoStore.getUserId$(), this.userDataStore.getUserData$()]).pipe(
-      takeUntil(this.destroy$),
-      switchMap(([userId, userData]) => {
+    combineLatest([
+      this.userInfoStore.getUserId$(),
+      this.userDataStore.getUserData$(),
+    ])
+      .pipe(
+        takeUntil(this.destroy$),
+        switchMap(([userId, userData]) => {
           this.userId = userId;
           this.userData = userData;
-          return this.personalNotesService.getSuggestedNoteTags(this.userId)
-        }
-      )
-    ).subscribe(tags => {
-      this.autocompleteTags = tags;
-      this.filteredTags = this.tagsControl.valueChanges.pipe(
-        startWith(null),
-        map((tag: string | null) => {
-          return tag ? this.filter(tag) : this.autocompleteTags.slice();
+          return this.personalNotesService.getSuggestedNoteTags(this.userId);
         })
-      );
-    });
+      )
+      .subscribe((tags) => {
+        this.autocompleteTags = tags;
+        this.filteredTags = this.tagsControl.valueChanges.pipe(
+          startWith(null),
+          map((tag: string | null) => {
+            return tag ? this.filter(tag) : this.autocompleteTags.slice();
+          })
+        );
+      });
 
     this.scrollStrategy = this.scrollStrategyOptions.noop();
   }
@@ -210,7 +229,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   filter(name: string) {
-    return this.autocompleteTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
+    return this.autocompleteTags.filter(
+      (tag) => tag.toLowerCase().indexOf(name.toLowerCase()) === 0
+    );
   }
 
   saveNote(note: Note) {
@@ -226,23 +247,23 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     note.createdAt = now;
     note.updatedAt = now;
     note.userId = this.userId;
-    this.personalNotesService.createNote(this.userId, note).subscribe(
-      response => {
+    this.personalNotesService
+      .createNote(this.userId, note)
+      .subscribe((response) => {
         const headers = response.headers;
         // get the snippet id, which lies in the "location" response header
         const lastSlashIndex = headers.get('location').lastIndexOf('/');
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
-        this.navigateToSnippetDetails(note, {})
-      }
-    );
+        this.navigateToSnippetDetails(note, {});
+      });
   }
 
   navigateToSnippetDetails(note: Note, queryParams: Params): void {
     const link = [`./my-notes/${note._id}/details`];
     this.router.navigate(link, {
-      state: {snippet: note},
-      queryParams: queryParams
+      state: { snippet: note },
+      queryParams: queryParams,
     });
   }
 
@@ -251,19 +272,16 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     note.updatedAt = now;
     note.userId = this.note.userId;
     note._id = this.note._id;
-    this.personalNotesService.updateNote(note).subscribe(
-      () => {
-        this.navigateToSnippetDetails(note, {})
-      }
-    );
+    this.personalNotesService.updateNote(note).subscribe(() => {
+      this.navigateToSnippetDetails(note, {});
+    });
   }
 
   navigateToNoteDetails(note: Note): void {
     const link = [`./my-notes/${note._id}/details`];
-    this.router.navigate(link,
-      {
-        state: {note: note}
-      });
+    this.router.navigate(link, {
+      state: { note: note },
+    });
   }
 
   get tags() {
@@ -290,31 +308,33 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
       resourceName: note.title,
-      type: 'note'
+      type: 'note',
     };
 
-    const dialogRef = this.deleteDialog.open(DeleteResourceDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        if (data === 'DELETE_CONFIRMED') {
-          this.deleteNote(note);
-        }
-      }
+    const dialogRef = this.deleteDialog.open(
+      DeleteResourceDialogComponent,
+      dialogConfig
     );
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data === 'DELETE_CONFIRMED') {
+        this.deleteNote(note);
+      }
+    });
   }
 
   deleteNote(note: Note) {
-    this.personalNotesService.deleteNoteById(this.userId, note._id).subscribe(() => {
-        this.router.navigate(
-          ['']
+    this.personalNotesService.deleteNoteById(this.userId, note._id).subscribe(
+      () => {
+        this.router.navigate(['']);
+        this.deleteNotificationService.showSuccessNotification(
+          `Note - "${note.title}" was deleted`
         );
-        this.deleteNotificationService.showSuccessNotification(`Note - "${note.title}" was deleted`);
       },
       () => {
-        this.deleteNotificationService.showErrorNotification('Note could not be deleted. Please try again later!');
+        this.deleteNotificationService.showErrorNotification(
+          'Note could not be deleted. Please try again later!'
+        );
       }
     );
   }
 }
-
-

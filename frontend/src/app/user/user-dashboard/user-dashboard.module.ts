@@ -22,42 +22,38 @@ const userDashboardRoutes: Routes = [
   {
     path: 'tags',
     redirectTo: '/dashboard?tab=tags',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
-
     path: '',
     component: UserDashboardComponent,
     canActivate: [AuthGuard],
-  }
+  },
 ];
 
 @NgModule({
-    declarations: [
-        UserTagsComponent,
-        UserDashboardComponent,
-        UserBookmarksComponent,
-        DeleteBookmarksByTagDialogComponent,
-        DeleteSavedSearchDialogComponent,
-        MySearchesComponent,
-        FollowingComponent,
-        FollowersComponent,
-        MySearchesTemplateComponent,
-        MySnippetsComponent
-    ],
-    imports: [
-        RouterModule.forChild(userDashboardRoutes),
-        SharedModule,
-        MatTabsModule,
-        MatAutocompleteModule,
-        MatExpansionModule,
-        MatDialogModule,
-        CommonModule
-    ],
-    providers: [
-        AuthGuard
-    ],
-    exports: [RouterModule]
+  declarations: [
+    UserTagsComponent,
+    UserDashboardComponent,
+    UserBookmarksComponent,
+    DeleteBookmarksByTagDialogComponent,
+    DeleteSavedSearchDialogComponent,
+    MySearchesComponent,
+    FollowingComponent,
+    FollowersComponent,
+    MySearchesTemplateComponent,
+    MySnippetsComponent,
+  ],
+  imports: [
+    RouterModule.forChild(userDashboardRoutes),
+    SharedModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    MatExpansionModule,
+    MatDialogModule,
+    CommonModule,
+  ],
+  providers: [AuthGuard],
+  exports: [RouterModule],
 })
-export class UserDashboardModule {
-}
+export class UserDashboardModule {}

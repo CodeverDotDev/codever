@@ -30,7 +30,6 @@ import { LoginDialogHelperService } from './core/login-dialog-helper.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-
   url = 'https://www.codever.dev';
   innerWidth: any;
 
@@ -43,26 +42,39 @@ export class AppComponent implements OnInit {
   latestVisitedBookmarks$: Observable<Bookmark[]>;
 
   private hoveringLastSearches: boolean[] = [];
-  private hoveringLastVisited: boolean[] = [false, false, false, false, false, false, false, false, false, false];
+  private hoveringLastVisited: boolean[] = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
 
   favIcon: HTMLLinkElement = document.querySelector('#favicon');
   readonly environment = environment;
 
   scrollStrategy: ScrollStrategy;
 
-  constructor(private keycloakService: KeycloakService,
-              private userInfoStore: UserInfoStore,
-              private userDataStore: UserDataStore,
-              private userDataHistoryStore: UserDataHistoryStore,
-              private userDataPinnedStore: UserDataPinnedStore,
-              private historyDialog: MatDialog,
-              private loginDialog: MatDialog,
-              private loginDialogHelperService: LoginDialogHelperService,
-              private cookieService: CookieService,
-              private feedbackService: FeedbackService,
-              protected router: Router,
-              private addToHistoryService: AddToHistoryService,
-              private readonly  scrollStrategyOptions: ScrollStrategyOptions) {
+  constructor(
+    private keycloakService: KeycloakService,
+    private userInfoStore: UserInfoStore,
+    private userDataStore: UserDataStore,
+    private userDataHistoryStore: UserDataHistoryStore,
+    private userDataPinnedStore: UserDataPinnedStore,
+    private historyDialog: MatDialog,
+    private loginDialog: MatDialog,
+    private loginDialogHelperService: LoginDialogHelperService,
+    private cookieService: CookieService,
+    private feedbackService: FeedbackService,
+    protected router: Router,
+    private addToHistoryService: AddToHistoryService,
+    private readonly scrollStrategyOptions: ScrollStrategyOptions
+  ) {
     this.innerWidth = 100;
   }
 
@@ -70,27 +82,32 @@ export class AppComponent implements OnInit {
     if (environment.production === false) {
       this.favIcon.href = 'assets/logo/logo-green.svg';
     }
-    const acknowledgedCodeverMigration = this.cookieService.readCookie('acknowledge-codever-migration');
+    const acknowledgedCodeverMigration = this.cookieService.readCookie(
+      'acknowledge-codever-migration'
+    );
     if (acknowledgedCodeverMigration !== 'true') {
       this.showAcknowledgeMigrationHeader = true;
     }
 
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userId = userInfo.sub;
-          this.latestVisitedBookmarks$ = this.userDataHistoryStore.getHistory$(this.userId, 1);
+          this.latestVisitedBookmarks$ = this.userDataHistoryStore.getHistory$(
+            this.userId,
+            1
+          );
         });
         this.userData$ = this.userDataStore.getUserData$();
         this.latestSearches$ = this.userData$.pipe(
-          map(userData => {
+          map((userData) => {
             for (let i = 0; i < 10; i++) {
               this.hoveringLastSearches.push(false);
             }
             return userData.searches.slice(0, 10);
           })
-        )
+        );
       }
     });
     this.scrollStrategy = this.scrollStrategyOptions.noop();
@@ -99,7 +116,9 @@ export class AppComponent implements OnInit {
   @HostListener('window:keydown.control.p', ['$event'])
   showPinned(event: KeyboardEvent) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to see the Pinned Bookmarks popup');
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
+        'You need to be logged in to see the Pinned Bookmarks popup'
+      );
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
@@ -112,16 +131,20 @@ export class AppComponent implements OnInit {
       dialogConfig.height = this.getRelativeHeight();
       dialogConfig.scrollStrategy = this.scrollStrategy;
       dialogConfig.data = {
-        bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1),
-        title: '<i class="fas fa-thumbtack"></i> Pinned'
+        bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(
+          this.userId,
+          1
+        ),
+        title: '<i class="fas fa-thumbtack"></i> Pinned',
       };
 
-      const dialogRef = this.historyDialog.open(HotKeysDialogComponent, dialogConfig);
-      dialogRef.afterClosed().subscribe(
-        data => {
-          console.log('Dialog output:', data);
-        }
+      const dialogRef = this.historyDialog.open(
+        HotKeysDialogComponent,
+        dialogConfig
       );
+      dialogRef.afterClosed().subscribe((data) => {
+        console.log('Dialog output:', data);
+      });
     }
   }
 
@@ -146,7 +169,9 @@ export class AppComponent implements OnInit {
   @HostListener('window:keydown.control.h', ['$event'])
   showHistory(event: KeyboardEvent) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = this.loginDialogHelperService.loginDialogConfig('You need to be logged in to see the History Bookmarks popup');
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
+        'You need to be logged in to see the History Bookmarks popup'
+      );
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
@@ -160,35 +185,40 @@ export class AppComponent implements OnInit {
       dialogConfig.scrollStrategy = this.scrollStrategy;
       dialogConfig.data = {
         bookmarks$: this.userDataHistoryStore.getAllHistory$(this.userId),
-        title: '<i class="fas fa-history"></i> History'
+        title: '<i class="fas fa-history"></i> History',
       };
 
-      const dialogRef = this.historyDialog.open(HotKeysDialogComponent, dialogConfig);
-      dialogRef.afterClosed().subscribe(
-        data => {
-          console.log('Dialog output:', data);
-        }
+      const dialogRef = this.historyDialog.open(
+        HotKeysDialogComponent,
+        dialogConfig
       );
+      dialogRef.afterClosed().subscribe((data) => {
+        console.log('Dialog output:', data);
+      });
     }
   }
 
   public acknowledgeCodeverRebranding(response: string) {
-    this.cookieService.createCookie('acknowledge-codever-migration', 'true', 365);
+    this.cookieService.createCookie(
+      'acknowledge-codever-migration',
+      'true',
+      365
+    );
     this.showAcknowledgeMigrationHeader = false;
 
     const iziToastSettings: IziToastSettings = {
       title: 'Thank you for your feedback',
       timeout: 3000,
-      position: 'topRight'
-    }
+      position: 'topRight',
+    };
     iziToast.success(iziToastSettings);
 
     const feedback: Feedback = {
       question: 'Bookmarks.dev rebranding to Codever',
       userResponse: response,
       userId: this.userId ? this.userId : null,
-      userAgent: navigator.userAgent
-    }
+      userAgent: navigator.userAgent,
+    };
 
     this.feedbackService.createFeedback(feedback).subscribe();
   }
@@ -198,11 +228,11 @@ export class AppComponent implements OnInit {
   }
 
   resetHoveringLastSearches() {
-    this.hoveringLastSearches.forEach(item => item = false);
+    this.hoveringLastSearches.forEach((item) => (item = false));
   }
 
   resetHoveringLastVisited() {
-    this.hoveringLastVisited.forEach(item => item = false);
+    this.hoveringLastVisited.forEach((item) => (item = false));
   }
 
   navigateToBookmarkDetails(bookmark: Bookmark): void {
@@ -211,9 +241,12 @@ export class AppComponent implements OnInit {
       link = [`./bookmarks/${bookmark._id}/details`];
     }
     this.router.navigate(link, {
-      state: {bookmark: bookmark}
+      state: { bookmark: bookmark },
     });
-    this.addToHistoryService.promoteInHistoryIfLoggedIn(this.userIsLoggedIn, bookmark);
+    this.addToHistoryService.promoteInHistoryIfLoggedIn(
+      this.userIsLoggedIn,
+      bookmark
+    );
   }
 
   goToMainLink(bookmark: Bookmark) {

@@ -8,26 +8,29 @@ import { Observable, of } from 'rxjs';
 @Component({
   selector: 'app-update-bookmark',
   templateUrl: './update-personal-bookmark.component.html',
-  styleUrls: ['./update-personal-bookmark.component.scss']
+  styleUrls: ['./update-personal-bookmark.component.scss'],
 })
 export class UpdatePersonalBookmarkComponent implements OnInit {
-
   bookmark$: Observable<Bookmark>;
   bookmarkId: string;
   userId: string;
 
-  constructor(private route: ActivatedRoute,
-              private personalBookmarksService: PersonalBookmarksService,
-              private userInfoStore: UserInfoStore) {
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private personalBookmarksService: PersonalBookmarksService,
+    private userInfoStore: UserInfoStore
+  ) {}
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
       this.userId = userInfo.sub;
       this.bookmark$ = of(window.history.state.bookmark);
       if (!window.history.state.bookmark) {
         this.bookmarkId = this.route.snapshot.paramMap.get('id');
-        this.bookmark$ = this.personalBookmarksService.getPersonalBookmarkById(this.userId, this.bookmarkId);
+        this.bookmark$ = this.personalBookmarksService.getPersonalBookmarkById(
+          this.userId,
+          this.bookmarkId
+        );
       }
     });
   }

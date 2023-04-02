@@ -10,20 +10,20 @@ import { LocalStorageService } from '../../core/cache/local-storage.service';
 @Component({
   selector: 'app-user-settings',
   templateUrl: './user-settings.component.html',
-  styleUrls: ['./user-settings.component.scss']
+  styleUrls: ['./user-settings.component.scss'],
 })
 export class UserSettingsComponent implements OnInit {
-
   environment = environment;
   userData$: Observable<UserData>;
 
-  constructor(private userInfoStore: UserInfoStore,
-              private userDataStore: UserDataStore,
-              private localStorageService: LocalStorageService) {
-  }
+  constructor(
+    private userInfoStore: UserInfoStore,
+    private userDataStore: UserDataStore,
+    private localStorageService: LocalStorageService
+  ) {}
 
   ngOnInit() {
-    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
       this.userData$ = this.userDataStore.getUserData$();
     });
   }
@@ -34,5 +34,4 @@ export class UserSettingsComponent implements OnInit {
   clearAccountCacheEntry() {
     this.localStorageService.cleanCachedKey(localStorageKeys.userInfoOidc);
   }
-
 }

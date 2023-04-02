@@ -1,23 +1,34 @@
 <div class="navigation-space-buffer rounded shadow-sm note-bg">
   <form [formGroup]="noteForm" novalidate (ngSubmit)="saveNote(noteForm.value)">
     <div class="form-group pb-1">
-      <label for="title" class="space-btw-wrapper"><span>Title*</span> <span><i
-        class="fa fa-sticky-note fa-lg"></i></span></label>
-      <input type="text" class="form-control" id="title"
-             required
-             formControlName="title"
-             placeholder="Note title to recognize later">
-      <div [hidden]="noteForm.get('title').valid || (noteForm.get('title').pristine)"
-           class="alert alert-danger">
+      <label for="title" class="space-btw-wrapper"
+        ><span>Title*</span> <span><i class="fa fa-sticky-note fa-lg"></i></span
+      ></label>
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        required
+        formControlName="title"
+        placeholder="Note title to recognize later"
+      />
+      <div
+        [hidden]="noteForm.get('title').valid || noteForm.get('title').pristine"
+        class="alert alert-danger"
+      >
         Title is required
       </div>
       <!-- tags -->
       <div id="tags" class="mb-3 border rounded p-2 mt-3">
         <mat-form-field class="full-width">
           <mat-chip-list #chipList>
-            <mat-chip *ngFor="let tag of formArrayTags.controls; let i = index;" [selectable]="selectable"
-                      [removable]="removable" (removed)="removeTagByIndex(i)">
-              {{tag.value}}
+            <mat-chip
+              *ngFor="let tag of formArrayTags.controls; let i = index"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="removeTagByIndex(i)"
+            >
+              {{ tag.value }}
               <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
             </mat-chip>
             <input
@@ -36,41 +47,62 @@
           <mat-autocomplete
             #auto="matAutocomplete"
             (optionActivated)="optionActivated($event)"
-            (optionSelected)="selectedTag($event)">
+            (optionSelected)="selectedTag($event)"
+          >
             <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
               {{ tag }}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <span *ngIf="formArrayTags.invalid && (formArrayTags.dirty || formArrayTags.touched)">
-        <mat-error *ngIf="formArrayTags.errors.tagsAreRequired">
-          Tags are <strong>required</strong>
-        </mat-error>
-        <mat-error *ngIf="formArrayTags.errors.tooManyTags">
-          You can add <strong>maximum 8 tags</strong>
-        </mat-error>
-      </span>
+        <span
+          *ngIf="
+            formArrayTags.invalid &&
+            (formArrayTags.dirty || formArrayTags.touched)
+          "
+        >
+          <mat-error *ngIf="formArrayTags.errors.tagsAreRequired">
+            Tags are <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="formArrayTags.errors.tooManyTags">
+            You can add <strong>maximum 8 tags</strong>
+          </mat-error>
+        </span>
       </div>
 
       <div class="form-group">
-        <label for="content" style="width: 100%">Content* - <i class="fab fa-markdown"></i> <a
-          class="markdown-link" href="https://daringfireball.net/projects/markdown/" target="_blank"><span class="ml-1">Markdown is
-          supported</span></a></label>
-        <textarea class="form-control"
-                  id="content"
-                  formControlName="content"
-                  placeholder="Note text (searchable)"
-                  style="height: 300px">
-      </textarea>
-        <div class="description-chars-counter">{{content.value ? content.value.length : 0}} / 5000</div>
+        <label for="content" style="width: 100%"
+          >Content* - <i class="fab fa-markdown"></i>
+          <a
+            class="markdown-link"
+            href="https://daringfireball.net/projects/markdown/"
+            target="_blank"
+            ><span class="ml-1">Markdown is supported</span></a
+          ></label
+        >
+        <textarea
+          class="form-control"
+          id="content"
+          formControlName="content"
+          placeholder="Note text (searchable)"
+          style="height: 300px"
+        >
+        </textarea>
+        <div class="description-chars-counter">
+          {{ content.value ? content.value.length : 0 }} / 5000
+        </div>
         <div class="clear"></div>
-        <div *ngIf="content.invalid && (content.dirty || content.touched)" class="alert alert-danger">
+        <div
+          *ngIf="content.invalid && (content.dirty || content.touched)"
+          class="alert alert-danger"
+        >
           <div *ngIf="content.errors.tooManyLines">
-            Your description has {{content.errors.tooManyLines.value}} lines. Maximum 300 lines are allowed.
+            Your description has {{ content.errors.tooManyLines.value }} lines.
+            Maximum 300 lines are allowed.
           </div>
           <div *ngIf="content.errors.tooManyCharacters">
-            Your description has {{content.errors.tooManyCharacters.value}} characters. Maximum 5000 characters are
-            allowed.
+            Your description has
+            {{ content.errors.tooManyCharacters.value }} characters. Maximum
+            5000 characters are allowed.
           </div>
         </div>
       </div>
@@ -78,21 +110,37 @@
 
     <div class="form-group pb-2">
       <label for="reference">Reference</label>
-      <input type="url"
-             class="form-control"
-             id="reference"
-             formControlName="reference"
-             placeholder='Optional reference (web url, project, topic etc.)'>
+      <input
+        type="url"
+        class="form-control"
+        id="reference"
+        formControlName="reference"
+        placeholder="Optional reference (web url, project, topic etc.)"
+      />
     </div>
 
-    <button type="submit" class="btn btn-primary mr-2"
-            [disabled]="!noteForm.valid">
+    <button
+      type="submit"
+      class="btn btn-primary mr-2"
+      [disabled]="!noteForm.valid"
+    >
       Save note
     </button>
-    <button type="button" class="btn btn-secondary" title="Cancel update" (click)="cancelUpdate()">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      title="Cancel update"
+      (click)="cancelUpdate()"
+    >
       Cancel <i class="far fa-times-circle"></i>
     </button>
-    <button *ngIf="isEditMode" type="button" class="btn btn-danger float-right" title="Delete snippet" (click)="openDeleteDialog(note)">
+    <button
+      *ngIf="isEditMode"
+      type="button"
+      class="btn btn-danger float-right"
+      title="Delete snippet"
+      (click)="openDeleteDialog(note)"
+    >
       Delete <i class="fas fa-trash-alt"></i>
     </button>
   </form>

@@ -1,15 +1,18 @@
 <h2 mat-dialog-title>Login required</h2>
 
-<hr>
+<hr />
 
 <mat-dialog-content>
-  <p>{{message}}</p>
+  <p>{{ message }}</p>
 </mat-dialog-content>
 
-<hr>
+<hr />
 
 <mat-dialog-actions class="app-dialog-actions">
-  <button type="button" class="btn btn-primary btn-sm mr-2" (click)="login()"><i class="fas fa-unlock"></i> Login / Register
+  <button type="button" class="btn btn-primary btn-sm mr-2" (click)="login()">
+    <i class="fas fa-unlock"></i> Login / Register
   </button>
-  <button type="button" class="btn btn-secondary btn-sm" (click)="cancel()">Cancel</button>
+  <button type="button" class="btn btn-secondary btn-sm" (click)="cancel()">
+    Cancel
+  </button>
 </mat-dialog-actions>

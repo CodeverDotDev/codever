@@ -17,10 +17,12 @@ import iziToast, { IziToastSettings } from 'izitoast';
 @Component({
   selector: 'app-user-tags',
   templateUrl: './user-tags.component.html',
-  styleUrls: ['./user-tags.component.scss']
+  styleUrls: ['./user-tags.component.scss'],
 })
-export class UserTagsComponent extends TagFollowingBaseComponent implements OnInit {
-
+export class UserTagsComponent
+  extends TagFollowingBaseComponent
+  implements OnInit
+{
   usedTags$: Observable<UsedTags>;
 
   selectTagControl = new FormControl();
@@ -42,29 +44,30 @@ export class UserTagsComponent extends TagFollowingBaseComponent implements OnIn
     public userDataWatchedTagsStore: UserDataWatchedTagsStore,
     public loginDialog: MatDialog,
     private personaBookmarksService: PersonalBookmarksService,
-    private localStorageService: LocalStorageService,
+    private localStorageService: LocalStorageService
   ) {
     super(loginDialog, userDataWatchedTagsStore);
   }
 
   ngOnInit() {
     this.usedTags$ = this.userDataService.getUsedTags(this.userId);
-    this.usedTags$.subscribe(usedTags => {
+    this.usedTags$.subscribe((usedTags) => {
       this.options = usedTags.private;
 
-      this.filteredOptions = this.selectTagControl.valueChanges
-        .pipe(
-          startWith(''),
-          map(value => typeof value === 'string' ? value : value.name),
-          map(name => name ? this._filter(name) : this.options.slice())
-        );
+      this.filteredOptions = this.selectTagControl.valueChanges.pipe(
+        startWith(''),
+        map((value) => (typeof value === 'string' ? value : value.name)),
+        map((name) => (name ? this._filter(name) : this.options.slice()))
+      );
     });
 
-    this.selectTagControl.valueChanges.subscribe(value => {
-      this.buttonEnabled = this.options.map(option => {
-        return option.name
-      }).includes(value.name);
-    })
+    this.selectTagControl.valueChanges.subscribe((value) => {
+      this.buttonEnabled = this.options
+        .map((option) => {
+          return option.name;
+        })
+        .includes(value.name);
+    });
   }
 
   displayTag(usedTag?: UsedTag): string | undefined {
@@ -74,11 +77,13 @@ export class UserTagsComponent extends TagFollowingBaseComponent implements OnIn
   private _filter(name: string): UsedTag[] {
     const filterValue = name.toLowerCase();
 
-    return this.options.filter(option => option.name.toLowerCase().indexOf(filterValue) >= 0);
+    return this.options.filter(
+      (option) => option.name.toLowerCase().indexOf(filterValue) >= 0
+    );
   }
 
   deletePrivateBookmarksByTag(value: string) {
-    console.log('DELETED all private tags for value ', value)
+    console.log('DELETED all private tags for value ', value);
   }
 
   openDeleteDialog(tag: string) {
@@ -86,35 +91,39 @@ export class UserTagsComponent extends TagFollowingBaseComponent implements OnIn
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      tag: tag
+      tag: tag,
     };
 
     console.log(dialogConfig.data);
 
-    const dialogRef = this.deleteDialog.open(DeleteBookmarksByTagDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        if (data === 'DELETE_CONFIRMED') {
-          this.deletePrivateBookmarksForTag(tag);
-        }
-      }
+    const dialogRef = this.deleteDialog.open(
+      DeleteBookmarksByTagDialogComponent,
+      dialogConfig
     );
-  }
-
-  deletePrivateBookmarksForTag(tag: string): void {
-    this.personaBookmarksService.deletePrivateBookmarksForTag(this.userId, tag).subscribe((response) => {
-      console.log('Private bookmarks deleted for tag - ', tag);
-      this.localStorageService.cleanCachedKey(localStorageKeys.userHistoryBookmarks);
-      const iziToastSettings: IziToastSettings = {
-        title: `${response.deletedCount} bookmarks successfully deleted`,
-        timeout: 3000,
-        message: 'Page will reload shortly'
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data === 'DELETE_CONFIRMED') {
+        this.deletePrivateBookmarksForTag(tag);
       }
-      iziToast.success(iziToastSettings);
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000)
     });
   }
 
+  deletePrivateBookmarksForTag(tag: string): void {
+    this.personaBookmarksService
+      .deletePrivateBookmarksForTag(this.userId, tag)
+      .subscribe((response) => {
+        console.log('Private bookmarks deleted for tag - ', tag);
+        this.localStorageService.cleanCachedKey(
+          localStorageKeys.userHistoryBookmarks
+        );
+        const iziToastSettings: IziToastSettings = {
+          title: `${response.deletedCount} bookmarks successfully deleted`,
+          timeout: 3000,
+          message: 'Page will reload shortly',
+        };
+        iziToast.success(iziToastSettings);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      });
+  }
 }

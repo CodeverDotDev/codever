@@ -4,7 +4,6 @@ import { Bookmark } from '../model/bookmark';
 
 @Injectable()
 export class NotifyStoresService {
-
   // Observable string sources
   private bookmarkDeleteSource = new Subject<Bookmark>();
 
@@ -14,5 +13,4 @@ export class NotifyStoresService {
   deleteBookmark(bookmark: Bookmark) {
     this.bookmarkDeleteSource.next(bookmark);
   }
-
 }

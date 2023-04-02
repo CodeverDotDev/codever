@@ -10,10 +10,9 @@ import { PersonalSnippetsService } from '../../../core/personal-snippets.service
   selector: 'app-snippet-social-share-dialog',
   templateUrl: './snippet-social-share-dialog.component.html',
   styleUrls: ['./social-share-dialog.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe],
 })
 export class SnippetSocialShareDialogComponent implements OnInit {
-
   shareableId$: Observable<any>;
   public snippet: Snippet;
   readonly environment = environment;
@@ -25,11 +24,13 @@ export class SnippetSocialShareDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) data
   ) {
     this.snippet = data.snippet;
-    this.shareableId$ = this.personalSnippetsService.createOrGetShareableId(data.userId, this.snippet._id);
+    this.shareableId$ = this.personalSnippetsService.createOrGetShareableId(
+      data.userId,
+      this.snippet._id
+    );
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   close() {
     this.dialogRef.close('SHARE_CANCELED');

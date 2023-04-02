@@ -13,13 +13,12 @@ import { UserFeedComponent } from './user-feed/user-feed.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { UserLocalStorageSetupComponent } from './local-storage/user-local-storage-setup.component';
 
-
 const userSettingsRoutes: Routes = [
   {
     path: '',
     component: UserSettingsComponent,
-    canActivate: [AuthGuard]
-  }
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
@@ -38,9 +37,6 @@ const userSettingsRoutes: Routes = [
     MatTabsModule,
     MatRadioModule,
   ],
-  providers: [
-    ImageUploadService
-  ]
+  providers: [ImageUploadService],
 })
-export class UserSettingsModule {
-}
+export class UserSettingsModule {}

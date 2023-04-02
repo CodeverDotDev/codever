@@ -5,7 +5,7 @@ import { LoaderService } from './loader.service';
 describe('LoaderService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LoaderService]
+      providers: [LoaderService],
     });
   });
 

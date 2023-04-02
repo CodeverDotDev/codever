@@ -5,7 +5,7 @@ import {
   Component,
   ElementRef,
   Input,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { Snippet } from '../../../core/model/snippet';
 import * as screenfull from 'screenfull';
@@ -13,10 +13,9 @@ import { Note } from '../../../core/model/note';
 
 @Component({
   selector: 'app-note-content',
-  templateUrl: './note-content.component.html'
+  templateUrl: './note-content.component.html',
 })
-export class NoteContentComponent implements  AfterViewInit, AfterViewChecked {
-
+export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   @Input()
   note: Note;
 
@@ -29,7 +28,7 @@ export class NoteContentComponent implements  AfterViewInit, AfterViewChecked {
   show = false; // add one more property
   public showMoreText = false;
 
-  @ViewChild('noteContentDiv', {static: false}) elementView: ElementRef;
+  @ViewChild('noteContentDiv', { static: false }) elementView: ElementRef;
   public viewHeight: number;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
@@ -40,7 +39,8 @@ export class NoteContentComponent implements  AfterViewInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     const show = this.viewHeight > 180;
-    if (show !== this.show) { // check if it change, tell CD update view
+    if (show !== this.show) {
+      // check if it change, tell CD update view
       this.show = show;
       this.changeDetectorRef.detectChanges();
     }

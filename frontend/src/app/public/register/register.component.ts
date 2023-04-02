@@ -5,22 +5,18 @@ import { KeycloakService } from 'keycloak-angular';
 @Component({
   selector: 'app-about',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
-
   environment = environment;
 
-  constructor(private keycloakService: KeycloakService) {
-  }
+  constructor(private keycloakService: KeycloakService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   login() {
     const options: Keycloak.KeycloakLoginOptions = {};
     options.redirectUri = `${environment.APP_HOME_URL}`;
     this.keycloakService.login(options);
   }
-
 }

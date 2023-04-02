@@ -2,117 +2,174 @@
   <div class="card-body show-hide">
     <div class="header-wrapper">
       <div class="titles">
-        <h5 *ngIf='inlist; else hyperLinkTitle' class="card-title">
-             <span *ngIf="snippet.public; else linkToPrivateSnippet">
-                <i class="fas fa-code fa-xs mr-2" title="Public snippet" style="color: #6c757d"></i>
-                <a routerLink="/snippets/{{snippet._id}}/details"
-                   [innerHtml]="snippet.title | highlight: queryText"></a> </span>
+        <h5 *ngIf="inlist; else hyperLinkTitle" class="card-title">
+          <span *ngIf="snippet.public; else linkToPrivateSnippet">
+            <i
+              class="fas fa-code fa-xs mr-2"
+              title="Public snippet"
+              style="color: #6c757d"
+            ></i>
+            <a
+              routerLink="/snippets/{{ snippet._id }}/details"
+              [innerHtml]="snippet.title | highlight : queryText"
+            ></a>
+          </span>
           <ng-template #linkToPrivateSnippet>
-                <span>
-                  <i class="fas fa-code fa-xs mr-2 anthracite-gray" title="Private snippet"></i>
-                  <a routerLink="/my-snippets/{{snippet._id}}/details"
-                     [innerHtml]="snippet.title | highlight: queryText"></a>
-                </span>
+            <span>
+              <i
+                class="fas fa-code fa-xs mr-2 anthracite-gray"
+                title="Private snippet"
+              ></i>
+              <a
+                routerLink="/my-snippets/{{ snippet._id }}/details"
+                [innerHtml]="snippet.title | highlight : queryText"
+              ></a>
+            </span>
           </ng-template>
         </h5>
         <ng-template #hyperLinkTitle>
           <h4 class="card-title">
-            <i *ngIf="snippet.public; else linkToPrivateSnippet" class="fas fa-eye fa-xs mr-1"
-               title="Public snippet"></i>
+            <i
+              *ngIf="snippet.public; else linkToPrivateSnippet"
+              class="fas fa-eye fa-xs mr-1"
+              title="Public snippet"
+            ></i>
             <ng-template #linkToPrivateSnippet>
-              <i class="fas fa-eye-slash fa-xs mr-1" title="Private snippet"></i>
+              <i
+                class="fas fa-eye-slash fa-xs mr-1"
+                title="Private snippet"
+              ></i>
             </ng-template>
 
-            {{snippet.title}} <span *ngIf="snippet.public === false; else publicPill"
-                                    class="badge badge-pill badge-light ml-3 font-weight-normal">Private</span>
+            {{ snippet.title }}
+            <span
+              *ngIf="snippet.public === false; else publicPill"
+              class="badge badge-pill badge-light ml-3 font-weight-normal"
+              >Private</span
+            >
             <ng-template #publicPill>
-              <span class="badge badge-pill badge-light ml-3  font-weight-normal">Public</span>
+              <span class="badge badge-pill badge-light ml-3 font-weight-normal"
+                >Public</span
+              >
             </ng-template>
           </h4>
         </ng-template>
         <h6 class="card-subtitle mb-2 text-muted url-under-title">
-          <span *ngIf="snippet.sourceUrl"><strong>Ref</strong> -
+          <span *ngIf="snippet.sourceUrl"
+            ><strong>Ref</strong> -
             <span
-              *ngIf="snippet.sourceUrl.startsWith('http:') || snippet.sourceUrl.startsWith('https:'); else justText">
-              <a href="{{snippet.sourceUrl}}" target="_blank">{{snippet.sourceUrl}}</a>
+              *ngIf="
+                snippet.sourceUrl.startsWith('http:') ||
+                  snippet.sourceUrl.startsWith('https:');
+                else justText
+              "
+            >
+              <a href="{{ snippet.sourceUrl }}" target="_blank">{{
+                snippet.sourceUrl
+              }}</a>
               <sup class="ml-1"><i class="fas fa-external-link-alt"></i></sup>
             </span>
             <ng-template #justText>
-              <span>{{snippet.sourceUrl}}</span>
+              <span>{{ snippet.sourceUrl }}</span>
             </ng-template>
-            </span>
+          </span>
         </h6>
       </div>
     </div>
 
-    <hr class="title-content-separator">
+    <hr class="title-content-separator" />
 
-    <app-snippet-card-body [snippet]="snippet" [queryText]="queryText" [inList]="inlist"></app-snippet-card-body>
-
+    <app-snippet-card-body
+      [snippet]="snippet"
+      [queryText]="queryText"
+      [inList]="inlist"
+    ></app-snippet-card-body>
   </div>
 
-  <ng-container *ngIf="
-  {
-    userId: userId$ | async
-  } as observables">
-
+  <ng-container
+    *ngIf="{
+      userId: userId$ | async
+    } as observables"
+  >
     <div class="card-footer" style="padding-right: 0.3rem">
       <div class="tags-group">
-        <div class="input-group-sm  mb-2 mb-sm-0 star-group">
-      <span *ngIf="snippet.public; else showPrivateIcon">
-        <i class="fas fa-eye anthracite-gray" title="Public snippet"></i>
-      </span>
+        <div class="input-group-sm mb-2 mb-sm-0 star-group">
+          <span *ngIf="snippet.public; else showPrivateIcon">
+            <i class="fas fa-eye anthracite-gray" title="Public snippet"></i>
+          </span>
           <ng-template #showPrivateIcon>
-        <span>
-          <i class="fas fa-eye-slash anthracite-gray" title="Private snippet"></i>
-        </span>
+            <span>
+              <i
+                class="fas fa-eye-slash anthracite-gray"
+                title="Private snippet"
+              ></i>
+            </span>
           </ng-template>
         </div>
-        <div *ngFor="let tag of snippet.tags" class="btn-group tag-list  mr-2 mt-1">
-          <a *ngIf="snippet.public && snippet.userId !== observables.userId; else linkToMyTagged"
-             class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
-             [routerLink]="['/snippets/t', tag]"
-             title="Go to snippets tagged [{{tag}}]"
-             [innerHtml]="tag | highlight: queryText">
-            {{tag}}
+        <div
+          *ngFor="let tag of snippet.tags"
+          class="btn-group tag-list mr-2 mt-1"
+        >
+          <a
+            *ngIf="
+              snippet.public && snippet.userId !== observables.userId;
+              else linkToMyTagged
+            "
+            class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
+            [routerLink]="['/snippets/t', tag]"
+            title="Go to snippets tagged [{{ tag }}]"
+            [innerHtml]="tag | highlight : queryText"
+          >
+            {{ tag }}
           </a>
           <ng-template #linkToMyTagged>
-            <a class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
-               [routerLink]="['/search']"
-               [queryParams]="{q: '[' + tag + ']', sd: 'my-snippets'}"
-               title="Search my bookmarks tagged {{tag}}"
-               [innerHtml]="tag | highlight: queryText">
-              {{tag}}
+            <a
+              class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
+              [routerLink]="['/search']"
+              [queryParams]="{ q: '[' + tag + ']', sd: 'my-snippets' }"
+              title="Search my bookmarks tagged {{ tag }}"
+              [innerHtml]="tag | highlight : queryText"
+            >
+              {{ tag }}
             </a>
           </ng-template>
         </div>
         <div class="float-right mt-1">
           <button
             *ngIf="observables.userId && snippet.userId === observables.userId"
-            type="button" class="btn btn-light btn-sm"
+            type="button"
+            class="btn btn-light btn-sm"
             (click)="editSnippet(snippet)"
-            title="Edit code snippet">
+            title="Edit code snippet"
+          >
             <i class="far fa-edit"></i> Edit
           </button>
 
           <button
             *ngIf="snippet.userId !== observables.userId"
-            type="button" class="btn btn-light btn-sm"
+            type="button"
+            class="btn btn-light btn-sm"
             (click)="copyToMine(userIsLoggedIn, snippet)"
-            title="Save to my snippets">
+            title="Save to my snippets"
+          >
             <i class="far fa-copy"></i> Copy to mine
           </button>
-          <button *ngIf="snippet.public || (!snippet.public && snippet.userId === observables.userId)"
-                  class="btn btn-light btn-sm float-right"
-                  title="Share via email or on social media"
-                  (click)="shareSnippetDialog(snippet, userIsLoggedIn, observables.userId)"><i class="fas fa-share"></i>
+          <button
+            *ngIf="
+              snippet.public ||
+              (!snippet.public && snippet.userId === observables.userId)
+            "
+            class="btn btn-light btn-sm float-right"
+            title="Share via email or on social media"
+            (click)="
+              shareSnippetDialog(snippet, userIsLoggedIn, observables.userId)
+            "
+          >
+            <i class="fas fa-share"></i>
             Share
           </button>
         </div>
-
       </div>
     </div>
-
   </ng-container>
-
 </div>

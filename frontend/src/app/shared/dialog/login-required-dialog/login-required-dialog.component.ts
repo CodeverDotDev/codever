@@ -7,10 +7,9 @@ import { KeycloakServiceWrapper } from '../../../core/keycloak-service-wrapper.s
 @Component({
   selector: 'app-delete-bookmark-dialog',
   templateUrl: './login-required-dialog.component.html',
-  styleUrls: ['./login-required-dialog.component.scss']
+  styleUrls: ['./login-required-dialog.component.scss'],
 })
 export class LoginRequiredDialogComponent implements OnInit {
-
   message: string;
 
   constructor(
@@ -20,11 +19,11 @@ export class LoginRequiredDialogComponent implements OnInit {
     private router: Router,
     @Inject(MAT_DIALOG_DATA) data
   ) {
-    this.message = data.message || 'You need to be logged in to be able execute this action';
+    this.message =
+      data.message || 'You need to be logged in to be able execute this action';
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   login() {
     this.dialogRef.close('LOGIN_CONFIRMED');
@@ -34,5 +33,4 @@ export class LoginRequiredDialogComponent implements OnInit {
   cancel() {
     this.dialogRef.close();
   }
-
 }

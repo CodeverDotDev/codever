@@ -46,5 +46,5 @@ export const snippet_common_tags = [
   'toml',
   'typescript',
   'xml',
-  'yaml'
+  'yaml',
 ];

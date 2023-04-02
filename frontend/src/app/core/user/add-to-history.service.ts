@@ -3,20 +3,27 @@ import { Bookmark } from '../model/bookmark';
 import { UserDataStore } from './userdata.store';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AddToHistoryService {
-  constructor(private userDataStore: UserDataStore) {
-  }
+  constructor(private userDataStore: UserDataStore) {}
 
-  onClickInDescription(userIsLoggedIn: boolean, $event: any, bookmark: Bookmark) {
+  onClickInDescription(
+    userIsLoggedIn: boolean,
+    $event: any,
+    bookmark: Bookmark
+  ) {
     if (userIsLoggedIn && this.isHtmlAnchorElement($event)) {
       $event.target.setAttribute('target', '_blank');
       this.userDataStore.updateUserDataHistory$(bookmark);
     }
   }
 
-  onMiddleClickInDescription(userIsLoggedIn: boolean, $event: any, bookmark: Bookmark) {
+  onMiddleClickInDescription(
+    userIsLoggedIn: boolean,
+    $event: any,
+    bookmark: Bookmark
+  ) {
     if (userIsLoggedIn && this.isHtmlAnchorElement($event)) {
       this.userDataStore.updateUserDataHistory$(bookmark);
     }

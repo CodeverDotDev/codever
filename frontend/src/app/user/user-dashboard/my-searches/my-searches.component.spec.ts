@@ -8,9 +8,8 @@ describe('UserTagsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MySearchesComponent ]
-    })
-    .compileComponents();
+      declarations: [MySearchesComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -23,4 +22,3 @@ describe('UserTagsComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

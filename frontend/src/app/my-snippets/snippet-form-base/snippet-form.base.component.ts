@@ -6,7 +6,10 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { CodeSnippet, Snippet } from '../../core/model/snippet';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteActivatedEvent,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Params, Router } from '@angular/router';
@@ -16,12 +19,10 @@ import { throwError as observableThrowError } from 'rxjs/internal/observable/thr
 import { PersonalSnippetsService } from '../../core/personal-snippets.service';
 import { ErrorService } from '../../core/error/error.service';
 
-
 @Component({
-  template: ''
+  template: '',
 })
 export class SnippetFormBaseComponent implements OnInit {
-
   snippetFormGroup: FormGroup;
   codeSnippetsFormArray: FormArray;
   userId = null;
@@ -47,7 +48,7 @@ export class SnippetFormBaseComponent implements OnInit {
   @Input()
   snippet: Snippet;
 
-  @ViewChild('tagInput', {static: false})
+  @ViewChild('tagInput', { static: false })
   tagInput: ElementRef;
 
   constructor(
@@ -57,25 +58,26 @@ export class SnippetFormBaseComponent implements OnInit {
     protected userInfoStore: UserInfoStore,
     protected router: Router,
     protected errorService: ErrorService
-  ) {
-  }
-
+  ) {}
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfoOidc$().pipe(
-      switchMap((userInfoOidc) => {
-        this.userId = userInfoOidc.sub;
-        return this.suggestedTagsStore.getSuggestedSnippetTags$(this.userId)
-      })
-    ).subscribe(suggestedSnippetTags => {
-      this.autocompleteTags = suggestedSnippetTags;
-      this.filteredTags = this.tagsControl.valueChanges.pipe(
-        startWith(null),
-        map((tag: string | null) => {
-          return tag ? this.filter(tag) : this.autocompleteTags.slice();
+    this.userInfoStore
+      .getUserInfoOidc$()
+      .pipe(
+        switchMap((userInfoOidc) => {
+          this.userId = userInfoOidc.sub;
+          return this.suggestedTagsStore.getSuggestedSnippetTags$(this.userId);
         })
-      );
-    });
+      )
+      .subscribe((suggestedSnippetTags) => {
+        this.autocompleteTags = suggestedSnippetTags;
+        this.filteredTags = this.tagsControl.valueChanges.pipe(
+          startWith(null),
+          map((tag: string | null) => {
+            return tag ? this.filter(tag) : this.autocompleteTags.slice();
+          })
+        );
+      });
   }
 
   addTag(event: MatChipInputEvent): void {
@@ -84,7 +86,9 @@ export class SnippetFormBaseComponent implements OnInit {
 
     if ((value || '').trim() && !this.autocompleteTagsOptionActivated) {
       // if ((value || '').trim()) {
-      this.formArrayTags.push(this.formBuilder.control(value.trim().toLowerCase()));
+      this.formArrayTags.push(
+        this.formBuilder.control(value.trim().toLowerCase())
+      );
     }
 
     // Reset the input value
@@ -104,7 +108,9 @@ export class SnippetFormBaseComponent implements OnInit {
   }
 
   filter(name: string) {
-    return this.autocompleteTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
+    return this.autocompleteTags.filter(
+      (tag) => tag.toLowerCase().indexOf(name.toLowerCase()) === 0
+    );
   }
 
   optionActivated($event: MatAutocompleteActivatedEvent) {
@@ -128,7 +134,7 @@ export class SnippetFormBaseComponent implements OnInit {
     return this.formBuilder.group({
       code: [codeSnippet.code, textSizeValidator(10000, 1000)],
       comment: codeSnippet.comment,
-      commentAfter: codeSnippet.commentAfter
+      commentAfter: codeSnippet.commentAfter,
     });
   }
 
@@ -136,7 +142,7 @@ export class SnippetFormBaseComponent implements OnInit {
     return this.formBuilder.group({
       code: ['', textSizeValidator(10000, 1000)],
       comment: ['', textSizeValidator(1000, 30)],
-      commentAfter: ['', textSizeValidator(1000, 30)]
+      commentAfter: ['', textSizeValidator(1000, 30)],
     });
   }
 
@@ -144,7 +150,7 @@ export class SnippetFormBaseComponent implements OnInit {
     return this.formBuilder.group({
       code: ['', textSizeValidator(10000, 1000)],
       comment: ['', textSizeValidator(1000, 30)],
-      commentAfter: ['', textSizeValidator(1000, 30)]
+      commentAfter: ['', textSizeValidator(1000, 30)],
     });
   }
 
@@ -163,35 +169,33 @@ export class SnippetFormBaseComponent implements OnInit {
     snippet.lastAccessedAt = now;
     if (copyToMine) {
       delete snippet['_id'];
-      snippet.createdAt = now
+      snippet.createdAt = now;
     }
 
-    this.personalSnippetsService.createSnippet(this.userId, snippet)
-      .subscribe(
-        response => {
-          const headers = response.headers;
-          // get the snippet id, which lies in the "location" response header
-          const lastSlashIndex = headers.get('location').lastIndexOf('/');
-          const newSnippetId = headers.get('location').substring(lastSlashIndex + 1);
-          snippet._id = newSnippetId;
-          const queryParams = popup ? {popup: popup} : {};
-          this.navigateToSnippetDetails(snippet, queryParams)
-        },
-        (error: HttpResponse<any>) => {
-          this.errorService.handleError(error.body.json());
-          return observableThrowError(error.body.json());
-        }
-      );
+    this.personalSnippetsService.createSnippet(this.userId, snippet).subscribe(
+      (response) => {
+        const headers = response.headers;
+        // get the snippet id, which lies in the "location" response header
+        const lastSlashIndex = headers.get('location').lastIndexOf('/');
+        const newSnippetId = headers
+          .get('location')
+          .substring(lastSlashIndex + 1);
+        snippet._id = newSnippetId;
+        const queryParams = popup ? { popup: popup } : {};
+        this.navigateToSnippetDetails(snippet, queryParams);
+      },
+      (error: HttpResponse<any>) => {
+        this.errorService.handleError(error.body.json());
+        return observableThrowError(error.body.json());
+      }
+    );
   }
 
   navigateToSnippetDetails(snippet: Snippet, queryParams: Params): void {
     const link = [`./my-snippets/${snippet._id}/details`];
     this.router.navigate(link, {
-      state: {snippet: snippet},
-      queryParams: queryParams
+      state: { snippet: snippet },
+      queryParams: queryParams,
     });
   }
-
 }
-
-

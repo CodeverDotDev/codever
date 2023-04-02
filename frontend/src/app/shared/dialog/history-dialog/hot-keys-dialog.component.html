@@ -2,40 +2,79 @@
   <h2 mat-dialog-title [innerHTML]="title"></h2>
   <div class="form-group has-search">
     <span class="fas fa-filter form-control-feedback"></span>
-    <input type="search" [(ngModel)]="filterText" class="form-control" placeholder="Filter...">
+    <input
+      type="search"
+      [(ngModel)]="filterText"
+      class="form-control"
+      placeholder="Filter..."
+    />
   </div>
-
 </div>
-<mat-dialog-content *ngIf="(bookmarks$ | async) as bookmarks" class="mt-2 pt-1 pb-1">
+<mat-dialog-content
+  *ngIf="bookmarks$ | async as bookmarks"
+  class="mt-2 pt-1 pb-1"
+>
   <mat-accordion>
     <mat-expansion-panel
-      *ngFor="let bookmark of bookmarks | bookmarkFilter: filterText as filteredBookmarks; index as i"
-      [expanded]="filteredBookmarks.length === 1">
-      <mat-expansion-panel-header *ngIf="i<15">
+      *ngFor="
+        let bookmark of bookmarks
+          | bookmarkFilter : filterText as filteredBookmarks;
+        index as i
+      "
+      [expanded]="filteredBookmarks.length === 1"
+    >
+      <mat-expansion-panel-header *ngIf="i < 15">
         <div class="p-3">
           <h5 class="card-title">
-            <a href="{{bookmark.location}}"
-               [innerHTML]="bookmark.name | slice:0:100 | highlightHtml: filterText"
-               target="_blank"
-               (click)="addToHistoryService.promoteInHistoryIfLoggedIn(true, bookmark)"
-               (auxclick)="addToHistoryService.onMiddleClickInDescription(true, $event, bookmark)"
+            <a
+              href="{{ bookmark.location }}"
+              [innerHTML]="
+                bookmark.name | slice : 0 : 100 | highlightHtml : filterText
+              "
+              target="_blank"
+              (click)="
+                addToHistoryService.promoteInHistoryIfLoggedIn(true, bookmark)
+              "
+              (auxclick)="
+                addToHistoryService.onMiddleClickInDescription(
+                  true,
+                  $event,
+                  bookmark
+                )
+              "
             >
-              {{"see innerhtml"}}
+              {{ 'see innerhtml' }}
             </a>
-            <sup class="external-link-hint"><i class="fas fa-external-link-alt"></i></sup>
+            <sup class="external-link-hint"
+              ><i class="fas fa-external-link-alt"></i
+            ></sup>
           </h5>
-          <h6 class="card-subtitle mb-2 text-muted url-under-title"
-              [innerHTML]="bookmark.location | slice:0:120 | highlightHtml: filterText"
+          <h6
+            class="card-subtitle mb-2 text-muted url-under-title"
+            [innerHTML]="
+              bookmark.location | slice : 0 : 120 | highlightHtml : filterText
+            "
           >
-            {{"see innerhtml"}}
+            {{ 'see innerhtml' }}
           </h6>
         </div>
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
-        <app-bookmark-text [bookmark]="bookmark" [showMoreText]="true"
-                           (click)="addToHistoryService.onClickInDescription(true, $event, bookmark)"
-                           (auxclick)="addToHistoryService.onMiddleClickInDescription(true, $event, bookmark)">
+        <app-bookmark-text
+          [bookmark]="bookmark"
+          [showMoreText]="true"
+          (click)="
+            addToHistoryService.onClickInDescription(true, $event, bookmark)
+          "
+          (auxclick)="
+            addToHistoryService.onMiddleClickInDescription(
+              true,
+              $event,
+              bookmark
+            )
+          "
+        >
         </app-bookmark-text>
       </ng-template>
     </mat-expansion-panel>

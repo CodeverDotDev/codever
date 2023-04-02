@@ -21,14 +21,15 @@ import { FeedStore } from '../../core/user/feed-store.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
-
 @Component({
   selector: 'app-public-bookmarks',
   templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.scss']
+  styleUrls: ['./homepage.component.scss'],
 })
-export class HomepageComponent extends TagFollowingBaseComponent implements OnInit, OnDestroy, AfterViewInit {
-
+export class HomepageComponent
+  extends TagFollowingBaseComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   readonly FIRST_PAGE = 1;
 
   feedBookmarks$: Observable<Bookmark[]>;
@@ -57,35 +58,35 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   callerPaginationPinned = 'pinned';
   callerPaginationReadLater = 'read-later';
 
-  constructor(private appService: AppService,
-              private publicBookmarksStore: PublicBookmarksStore,
-              private router: Router,
-              private route: ActivatedRoute,
-              private keycloakService: KeycloakService,
-              private userDataStore: UserDataStore,
-              private userDataHistoryStore: UserDataHistoryStore,
-              private userDataPinnedStore: UserDataPinnedStore,
-              private userDataReadLaterStore: UserDataReadLaterStore,
-              private feedStore: FeedStore,
-              public userDataWatchedTagsStore: UserDataWatchedTagsStore,
-              public loginDialog: MatDialog,
-              private userInfoStore: UserInfoStore,
-              private paginationNotificationService: PaginationNotificationService,
+  constructor(
+    private appService: AppService,
+    private publicBookmarksStore: PublicBookmarksStore,
+    private router: Router,
+    private route: ActivatedRoute,
+    private keycloakService: KeycloakService,
+    private userDataStore: UserDataStore,
+    private userDataHistoryStore: UserDataHistoryStore,
+    private userDataPinnedStore: UserDataPinnedStore,
+    private userDataReadLaterStore: UserDataReadLaterStore,
+    private feedStore: FeedStore,
+    public userDataWatchedTagsStore: UserDataWatchedTagsStore,
+    public loginDialog: MatDialog,
+    private userInfoStore: UserInfoStore,
+    private paginationNotificationService: PaginationNotificationService
   ) {
     super(loginDialog, userDataWatchedTagsStore);
   }
 
   ngOnInit(): void {
-
     const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
     const page = this.route.snapshot.queryParamMap.get('page');
     this.userIsLoggedIn$ = this.keycloakService.isLoggedIn();
 
-    this.userIsLoggedIn$.then(isLoggedIn => {
+    this.userIsLoggedIn$.then((isLoggedIn) => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userData$ = this.userDataStore.getUserData$();
-        this.userData$.subscribe(userData => {
+        this.userData$.subscribe((userData) => {
           this.userId = userData.userId;
           this.userData = userData;
           this.setSelectedTabIndexFromQueryParam(tabQueryParam);
@@ -106,7 +107,6 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
 
       this.listenToPaginationNavigationEvents(isLoggedIn);
     });
-
   }
 
   private setSelectedTabIndexFromQueryParam(tabQueryParam) {
@@ -133,7 +133,8 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
     if (isLoggedIn && !this.userData?.showAllPublicInFeed) {
       this.feedBookmarks$ = this.feedStore.getFeedBookmarks$(this.userId, page);
     } else {
-      this.feedBookmarks$ = this.publicBookmarksStore.getRecentPublicBookmarks$(page);
+      this.feedBookmarks$ =
+        this.publicBookmarksStore.getRecentPublicBookmarks$(page);
     }
   }
 
@@ -156,7 +157,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   }
 
   private listenToClickOnLogoEvent(isLoggedIn: boolean) {
-    this.appService.logoClicked.subscribe(logoClicked => {
+    this.appService.logoClicked.subscribe((logoClicked) => {
       if (logoClicked) {
         this.currentPageFeed = this.FIRST_PAGE;
         this.setFeedBookmarks$(isLoggedIn, this.currentPageFeed);
@@ -165,24 +166,48 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   }
 
   private listenToPaginationNavigationEvents(isLoggedIn: boolean) {
-    this.pageNavigationSubscription = this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
-      if (paginationAction.caller === this.callerPaginationFeed && this.selectedTabIndex === TabIndex.Feed) {
-        this.currentPageFeed = paginationAction.page;
-        this.setFeedBookmarks$(isLoggedIn, this.currentPageFeed);
-      }
-      if (paginationAction.caller === this.callerPaginationHistory && this.selectedTabIndex === TabIndex.History) {
-        this.currentPageHistory = paginationAction.page;
-        this.history$ = this.userDataHistoryStore.getHistory$(this.userId, paginationAction.page);
-      }
-      if (paginationAction.caller === this.callerPaginationPinned && this.selectedTabIndex === TabIndex.Pinned) {
-        this.currentPagePinned = paginationAction.page;
-        this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(this.userId, paginationAction.page);
-      }
-      if (paginationAction.caller === this.callerPaginationReadLater && this.selectedTabIndex === TabIndex.ReadLater) {
-        this.currentPageReadLater = paginationAction.page;
-        this.readLater$ = this.userDataReadLaterStore.getReadLater$(this.userId, paginationAction.page);
-      }
-    });
+    this.pageNavigationSubscription =
+      this.paginationNotificationService.pageNavigationClicked$.subscribe(
+        (paginationAction) => {
+          if (
+            paginationAction.caller === this.callerPaginationFeed &&
+            this.selectedTabIndex === TabIndex.Feed
+          ) {
+            this.currentPageFeed = paginationAction.page;
+            this.setFeedBookmarks$(isLoggedIn, this.currentPageFeed);
+          }
+          if (
+            paginationAction.caller === this.callerPaginationHistory &&
+            this.selectedTabIndex === TabIndex.History
+          ) {
+            this.currentPageHistory = paginationAction.page;
+            this.history$ = this.userDataHistoryStore.getHistory$(
+              this.userId,
+              paginationAction.page
+            );
+          }
+          if (
+            paginationAction.caller === this.callerPaginationPinned &&
+            this.selectedTabIndex === TabIndex.Pinned
+          ) {
+            this.currentPagePinned = paginationAction.page;
+            this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(
+              this.userId,
+              paginationAction.page
+            );
+          }
+          if (
+            paginationAction.caller === this.callerPaginationReadLater &&
+            this.selectedTabIndex === TabIndex.ReadLater
+          ) {
+            this.currentPageReadLater = paginationAction.page;
+            this.readLater$ = this.userDataReadLaterStore.getReadLater$(
+              this.userId,
+              paginationAction.page
+            );
+          }
+        }
+      );
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {
@@ -193,28 +218,37 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
           this.setFeedBookmarks$(this.userIsLoggedIn, this.currentPageFeed);
           break;
         case TabIndex.History:
-          this.history$ = this.userDataHistoryStore.getHistory$(this.userId, this.currentPageHistory);
+          this.history$ = this.userDataHistoryStore.getHistory$(
+            this.userId,
+            this.currentPageHistory
+          );
           break;
         case TabIndex.Pinned:
-          this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(this.userId, this.currentPagePinned);
+          this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(
+            this.userId,
+            this.currentPagePinned
+          );
           break;
         case TabIndex.ReadLater:
-          this.readLater$ = this.userDataReadLaterStore.getReadLater$(this.userId, this.currentPageReadLater);
+          this.readLater$ = this.userDataReadLaterStore.getReadLater$(
+            this.userId,
+            this.currentPageReadLater
+          );
           break;
       }
     }
 
-    const queryParamsFromIndex = this.getQueryParamsForSelectedTab(this.selectedTabIndex);
-    this.router.navigate([],
-      {
-        relativeTo: this.route,
-        queryParams: {
-          tab: queryParamsFromIndex.tab,
-          page: queryParamsFromIndex.page
-        },
-        queryParamsHandling: 'merge'
-      }
+    const queryParamsFromIndex = this.getQueryParamsForSelectedTab(
+      this.selectedTabIndex
     );
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        tab: queryParamsFromIndex.tab,
+        page: queryParamsFromIndex.page,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   login(selectedTab: string) {
@@ -226,19 +260,19 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   private getQueryParamsForSelectedTab(tabIndex: number): TabSwitchQueryParams {
     switch (tabIndex) {
       case TabIndex.History: {
-        return {tab: 'history', page: this.currentPageHistory}
+        return { tab: 'history', page: this.currentPageHistory };
         break;
       }
       case TabIndex.Pinned: {
-        return {tab: 'pinned', page: this.currentPagePinned};
+        return { tab: 'pinned', page: this.currentPagePinned };
         break;
       }
-      case TabIndex.ReadLater : {
-        return {tab: 'read-later', page: this.currentPageReadLater};
+      case TabIndex.ReadLater: {
+        return { tab: 'read-later', page: this.currentPageReadLater };
         break;
       }
       default: {
-        return {tab: 'feed', page: this.currentPageFeed};
+        return { tab: 'feed', page: this.currentPageFeed };
       }
     }
   }
@@ -248,14 +282,17 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   }
 
   searchPublicBookmarksByTag(tag: string) {
-    this.router.navigate(['./search'],
-      {
-        queryParams: {q: '[' + tag + ']', sd: SearchDomain.PUBLIC_BOOKMARKS, page: this.FIRST_PAGE}
-      });
+    this.router.navigate(['./search'], {
+      queryParams: {
+        q: '[' + tag + ']',
+        sd: SearchDomain.PUBLIC_BOOKMARKS,
+        page: this.FIRST_PAGE,
+      },
+    });
   }
 
   ngAfterViewInit(): void {
-    this.userIsLoggedIn$.then(isLoggedIn => {
+    this.userIsLoggedIn$.then((isLoggedIn) => {
       if (!isLoggedIn) {
         this.showLoginButton = true;
       }
@@ -272,5 +309,5 @@ enum TabIndex {
   Feed = 0,
   History,
   Pinned,
-  ReadLater
+  ReadLater,
 }

@@ -19,13 +19,13 @@ export interface UserData {
 }
 
 export interface Profile {
-  displayName: string,
-  imageUrl?: string,
-  summary?: string,
-  websiteLink?: string,
-  twitterLink?: string,
-  githubLink?: string,
-  linkedinLink?: string
+  displayName: string;
+  imageUrl?: string;
+  summary?: string;
+  websiteLink?: string;
+  twitterLink?: string;
+  githubLink?: string;
+  linkedinLink?: string;
 }
 
 export interface Following {
@@ -40,6 +40,5 @@ export interface Search {
   lastAccessedAt?: Date;
   searchDomain?: string; // personal or public at the moment
   count?: number; // number of times search was used
-  saved?: boolean // whether it is a saved search, they are meant to live forever
+  saved?: boolean; // whether it is a saved search, they are meant to live forever
 }
-

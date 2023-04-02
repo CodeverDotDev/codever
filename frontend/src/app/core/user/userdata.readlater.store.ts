@@ -10,19 +10,19 @@ import { UserDataStore } from './userdata.store';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserDataReadLaterStore {
-
   private _readLater: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private readLaterHaveBeenLoaded = false;
 
   loadedPage: number;
 
-  constructor(private userService: UserDataService,
-              private userDataStore: UserDataStore,
-              private userInfoStore: UserInfoStore,
-              private notifyStoresService: NotifyStoresService
+  constructor(
+    private userService: UserDataService,
+    private userDataStore: UserDataStore,
+    private userInfoStore: UserInfoStore,
+    private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
@@ -32,13 +32,15 @@ export class UserDataReadLaterStore {
 
   getReadLater$(userId: string, page: number): Observable<Bookmark[]> {
     if (this.loadedPage !== page || !this.readLaterHaveBeenLoaded) {
-      this.userService.getReadLater(userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
-        if (!this.readLaterHaveBeenLoaded) {
-          this.readLaterHaveBeenLoaded = true;
-        }
-        this.loadedPage = page;
-        this._readLater.next(data);
-      });
+      this.userService
+        .getReadLater(userId, page, environment.PAGINATION_PAGE_SIZE)
+        .subscribe((data) => {
+          if (!this.readLaterHaveBeenLoaded) {
+            this.readLaterHaveBeenLoaded = true;
+          }
+          this.loadedPage = page;
+          this._readLater.next(data);
+        });
     }
     return this._readLater.asObservable();
   }
@@ -73,6 +75,4 @@ export class UserDataReadLaterStore {
       this._readLater.next(readLater); // insert at the top (index 0)
     }
   }
-
 }
-

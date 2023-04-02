@@ -1,7 +1,19 @@
-import { concatMap, debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import {
+  concatMap,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+} from 'rxjs/operators';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MarkdownService } from '../../core/markdown/markdown.service';
 import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
@@ -22,9 +34,7 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
 import { WebpageInfo } from '../../core/model/webpage-info';
 import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
-import {
-  PublicBookmarkPresentDialogComponent
-} from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
+import { PublicBookmarkPresentDialogComponent } from './public-bookmark-present-dialog/public-bookmark-present-dialog.component';
 import { AdminService } from '../../core/admin/admin.service';
 import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
@@ -36,16 +46,18 @@ import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Location } from '@angular/common';
-import { MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteActivatedEvent,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 import iziToast, { IziToastSettings } from 'izitoast';
 
 @Component({
   selector: 'app-save-bookmark-form',
   templateUrl: './save-bookmark-form.component.html',
-  styleUrls: ['./save-bookmark-form.component.scss']
+  styleUrls: ['./save-bookmark-form.component.scss'],
 })
 export class SaveBookmarkFormComponent implements OnInit {
-
   bookmarkForm: FormGroup;
   userId = null;
   private userData: UserData;
@@ -88,7 +100,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   @Input()
   bookmark$: Observable<Bookmark>;
 
-  @ViewChild('tagInput', {static: false})
+  @ViewChild('tagInput', { static: false })
   tagInput: ElementRef;
 
   @Input()
@@ -125,29 +137,30 @@ export class SaveBookmarkFormComponent implements OnInit {
     private route: ActivatedRoute,
     private errorService: ErrorService
   ) {
-    this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
+    this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
       this.userId = userInfo.sub;
-      this.userDataStore.getUserData$().subscribe(userData => {
+      this.userDataStore.getUserData$().subscribe((userData) => {
         this.userData = userData;
       });
-      this.suggestedTagsStore.getSuggestedBookmarkTags$(this.userId).subscribe(tags => {
-        this.autocompleteTags = tags;
+      this.suggestedTagsStore
+        .getSuggestedBookmarkTags$(this.userId)
+        .subscribe((tags) => {
+          this.autocompleteTags = tags;
 
-        this.filteredTags = this.tagsControl.valueChanges.pipe(
-          startWith(null),
-          map((tag: string | null) => {
-            return tag ? this.filter(tag) : this.autocompleteTags.slice();
-          })
-        );
-      });
+          this.filteredTags = this.tagsControl.valueChanges.pipe(
+            startWith(null),
+            map((tag: string | null) => {
+              return tag ? this.filter(tag) : this.autocompleteTags.slice();
+            })
+          );
+        });
     });
-
   }
 
   ngOnInit(): void {
     this.buildForm();
     if (this.isUpdate || this.copyToMine) {
-      this.bookmark$.subscribe(bookmark => {
+      this.bookmark$.subscribe((bookmark) => {
         this.bookmark = bookmark;
         this.makePublic = this.bookmark.public;
         if (this.copyToMine) {
@@ -157,7 +170,11 @@ export class SaveBookmarkFormComponent implements OnInit {
           this.verifyExistenceInPersonalBookmarks(bookmark.location);
         }
         this.bookmarkForm.patchValue(this.bookmark);
-        this.bookmarkForm.get('publishedOn').patchValue(this.datePipe.transform(bookmark.publishedOn, 'yyyy-MM-dd')); // issue setting date otherwise on date field
+        this.bookmarkForm
+          .get('publishedOn')
+          .patchValue(
+            this.datePipe.transform(bookmark.publishedOn, 'yyyy-MM-dd')
+          ); // issue setting date otherwise on date field
         for (let i = 0; i < this.bookmark.tags.length; i++) {
           const formTags = this.bookmarkForm.get('tags') as FormArray;
           formTags.push(this.formBuilder.control(this.bookmark.tags[i]));
@@ -195,51 +212,70 @@ export class SaveBookmarkFormComponent implements OnInit {
   private onChanges() {
     const isNewBookmark = !this.isUpdate && !this.copyToMine;
     if (isNewBookmark) {
-      this.bookmarkForm.get('location').valueChanges.pipe(
-        debounceTime(1000),
-        distinctUntilChanged(),)
-        .subscribe(location => {
+      this.bookmarkForm
+        .get('location')
+        .valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
+        .subscribe((location) => {
           this.verifyExistenceInPersonalBookmarks(location);
         });
     }
   }
 
   private verifyExistenceInPersonalBookmarks(location) {
-    this.personalBookmarksService.getPersonalBookmarkByLocation(this.userId, location).subscribe((bookmarks: Bookmark[]) => {
-      if (bookmarks.length === 1) {
-        this.personalBookmarkPresent = true;
-        this.existingPersonalBookmark = bookmarks[0];
-      } else if (!this.copyToMine) {
-        this.getWebPageInfo(location);
-      }
-    });
+    this.personalBookmarksService
+      .getPersonalBookmarkByLocation(this.userId, location)
+      .subscribe((bookmarks: Bookmark[]) => {
+        if (bookmarks.length === 1) {
+          this.personalBookmarkPresent = true;
+          this.existingPersonalBookmark = bookmarks[0];
+        } else if (!this.copyToMine) {
+          this.getWebPageInfo(location);
+        }
+      });
   }
 
   private getWebPageInfo(location) {
     this.personalBookmarkPresent = false;
     const youtubeVideoId = this.getYoutubeVideoId(location);
     if (youtubeVideoId) {
-      this.bookmarkForm.get('youtubeVideoId').patchValue(youtubeVideoId, {emitEvent: false});
-      this.webpageInfoService.getYoutubeVideoData(youtubeVideoId).subscribe((webpageData: WebpageInfo) => {
+      this.bookmarkForm
+        .get('youtubeVideoId')
+        .patchValue(youtubeVideoId, { emitEvent: false });
+      this.webpageInfoService.getYoutubeVideoData(youtubeVideoId).subscribe(
+        (webpageData: WebpageInfo) => {
           this.patchFormAttributesWithWebPageData(webpageData);
         },
-        error => {
-          console.error(`Problems when scraping data for youtube id ${youtubeVideoId}`, error);
+        (error) => {
+          console.error(
+            `Problems when scraping data for youtube id ${youtubeVideoId}`,
+            error
+          );
           // fallback to scrape from location
           this.updateFormWithScrapingDataFromLocation(location);
-        });
+        }
+      );
     } else {
-      const stackoverflowQuestionId = this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(location);
+      const stackoverflowQuestionId =
+        this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(location);
       if (stackoverflowQuestionId) {
-        this.bookmarkForm.get('stackoverflowQuestionId').patchValue(stackoverflowQuestionId, {emitEvent: false});
-        this.webpageInfoService.getStackoverflowQuestionData(stackoverflowQuestionId).subscribe((webpageData: WebpageInfo) => {
-            this.patchFormAttributesWithWebPageData(webpageData);
-          },
-          error => {
-            console.error(`Problems when scraping data for stackoverflow id ${stackoverflowQuestionId}`, error);
-            // fallback to scrape from location
-            this.updateFormWithScrapingDataFromLocation(location);
-          });
+        this.bookmarkForm
+          .get('stackoverflowQuestionId')
+          .patchValue(stackoverflowQuestionId, { emitEvent: false });
+        this.webpageInfoService
+          .getStackoverflowQuestionData(stackoverflowQuestionId)
+          .subscribe(
+            (webpageData: WebpageInfo) => {
+              this.patchFormAttributesWithWebPageData(webpageData);
+            },
+            (error) => {
+              console.error(
+                `Problems when scraping data for stackoverflow id ${stackoverflowQuestionId}`,
+                error
+              );
+              // fallback to scrape from location
+              this.updateFormWithScrapingDataFromLocation(location);
+            }
+          );
       } else {
         // for everything else try to scrape the web page for the location
         this.updateFormWithScrapingDataFromLocation(location);
@@ -249,15 +285,24 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   private patchFormAttributesWithWebPageData(webpageData) {
     if (webpageData.title) {
-      this.bookmarkForm.get('name').patchValue(webpageData.title, {emitEvent: false});
+      this.bookmarkForm
+        .get('name')
+        .patchValue(webpageData.title, { emitEvent: false });
     }
     if (webpageData.publishedOn) {
-      this.bookmarkForm.get('publishedOn').patchValue(webpageData.publishedOn, {emitEvent: false});
+      this.bookmarkForm
+        .get('publishedOn')
+        .patchValue(webpageData.publishedOn, { emitEvent: false });
     }
-    if (this.desc) {// use user selected text if present
-      this.bookmarkForm.get('description').patchValue(this.desc, {emitEvent: false});
+    if (this.desc) {
+      // use user selected text if present
+      this.bookmarkForm
+        .get('description')
+        .patchValue(this.desc, { emitEvent: false });
     } else if (webpageData.metaDescription) {
-      this.bookmarkForm.get('description').patchValue(webpageData.metaDescription, {emitEvent: false});
+      this.bookmarkForm
+        .get('description')
+        .patchValue(webpageData.metaDescription, { emitEvent: false });
     }
     if (webpageData.tags) {
       for (let i = 0; i < webpageData.tags.length; i++) {
@@ -274,18 +319,23 @@ export class SaveBookmarkFormComponent implements OnInit {
     if (this.desc) {
       const webpageData: WebpageInfo = {
         title: this.title,
-        metaDescription: this.desc
-      }
+        metaDescription: this.desc,
+      };
       this.patchFormAttributesWithWebPageData(webpageData);
-    } else { // go try to scrape for description and title if user did not select any text
-      this.webpageInfoService.getScrapingData(location).subscribe((webpageData: WebpageInfo) => {
+    } else {
+      // go try to scrape for description and title if user did not select any text
+      this.webpageInfoService.getScrapingData(location).subscribe(
+        (webpageData: WebpageInfo) => {
           this.patchFormAttributesWithWebPageData(webpageData);
         },
-        error => {
-          console.error(`Problems when scraping data for location ${location}`, error);
-        });
+        (error) => {
+          console.error(
+            `Problems when scraping data for location ${location}`,
+            error
+          );
+        }
+      );
     }
-
   }
 
   private getYoutubeVideoId(bookmarkUrl): string {
@@ -301,7 +351,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     }
 
     return youtubeVideoId;
-  };
+  }
 
   addTag(event: MatChipInputEvent): void {
     const input = event.input;
@@ -346,12 +396,14 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   filter(name: string) {
-    return this.autocompleteTags.filter(tag => tag.toLowerCase().indexOf(name.toLowerCase()) === 0);
+    return this.autocompleteTags.filter(
+      (tag) => tag.toLowerCase().indexOf(name.toLowerCase()) === 0
+    );
   }
 
   saveBookmark(bookmark: Bookmark) {
     if (this.isUpdate) {
-      this.updateBookmark(bookmark)
+      this.updateBookmark(bookmark);
     } else if (this.copyToMine) {
       this.copyBookmarkToMine(bookmark);
     } else {
@@ -359,9 +411,10 @@ export class SaveBookmarkFormComponent implements OnInit {
     }
   }
 
-
   updateBookmark(bookmark: Bookmark): void {
-    bookmark.descriptionHtml = this.markdownService.toHtml(bookmark.description);
+    bookmark.descriptionHtml = this.markdownService.toHtml(
+      bookmark.description
+    );
     const now = new Date();
     bookmark.updatedAt = now;
     bookmark.lastAccessedAt = now;
@@ -369,42 +422,46 @@ export class SaveBookmarkFormComponent implements OnInit {
     bookmark.userDisplayName = this.bookmark.userDisplayName;
     bookmark._id = this.bookmark._id;
 
-    const updateAsAdmin = this.keycloakService.isUserInRole('ROLE_ADMIN') && bookmark.userId !== this.userId;
+    const updateAsAdmin =
+      this.keycloakService.isUserInRole('ROLE_ADMIN') &&
+      bookmark.userId !== this.userId;
     if (updateAsAdmin) {
       this.adminService.updateBookmark(bookmark).subscribe(
         () => {
-          this.navigateToHomePageHistoryTab()
+          this.navigateToHomePageHistoryTab();
         },
         () => this.navigateToHomePageHistoryTab() // TODO add error handling - popover
       );
     } else {
-      this.personalBookmarksService.updateBookmark(bookmark).pipe(
-        concatMap((updatedBookmark) => this.userDataStore.updateUserDataHistory$(updatedBookmark))
-      ).subscribe(
-        () => {
-          this.navigateToHomePageHistoryTab();
-        },
-        (response) => {
-          const iziToastSettings: IziToastSettings = {
-            title: `Error when updating ${bookmark.name}`,
-            messageLineHeight: '5',
-            timeout: false,
-            message: response.message + ' ' + response?.validationErrors
-          }
-          iziToast.error(iziToastSettings);
-          this.navigateToHomePageHistoryTab()
-        } // TODO add error handling - popover}
-      );
+      this.personalBookmarksService
+        .updateBookmark(bookmark)
+        .pipe(
+          concatMap((updatedBookmark) =>
+            this.userDataStore.updateUserDataHistory$(updatedBookmark)
+          )
+        )
+        .subscribe(
+          () => {
+            this.navigateToHomePageHistoryTab();
+          },
+          (response) => {
+            const iziToastSettings: IziToastSettings = {
+              title: `Error when updating ${bookmark.name}`,
+              messageLineHeight: '5',
+              timeout: false,
+              message: response.message + ' ' + response?.validationErrors,
+            };
+            iziToast.error(iziToastSettings);
+            this.navigateToHomePageHistoryTab();
+          } // TODO add error handling - popover}
+        );
     }
   }
 
   navigateToHomePageHistoryTab(): void {
-    this.router.navigate(
-      ['/'],
-      {
-        queryParams: {tab: 'history'}
-      }
-    );
+    this.router.navigate(['/'], {
+      queryParams: { tab: 'history' },
+    });
   }
 
   private createBookmark(bookmark: Bookmark) {
@@ -422,7 +479,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       userDisplayName: this.userData.profile.displayName,
       public: bookmark.public,
       lastAccessedAt: new Date(),
-      likeCount: 0
+      likeCount: 0,
     };
 
     if (bookmark.youtubeVideoId) {
@@ -433,13 +490,16 @@ export class SaveBookmarkFormComponent implements OnInit {
       newBookmark.stackoverflowQuestionId = bookmark.stackoverflowQuestionId;
     }
 
-    this.personalBookmarksService.createBookmark(this.userId, newBookmark)
+    this.personalBookmarksService
+      .createBookmark(this.userId, newBookmark)
       .subscribe(
-        response => {
+        (response) => {
           const headers = response.headers;
           // get the bookmark id, which lies in the "location" response header
           const lastSlashIndex = headers.get('location').lastIndexOf('/');
-          const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
+          const newBookmarkId = headers
+            .get('location')
+            .substring(lastSlashIndex + 1);
           newBookmark._id = newBookmarkId;
 
           this.myBookmarksStore.addToLastCreated(bookmark);
@@ -450,11 +510,13 @@ export class SaveBookmarkFormComponent implements OnInit {
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
           const pinned = this.bookmarkForm.controls['pinned'].value;
-          this.userDataStore.updateHistoryReadLaterAndPinned$(newBookmark, readLater, pinned).subscribe(() => {
-            this.publishInUserDataStores(newBookmark, readLater, pinned);
-            this.navigateToBookmarkDetails(newBookmark);
+          this.userDataStore
+            .updateHistoryReadLaterAndPinned$(newBookmark, readLater, pinned)
+            .subscribe(() => {
+              this.publishInUserDataStores(newBookmark, readLater, pinned);
+              this.navigateToBookmarkDetails(newBookmark);
 
-            /*            if (this.url) {
+              /*            if (this.url) {
                           if (this.popup) {
                             this.navigateToBookmarkDetails(newBookmark);
                           } else if (this.popupExt) {
@@ -465,7 +527,7 @@ export class SaveBookmarkFormComponent implements OnInit {
                         } else {
                           this.navigateToHomePageHistoryTab();
                         }*/
-          });
+            });
         },
         (error: HttpResponse<any>) => {
           this.errorService.handleError(error.body.json());
@@ -476,11 +538,10 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   navigateToBookmarkDetails(bookmark: Bookmark): void {
     const link = [`./my-bookmarks/${bookmark._id}/details`];
-    this.router.navigate(link,
-      {
-        state: {bookmark: bookmark},
-        queryParams: {popup: this.popup}
-      });
+    this.router.navigate(link, {
+      state: { bookmark: bookmark },
+      queryParams: { popup: this.popup },
+    });
   }
 
   private publishInUserDataStores(bookmark: Bookmark, readLater, pinned) {
@@ -496,15 +557,16 @@ export class SaveBookmarkFormComponent implements OnInit {
   onClickMakePublic(checkboxValue) {
     if (checkboxValue) {
       const location: string = this.bookmarkForm.controls['location'].value;
-      this.publicBookmarksService.getPublicBookmarkByLocation(location).subscribe(bookmarksForLocation => {
+      this.publicBookmarksService
+        .getPublicBookmarkByLocation(location)
+        .subscribe((bookmarksForLocation) => {
           if (bookmarksForLocation.length === 0) {
             this.makePublic = true;
             this.bookmarkForm.controls['language'].setValue('en');
           } else {
             this.openPublicBookmarkPresentDialog(bookmarksForLocation[0]);
           }
-        }
-      );
+        });
     } else {
       this.makePublic = false;
       this.bookmarkForm.controls['language'].setValue(null);
@@ -516,29 +578,30 @@ export class SaveBookmarkFormComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      bookmark: bookmark
+      bookmark: bookmark,
     };
 
-    const dialogRef = this.publicBookmarkPresentDialog.open(PublicBookmarkPresentDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        if (data === 'LIKE_BOOKMARK') {
-          this.likeExistingPublicBookmak(bookmark);
-        }
-        this.makePublic = false;
-        this.bookmarkForm.patchValue({
-          public: false
-        });
-      }
+    const dialogRef = this.publicBookmarkPresentDialog.open(
+      PublicBookmarkPresentDialogComponent,
+      dialogConfig
     );
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data === 'LIKE_BOOKMARK') {
+        this.likeExistingPublicBookmak(bookmark);
+      }
+      this.makePublic = false;
+      this.bookmarkForm.patchValue({
+        public: false,
+      });
+    });
   }
 
   likeExistingPublicBookmak(bookmark: Bookmark): void {
-    this.userDataStore.getUserData$().subscribe(userData => {
+    this.userDataStore.getUserData$().subscribe((userData) => {
       if (userData.likes.indexOf(bookmark._id) === -1) {
         this.userDataStore.likeBookmark(bookmark);
       }
-    })
+    });
   }
 
   get tags() {
@@ -550,31 +613,37 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   private copyBookmarkToMine(bookmark: Bookmark) {
-
-    bookmark.descriptionHtml = this.markdownService.toHtml(bookmark.description);
+    bookmark.descriptionHtml = this.markdownService.toHtml(
+      bookmark.description
+    );
     const now = new Date();
     bookmark.updatedAt = now;
     bookmark.lastAccessedAt = now;
     bookmark.userId = this.userId;
     bookmark.userDisplayName = this.userData.profile.displayName;
 
-    this.personalBookmarksService.createBookmark(this.userId, bookmark)
+    this.personalBookmarksService
+      .createBookmark(this.userId, bookmark)
       .subscribe(
-        response => {
+        (response) => {
           const headers = response.headers;
           // get the bookmark id, which lies in the "location" response header
           const lastSlashIndex = headers.get('location').lastIndexOf('/');
-          const newBookmarkId = headers.get('location').substring(lastSlashIndex + 1);
+          const newBookmarkId = headers
+            .get('location')
+            .substring(lastSlashIndex + 1);
           bookmark._id = newBookmarkId;
 
           this.myBookmarksStore.addToLastCreated(bookmark);
 
           const readLater = this.bookmarkForm.controls['readLater'].value;
           const pinned = this.bookmarkForm.controls['pinned'].value;
-          this.userDataStore.updateHistoryReadLaterAndPinned$(bookmark, readLater, pinned).subscribe(() => {
-            this.publishInUserDataStores(bookmark, readLater, pinned);
-            this.navigateToHomePageHistoryTab();
-          });
+          this.userDataStore
+            .updateHistoryReadLaterAndPinned$(bookmark, readLater, pinned)
+            .subscribe(() => {
+              this.publishInUserDataStores(bookmark, readLater, pinned);
+              this.navigateToHomePageHistoryTab();
+            });
         },
         (error: HttpResponse<any>) => {
           this.errorService.handleError(error.body.json());
@@ -585,7 +654,9 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   editExistingBookmark(): void {
     const link = [`./my-bookmarks/${this.existingPersonalBookmark._id}/edit`];
-    this.router.navigate(link, {state: {bookmark: this.existingPersonalBookmark}});
+    this.router.navigate(link, {
+      state: { bookmark: this.existingPersonalBookmark },
+    });
   }
 
   cancelUpdate() {
@@ -593,5 +664,3 @@ export class SaveBookmarkFormComponent implements OnInit {
     console.log('goBAck()...');
   }
 }
-
-

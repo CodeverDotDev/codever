@@ -27,8 +27,7 @@
               "./node_modules/izitoast/dist/css/iziToast.min.css"
               // "./node_modules/highlight.js/styles/github.css"
             ],
-            "scripts": [
-            ],
+            "scripts": [],
             "aot": false,
             "vendorChunk": true,
             "extractLicenses": false,
@@ -111,14 +110,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "assets": [
-              "src/assets",
-              "src/favicon.ico",
-              "src/manifest.json"
-            ]
+            "styles": ["src/styles.scss"],
+            "assets": ["src/assets", "src/favicon.ico", "src/manifest.json"]
           }
         }
       }

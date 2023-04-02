@@ -5,10 +5,9 @@ import { Bookmark } from '../../../core/model/bookmark';
 @Component({
   selector: 'app-delete-bookmarks-by-tag-dialog',
   templateUrl: './public-bookmark-present-dialog.component.html',
-  styleUrls: ['./public-bookmark-present-dialog.component.scss']
+  styleUrls: ['./public-bookmark-present-dialog.component.scss'],
 })
 export class PublicBookmarkPresentDialogComponent implements OnInit {
-
   bookmark: Bookmark;
 
   constructor(
@@ -18,8 +17,7 @@ export class PublicBookmarkPresentDialogComponent implements OnInit {
     this.bookmark = data.bookmark;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   likeBookmark() {
     this.dialogRef.close('LIKE_BOOKMARK');
@@ -28,5 +26,4 @@ export class PublicBookmarkPresentDialogComponent implements OnInit {
   close() {
     this.dialogRef.close('LIKE_CANCEL');
   }
-
 }

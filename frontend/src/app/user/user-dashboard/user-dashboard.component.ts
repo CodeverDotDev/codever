@@ -9,25 +9,24 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.scss']
+  styleUrls: ['./user-dashboard.component.scss'],
 })
 export class UserDashboardComponent implements OnInit {
-
   private userId: string;
   selectedTabIndex: number;
   userData$: Observable<UserData>;
 
-  constructor(private keycloakService: KeycloakService,
-              private userInfoStore: UserInfoStore,
-              private userDataStore: UserDataStore,
-              private route: ActivatedRoute) {
-  }
+  constructor(
+    private keycloakService: KeycloakService,
+    private userInfoStore: UserInfoStore,
+    private userDataStore: UserDataStore,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
-        this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userId = userInfo.sub;
           this.userData$ = this.userDataStore.getUserData$();
           const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
@@ -38,5 +37,4 @@ export class UserDashboardComponent implements OnInit {
       }
     });
   }
-
 }

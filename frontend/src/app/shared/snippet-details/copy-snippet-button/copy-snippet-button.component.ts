@@ -3,20 +3,17 @@ import { Component, Input, OnInit } from '@angular/core';
 @Component({
   selector: 'app-button-copy-snippet',
   templateUrl: './copy-snippet-button.component.html',
-  styleUrls: ['./copy-snippet-button.component.scss']
+  styleUrls: ['./copy-snippet-button.component.scss'],
 })
 export class CopySnippetButtonComponent implements OnInit {
-
   buttonText = 'Copy snippet';
 
   @Input()
   codeSnippet: string;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   copyToClipboard() {
     const selBox = document.createElement('textarea');
@@ -31,9 +28,8 @@ export class CopySnippetButtonComponent implements OnInit {
     const copyResult = document.execCommand('copy');
     if (copyResult) {
       this.buttonText = 'Copied';
-      setTimeout(() => this.buttonText = 'Copy snippet', 1300);
+      setTimeout(() => (this.buttonText = 'Copy snippet'), 1300);
     }
     document.body.removeChild(selBox);
   }
-
 }

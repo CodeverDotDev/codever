@@ -18,15 +18,17 @@ import { SnippetFormBaseComponent } from '../snippet-form-base/snippet-form.base
 @Component({
   selector: 'app-save-snippet-form',
   templateUrl: './create-snippet-form.component.html',
-  styleUrls: ['./create-snippet-form.component.scss']
+  styleUrls: ['./create-snippet-form.component.scss'],
 })
-export class CreateSnippetFormComponent extends SnippetFormBaseComponent implements OnInit {
-
+export class CreateSnippetFormComponent
+  extends SnippetFormBaseComponent
+  implements OnInit
+{
   snippetFormGroup: FormGroup;
   codeSnippetsFormArray: FormArray;
   userId = null;
 
-  @ViewChild('tagInput', {static: false})
+  @ViewChild('tagInput', { static: false })
   tagInput: ElementRef;
 
   snippet: Snippet;
@@ -63,32 +65,53 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
     private route: ActivatedRoute,
     protected errorService: ErrorService,
     private webpageInfoService: WebpageInfoService,
-    private stackoverflowHelper: StackoverflowHelper,
+    private stackoverflowHelper: StackoverflowHelper
   ) {
-    super(formBuilder, personalSnippetsService, suggestedTagsStore, userInfoStore, router, errorService);
+    super(
+      formBuilder,
+      personalSnippetsService,
+      suggestedTagsStore,
+      userInfoStore,
+      router,
+      errorService
+    );
   }
 
   ngOnInit(): void {
     super.ngOnInit();
     this.buildInitialForm();
-    this.codeSnippetsFormArray = this.snippetFormGroup.get('codeSnippets') as FormArray;
+    this.codeSnippetsFormArray = this.snippetFormGroup.get(
+      'codeSnippets'
+    ) as FormArray;
 
     if (this.sourceUrl) {
-      const stackoverflowQuestionId = this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(this.sourceUrl);
+      const stackoverflowQuestionId =
+        this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(
+          this.sourceUrl
+        );
       if (stackoverflowQuestionId) {
-        this.webpageInfoService.getStackoverflowQuestionData(stackoverflowQuestionId).subscribe((webpageData: WebpageInfo) => {
-            if (webpageData.tags) {
-              for (let i = 0; i < webpageData.tags.length; i++) {
-                this.formArrayTags.push(this.formBuilder.control(webpageData.tags[i]));
-              }
+        this.webpageInfoService
+          .getStackoverflowQuestionData(stackoverflowQuestionId)
+          .subscribe(
+            (webpageData: WebpageInfo) => {
+              if (webpageData.tags) {
+                for (let i = 0; i < webpageData.tags.length; i++) {
+                  this.formArrayTags.push(
+                    this.formBuilder.control(webpageData.tags[i])
+                  );
+                }
 
-              this.tagsControl.setValue(null);
-              this.formArrayTags.markAsDirty();
+                this.tagsControl.setValue(null);
+                this.formArrayTags.markAsDirty();
+              }
+            },
+            (error) => {
+              console.error(
+                `Problems when scraping data for stackoverflow id ${stackoverflowQuestionId}`,
+                error
+              );
             }
-          },
-          error => {
-            console.error(`Problems when scraping data for stackoverflow id ${stackoverflowQuestionId}`, error);
-          });
+          );
       }
     }
 
@@ -109,13 +132,19 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
 
   buildInitialForm(): void {
     this.snippetFormGroup = this.formBuilder.group({
-      title: [this.title ? this.ext === 'vscode' ? this.decodeTextVsCode(this.title) : this.title : '', Validators.required],
+      title: [
+        this.title
+          ? this.ext === 'vscode'
+            ? this.decodeTextVsCode(this.title)
+            : this.title
+          : '',
+        Validators.required,
+      ],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       codeSnippets: new FormArray([this.createInitialCodeSnippet()]),
       sourceUrl: this.sourceUrl ? this.sourceUrl : '',
-      public: false
+      public: false,
     });
-
   }
 
   createInitialCodeSnippet(): FormGroup {
@@ -124,9 +153,16 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
     }
 
     return this.formBuilder.group({
-      code: [this.code ? this.ext === 'vscode' ? this.decodeTextVsCode(this.code) : this.code : '', textSizeValidator(10000, 1000)],
+      code: [
+        this.code
+          ? this.ext === 'vscode'
+            ? this.decodeTextVsCode(this.code)
+            : this.code
+          : '',
+        textSizeValidator(10000, 1000),
+      ],
       comment: [this.comment ? this.comment : '', textSizeValidator(1000, 30)],
-      commentAfter: [ '', textSizeValidator(1000, 30)]
+      commentAfter: ['', textSizeValidator(1000, 30)],
     });
   }
 
@@ -148,13 +184,17 @@ export class CreateSnippetFormComponent extends SnippetFormBaseComponent impleme
     if (firstLineNumberSpaces > 0) {
       let response = '';
       for (let i = 0; i < lines.length - 1; i++) {
-        response += lines[i].substring(firstLineNumberSpaces, lines[i].length).trimRight() + '\r\n';
+        response +=
+          lines[i]
+            .substring(firstLineNumberSpaces, lines[i].length)
+            .trimRight() + '\r\n';
       }
-      response += lines[lines.length - 1].substring(firstLineNumberSpaces, lines[lines.length - 1].length).trimRight();
+      response += lines[lines.length - 1]
+        .substring(firstLineNumberSpaces, lines[lines.length - 1].length)
+        .trimRight();
       return response;
     } else {
       return code;
     }
   }
 }
-

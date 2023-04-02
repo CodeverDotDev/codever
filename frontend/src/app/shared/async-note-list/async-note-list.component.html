@@ -1,4 +1,4 @@
-<div *ngIf="(notes$ | async) as notes" class="mt-2">
+<div *ngIf="notes$ | async as notes" class="mt-2">
   <div *ngFor="let note of notes">
     <app-note-details
       [note$]="of(note)"
@@ -13,7 +13,4 @@
     [currentPage]="currentPage"
     [callerPagination]="callerPagination"
   ></app-page-navigation-bar>
-
 </div>
-
-

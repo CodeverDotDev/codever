@@ -3,13 +3,12 @@ import iziToast, { IziToastSettings } from 'izitoast';
 
 @Injectable()
 export class DeleteNotificationService {
-
   public showSuccessNotification(title: string): void {
     const iziToastSettings: IziToastSettings = {
       title: title,
       timeout: 3000,
-      position: 'bottomRight'
-    }
+      position: 'bottomRight',
+    };
     iziToast.success(iziToastSettings);
   }
 
@@ -17,9 +16,8 @@ export class DeleteNotificationService {
     const iziToastSettings: IziToastSettings = {
       title: title,
       timeout: 3000,
-      position: 'bottomRight'
-    }
+      position: 'bottomRight',
+    };
     iziToast.error(iziToastSettings);
   }
-
 }

@@ -4,12 +4,10 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss']
+  styleUrls: ['./about.component.scss'],
 })
 export class AboutComponent implements OnInit {
-
   environment = environment;
 
   ngOnInit() {}
-
 }

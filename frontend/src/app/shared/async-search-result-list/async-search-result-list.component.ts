@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnInit, Output, } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
@@ -12,10 +12,11 @@ import { Note } from '../../core/model/note';
 @Component({
   selector: 'app-async-search-result-list',
   templateUrl: './async-search-result-list.component.html',
-  styleUrls: ['./async-search-result-list.component.scss']
+  styleUrls: ['./async-search-result-list.component.scss'],
 })
-export class AsyncSearchResultListComponent extends TagFollowingBaseComponent implements OnInit {
-
+export class AsyncSearchResultListComponent
+  extends TagFollowingBaseComponent
+  implements OnInit {
   verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
   @Input()
@@ -50,7 +51,7 @@ export class AsyncSearchResultListComponent extends TagFollowingBaseComponent im
   constructor(
     private injector: Injector,
     public userDataWatchedTagsStore: UserDataWatchedTagsStore,
-    public loginDialog: MatDialog,
+    public loginDialog: MatDialog
   ) {
     super(loginDialog, userDataWatchedTagsStore);
     this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);

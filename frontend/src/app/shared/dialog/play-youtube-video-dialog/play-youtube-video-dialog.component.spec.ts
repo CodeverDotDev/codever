@@ -8,9 +8,8 @@ describe('PlayYoutubeVideoDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PlayYoutubeVideoDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [PlayYoutubeVideoDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

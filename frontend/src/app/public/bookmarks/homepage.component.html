@@ -1,40 +1,51 @@
 <div id="public-search-box">
-  <mat-tab-group [selectedIndex]="selectedTabIndex"
-                 (selectedTabChange)="tabSelectionChanged($event)">
+  <mat-tab-group
+    [selectedIndex]="selectedTabIndex"
+    (selectedTabChange)="tabSelectionChanged($event)"
+  >
     <mat-tab>
       <ng-template mat-tab-label>
         <span class="app-tab-label"><i class="fas fa-home"></i> Feed</span>
       </ng-template>
       <div *ngIf="!userIsLoggedIn && showLoginButton; else showFollowedTags">
         <div class="alert alert-info mt-2">
-          <button type="button" class="btn btn-primary btn-sm mr-2"
-                  (click)="login('feed')"
-                  data-test="login-register-btn"
-          ><i
-            class="fas fa-unlock"></i> Login / Register
+          <button
+            type="button"
+            class="btn btn-primary btn-sm mr-2"
+            (click)="login('feed')"
+            data-test="login-register-btn"
+          >
+            <i class="fas fa-unlock"></i> Login / Register
           </button>
           to <strong>Codever</strong>
           to see posts from your favorite topics in your feed
         </div>
       </div>
       <ng-template #showFollowedTags>
-        <div *ngIf="(userData$ | async) as userData">
-          <div *ngIf="userData.watchedTags.length > 0; else startWatchingTags" class="mt-2 mb-3">
+        <div *ngIf="userData$ | async as userData">
+          <div
+            *ngIf="userData.watchedTags.length > 0; else startWatchingTags"
+            class="mt-2 mb-3"
+          >
             <a
               [routerLink]="['/dashboard']"
-              [queryParams]="{tab: 'tags'}"
-              class="btn btn-outline-secondary btn-sm  mr-3 mt-2 tag-list-header shadow-sm"
+              [queryParams]="{ tab: 'tags' }"
+              class="btn btn-outline-secondary btn-sm mr-3 mt-2 tag-list-header shadow-sm"
               title="Go to My Tags in dashboard"
             >
               Watching <i class="fas fa-eye"></i>
             </a>
-            <div *ngFor="let tag of userData.watchedTags.sort()" class="btn-group mr-3 mt-2 tag-list-header">
-              <a type="button"
-                 class="btn btn-secondary btn-sm text-white"
-                 (click)="searchPublicBookmarksByTag(tag)"
-                 title="Show public bookmarks tagged {{tag}}"
+            <div
+              *ngFor="let tag of userData.watchedTags.sort()"
+              class="btn-group mr-3 mt-2 tag-list-header"
+            >
+              <a
+                type="button"
+                class="btn btn-secondary btn-sm text-white"
+                (click)="searchPublicBookmarksByTag(tag)"
+                title="Show public bookmarks tagged {{ tag }}"
               >
-                {{tag}}
+                {{ tag }}
               </a>
               <button
                 type=" button"
@@ -42,41 +53,55 @@
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                (click)="onDropDownClick(tag)">
+                (click)="onDropDownClick(tag)"
+              >
                 <span class="sr-only">Toggle Dropdown</span>
               </button>
               <div class="dropdown-menu">
                 <a
-                  *ngIf="(verifyForWatchedTag | async) === tag && userData?.watchedTags.includes(tag); else watchTagOption"
+                  *ngIf="
+                    (verifyForWatchedTag | async) === tag &&
+                      userData?.watchedTags.includes(tag);
+                    else watchTagOption
+                  "
                   class="dropdown-item"
-                  (click)="unwatchTag(tag)"><i class="fas fa-eye-slash"></i> Unwatch tag
+                  (click)="unwatchTag(tag)"
+                  ><i class="fas fa-eye-slash"></i> Unwatch tag
                 </a>
                 <ng-template #watchTagOption>
-                  <a (click)="watchTag(tag, userIsLoggedIn)"><i class="fas fa-eye"></i> Watch tag</a>
+                  <a (click)="watchTag(tag, userIsLoggedIn)"
+                    ><i class="fas fa-eye"></i> Watch tag</a
+                  >
                 </ng-template>
                 <a
-                  *ngIf="(verifyForWatchedTag | async) === tag && (userData$ | async)?.ignoredTags.includes(tag); else ignoreTagOption"
+                  *ngIf="
+                    (verifyForWatchedTag | async) === tag &&
+                      (userData$ | async)?.ignoredTags.includes(tag);
+                    else ignoreTagOption
+                  "
                   class="dropdown-item"
-                  (click)="unignoreTag(tag)"><i class="fas fa-ban"></i> Unignore tag
+                  (click)="unignoreTag(tag)"
+                  ><i class="fas fa-ban"></i> Unignore tag
                 </a>
                 <ng-template #ignoreTagOption>
-                  <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"><i class="fas fa-ban"></i> Ignore
-                    tag
+                  <a
+                    (click)="ignoreTag(tag, userIsLoggedIn)"
+                    class="dropdown-item"
+                    ><i class="fas fa-ban"></i> Ignore tag
                   </a>
                 </ng-template>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" [routerLink]="['/tagged', tag]"><i class="fas fa-tag"></i> Public page </a>
+                <a class="dropdown-item" [routerLink]="['/tagged', tag]"
+                  ><i class="fas fa-tag"></i> Public page
+                </a>
               </div>
-
             </div>
-
           </div>
-
         </div>
         <ng-template #startWatchingTags>
           <div class="alert alert-info mt-3">
-            <strong>Watch tags <i class="fas fa-eye"></i></strong> to see more posts with your favorite topics in your
-            feed
+            <strong>Watch tags <i class="fas fa-eye"></i></strong> to see more
+            posts with your favorite topics in your feed
           </div>
         </ng-template>
       </ng-template>
@@ -85,31 +110,46 @@
         [bookmarks$]="feedBookmarks$"
         [userData$]="userData$"
         [callerPagination]="callerPaginationFeed"
-        [showFilterBox]="false">
+        [showFilterBox]="false"
+      >
       </app-async-bookmark-list>
     </mat-tab>
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label" title="Ctrl+H for quick access"><i class="fas fa-history"></i> History</span>
+        <span class="app-tab-label" title="Ctrl+H for quick access"
+          ><i class="fas fa-history"></i> History</span
+        >
       </ng-template>
-      <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInLastVisited"
+      <div
+        *ngIf="!(userIsLoggedIn$ | async); else isLoggedInLastVisited"
         class="tabs-headline-message mt-2 alert alert-info"
         data-test="history-tab-alert"
       >
-        <p>In <strong>History</strong> you have a list of your last visited, created or updated bookmarks.
-          Quick access with <strong>Ctrl + H</strong>
+        <p>
+          In <strong>History</strong> you have a list of your last visited,
+          created or updated bookmarks. Quick access with
+          <strong>Ctrl + H</strong>
         </p>
         You need to
-        <button type="button" class="btn btn-primary btn-sm" (click)="login('history')">Login / Register</button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          (click)="login('history')"
+        >
+          Login / Register
+        </button>
         to access this functionality.
       </div>
       <ng-template #isLoggedInLastVisited>
-        <div *ngIf="(history$ | async)?.length === 0 && currentPageHistory === 1"
-             class="tabs-headline-message mt-2 alert alert-info">
+        <div
+          *ngIf="(history$ | async)?.length === 0 && currentPageHistory === 1"
+          class="tabs-headline-message mt-2 alert alert-info"
+        >
           <p>
-            In <strong>History</strong> you have a list of your last visited, created or updated bookmarks. Quick access
-            with <strong>Ctrl + H</strong>
+            In <strong>History</strong> you have a list of your last visited,
+            created or updated bookmarks. Quick access with
+            <strong>Ctrl + H</strong>
           </p>
         </div>
         <app-async-bookmark-list
@@ -123,33 +163,47 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label" title="Ctrl+P for quick access"><i class="fas fa-thumbtack"></i> Pinned</span>
+        <span class="app-tab-label" title="Ctrl+P for quick access"
+          ><i class="fas fa-thumbtack"></i> Pinned</span
+        >
       </ng-template>
       <ng-template matTabContent>
-        <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToPin"
+        <div
+          *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToPin"
           class="tabs-headline-message mt-2 alert alert-info"
           data-test="pinned-tab-alert"
         >
           <p>
-            Got some bookmarks you will use a lot today? Just pin them <i
-            class="fas fa-thumbtack"></i>
-            and they will appear in the <strong>Pinned</strong> list. Quick access with <strong>Ctrl + P</strong>
+            Got some bookmarks you will use a lot today? Just pin them
+            <i class="fas fa-thumbtack"></i> and they will appear in the
+            <strong>Pinned</strong> list. Quick access with
+            <strong>Ctrl + P</strong>
           </p>
           You need to
-          <button type="button" class="btn btn-primary btn-sm" (click)="login('pinned')">Login / Register</button>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="login('pinned')"
+          >
+            Login / Register
+          </button>
           to access this functionality.
         </div>
         <ng-template #isLoggedInToPin>
-          <div *ngIf="(pinned$ | async)?.length === 0 && currentPagePinned === 1"
-               class="tabs-headline-message mt-2 alert alert-info">
-            Got some bookmarks you will use a lot today? Just pin it <i
-            class="fas fa-thumbtack"></i>
-            and it will appear in the <strong>Pinned</strong> list. Quick access with <strong>Ctrl + P</strong>
+          <div
+            *ngIf="(pinned$ | async)?.length === 0 && currentPagePinned === 1"
+            class="tabs-headline-message mt-2 alert alert-info"
+          >
+            Got some bookmarks you will use a lot today? Just pin it
+            <i class="fas fa-thumbtack"></i> and it will appear in the
+            <strong>Pinned</strong> list. Quick access with
+            <strong>Ctrl + P</strong>
           </div>
           <app-async-bookmark-list
             [bookmarks$]="pinned$"
             [userData$]="userData$"
-            [callerPagination]="callerPaginationPinned">
+            [callerPagination]="callerPaginationPinned"
+          >
           </app-async-bookmark-list>
         </ng-template>
       </ng-template>
@@ -157,37 +211,52 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <span class="app-tab-label"><i class="fas fa-clock"></i> Read Later</span>
+        <span class="app-tab-label"
+          ><i class="fas fa-clock"></i> Read Later</span
+        >
       </ng-template>
       <ng-template matTabContent>
-        <div *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToReadLater"
+        <div
+          *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToReadLater"
           class="tabs-headline-message mt-2 alert alert-info"
           data-test="readlater-tab-alert"
         >
           <p>
-            Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
-            class="fas fa-clock"></i>
-            on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
+            Found an interesting link you'll like to read, but don't have time
+            at the moment? Click on the <i class="fas fa-clock"></i> on the
+            bookmark's upper right corner and it will be added to this
+            <strong>Read Later</strong> list.
           </p>
           You need to
-          <button type="button" class="btn btn-primary btn-sm" (click)="login('read-later')">Login / Register</button>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="login('read-later')"
+          >
+            Login / Register
+          </button>
           to access this functionality.
         </div>
         <ng-template #isLoggedInToReadLater>
-          <div *ngIf="(readLater$ | async)?.length === 0 && currentPageReadLater === 1"
-               class="tabs-headline-message mt-2 alert alert-info">
-            Found an interesting link you'll like to read, but don't have time at the moment? Click on the <i
-            class="fas fa-clock"></i>
-            on the bookmark's upper right corner and it will be added to this <strong>Read Later</strong> list.
+          <div
+            *ngIf="
+              (readLater$ | async)?.length === 0 && currentPageReadLater === 1
+            "
+            class="tabs-headline-message mt-2 alert alert-info"
+          >
+            Found an interesting link you'll like to read, but don't have time
+            at the moment? Click on the <i class="fas fa-clock"></i> on the
+            bookmark's upper right corner and it will be added to this
+            <strong>Read Later</strong> list.
           </div>
           <app-async-bookmark-list
             [bookmarks$]="readLater$"
             [userData$]="userData$"
-            [callerPagination]="callerPaginationReadLater">
+            [callerPagination]="callerPaginationReadLater"
+          >
           </app-async-bookmark-list>
         </ng-template>
       </ng-template>
     </mat-tab>
-
   </mat-tab-group>
 </div>

@@ -8,9 +8,8 @@ describe('PublicCodeletsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PublicSnippetsComponent ]
-    })
-    .compileComponents();
+      declarations: [PublicSnippetsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

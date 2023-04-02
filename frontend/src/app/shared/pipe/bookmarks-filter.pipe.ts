@@ -2,7 +2,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 
-@Pipe({name: 'bookmarkFilter'})
+@Pipe({ name: 'bookmarkFilter' })
 export class BookmarksFilterPipe implements PipeTransform {
   /**
    * Bookmarks in, bookmarks out that contain all the terms in the filterText
@@ -19,7 +19,7 @@ export class BookmarksFilterPipe implements PipeTransform {
       return bookmarks;
     }
 
-    const filteredBookmarks = bookmarks.filter(bookmark => {
+    const filteredBookmarks = bookmarks.filter((bookmark) => {
       return this.bookmarkContainsFilterText(bookmark, filterText);
     });
 
@@ -30,7 +30,10 @@ export class BookmarksFilterPipe implements PipeTransform {
     filterText = filterText.toLocaleLowerCase();
     const filterTerms = filterText.split(' ');
     for (const filterTerm of filterTerms) {
-      const hasFilterTerm = this.bookmarkContainsFilterTerm(bookmark, filterTerm);
+      const hasFilterTerm = this.bookmarkContainsFilterTerm(
+        bookmark,
+        filterTerm
+      );
       if (hasFilterTerm === false) {
         return false;
       }
@@ -50,9 +53,11 @@ export class BookmarksFilterPipe implements PipeTransform {
   }
 
   private bookmarkContainsFilterTerm(bookmark: Bookmark, filterTerm: string) {
-    return bookmark.name.toLocaleLowerCase().includes(filterTerm)
-      || bookmark.location.toLocaleLowerCase().includes(filterTerm)
-      || bookmark.description?.toLocaleLowerCase().includes(filterTerm)
-      || this.tagsHaveFilterText(bookmark.tags, filterTerm);
+    return (
+      bookmark.name.toLocaleLowerCase().includes(filterTerm) ||
+      bookmark.location.toLocaleLowerCase().includes(filterTerm) ||
+      bookmark.description?.toLocaleLowerCase().includes(filterTerm) ||
+      this.tagsHaveFilterText(bookmark.tags, filterTerm)
+    );
   }
 }

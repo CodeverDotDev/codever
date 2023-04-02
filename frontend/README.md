@@ -1,13 +1,14 @@
 # Frontend
- The User Interface (frontend) is built with [Angular](https://angular.io/) and [Angular CLI](https://cli.angular.io/)
 
-***
+The User Interface (frontend) is built with [Angular](https://angular.io/) and [Angular CLI](https://cli.angular.io/)
 
-# Getting Started 
+---
+
+# Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
- See deployment for notes on how to deploy the project on a live system.
- 
+See deployment for notes on how to deploy the project on a live system.
+
 ## Development setup
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli)
@@ -44,7 +45,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
 I use an alias for that
+
 ```shell
 alias codever-build-aot='cd ~/projects/dev/personal/codever/codever/frontend; rm -rf dist*; nvm use; npm run build:aot'
 ```
-

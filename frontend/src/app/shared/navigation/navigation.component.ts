@@ -14,25 +14,25 @@ import { LocalStorageService } from '../../core/cache/local-storage.service';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss']
+  styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
-
   isLoggedIn: boolean;
   userInfoOidc$: Observable<UserInfoOidc>;
   environment = environment;
   userData$: Observable<UserData>;
 
-  constructor(private appService: AppService,
-              private keycloakService: KeycloakService,
-              private userInfoStore: UserInfoStore,
-              private userDataStore: UserDataStore,
-              private localStorageService: LocalStorageService,
-              private keycloakServiceWrapper: KeycloakServiceWrapper) {
-  }
+  constructor(
+    private appService: AppService,
+    private keycloakService: KeycloakService,
+    private userInfoStore: UserInfoStore,
+    private userDataStore: UserDataStore,
+    private localStorageService: LocalStorageService,
+    private keycloakServiceWrapper: KeycloakServiceWrapper
+  ) {}
 
   ngOnInit() {
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.userInfoOidc$ = this.userInfoStore.getUserInfoOidc$();
         this.isLoggedIn = true;

@@ -8,9 +8,8 @@ describe('HistoryDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HotKeysDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [HotKeysDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

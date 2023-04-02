@@ -8,23 +8,24 @@ import { switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-shared-snippet-details',
   templateUrl: './shareable-snippet-details.component.html',
-  styleUrls: ['./shareable-snippet-details.component.scss']
+  styleUrls: ['./shareable-snippet-details.component.scss'],
 })
 export class ShareableSnippetDetailsComponent implements OnInit {
-
   snippet$: Observable<Snippet>;
   popup: string;
 
   constructor(
     private route: ActivatedRoute,
     private publicSnippetsService: PublicSnippetsService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.snippet$ = this.route.paramMap.pipe(
-      switchMap(params => {
-        return this.publicSnippetsService.getSharedSnippetBySharableId(params.get('shareableId'))
-      }));
+      switchMap((params) => {
+        return this.publicSnippetsService.getSharedSnippetBySharableId(
+          params.get('shareableId')
+        );
+      })
+    );
   }
 }

@@ -5,17 +5,16 @@ import {
   Component,
   ElementRef,
   Input,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
-import {Bookmark} from '../../core/model/bookmark';
+import { Bookmark } from '../../core/model/bookmark';
 
 @Component({
   selector: 'app-bookmark-text',
   templateUrl: './bookmark-text.component.html',
-    styleUrls: [ './bookmark-text.component.scss' ]
+  styleUrls: ['./bookmark-text.component.scss'],
 })
-export class BookmarkTextComponent  implements  AfterViewInit, AfterViewChecked {
-
+export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @Input()
   bookmark: Bookmark;
 
@@ -27,7 +26,7 @@ export class BookmarkTextComponent  implements  AfterViewInit, AfterViewChecked 
   @Input()
   public showMoreText = false;
 
-  @ViewChild('bookmarkText', {static: false}) elementView: ElementRef;
+  @ViewChild('bookmarkText', { static: false }) elementView: ElementRef;
   public viewHeight: number;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
@@ -38,7 +37,8 @@ export class BookmarkTextComponent  implements  AfterViewInit, AfterViewChecked 
 
   ngAfterViewChecked(): void {
     const show = this.viewHeight > 120;
-    if (show !== this.show) { // check if it change, tell CD update view
+    if (show !== this.show) {
+      // check if it change, tell CD update view
       this.show = show;
       this.changeDetectorRef.detectChanges();
     }

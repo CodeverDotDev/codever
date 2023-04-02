@@ -1,10 +1,15 @@
 <mat-tab-group [selectedIndex]="selectedTabIndex">
   <mat-tab>
     <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fas fa-bookmark"></i> My bookmarks</span>
+      <span class="app-tab-label"
+        ><i class="fas fa-bookmark"></i> My bookmarks</span
+      >
     </ng-template>
     <ng-template matTabContent>
-      <app-user-bookmarks [userId]="userId" [userData$]="userData$"></app-user-bookmarks>
+      <app-user-bookmarks
+        [userId]="userId"
+        [userData$]="userData$"
+      ></app-user-bookmarks>
     </ng-template>
   </mat-tab>
   <mat-tab>
@@ -33,7 +38,9 @@
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fas fa-user-friends"></i> Followers</span>
+      <span class="app-tab-label"
+        ><i class="fas fa-user-friends"></i> Followers</span
+      >
     </ng-template>
     <ng-template matTabContent>
       <app-followers [userId]="userId"></app-followers>

@@ -1,5 +1,5 @@
 import { RouterModule, Routes, UrlSegment } from '@angular/router';
-import {NgModule} from '@angular/core';
+import { NgModule } from '@angular/core';
 import { HowToBookmarkletComponent } from './howto-bookmarklets/how-to-bookmarklet.component';
 import { HowToSnippetComponent } from './howto-snippets/how-to-snippet.component';
 import { HowtoComponent } from './howto.component';
@@ -18,15 +18,15 @@ const howToRoutes: Routes = [
   },
   {
     path: 'bookmarklets',
-    component: HowToBookmarkletComponent
+    component: HowToBookmarkletComponent,
   },
   {
     path: 'bookmarks',
-    component: HowToBookmarksComponent
+    component: HowToBookmarksComponent,
   },
   {
     path: 'snippets',
-    component: HowToSnippetComponent
+    component: HowToSnippetComponent,
   },
   {
     path: 'snippets',
@@ -34,16 +34,16 @@ const howToRoutes: Routes = [
   },
   {
     path: 'hotkeys',
-    component: HowtoHotkeysComponent
+    component: HowtoHotkeysComponent,
   },
   {
     path: '**',
-    component: HowtoComponent
-  }
+    component: HowtoComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(howToRoutes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class HowtoRoutingModule {}

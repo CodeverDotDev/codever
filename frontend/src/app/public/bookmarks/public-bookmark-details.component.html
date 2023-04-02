@@ -1,7 +1,8 @@
-<div *ngIf="(bookmark$ | async) as bookmark">
+<div *ngIf="bookmark$ | async as bookmark">
   <app-bookmark-list-element
     [bookmark]="bookmark"
     [isDetailsPage]="true"
-    [showMoreText]="true">
+    [showMoreText]="true"
+  >
   </app-bookmark-list-element>
 </div>

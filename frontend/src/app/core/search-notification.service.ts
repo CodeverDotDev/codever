@@ -4,12 +4,13 @@ import { SearchData } from './model/search-data';
 
 @Injectable()
 export class SearchNotificationService {
-
   private searchTriggeredSource = new Subject<SearchData>();
-  searchTriggeredSource$: Observable<SearchData> = this.searchTriggeredSource.asObservable();
+  searchTriggeredSource$: Observable<SearchData> =
+    this.searchTriggeredSource.asObservable();
 
   private searchTriggeredFromNavbar = new Subject<SearchData>();
-  searchTriggeredFromNavbar$: Observable<SearchData> = this.searchTriggeredFromNavbar.asObservable();
+  searchTriggeredFromNavbar$: Observable<SearchData> =
+    this.searchTriggeredFromNavbar.asObservable();
 
   triggerSearch(searchData: SearchData) {
     this.searchTriggeredSource.next(searchData);

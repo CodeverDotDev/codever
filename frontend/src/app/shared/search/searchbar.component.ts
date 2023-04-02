@@ -10,7 +10,7 @@ import {
   Input,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,7 +26,10 @@ import { PaginationNotificationService } from '../../core/pagination-notificatio
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 import { SearchNotificationService } from '../../core/search-notification.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
-import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteSelectedEvent,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
 import { searchDomains } from '../../core/model/search-domains-map';
 import { AddTagFilterToSearchDialogComponent } from './add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
 import { DialogMeasurementsHelper } from '../../core/helper/dialog-measurements.helper';
@@ -35,10 +38,9 @@ import iziToast, { IziToastSettings } from 'izitoast';
 @Component({
   selector: 'app-searchbar',
   templateUrl: './searchbar.component.html',
-  styleUrls: ['./searchbar.component.scss']
+  styleUrls: ['./searchbar.component.scss'],
 })
 export class SearchbarComponent implements OnInit, AfterViewInit {
-
   @Input()
   context: string;
 
@@ -49,7 +51,8 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
   searchTextCleared = new EventEmitter<boolean>();
 
   @ViewChild('publicSearchBox') searchBoxField: ElementRef;
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger)
+  autocompleteTrigger: MatAutocompleteTrigger;
 
   _userData: UserData;
 
@@ -63,7 +66,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
   autocompleteSearches: Search[] = [];
   filteredSearches: Observable<Search[]>;
 
-  options: Search[] = [{text: 'one'}, {text: 'two'}, {text: 'three'}];
+  options: Search[] = [{ text: 'one' }, { text: 'two' }, { text: 'three' }];
   filteredOptions: Observable<Search[]>;
 
   isFocusOnSearchControl = false;
@@ -81,57 +84,67 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
   currentPage: number;
   callerPaginationSearchResults = 'search-results';
 
-  constructor(private router: Router,
-              private route: ActivatedRoute,
-              private searchNotificationService: SearchNotificationService,
-              private bookmarkStore: PublicBookmarksStore,
-              private publicBookmarksService: PublicBookmarksService,
-              private paginationNotificationService: PaginationNotificationService,
-              private keycloakService: KeycloakService,
-              private keycloakServiceWrapper: KeycloakServiceWrapper,
-              private userDataStore: UserDataStore,
-              private userInfoStore: UserInfoStore,
-              private dialogMeasurementsHelper: DialogMeasurementsHelper,
-              private addTagsToSearchDialog: MatDialog,
-              private loginDialog: MatDialog) {
-  }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private searchNotificationService: SearchNotificationService,
+    private bookmarkStore: PublicBookmarksStore,
+    private publicBookmarksService: PublicBookmarksService,
+    private paginationNotificationService: PaginationNotificationService,
+    private keycloakService: KeycloakService,
+    private keycloakServiceWrapper: KeycloakServiceWrapper,
+    private userDataStore: UserDataStore,
+    private userInfoStore: UserInfoStore,
+    private dialogMeasurementsHelper: DialogMeasurementsHelper,
+    private addTagsToSearchDialog: MatDialog,
+    private loginDialog: MatDialog
+  ) {}
 
   @Input()
   set userData$(userData$: Observable<UserData>) {
     if (userData$) {
-      userData$
-        .subscribe(userData => {
-          this.userId = userData.userId;
-          const emptyUserData = Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
-          if (emptyUserData) {
-            this._userData = userData; // = {}
-          } else {
-            this._userData = userData;
-            this.autocompleteSearches = this._userData.searches;
-            this.setFilteredSearches$(this.searchDomain);
-          }
-        });
+      userData$.subscribe((userData) => {
+        this.userId = userData.userId;
+        const emptyUserData =
+          Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
+        if (emptyUserData) {
+          this._userData = userData; // = {}
+        } else {
+          this._userData = userData;
+          this.autocompleteSearches = this._userData.searches;
+          this.setFilteredSearches$(this.searchDomain);
+        }
+      });
     }
   }
 
   private setFilteredSearches$(searchDomain: string) {
-    this.filteredSearches = this.searchControl.valueChanges
-      .pipe(
-        startWith(null),
-        map((searchText: string | null) => {
-          return searchText ? this._filter(searchText) : this.autocompleteSearches.filter(item => item.searchDomain === searchDomain);
-        })
-      );
+    this.filteredSearches = this.searchControl.valueChanges.pipe(
+      startWith(null),
+      map((searchText: string | null) => {
+        return searchText
+          ? this._filter(searchText)
+          : this.autocompleteSearches.filter(
+              (item) => item.searchDomain === searchDomain
+            );
+      })
+    );
   }
 
   private _filter(value: string): Search[] {
     const filterValue = value.toLowerCase();
 
-    return this.autocompleteSearches.filter(search => this.includesFilterValues(search, filterValue) && search.searchDomain === this.searchDomain);
+    return this.autocompleteSearches.filter(
+      (search) =>
+        this.includesFilterValues(search, filterValue) &&
+        search.searchDomain === this.searchDomain
+    );
   }
 
   private includesFilterValues(search: Search, filterValue: string) {
-    const isEvery = filterValue.split(' ').every(element => search.text.toLowerCase().includes(element));
+    const isEvery = filterValue
+      .split(' ')
+      .every((element) => search.text.toLowerCase().includes(element));
 
     // return search.text.toLowerCase().includes(filterValue);
     return isEvery;
@@ -140,23 +153,25 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
 
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.searchDomain = SearchDomain.MY_BOOKMARKS;
       }
     });
 
-    this.searchNotificationService.searchTriggeredFromNavbar$.subscribe(searchData => {
-      this.searchDomain = searchData.searchDomain;
-      this.searchControl.setValue(searchData.searchText);
-    });
+    this.searchNotificationService.searchTriggeredFromNavbar$.subscribe(
+      (searchData) => {
+        this.searchDomain = searchData.searchDomain;
+        this.searchControl.setValue(searchData.searchText);
+      }
+    );
 
     this.watchSearchBoxValueChanges();
   }
 
   private watchSearchBoxValueChanges() {
-    this.searchControl.valueChanges.subscribe(val => {
+    this.searchControl.valueChanges.subscribe((val) => {
       this.searchBoxText = val;
     });
   }
@@ -171,13 +186,17 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
     this.searchDomain = selectedSearchDomain;
     this.watchSearchBoxValueChanges();
     this.setFilteredSearches$(selectedSearchDomain);
-    if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS
-      || selectedSearchDomain === SearchDomain.ALL_MINE
-      || selectedSearchDomain === SearchDomain.MY_SNIPPETS
-      || selectedSearchDomain === SearchDomain.MY_NOTES
-    ) && !this.userIsLoggedIn) {
+    if (
+      (selectedSearchDomain === SearchDomain.MY_BOOKMARKS ||
+        selectedSearchDomain === SearchDomain.ALL_MINE ||
+        selectedSearchDomain === SearchDomain.MY_SNIPPETS ||
+        selectedSearchDomain === SearchDomain.MY_NOTES) &&
+      !this.userIsLoggedIn
+    ) {
       this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
-      this.showLoginRequiredDialog('You need to be logged in to search in your personal assets');
+      this.showLoginRequiredDialog(
+        'You need to be logged in to search in your personal assets'
+      );
     } else {
       this.searchDomain = selectedSearchDomain;
       this.searchBoxField.nativeElement.focus();
@@ -191,10 +210,13 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      message: message
+      message: message,
     };
 
-    const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    const dialogRef = this.loginDialog.open(
+      LoginRequiredDialogComponent,
+      dialogConfig
+    );
   }
 
   /**
@@ -203,7 +225,7 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
    */
   onSaveSearchClick() {
     if (!this.userIsLoggedIn) {
-      this.showLoginRequiredDialog('You need to be logged in to save searches')
+      this.showLoginRequiredDialog('You need to be logged in to save searches');
     } else {
       const now = new Date();
       const newSearch: Search = {
@@ -212,18 +234,26 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
         lastAccessedAt: now,
         searchDomain: this.searchDomain,
         count: 1,
-        saved: true
-      }
-      const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
+        saved: true,
+      };
+      const emptyUserData =
+        Object.keys(this._userData).length === 0 &&
+        this._userData.constructor === Object;
       if (emptyUserData) {
         this._userData = {
           userId: this.userId,
-          searches: [newSearch]
-        }
+          searches: [newSearch],
+        };
       } else {
-        const existingSavedSearchIndex = this.getIndexSavedSearch(this.searchDomain, this.searchBoxText);
+        const existingSavedSearchIndex = this.getIndexSavedSearch(
+          this.searchDomain,
+          this.searchBoxText
+        );
         if (existingSavedSearchIndex !== -1) {
-          const existingSavedSearch: Search = this._userData.searches.splice(existingSavedSearchIndex, 1)[0];
+          const existingSavedSearch: Search = this._userData.searches.splice(
+            existingSavedSearchIndex,
+            1
+          )[0];
           existingSavedSearch.lastAccessedAt = now;
           existingSavedSearch.count++;
           existingSavedSearch.saved = true;
@@ -238,8 +268,10 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
 
   private getIndexSavedSearch(searchDomain: string, searchText: string) {
     return this._userData.searches.findIndex(
-      element => element.searchDomain === searchDomain
-        && element.text.trim().toLowerCase() === searchText.trim().toLowerCase());
+      (element) =>
+        element.searchDomain === searchDomain &&
+        element.text.trim().toLowerCase() === searchText.trim().toLowerCase()
+    );
   }
 
   onAutocompleteSelectionChanged(event: MatAutocompleteSelectedEvent) {
@@ -263,16 +295,21 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
   triggerBookmarkSearch(searchText: string) {
     const searchTextNotEmpty = searchText.trim() !== '';
     if (searchTextNotEmpty) {
-      this.router.navigate(['./search'],
-        {
-          queryParams: {q: searchText, sd: this.searchDomain, page: this.currentPage, include: 'all'}
-        }).then(() => {
-        this.searchNotificationService.triggerSearch(
-          {
+      this.router
+        .navigate(['./search'], {
+          queryParams: {
+            q: searchText,
+            sd: this.searchDomain,
+            page: this.currentPage,
+            include: 'all',
+          },
+        })
+        .then(() => {
+          this.searchNotificationService.triggerSearch({
             searchText: this.searchBoxText,
-            searchDomain: this.searchDomain
+            searchDomain: this.searchDomain,
           });
-      });
+        });
     }
   }
 
@@ -297,7 +334,6 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
       } else {
         response += ' Codever';
       }
-
     }
 
     return response;
@@ -315,35 +351,46 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
     dialogConfig.width = this.dialogMeasurementsHelper.getRelativeWidth(60);
     dialogConfig.data = {
       userId: this.userId,
-      searchDomain: this.searchDomain
+      searchDomain: this.searchDomain,
     };
 
-    const dialogRef = this.addTagsToSearchDialog.open(AddTagFilterToSearchDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      tagsString => {
-        if (tagsString) {
-          const existingQueryValue = this.searchControl.value ? this.searchControl.value : '';
-          this.searchControl.patchValue(`${existingQueryValue} ${tagsString}`);
-          this.searchBoxField.nativeElement.focus();
-        }
-      }
+    const dialogRef = this.addTagsToSearchDialog.open(
+      AddTagFilterToSearchDialogComponent,
+      dialogConfig
     );
+    dialogRef.afterClosed().subscribe((tagsString) => {
+      if (tagsString) {
+        const existingQueryValue = this.searchControl.value
+          ? this.searchControl.value
+          : '';
+        this.searchControl.patchValue(`${existingQueryValue} ${tagsString}`);
+        this.searchBoxField.nativeElement.focus();
+      }
+    });
   }
 
   removeSearch(search: Search, e: MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
 
-    const indexSavedSearch = this.getIndexSavedSearch(search.searchDomain, search.text);
+    const indexSavedSearch = this.getIndexSavedSearch(
+      search.searchDomain,
+      search.text
+    );
 
-    const deletedSearch = this._userData.searches.splice(indexSavedSearch, 1)[0];
+    const deletedSearch = this._userData.searches.splice(
+      indexSavedSearch,
+      1
+    )[0];
     this.userDataStore.updateUserData$(this._userData).subscribe(() => {
-      console.log('Removed search ' + search.text + ' from domain ' + search.searchDomain);
+      console.log(
+        'Removed search ' + search.text + ' from domain ' + search.searchDomain
+      );
       const iziToastSettings: IziToastSettings = {
         title: `"${deletedSearch.text}" deleted from "${deletedSearch.searchDomain}" search history `,
         timeout: 3000,
-        position: 'bottomRight'
-      }
+        position: 'bottomRight',
+      };
       iziToast.success(iziToastSettings);
     });
   }
@@ -352,5 +399,4 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
     this.searchBoxField.nativeElement.focus();
     this.autocompleteTrigger.closePanel();
   }
-
 }

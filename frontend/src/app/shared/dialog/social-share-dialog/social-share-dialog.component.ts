@@ -10,10 +10,9 @@ import { environment } from 'environments/environment';
 @Component({
   selector: 'app-social-share-dialog',
   templateUrl: './social-share-dialog.component.html',
-  providers: [DatePipe]
+  providers: [DatePipe],
 })
 export class SocialShareDialogComponent implements OnInit {
-
   userIsLoggedIn: boolean;
   userOwnsBookmark: boolean;
   shareableId$: Observable<any>;
@@ -34,21 +33,28 @@ export class SocialShareDialogComponent implements OnInit {
     this.bookmark = data.bookmark;
     this.userIsLoggedIn = data.userIsLoggedIn;
     this.userOwnsBookmark = data.userOwnsBookmark;
-    this.shareableId$ = this.personalBookmarksService.createOrGetShareableId(data.userId, this.bookmark._id);
-    this.tagsStr = this.bookmark.tags.map(tag => {
-      return this.prepareTagForTweet(tag);
-    }).join(',');
+    this.shareableId$ = this.personalBookmarksService.createOrGetShareableId(
+      data.userId,
+      this.bookmark._id
+    );
+    this.tagsStr = this.bookmark.tags
+      .map((tag) => {
+        return this.prepareTagForTweet(tag);
+      })
+      .join(',');
     this.tweetText = this.bookmark.name + '\n';
     if (this.bookmark.publishedOn) {
-      this.tweetText += 'Published on ' + this.datePipe.transform(this.bookmark.publishedOn, 'yyyy-MM-dd') + '\n';
+      this.tweetText +=
+        'Published on ' +
+        this.datePipe.transform(this.bookmark.publishedOn, 'yyyy-MM-dd') +
+        '\n';
     }
     if (this.bookmark.sourceCodeURL) {
       this.tweetText += 'Source code ' + this.bookmark.sourceCodeURL + '\n\n';
     }
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   cancel() {
     this.dialogRef.close('SHARE_CANCELED');
@@ -65,9 +71,12 @@ export class SocialShareDialogComponent implements OnInit {
    * @param tag
    */
   private prepareTagForTweet(tag: string): string {
-    return tag.split('-').map(word => {
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    }).join('');
+    return tag
+      .split('-')
+      .map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join('');
   }
 
   copyToClipboard(location: string, trigger: string) {
@@ -84,10 +93,11 @@ export class SocialShareDialogComponent implements OnInit {
     if (copyResult) {
       if (trigger === 'linkButton') {
         this.copyLinkButtonText = 'Copied';
-        setTimeout(() => this.copyLinkButtonText = 'Link', 1300);
-      } else { // trigger === 'shareableLinkButton'
+        setTimeout(() => (this.copyLinkButtonText = 'Link'), 1300);
+      } else {
+        // trigger === 'shareableLinkButton'
         this.copyLinkButtonShareableText = 'Copied';
-        setTimeout(() => this.copyLinkButtonShareableText = 'Copy', 1300);
+        setTimeout(() => (this.copyLinkButtonShareableText = 'Copy'), 1300);
       }
     }
     document.body.removeChild(selBox);

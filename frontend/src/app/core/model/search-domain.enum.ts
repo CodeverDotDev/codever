@@ -4,5 +4,5 @@ export enum SearchDomain {
   PUBLIC_BOOKMARKS = 'public-bookmarks',
   MY_SNIPPETS = 'my-snippets',
   PUBLIC_SNIPPETS = 'public-snippets',
-  MY_NOTES = 'my-notes'
+  MY_NOTES = 'my-notes',
 }

@@ -6,21 +6,21 @@ import { NotifyStoresService } from './notify-stores.service';
 import { UserDataStore } from './userdata.store';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserDataWatchedTagsStore {
-
   private userData: UserData;
 
   loadedPage: number;
 
-  constructor(private userService: UserDataService,
-              private userDataStore: UserDataStore,
-              private userInfoStore: UserInfoStore,
-              private notifyStoresService: NotifyStoresService
+  constructor(
+    private userService: UserDataService,
+    private userDataStore: UserDataStore,
+    private userInfoStore: UserInfoStore,
+    private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.userDataStore.getUserData$().subscribe(userData => {
+    this.userDataStore.getUserData$().subscribe((userData) => {
       this.userData = userData;
     });
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
@@ -62,6 +62,4 @@ export class UserDataWatchedTagsStore {
       this.userDataStore.updateUserData$(this.userData);
     }
   }
-
 }
-

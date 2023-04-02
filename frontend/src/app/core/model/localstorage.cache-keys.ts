@@ -7,5 +7,5 @@ export const localStorageKeys = {
   userLocalStorageConsent: 'user-localstorage-consent',
   userHistoryBookmarks: 'user-history-bookmarks',
   userInfoOidc: 'userinfo-oidc',
-  cacheVersion: 'cache-version'
-}
+  cacheVersion: 'cache-version',
+};

@@ -6,10 +6,9 @@ import { Bookmark } from '../../../core/model/bookmark';
 @Component({
   selector: 'app-play-youtube-video-dialog',
   templateUrl: './play-youtube-video-dialog.component.html',
-  styleUrls: ['./play-youtube-video-dialog.component.scss']
+  styleUrls: ['./play-youtube-video-dialog.component.scss'],
 })
 export class PlayYoutubeVideoDialogComponent implements OnInit {
-
   bookmark: Bookmark;
   safeUrl: any;
 
@@ -19,14 +18,14 @@ export class PlayYoutubeVideoDialogComponent implements OnInit {
     private _sanitizer: DomSanitizer
   ) {
     this.bookmark = data.bookmark;
-    this.safeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${this.bookmark.youtubeVideoId}`);
+    this.safeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${this.bookmark.youtubeVideoId}`
+    );
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   close() {
     this.dialogRef.close('Play Youtube Video Closed');
   }
-
 }

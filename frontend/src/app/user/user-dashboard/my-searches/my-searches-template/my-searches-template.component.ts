@@ -4,10 +4,9 @@ import { Search } from '../../../../core/model/user-data';
 @Component({
   selector: 'app-my-searches-template',
   templateUrl: './my-searches-template.component.html',
-  styleUrls: ['./my-searches-template.component.scss']
+  styleUrls: ['./my-searches-template.component.scss'],
 })
 export class MySearchesTemplateComponent implements OnInit {
-
   @Input()
   searches: Search[];
 
@@ -17,9 +16,7 @@ export class MySearchesTemplateComponent implements OnInit {
   @Input()
   type: string;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

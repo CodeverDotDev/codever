@@ -5,11 +5,14 @@ import { LoaderInterceptorService } from './loader-interceptor.service';
 describe('LoaderInterceptorService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LoaderInterceptorService]
+      providers: [LoaderInterceptorService],
     });
   });
 
-  it('should be created', inject([LoaderInterceptorService], (service: LoaderInterceptorService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should be created', inject(
+    [LoaderInterceptorService],
+    (service: LoaderInterceptorService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 });

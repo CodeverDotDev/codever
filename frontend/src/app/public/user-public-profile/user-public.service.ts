@@ -10,20 +10,22 @@ import { UserPublicData } from '../../core/model/user-public-data';
 
 @Injectable()
 export class UserPublicService {
-
-  private userPublicApiBaseUrl = '';  // URL to web api
+  private userPublicApiBaseUrl = ''; // URL to web api
 
   constructor(private httpClient: HttpClient) {
     this.userPublicApiBaseUrl = environment.API_URL + '/public/users';
   }
 
-  getUserPublicData$(userId: string, limit: number): Observable<UserPublicData> {
+  getUserPublicData$(
+    userId: string,
+    limit: number
+  ): Observable<UserPublicData> {
     return this.httpClient
       .get<UserPublicData>(`${this.userPublicApiBaseUrl}/${userId}/profile`)
       .pipe(shareReplay(1));
   }
 
-/*  getPersonalBookmarkOrderedBy(userId: string, orderBy: string): Observable<Bookmark[]> {
+  /*  getPersonalBookmarkOrderedBy(userId: string, orderBy: string): Observable<Bookmark[]> {
     let params = new HttpParams();
     params = params.append('orderBy', orderBy);
 

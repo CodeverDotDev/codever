@@ -8,9 +8,8 @@ describe('HowtoHotkeysComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HowtoHotkeysComponent ]
-    })
-    .compileComponents();
+      declarations: [HowtoHotkeysComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

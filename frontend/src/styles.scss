@@ -2,7 +2,7 @@
 
 // styles in src/style directory are applied to the whole page
 body {
-  background: #FFFFFF;
+  background: #ffffff;
   overflow: scroll;
 }
 
@@ -31,8 +31,9 @@ pre {
 }
 
 //forms - TODO maybe move to own forms.scss file... that is also valid application wide
-.ng-valid[required], .ng-valid.required {
-  border-left: 5px solid #42A948; /* green */
+.ng-valid[required],
+.ng-valid.required {
+  border-left: 5px solid #42a948; /* green */
 }
 
 .ng-invalid:not(form) {
@@ -48,7 +49,7 @@ ul.tags {
 }
 
 ul.tags li {
-  display: inline
+  display: inline;
 }
 
 ul.tags li:not(:last-child):after {
@@ -154,10 +155,12 @@ pre {
   width: auto;
   max-height: 800px;
   overflow: auto;
-  font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif;
+  font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace,
+    sans-serif;
   font-size: 13px;
   background-color: #eff0f1;
-  border-radius: 3px
+  border-radius: 3px;
 }
 
 .note_normal {
@@ -223,7 +226,6 @@ pre {
   }
 }
 
-
 .private-bookmark {
   background-color: linen;
 }
@@ -231,7 +233,6 @@ pre {
 .note-bg {
   background-color: lightgoldenrodyellow;
 }
-
 
 @media (max-width: 1349px) {
   .github-fork-ribbon {
@@ -244,7 +245,7 @@ pre {
 @import '~bootstrap/scss/bootstrap';
 @import 'scss/bootstrap-override';
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
-@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 label {
   width: 100%;
@@ -269,7 +270,7 @@ label {
 
 @media (max-width: 680px) {
   .main-body {
-    margin-top: 7rem
+    margin-top: 7rem;
   }
 }
 

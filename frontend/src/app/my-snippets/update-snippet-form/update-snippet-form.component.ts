@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { tagsValidator } from '../../shared/directive/tags-validation.directive';
 import { Logger } from '../../core/logger.service';
@@ -12,9 +20,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PublicSnippetsService } from '../../public/snippets/public-snippets.service';
 import { SnippetFormBaseComponent } from '../snippet-form-base/snippet-form.base.component';
 import { Location } from '@angular/common';
-import {
-  DeleteResourceDialogComponent
-} from '../../shared/dialog/delete-bookmark-dialog/delete-resource-dialog.component';
+import { DeleteResourceDialogComponent } from '../../shared/dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
 import { ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
@@ -22,10 +28,12 @@ import { DeleteNotificationService } from '../../core/notifications/delete-notif
 @Component({
   selector: 'app-update-snippet-form',
   templateUrl: './update-snippet-form.component.html',
-  styleUrls: ['./update-snippet-form.component.scss']
+  styleUrls: ['./update-snippet-form.component.scss'],
 })
-export class UpdateSnippetFormComponent extends SnippetFormBaseComponent implements OnInit, OnChanges {
-
+export class UpdateSnippetFormComponent
+  extends SnippetFormBaseComponent
+  implements OnInit, OnChanges
+{
   snippetFormGroup: FormGroup;
   codeSnippetsFormArray: FormArray;
   userId = null;
@@ -33,7 +41,7 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
   @Input()
   snippet: Snippet;
 
-  @ViewChild('tagInput', {static: false})
+  @ViewChild('tagInput', { static: false })
   tagInput: ElementRef;
 
   @Input()
@@ -59,7 +67,14 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
     private readonly scrollStrategyOptions: ScrollStrategyOptions,
     private deleteNotificationService: DeleteNotificationService
   ) {
-    super(formBuilder, personalSnippetsService, suggestedTagsStore, userInfoStore, router, errorService);
+    super(
+      formBuilder,
+      personalSnippetsService,
+      suggestedTagsStore,
+      userInfoStore,
+      router,
+      errorService
+    );
     this.scrollStrategy = this.scrollStrategyOptions.noop();
   }
 
@@ -89,7 +104,9 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
 
     this.codeSnippetsFormArray.removeAt(0); // there is an empty element created when building form - needs removing
     for (let i = 0; i < snippet.codeSnippets.length; i++) {
-      this.codeSnippetsFormArray.push(this.createCodeSnippet(snippet.codeSnippets[i]));
+      this.codeSnippetsFormArray.push(
+        this.createCodeSnippet(snippet.codeSnippets[i])
+      );
     }
 
     this.tagsControl.setValue(null);
@@ -103,10 +120,12 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
       codeSnippets: new FormArray([this.createInitialCodeSnippet()]),
       sourceUrl: '',
       public: false,
-      copiedFromId: null
+      copiedFromId: null,
     });
 
-    this.codeSnippetsFormArray = this.snippetFormGroup.get('codeSnippets') as FormArray;
+    this.codeSnippetsFormArray = this.snippetFormGroup.get(
+      'codeSnippets'
+    ) as FormArray;
   }
 
   saveSnippet(snippet: Snippet) {
@@ -124,13 +143,12 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
     snippet.userId = this.snippet.userId;
     snippet._id = this.snippet._id;
 
-    this.personalSnippetsService.updateSnippet(snippet)
-      .subscribe(
-        () => {
-          super.navigateToSnippetDetails(snippet, {})
-        },
-        () => this.navigateToSnippetDetails(snippet, {})
-      );
+    this.personalSnippetsService.updateSnippet(snippet).subscribe(
+      () => {
+        super.navigateToSnippetDetails(snippet, {});
+      },
+      () => this.navigateToSnippetDetails(snippet, {})
+    );
   }
 
   openDeleteDialog() {
@@ -141,30 +159,36 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
     dialogConfig.data = {
       resourceName: this.snippet.title,
       type: 'snippet',
-      isPublic: this.snippet.public
+      isPublic: this.snippet.public,
     };
 
-    const dialogRef = this.deleteDialog.open(DeleteResourceDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        if (data === 'DELETE_CONFIRMED') {
-          this.deleteSnippet(this.snippet._id);
-        }
-      }
+    const dialogRef = this.deleteDialog.open(
+      DeleteResourceDialogComponent,
+      dialogConfig
     );
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data === 'DELETE_CONFIRMED') {
+        this.deleteSnippet(this.snippet._id);
+      }
+    });
   }
 
   deleteSnippet(snippetId: string) {
-    this.personalSnippetsService.deleteSnippetById(this.userId, snippetId).subscribe(() => {
-        this.router.navigate(
-          ['']
-        );
-        this.deleteNotificationService.showSuccessNotification(`Snippet - "${this.snippet.title}" was deleted`);
-      },
-      () => {
-        this.deleteNotificationService.showErrorNotification('Snippet could not be deleted. Please try again later!');
-      }
-    );
+    this.personalSnippetsService
+      .deleteSnippetById(this.userId, snippetId)
+      .subscribe(
+        () => {
+          this.router.navigate(['']);
+          this.deleteNotificationService.showSuccessNotification(
+            `Snippet - "${this.snippet.title}" was deleted`
+          );
+        },
+        () => {
+          this.deleteNotificationService.showErrorNotification(
+            'Snippet could not be deleted. Please try again later!'
+          );
+        }
+      );
   }
 
   cancelUpdate() {
@@ -172,5 +196,3 @@ export class UpdateSnippetFormComponent extends SnippetFormBaseComponent impleme
     console.log('goBAck()...');
   }
 }
-
-

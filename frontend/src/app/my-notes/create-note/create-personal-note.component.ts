@@ -7,12 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './create-personal-note.component.html',
 })
 export class CreatePersonalNoteComponent implements OnInit {
-  constructor(
-  ) {}
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
-
-

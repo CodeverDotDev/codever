@@ -16,10 +16,9 @@ import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.
 @Component({
   selector: 'app-tag',
   templateUrl: './bookmarks-tagged.component.html',
-  styleUrls: ['./bookmarks-tagged.component.css']
+  styleUrls: ['./bookmarks-tagged.component.css'],
 })
 export class BookmarksTaggedComponent implements OnInit {
-
   bookmarksForTag$: Observable<Bookmark[]>;
   tag: string;
   userData$: Observable<UserData>;
@@ -29,15 +28,16 @@ export class BookmarksTaggedComponent implements OnInit {
   currentPage: number;
   taggedCallerPagination = 'tagged-page';
 
-  constructor(private tagService: BookmarksTaggedService,
-              private userDataStore: UserDataStore,
-              private userDataWatchedTagsStore: UserDataWatchedTagsStore,
-              private userInfoStore: UserInfoStore,
-              private keycloakService: KeycloakService,
-              private paginationNotificationService: PaginationNotificationService,
-              private route: ActivatedRoute,
-              private loginDialog: MatDialog) {
-  }
+  constructor(
+    private tagService: BookmarksTaggedService,
+    private userDataStore: UserDataStore,
+    private userDataWatchedTagsStore: UserDataWatchedTagsStore,
+    private userInfoStore: UserInfoStore,
+    private keycloakService: KeycloakService,
+    private paginationNotificationService: PaginationNotificationService,
+    private route: ActivatedRoute,
+    private loginDialog: MatDialog
+  ) {}
 
   ngOnInit() {
     this.tag = this.route.snapshot.params['tag'];
@@ -47,32 +47,47 @@ export class BookmarksTaggedComponent implements OnInit {
     } else {
       this.currentPage = 1;
     }
-    this.route.paramMap.subscribe(
-      params => {
-        this.tag = params.get('tag');
-        if (this.tag) {
-          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, this.currentPage, environment.PAGINATION_PAGE_SIZE);
-        } else {
-          this.tag = this.route.snapshot.url[0].path;
-          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, this.currentPage, environment.PAGINATION_PAGE_SIZE);
-        }
-      });
+    this.route.paramMap.subscribe((params) => {
+      this.tag = params.get('tag');
+      if (this.tag) {
+        this.bookmarksForTag$ = this.tagService.getBookmarksForTag(
+          this.tag,
+          this.orderBy,
+          this.currentPage,
+          environment.PAGINATION_PAGE_SIZE
+        );
+      } else {
+        this.tag = this.route.snapshot.url[0].path;
+        this.bookmarksForTag$ = this.tagService.getBookmarksForTag(
+          this.tag,
+          this.orderBy,
+          this.currentPage,
+          environment.PAGINATION_PAGE_SIZE
+        );
+      }
+    });
 
-
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userData$ = this.userDataStore.getUserData$();
         });
       }
     });
 
-    this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
-      if (paginationAction.caller === this.taggedCallerPagination) {
-        this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, paginationAction.page, environment.PAGINATION_PAGE_SIZE);
+    this.paginationNotificationService.pageNavigationClicked$.subscribe(
+      (paginationAction) => {
+        if (paginationAction.caller === this.taggedCallerPagination) {
+          this.bookmarksForTag$ = this.tagService.getBookmarksForTag(
+            this.tag,
+            this.orderBy,
+            paginationAction.page,
+            environment.PAGINATION_PAGE_SIZE
+          );
+        }
       }
-    });
+    );
   }
 
   showMoreResults() {
@@ -81,12 +96,22 @@ export class BookmarksTaggedComponent implements OnInit {
 
   getLatestForTag() {
     this.orderBy = 'LATEST';
-    this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, this.currentPage, environment.PAGINATION_PAGE_SIZE);
+    this.bookmarksForTag$ = this.tagService.getBookmarksForTag(
+      this.tag,
+      this.orderBy,
+      this.currentPage,
+      environment.PAGINATION_PAGE_SIZE
+    );
   }
 
   getByLikeCount() {
     this.orderBy = 'LIKE_COUNT';
-    this.bookmarksForTag$ = this.tagService.getBookmarksForTag(this.tag, this.orderBy, this.currentPage, environment.PAGINATION_PAGE_SIZE);
+    this.bookmarksForTag$ = this.tagService.getBookmarksForTag(
+      this.tag,
+      this.orderBy,
+      this.currentPage,
+      environment.PAGINATION_PAGE_SIZE
+    );
   }
 
   watchTag() {
@@ -96,7 +121,7 @@ export class BookmarksTaggedComponent implements OnInit {
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
       dialogConfig.data = {
-        message: 'You need to be logged in to follow tags'
+        message: 'You need to be logged in to follow tags',
       };
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
@@ -108,5 +133,4 @@ export class BookmarksTaggedComponent implements OnInit {
   unwatchTag() {
     this.userDataWatchedTagsStore.unwatchTag(this.tag);
   }
-
 }

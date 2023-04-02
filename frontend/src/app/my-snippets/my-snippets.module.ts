@@ -7,7 +7,11 @@ import { CreateSnippetComponent } from './create/create-snippet.component';
 import { UpdateSnippetComponent } from './update/update-snippet.component';
 import { AuthGuard } from '../core/auth/auth-guard.service';
 import { SnippetDetailsPageComponent } from './snippet-details-page/snippet-details-page.component';
-import { HIGHLIGHT_OPTIONS, HighlightModule, HighlightOptions } from 'ngx-highlightjs';
+import {
+  HIGHLIGHT_OPTIONS,
+  HighlightModule,
+  HighlightOptions,
+} from 'ngx-highlightjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
@@ -39,40 +43,39 @@ const snippetRoutes: Routes = [
     path: ':id/details',
     canActivate: [AuthGuard],
     component: SnippetDetailsPageComponent,
-  }
-]
+  },
+];
 
 @NgModule({
-    declarations: [
-        CreateSnippetFormComponent,
-        UpdateSnippetFormComponent,
-        CreateSnippetComponent,
-        UpdateSnippetComponent,
-        SnippetDetailsPageComponent,
-        CopyToMineSnippetComponent,
-        SnippetFormBaseComponent
-    ],
-    imports: [
-        RouterModule.forChild(snippetRoutes),
-        SharedModule,
-        MatTabsModule,
-        MatAutocompleteModule,
-        MatSelectModule,
-        MatChipsModule,
-        MatIconModule,
-        MatDialogModule,
-        MatTooltipModule,
-        HighlightModule
-    ],
-    providers: [
-        PersonalSnippetsService,
-        {
-            provide: HIGHLIGHT_OPTIONS,
-            useValue: <HighlightOptions>{
-                lineNumbers: true
-            }
-        }
-    ]
+  declarations: [
+    CreateSnippetFormComponent,
+    UpdateSnippetFormComponent,
+    CreateSnippetComponent,
+    UpdateSnippetComponent,
+    SnippetDetailsPageComponent,
+    CopyToMineSnippetComponent,
+    SnippetFormBaseComponent,
+  ],
+  imports: [
+    RouterModule.forChild(snippetRoutes),
+    SharedModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatChipsModule,
+    MatIconModule,
+    MatDialogModule,
+    MatTooltipModule,
+    HighlightModule,
+  ],
+  providers: [
+    PersonalSnippetsService,
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: <HighlightOptions>{
+        lineNumbers: true,
+      },
+    },
+  ],
 })
-export class MySnippetsModule {
-}
+export class MySnippetsModule {}

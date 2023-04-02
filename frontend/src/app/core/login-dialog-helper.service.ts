@@ -5,7 +5,6 @@ import { ScrollStrategy } from '@angular/cdk/overlay/scroll/scroll-strategy';
 
 @Injectable()
 export class LoginDialogHelperService {
-
   scrollStrategy: ScrollStrategy;
 
   constructor(private readonly scrollStrategyOptions: ScrollStrategyOptions) {
@@ -19,7 +18,7 @@ export class LoginDialogHelperService {
     dialogConfig.autoFocus = true;
     dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
-      message: message
+      message: message,
     };
 
     return dialogConfig;

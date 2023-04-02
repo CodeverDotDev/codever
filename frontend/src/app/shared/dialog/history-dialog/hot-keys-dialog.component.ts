@@ -7,10 +7,9 @@ import { AddToHistoryService } from '../../../core/user/add-to-history.service';
 @Component({
   selector: 'app-hotkeys-dialog',
   templateUrl: './hot-keys-dialog.component.html',
-  styleUrls: ['./hot-keys-dialog.component.scss']
+  styleUrls: ['./hot-keys-dialog.component.scss'],
 })
 export class HotKeysDialogComponent implements OnInit {
-
   bookmarks$: Observable<Bookmark[]>;
   title: string;
   filterText: '';
@@ -24,7 +23,5 @@ export class HotKeysDialogComponent implements OnInit {
     this.title = data.title;
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

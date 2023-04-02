@@ -24,16 +24,15 @@ import { SharedModule } from '../../shared/shared.module';
     AddBookmarkBookmarkletComponent,
     AddSnippetBookmarkletComponent,
     CodeverBookmarkletComponent,
-    HowtoHotkeysComponent
+    HowtoHotkeysComponent,
   ],
-  exports: [
-  ],
+  exports: [],
   imports: [
     HowtoRoutingModule,
     CommonModule,
     MatExpansionModule,
     MatTabsModule,
-    SharedModule
-  ]
+    SharedModule,
+  ],
 })
-export class HowtoModule { }
+export class HowtoModule {}

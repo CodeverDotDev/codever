@@ -1,47 +1,75 @@
 <div #codeletCardBody>
-  <div *ngIf="inList && viewHeight > 180 else wholeText">
-    <div [ngClass]="{more_text: showMoreText, less_text: !showMoreText}">
-      <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast=last">
-          <p *ngIf="codeSnippet.comment" class="mb-0"
-             [innerHtml]="codeSnippet.comment | md2html"></p>
+  <div *ngIf="inList && viewHeight > 180; else wholeText">
+    <div [ngClass]="{ more_text: showMoreText, less_text: !showMoreText }">
+      <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast = last">
+        <p
+          *ngIf="codeSnippet.comment"
+          class="mb-0"
+          [innerHtml]="codeSnippet.comment | md2html"
+        ></p>
         <div class="code-snippet-wrapper">
-          <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
+          <app-button-copy-snippet
+            [codeSnippet]="codeSnippet.code"
+          ></app-button-copy-snippet>
           <button
             class="btn btn-sm btn-light float-right mr-1"
             (click)="toggleFullScreen(codePart)"
-            placeholder="Click to copy code snippet" >
+            placeholder="Click to copy code snippet"
+          >
             Fullscreen <i class="fas fa-expand"></i>
           </button>
           <div class="clear"></div>
-          <pre class="mb-0"><code [highlight]="codeSnippet.code" #codePart></code></pre>
+          <pre
+            class="mb-0"
+          ><code [highlight]="codeSnippet.code" #codePart></code></pre>
         </div>
-        <p *ngIf="codeSnippet.commentAfter" class="mb-0 mt-2"
-           [innerHtml]="codeSnippet.commentAfter | md2html"></p>
-        <hr *ngIf="!isLast">
+        <p
+          *ngIf="codeSnippet.commentAfter"
+          class="mb-0 mt-2"
+          [innerHtml]="codeSnippet.commentAfter | md2html"
+        ></p>
+        <hr *ngIf="!isLast" />
       </div>
     </div>
-    <button (click)="showMoreText = !showMoreText"
-            [ngClass]="{show_less_button: showMoreText, show_more_button: !showMoreText}"
-            class="toggle-show-more-button" title="Show more"></button>
+    <button
+      (click)="showMoreText = !showMoreText"
+      [ngClass]="{
+        show_less_button: showMoreText,
+        show_more_button: !showMoreText
+      }"
+      class="toggle-show-more-button"
+      title="Show more"
+    ></button>
   </div>
   <ng-template #wholeText>
-    <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast=last">
-      <p *ngIf="codeSnippet.comment" class="mb-1"
-         [innerHtml]="codeSnippet.comment | md2html"></p>
+    <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast = last">
+      <p
+        *ngIf="codeSnippet.comment"
+        class="mb-1"
+        [innerHtml]="codeSnippet.comment | md2html"
+      ></p>
       <div class="code-snippet-wrapper">
-        <app-button-copy-snippet [codeSnippet]="codeSnippet.code"></app-button-copy-snippet>
+        <app-button-copy-snippet
+          [codeSnippet]="codeSnippet.code"
+        ></app-button-copy-snippet>
         <button
           class="btn btn-sm btn-light float-right mr-1"
           (click)="toggleFullScreen(codePart)"
-          placeholder="Click to copy code snippet" >
-           Fullscreen <i class="fas fa-expand"></i>
+          placeholder="Click to copy code snippet"
+        >
+          Fullscreen <i class="fas fa-expand"></i>
         </button>
         <div class="clear"></div>
-        <pre class="mb-0"><code [highlight]="codeSnippet.code" #codePart></code></pre>
+        <pre
+          class="mb-0"
+        ><code [highlight]="codeSnippet.code" #codePart></code></pre>
       </div>
-      <p *ngIf="codeSnippet.commentAfter" class="mb-1 mt-2"
-         [innerHtml]="codeSnippet.commentAfter | md2html"></p>
-      <hr *ngIf="!isLast">
+      <p
+        *ngIf="codeSnippet.commentAfter"
+        class="mb-1 mt-2"
+        [innerHtml]="codeSnippet.commentAfter | md2html"
+      ></p>
+      <hr *ngIf="!isLast" />
     </div>
   </ng-template>
 </div>

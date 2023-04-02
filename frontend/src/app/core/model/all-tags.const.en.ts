@@ -654,7 +654,7 @@ export const allTags = [
   'youtube',
   'zipkin',
   'zsh',
-  'zuul'
-]
+  'zuul',
+];
 
 export const publicTags = new Set(allTags);

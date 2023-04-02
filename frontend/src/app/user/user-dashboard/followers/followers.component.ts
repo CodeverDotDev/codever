@@ -6,19 +6,17 @@ import { UserDataService } from '../../../core/user-data.service';
 @Component({
   selector: 'app-followers',
   templateUrl: './followers.component.html',
-  styleUrls: ['./followers.component.scss']
+  styleUrls: ['./followers.component.scss'],
 })
 export class FollowersComponent implements OnInit {
-
   @Input()
   userId: string;
 
   followers$: Observable<UserDataProfile[]>;
 
-  constructor(private userDataService: UserDataService) { }
+  constructor(private userDataService: UserDataService) {}
 
   ngOnInit() {
     this.followers$ = this.userDataService.getFollowers$(this.userId);
   }
-
 }

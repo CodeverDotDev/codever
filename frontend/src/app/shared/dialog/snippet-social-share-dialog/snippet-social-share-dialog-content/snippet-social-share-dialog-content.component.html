@@ -3,32 +3,38 @@
     <div class="row">
       <div class="col">
         <a
-          type="button" class="btn btn-light btn-sm"
+          type="button"
+          class="btn btn-light btn-sm"
           title="Copy snippet link"
-          (click)="copyToClipboard(shareableUrl)">
-          <i class="far fa-copy" style="font-size: smaller"></i> {{copyLinkButtonText}}
+          (click)="copyToClipboard(shareableUrl)"
+        >
+          <i class="far fa-copy" style="font-size: smaller"></i>
+          {{ copyLinkButtonText }}
         </a>
       </div>
       <div class="col">
         <a
-          type="button" class="btn btn-light btn-sm"
-          href="mailto:?subject={{snippet.title + ' via Codever'}}&body={{shareableUrl}}"
-          title="Share link via Email">
+          type="button"
+          class="btn btn-light btn-sm"
+          href="mailto:?subject={{ snippet.title + ' via Codever' }}&body={{
+            shareableUrl
+          }}"
+          title="Share link via Email"
+        >
           <i class="far fa-envelope"></i> Email
         </a>
       </div>
       <div class="col" *ngIf="snippet.public">
-        <tweet
-          [url]="shareableUrl"
-          [text]="tweetText"
-          [hashTags]="tagsStr"
-        >
+        <tweet [url]="shareableUrl" [text]="tweetText" [hashTags]="tagsStr">
         </tweet>
       </div>
     </div>
     <div class="clear"></div>
 
-    <hr>
-    <div *ngIf="!snippet.public" class="alert alert-warning mt-2"><i class="fas fa-info-circle mr-1"></i> Anyone with the generated <b>shareable link</b> can access it</div>
+    <hr />
+    <div *ngIf="!snippet.public" class="alert alert-warning mt-2">
+      <i class="fas fa-info-circle mr-1"></i> Anyone with the generated
+      <b>shareable link</b> can access it
+    </div>
   </div>
 </mat-dialog-content>

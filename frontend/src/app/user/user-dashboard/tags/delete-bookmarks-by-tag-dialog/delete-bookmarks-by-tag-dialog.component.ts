@@ -5,10 +5,9 @@ import { UsedTag } from '../../../../core/model/used-tag';
 @Component({
   selector: 'app-delete-bookmarks-by-tag-dialog',
   templateUrl: './delete-bookmarks-by-tag-dialog.component.html',
-  styleUrls: ['./delete-bookmarks-by-tag-dialog.component.scss']
+  styleUrls: ['./delete-bookmarks-by-tag-dialog.component.scss'],
 })
 export class DeleteBookmarksByTagDialogComponent implements OnInit {
-
   tag: string;
 
   constructor(
@@ -19,8 +18,7 @@ export class DeleteBookmarksByTagDialogComponent implements OnInit {
     this.tag = data.tag;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   delete() {
     this.dialogRef.close('DELETE_CONFIRMED');
@@ -29,5 +27,4 @@ export class DeleteBookmarksByTagDialogComponent implements OnInit {
   close() {
     this.dialogRef.close('DELETE_CANCELED');
   }
-
 }

@@ -9,22 +9,20 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class UserInfoStore {
-
   private _userInfo: ReplaySubject<UserInfoOidc> = new ReplaySubject(1);
   public userInfoLoaded = false;
 
-  constructor(private userService: UserDataService,
-              private logger: Logger,
-              private errorService: ErrorService,
-              private userInfoService: UserInfoService,
-  ) {
-  }
+  constructor(
+    private userService: UserDataService,
+    private logger: Logger,
+    private errorService: ErrorService,
+    private userInfoService: UserInfoService
+  ) {}
 
   private loadInitialOidcData() {
-    this.userInfoService.getUserInfoOidc().subscribe(data => {
-        this._userInfo.next(data);
-      }
-    );
+    this.userInfoService.getUserInfoOidc().subscribe((data) => {
+      this._userInfo.next(data);
+    });
   }
 
   public getUserInfoOidc$(): Observable<UserInfoOidc> {
@@ -36,9 +34,6 @@ export class UserInfoStore {
   }
 
   public getUserId$(): Observable<string> {
-    return this.getUserInfoOidc$().pipe(
-      map(userInfo => userInfo.sub)
-    )
+    return this.getUserInfoOidc$().pipe(map((userInfo) => userInfo.sub));
   }
-
 }

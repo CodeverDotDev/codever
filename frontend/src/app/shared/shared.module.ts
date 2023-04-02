@@ -11,9 +11,7 @@ import { DeleteResourceDialogComponent } from './dialog/delete-bookmark-dialog/d
 import { LoginRequiredDialogComponent } from './dialog/login-required-dialog/login-required-dialog.component';
 import { SocialShareDialogComponent } from './dialog/social-share-dialog/social-share-dialog.component';
 import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
-import {
-  PlayYoutubeVideoDialogComponent
-} from './dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
+import { PlayYoutubeVideoDialogComponent } from './dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
 import { Markdown2HtmlPipe } from './pipe/markdown2html.pipe';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -32,9 +30,7 @@ import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/sn
 import { AsyncSnippetListComponent } from './async-snippet-list/async-snippet-list.component';
 import { SearchFilterPipe } from './pipe/search-filter.pipe';
 import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
-import {
-  AddTagFilterToSearchDialogComponent
-} from './search/add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
+import { AddTagFilterToSearchDialogComponent } from './search/add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
@@ -46,13 +42,8 @@ import { NoteDetailsComponent } from './note-details/note-details.component';
 import { NoteContentComponent } from './note-details/note-card-body/note-content.component';
 import { AsyncNoteListComponent } from './async-note-list/async-note-list.component';
 import { MarkedImageWidthDirective } from './directive/marked-image-width.directive';
-import {
-  SnippetSocialShareDialogComponent
-} from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
-import {
-  SnippetSocialShareDialogContentComponent
-} from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
-
+import { SnippetSocialShareDialogComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
+import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
 
 /**
  * Add a SharedModule to hold the common components, directives, and pipes and share them with the modules that need them.
@@ -130,7 +121,6 @@ import {
     ExtensionsComponent,
     NoteDetailsComponent,
     AsyncNoteListComponent,
-  ]
+  ],
 })
-export class SharedModule {
-}
+export class SharedModule {}

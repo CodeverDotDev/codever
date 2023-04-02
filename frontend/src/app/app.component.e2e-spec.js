@@ -1,11 +1,10 @@
 describe('App', function () {
-
   beforeEach(function () {
     browser.get('/');
   });
 
   it('should have a title', function () {
-    expect(browser.getTitle()).toEqual("Angular 2 App | ng2-webpack");
+    expect(browser.getTitle()).toEqual('Angular 2 App | ng2-webpack');
   });
 
   it('should have <header>', function () {
@@ -17,11 +16,14 @@ describe('App', function () {
   });
 
   it('should have a main title', function () {
-    expect(element(by.css('main h1')).getText()).toEqual('Hello from Angular 2!');
+    expect(element(by.css('main h1')).getText()).toEqual(
+      'Hello from Angular 2!'
+    );
   });
 
   it('should have <footer>', function () {
-    expect(element(by.css('my-app footer')).getText()).toEqual("Webpack Angular 2 Starter");
+    expect(element(by.css('my-app footer')).getText()).toEqual(
+      'Webpack Angular 2 Starter'
+    );
   });
-
 });

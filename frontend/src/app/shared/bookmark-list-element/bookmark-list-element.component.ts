@@ -1,8 +1,13 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Bookmark } from '../../core/model/bookmark';
 import {
-  PlayYoutubeVideoDialogComponent
-} from '../dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { Bookmark } from '../../core/model/bookmark';
+import { PlayYoutubeVideoDialogComponent } from '../dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { KeycloakService } from 'keycloak-angular';
 import { UserInfoStore } from '../../core/user/user-info.store';
@@ -33,10 +38,12 @@ import { DeleteNotificationService } from '../../core/notifications/delete-notif
 @Component({
   selector: 'app-bookmark-list-element',
   templateUrl: './bookmark-list-element.component.html',
-  styleUrls: ['./bookmark-list-element.component.scss']
+  styleUrls: ['./bookmark-list-element.component.scss'],
 })
-export class BookmarkListElementComponent extends TagFollowingBaseComponent implements OnInit, OnDestroy {
-
+export class BookmarkListElementComponent
+  extends TagFollowingBaseComponent
+  implements OnInit, OnDestroy
+{
   @Input()
   bookmark: Bookmark;
 
@@ -72,35 +79,36 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   scrollStrategy: ScrollStrategy;
 
-  constructor(private router: Router,
-              private playYoutubeDialog: MatDialog,
-              public loginDialog: MatDialog,
-              private deleteDialog: MatDialog,
-              private shareDialog: MatDialog,
-              public keycloakService: KeycloakService,
-              private userInfoStore: UserInfoStore,
-              private userDataHistoryStore: UserDataHistoryStore,
-              private personalBookmarksService: PersonalBookmarksService,
-              private userDataPinnedStore: UserDataPinnedStore,
-              private userDataReadLaterStore: UserDataReadLaterStore,
-              private userDataStore: UserDataStore,
-              public userDataWatchedTagsStore: UserDataWatchedTagsStore,
-              private publicBookmarksStore: PublicBookmarksStore,
-              private adminService: AdminService,
-              private feedStore: FeedStore,
-              private loginDialogHelperService: LoginDialogHelperService,
-              private myBookmarksStore: MyBookmarksStore,
-              public addToHistoryService: AddToHistoryService,
-              private clipboard: Clipboard,
-              private readonly scrollStrategyOptions: ScrollStrategyOptions,
-              private deleteNotificationService: DeleteNotificationService,
+  constructor(
+    private router: Router,
+    private playYoutubeDialog: MatDialog,
+    public loginDialog: MatDialog,
+    private deleteDialog: MatDialog,
+    private shareDialog: MatDialog,
+    public keycloakService: KeycloakService,
+    private userInfoStore: UserInfoStore,
+    private userDataHistoryStore: UserDataHistoryStore,
+    private personalBookmarksService: PersonalBookmarksService,
+    private userDataPinnedStore: UserDataPinnedStore,
+    private userDataReadLaterStore: UserDataReadLaterStore,
+    private userDataStore: UserDataStore,
+    public userDataWatchedTagsStore: UserDataWatchedTagsStore,
+    private publicBookmarksStore: PublicBookmarksStore,
+    private adminService: AdminService,
+    private feedStore: FeedStore,
+    private loginDialogHelperService: LoginDialogHelperService,
+    private myBookmarksStore: MyBookmarksStore,
+    public addToHistoryService: AddToHistoryService,
+    private clipboard: Clipboard,
+    private readonly scrollStrategyOptions: ScrollStrategyOptions,
+    private deleteNotificationService: DeleteNotificationService
   ) {
     super(loginDialog, userDataWatchedTagsStore);
 
     // START force reload on same root - solution taken from https://github.com/angular/angular/issues/13831
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
-    }
+    };
 
     this.navigationSubscription = this.router.events.subscribe((evt) => {
       if (evt instanceof NavigationEnd) {
@@ -118,10 +126,10 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfoOidc$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userId = userInfo.sub;
         });
       }
@@ -150,13 +158,17 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
       bookmark: bookmark,
     };
 
-    const dialogRef = this.playYoutubeDialog.open(PlayYoutubeVideoDialogComponent, dialogConfig);
+    const dialogRef = this.playYoutubeDialog.open(
+      PlayYoutubeVideoDialogComponent,
+      dialogConfig
+    );
   }
 
   addToPinned(bookmark: Bookmark) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig =
-        this.loginDialogHelperService.loginDialogConfig('You need to be logged in to pin bookmarks');
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
+        'You need to be logged in to pin bookmarks'
+      );
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataPinnedStore.addToPinnedBookmarks(bookmark);
@@ -169,8 +181,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   addToReadLater(bookmark: Bookmark) {
     if (!this.userIsLoggedIn) {
-      const dialogConfig =
-        this.loginDialogHelperService.loginDialogConfig('You need to be logged in to add bookmarks to "Read Later"');
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
+        'You need to be logged in to add bookmarks to "Read Later"'
+      );
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataReadLaterStore.addToReadLater(bookmark);
@@ -183,8 +196,9 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   likeBookmark(bookmark: Bookmark): void {
     if (!this.userIsLoggedIn) {
-      const dialogConfig =
-        this.loginDialogHelperService.loginDialogConfig('You need to be logged in to like public bookmarks');
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
+        'You need to be logged in to like public bookmarks'
+      );
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       this.userDataStore.likeBookmark(bookmark);
@@ -203,52 +217,69 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     dialogConfig.data = {
       resourceName: bookmark.name,
       type: 'bookmark',
-      isPublic: bookmark.public
+      isPublic: bookmark.public,
     };
 
-    const dialogRef = this.deleteDialog.open(DeleteResourceDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(
-      data => {
-        console.log('Dialog output:', data);
-        if (data === 'DELETE_CONFIRMED') {
-          this.deleteBookmark(bookmark);
-        }
-      }
+    const dialogRef = this.deleteDialog.open(
+      DeleteResourceDialogComponent,
+      dialogConfig
     );
+    dialogRef.afterClosed().subscribe((data) => {
+      console.log('Dialog output:', data);
+      if (data === 'DELETE_CONFIRMED') {
+        this.deleteBookmark(bookmark);
+      }
+    });
   }
 
   deleteBookmark(bookmark: Bookmark): void {
-    const deleteAsAdmin = this.keycloakService.isUserInRole('ROLE_ADMIN') && bookmark.userId !== this.userId;
+    const deleteAsAdmin =
+      this.keycloakService.isUserInRole('ROLE_ADMIN') &&
+      bookmark.userId !== this.userId;
     if (deleteAsAdmin) {
-      this.adminService.deleteBookmark(bookmark).subscribe(() => {
-        this.bookmarkDeleted.emit(true);
-        this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-        this.feedStore.removeFromFeedBookmarks(bookmark);
-        if (this.isSearchResultsPage) {
-          location.reload();
-        }
-        this.deleteNotificationService.showSuccessNotification(`Bookmark "${bookmark.name}" was deleted`);
-      }, () => {
-        this.deleteNotificationService.showErrorNotification(`Bookmark "${bookmark.name}" could not be deleted`);
-      });
-    } else {
-      this.personalBookmarksService.deleteBookmark(bookmark).subscribe(() => {
-        if (this.isSearchResultsPage) {
-          location.reload();
-        } else {
+      this.adminService.deleteBookmark(bookmark).subscribe(
+        () => {
           this.bookmarkDeleted.emit(true);
           this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-          this.userDataStore.removeFromStoresAtDeletion(bookmark);
-          this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
           this.feedStore.removeFromFeedBookmarks(bookmark);
-          if (this.isDetailsPage) {
-            this.navigateToHomePage();
+          if (this.isSearchResultsPage) {
+            location.reload();
           }
+          this.deleteNotificationService.showSuccessNotification(
+            `Bookmark "${bookmark.name}" was deleted`
+          );
+        },
+        () => {
+          this.deleteNotificationService.showErrorNotification(
+            `Bookmark "${bookmark.name}" could not be deleted`
+          );
         }
-        this.deleteNotificationService.showSuccessNotification(`Bookmark "${bookmark.name}" was deleted`);
-      }, () => {
-        this.deleteNotificationService.showErrorNotification(`Bookmark "${bookmark.name}" could not be deleted`);
-      });
+      );
+    } else {
+      this.personalBookmarksService.deleteBookmark(bookmark).subscribe(
+        () => {
+          if (this.isSearchResultsPage) {
+            location.reload();
+          } else {
+            this.bookmarkDeleted.emit(true);
+            this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+            this.userDataStore.removeFromStoresAtDeletion(bookmark);
+            this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
+            this.feedStore.removeFromFeedBookmarks(bookmark);
+            if (this.isDetailsPage) {
+              this.navigateToHomePage();
+            }
+          }
+          this.deleteNotificationService.showSuccessNotification(
+            `Bookmark "${bookmark.name}" was deleted`
+          );
+        },
+        () => {
+          this.deleteNotificationService.showErrorNotification(
+            `Bookmark "${bookmark.name}" could not be deleted`
+          );
+        }
+      );
     }
   }
 
@@ -257,7 +288,6 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
   }
 
   shareBookmarkDialog(bookmark: Bookmark) {
-
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
@@ -268,7 +298,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
       bookmark: bookmark,
       userIsLoggedIn: this.userIsLoggedIn,
       userOwnsBookmark: this.bookmark.userId === this.userId,
-      userId: this.userId
+      userId: this.userId,
     };
 
     this.shareDialog.open(SocialShareDialogComponent, dialogConfig);
@@ -276,7 +306,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
 
   editBookmark(bookmark: Bookmark): void {
     const link = [`./my-bookmarks/${bookmark._id}/edit`];
-    this.router.navigate(link, {state: {bookmark: bookmark}});
+    this.router.navigate(link, { state: { bookmark: bookmark } });
   }
 
   copyToMine(bookmark: Bookmark): void {
@@ -286,13 +316,16 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
       dialogConfig.disableClose = true;
       dialogConfig.autoFocus = true;
       dialogConfig.data = {
-        message: 'You need to be logged in to copy it to your personal list'
+        message: 'You need to be logged in to copy it to your personal list',
       };
 
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      const dialogRef = this.loginDialog.open(
+        LoginRequiredDialogComponent,
+        dialogConfig
+      );
     } else {
       const link = [`./my-bookmarks/${bookmark._id}/copy-to-mine`];
-      this.router.navigate(link, {state: {bookmark: bookmark}});
+      this.router.navigate(link, { state: { bookmark: bookmark } });
     }
   }
 
@@ -306,7 +339,7 @@ export class BookmarkListElementComponent extends TagFollowingBaseComponent impl
     const copied = this.clipboard.copy(location);
     if (copied) {
       this.copyLinkButtonText = ' Copied';
-      setTimeout(() => this.copyLinkButtonText = '', 1300);
+      setTimeout(() => (this.copyLinkButtonText = ''), 1300);
     }
   }
 }

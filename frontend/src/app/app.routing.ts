@@ -9,11 +9,14 @@ const routes: Routes = [
   {
     path: 'new-entry',
     canActivate: [AuthGuard],
-    component: NewEntryComponent
+    component: NewEntryComponent,
   },
   {
     path: 'my-bookmarks',
-    loadChildren: () => import('app/my-bookmarks/my-bookmarks.module').then(m => m.MyBookmarksModule)
+    loadChildren: () =>
+      import('app/my-bookmarks/my-bookmarks.module').then(
+        (m) => m.MyBookmarksModule
+      ),
   },
   {
     path: 'personal',
@@ -21,23 +24,34 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
-    loadChildren: () => import('app/user/user-dashboard/user-dashboard.module').then(m => m.UserDashboardModule)
+    loadChildren: () =>
+      import('app/user/user-dashboard/user-dashboard.module').then(
+        (m) => m.UserDashboardModule
+      ),
   },
   {
     path: 'settings',
-    loadChildren: () => import('app/user/user-settings/user-settings.module').then(m => m.UserSettingsModule)
+    loadChildren: () =>
+      import('app/user/user-settings/user-settings.module').then(
+        (m) => m.UserSettingsModule
+      ),
   },
   {
     path: 'public',
-    loadChildren: () => import('app/public/public.module').then(m => m.PublicResourcesModule)
+    loadChildren: () =>
+      import('app/public/public.module').then((m) => m.PublicResourcesModule),
   },
   {
     path: 'my-notes',
-    loadChildren: () => import('app/my-notes/my-notes.module').then(m => m.MyNotesModule)
+    loadChildren: () =>
+      import('app/my-notes/my-notes.module').then((m) => m.MyNotesModule),
   },
   {
     path: 'my-snippets',
-    loadChildren: () => import('app/my-snippets/my-snippets.module').then(m => m.MySnippetsModule)
+    loadChildren: () =>
+      import('app/my-snippets/my-snippets.module').then(
+        (m) => m.MySnippetsModule
+      ),
   },
   {
     path: 'my-codelets',
@@ -45,29 +59,25 @@ const routes: Routes = [
   },
   {
     path: 'search',
-    loadChildren: () => import('app/search-results/search-results.module').then(m => m.SearchResultsModule)
+    loadChildren: () =>
+      import('app/search-results/search-results.module').then(
+        (m) => m.SearchResultsModule
+      ),
   },
   {
     path: '',
     redirectTo: 'public',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
-  {path: '404-snippet', component: SnippetNotFoundComponent},
-  {path: '**', component: PageNotFoundComponent}
+  { path: '404-snippet', component: SnippetNotFoundComponent },
+  { path: '**', component: PageNotFoundComponent },
 ];
-
 
 /**
  * See App routing @https://angular.io/docs/ts/latest/guide/ngmodule.html
  */
 @NgModule({
-  imports: [
-    RouterModule.forRoot(
-      routes
-    )
-  ],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
-
+export class AppRoutingModule {}

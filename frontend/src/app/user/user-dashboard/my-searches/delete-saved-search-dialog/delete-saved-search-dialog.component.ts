@@ -5,10 +5,9 @@ import { UsedTag } from '../../../../core/model/used-tag';
 @Component({
   selector: 'app-delete-bookmarks-by-tag-dialog',
   templateUrl: './delete-saved-search-dialog.component.html',
-  styleUrls: ['./delete-saved-search-dialog.component.scss']
+  styleUrls: ['./delete-saved-search-dialog.component.scss'],
 })
 export class DeleteSavedSearchDialogComponent implements OnInit {
-
   savedSearchText: string;
   searchDomain: string;
 
@@ -20,8 +19,7 @@ export class DeleteSavedSearchDialogComponent implements OnInit {
     this.searchDomain = data.searchDomain;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   delete() {
     this.dialogRef.close('DELETE_CONFIRMED');
@@ -30,5 +28,4 @@ export class DeleteSavedSearchDialogComponent implements OnInit {
   close() {
     this.dialogRef.close('DELETE_CANCELED');
   }
-
 }

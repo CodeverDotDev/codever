@@ -1,4 +1,4 @@
-import {Bookmark} from './bookmark';
+import { Bookmark } from './bookmark';
 
 export class Tag {
   name: string;
@@ -6,10 +6,7 @@ export class Tag {
   userId: String;
   shared: boolean;
 
-  constructor (
-    name: string,
-    bookmarks: Bookmark[]
-  ) {
+  constructor(name: string, bookmarks: Bookmark[]) {
     this.name = name;
     this.bookmarks = bookmarks;
   }

@@ -8,9 +8,8 @@ describe('FindElsewhereComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FindElsewhereComponent ]
-    })
-    .compileComponents();
+      declarations: [FindElsewhereComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

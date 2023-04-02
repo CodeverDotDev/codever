@@ -25,15 +25,11 @@ import { ExtensionsPageComponent } from './extensions/extensions-page.component'
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
-import {
-  ShareableBookmarkDetailsComponent
-} from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
-import {
-  ShareableSnippetDetailsComponent
-} from './snippets/shareable-snippet-details/shareable-snippet-details.component';
+import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
+import { ShareableSnippetDetailsComponent } from './snippets/shareable-snippet-details/shareable-snippet-details.component';
 
 @NgModule({
-  declarations : [
+  declarations: [
     AboutComponent,
     RegisterComponent,
     ExtensionsPageComponent,
@@ -48,7 +44,7 @@ import {
     PublicBookmarkDetailsComponent,
     SnippetTaggedComponent,
     ShareableBookmarkDetailsComponent,
-    ShareableSnippetDetailsComponent
+    ShareableSnippetDetailsComponent,
   ],
   imports: [
     SharedModule,
@@ -56,7 +52,7 @@ import {
     MatTabsModule,
     MatAutocompleteModule,
     MatSelectModule,
-    MySnippetsModule
+    MySnippetsModule,
   ],
   providers: [
     PublicBookmarksService,
@@ -65,7 +61,7 @@ import {
     UserPublicService,
     BookmarksTaggedService,
     SnippetTagService,
-    FeedbackService
-  ]
+    FeedbackService,
+  ],
 })
 export class PublicResourcesModule {}

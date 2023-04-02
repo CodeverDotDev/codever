@@ -15,27 +15,26 @@ const myBookmarksRoutes: Routes = [
     children: [
       {
         path: 'new',
-        component: CreatePersonalBookmarkComponent
+        component: CreatePersonalBookmarkComponent,
       },
       {
         path: ':id/copy-to-mine',
-        component: CopyToMineBookmarkComponent
+        component: CopyToMineBookmarkComponent,
       },
       {
         path: ':id/details',
-        component: BookmarkDetailsComponent
+        component: BookmarkDetailsComponent,
       },
       {
         path: ':id/edit',
-        component: UpdatePersonalBookmarkComponent
-      }
-    ]
-  }
+        component: UpdatePersonalBookmarkComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(myBookmarksRoutes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class MyBookmarksRoutingModule {
-}
+export class MyBookmarksRoutingModule {}

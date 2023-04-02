@@ -6,13 +6,13 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'fb-share',
-  template: `
-    <div class="fb-share-button"
-         [attr.data-href]="url"
-         data-layout="button_count"
-         data-size="large"
-         data-share="true">
-    </div>`
+  template: ` <div
+    class="fb-share-button"
+    [attr.data-href]="url"
+    data-layout="button_count"
+    data-size="large"
+    data-share="true"
+  ></div>`,
 })
 export class FbShareComponent implements AfterViewInit {
   @Input() url = location.href;
@@ -25,7 +25,7 @@ export class FbShareComponent implements AfterViewInit {
           appId: '1092807280906923', // bookmarks.dev
           autoLogAppEvents: true,
           xfbml: true,
-          version: 'v3.0'
+          version: 'v3.0',
         });
       };
     }

@@ -4,12 +4,10 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-howto-bookmarklets',
   templateUrl: './how-to-bookmarklet.component.html',
-  styleUrls: ['./how-to-bookmarklet.component.scss']
+  styleUrls: ['./how-to-bookmarklet.component.scss'],
 })
 export class HowToBookmarkletComponent implements OnInit {
-
   environment = environment;
 
   ngOnInit() {}
-
 }

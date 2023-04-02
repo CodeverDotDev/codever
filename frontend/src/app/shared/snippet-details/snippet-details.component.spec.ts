@@ -8,9 +8,8 @@ describe('CodeletDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SnippetDetailsComponent ]
-    })
-    .compileComponents();
+      declarations: [SnippetDetailsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

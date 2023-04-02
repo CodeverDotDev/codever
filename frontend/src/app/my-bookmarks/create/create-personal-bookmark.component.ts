@@ -5,10 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-new-personal-bookmark-form',
   templateUrl: './create-personal-bookmark.component.html',
-  styleUrls: ['./create-personal-bookmark.component.scss']
+  styleUrls: ['./create-personal-bookmark.component.scss'],
 })
 export class CreatePersonalBookmarkComponent implements OnInit {
-
   url; // value of "url" query parameter if present
   popup; // if present will go popup to the submitted url
   popupExt; // set from the popup of the extension (firefox currently)}
@@ -28,7 +27,4 @@ export class CreatePersonalBookmarkComponent implements OnInit {
     this.popup = this.route.snapshot.queryParamMap.get('popup');
     this.popupExt = this.route.snapshot.queryParamMap.get('popupExt');
   }
-
 }
-
-

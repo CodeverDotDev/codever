@@ -6,7 +6,6 @@ import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class PublicBookmarksStore {
-
   private _publicBookmarks: BehaviorSubject<Bookmark[]>;
   loadedPage: number;
   storeHasBeenFilled = false;
@@ -19,13 +18,14 @@ export class PublicBookmarksStore {
    * The initial data is loaded either when the home page is requested (directly or via search parameters)
    */
   private loadDataFromBackend(page: number) {
-    this.publicBookmarksService.getRecentPublicBookmarks(page, environment.PAGINATION_PAGE_SIZE)
+    this.publicBookmarksService
+      .getRecentPublicBookmarks(page, environment.PAGINATION_PAGE_SIZE)
       .subscribe(
-        bookmarks => {
+        (bookmarks) => {
           this._publicBookmarks.next(bookmarks);
           this.loadedPage = page;
         },
-        err => console.log('Error retrieving bookmarks')
+        (err) => console.log('Error retrieving bookmarks')
       );
   }
 
@@ -49,11 +49,12 @@ export class PublicBookmarksStore {
     }
   }
 
-
   removeBookmarkFromPublicStore(deleted: Bookmark): void {
     if (this._publicBookmarks) {
       const bookmarks: Bookmark[] = this._publicBookmarks.getValue();
-      const index = bookmarks.findIndex((bookmark) => bookmark._id === deleted._id);
+      const index = bookmarks.findIndex(
+        (bookmark) => bookmark._id === deleted._id
+      );
       bookmarks.splice(index, 1);
 
       this._publicBookmarks.next(bookmarks);
@@ -63,12 +64,12 @@ export class PublicBookmarksStore {
   updateBookmarkInPublicStore(updated: Bookmark): void {
     if (this._publicBookmarks) {
       const bookmarks = this._publicBookmarks.getValue();
-      const index = bookmarks.findIndex((bookmark: Bookmark) => bookmark._id === updated._id);
+      const index = bookmarks.findIndex(
+        (bookmark: Bookmark) => bookmark._id === updated._id
+      );
       bookmarks.splice(index, 1, updated);
 
       this._publicBookmarks.next(bookmarks);
     }
   }
-
 }
-

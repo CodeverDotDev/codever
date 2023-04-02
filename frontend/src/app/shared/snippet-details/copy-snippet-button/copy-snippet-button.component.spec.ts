@@ -8,9 +8,8 @@ describe('CopySnippetButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CopySnippetButtonComponent ]
-    })
-    .compileComponents();
+      declarations: [CopySnippetButtonComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

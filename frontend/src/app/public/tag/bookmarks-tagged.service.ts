@@ -9,20 +9,24 @@ import { shareReplay } from 'rxjs/operators';
 
 @Injectable()
 export class BookmarksTaggedService {
-
-  private bookmarksUrl = '';  // URL to web api
+  private bookmarksUrl = ''; // URL to web api
 
   constructor(private httpClient: HttpClient) {
     this.bookmarksUrl = environment.API_URL + '/public/bookmarks/';
   }
 
-  getBookmarksForTag(tag: string, orderBy: string, page: number, limit: number): Observable<Bookmark[]> {
+  getBookmarksForTag(
+    tag: string,
+    orderBy: string,
+    page: number,
+    limit: number
+  ): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('orderBy', orderBy)
       .set('page', page.toString())
       .set('limit', limit.toString());
-    return this.httpClient.get<Bookmark[]>(`${this.bookmarksUrl}tagged/${tag}`, {params: params})
+    return this.httpClient
+      .get<Bookmark[]>(`${this.bookmarksUrl}tagged/${tag}`, { params: params })
       .pipe(shareReplay(1));
-  };
-
+  }
 }

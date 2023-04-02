@@ -9,16 +9,19 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-public-snippets',
   templateUrl: './public-snippets.component.html',
-  styleUrls: ['./public-snippets.component.css']
+  styleUrls: ['./public-snippets.component.css'],
 })
 export class PublicSnippetsComponent implements OnInit {
-
   snippets$: Observable<Snippet[]>;
 
   currentPage = 1;
   callerPaginationPublicSnippets = 'public-snippets';
 
-  constructor(private publicSnippetsService: PublicSnippetsService, private route: ActivatedRoute, private paginationNotificationService: PaginationNotificationService) { }
+  constructor(
+    private publicSnippetsService: PublicSnippetsService,
+    private route: ActivatedRoute,
+    private paginationNotificationService: PaginationNotificationService
+  ) {}
 
   ngOnInit(): void {
     const page = this.route.snapshot.queryParamMap.get('page');
@@ -26,13 +29,20 @@ export class PublicSnippetsComponent implements OnInit {
       this.currentPage = parseInt(page, 0);
     }
 
-    this.snippets$ = this.publicSnippetsService.getRecentPublicSnippets(this.currentPage, environment.PAGINATION_PAGE_SIZE);
+    this.snippets$ = this.publicSnippetsService.getRecentPublicSnippets(
+      this.currentPage,
+      environment.PAGINATION_PAGE_SIZE
+    );
 
-    this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
-      if (paginationAction.caller === this.callerPaginationPublicSnippets) {
-        this.snippets$ = this.publicSnippetsService.getRecentPublicSnippets(paginationAction.page, environment.PAGINATION_PAGE_SIZE);
+    this.paginationNotificationService.pageNavigationClicked$.subscribe(
+      (paginationAction) => {
+        if (paginationAction.caller === this.callerPaginationPublicSnippets) {
+          this.snippets$ = this.publicSnippetsService.getRecentPublicSnippets(
+            paginationAction.page,
+            environment.PAGINATION_PAGE_SIZE
+          );
+        }
       }
-    });
+    );
   }
-
 }

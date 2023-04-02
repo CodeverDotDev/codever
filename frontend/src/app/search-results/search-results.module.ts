@@ -10,8 +10,8 @@ import { FindElsewhereComponent } from './find-elsewhere/find-elsewhere.componen
 const searchResultsRoutes: Routes = [
   {
     path: '',
-    component: SearchResultsPageComponent
-  }
+    component: SearchResultsPageComponent,
+  },
 ];
 
 @NgModule({
@@ -22,6 +22,6 @@ const searchResultsRoutes: Routes = [
     MySnippetsModule,
     SharedModule,
     MatTabsModule,
-  ]
+  ],
 })
-export class SearchResultsModule { }
+export class SearchResultsModule {}

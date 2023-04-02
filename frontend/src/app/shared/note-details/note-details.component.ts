@@ -8,10 +8,9 @@ import { PersonalNotesService } from '../../core/personal-notes.service';
 
 @Component({
   selector: 'app-note-details',
-  templateUrl: './note-details.component.html'
+  templateUrl: './note-details.component.html',
 })
 export class NoteDetailsComponent implements OnInit {
-
   @Input()
   note$: Observable<Note>;
 
@@ -28,8 +27,8 @@ export class NoteDetailsComponent implements OnInit {
     private personalNotesService: PersonalNotesService,
     private userInfoStore: UserInfoStore,
     private route: ActivatedRoute,
-    private router: Router) {
-  }
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.userId$ = this.userInfoStore.getUserId$();
@@ -38,18 +37,20 @@ export class NoteDetailsComponent implements OnInit {
         this.note$ = of(window.history.state.snippet);
       } else {
         this.note$ = this.userId$.pipe(
-          switchMap(userId => {
+          switchMap((userId) => {
             this.noteId = this.route.snapshot.paramMap.get('id');
-            return this.personalNotesService.getPersonalNoteById(userId, this.noteId);
+            return this.personalNotesService.getPersonalNoteById(
+              userId,
+              this.noteId
+            );
           })
         );
       }
     }
-
   }
 
   editNote(note: Note) {
     const link = [`/my-notes/${note._id}/edit`];
-    this.router.navigate(link, {state: {note: note}});
+    this.router.navigate(link, { state: { note: note } });
   }
 }

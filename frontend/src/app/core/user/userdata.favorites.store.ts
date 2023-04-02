@@ -12,13 +12,12 @@ import { UserDataStore } from './userdata.store';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 /*
  * Not in use anymore - in case community decides to reactivate favorites will be needed, till then temporary deprecated
  */
 export class UserDataFavoritesStore {
-
   private _favorites: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private favoriteBookmarksHaveBeenLoaded = false;
 
@@ -27,18 +26,19 @@ export class UserDataFavoritesStore {
 
   loadedPage: number;
 
-  constructor(private userService: UserDataService,
-              private userDataStore: UserDataStore,
-              private keycloakService: KeycloakService,
-              private userInfoStore: UserInfoStore,
-              private notifyStoresService: NotifyStoresService
+  constructor(
+    private userService: UserDataService,
+    private userDataStore: UserDataStore,
+    private keycloakService: KeycloakService,
+    private userInfoStore: UserInfoStore,
+    private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.keycloakService.isLoggedIn().then(isLoggedIn => {
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
-        this.userInfoStore. getUserInfoOidc$().subscribe(userInfo => {
+        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userId = userInfo.sub;
-          this.userDataStore.getUserData$().subscribe(userData => {
+          this.userDataStore.getUserData$().subscribe((userData) => {
             this.userData = userData;
           });
         });
@@ -51,13 +51,19 @@ export class UserDataFavoritesStore {
 
   getFavoriteBookmarks$(page: number): Observable<Bookmark[]> {
     if (this.loadedPage !== page || !this.favoriteBookmarksHaveBeenLoaded) {
-      this.userService.getFavoriteBookmarks(this.userId, page, environment.PAGINATION_PAGE_SIZE).subscribe(data => {
-        if (!this.favoriteBookmarksHaveBeenLoaded) {
-          this.favoriteBookmarksHaveBeenLoaded = true;
-        }
-        this.loadedPage = page;
-        this._favorites.next(data);
-      });
+      this.userService
+        .getFavoriteBookmarks(
+          this.userId,
+          page,
+          environment.PAGINATION_PAGE_SIZE
+        )
+        .subscribe((data) => {
+          if (!this.favoriteBookmarksHaveBeenLoaded) {
+            this.favoriteBookmarksHaveBeenLoaded = true;
+          }
+          this.loadedPage = page;
+          this._favorites.next(data);
+        });
     }
     return this._favorites.asObservable();
   }
@@ -75,7 +81,9 @@ export class UserDataFavoritesStore {
   }
 
   removeFromFavoriteBookmarks(bookmark: Bookmark) {
-    this.userData.favorites = this.userData.favorites.filter(x => x !== bookmark._id);
+    this.userData.favorites = this.userData.favorites.filter(
+      (x) => x !== bookmark._id
+    );
     this.userDataStore.updateUserData$(this.userData).subscribe(() => {
       this.publishedFavoritesAfterDeletion(bookmark);
     });
@@ -84,13 +92,13 @@ export class UserDataFavoritesStore {
   private publishedFavoritesAfterDeletion(bookmark: Bookmark) {
     if (this.favoriteBookmarksHaveBeenLoaded) {
       const favoritesBookmarks: Bookmark[] = this._favorites.getValue();
-      const index = favoritesBookmarks.findIndex((favoriteBookmark) => bookmark._id === favoriteBookmark._id);
+      const index = favoritesBookmarks.findIndex(
+        (favoriteBookmark) => bookmark._id === favoriteBookmark._id
+      );
       if (index !== -1) {
         favoritesBookmarks.splice(index, 1);
         this._favorites.next(favoritesBookmarks);
       }
     }
   }
-
 }
-
