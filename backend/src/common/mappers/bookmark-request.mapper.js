@@ -6,7 +6,9 @@ const Bookmark = require('../../model/bookmark');
 
 module.exports = {
   toBookmark: function (req) {
-    const descriptionHtml = req.body.descriptionHtml ? req.body.descriptionHtml : converter.makeHtml(req.body.description);
+    const descriptionHtml = req.body.descriptionHtml
+      ? req.body.descriptionHtml
+      : converter.makeHtml(req.body.description);
     const youtubeVideoId = req.body.youtubeVideoId;
     const stackoverflowQuestionId = req.body.stackoverflowQuestionId;
     const bookmark = new Bookmark({
@@ -25,10 +27,11 @@ module.exports = {
       lastAccessedAt: req.body.lastAccessedAt,
       likeCount: req.body.likeCount || 0,
       youtubeVideoId: youtubeVideoId ? youtubeVideoId : null,
-      stackoverflowQuestionId: stackoverflowQuestionId ? stackoverflowQuestionId : null
+      stackoverflowQuestionId: stackoverflowQuestionId
+        ? stackoverflowQuestionId
+        : null,
     });
 
     return bookmark;
-  }
-
-}
+  },
+};

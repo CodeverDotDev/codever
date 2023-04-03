@@ -7,7 +7,7 @@ class NotFoundError extends Error {
       Error.captureStackTrace(this, NotFoundError);
     }
 
-    this.name = 'NotFoundError'
+    this.name = 'NotFoundError';
   }
 }
 

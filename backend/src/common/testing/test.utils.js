@@ -1,8 +1,8 @@
-const superagent = require("superagent");
-const jwt = require("jsonwebtoken");
+const superagent = require('superagent');
+const jwt = require('jsonwebtoken');
 
 const common = require('../config');
-const HttpStatus = require("http-status-codes");
+const HttpStatus = require('http-status-codes');
 const config = common.config();
 
 const getAccessToken = async () => {
@@ -18,31 +18,29 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
+const getBearerToken = (accessToken) => `Bearer ${accessToken}`;
 
-const getBearerToken = accessToken => `Bearer ${accessToken}`;
-
-const getTestUserId = accessToken => {
+const getTestUserId = (accessToken) => {
   const decoded = jwt.decode(accessToken);
   const testUserId = decoded.sub;
 
   return testUserId;
 };
 
-const getBookmarkId = httpResponse => {
-  if ( httpResponse.statusCode !== HttpStatus.CREATED ) {
-    throw new Error("Sample bookmark not properly created");
+const getBookmarkId = (httpResponse) => {
+  if (httpResponse.statusCode !== HttpStatus.CREATED) {
+    throw new Error('Sample bookmark not properly created');
   }
-  const locationHeaderValue = httpResponse.header['location']
+  const locationHeaderValue = httpResponse.header['location'];
 
   //set the id of the bookmarkexample now that it is created
   const lastSlashIndex = locationHeaderValue.lastIndexOf('/');
   return locationHeaderValue.substring(lastSlashIndex + 1);
-}
-
+};
 
 module.exports = {
   getTestUserId: getTestUserId,
   getAccessToken: getAccessToken,
   getBearerToken: getBearerToken,
   getBookmarkId: getBookmarkId,
-}
+};

@@ -5,9 +5,7 @@ const HttpStatus = require('http-status-codes/index');
 
 router.post('/', async (request, response) => {
   await FeedbackService.createFeedback(request.body);
-  response
-    .status(HttpStatus.CREATED)
-    .send();
+  response.status(HttpStatus.CREATED).send();
 });
 
 module.exports = router;

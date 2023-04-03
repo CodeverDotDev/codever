@@ -2,24 +2,23 @@ const app = require('../../app');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes/index');
 
-
-const common = require('../../common/config');
-
-
-const {toInclude} = require('jest-extended');
-const {getAccessToken, getBearerToken, getTestUserId} = require("../../common/testing/test.utils");
-expect.extend({toInclude});
+const { toInclude } = require('jest-extended');
+const {
+  getAccessToken,
+  getBearerToken,
+  getTestUserId,
+} = require('../../common/testing/test.utils');
+expect.extend({ toInclude });
 
 /**
  * Order of tests is important (example user will be first created/updated to eventually be deleted)
  */
-describe('User Data tests',  () => {
-
+describe('User Data tests', () => {
   let bearerToken;
   let testUserId;
   const baseApiUrlUnderTest = '/api/personal/users';
 
-  const starredBookmarkId = "bookmarkid-3443";
+  const starredBookmarkId = 'bookmarkid-3443';
 
   const searchTextExample = 'nodejs rocks';
   let userExample;
@@ -31,22 +30,21 @@ describe('User Data tests',  () => {
       testUserId = getTestUserId(accessToken);
 
       userExample = {
-        "userId": testUserId,
-        "searches": [
+        userId: testUserId,
+        searches: [
           {
-            "text": searchTextExample,
-            "lastAccessedAt": "2019-01-28T05:47:47.652Z"
-          }
+            text: searchTextExample,
+            lastAccessedAt: '2019-01-28T05:47:47.652Z',
+          },
         ],
-        "readLater": [],
-        "likes": [],
-        "watchedTags": [],
-        "pinned": [],
-        "history": []
-      }
-
+        readLater: [],
+        likes: [],
+        watchedTags: [],
+        pinned: [],
+        history: [],
+      };
     } catch (err) {
-      console.error('Error when getting user bearer token', err)
+      console.error('Error when getting user bearer token', err);
     }
   });
 
@@ -75,7 +73,9 @@ describe('User Data tests',  () => {
       .set('Authorization', bearerToken);
 
     expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-    expect(response.body.validationErrors).toInclude('Missing or invalid userId in provided user data');
+    expect(response.body.validationErrors).toInclude(
+      'Missing or invalid userId in provided user data'
+    );
   });
 
   it('should fail trying to UPDATE with invalid user Id in the body', async function () {
@@ -87,7 +87,9 @@ describe('User Data tests',  () => {
       .set('Authorization', bearerToken);
 
     expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-    expect(response.body.validationErrors).toInclude('Missing or invalid userId in provided user data');
+    expect(response.body.validationErrors).toInclude(
+      'Missing or invalid userId in provided user data'
+    );
   });
 
   it('should successfully UPDATE example user without searches', async function () {
@@ -101,12 +103,15 @@ describe('User Data tests',  () => {
 
     expect(response.statusCode).toEqual(HttpStatus.OK);
     expect(response.body.userId).toEqual(testUserId);
-    expect(response.body.searches.length).toEqual(0);
+    expect(response.body.searches).toHaveLength(0);
   });
 
   it('should fail trying to UPDATE example user with invalid searches', async function () {
     let userWithInvalidSearches = JSON.parse(JSON.stringify(userExample));
-    userWithInvalidSearches.searches.push({"text": "", "lastAccessedAt": "2019-01-28T05:47:47.652Z"});
+    userWithInvalidSearches.searches.push({
+      text: '',
+      lastAccessedAt: '2019-01-28T05:47:47.652Z',
+    });
 
     const response = await request(app)
       .put(`${baseApiUrlUnderTest}/${testUserId}`)
@@ -114,8 +119,9 @@ describe('User Data tests',  () => {
       .send(userWithInvalidSearches);
 
     expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-    expect(response.body.validationErrors).toInclude('Searches are not valid - search text is required');
-
+    expect(response.body.validationErrors).toInclude(
+      'Searches are not valid - search text is required'
+    );
   });
 
   it('should successfully UPDATE example user with searches', async function () {
@@ -155,7 +161,6 @@ describe('User Data tests',  () => {
     expect(response.body.searches).toHaveLength(1);
     expect(response.body.searches[0].text).toEqual(searchTextExample);
     expect(response.body.likes[0]).toEqual(starredBookmarkId);
-
   });
 
   it('should succeed to DELETE the new created user', async function () {
@@ -166,7 +171,6 @@ describe('User Data tests',  () => {
     expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
   });
 
-
   it('should fail trying to DELETE the already deleted user', async function () {
     const response = await request(app)
       .delete(`${baseApiUrlUnderTest}/${testUserId}`)
@@ -174,6 +178,4 @@ describe('User Data tests',  () => {
 
     expect(response.statusCode).toEqual(HttpStatus.NOT_FOUND);
   });
-
-
 });

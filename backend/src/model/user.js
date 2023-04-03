@@ -1,35 +1,38 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const searchSchema = new Schema({
+const searchSchema = new Schema(
+  {
     text: String,
     lastAccessedAt: Date,
     searchDomain: String,
     count: Number,
-    saved: Boolean
+    saved: Boolean,
   },
   {
-    timestamps: true
-  });
+    timestamps: true,
+  }
+);
 
 const profileSchema = new Schema({
-  _id: {type:Schema.Types.ObjectId, select: false},
+  _id: { type: Schema.Types.ObjectId, select: false },
   imageUrl: String,
   displayName: String,
   summary: String,
   websiteLink: String,
   twitterLink: String,
   githubLink: String,
-  linkedinLink: String
+  linkedinLink: String,
 });
 
 const followingSchema = new Schema({
-  _id: {type:Schema.Types.ObjectId, select: false},
+  _id: { type: Schema.Types.ObjectId, select: false },
   users: [String],
-  tags: [String]
+  tags: [String],
 });
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     userId: String, //global userId in the bookmarks context (currently is the Keycloak Id)
     profile: profileSchema,
     searches: [searchSchema],
@@ -42,14 +45,15 @@ const userSchema = new Schema({
     favorites: [String],
     history: [String],
     following: followingSchema,
-    followers: {type: [String], select: false},
+    followers: { type: [String], select: false },
     showAllPublicInFeed: Boolean,
     enableLocalStorage: Boolean,
     welcomeAck: Boolean,
-    __v: {type: Number, select: false}
+    __v: { type: Number, select: false },
   },
   {
-    timestamps: true
-  });
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model('User', userSchema);

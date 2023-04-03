@@ -3,8 +3,6 @@ const app = require('../../../app');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes/index');
 
-const constants = require('../../../common/constants');
-
 let bearerToken;
 
 let testUserId;
@@ -379,7 +377,7 @@ describe('Personal Bookmarks tests', () => {
 
       expect(response.statusCode).toEqual(HttpStatus.OK);
       const filteredBookmarks = response.body;
-      expect(filteredBookmarks.length).toEqual(0);
+      expect(filteredBookmarks).toHaveLength(0);
     });
 
 
@@ -406,7 +404,7 @@ describe('Personal Bookmarks tests', () => {
         .query({limit: 10});
       expect(response.statusCode).toEqual(HttpStatus.OK);
       const filteredBookmarks = response.body;
-      expect(filteredBookmarks.length).toEqual(1);
+      expect(filteredBookmarks).toHaveLength(1);
       const foundBookmark = filteredBookmarks[0];
       expect(foundBookmark.name).toEqual(bookmarkExample.name);
       expect(foundBookmark.userId).toEqual(testUserId);

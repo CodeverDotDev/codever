@@ -1,6 +1,7 @@
 ## Install graphviz
 
 On Mac:
+
 ```bash
 brew install graphviz
 ```

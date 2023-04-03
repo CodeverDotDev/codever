@@ -12,7 +12,9 @@ const PaginationQueryParamsHelper = require('../../common/pagination-query-param
  */
 router.get('/shared/:shareableId', async (request, response) => {
   const shareableId = request.params.shareableId;
-  const sharedSnippet = await PublicSnippetsService.getSnippetBySharableId(shareableId);
+  const sharedSnippet = await PublicSnippetsService.getSnippetBySharableId(
+    shareableId
+  );
 
   return response.json(sharedSnippet);
 });
@@ -24,24 +26,31 @@ router.get('/', async (request, response, next) => {
   const searchText = request.query.q;
   const searchInclude = request.query.include || 'all';
   const sort = request.query.sort;
-  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
 
   if (searchText) {
-    const snippets = await SnippetsSearchService.findPublicSnippets(searchText, page, limit, sort, searchInclude);
+    const snippets = await SnippetsSearchService.findPublicSnippets(
+      searchText,
+      page,
+      limit,
+      sort,
+      searchInclude
+    );
     response.send(snippets);
   } else {
-    next()
+    next();
   }
 });
-
 
 /**
  * When no filter send latest public bookmarks
  */
 router.get('/', async (request, response) => {
-
-  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const bookmarks = await PublicSnippetsService.getLatestPublicSnippets(page, limit);
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarks = await PublicSnippetsService.getLatestPublicSnippets(
+    page,
+    limit
+  );
 
   return response.send(bookmarks);
 });
@@ -49,19 +58,28 @@ router.get('/', async (request, response) => {
 /**
  * Get most used public tags for snippets
  */
-router.get('/tags', NodeCache.cacheMiddleware(1440), async (request, response) => {
+router.get(
+  '/tags',
+  NodeCache.cacheMiddleware(1440),
+  async (request, response) => {
+    const { limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+    const mostUsedPublicTagsForSnippets =
+      await PublicSnippetsService.getMostUsedPublicTagsForSnippets(limit);
 
-  const {limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const mostUsedPublicTagsForSnippets = await PublicSnippetsService.getMostUsedPublicTagsForSnippets(limit);
-
-  return response.send(mostUsedPublicTagsForSnippets);
-});
+    return response.send(mostUsedPublicTagsForSnippets);
+  }
+);
 
 router.get('/tagged/:tag', async (request, response) => {
   const orderBy = request.query.orderBy;
-  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
 
-  const snippets = await PublicSnippetsService.getPublicSnippetsForTag(request.params.tag, orderBy, page, limit);
+  const snippets = await PublicSnippetsService.getPublicSnippetsForTag(
+    request.params.tag,
+    orderBy,
+    page,
+    limit
+  );
 
   return response.send(snippets);
 });
@@ -72,9 +90,10 @@ router.get('/tagged/:tag', async (request, response) => {
  */
 
 router.get('/:id', async function (request, response) {
-  const bookmark = await PublicSnippetsService.getSnippetById(request.params.id);
+  const bookmark = await PublicSnippetsService.getSnippetById(
+    request.params.id
+  );
   response.send(bookmark);
 });
-
 
 module.exports = router;

@@ -1,8 +1,8 @@
-const ValidationError = require("../../../error/validation.error");
-const {OrderBy} = require("../constant/orderby.constant");
-const {SearchInclude} = require("../constant/searchInclude.constant");
-const {SpecialSearchTerm} = require("../constant/specialSearchTerm.constant");
-const {DocType} = require("../../constants");
+const ValidationError = require('../../../error/validation.error');
+const { OrderBy } = require('../constant/orderby.constant');
+const { SearchInclude } = require('../constant/searchInclude.constant');
+const { SpecialSearchTerm } = require('../constant/specialSearchTerm.constant');
+const { DocType } = require('../../constants');
 
 let splitSearchQuery = function (query) {
   const terms = [];
@@ -13,11 +13,11 @@ let splitSearchQuery = function (query) {
   let isInsideTerm = false;
   let isInsideTag = false;
 
-  for ( let i = 0; i < query.length; i++ ) {
+  for (let i = 0; i < query.length; i++) {
     const currentCharacter = query[i];
-    if ( currentCharacter === ' ' ) {
-      if ( !isInsideTag ) {
-        if ( !isInsideTerm ) {
+    if (currentCharacter === ' ') {
+      if (!isInsideTag) {
+        if (!isInsideTerm) {
           continue;
         } else {
           terms.push(term);
@@ -27,18 +27,18 @@ let splitSearchQuery = function (query) {
       } else {
         tag += ' ';
       }
-    } else if ( currentCharacter === '[' ) {
-      if ( !isInsideTag ) {
+    } else if (currentCharacter === '[') {
+      if (!isInsideTag) {
         isInsideTag = true;
       }
-    } else if ( currentCharacter === ']' ) {
-      if ( isInsideTag ) {
+    } else if (currentCharacter === ']') {
+      if (isInsideTag) {
         isInsideTag = false;
         tags.push(tag.trim());
         tag = '';
       }
     } else {
-      if ( isInsideTag ) {
+      if (isInsideTag) {
         tag += currentCharacter;
       } else {
         isInsideTerm = true;
@@ -47,47 +47,47 @@ let splitSearchQuery = function (query) {
     }
   }
 
-  if ( tag.length > 0 ) {
+  if (tag.length > 0) {
     tags.push(tag.trim());
   }
 
-  if ( term.length > 0 ) {
+  if (term.length > 0) {
     terms.push(term);
   }
 
   return {
     searchTerms: terms,
-    searchTags: tags
-  }
-}
-
+    searchTags: tags,
+  };
+};
 
 let extractFulltextAndSpecialSearchTerms = function (searchedTerms) {
-  let specialSearchFilters = {}
+  let specialSearchFilters = {};
   let fulltextSearchTerms = [];
-  for ( let i = 0; i < searchedTerms.length; i++ ) {
+  for (let i = 0; i < searchedTerms.length; i++) {
     const searchTerm = searchedTerms[i];
 
     const langParamIndex = searchTerm.startsWith(SpecialSearchTerm.language);
-    if ( langParamIndex > 0 ) {
+    if (langParamIndex > 0) {
       specialSearchFilters.lang = searchTerm.substring(5, searchTerm.length);
       continue;
     }
 
     const siteParamIndex = searchTerm.startsWith(SpecialSearchTerm.site);
-    if ( siteParamIndex > 0 ) {
+    if (siteParamIndex > 0) {
       specialSearchFilters.site = searchTerm.substring(5, searchTerm.length);
       continue;
     }
 
-    if ( searchTerm === SpecialSearchTerm.privateOnly ) {
+    if (searchTerm === SpecialSearchTerm.privateOnly) {
       specialSearchFilters.privateOnly = true;
       continue;
     }
 
-    if ( searchTerm.startsWith(SpecialSearchTerm.user) ) {
-      const regex = /user:\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
-      if ( searchedTerms[i].match(regex) ) {
+    if (searchTerm.startsWith(SpecialSearchTerm.user)) {
+      const regex =
+        /user:\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
+      if (searchedTerms[i].match(regex)) {
         specialSearchFilters.userId = searchedTerms[i].split(':')[1];
         continue;
       }
@@ -98,9 +98,9 @@ let extractFulltextAndSpecialSearchTerms = function (searchedTerms) {
 
   return {
     specialSearchTerms: specialSearchFilters,
-    fulltextSearchTerms: fulltextSearchTerms
-  }
-}
+    fulltextSearchTerms: fulltextSearchTerms,
+  };
+};
 
 /*
   The default search in Mongo uses the OR operator, here
@@ -108,10 +108,12 @@ let extractFulltextAndSpecialSearchTerms = function (searchedTerms) {
  */
 let generateFullSearchText = function (fulltextSearchTerms) {
   let termsQuery = '';
-  fulltextSearchTerms.forEach(searchTerm => {
-    if ( searchTerm.startsWith('-') ) { // "-" means it must not contain this searchTerm
+  fulltextSearchTerms.forEach((searchTerm) => {
+    if (searchTerm.startsWith('-')) {
+      // "-" means it must not contain this searchTerm
       termsQuery += ' ' + searchTerm;
-    } else { //wrap it in quotes to make it a default AND in search
+    } else {
+      //wrap it in quotes to make it a default AND in search
       termsQuery += ' "' + searchTerm.substring(0, searchTerm.length) + '"';
     }
   });
@@ -119,26 +121,30 @@ let generateFullSearchText = function (fulltextSearchTerms) {
   return termsQuery.trim();
 };
 
-let setFulltextSearchTermsFilter = function (fulltextSearchTerms, filter, searchInclude) {
-  let newFilter = {...filter};
-  if ( fulltextSearchTerms.length > 0 ) {
+let setFulltextSearchTermsFilter = function (
+  fulltextSearchTerms,
+  filter,
+  searchInclude
+) {
+  let newFilter = { ...filter };
+  if (fulltextSearchTerms.length > 0) {
     let searchText = '';
-    if ( searchInclude === SearchInclude.ANY ) {
-      searchText = {$search: fulltextSearchTerms.join(' ')}
+    if (searchInclude === SearchInclude.ANY) {
+      searchText = { $search: fulltextSearchTerms.join(' ') };
     } else {
-      searchText = {$search: generateFullSearchText(fulltextSearchTerms)};
+      searchText = { $search: generateFullSearchText(fulltextSearchTerms) };
     }
 
     newFilter.$text = searchText;
   }
   return newFilter;
-}
+};
 
 let setTagsToFilter = function (searchTags, filter) {
-  if ( searchTags.length > 0 ) {
+  if (searchTags.length > 0) {
     return {
       ...filter,
-      tags: {$all: searchTags}
+      tags: { $all: searchTags },
     };
   } else {
     return filter;
@@ -146,45 +152,56 @@ let setTagsToFilter = function (searchTags, filter) {
 };
 
 let setPublicOrPersonalFilter = function (isPublic, filter, userId) {
-  if ( isPublic ) {
+  if (isPublic) {
     return {
       ...filter,
-      public: true
-    }
-  } else if ( userId ) {
+      public: true,
+    };
+  } else if (userId) {
     return {
       ...filter,
-      userId: userId
-    }
+      userId: userId,
+    };
   } else {
-    throw new ValidationError('Resource must be either public or personal (public OR userId must be provided)');
+    throw new ValidationError(
+      'Resource must be either public or personal (public OR userId must be provided)'
+    );
   }
 };
 
-
-let setSpecialSearchTermsFilter = function (docType, isPublic, userId, specialSearchFilters, filter) {
-  let newFilter = {...filter};
+let setSpecialSearchTermsFilter = function (
+  docType,
+  isPublic,
+  userId,
+  specialSearchFilters,
+  filter
+) {
+  let newFilter = { ...filter };
 
   //one is not entitled to see private bookmarks of another user
-  if ( specialSearchFilters.userId && (isPublic || specialSearchFilters.userId === userId) ) {
+  if (
+    specialSearchFilters.userId &&
+    (isPublic || specialSearchFilters.userId === userId)
+  ) {
     newFilter.userId = specialSearchFilters.userId;
   }
 
-  if ( specialSearchFilters.privateOnly && !isPublic ) { //
+  if (specialSearchFilters.privateOnly && !isPublic) {
+    //
     newFilter.public = false;
   }
 
-  if ( specialSearchFilters.lang ) {
-    newFilter.language = specialSearchFilters.lang
+  if (specialSearchFilters.lang) {
+    newFilter.language = specialSearchFilters.lang;
   }
 
-  if ( specialSearchFilters.site ) {
-    if(docType === DocType.BOOKMARK) {
+  if (specialSearchFilters.site) {
+    if (docType === DocType.BOOKMARK) {
       newFilter.location = new RegExp(specialSearchFilters.site, 'i');
     } else if (docType === DocType.SNIPPET) {
-      newFilter.sourceUrl = new RegExp(specialSearchFilters.site, 'i');//TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
+      newFilter.sourceUrl = new RegExp(specialSearchFilters.site, 'i'); //TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
     } else {
-      throw new Error(`${docType} is not supported as document type`)
+      throw new Error(`${docType} is not supported as document type`);
     }
   }
 
@@ -193,32 +210,50 @@ let setSpecialSearchTermsFilter = function (docType, isPublic, userId, specialSe
 
 function getSortByObject(sort, fulltextSearchTerms) {
   let sortBy = {};
-  if ( sort === OrderBy.NEWEST || fulltextSearchTerms.length === 0 ) { //now "fulltext search terms" it defaults to "newest" sorting
+  if (sort === OrderBy.NEWEST || fulltextSearchTerms.length === 0) {
+    //now "fulltext search terms" it defaults to "newest" sorting
     sortBy.createdAt = -1;
   } else {
-    sortBy.score = {$meta: OrderBy.TEXT_SCORE};
+    sortBy.score = { $meta: OrderBy.TEXT_SCORE };
   }
   return Object.freeze(sortBy);
 }
 
-const generateSearchFilterAndSortBy = (docType, isPublic, userId, query, searchInclude, sort) => {
-  const {searchTerms, searchTags} = splitSearchQuery(query);
+const generateSearchFilterAndSortBy = (
+  docType,
+  isPublic,
+  userId,
+  query,
+  searchInclude,
+  sort
+) => {
+  const { searchTerms, searchTags } = splitSearchQuery(query);
 
-  const {specialSearchTerms, fulltextSearchTerms} = extractFulltextAndSpecialSearchTerms(searchTerms);
+  const { specialSearchTerms, fulltextSearchTerms } =
+    extractFulltextAndSpecialSearchTerms(searchTerms);
 
-  let filter = {}
+  let filter = {};
   filter = setPublicOrPersonalFilter(isPublic, filter, userId);
   filter = setTagsToFilter(searchTags, filter);
-  filter = setFulltextSearchTermsFilter(fulltextSearchTerms, filter, searchInclude);
-  filter = setSpecialSearchTermsFilter(docType, isPublic, userId, specialSearchTerms, filter);
+  filter = setFulltextSearchTermsFilter(
+    fulltextSearchTerms,
+    filter,
+    searchInclude
+  );
+  filter = setSpecialSearchTermsFilter(
+    docType,
+    isPublic,
+    userId,
+    specialSearchTerms,
+    filter
+  );
   const sortBy = getSortByObject(sort, fulltextSearchTerms);
 
   return {
     filter: filter,
-    sortBy: sortBy
-  }
-
-}
+    sortBy: sortBy,
+  };
+};
 
 module.exports = {
   splitSearchQuery: splitSearchQuery,
@@ -229,5 +264,5 @@ module.exports = {
   setTagsToFilter: setTagsToFilter,
   setSpecialSearchTermsFilter: setSpecialSearchTermsFilter,
   getSortByObject: getSortByObject,
-  generateSearchFilterAndSortBy: generateSearchFilterAndSortBy
-}
+  generateSearchFilterAndSortBy: generateSearchFilterAndSortBy,
+};

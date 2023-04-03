@@ -14,13 +14,19 @@ router.get('/', async (request, response, next) => {
   const searchText = request.query.q;
   const searchInclude = request.query.include;
   const sort = request.query.sort;
-  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
 
-  if ( searchText ) {
-    const bookmarks = await bookmarksSearchService.findPublicBookmarks(searchText, page, limit, searchInclude, sort);
+  if (searchText) {
+    const bookmarks = await bookmarksSearchService.findPublicBookmarks(
+      searchText,
+      page,
+      limit,
+      searchInclude,
+      sort
+    );
     response.send(bookmarks);
   } else {
-    next()
+    next();
   }
 });
 
@@ -29,21 +35,24 @@ router.get('/', async (request, response, next) => {
  */
 router.get('/', async (request, response, next) => {
   const location = request.query.location;
-  if ( location ) {
-    const bookmarksForLocation = await PublicBookmarksService.getPublicBookmarkByLocation(location);
+  if (location) {
+    const bookmarksForLocation =
+      await PublicBookmarksService.getPublicBookmarkByLocation(location);
 
     return response.send(bookmarksForLocation);
   } else {
-    next()
+    next();
   }
 });
 
 /**
  * Get Bookmark by shareableId
  */
-router.get('/shared/:shareableId', async (request, response, next) => {
+router.get('/shared/:shareableId', async (request, response) => {
   const shareableId = request.params.shareableId;
-  const sharedBookmark = await PublicBookmarksService.getBookmarkBySharableId(shareableId);
+  const sharedBookmark = await PublicBookmarksService.getBookmarkBySharableId(
+    shareableId
+  );
 
   return response.json(sharedBookmark);
 });
@@ -52,8 +61,11 @@ router.get('/shared/:shareableId', async (request, response, next) => {
  * When no filter send latest public bookmarks
  */
 router.get('/', async (request, response) => {
-  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const bookmarks = await PublicBookmarksService.getLatestPublicBookmarks(page, limit);
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarks = await PublicBookmarksService.getLatestPublicBookmarks(
+    page,
+    limit
+  );
 
   return response.send(bookmarks);
 });
@@ -61,18 +73,28 @@ router.get('/', async (request, response) => {
 /**
  * Get most used public tags
  */
-router.get('/tags', NodeCache.cacheMiddleware(1440), async (request, response) => {
+router.get(
+  '/tags',
+  NodeCache.cacheMiddleware(1440),
+  async (request, response) => {
+    const { limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+    const publicTags = await PublicBookmarksService.getMostUsedPublicTags(
+      limit
+    );
 
-  const {limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const publicTags = await PublicBookmarksService.getMostUsedPublicTags(limit);
-
-  return response.send(publicTags);
-});
+    return response.send(publicTags);
+  }
+);
 
 router.get('/tagged/:tag', async (request, response) => {
   const orderBy = request.query.orderBy;
-  const {page, limit} = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const bookmarks = await PublicBookmarksService.getBookmarksForTag(request.params.tag, orderBy, page, limit);
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const bookmarks = await PublicBookmarksService.getBookmarksForTag(
+    request.params.tag,
+    orderBy,
+    page,
+    limit
+  );
 
   return response.send(bookmarks);
 });
@@ -80,8 +102,10 @@ router.get('/tagged/:tag', async (request, response) => {
 /* GET title of bookmark given its url - might be moved to front-end */
 router.get('/scrape', async function (request, response, next) {
   const location = request.query.location;
-  if ( location ) {
-    const webpageData = await PublicBookmarksService.getScrapedDataForLocation(location);
+  if (location) {
+    const webpageData = await PublicBookmarksService.getScrapedDataForLocation(
+      location
+    );
 
     return response.send(webpageData);
   } else {
@@ -95,9 +119,10 @@ router.get('/scrape', async function (request, response, next) {
  */
 
 router.get('/:id', async function (request, response) {
-  const bookmark = await PublicBookmarksService.getBookmarkById(request.params.id);
+  const bookmark = await PublicBookmarksService.getBookmarkById(
+    request.params.id
+  );
   response.send(bookmark);
 });
-
 
 module.exports = router;

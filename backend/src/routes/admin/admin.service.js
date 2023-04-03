@@ -9,35 +9,34 @@ const BookmarkInputValidator = require('../../common/validation/bookmark-input.v
 /* GET all bookmarks */
 let getBookmarksWithFilter = async (isPublic, location, userId) => {
   let filter = {};
-  if ( isPublic ) {
+  if (isPublic) {
     filter.public = true;
   }
-  if ( location ) {
+  if (location) {
     filter.location = location;
   }
-  if ( userId ) {
+  if (userId) {
     filter.userId = userId;
   }
-  const bookmarks = await Bookmark.find(filter).sort({createdAt: -1}).lean().exec();
+  const bookmarks = await Bookmark.find(filter)
+    .sort({ createdAt: -1 })
+    .lean()
+    .exec();
 
   return bookmarks;
 };
 
-
 let getTagsOrderByNumberDesc = async () => {
-  const tags = await Bookmark.aggregate(
-    [
-      {$match: {public: true}},
-      {$project: {"tags": 1}},
-      {$unwind: "$tags"},
-      {$group: {"_id": "$tags", "count": {"$sum": 1}}},
-      {$sort: {count: -1}}
-    ]
-  );
+  const tags = await Bookmark.aggregate([
+    { $match: { public: true } },
+    { $project: { tags: 1 } },
+    { $unwind: '$tags' },
+    { $group: { _id: '$tags', count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+  ]);
 
   return tags;
 };
-
 
 /**
  * Returns the bookmarks added recently.
@@ -48,42 +47,46 @@ let getTagsOrderByNumberDesc = async () => {
  *
  */
 let getLatestBookmarksBetweenDates = async (fromDate, toDate) => {
-
-  if ( fromDate > toDate ) {
-    throw new ValidationError('timing query parameters values', ['<Since> param value must be before <to> parameter value']);
+  if (fromDate > toDate) {
+    throw new ValidationError('timing query parameters values', [
+      '<Since> param value must be before <to> parameter value',
+    ]);
   }
-  const bookmarks = await Bookmark.find(
-    {
-      'public': true,
-      createdAt: {
-        $gte: fromDate,
-        $lte: toDate
-      }
-    }
-  ).sort({createdAt: 'desc'}).lean().exec();
+  const bookmarks = await Bookmark.find({
+    public: true,
+    createdAt: {
+      $gte: fromDate,
+      $lte: toDate,
+    },
+  })
+    .sort({ createdAt: 'desc' })
+    .lean()
+    .exec();
 
   return bookmarks;
-}
+};
 
 let getLatestBookmarksWithDaysBack = async (daysBack) => {
-
-  const bookmarks = await Bookmark.find(
-    {
-      'public': true,
-      createdAt: {$gte: new Date((new Date().getTime() - (daysBack * 24 * 60 * 60 * 1000)))}
-    }
-  ).sort({createdAt: 'desc'}).lean().exec();
+  const bookmarks = await Bookmark.find({
+    public: true,
+    createdAt: {
+      $gte: new Date(new Date().getTime() - daysBack * 24 * 60 * 60 * 1000),
+    },
+  })
+    .sort({ createdAt: 'desc' })
+    .lean()
+    .exec();
 
   return bookmarks;
-}
+};
 
 /* GET bookmark by id */
 let getBookmarkById = async (bookmarkId) => {
   const bookmark = await Bookmark.findOne({
-    _id: bookmarkId
+    _id: bookmarkId,
   });
 
-  if ( !bookmark ) {
+  if (!bookmark) {
     throw new NotFoundError(`Bookmark NOT_FOUND with id:${bookmarkId}`);
   } else {
     return bookmark;
@@ -94,17 +97,16 @@ let getBookmarkById = async (bookmarkId) => {
  * create bookmark
  */
 let createBookmark = async (bookmark) => {
-
   BookmarkInputValidator.validateBookmarkInputForAdmin(bookmark);
 
-  await BookmarkInputValidator.verifyPublicBookmarkExistenceOnCreation(bookmark);
+  await BookmarkInputValidator.verifyPublicBookmarkExistenceOnCreation(
+    bookmark
+  );
 
   let newBookmark = await bookmark.save();
 
   return newBookmark;
-
 };
-
 
 /**
  * full UPDATE via PUT - that is the whole document is required and will be updated
@@ -112,33 +114,38 @@ let createBookmark = async (bookmark) => {
  */
 let updateBookmark = async (bookmark) => {
   BookmarkInputValidator.validateBookmarkInputForAdmin(bookmark);
-  await BookmarkInputValidator.verifyPublicBookmarkExistenceOnUpdate(bookmark, bookmark.userId);
+  await BookmarkInputValidator.verifyPublicBookmarkExistenceOnUpdate(
+    bookmark,
+    bookmark.userId
+  );
 
   const updatedBookmark = await Bookmark.findOneAndUpdate(
     {
-      _id: bookmark._id
+      _id: bookmark._id,
     },
     bookmark,
-    {new: true}
+    { new: true }
   );
 
   const bookmarkNotFound = !updatedBookmark;
-  if ( bookmarkNotFound ) {
-    throw new NotFoundError('Bookmark with the id ' + bookmark._id + ' not found');
+  if (bookmarkNotFound) {
+    throw new NotFoundError(
+      'Bookmark with the id ' + bookmark._id + ' not found'
+    );
   } else {
     return updatedBookmark;
   }
 };
 
 /*
-* DELETE bookmark for by bookmarkId
-*/
+ * DELETE bookmark for by bookmarkId
+ */
 let deleteBookmarkById = async (bookmarkId) => {
   const bookmark = await Bookmark.findOneAndRemove({
-    _id: bookmarkId
+    _id: bookmarkId,
   });
 
-  if ( !bookmark ) {
+  if (!bookmark) {
     throw new NotFoundError(`Bookmark NOT_FOUND with id: ${bookmarkId}`);
   } else {
     return true;
@@ -146,10 +153,10 @@ let deleteBookmarkById = async (bookmarkId) => {
 };
 
 /*
-* DELETE bookmarks with location
-*/
+ * DELETE bookmarks with location
+ */
 let deleteBookmarksByLocation = async (location) => {
-  await Bookmark.deleteMany({location: location});
+  await Bookmark.deleteMany({ location: location });
 
   return true;
 };
@@ -158,7 +165,7 @@ let deleteBookmarksByLocation = async (location) => {
  * Delete bookmarks of a user, identified by userId
  */
 let deleteBookmarksByUserId = async (userId) => {
-  await Bookmark.deleteMany({userId: userId});
+  await Bookmark.deleteMany({ userId: userId });
   return true;
 };
 
@@ -170,29 +177,29 @@ let deleteBookmarksByUserId = async (userId) => {
  */
 let updateDisplayNameForUsers = async (keycloakUsers) => {
   let response = [];
-  for ( let keycloakUser of keycloakUsers ) {
+  for (let keycloakUser of keycloakUsers) {
     const updatedUser = await User.findOneAndUpdate(
       {
         $and: [
-          {userId: keycloakUser.id},
-          { "profile.displayName": { "$exists": false } },
-        ]
+          { userId: keycloakUser.id },
+          { 'profile.displayName': { $exists: false } },
+        ],
       },
-      {"$set": {"profile.displayName": keycloakUser.firstName}},
-      {new: true}
+      { $set: { 'profile.displayName': keycloakUser.firstName } },
+      { new: true }
     );
 
-    if(updatedUser) {
+    if (updatedUser) {
       response.push({
         userId: updatedUser.userId,
         email: keycloakUser.email,
-        displayName: updatedUser.profile.displayName
+        displayName: updatedUser.profile.displayName,
       });
     }
   }
 
   return response;
-}
+};
 
 /**
  * Updates displayName in User documents with the first name from Keycloak if not set already
@@ -202,47 +209,49 @@ let updateDisplayNameForUsers = async (keycloakUsers) => {
  */
 let setProfileImageUrlForUsersWithGravatar = async (keycloakUsers) => {
   let response = [];
-  for ( let keycloakUser of keycloakUsers ) {
-    const emailMd5Hash = crypto.createHash('md5').update(keycloakUser.email).digest('hex');
+  for (let keycloakUser of keycloakUsers) {
+    const emailMd5Hash = crypto
+      .createHash('md5')
+      .update(keycloakUser.email)
+      .digest('hex');
     const imageUrl = `https://gravatar.com/avatar/${emailMd5Hash}?s=340`;
     const updatedUser = await User.findOneAndUpdate(
       {
         $and: [
-          {userId: keycloakUser.id},
-          { "profile.imageUrl": { "$exists": false } },
-        ]
+          { userId: keycloakUser.id },
+          { 'profile.imageUrl': { $exists: false } },
+        ],
       },
-      {"$set": {"profile.imageUrl": imageUrl}},
-      {new: true}
+      { $set: { 'profile.imageUrl': imageUrl } },
+      { new: true }
     );
 
-    if(updatedUser) {
+    if (updatedUser) {
       response.push({
         userId: updatedUser.userId,
         email: keycloakUser.email,
-        imageUrl: updatedUser.profile.imageUrl
+        imageUrl: updatedUser.profile.imageUrl,
       });
     }
   }
 
   return response;
-}
+};
 
 /*
-* DELETE user by userId
-*/
+ * DELETE user by userId
+ */
 let deleteUserByUserId = async (userId) => {
   const user = await User.findOneAndRemove({
-    userId: userId
+    userId: userId,
   });
 
-  if ( !user ) {
+  if (!user) {
     throw new NotFoundError(`User NOT_FOUND with userId: ${userId}`);
   } else {
     return true;
   }
 };
-
 
 module.exports = {
   getBookmarksWithFilter: getBookmarksWithFilter,
@@ -257,5 +266,6 @@ module.exports = {
   deleteBookmarksByLocation: deleteBookmarksByLocation,
   deleteBookmarksByUserId: deleteBookmarksByUserId,
   updateDisplayNameForUsers: updateDisplayNameForUsers,
-  setProfileImageUrlForUsersWithGravatar: setProfileImageUrlForUsersWithGravatar
+  setProfileImageUrlForUsersWithGravatar:
+    setProfileImageUrlForUsersWithGravatar,
 };

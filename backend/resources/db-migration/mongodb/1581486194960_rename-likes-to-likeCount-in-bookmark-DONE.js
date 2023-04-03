@@ -1,1 +1,1 @@
-db.bookmarks.updateMany( {}, { $rename: { "likes": "likeCount" } } )
+db.bookmarks.updateMany({}, { $rename: { likes: 'likeCount' } });

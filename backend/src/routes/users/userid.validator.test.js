@@ -1,5 +1,4 @@
-const Token = require('keycloak-connect/middleware/auth-utils/token');
-const { validateUserId, validateIsAdminOrUserId } = require('./userid.validator');
+const { validateUserId } = require('./userid.validator');
 const UserIdValidationError = require('./userid-validation.error');
 
 describe('validateUserId()', () => {
@@ -9,14 +8,14 @@ describe('validateUserId()', () => {
         grant: {
           access_token: {
             content: {
-              sub: '123'
-            }
-          }
-        }
+              sub: '123',
+            },
+          },
+        },
       },
       params: {
-        userId: '456'
-      }
+        userId: '456',
+      },
     };
     expect(() => {
       validateUserId(request);
@@ -29,21 +28,20 @@ describe('validateUserId()', () => {
         grant: {
           access_token: {
             content: {
-              sub: '123'
-            }
-          }
-        }
+              sub: '123',
+            },
+          },
+        },
       },
       params: {
-        userId: '123'
-      }
+        userId: '123',
+      },
     };
     expect(() => {
       validateUserId(request);
     }).not.toThrow();
   });
 });
-
 
 // TODO give it a try later when mocking works...
 // describe('validateIsAdminOrUserId()', () => {
@@ -113,7 +111,6 @@ describe('validateUserId()', () => {
 //     }).not.toThrow();
 //   });
 // });
-
 
 // describe('validateIsAdminOrUserId()', () => {
 //   test('should throw error if user is not an admin and userId does not match sub in access token', () => {

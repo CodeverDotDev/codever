@@ -3,7 +3,7 @@ const Snippet = require('../../../model/snippet');
 const NotFoundError = require('../../../error/not-found.error');
 
 const SnippetInputValidator = require('./snippet-input.validator');
-const {v4: uuidv4} = require("uuid");
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * CREATE snippet for user
@@ -16,18 +16,19 @@ let createSnippet = async function (userId, snippetData) {
   let newSnippet = await snippet.save();
 
   return newSnippet;
-}
+};
 
 /* GET bookmark of user by bookmarkId */
 let getSnippetById = async (userId, snippetId) => {
-
   const snippet = await Snippet.findOne({
     _id: snippetId,
-    userId: userId
+    userId: userId,
   });
 
-  if ( !snippet ) {
-    throw new NotFoundError(`Codelet NOT_FOUND the userId: ${userId} AND id: ${snippetId}`);
+  if (!snippet) {
+    throw new NotFoundError(
+      `Codelet NOT_FOUND the userId: ${userId} AND id: ${snippetId}`
+    );
   } else {
     return snippet;
   }
@@ -35,8 +36,8 @@ let getSnippetById = async (userId, snippetId) => {
 
 /* GET last created snippets of the user */
 let getLatestSnippets = async (userId, limit) => {
-  const snippets = await Snippet.find({userId: userId})
-    .sort({createdAt: -1})
+  const snippets = await Snippet.find({ userId: userId })
+    .sort({ createdAt: -1 })
     .limit(limit);
 
   return snippets;
@@ -44,8 +45,9 @@ let getLatestSnippets = async (userId, limit) => {
 
 /* GET last created snippets of the user */
 let getAllMySnippets = async (userId) => {
-  const snippets = await Snippet.find({userId: userId})
-    .sort({createdAt: -1});
+  const snippets = await Snippet.find({ userId: userId }).sort({
+    createdAt: -1,
+  });
 
   return snippets;
 };
@@ -55,120 +57,121 @@ let getAllMySnippets = async (userId) => {
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 let updateSnippet = async (userId, codeletId, snippetData) => {
-
   SnippetInputValidator.validateSnippetInput(userId, snippetData);
 
   const updatedSnippet = await Snippet.findOneAndUpdate(
     {
       _id: codeletId,
-      userId: userId
+      userId: userId,
     },
     snippetData,
-    {new: true}
+    { new: true }
   );
 
   const snippetNotFound = !updatedSnippet;
-  if ( snippetNotFound ) {
-    throw new NotFoundError('Snippet NOT_FOUND with id: ' + codeletId + ' AND title: ' + snippetData.title);
+  if (snippetNotFound) {
+    throw new NotFoundError(
+      'Snippet NOT_FOUND with id: ' +
+        codeletId +
+        ' AND title: ' +
+        snippetData.title
+    );
   } else {
     return updatedSnippet;
   }
 };
 
 /*
-* DELETE snippet for user
-*/
+ * DELETE snippet for user
+ */
 let deleteSnippetById = async (userId, codeletId) => {
   const snippet = await Snippet.findOneAndRemove({
     _id: codeletId,
-    userId: userId
+    userId: userId,
   });
 
-  if ( !snippet ) {
+  if (!snippet) {
     throw new NotFoundError('Snippet NOT_FOUND with id: ' + codeletId);
   }
 };
 
 /* GET suggested tags used for user */
 let getSuggestedSnippetTags = async (userId) => {
-
-  const tags = await Snippet.distinct("tags",
-    {userId: userId}
-  ); // sort does not work with distinct in mongoose - https://mongoosejs.com/docs/api.html#query_Query-sort
+  const tags = await Snippet.distinct('tags', { userId: userId }); // sort does not work with distinct in mongoose - https://mongoosejs.com/docs/api.html#query_Query-sort
 
   return tags;
 };
 
 let getUserSnippetTags = async (userId) => {
-
   const aggregatedTags = await Snippet.aggregate([
     //first stage - filter
     {
       $match: {
-        userId: userId
+        userId: userId,
       },
     },
 
     //second stage - unwind tags
-    {$unwind: "$tags"},
+    { $unwind: '$tags' },
 
     //third stage - group
     {
       $group: {
         _id: {
-          tag: '$tags'
+          tag: '$tags',
         },
         count: {
-          $sum: 1
-        }
-      }
+          $sum: 1,
+        },
+      },
     },
 
     //fourth stage - order by count desc
     {
-      $sort: {count: -1}
-    }
+      $sort: { count: -1 },
+    },
   ]);
 
-  const userTags = aggregatedTags.map(aggregatedTag => {
+  const userTags = aggregatedTags.map((aggregatedTag) => {
     return {
       name: aggregatedTag._id.tag,
-      count: aggregatedTag.count
-    }
+      count: aggregatedTag.count,
+    };
   });
 
   return userTags;
 };
 
 let getOrCreateShareableId = async (userId, snippetId) => {
-  const snippet = await Snippet.findOne(
-    {
-      _id: snippetId,
-      userId: userId
-    }).select('+shareableId');
+  const snippet = await Snippet.findOne({
+    _id: snippetId,
+    userId: userId,
+  }).select('+shareableId');
 
-  if ( snippet ) {
-    if ( snippet.shareableId ) {
-      return snippet.shareableId
+  if (snippet) {
+    if (snippet.shareableId) {
+      return snippet.shareableId;
     } else {
       const uuid = uuidv4();
       const updatedSnippet = await Snippet.findOneAndUpdate(
         {
           _id: snippetId,
-          userId: userId
+          userId: userId,
         },
         {
-          $set: {shareableId: uuid}
+          $set: { shareableId: uuid },
         },
-        {new: true}
+        { new: true }
       ).select('+shareableId');
 
       return updatedSnippet.shareableId;
     }
   } else {
-    throw new NotFoundError(`Snippet NOT_FOUND the userId: ${userId} AND id: ${snippetId}`);
+    throw new NotFoundError(
+      `Snippet NOT_FOUND the userId: ${userId} AND id: ${snippetId}`
+    );
   }
-}
+};
 
 module.exports = {
   createSnippet: createSnippet,
@@ -179,5 +182,5 @@ module.exports = {
   getAllMySnippets: getAllMySnippets,
   updateSnippet: updateSnippet,
   deleteSnippetById: deleteSnippetById,
-  getOrCreateShareableId: getOrCreateShareableId
+  getOrCreateShareableId: getOrCreateShareableId,
 };

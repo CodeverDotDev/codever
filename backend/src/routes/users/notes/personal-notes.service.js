@@ -14,18 +14,19 @@ let createNote = async function (userId, noteData) {
   let newNote = await note.save();
 
   return newNote;
-}
+};
 
 /* GET bookmark of user by bookmarkId */
 let getNoteById = async (userId, noteId) => {
-
   const note = await Note.findOne({
     _id: noteId,
-    userId: userId
+    userId: userId,
   });
 
-  if ( !note ) {
-    throw new NotFoundError(`Note NOT_FOUND the userId: ${userId} AND id: ${noteId}`);
+  if (!note) {
+    throw new NotFoundError(
+      `Note NOT_FOUND the userId: ${userId} AND id: ${noteId}`
+    );
   } else {
     return note;
   }
@@ -33,8 +34,8 @@ let getNoteById = async (userId, noteId) => {
 
 /* GET last created snippets of the user */
 let getLatestNotes = async (userId, limit) => {
-  const notes = await Note.find({userId: userId})
-    .sort({createdAt: -1})
+  const notes = await Note.find({ userId: userId })
+    .sort({ createdAt: -1 })
     .limit(limit);
 
   return notes;
@@ -42,8 +43,7 @@ let getLatestNotes = async (userId, limit) => {
 
 /* GET last created snippets of the user */
 let getAllMyNotes = async (userId) => {
-  const notes = await Note.find({userId: userId})
-    .sort({createdAt: -1});
+  const notes = await Note.find({ userId: userId }).sort({ createdAt: -1 });
 
   return notes;
 };
@@ -53,91 +53,87 @@ let getAllMyNotes = async (userId) => {
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 let updateNote = async (userId, noteId, noteData) => {
-
   NoteInputValidator.validateNoteInput(userId, noteData);
 
   const updatedNote = await Note.findOneAndUpdate(
     {
       _id: noteId,
-      userId: userId
+      userId: userId,
     },
     noteData,
-    {new: true}
+    { new: true }
   );
 
   const noteNotFound = !updatedNote;
-  if ( noteNotFound ) {
-    throw new NotFoundError('Note NOT_FOUND with id: ' + noteId + ' AND title: ' + noteData.title);
+  if (noteNotFound) {
+    throw new NotFoundError(
+      'Note NOT_FOUND with id: ' + noteId + ' AND title: ' + noteData.title
+    );
   } else {
     return updatedNote;
   }
 };
 
 /*
-* DELETE snippet for user
-*/
+ * DELETE snippet for user
+ */
 let deleteNoteById = async (userId, noteId) => {
   const note = await Note.findOneAndRemove({
     _id: noteId,
-    userId: userId
+    userId: userId,
   });
 
-  if ( !note ) {
+  if (!note) {
     throw new NotFoundError('Note NOT_FOUND with id: ' + noteId);
   }
 };
 
 /* GET suggested tags used for user */
 let getSuggestedNoteTags = async (userId) => {
-
-  const tags = await Note.distinct("tags",
-    {userId: userId}
-  ); // sort does not work with distinct in mongoose - https://mongoosejs.com/docs/api.html#query_Query-sort
+  const tags = await Note.distinct('tags', { userId: userId }); // sort does not work with distinct in mongoose - https://mongoosejs.com/docs/api.html#query_Query-sort
 
   return tags;
 };
 
 let getUserNoteTags = async (userId) => {
-
   const aggregatedTags = await Note.aggregate([
     //first stage - filter
     {
       $match: {
-        userId: userId
+        userId: userId,
       },
     },
 
     //second stage - unwind tags
-    {$unwind: "$tags"},
+    { $unwind: '$tags' },
 
     //third stage - group
     {
       $group: {
         _id: {
-          tag: '$tags'
+          tag: '$tags',
         },
         count: {
-          $sum: 1
-        }
-      }
+          $sum: 1,
+        },
+      },
     },
 
     //fourth stage - order by count desc
     {
-      $sort: {count: -1}
-    }
+      $sort: { count: -1 },
+    },
   ]);
 
-  const userTags = aggregatedTags.map(aggregatedTag => {
+  const userTags = aggregatedTags.map((aggregatedTag) => {
     return {
       name: aggregatedTag._id.tag,
-      count: aggregatedTag.count
-    }
+      count: aggregatedTag.count,
+    };
   });
 
   return userTags;
 };
-
 
 module.exports = {
   createNote: createNote,

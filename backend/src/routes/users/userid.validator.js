@@ -4,20 +4,24 @@ const UserIdValidationError = require('./userid-validation.error');
 let validateUserId = function (request) {
   const userId = request.kauth.grant.access_token.content.sub;
   if (userId !== request.params.userId) {
-    throw new UserIdValidationError('The userId does not match the subject in the access token');
+    throw new UserIdValidationError(
+      'The userId does not match the subject in the access token'
+    );
   }
-}
+};
 
 let validateIsAdminOrUserId = function (request) {
-  const token = new Token(request.kauth.grant.access_token.token, 'bookmarks-api');
+  const token = new Token(
+    request.kauth.grant.access_token.token,
+    'bookmarks-api'
+  );
   const isNotAdmin = !token.hasRealmRole('ROLE_ADMIN');
   if (isNotAdmin) {
     validateUserId(request);
   }
-}
-
+};
 
 module.exports = {
   validateUserId: validateUserId,
-  validateIsAdminOrUserId: validateIsAdminOrUserId
+  validateIsAdminOrUserId: validateIsAdminOrUserId,
 };

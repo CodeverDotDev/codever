@@ -7,7 +7,7 @@ class PublicBookmarkExistingError extends Error {
       Error.captureStackTrace(this, PublicBookmarkExistingError);
     }
 
-    this.name = 'PublicBookmarkExistingError'
+    this.name = 'PublicBookmarkExistingError';
   }
 }
 

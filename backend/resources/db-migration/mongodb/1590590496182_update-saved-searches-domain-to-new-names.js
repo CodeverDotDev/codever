@@ -1,43 +1,39 @@
-db.users.find({}).forEach(
-  function(user) {
-    var updatedSearches = [];
-    var needsUpdating = false;
-    if(user.searches) {
-      user.searches.forEach(
-        function(search) {
-          if(!search.searchDomain) {
-            needsUpdating = true;
-            search.searchDomain = 'my-bookmarks';
-            //var newSearch = Object.assign({}, search);
-/*            newSearch.searchDomain = 'public-bookmarks';
+db.users.find({}).forEach(function (user) {
+  var updatedSearches = [];
+  var needsUpdating = false;
+  if (user.searches) {
+    user.searches.forEach(function (search) {
+      if (!search.searchDomain) {
+        needsUpdating = true;
+        search.searchDomain = 'my-bookmarks';
+        //var newSearch = Object.assign({}, search);
+        /*            newSearch.searchDomain = 'public-bookmarks';
             updatedSearches.push(newSearch);*/
-          } else {
-            if(search.searchDomain === 'public') {
-              needsUpdating = true;
-              search.searchDomain = 'public-bookmarks';
-            }
-
-            if(search.searchDomain === 'personal') {
-              needsUpdating = true;
-              search.searchDomain = 'my-bookmarks';
-            }
-          }
-          updatedSearches.push(search);
-        }
-      );
-      //printjson(updatedSearches);
-      if(needsUpdating) {
-        db.users.update(
-          {_id: user._id},
-          {$set: {"searches": updatedSearches}}
-        );
-        print("needed update")
       } else {
-        print("NO update needed")
+        if (search.searchDomain === 'public') {
+          needsUpdating = true;
+          search.searchDomain = 'public-bookmarks';
+        }
+
+        if (search.searchDomain === 'personal') {
+          needsUpdating = true;
+          search.searchDomain = 'my-bookmarks';
+        }
       }
+      updatedSearches.push(search);
+    });
+    //printjson(updatedSearches);
+    if (needsUpdating) {
+      db.users.update(
+        { _id: user._id },
+        { $set: { searches: updatedSearches } }
+      );
+      print('needed update');
+    } else {
+      print('NO update needed');
     }
   }
-);
+});
 
 // // Test on one user only before
 // db.users.find({userId : "e785a9fd-506f-49f7-9c97-6fcae98a9ea6"}).pretty();

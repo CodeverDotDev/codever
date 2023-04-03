@@ -2,32 +2,31 @@ const app = require('../../app');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes/index');
 
-
 const common = require('../../common/config');
 const config = common.config();
-const constants = require('../../common/constants');
 
 const superagent = require('superagent');
 
-const {toInclude} = require('jest-extended');
-const {BookmarkValidationErrorMessages} = require("../../common/validation/bookmark-input.validator");
-expect.extend({toInclude});
+const { toInclude } = require('jest-extended');
+const {
+  BookmarkValidationErrorMessages,
+} = require('../../common/validation/bookmark-input.validator');
+expect.extend({ toInclude });
 
 describe('Admin API Tests', () => {
-
   let adminBearerToken;
   const baseApiUnderTestUrl = '/api/admin/bookmarks/';
 
   let bookmarkExample;
-  const bookmarkExampleLocation = "http://www.codepedia.org/ama/admin-api-tests";
+  const bookmarkExampleLocation =
+    'http://www.codepedia.org/ama/admin-api-tests';
 
   beforeAll(async () => {
-
     //set admin bearer token
     const response = await superagent
       .post(config.integration_tests.token_endpoint)
       .send('client_id=' + 'bookmarks')
-      .send('username=' + 'admin-integration-tests')//TODO change me
+      .send('username=' + 'admin-integration-tests') //TODO change me
       .send('password=' + 'admin-integration-tests')
       .send('grant_type=password')
       .set('Accept', 'application/json');
@@ -36,28 +35,24 @@ describe('Admin API Tests', () => {
 
     //set bookmark example
     bookmarkExample = {
-      "name": "Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg",
-      "location": bookmarkExampleLocation,
-      "language": "en",
-      "tags": [
-        "nodejs",
-        "async-await",
-        "mongoose",
-        "mongodb"
-      ],
-      "publishedOn": "2017-11-05",
-      "sourceCodeURL": "https://github.com/CodeverDotDev/codever",
-      "description": "Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs",
-      "descriptionHtml": "<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>",
-      "userId": "some-user-id-for-admin-api-tests",
-      "public": true,
-      "likeCount": 0,
-      "lastAccessedAt": null
-    }
+      name: 'Cleaner code in NodeJs with async-await - Mongoose calls example – CodingpediaOrg',
+      location: bookmarkExampleLocation,
+      language: 'en',
+      tags: ['nodejs', 'async-await', 'mongoose', 'mongodb'],
+      publishedOn: '2017-11-05',
+      sourceCodeURL: 'https://github.com/CodeverDotDev/codever',
+      description:
+        'Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs',
+      descriptionHtml:
+        '<p>Example showing migration of Mongoose calls from previously using callbacks to using the new async-await feature in NodeJs</p>',
+      userId: 'some-user-id-for-admin-api-tests',
+      public: true,
+      likeCount: 0,
+      lastAccessedAt: null,
+    };
   });
 
   describe('Get bookmarks functionality', () => {
-
     it('should find some bookmarks', async () => {
       const response = await request(app)
         .get(baseApiUnderTestUrl)
@@ -68,19 +63,16 @@ describe('Admin API Tests', () => {
       expect(bookmarks.length).toBeGreaterThan(1);
     });
 
-
     it('should find some public bookmarks', async function () {
       const response = await request(app)
         .get(baseApiUnderTestUrl)
         .set('Authorization', adminBearerToken)
-        .query({public: true}); //difference to previous test
+        .query({ public: true }); //difference to previous test
 
       expect(response.statusCode).toEqual(HttpStatus.OK);
       const bookmarks = response.body;
       expect(bookmarks.length).toBeGreaterThan(1);
-
     });
-
   });
 
   describe('get latest bookmarks function tests', function () {
@@ -100,7 +92,7 @@ describe('Admin API Tests', () => {
 
       const response = await request(app)
         .get(latestEntriesApiBaseUrl)
-        .query({since: oneMonthBeforeNow.getTime()})
+        .query({ since: oneMonthBeforeNow.getTime() })
         .set('Authorization', adminBearerToken);
 
       expect(response.statusCode).toEqual(HttpStatus.OK);
@@ -115,8 +107,8 @@ describe('Admin API Tests', () => {
 
       const response = await request(app)
         .get(latestEntriesApiBaseUrl)
-        .query({since: sevenDaysBeforeNow.getTime()})
-        .query({to: twoDaysBeforeNow.getTime()})
+        .query({ since: sevenDaysBeforeNow.getTime() })
+        .query({ to: twoDaysBeforeNow.getTime() })
         .set('Authorization', adminBearerToken);
 
       expect(response.statusCode).toEqual(HttpStatus.OK);
@@ -131,8 +123,8 @@ describe('Admin API Tests', () => {
 
       const response = await request(app)
         .get(latestEntriesApiBaseUrl)
-        .query({since: twoDaysBeforeNow.getTime()})
-        .query({to: sevenDaysBeforeNow.getTime()})
+        .query({ since: twoDaysBeforeNow.getTime() })
+        .query({ to: sevenDaysBeforeNow.getTime() })
         .set('Authorization', adminBearerToken);
 
       expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
@@ -140,8 +132,6 @@ describe('Admin API Tests', () => {
   });
 
   describe('failed at CREATION', function () {
-
-
     it('should fail trying to CREATE bookmark without a userId', async function () {
       let bookmarkdWithoutUserId = JSON.parse(JSON.stringify(bookmarkExample));
       bookmarkdWithoutUserId.userId = '';
@@ -152,8 +142,12 @@ describe('Admin API Tests', () => {
         .send(bookmarkdWithoutUserId);
 
       expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual(BookmarkValidationErrorMessages.BOOKMARK_NOT_VALID);
-      expect(response.body.validationErrors).toInclude(BookmarkValidationErrorMessages.MISSING_USER_ID);
+      expect(response.body.message).toEqual(
+        BookmarkValidationErrorMessages.BOOKMARK_NOT_VALID
+      );
+      expect(response.body.validationErrors).toInclude(
+        BookmarkValidationErrorMessages.MISSING_USER_ID
+      );
     });
 
     it('should fail trying to CREATE bookmark without a location', async function () {
@@ -166,36 +160,34 @@ describe('Admin API Tests', () => {
         .send(bookmarkWithoutLocation);
 
       expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toEqual(BookmarkValidationErrorMessages.BOOKMARK_NOT_VALID);
-      expect(response.body.validationErrors).toInclude(BookmarkValidationErrorMessages.MISSING_LOCATION);
+      expect(response.body.message).toEqual(
+        BookmarkValidationErrorMessages.BOOKMARK_NOT_VALID
+      );
+      expect(response.body.validationErrors).toInclude(
+        BookmarkValidationErrorMessages.MISSING_LOCATION
+      );
     });
-
-
-
   });
 
   describe('admin - test successful creation, update and deletion of bookmark', function () {
-
     let createdBookmark;
 
     beforeAll(async function () {
       //proactively try deletion of bookmark
       await request(app)
         .delete(baseApiUnderTestUrl)
-        .query({'location': bookmarkExampleLocation})
-        .set('Authorization', adminBearerToken)
+        .query({ location: bookmarkExampleLocation })
+        .set('Authorization', adminBearerToken);
     });
 
-
     it('should succeed creating example bookmark', async function () {
-
       const response = await request(app)
         .post(baseApiUnderTestUrl)
         .set('Authorization', adminBearerToken)
         .send(bookmarkExample);
 
       expect(response.statusCode).toEqual(HttpStatus.CREATED);
-      const locationHeaderValue = response.header['location']
+      const locationHeaderValue = response.header['location'];
       const isLocationHeaderPresent = response.header['location'] !== undefined;
       expect(isLocationHeaderPresent).toBeTruthy();
 
@@ -212,37 +204,33 @@ describe('Admin API Tests', () => {
       expect(createdBookmark._id).toEqual(bookmarkId);
       expect(createdBookmark.name).toEqual(bookmarkExample.name);
       expect(createdBookmark.location).toEqual(bookmarkExample.location);
-
     });
 
     it('should find created bookmark by location', async function () {
       const response = await request(app)
         .get(baseApiUnderTestUrl)
-        .query({location: createdBookmark.location})
+        .query({ location: createdBookmark.location })
         .set('Authorization', adminBearerToken);
 
       expect(response.statusCode).toEqual(HttpStatus.OK);
-      expect(response.body.length).toEqual(1);
+      expect(response.body).toHaveLength(1);
       const responseBookmark = response.body[0];
       expect(responseBookmark.location).toEqual(createdBookmark.location);
-
     });
 
     it('should find created bookmark by userId', async function () {
       const response = await request(app)
         .get(baseApiUnderTestUrl)
-        .query({userId: createdBookmark.userId})
+        .query({ userId: createdBookmark.userId })
         .set('Authorization', adminBearerToken);
 
       expect(response.statusCode).toEqual(HttpStatus.OK);
-      expect(response.body.length).toEqual(1);
+      expect(response.body).toHaveLength(1);
       const responseBookmark = response.body[0];
       expect(responseBookmark.location).toEqual(createdBookmark.location);
-
     });
 
     describe('failed UPDATE', function () {
-
       it('should fail trying to add bookmark with existent location for same user', async function () {
         const response = await request(app)
           .post(`${baseApiUnderTestUrl}`)
@@ -250,11 +238,15 @@ describe('Admin API Tests', () => {
           .send(bookmarkExample);
 
         expect(response.statusCode).toEqual(HttpStatus.CONFLICT);
-        expect(response.body.message).toEqual(`Create: A public bookmark with this location is already present - location: ${bookmarkExample.location}`);
+        expect(response.body.message).toEqual(
+          `Create: A public bookmark with this location is already present - location: ${bookmarkExample.location}`
+        );
       });
 
       it('should fail trying to UPDATE bookmark without a location', async function () {
-        let bookmark_without_location = JSON.parse(JSON.stringify(createdBookmark));
+        let bookmark_without_location = JSON.parse(
+          JSON.stringify(createdBookmark)
+        );
         bookmark_without_location.location = '';
 
         const response = await request(app)
@@ -263,11 +255,14 @@ describe('Admin API Tests', () => {
           .send(bookmark_without_location);
 
         expect(response.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-        expect(response.body.message).toEqual('The bookmark you submitted is not valid');
-        expect(response.body.validationErrors).toInclude('Missing required attribute - location');
+        expect(response.body.message).toEqual(
+          'The bookmark you submitted is not valid'
+        );
+        expect(response.body.validationErrors).toInclude(
+          'Missing required attribute - location'
+        );
       });
     });
-
 
     it('should successfully UPDATE bookmark', async function () {
       let updatedBookmark = JSON.parse(JSON.stringify(createdBookmark));
@@ -279,7 +274,9 @@ describe('Admin API Tests', () => {
         .send(updatedBookmark);
 
       expect(updateBookmarkResponse.statusCode).toEqual(HttpStatus.OK);
-      expect(updateBookmarkResponse.body.name).toEqual(bookmarkExample.name + ' rocks');
+      expect(updateBookmarkResponse.body.name).toEqual(
+        bookmarkExample.name + ' rocks'
+      );
 
       //make also a read to be sure sure :P
       const readResponse = await request(app)
@@ -310,11 +307,10 @@ describe('Admin API Tests', () => {
 
       const deleteResponse = await request(app)
         .delete(`${baseApiUnderTestUrl}`)
-        .query({location: bookmarkExample.location})
+        .query({ location: bookmarkExample.location })
         .set('Authorization', adminBearerToken);
 
       expect(deleteResponse.statusCode).toEqual(HttpStatus.NO_CONTENT);
-
     });
 
     it('should succeed creating example bookmark and deleting it by userId', async function () {
@@ -324,35 +320,34 @@ describe('Admin API Tests', () => {
         .send(bookmarkExample);
 
       expect(createResponse.statusCode).toEqual(HttpStatus.CREATED);
-      const isLocationHeaderPresent = createResponse.header['location'] !== undefined;
+      const isLocationHeaderPresent =
+        createResponse.header['location'] !== undefined;
       expect(isLocationHeaderPresent).toBeTruthy();
 
       const deleteResponse = await request(app)
         .delete(`${baseApiUnderTestUrl}`)
-        .query({userId: bookmarkExample.userId})
+        .query({ userId: bookmarkExample.userId })
         .set('Authorization', adminBearerToken);
 
       expect(deleteResponse.statusCode).toEqual(HttpStatus.NO_CONTENT);
     });
 
-    it('should succeed trying to delete non-existent bookmark', async function () {
+    it('should succeed trying to delete non-existent bookmark looking by location', async function () {
       const response = await request(app)
         .delete(`${baseApiUnderTestUrl}`)
-        .query({location: bookmarkExample.location})
+        .query({ location: bookmarkExample.location })
         .set('Authorization', adminBearerToken);
 
       expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
     });
 
-    it('should succeed trying to delete non-existent bookmark', async function () {
+    it('should succeed trying to delete non-existent bookmark looking by userId', async function () {
       const response = await request(app)
         .delete(`${baseApiUnderTestUrl}`)
-        .query({userId: bookmarkExample.userId})
+        .query({ userId: bookmarkExample.userId })
         .set('Authorization', adminBearerToken);
 
       expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
     });
-
   });
-
 });

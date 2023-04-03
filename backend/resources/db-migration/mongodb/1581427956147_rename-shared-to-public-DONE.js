@@ -1,1 +1,1 @@
-db.bookmarks.updateMany( {}, { $rename: { "shared": "public" } } )
+db.bookmarks.updateMany({}, { $rename: { shared: 'public' } });
