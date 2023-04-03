@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { shareReplay } from 'rxjs/operators';
-import { UsedTag } from '../../core/model/used-tag';
 import { UserPublicData } from '../../core/model/user-public-data';
 
 @Injectable()

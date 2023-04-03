@@ -23,7 +23,7 @@ export class UserSettingsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
+    this.userInfoStore.getUserInfoOidc$().subscribe(() => {
       this.userData$ = this.userDataStore.getUserData$();
     });
   }

@@ -1,19 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-button-copy-snippet',
   templateUrl: './copy-snippet-button.component.html',
   styleUrls: ['./copy-snippet-button.component.scss'],
 })
-export class CopySnippetButtonComponent implements OnInit {
+export class CopySnippetButtonComponent {
   buttonText = 'Copy snippet';
 
   @Input()
   codeSnippet: string;
-
-  constructor() {}
-
-  ngOnInit() {}
 
   copyToClipboard() {
     const selBox = document.createElement('textarea');

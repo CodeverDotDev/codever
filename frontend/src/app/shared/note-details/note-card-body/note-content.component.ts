@@ -7,7 +7,6 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { Snippet } from '../../../core/model/snippet';
 import * as screenfull from 'screenfull';
 import { Note } from '../../../core/model/note';
 

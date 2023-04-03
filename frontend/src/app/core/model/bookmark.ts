@@ -10,8 +10,8 @@ export interface Bookmark {
   tagsLine?: string;
   publishedOn?: Date;
   sourceCodeURL?: string;
-  userId?: String;
-  userDisplayName: String;
+  userId?: string;
+  userDisplayName: string;
   public?: boolean;
   language: string;
   createdAt?: Date;

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { PersonalSnippetsService } from '../../../core/personal-snippets.service
   styleUrls: ['./social-share-dialog.component.scss'],
   providers: [DatePipe],
 })
-export class SnippetSocialShareDialogComponent implements OnInit {
+export class SnippetSocialShareDialogComponent {
   shareableId$: Observable<any>;
   public snippet: Snippet;
   readonly environment = environment;
@@ -29,8 +29,6 @@ export class SnippetSocialShareDialogComponent implements OnInit {
       this.snippet._id
     );
   }
-
-  ngOnInit() {}
 
   close() {
     this.dialogRef.close('SHARE_CANCELED');

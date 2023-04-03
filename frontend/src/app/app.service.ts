@@ -7,8 +7,6 @@ import { Subject } from 'rxjs';
 export class AppService {
   public logoClicked = new Subject();
 
-  constructor() {}
-
   clickLogo(logoClicked: boolean) {
     this.logoClicked.next(logoClicked);
   }

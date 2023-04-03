@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { KeycloakService } from 'keycloak-angular';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { KeycloakServiceWrapper } from '../../../core/keycloak-service-wrapper.s
   templateUrl: './login-required-dialog.component.html',
   styleUrls: ['./login-required-dialog.component.scss'],
 })
-export class LoginRequiredDialogComponent implements OnInit {
+export class LoginRequiredDialogComponent {
   message: string;
 
   constructor(
@@ -22,8 +22,6 @@ export class LoginRequiredDialogComponent implements OnInit {
     this.message =
       data.message || 'You need to be logged in to be able execute this action';
   }
-
-  ngOnInit() {}
 
   login() {
     this.dialogRef.close('LOGIN_CONFIRMED');

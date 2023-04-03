@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Bookmark } from '../../../core/model/bookmark';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserData } from '../../../core/model/user-data';
@@ -12,7 +12,7 @@ import { environment } from 'environments/environment';
   templateUrl: './social-share-dialog.component.html',
   providers: [DatePipe],
 })
-export class SocialShareDialogComponent implements OnInit {
+export class SocialShareDialogComponent {
   userIsLoggedIn: boolean;
   userOwnsBookmark: boolean;
   shareableId$: Observable<any>;
@@ -53,8 +53,6 @@ export class SocialShareDialogComponent implements OnInit {
       this.tweetText += 'Source code ' + this.bookmark.sourceCodeURL + '\n\n';
     }
   }
-
-  ngOnInit() {}
 
   cancel() {
     this.dialogRef.close('SHARE_CANCELED');

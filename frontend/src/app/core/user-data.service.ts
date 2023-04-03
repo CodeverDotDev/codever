@@ -142,7 +142,7 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
-  uploadProfileImage(userId: String, image: File): Observable<any> {
+  uploadProfileImage(userId: string, image: File): Observable<any> {
     const formData = new FormData();
     formData.append('image', image);
 
@@ -153,7 +153,7 @@ export class UserDataService {
   }
 
   uploadBookmarks(
-    userId: String,
+    userId: string,
     bookmarks: File,
     userDisplayName: string
   ): Observable<any> {

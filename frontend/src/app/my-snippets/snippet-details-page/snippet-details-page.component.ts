@@ -1,19 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { Snippet } from '../../core/model/snippet';
 import { ActivatedRoute } from '@angular/router';
 import { PersonalSnippetsService } from '../../core/personal-snippets.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
-import {
-  last,
-  map,
-  mergeMap,
-  switchMap,
-  take,
-  withLatestFrom,
-} from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
-import { Meta, Title } from '@angular/platform-browser';
+import { switchMap, take } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 @Component({

@@ -4,8 +4,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class CookieService {
-  constructor() {}
-
   createCookie(name: string, value: string, days: number): void {
     let expires;
     if (days) {

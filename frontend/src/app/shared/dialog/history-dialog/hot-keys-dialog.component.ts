@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../../../core/model/bookmark';
@@ -9,7 +9,7 @@ import { AddToHistoryService } from '../../../core/user/add-to-history.service';
   templateUrl: './hot-keys-dialog.component.html',
   styleUrls: ['./hot-keys-dialog.component.scss'],
 })
-export class HotKeysDialogComponent implements OnInit {
+export class HotKeysDialogComponent {
   bookmarks$: Observable<Bookmark[]>;
   title: string;
   filterText: '';
@@ -22,6 +22,4 @@ export class HotKeysDialogComponent implements OnInit {
     this.bookmarks$ = data.bookmarks$;
     this.title = data.title;
   }
-
-  ngOnInit() {}
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './extensions.component.html',
   styleUrls: ['./extensions.component.scss'],
 })
-export class ExtensionsComponent implements OnInit {
+export class ExtensionsComponent {
   environment = environment;
 
   @Input()
@@ -14,6 +14,4 @@ export class ExtensionsComponent implements OnInit {
 
   @Input()
   showEntryParagraph = true;
-
-  ngOnInit() {}
 }

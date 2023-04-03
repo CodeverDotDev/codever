@@ -38,7 +38,7 @@ export class PersonalSnippetsService {
       .pipe(shareReplay(1));
   }
 
-  getUserTagsForSnippets(userId: String): Observable<UsedTag[]> {
+  getUserTagsForSnippets(userId: string): Observable<UsedTag[]> {
     const options: HttpOptions = {
       url: `${this.personalSnippetsApiBaseUrl}/${userId}/snippets/tags`,
       key: localStorageKeys.personalTagsSnippets,
@@ -51,7 +51,7 @@ export class PersonalSnippetsService {
       .pipe(shareReplay());
   }
 
-  getSuggestedSnippetTags(userId: String): Observable<string[]> {
+  getSuggestedSnippetTags(userId: string): Observable<string[]> {
     return this.httpClient
       .get<string[]>(
         `${this.personalSnippetsApiBaseUrl}/${userId}/snippets/suggested-tags`

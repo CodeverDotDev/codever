@@ -1,12 +1,5 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Snippet } from '../../core/model/snippet';
-import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 
@@ -15,7 +8,7 @@ import { Bookmark } from '../../core/model/bookmark';
   templateUrl: './async-snippet-list.component.html',
   styleUrls: ['./async-snippet-list.component.scss'],
 })
-export class AsyncSnippetListComponent implements OnInit {
+export class AsyncSnippetListComponent {
   @Input()
   snippets$: Observable<Snippet[]>;
 
@@ -29,10 +22,6 @@ export class AsyncSnippetListComponent implements OnInit {
   showPagination = true;
 
   currentPage = 1;
-
-  constructor(private route: ActivatedRoute) {}
-
-  ngOnInit() {}
 
   of(searchResult: Snippet | Bookmark) {
     return of(searchResult);

@@ -1,4 +1,4 @@
-import { RouterModule, Routes, UrlSegment } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HowToBookmarkletComponent } from './howto-bookmarklets/how-to-bookmarklet.component';
 import { HowToSnippetComponent } from './howto-snippets/how-to-snippet.component';

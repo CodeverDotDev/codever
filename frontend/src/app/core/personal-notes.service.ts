@@ -30,7 +30,7 @@ export class PersonalNotesService {
       .pipe(shareReplay(1));
   }
 
-  getUserTagsForNotes(userId: String): Observable<UsedTag[]> {
+  getUserTagsForNotes(userId: string): Observable<UsedTag[]> {
     const options: HttpOptions = {
       url: `${this.personalNotesApiBaseUrl}/${userId}/notes/tags`,
       key: localStorageKeys.personalTagsNotes,
@@ -43,7 +43,7 @@ export class PersonalNotesService {
       .pipe(shareReplay());
   }
 
-  getSuggestedNoteTags(userId: String): Observable<string[]> {
+  getSuggestedNoteTags(userId: string): Observable<string[]> {
     return this.httpClient
       .get<string[]>(
         `${this.personalNotesApiBaseUrl}/${userId}/notes/suggested-tags`

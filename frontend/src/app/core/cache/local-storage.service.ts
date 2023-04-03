@@ -3,8 +3,6 @@ import { localStorageKeys } from '../model/localstorage.cache-keys';
 
 @Injectable()
 export class LocalStorageService {
-  constructor() {}
-
   save(options: LocalStorageSaveOptions) {
     // Set default values for optionals
     options.expirationHours = options.expirationHours || 0;

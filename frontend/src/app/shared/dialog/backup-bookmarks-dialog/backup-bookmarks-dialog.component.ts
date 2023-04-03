@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -8,7 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   templateUrl: './backup-bookmarks-dialog.component.html',
   styleUrls: ['./backup-bookmarks-dialog.component.scss'],
 })
-export class BackupBookmarksDialogComponent implements OnInit {
+export class BackupBookmarksDialogComponent {
   backupType: string; // 'bookmarks' | 'snippets';
   blobUrl: any;
   sanitizedBlobUrl: any;
@@ -27,13 +27,9 @@ export class BackupBookmarksDialogComponent implements OnInit {
     this.filename = `${this.backupType}_${currentDate.toISOString()}.json`;
   }
 
-  ngOnInit() {}
-
   close() {
     this.dialogRef.close();
   }
-
-  download() {}
 
   viewInBrowser() {
     window.open(this.blobUrl);

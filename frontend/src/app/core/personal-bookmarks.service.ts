@@ -26,7 +26,7 @@ export class PersonalBookmarksService {
     this.personalBookmarksApiBaseUrl = environment.API_URL + '/personal/users';
   }
 
-  getUserTagsForBookmarks(userId: String): Observable<UsedTag[]> {
+  getUserTagsForBookmarks(userId: string): Observable<UsedTag[]> {
     const options: HttpOptions = {
       url: `${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/tags`,
       key: localStorageKeys.personalTagsBookmarks,

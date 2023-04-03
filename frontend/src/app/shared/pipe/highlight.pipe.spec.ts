@@ -16,8 +16,8 @@ describe('HighlightHtml Pipe', () => {
       '<span class="highlight">codingpedia</span> is great',
       'simple text highlight'
     );
-    //expect(highLightPipe.transform('codingpedia', 'codingpedia')).toContain('<span class="highlight">codingpedia</span>', 'highlight not finished tag');
-    //expect(highlightHtmlPipe.transform('codingpedia is great', '[codingpe')).toContain('<span class="highlight">codingpe</span>dia is great', 'highlight not finished tag');
+    // expect(highLightPipe.transform('codingpedia', 'codingpedia')).toContain('<span class="highlight">codingpedia</span>', 'highlight not finished tag');
+    // expect(highlightHtmlPipe.transform('codingpedia is great', '[codingpe')).toContain('<span class="highlight">codingpe</span>dia is great', 'highlight not finished tag');
   });
 
   it('should add highlight span also when searching tags ', () => {

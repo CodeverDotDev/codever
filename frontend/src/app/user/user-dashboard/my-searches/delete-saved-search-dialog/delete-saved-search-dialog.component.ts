@@ -1,13 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { UsedTag } from '../../../../core/model/used-tag';
 
 @Component({
   selector: 'app-delete-bookmarks-by-tag-dialog',
   templateUrl: './delete-saved-search-dialog.component.html',
   styleUrls: ['./delete-saved-search-dialog.component.scss'],
 })
-export class DeleteSavedSearchDialogComponent implements OnInit {
+export class DeleteSavedSearchDialogComponent {
   savedSearchText: string;
   searchDomain: string;
 
@@ -18,8 +17,6 @@ export class DeleteSavedSearchDialogComponent implements OnInit {
     this.savedSearchText = data.savedSearchText;
     this.searchDomain = data.searchDomain;
   }
-
-  ngOnInit() {}
 
   delete() {
     this.dialogRef.close('DELETE_CONFIRMED');

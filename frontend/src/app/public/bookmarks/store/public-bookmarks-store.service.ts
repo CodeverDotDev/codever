@@ -25,7 +25,7 @@ export class PublicBookmarksStore {
           this._publicBookmarks.next(bookmarks);
           this.loadedPage = page;
         },
-        (err) => console.log('Error retrieving bookmarks')
+        () => console.log('Error retrieving bookmarks')
       );
   }
 

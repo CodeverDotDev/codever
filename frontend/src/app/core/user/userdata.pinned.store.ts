@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import { KeycloakService } from 'keycloak-angular';
-import { UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
 import { NotifyStoresService } from './notify-stores.service';

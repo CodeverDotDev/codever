@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Bookmark } from '../../../core/model/bookmark';
 
@@ -7,7 +7,7 @@ import { Bookmark } from '../../../core/model/bookmark';
   templateUrl: './public-bookmark-present-dialog.component.html',
   styleUrls: ['./public-bookmark-present-dialog.component.scss'],
 })
-export class PublicBookmarkPresentDialogComponent implements OnInit {
+export class PublicBookmarkPresentDialogComponent {
   bookmark: Bookmark;
 
   constructor(
@@ -16,8 +16,6 @@ export class PublicBookmarkPresentDialogComponent implements OnInit {
   ) {
     this.bookmark = data.bookmark;
   }
-
-  ngOnInit() {}
 
   likeBookmark() {
     this.dialogRef.close('LIKE_BOOKMARK');

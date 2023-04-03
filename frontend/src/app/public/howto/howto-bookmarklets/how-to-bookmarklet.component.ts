@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -6,8 +6,6 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './how-to-bookmarklet.component.html',
   styleUrls: ['./how-to-bookmarklet.component.scss'],
 })
-export class HowToBookmarkletComponent implements OnInit {
+export class HowToBookmarkletComponent {
   environment = environment;
-
-  ngOnInit() {}
 }

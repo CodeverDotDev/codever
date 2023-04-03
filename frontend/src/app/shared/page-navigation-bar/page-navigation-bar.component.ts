@@ -3,7 +3,6 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit,
   SimpleChanges,
 } from '@angular/core';
 import { environment } from '../../../environments/environment';
@@ -19,9 +18,7 @@ import { Note } from '../../core/model/note';
   templateUrl: './page-navigation-bar.component.html',
   styleUrls: ['./page-navigation-bar.component.scss'],
 })
-export class PageNavigationBarComponent
-  implements OnInit, AfterViewInit, OnChanges
-{
+export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   @Input()
   showPagination: boolean;
 
@@ -44,8 +41,6 @@ export class PageNavigationBarComponent
     private router: Router,
     private paginationNotificationService: PaginationNotificationService
   ) {}
-
-  ngOnInit() {}
 
   navigate(page: number) {
     scroll(0, 0);

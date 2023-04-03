@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output, } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Injector,
+  Input,
+  Output,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
@@ -12,9 +18,7 @@ import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-f
   templateUrl: './async-bookmark-list.component.html',
   styleUrls: ['./async-bookmark-list.component.scss'],
 })
-export class AsyncBookmarkListComponent
-  extends TagFollowingBaseComponent
-  implements OnInit {
+export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
   verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
   @Input()
@@ -55,8 +59,5 @@ export class AsyncBookmarkListComponent
   ) {
     super(loginDialog, userDataWatchedTagsStore);
     this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
-  }
-
-  ngOnInit(): void {
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { KeycloakService } from 'keycloak-angular';
 
@@ -7,12 +7,10 @@ import { KeycloakService } from 'keycloak-angular';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   environment = environment;
 
   constructor(private keycloakService: KeycloakService) {}
-
-  ngOnInit() {}
 
   login() {
     const options: Keycloak.KeycloakLoginOptions = {};

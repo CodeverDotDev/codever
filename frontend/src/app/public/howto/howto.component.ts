@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -6,8 +6,6 @@ import { environment } from '../../../environments/environment';
   templateUrl: './howto.component.html',
   styleUrls: ['./howto.component.scss'],
 })
-export class HowtoComponent implements OnInit {
+export class HowtoComponent {
   environment = environment;
-
-  ngOnInit() {}
 }

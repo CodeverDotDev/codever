@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Bookmark } from '../../../core/model/bookmark';
@@ -8,7 +8,7 @@ import { Bookmark } from '../../../core/model/bookmark';
   templateUrl: './play-youtube-video-dialog.component.html',
   styleUrls: ['./play-youtube-video-dialog.component.scss'],
 })
-export class PlayYoutubeVideoDialogComponent implements OnInit {
+export class PlayYoutubeVideoDialogComponent {
   bookmark: Bookmark;
   safeUrl: any;
 
@@ -22,8 +22,6 @@ export class PlayYoutubeVideoDialogComponent implements OnInit {
       `https://www.youtube.com/embed/${this.bookmark.youtubeVideoId}`
     );
   }
-
-  ngOnInit() {}
 
   close() {
     this.dialogRef.close('Play Youtube Video Closed');

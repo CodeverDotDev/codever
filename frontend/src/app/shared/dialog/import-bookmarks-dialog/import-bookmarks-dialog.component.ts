@@ -25,7 +25,6 @@ export class ImportBookmarksDialogComponent implements OnInit {
     private router: Router,
     @Inject(MAT_DIALOG_DATA) data
   ) {
-    const currentDate = new Date();
     this.userId = data.userId;
   }
 
@@ -38,8 +37,6 @@ export class ImportBookmarksDialogComponent implements OnInit {
   close() {
     this.dialogRef.close();
   }
-
-  download() {}
 
   uploadBookmarks(fileInput: HTMLInputElement) {
     const file: File = fileInput.files[0];

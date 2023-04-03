@@ -22,7 +22,7 @@ export class SuggestedTagsStore {
     private personalSnippetsService: PersonalSnippetsService
   ) {}
 
-  getSuggestedBookmarkTags$(userId: String) {
+  getSuggestedBookmarkTags$(userId: string) {
     if (!this.suggestedTagsLoaded) {
       const userTags$ =
         this.personalBookmarksService.getUserTagsForBookmarks(userId);
@@ -47,7 +47,7 @@ export class SuggestedTagsStore {
     return this._suggestedTags.asObservable();
   }
 
-  getSuggestedSnippetTags$(userId: String) {
+  getSuggestedSnippetTags$(userId: string) {
     if (!this.suggestedTagsForSnippetLoaded) {
       const userTags$ =
         this.personalSnippetsService.getUserTagsForSnippets(userId);

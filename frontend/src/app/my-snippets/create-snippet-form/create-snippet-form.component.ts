@@ -120,7 +120,7 @@ export class CreateSnippetFormComponent
 
   private setTagsFromQueryParameter() {
     if (this.tagsStr) {
-      const tags: String[] = this.tagsStr.split(',');
+      const tags: string[] = this.tagsStr.split(',');
       for (let i = 0; i < tags.length; i++) {
         this.formArrayTags.push(this.formBuilder.control(tags[i].trim()));
       }
