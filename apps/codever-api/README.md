@@ -1,6 +1,6 @@
-# Backend
+# Codever API (backend)
 
-Back-end REST API for [www.codever.land](http://www.codever.land).
+Back-end REST API for [www.codever.dev](http://www.codever.dev) based on Node.js with ExspressJS
 
 ## Development
 
@@ -32,7 +32,7 @@ npm run test
 ### Integration tests
 
 To run the integration you have to prepare and start the local docker image and node for backend as specified
-in the main [README](../README.md) file.
+in the main [README](../../README.md) file.
 
 When ready run the following command
 

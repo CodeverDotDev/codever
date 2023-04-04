@@ -41,7 +41,7 @@ The project is developed with the MEAN stack and [Keycloak](http://www.keycloak.
 The project contains two parts
 
 * [frontend](frontend) which makes up the User Interface. This uses with Angular and Angular CLI.
-* [backend](backend) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.codever.dev/api/docs)
+* [backend](apps/codever-api) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.codever.dev/api/docs)
 
 ### Prerequisites
 
@@ -105,7 +105,7 @@ This starts
 > [Add a Keycloak user](documentation/keycloak/add-keycloak-user.md) to create it.
 
 > To be able to automatically add youtube videos published date and duration to the title you need to
-create a _nodemon.json_ file based on the [backend/nodemon.json.example](backend/nodemon.json.example) and your own youtube api key
+create a _nodemon.json_ file based on the [backend/nodemon.json.example](apps/codever-api/nodemon.json.example) and your own youtube api key
 
 ## Testing
 
@@ -118,7 +118,7 @@ create a _nodemon.json_ file based on the [backend/nodemon.json.example](backend
 Run the integration test by issuing the following command.
 
 ```bash
-cd backend;
+cd apps/codever-api
 npm run integration-tests
 ```
 
