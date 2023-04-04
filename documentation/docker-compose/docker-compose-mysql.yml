@@ -44,7 +44,7 @@ services:
     command: -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=IGNORE_EXISTING
     volumes:
       - ./docker-compose-setup/keycloak-export-import:/tmp/keycloak/export-import/
-      - ./keycloak-theme/codever/:/opt/jboss/keycloak/themes/codever/
+      - ./apps/codever-keycloak-theme/codever/:/opt/jboss/keycloak/themes/codever/
   mongo:
     image: mongo:3.4
     container_name: codever-mongo

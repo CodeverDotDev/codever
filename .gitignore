@@ -2,7 +2,7 @@
 /node_modules/
 /frontend/src/environments/version.ts
 dist.zip
-keycloak-theme/keycloak-original-themes/*
+apps/codever-keycloak-theme/keycloak-original-themes/*
 documentation/keycloak-upgrade/*
 /documentation/keycloak-upgrade/
 /frontend/cypress/videos/

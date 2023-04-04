@@ -16,7 +16,7 @@
  */
 
 .navbar-title {
-    background: url('../img/codever-keycloak.logo-199x46.png') no-repeat;
+    background: url('apps/codever-keycloak-theme/codever/account/resources/img/codever-keycloak.logo-199x46.png') no-repeat;
     height: 50px;
     width: 155px;
 }
