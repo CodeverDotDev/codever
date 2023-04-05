@@ -1,0 +1,206 @@
+<div id="about-content" class="jumbotron">
+  <h2>Bookmarklets</h2>
+  <p class="lead">
+    <a href="https://en.wikipedia.org/wiki/Bookmarklet" target="_blank">
+      Bookmarklets
+      <sup class="external-link-hint"
+        ><i class="fas fa-external-link-alt"></i></sup
+    ></a>
+    are little javascript links that live in the bookmarks toolbar of your
+    browser. Drag
+    <i class="fas fas fa-arrows-alt ml-1"></i> one of the bookmarklet links
+    bellow to your browser's bookmarks to easily save links and code snippets
+    when clicked.
+  </p>
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">+Codever</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <ul class="mt-3">
+          <li>
+            <app-codever-bookmarklet
+              [withWindowDialog]="true"
+            ></app-codever-bookmarklet>
+            - when clicked a popup to save the current URL is displayed [<em
+              >recommended for <strong>desktops</strong> and
+              <strong>notebooks</strong> with good resolution</em
+            >]
+          </li>
+          <li class="mt-2">
+            <app-codever-bookmarklet
+              [withWindowDialog]="false"
+            ></app-codever-bookmarklet>
+            - when clicked it redirects you to the
+            <a href="{{ environment.HOST }}/my-bookmarks/new">New Bookmark</a>
+            form. Once added, you go back to the initial page [<em
+              >recommended for <strong>phones</strong> or smaller resolution
+              devices</em
+            >]
+          </li>
+        </ul>
+
+        <p class="alert alert-info mb-3">
+          <i class="fas fa-info-circle mr-1"></i> You can make a
+          <strong> text selection </strong> on the page, to use it as
+          <strong>description</strong> when choosing to create a
+          <strong>new bookmark</strong> or as
+          <strong>code</strong>
+          when choosing to create a <strong>new snippet</strong> out of it.
+
+          <br /><br />
+          If <strong>no text selection</strong>, then the
+          <strong>new bookmark</strong> dialog is presented. The
+          <strong>meta:description</strong>, if available, will be used for the
+          <strong>description</strong> field
+        </p>
+
+        <div class="mb-2">
+          <h3>Save bookmark via bookmarklet demo</h3>
+        </div>
+        <div class="image-container">
+          <img
+            src="../../../../assets/img/gif/codever-bookmarklet-save-bookmark-800x454.gif"
+            alt="Save bookmark via bookmarklet"
+            border="0"
+          />
+        </div>
+
+        <div class="mb-2 mt-5">
+          <h3>Save snippet via bookmarklet demo</h3>
+        </div>
+        <div class="image-container">
+          <img
+            src="../../../../assets/img/gif/codever-bookmarklet-save-snippet-800x454.gif"
+            alt="Save snippet via bookmarklet"
+            border="0"
+          />
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">+Bookmark</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="alert alert-warning mt-2">
+          <i class="fas fa-info-circle"></i> Same as
+          <app-codever-bookmarklet
+            [withWindowDialog]="true"
+          ></app-codever-bookmarklet>
+          , with the exception it saves directly as <b>bookmark</b>
+        </div>
+        <ul class="mt-3">
+          <li>
+            <app-add-bookmark-bookmarklet
+              [withWindowDialog]="true"
+            ></app-add-bookmark-bookmarklet>
+            - when clicked a popup to save the current URL is displayed [<em
+              >recommended for <strong>desktops</strong> and
+              <strong>notebooks</strong> with good resolution</em
+            >]
+          </li>
+          <li class="mt-2">
+            <app-add-bookmark-bookmarklet
+              [withWindowDialog]="false"
+            ></app-add-bookmark-bookmarklet>
+            - when clicked it redirects you to the
+            <a href="{{ environment.HOST }}/my-bookmarks/new">New Bookmark</a>
+            form. Once added, you go back to the initial page [<em
+              >recommended for <strong>phones</strong> or smaller resolution
+              devices</em
+            >]
+          </li>
+        </ul>
+        <div class="image-container">
+          <img
+            src="../../../../assets/img/gif/codever-bookmarklet-save-bookmark-800x454.gif"
+            alt="Save bookmark via bookmarklet"
+            border="0"
+          />
+        </div>
+        <p class="note_normal mt-2">
+          You can also <strong>select the text on page</strong> that you want to
+          be added to the <strong>description</strong> of the bookmark before
+          you click the bookmarklet (this will have priority over the value from
+          <strong>meta:description</strong> value which is used by default
+        </p>
+
+        <p class="alert-info p-2 m-2">
+          You can also use the
+          <a
+            href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          >
+            <i class="fab fa-chrome"></i> Codever</a
+          >
+          extension for Chromium based browsers. It provides the same behaviour
+          as the bookmarklet.
+        </p>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">+Snippet</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="alert alert-warning mt-2">
+          <i class="fas fa-info-circle"></i> Same as
+          <app-codever-bookmarklet
+            [withWindowDialog]="true"
+          ></app-codever-bookmarklet>
+          , with the exception it saves directly as <b>snippet</b>
+        </div>
+        <ul class="mt-3">
+          <li>
+            <app-add-snippet-bookmarklet
+              [withWindowDialog]="true"
+            ></app-add-snippet-bookmarklet>
+            - when clicked a popup to save the current URL is displayed [<em
+              >recommended for <strong>desktops</strong> and
+              <strong>notebooks</strong> with good resolution</em
+            >]
+          </li>
+          <li class="mt-2">
+            <app-add-snippet-bookmarklet
+              [withWindowDialog]="false"
+            ></app-add-snippet-bookmarklet>
+            - when clicked it redirects you to the
+            <a href="{{ environment.HOST }}/my-snippets/new"
+              >New Snippet Form</a
+            >
+            in the same window. Once added, you go back to the initial page [<em
+              >recommended for <strong>phones</strong> or smaller resolution
+              devices</em
+            >]
+          </li>
+        </ul>
+
+        <div class="image-container">
+          <img
+            src="../../../../assets/img/gif/codever-bookmarklet-save-snippet-800x454.gif"
+            alt="Save snippet via bookmarklet"
+            border="0"
+          />
+        </div>
+
+        <p class="alert-danger p-2 m-2">
+          You need to select the code snippet from the page you are surfing on.
+          This will be "pasted" in the
+          <a href="{{ environment.HOST }}/my-snippets/new">New Snippet Form</a>
+        </p>
+
+        <p class="alert-info p-2 m-2">
+          You can also use the
+          <a
+            href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          >
+            <i class="fab fa-chrome"></i> Codever</a
+          >
+          extension for Chromium based browsers. It provides the same behaviour
+          as the bookmarklet.
+        </p>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -38,17 +38,17 @@ These instructions will get you a copy of the project up and running on your loc
 The project is developed with the MEAN stack and [Keycloak](http://www.keycloak.org/) for authentication and authorization:
 ![components-graph](documentation/graphviz/components-graph.png)
 
-The project contains two parts
+The project contains two apps
 
-* [frontend](frontend) which makes up the User Interface. This uses with Angular and Angular CLI.
-* [backend](apps/codever-api) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.codever.dev/api/docs)
+* [codever-ui](apps/codever-ui) which makes up the User Interface. This uses with Angular and Angular CLI.
+* [codever-api](apps/codever-api) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.codever.dev/api/docs)
 
 ### Prerequisites
 
 What you need to run this app:
 
 * `node` and `npm` (we recommend using [NVM](https://github.com/creationix/nvm))
-  * Ensure you're running Node at least (`v10.x.x`+) and NPM (`6.x.x`+)
+  * Ensure you're running Node at least (`v16.x.x`+) and NPM (`8.x.x`+)
 * [nodemon](https://nodemon.io/) - `npm install -g nodemon`
 * **Docker** - we recommend using [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
@@ -104,12 +104,13 @@ This starts
 > You can create your own test user, or any other extra users by following the screenshots in
 > [Add a Keycloak user](documentation/keycloak/add-keycloak-user.md) to create it.
 
-> To be able to automatically add youtube videos published date and duration to the title you need to
-create a _nodemon.json_ file based on the [backend/nodemon.json.example](apps/codever-api/nodemon.json.example) and your own youtube api key
+> To be able to automatically add youtube videos published date and duration to the title you need to 
+> create a _nodemon.json_ file based on the [backend/nodemon.json.example](apps/codever-api/nodemon.json.example) 
+> and add your own youtube api key
 
 ## Testing
 
-### Backend
+### API (backend)
 
 ### Integration tests
 
@@ -126,11 +127,12 @@ A report will be generated.
 
 ## Debugging
 
-### Frontend
+### UI (Frontend)
 
 #### Dev Tools in Chromium browsers
 
-You can use the Dev Tools in Chromium based browsers (e.g. Chrome, Brave). Navigate to **Sources** and the file you want to set your break points, like in the following example:
+You can use the Dev Tools in Chromium based browsers (e.g. Chrome, Brave). Navigate to **Sources**
+and the file you want to set your break points, like in the following example:
 
 ![chrome-dev-tools-debugging](documentation/debugging/frontend/debug-frontend-chrome-dev-tools-800x574.png)
 
@@ -144,7 +146,9 @@ In IntelliJ you add Javascript Debug configuration as shown below:
 
 #### IntelliJ / Webstorm (Node.js plugin is required)
 
-The `npm run debug` starts nodemon with the `--inspect` parameter so you can attach to this process, by using the following configuration:
+The `npm run debug` starts nodemon with the `--inspect` parameter so you can attach to this process,
+by using the following configuration:
+
 ![nodejs-remote-debugging](documentation/debugging/backend/attach-to-nodemon-process.png)
 
 #### Visual Studio Code

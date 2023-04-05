@@ -1,0 +1,426 @@
+<div id="howto-snippets-content" class="jumbotron">
+  <h2>Bookmarks <i class="fa fa-bookmark"></i></h2>
+  <p class="lead">
+    <strong>Bookmarks management</strong> tailored for Developers & Co.
+  </p>
+
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"><i class="fas fa-save"></i> Save</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div
+          style="display: flex; align-items: center"
+          class="mt-3 mb-2 alert-info p-2"
+        >
+          <div style="font-size: 1.2rem">
+            You can use the
+            <strong><i class="fa fa-bookmark"></i> Bookmark</strong> option in
+            right side of the menu bar
+          </div>
+          <div class="dropdown mt-1 ml-2">
+            <button
+              class="btn btn-sm btn-dark dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton-save-bookmark"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <i class="fa fa-lg fa-plus"></i>
+            </button>
+            <div
+              class="dropdown-menu"
+              aria-labelledby="dropdownMenuButton-save-bookmark"
+            >
+              <a class="dropdown-item" routerLink="/my-bookmarks/new"
+                ><i class="fa fa-bookmark"></i> Bookmark</a
+              >
+              <a class="dropdown-item" routerLink="/my-snippets/new"
+                ><i class="fa fa-code"></i> Snippet</a
+              >
+            </div>
+          </div>
+        </div>
+        <p class="lead">
+          or, for an easier experience use one of the following:
+        </p>
+
+        <div class="mt-4">
+          <mat-tab-group>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <span class="app-tab-label"> Browser extension</span>
+              </ng-template>
+              <ng-template matTabContent>
+                <div class="mt-2">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th align="center">
+                          <a
+                            href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+                            rel="nofollow"
+                            ><img
+                              src="../../../../assets/img/chrome-48.png"
+                              alt="Chrome"
+                              style="max-width: 100%"
+                          /></a>
+                        </th>
+                        <th align="center">
+                          <a
+                            href="https://addons.mozilla.org/addon/codever/"
+                            rel="nofollow"
+                            ><img
+                              src="../../../../assets/img/firefox-48.png"
+                              alt="Chrome"
+                              style="max-width: 100%"
+                          /></a>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td align="center">
+                          <a
+                            href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+                            rel="nofollow"
+                            >Chrome</a
+                          >
+                        </td>
+                        <td align="center" class="ml-2">
+                          <a
+                            href="https://addons.mozilla.org/addon/codever/"
+                            rel="nofollow"
+                            >Firefox</a
+                          >
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="image-container mt-2">
+                    <img
+                      class="mt-2 img-fluid"
+                      src="../../../../assets/img/gif/codever-browser-extension-save-bookmarks-800x454.gif"
+                      alt="How to save bookmarks"
+                    />
+                  </div>
+                </div>
+              </ng-template>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <span class="app-tab-label"> Bookmarklet</span>
+              </ng-template>
+              <ng-template matTabContent>
+                <div class="mt-2">
+                  The first option is with the help of
+                  <strong>bookmarklets</strong>. Bookmarklets are little
+                  javascript links that live in the bookmarks toolbar of your
+                  browser. Just drag one of the links bellow to your browser
+                  toolbar:
+                  <ul class="mt-3">
+                    <li>
+                      <app-codever-bookmarklet
+                        [withWindowDialog]="true"
+                      ></app-codever-bookmarklet>
+                      - when clicked a popup to save the current URL is
+                      displayed [<em
+                        >recommended for <strong>desktops</strong> and
+                        <strong>notebooks</strong> with good resolution</em
+                      >]
+                    </li>
+                    <li class="mt-2">
+                      <app-codever-bookmarklet
+                        [withWindowDialog]="false"
+                      ></app-codever-bookmarklet>
+                      - when clicked it redirects you to the
+                      <a href="{{ environment.HOST }}/my-bookmarks/new"
+                        >New Bookmark</a
+                      >
+                      form. Once added, you go back to the initial page [<em
+                        >recommended for <strong>phones</strong> or smaller
+                        resolution devices</em
+                      >]
+                    </li>
+                  </ul>
+
+                  <p class="alert alert-info mb-3">
+                    <i class="fas fa-info-circle mr-1"></i> You can make a
+                    <strong> text selection </strong> on the page, to use it as
+                    <strong>description</strong> when choosing to create a
+                    <strong>new bookmark</strong>.
+
+                    <br /><br />
+                    If <strong>no text selection</strong>, then the
+                    <strong>new bookmark</strong> dialog is presented. The
+                    <strong>meta:description</strong>, if available, will be
+                    used for the <strong>description</strong> field
+                  </p>
+
+                  <div class="mb-2">
+                    <h3>Save bookmark via bookmarklet demo</h3>
+                  </div>
+                  <div class="image-container">
+                    <img
+                      src="../../../../assets/img/gif/codever-bookmarklet-save-bookmark-800x454.gif"
+                      alt="Save bookmark via bookmarklet"
+                      border="0"
+                    />
+                  </div>
+                </div>
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
+
+          <p class="note_normal mt-4">
+            Worthy public bookmarks are regularly published on Github at
+            <a href="https://github.com/CodeverDotDev/bookmarks#readme">
+              https://github.com/CodeverDotDev/bookmarks</a
+            >
+          </p>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"><i class="fa fa-search"></i> Search</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="mt-4">
+          <p class="lead">
+            You can search bookmarks by placing your search terms in the Search
+            bar. You can choose to search in <strong>Public Bookmarks</strong>,
+            in <strong>My Bookmarks</strong> or <strong>My Snippets</strong> by
+            selecting one of the options besides the
+            <i class="fa fa-search"></i> in the Search Bar. When logged in, the
+            <strong>default</strong> search domain is
+            <strong>My Bookmarks</strong> and when <strong>not</strong> logged
+            in, the <strong>default</strong> search domain is
+            <strong>Public Bookmarks</strong>. <br /><br />
+            Tags must be embedded in
+            <strong>square bracktes - e.g. [java]</strong>
+          </p>
+          <div class="alert-warning p-2">
+            <p class="lead">
+              !!! The search has an <strong>AND</strong> logic (<code
+                [innerHTML]="'includes=all'"
+              ></code
+              >) as default, so adding a term will narrow your results, not
+              expand them. !!!
+            </p>
+            <p>
+              You can use an <strong>OR</strong> logic, by adding the
+              <code [innerHTML]="'includes=any'"></code> as query parameter in
+              your search
+            </p>
+          </div>
+          <br />
+          <h3>Example</h3>
+          <p>
+            Let's say you want to look for personal bookmarks that contain the
+            text
+            <strong><em>exception handling</em></strong> and are tagged with
+            <strong><em>java</em></strong
+            >. Then would put
+            <strong><em>exception handling [java]</em></strong> in the search
+            bar, and use the <strong>My Bookmarks</strong> option (which is the
+            <strong>default</strong> when you are logged in) :
+          </p>
+
+          <img
+            class="mt-2 img-fluid"
+            src="../../../../assets/img/gif/codever-search-my-bookmark-800x457.gif"
+            alt="How to save and search a snippet"
+          />
+
+          <p class="alert-info p-2 mt-2">
+            The search at the end of the demo is configured in
+            <a href="https://www.alfredapp.com/">AlfredApp</a> with a custom
+            query -
+            <code
+              [innerHTML]="
+                'https://www.codever.dev/search?q={query}&sd=my-bookmarks'
+              "
+            ></code>
+          </p>
+
+          <p class="alert-info p-2 mt-2">
+            You can change <strong>where</strong> you want to search by
+            selecting other search domains as shown in the picture
+          </p>
+          <br />
+
+          <h3>Filters</h3>
+          You can filter further by adding the following parameters to your
+          search
+          <ul>
+            <li>
+              <code>lang:iso_language_code</code>
+              - e.g. <code>lang:en</code> for English, <code>lang:es</code> for
+              Spanish and <code>lang:de</code>
+              for German bookmarks
+            </li>
+
+            <li>
+              <code>site:site_URL</code> - e.g.
+              <code>site:codepedia.org</code> bookmarks only from website
+              <a href="https://www.codepedia.org">www.codepedia.org</a>
+            </li>
+            <li>
+              <code>private:only</code> - when you want to search only through
+              your <strong>private</strong> bookmarks
+            </li>
+          </ul>
+
+          For example if you want to search for bookmarks that contain
+          <code>javascript</code>, are in
+          <code>German</code>
+          and published on <code>www.codepedia.org</code>, you would use the
+          following as query text in the search box:
+          <code> javascript lang:de site:codepedia.org </code>
+
+          <div class="mt-3">
+            <h3>Save searches</h3>
+            <p class="note_normal">
+              You have the possibility to save the search permanently by
+              clicking the
+              <strong><i class="fas fa-save"></i></strong> (Save search) button
+              in the search bar. This way it will be displayed in the
+              <strong>auto completion</strong> when you input text in the Search
+              bar - <strong>Successful</strong> searches are saved automatically
+              in the recent search history for auto completion.
+            </p>
+          </div>
+
+          <div class="mt-3">
+            <h3>Search via query parameters</h3>
+            <p class="lead">
+              You can execute the same search via
+              <strong>query parameters</strong>
+            </p>
+
+            You can trigger the same search as above by calling the following
+            URL:
+
+            <a
+              href="https://www.codever.dev/search?q=exception [java]&sd=my-bookmarks"
+              >https://www.codever.dev/search?q=exception [java]&sd=personal</a
+            >
+            <ul>
+              <li><strong>q</strong> - here is your input search text</li>
+              <li><strong>sd</strong> - search domain with two options</li>
+              <ul>
+                <li>
+                  <strong>my-bookmarks</strong> - personal (private and public)
+                  bookmarks
+                </li>
+                <li>
+                  <strong>public-bookmarks</strong> - public bookmarks (may
+                  include personal bookmarks if they come from same user)
+                </li>
+                <li><strong>my-snippets</strong> - personal code snippets</li>
+              </ul>
+            </ul>
+            <p class="note_normal">
+              This is very handy if you use Web Search tools where you can
+              define custom queries, like
+              <a href="https://www.alfredapp.com/help/features/web-search/">
+                Alfred Web Search</a
+              >
+              if you are on Mac
+            </p>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"
+          ><i class="fas fa-file-upload"></i> Import</span
+        >
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="mt-4">
+          <h5>1. Export the bookmarks from your favorite browser</h5>
+          You can import your browser bookmarks to Codever. First you need to
+          export the bookmarks as a html file from your favourite browser:
+          <ul>
+            <li>
+              <a href="https://support.google.com/chrome/answer/96816?hl=en"
+                ><b>Chrome</b> - Move bookmarks to another browser</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://support.mozilla.org/en-US/kb/export-firefox-bookmarks-to-backup-or-transfer"
+                ><b>Firefox</b> - Export Firefox bookmarks to an HTML file to
+                back up or transfer bookmarks</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://support.apple.com/en-gb/guide/safari/ibrw1015/mac#ibrw52131fd9"
+                ><b>Safari</b> - Import and export bookmarks in Safari on Mac</a
+              >
+            </li>
+          </ul>
+
+          <h5>2. Import the bookmarks to Codever</h5>
+          To import the bookmarks html file <em>navigate to</em> your
+          <a [routerLink]="['/dashboard']">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+          and select
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            title="Export my bookmarks"
+          >
+            Import <i class="fas fa-file-upload"></i>
+          </button>
+          button under <b>My Bookmarks</b>
+
+          <div class="alert alert-info mt-4">
+            <h5>Note:</h5>
+            <ul>
+              <li>all imported browser bookmarks are <b>private</b></li>
+              <li>
+                all imported browser bookmarks are tagged with
+                <b>imported-browser</b> plus folders they were found on (space
+                characters in folder names are transformed in "-" - e.g. "Java
+                tutorials" becomes "java-tutorials")
+              </li>
+            </ul>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">
+          <i class="fas fa-file-download"></i> Export</span
+        >
+      </ng-template>
+      <ng-template matTabContent>
+        <div class="mt-4">
+          You can export your personal bookmarks if you
+          <em>navigate to</em> your
+          <a [routerLink]="['/dashboard']">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+          and select
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            title="Export my bookmarks"
+          >
+            Export <i class="fas fa-file-download"></i>
+          </button>
+          button under <b>My Bookmarks</b>
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>

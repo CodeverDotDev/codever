@@ -4,11 +4,11 @@
   "description": "Codever - bookmarks, snippets and notes manager for developers & co",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "frontend": "cd frontend && npm start",
-    "install-frontend": "cd frontend && npm install",
+    "frontend": "cd apps/codever-ui && npm start",
+    "install-frontend": "cd apps/codever-ui && npm install",
     "backend": "cd apps/codever-api && npm run debug",
     "install-backend": "cd apps/codever-api && npm install",
-    "start": "npm-run-all --parallel frontend apps/codever-api",
+    "start": "npm-run-all --parallel apps/codever-ui apps/codever-api",
     "install": "npm-run-all install-frontend install-backend"
   },
   "repository": {
