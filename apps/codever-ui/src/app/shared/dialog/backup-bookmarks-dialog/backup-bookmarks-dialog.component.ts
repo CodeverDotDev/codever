@@ -27,6 +27,9 @@ export class BackupBookmarksDialogComponent {
     this.filename = `${this.backupType}_${currentDate.toISOString()}.json`;
   }
 
+  // eslint-disable-next-line
+  download() {}
+
   close() {
     this.dialogRef.close();
   }
