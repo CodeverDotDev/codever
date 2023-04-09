@@ -249,6 +249,10 @@ export class AppComponent implements OnInit {
   }
 
   goToMainLink(bookmark: Bookmark) {
+    this.addToHistoryService.promoteInHistoryIfLoggedIn(
+      this.userIsLoggedIn,
+      bookmark
+    );
     window.open(bookmark.location, '_blank');
   }
 }
