@@ -1,0 +1,276 @@
+<!--<h3>Results for <em>"{{searchText}}"</em></h3>
+<hr>-->
+
+<mat-tab-group
+  [selectedIndex]="selectedTabIndex"
+  (selectedTabChange)="tabSelectionChanged($event)"
+>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-search"></i> All mine</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
+        <div
+          *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+          class="alert alert-info no-search-results mt-2"
+          role="alert"
+        >
+          No results found for <strong>{{ this.searchInclude }}</strong> of
+          <em
+            ><code>{{ searchText }}</code></em
+          >
+          in <strong>My Bookmarks and My Snippets</strong>.
+          <span *ngIf="searchInclude === 'all'">
+            Try searching for <strong>any</strong> of the terms -
+            <button
+              class="btn btn-outline-primary btn-sm"
+              (click)="tryAllMine('any')"
+            >
+              <i class="fa fa-search"></i> Search any
+            </button>
+          </span>
+          <br />
+          <br />
+          {{ searchInOtherCategoriesTip }}
+        </div>
+        <app-async-search-result-list
+          [callerPagination]="callerPaginationSearchResults"
+          [searchResults$]="searchResults$"
+          [queryText]="searchText"
+          [userData$]="userData$"
+          [isSearchResultsPage]="true"
+          [showFilterBox]="false"
+        >
+        </app-async-search-result-list>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"
+        ><i class="fa fa-bookmark"></i> My Bookmarks</span
+      >
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
+        <div
+          *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+          class="alert alert-info no-search-results mt-2"
+          role="alert"
+        >
+          No results found for <strong>{{ this.searchInclude }}</strong> of
+          <em
+            ><code>{{ searchText }}</code></em
+          >
+          in <strong>My Bookmarks</strong>.
+          <span *ngIf="searchInclude === 'all'">
+            Try searching for <strong>any</strong> of the terms -
+            <button
+              class="btn btn-outline-primary btn-sm"
+              (click)="tryMyBookmarks('any')"
+            >
+              <i class="fa fa-search"></i> Search any
+            </button>
+          </span>
+          <br />
+          <br />
+          {{ searchInOtherCategoriesTip }}
+        </div>
+        <app-async-bookmark-list
+          [callerPagination]="callerPaginationSearchResults"
+          [bookmarks$]="searchResults$"
+          [queryText]="searchText"
+          [userData$]="userData$"
+          [isSearchResultsPage]="true"
+          [showFilterBox]="false"
+        >
+        </app-async-bookmark-list>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-code"></i> My Snippets</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
+        <div
+          *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+          class="alert alert-info no-search-results mt-2"
+          role="alert"
+        >
+          No results found for <strong>{{ this.searchInclude }}</strong> of
+          <em
+            ><code>{{ searchText }}</code></em
+          >
+          in <strong>My Snippets</strong>.
+          <span *ngIf="searchInclude === 'all'">
+            Try a more permissive search (use <strong>any</strong> of the terms)
+            -
+            <button
+              class="btn btn-outline-primary btn-sm"
+              (click)="tryMySnippets('any')"
+            >
+              <i class="fa fa-search"></i> Search any
+            </button>
+          </span>
+          <br />
+          <br />
+          {{ searchInOtherCategoriesTip }}
+        </div>
+        <app-async-snippet-list
+          [snippets$]="searchResults$"
+          [callerPagination]="callerPaginationSearchResults"
+          [queryText]="searchText"
+        >
+        </app-async-snippet-list>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-code"></i> My Notes</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
+        <div
+          *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+          class="alert alert-info no-search-results mt-2"
+          role="alert"
+        >
+          No results found for <strong>{{ this.searchInclude }}</strong> of
+          <em
+            ><code>{{ searchText }}</code></em
+          >
+          in <strong>My Notes</strong>.
+          <span *ngIf="searchInclude === 'all'">
+            Try a more permissive search (use <strong>any</strong> of the terms)
+            -
+            <button
+              class="btn btn-outline-primary btn-sm"
+              (click)="tryMyNotes('any')"
+            >
+              <i class="fa fa-search"></i> Search any
+            </button>
+          </span>
+          <br />
+          <br />
+          {{ searchInOtherCategoriesTip }}
+        </div>
+        <app-async-note-list
+          [notes$]="searchResults$"
+          [callerPagination]="callerPaginationSearchResults"
+          [queryText]="searchText"
+        >
+        </app-async-note-list>
+      </div>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"
+        ><i class="fa fa-bookmark"></i> Public Bookmarks</span
+      >
+    </ng-template>
+    <ng-template matTabContent>
+      <div
+        *ngIf="
+          (searchResults$ | async)?.length === 0 && currentPage === 1;
+          else showPubliBookmarksResults
+        "
+        class="alert alert-info no-search-results mt-2"
+        role="alert"
+      >
+        No results found for <strong>{{ this.searchInclude }}</strong> of
+        <em
+          ><code>{{ searchText }}</code></em
+        >
+        in <strong>Public Bookmarks</strong>.
+        <span *ngIf="searchInclude === 'all'">
+          Try a more permissive search (include <strong>any</strong> of the
+          terms) -
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="tryPublicBookmarks('any')"
+          >
+            <i class="fa fa-search"></i> Search any
+          </button>
+        </span>
+        <br />
+        <br />
+        {{ searchInOtherCategoriesTip }}
+      </div>
+      <ng-template #showPubliBookmarksResults>
+        <app-async-bookmark-list
+          [callerPagination]="callerPaginationSearchResults"
+          [bookmarks$]="searchResults$"
+          [queryText]="searchText"
+          [userData$]="userData$"
+          [isSearchResultsPage]="true"
+          [showFilterBox]="false"
+        >
+        </app-async-bookmark-list>
+      </ng-template>
+    </ng-template>
+  </mat-tab>
+
+  <ng-template #loggedInToSearchBookmarks>
+    <div class="mt-2 alert alert-info">
+      You need to
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        (click)="keycloakServiceWrapper.login()"
+      >
+        Login / Register
+      </button>
+      to search your personal bookmarks and code snippets.
+    </div>
+  </ng-template>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"
+        ><i class="fa fa-code"></i> Public Snippets</span
+      >
+    </ng-template>
+    <ng-template matTabContent>
+      <div
+        *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+        class="alert alert-info no-search-results mt-2"
+        role="alert"
+      >
+        No results found for <strong>{{ this.searchInclude }}</strong> of
+        <em
+          ><code>{{ searchText }}</code></em
+        >
+        in <strong>Public Snippets</strong>.
+        <span *ngIf="searchInclude === 'all'">
+          Try searching for <strong>any</strong> of the terms -
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="tryPublicSnippets('any')"
+          >
+            <i class="fa fa-search"></i> Search any
+          </button>
+        </span>
+        <br />
+        <br />
+        {{ searchInOtherCategoriesTip }}
+      </div>
+      <app-async-snippet-list
+        [snippets$]="searchResults$"
+        [callerPagination]="callerPaginationSearchResults"
+        [queryText]="searchText"
+      >
+      </app-async-snippet-list>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+
+<app-find-elsewhere [searchText]="searchText"> </app-find-elsewhere>

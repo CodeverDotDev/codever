@@ -1,0 +1,1 @@
+db.codelets.renameCollection('snippets');

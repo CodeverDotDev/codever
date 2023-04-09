@@ -1,0 +1,80 @@
+<p class="mb-3" *ngIf="showEntryParagraph">
+  To assist you by the management of bookmarks and code snippets, you can use
+  the following helpers and extensions
+</p>
+<table class="extensions-table">
+  <thead>
+    <tr>
+      <th align="center">
+        <a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow"
+          ><img src="./assets/img/bookmark-{{ logoSize }}.png" alt="Bookmark"
+        /></a>
+      </th>
+      <th align="center">
+        <a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow"
+          ><img src="./assets/img/chrome-{{ logoSize }}.png" alt="Chrome logo"
+        /></a>
+      </th>
+      <th align="center">
+        <a href="https://addons.mozilla.org/addon/codever/" rel="nofollow"
+          ><img
+            src="./assets/img/firefox-{{ logoSize }}.png"
+            alt="Firefox logo"
+        /></a>
+      </th>
+      <th align="center">
+        <a
+          href="https://plugins.jetbrains.com/plugin/14456-codever-snippets/"
+          rel="nofollow"
+          ><img
+            src="./assets/img/intellij-{{ logoSize }}.png"
+            alt="IntelliJ Logo"
+        /></a>
+      </th>
+      <th align="center">
+        <a
+          href="https://marketplace.visualstudio.com/items?itemName=codever.vscode-codever"
+          rel="nofollow"
+          ><img src="./assets/img/vscode-{{ logoSize }}.png" alt="VSCode Logo"
+        /></a>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">
+        <a [routerLink]="['/howto/bookmarklets']" rel="nofollow">Bookmarklet</a>
+      </td>
+      <td align="center">
+        <a
+          href="https://chrome.google.com/webstore/detail/codever/diofdblfhjbpgackifolmboaiccmebjb"
+          rel="nofollow"
+          >Chrome</a
+        >
+      </td>
+      <td align="center" class="ml-2">
+        <a href="https://addons.mozilla.org/addon/codever/" rel="nofollow"
+          >Firefox</a
+        >
+      </td>
+      <td align="center" class="ml-2">
+        <a
+          href="https://plugins.jetbrains.com/plugin/14456-codever-snippets/"
+          rel="nofollow"
+          >IntelliJ plugin</a
+        >
+      </td>
+      <td align="center" class="ml-2">
+        <a
+          href="https://marketplace.visualstudio.com/items?itemName=codever.vscode-codever"
+          rel="nofollow"
+          >VSCode</a
+        >
+      </td>
+    </tr>
+  </tbody>
+</table>

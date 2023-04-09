@@ -1,0 +1,29 @@
+<div id="about-content" class="jumbotron">
+  <h2>Register</h2>
+  <p class="lead mb-2">
+    Create an <strong>account</strong> on Codever to manage your dev bookmarks
+    and code snippets. You can choose to register with your
+    <strong>personal email</strong> or with one of the available identity
+    providers:
+  </p>
+
+  <div class="identity-providers-list">
+    <ul>
+      <li><i class="fab fa-github"></i> Github</li>
+      <li><i class="fab fa-google"></i> Google</li>
+      <li><i class="fab fa-gitlab"></i> Gitlab</li>
+      <li><i class="fab fa-stack-overflow"></i> StackOverflow</li>
+    </ul>
+  </div>
+
+  <p class="mt-2 mb-3">
+    Once registered you can use the available extensions to easily manage your
+    bookmarks and code snippets:
+  </p>
+
+  <app-extensions [showEntryParagraph]="false" [logoSize]="32"></app-extensions>
+
+  <button class="ml-2 mt-4 btn btn-primary btn-sm" (click)="login()">
+    Create account <i class="fas fa-user-plus"></i>
+  </button>
+</div>

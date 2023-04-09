@@ -1,0 +1,175 @@
+<div *ngIf="userPublicData$ | async as userPublicData">
+  <div class="public-profile-header">
+    <img
+      src="{{
+        userPublicData.publicProfile.imageUrl ||
+          'https://gravatar.com/avatar?s=400'
+      }}"
+      alt="User profile picture"
+    />
+    <div class="public-user-info">
+      <h2>{{ userPublicData.publicProfile.displayName }}</h2>
+      <button
+        *ngIf="
+          (userData$ | async) && userId === (userData$ | async).userId;
+          else following
+        "
+        type="button"
+        class="btn btn-dark btn-lg mb-2"
+        (click)="goToEditUserProfile()"
+      >
+        Edit profile
+      </button>
+      <ng-template #following>
+        <button
+          *ngIf="
+            (userData$ | async) &&
+              (userPublicData$ | async).followers.includes(
+                (userData$ | async).userId
+              );
+            else followUserBtn
+          "
+          type="button"
+          class="btn btn-dark btn-lg mb-2"
+          (click)="unfollowUser(userPublicData.userId)"
+          title="Click to unfollow"
+        >
+          <i class="fas fa-check"></i> Following
+        </button>
+        <ng-template #followUserBtn>
+          <button
+            type="button"
+            class="btn btn-dark btn-lg mb-2"
+            (click)="followUser(userPublicData.userId)"
+            title="Click to follow"
+          >
+            <i class="fa fa-plus"></i> Follow
+          </button>
+        </ng-template>
+      </ng-template>
+      <p class="summary">{{ userPublicData.publicProfile.summary }}</p>
+      <p class="social">
+        <a
+          *ngIf="userPublicData.publicProfile.websiteLink"
+          href="{{ userPublicData.publicProfile.websiteLink }}"
+          title="Website"
+          ><i class="fas fa-external-link-alt"></i
+        ></a>
+        <a
+          *ngIf="userPublicData.publicProfile.githubLink"
+          href="{{ userPublicData.publicProfile.githubLink }}"
+          title="Github profile"
+          ><i class="fab fa-github"></i
+        ></a>
+        <a
+          *ngIf="userPublicData.publicProfile.twitterLink"
+          href="{{ userPublicData.publicProfile.twitterLink }}"
+          title="Twitter link"
+          ><i class="fab fa-twitter"></i
+        ></a>
+        <a
+          *ngIf="userPublicData.publicProfile.linkedinLink"
+          href="{{ userPublicData.publicProfile.linkedinLink }}"
+          title="LinkedIn link"
+          ><i class="fab fa-linkedin"></i
+        ></a>
+      </p>
+    </div>
+  </div>
+
+  <hr />
+
+  <h4 style="margin-top: 1rem">Top tags <i class="fas fa-tags"></i></h4>
+
+  <div
+    *ngFor="let tag of userPublicData.topUsedPublicTags"
+    class="btn-group mr-3 mt-3 tag-list-header"
+  >
+    <a
+      [routerLink]="['/search']"
+      [queryParams]="{
+        q: '[' + tag.name + '] user:' + userId,
+        sd: 'public-bookmarks'
+      }"
+      class="btn btn-secondary"
+      title="Show public bookmarks tagged {{ tag.name }} of user"
+    >
+      {{ tag.name }} <span class="badge badge-light">{{ tag.count }}</span>
+    </a>
+    <button
+      type=" button"
+      class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+      (click)="onDropDownClick(tag.name)"
+    >
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu">
+      <a
+        *ngIf="
+          (verifyForWatchedTag | async) === tag.name &&
+            (userData$ | async)?.watchedTags.includes(tag.name);
+          else watchTagOption
+        "
+        class="dropdown-item"
+        (click)="unwatchTag(tag.name)"
+        ><i class="fas fa-eye-slash"></i> Unwatch tag
+      </a>
+      <ng-template #watchTagOption>
+        <a (click)="watchTag(tag.name, userIsLoggedIn)"
+          ><i class="fas fa-eye"></i> Watch tag</a
+        >
+      </ng-template>
+      <a
+        *ngIf="
+          (verifyForWatchedTag | async) === tag.name &&
+            (userData$ | async)?.ignoredTags.includes(tag.name);
+          else ignoreTagOption
+        "
+        class="dropdown-item"
+        (click)="unignoreTag(tag.name)"
+        ><i class="fas fa-ban"></i> Unignore tag
+      </a>
+      <ng-template #ignoreTagOption>
+        <a (click)="ignoreTag(tag.name, userIsLoggedIn)" class="dropdown-item"
+          ><i class="fas fa-ban"></i> Ignore tag
+        </a>
+      </ng-template>
+      <div class="dropdown-divider"></div>
+      <a
+        [routerLink]="['/search']"
+        [queryParams]="{
+          q: '[' + tag.name + '] user:' + userId,
+          sd: 'public-bookmarks'
+        }"
+        class="dropdown-item"
+      >
+        <i class="fas fa-history"></i> User posts
+      </a>
+      <a class="dropdown-item" [routerLink]="['/tagged', tag.name]"
+        ><i class="fas fa-tag"></i> Public page
+      </a>
+    </div>
+  </div>
+
+  <hr />
+
+  <h4 style="margin-top: 1rem">Recent posts <i class="fas fa-bookmark"></i></h4>
+
+  <app-async-bookmark-list
+    [bookmarks$]="recentPosts$"
+    [userData$]="userData$"
+    [showPagination]="false"
+  >
+  </app-async-bookmark-list>
+
+  <a
+    class="view-more-results"
+    [routerLink]="['/search']"
+    [queryParams]="{ q: 'user:' + userId, sd: 'public-bookmarks' }"
+  >
+    View more <i class="far fa-arrow-alt-circle-right"></i>
+  </a>
+</div>

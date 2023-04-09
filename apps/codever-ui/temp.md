@@ -1,0 +1,3 @@
+## pagination
+
+1. Next gets disabled when I delete a bookmark....

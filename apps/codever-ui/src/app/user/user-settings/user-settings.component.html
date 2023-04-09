@@ -1,0 +1,49 @@
+<div *ngIf="userData$ | async">
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Profile <i class="fa fa-user"></i></span>
+      </ng-template>
+
+      <ng-template matTabContent>
+        <app-user-profile [userData$]="userData$"></app-user-profile>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">
+          <a
+            class="dropdown-item"
+            href="{{ environment.keycloak.url }}/realms/bookmarks/account/"
+            (click)="clearAccountCacheEntry()"
+          >
+            Account
+            <i class="fas fa-user-shield"></i>
+          </a>
+        </span>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label">Feed <i class="fas fa-home"></i></span>
+      </ng-template>
+
+      <ng-template matTabContent>
+        <app-user-feed-setup [userData$]="userData$"></app-user-feed-setup>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"
+          >Local Storage <i class="fas fa-database"></i
+        ></span>
+      </ng-template>
+
+      <ng-template matTabContent>
+        <app-user-local-storage-setup
+          [userData$]="userData$"
+        ></app-user-local-storage-setup>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>

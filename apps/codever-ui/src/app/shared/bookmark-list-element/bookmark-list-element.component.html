@@ -1,0 +1,347 @@
+<div class="card shadow-sm">
+  <div
+    class="card-body show-hide"
+    [ngClass]="{ 'private-bookmark': bookmark.public === false }"
+  >
+    <div class="header-wrapper">
+      <div class="titles">
+        <h5 class="card-title">
+          <i class="fa fa-bookmark fa-sm mr-2 anthracite-gray"></i>
+          <i
+            *ngIf="bookmark.youtubeVideoId"
+            class="fab fa-youtube youtube-icon"
+            (click)="playYoutubeVideo(bookmark)"
+            title="Play video"
+          ></i>
+          <i
+            *ngIf="bookmark.stackoverflowQuestionId"
+            class="fab fa-stack-overflow stackoverflow-icon"
+          ></i>
+          <i
+            *ngIf="bookmark.location?.startsWith('https://github.com', 0)"
+            class="fab fa-github stackoverflow-icon"
+          ></i>
+          <i
+            *ngIf="bookmark.location?.startsWith('https://dev.to/', 0)"
+            class="fab fa-dev stackoverflow-icon"
+          ></i>
+          <a
+            href="{{ bookmark.location }}"
+            target="_blank"
+            [innerHtml]="
+              bookmark.name | highlight : filterText | highlight : queryText
+            "
+            (click)="
+              addToHistoryService.promoteInHistoryIfLoggedIn(
+                userIsLoggedIn,
+                bookmark
+              )
+            "
+            (auxclick)="
+              addToHistoryService.promoteInHistoryIfLoggedIn(
+                userIsLoggedIn,
+                bookmark
+              )
+            "
+          ></a>
+          <sup class="external-link-hint"
+            ><i class="fas fa-external-link-alt"></i
+          ></sup>
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted url-under-title">
+          <span *ngIf="bookmark.public">
+            Posted by
+            <a
+              [routerLink]="[
+                '/users',
+                bookmark.userId,
+                bookmark.userDisplayName
+              ]"
+              >{{ bookmark.userDisplayName }}</a
+            >
+            -
+          </span>
+          <span
+            *ngIf="bookmark.location.length <= 100; else sliceLocation"
+            [innerHtml]="
+              bookmark.location | highlight : filterText | highlight : queryText
+            "
+          >
+          </span>
+          <ng-template #sliceLocation>
+            <span
+              [innerHtml]="
+                bookmark.location
+                  | slice : 0 : 100
+                  | highlight : filterText
+                  | highlight : queryText
+              "
+            ></span>
+            <span>...</span>
+          </ng-template>
+          <span
+            class="btn-light btn-sm copy-btn"
+            (click)="copyToClipboard(bookmark.location)"
+            title="Copy link to clipboard"
+          >
+            <i class="far fa-copy copy-link"></i
+            ><span class="copy-btn-text">{{ copyLinkButtonText }}</span>
+          </span>
+        </h6>
+      </div>
+      <div style="display: flex">
+        <span
+          *ngIf="
+            !(userData$ | async)?.pinned?.includes(bookmark._id);
+            else markedAsPinned
+          "
+          class="clock-wrapper"
+          title="Pin bookmark"
+          (click)="addToPinned(bookmark)"
+        >
+          <i class="fas fa-thumbtack"></i>
+        </span>
+        <ng-template #markedAsPinned>
+          <span
+            class="clock-wrapper"
+            title="Unpin bookmark"
+            (click)="removeFromPinned(bookmark)"
+            ><i class="fas fa-thumbtack fa-rotate-90 pinned"></i
+          ></span>
+        </ng-template>
+        <span
+          *ngIf="
+            !(userData$ | async)?.readLater?.includes(bookmark._id);
+            else markedAsReadLater
+          "
+          class="clock-wrapper"
+          title="Read later"
+          (click)="addToReadLater(bookmark)"
+        >
+          <i class="far fa-clock"></i>
+        </span>
+        <ng-template #markedAsReadLater>
+          <span
+            class="clock-wrapper"
+            title="Remove from Read later"
+            (click)="removeFromReadLater(bookmark)"
+            ><i class="fas fa-clock"></i
+          ></span>
+        </ng-template>
+      </div>
+    </div>
+
+    <div *ngIf="bookmark.description">
+      <hr class="title-content-separator" />
+      <app-bookmark-text
+        [showMoreText]="showMoreText"
+        [bookmark]="bookmark"
+        [queryText]="queryText"
+        (click)="
+          addToHistoryService.onClickInDescription(
+            userIsLoggedIn,
+            $event,
+            bookmark
+          )
+        "
+        (auxclick)="
+          addToHistoryService.onMiddleClickInDescription(
+            userIsLoggedIn,
+            $event,
+            bookmark
+          )
+        "
+      >
+      </app-bookmark-text>
+    </div>
+    <a
+      *ngIf="bookmark.sourceCodeURL"
+      class="btn btn-light btn-sm float-xs-left tag-list mr-2"
+      href="{{ bookmark.sourceCodeURL }}"
+      target="_blank"
+      title="Source code URL"
+    >
+      <i class="fab fa-github"></i> Source code
+      <sup><i class="fas fa-external-link-alt fa-sm"></i></sup>
+    </a>
+    <button
+      *ngIf="bookmark.publishedOn"
+      class="btn btn-light btn-sm float-xs-left tag-list"
+      style="cursor: default"
+      title="Published on"
+      disabled
+    >
+      <i class="fa fa-calendar-alt"></i> Published
+      {{ bookmark.publishedOn | date : 'yyyy-MM-dd' }}
+    </button>
+  </div>
+  <div class="card-footer" style="padding-right: 0.3rem">
+    <div class="tags-group">
+      <div class="input-group-sm mb-2 mb-sm-0 star-group">
+        <span *ngIf="!bookmark.public; else showLikeButton"
+          ><i
+            class="fas fa-eye-slash anthracite-gray"
+            title="Private bookmark"
+          ></i
+        ></span>
+        <ng-template #showLikeButton>
+          <span
+            *ngIf="
+              userIsLoggedIn &&
+                (userData$ | async)?.likes?.indexOf(bookmark._id) !== -1;
+              else likeOption
+            "
+            title="UnLike"
+            class="mr-1"
+            (click)="unLikeBookmark(bookmark)"
+            style="cursor: pointer"
+          >
+            <i class="fas fa-thumbs-up fa-lg"></i>
+          </span>
+          <ng-template #likeOption>
+            <span
+              class="mr-1"
+              title="Like"
+              (click)="likeBookmark(bookmark)"
+              style="cursor: pointer"
+            >
+              <i class="far fa-thumbs-up"></i>
+            </span>
+          </ng-template>
+          <span>{{ bookmark.likeCount }}</span>
+        </ng-template>
+      </div>
+      <div
+        *ngFor="let tag of bookmark.tags"
+        class="btn-group tag-list mr-2 mt-1"
+      >
+        <a
+          *ngIf="
+            bookmark.public && bookmark.userId !== userId;
+            else linkToMyTagged
+          "
+          class="btn btn-secondary btn-sm"
+          [routerLink]="['/bookmarks/t', tag]"
+          title="Go to public bookmarks tagged {{ tag }}"
+          [innerHtml]="tag | highlight : filterText | highlight : queryText"
+        >
+          {{ tag }}
+        </a>
+        <ng-template #linkToMyTagged>
+          <a
+            class="btn btn-secondary btn-sm"
+            [routerLink]="['/search']"
+            [queryParams]="{ q: '[' + tag + ']', sd: 'my-bookmarks' }"
+            title="Search my bookmarks tagged {{ tag }}"
+            [innerHtml]="tag | highlight : filterText | highlight : queryText"
+          >
+            {{ tag }}
+          </a>
+        </ng-template>
+        <button
+          type=" button"
+          class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          (click)="onDropDownClick(tag)"
+        >
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <a
+            *ngIf="
+              (verifyForWatchedTag | async) === tag &&
+                (userData$ | async)?.watchedTags.includes(tag);
+              else watchTagOption
+            "
+            class="dropdown-item"
+            (click)="unwatchTag(tag)"
+            ><i class="fas fa-eye-slash"> </i> Unwatch tag
+          </a>
+          <ng-template #watchTagOption>
+            <a (click)="watchTag(tag, userIsLoggedIn)" class="dropdown-item"
+              ><i class="fas fa-eye"></i> Watch tag
+            </a>
+          </ng-template>
+          <a
+            *ngIf="
+              (verifyForWatchedTag | async) === tag &&
+                (userData$ | async)?.ignoredTags.includes(tag);
+              else ignoreTagOption
+            "
+            class="dropdown-item"
+            (click)="unignoreTag(tag)"
+            ><i class="fas fa-ban"></i> Unignore tag
+          </a>
+          <ng-template #ignoreTagOption>
+            <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"
+              ><i class="fas fa-ban"></i> Ignore tag
+            </a>
+          </ng-template>
+          <ng-container *ngIf="userIsLoggedIn">
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item"
+              [routerLink]="['/tagged', tag]"
+              title="Public bookmarks tagged &quot;{{ tag }}&quot;"
+            >
+              <i class="fas fa-tag"></i> Public
+            </a>
+            <a
+              class="dropdown-item"
+              [routerLink]="['/search']"
+              [queryParams]="{ q: '[' + tag + ']', sd: 'my-bookmarks' }"
+              title="Search my bookmarks tagged &quot;{{ tag }}&quot;"
+            >
+              <i class="fas fa-tag"></i> Personal
+            </a>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="float-right mt-1">
+        <button
+          *ngIf="
+            bookmark.userId === (userData$ | async)?.userId ||
+            keycloakService.isUserInRole('ROLE_ADMIN')
+          "
+          type="button"
+          class="btn btn-light btn-sm"
+          (click)="editBookmark(bookmark)"
+          title="Edit bookmark"
+        >
+          <i class="far fa-edit"></i> Edit
+        </button>
+        <button
+          *ngIf="
+            bookmark.userId === (userData$ | async)?.userId ||
+            keycloakService.isUserInRole('ROLE_ADMIN')
+          "
+          type="button"
+          class="btn btn-light btn-sm"
+          (click)="openDeleteDialog(bookmark)"
+          title="Delete bookmark"
+        >
+          <i class="far fa-trash-alt"></i> Delete
+        </button>
+        <button
+          *ngIf="bookmark.userId !== (userData$ | async)?.userId"
+          type="button"
+          class="btn btn-light btn-sm"
+          (click)="copyToMine(bookmark)"
+          title="Save to personal bookmarks"
+        >
+          <i class="far fa-copy"></i> Copy to mine
+        </button>
+        <button
+          class="btn btn-light btn-sm float-right"
+          title="Share via email or on social media"
+          (click)="shareBookmarkDialog(bookmark)"
+        >
+          <i class="fas fa-share"></i> Share
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

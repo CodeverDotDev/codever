@@ -1,0 +1,61 @@
+.right-font-icon {
+  @extend .float-right;
+  line-height: inherit;
+}
+
+.btn-primary,
+.btn-secondary,
+.alert-info,
+.btn-outline-primary,
+.btn-outline-secondary {
+  @extend .shadow-sm;
+}
+
+.card {
+  margin-bottom: 0.5rem;
+}
+
+.jumbotron {
+  padding: 2rem;
+}
+
+.card-body {
+  padding: 0.8rem;
+}
+
+.card-footer {
+  padding: 0rem 1.25rem;
+}
+
+.badge {
+  padding: 0.25rem;
+}
+
+@media (min-width: 1000px) {
+  .container {
+    max-width: 920px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1080px;
+  }
+}
+
+.navbar {
+  z-index: 1000;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 1);
+  font-weight: 500;
+}
+
+// https://stackoverflow.com/questions/16214326/bootstrap-dropdown-with-hover
+/*@media (min-width: 768px) {
+  .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; // remove the gap so it doesn't close
+  }
+}*/

@@ -1,0 +1,138 @@
+<div
+  *ngIf="userData$ | async as userDataVar; else loading"
+  class="navigation-space-buffer"
+>
+  <h2>Profile image <i class="fas fa-portrait"></i></h2>
+  <div class="profile-image">
+    <img
+      *ngIf="selectedFileSrc || userDataVar.profile.imageUrl; else robot"
+      [src]="selectedFileSrc || userDataVar.profile.imageUrl"
+      height="200"
+      alt="User profile image"
+    />
+    <br />
+    <ng-template #robot>
+      <div class="generic-profile-image"><i class="fas fa-robot"></i></div>
+    </ng-template>
+    <div class="custom-file">
+      <input
+        #imageInput
+        type="file"
+        accept="image/*"
+        class="form-control"
+        id="picture"
+        (change)="changeImage(imageInput)"
+      />
+      <label class="custom-file-label" style="cursor: pointer" for="picture">{{
+        uploadImageLabel
+      }}</label>
+    </div>
+  </div>
+
+  <div [hidden]="!imageFileIsTooBig" class="alert alert-danger mt-2">
+    The image file selected is too big (max 1MB)
+  </div>
+  <div
+    *ngIf="profileImageChangedStatus === 'ok'"
+    class="alert alert-success mt-2"
+  >
+    Image Profile updated successfully!
+  </div>
+  <div
+    *ngIf="profileImageChangedStatus === 'fail'"
+    class="alert alert-danger mt-2"
+  >
+    Image Profile failed to update!
+  </div>
+
+  <hr />
+
+  <div class="profile-data">
+    <h2>Profile data</h2>
+    <form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="displayName">Display name*</label>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            id="displayName"
+            required
+            formControlName="displayName"
+            placeholder="Displayed name on posted public bookmarks"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="summary" style="width: 100%">
+          Summary - <i class="fas fa-user-graduate"></i>
+        </label>
+        <textarea
+          class="form-control"
+          id="summary"
+          formControlName="summary"
+          placeholder="Tell us a little bit about yourself (max 200 chars)"
+        >
+        </textarea>
+      </div>
+      <div class="form-group">
+        <label for="website-link">Website URL</label>
+        <div class="input-group">
+          <input
+            type="url"
+            class="form-control"
+            id="website-link"
+            formControlName="websiteLink"
+            placeholder="https://www.yoursite.com"
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="github-link">Github URL</label>
+        <div class="input-group">
+          <input
+            type="url"
+            class="form-control"
+            id="github-link"
+            formControlName="githubLink"
+            placeholder="https://github.com/YOUR_USERNAME"
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="twitter-link">Twitter URL</label>
+        <div class="input-group">
+          <input
+            type="url"
+            class="form-control"
+            id="twitter-link"
+            formControlName="twitterLink"
+            placeholder="https://twitter.com/YOUR_USERNAME"
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="linkedin-link">LinkedIn URL</label>
+        <div class="input-group">
+          <input
+            type="url"
+            class="form-control"
+            id="linkedin-link"
+            formControlName="linkedinLink"
+            placeholder="https://www.linkedin.com/in/YOUR_USERNAME"
+          />
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!userProfileForm.valid || !userProfileForm.dirty"
+      >
+        Save profile
+      </button>
+    </form>
+  </div>
+</div>
+
+<ng-template #loading> Loading User Profile... </ng-template>

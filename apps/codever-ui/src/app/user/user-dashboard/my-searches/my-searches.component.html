@@ -1,0 +1,101 @@
+<div *ngIf="userData$ | async as userData" class="mt-3 p-1">
+  <h4><i class="fas fa-xs fa-save mr-1"></i> Saved searches (usage [count])</h4>
+  <app-my-searches-template
+    [searches]="userData.searches"
+    [showCount]="true"
+    [type]="saved"
+  ></app-my-searches-template>
+
+  <h5 class="text-danger mt-4" style="margin-top: 1rem">Danger zone</h5>
+  <div class="border border-danger rounded-lg" style="padding: 1rem">
+    <h6>Delete <strong>saved search</strong></h6>
+    <div class="input-group search-component">
+      <div class="input-group-prepend">
+        <span class="input-group-text">
+          <i class="fa fa-search"></i>
+        </span>
+        <button
+          type="button"
+          class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <a
+            class="dropdown-item"
+            role="button"
+            title="Search in personal bookmarks"
+            (click)="onSearchDomainChange('my-bookmarks')"
+          >
+            <i class="fas fa-xs fa-save mr-1"></i>
+            <i class="fa fa-xs fa-search"></i> My Bookmarks
+            <i *ngIf="searchDomain === 'my-bookmarks'" class="fas fa-check"></i>
+          </a>
+          <a
+            class="dropdown-item"
+            role="button"
+            title="Search in public bookmarks"
+            (click)="onSearchDomainChange('public-bookmarks')"
+          >
+            <i class="fas fa-xs fa-save mr-1"></i>
+            <i class="fa fa-xs fa-search"></i> Public Bookmarks
+            <i
+              *ngIf="searchDomain === 'public-bookmarks'"
+              class="fas fa-check"
+            ></i>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a
+            class="dropdown-item"
+            role="button"
+            title="Search in my snippets"
+            (click)="onSearchDomainChange('my-snippets')"
+          >
+            <i class="fas fa-xs fa-save mr-1"></i>
+            <i class="fa fa-xs fa-search"></i> My Snippets
+            <i *ngIf="searchDomain === 'my-snippets'" class="fas fa-check"></i>
+          </a>
+        </div>
+      </div>
+      <input
+        #tagSearchBox
+        type="text"
+        class="form-control"
+        [formControl]="selectSavedSearchControl"
+        placeholder="Start typing to select saved search for {{
+          searchDomains.get(searchDomain)
+        }}"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option
+          *ngFor="let search of filteredSearches | async"
+          [value]="search.text"
+          >{{ search.text }}</mat-option
+        >
+      </mat-autocomplete>
+      <div class="input-group-append">
+        <button
+          class="btn btn-outline-danger"
+          type="button"
+          (click)="openDeleteDialog(tagSearchBox.value)"
+          [disabled]="!buttonEnabled"
+        >
+          Delete <strong>saved search</strong>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  <h4 class="mt-4">
+    <i class="fas fa-xs fa-history mr-1"></i> Recent searches
+  </h4>
+  <app-my-searches-template
+    [searches]="userData.searches"
+    [type]="recent"
+  ></app-my-searches-template>
+</div>

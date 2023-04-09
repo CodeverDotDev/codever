@@ -1,0 +1,30 @@
+<br />
+<div class="tagged_header_wrapper">
+  <h2>
+    Public snippets tagged [<em>{{ tag }}</em
+    >]
+  </h2>
+</div>
+<hr />
+<!-- TODO uncomment when like is read for snippets too
+<div class="btn-group" role="group">
+  <button type="button" class="btn"
+          [ngClass]="{'btn-secondary': orderBy === 'LATEST', 'btn-outline-secondary': orderBy !== 'LATEST'}"
+          [disabled]="orderBy === 'LATEST'"
+          (click)="getLatestForTag()">
+
+    Latest snippets
+  </button>
+  <button type="button" class="btn"
+          [ngClass]="{'btn-secondary': orderBy === 'LIKE_COUNT', 'btn-outline-secondary': orderBy !== 'LIKE_COUNT'}"
+          [disabled]="orderBy === 'LIKE_COUNT'"
+          (click)="getByLikeCount()">
+    Top likes
+  </button>
+</div>
+-->
+
+<app-async-snippet-list
+  [snippets$]="snippetsForTag$"
+  [callerPagination]="taggedCallerPagination"
+></app-async-snippet-list>

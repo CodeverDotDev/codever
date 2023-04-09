@@ -1,0 +1,16 @@
+<div *ngIf="snippets$ | async as snippets" class="mt-2">
+  <div *ngFor="let snippet of snippets">
+    <app-snippet-details
+      [snippet]="snippet"
+      [queryText]="queryText"
+      [inlist]="true"
+    ></app-snippet-details>
+  </div>
+
+  <app-page-navigation-bar
+    [showPagination]="showPagination"
+    [results]="snippets"
+    [currentPage]="currentPage"
+    [callerPagination]="callerPagination"
+  ></app-page-navigation-bar>
+</div>

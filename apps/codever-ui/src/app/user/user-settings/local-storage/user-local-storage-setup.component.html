@@ -1,0 +1,48 @@
+<div *ngIf="userData$ | async; else loading" class="navigation-space-buffer">
+  <p class="alert alert-info">
+    We use <b>local storage</b> to cache public things like tags used for
+    bookmarks and snippets. You can also enable storing some aspects of your
+    data (<b>username and email</b>, <b>private tags</b> and
+    <b>bookmark history</b>) in <b>Local Storage</b>, which will be "cached" for
+    24h, thus you gain some performance improvements.
+  </p>
+  <h3>Local storage</h3>
+
+  <mat-radio-group
+    aria-labelledby="example-radio-group-label"
+    class="example-radio-group"
+    [(ngModel)]="localStorageEnabled"
+  >
+    <mat-radio-button
+      class="example-radio-button"
+      [value]="false"
+      (change)="selectionChange($event)"
+    >
+      Please DO NOT store any user related data in local storage (DEFAULT)
+    </mat-radio-button>
+    <mat-radio-button
+      class="example-radio-button"
+      [value]="true"
+      (change)="selectionChange($event)"
+    >
+      Store personal data (user details, private tags and bookmark history) in
+      local storage
+    </mat-radio-button>
+  </mat-radio-group>
+  <p class="alert alert-danger mt-2">
+    <b>Local Storage</b> is not considered a secure browser storage. We do our
+    best to protect you against
+    <a href="https://owasp.org/www-community/attacks/xss/">XSS attacks</a>, but
+    an intruder might get access to all the data in the local storage through
+    such an attack. Normally you wouldn't store any sensitive information in
+    your bookmarks or code snippets, so the (minimal) performance gains might
+    still be worth it. <br /><br />
+    <b
+      >!!! Please enable this option only you are in full control of the device
+      you are running the application on and don't forget to log out if you use
+      the platform on someone else's device !!!</b
+    >
+  </p>
+</div>
+
+<ng-template #loading> Loading Feed settings... </ng-template>
