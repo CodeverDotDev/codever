@@ -175,26 +175,30 @@ export class AppComponent implements OnInit {
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       event.preventDefault();
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = false;
-      dialogConfig.autoFocus = true;
-      dialogConfig.width = this.getRelativeWidth();
-      dialogConfig.height = this.getRelativeHeight();
-      dialogConfig.scrollStrategy = this.scrollStrategy;
-      dialogConfig.data = {
-        bookmarks$: this.userDataHistoryStore.getAllHistory$(this.userId),
-        title: '<i class="fas fa-history"></i> History',
-      };
-
-      const dialogRef = this.historyDialog.open(
-        HotKeysDialogComponent,
-        dialogConfig
-      );
-      dialogRef.afterClosed().subscribe((data) => {
-        console.log('Dialog output:', data);
-      });
+      this.launchHistoryDialog();
     }
+  }
+
+  private launchHistoryDialog() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = this.getRelativeWidth();
+    dialogConfig.height = this.getRelativeHeight();
+    dialogConfig.scrollStrategy = this.scrollStrategy;
+    dialogConfig.data = {
+      bookmarks$: this.userDataHistoryStore.getAllHistory$(this.userId),
+      title: '<i class="fas fa-history"></i> History',
+    };
+
+    const dialogRef = this.historyDialog.open(
+      HotKeysDialogComponent,
+      dialogConfig
+    );
+    dialogRef.afterClosed().subscribe((data) => {
+      console.log('Dialog output:', data);
+    });
   }
 
   public acknowledgeCodeverRebranding(response: string) {

@@ -51,9 +51,9 @@
           <a
             class="list-group-item list-group-item-action bg-light"
             title="Ctrl+H for quick access"
-            [routerLink]="['/history']"
+            (click)="launchHistoryDialog()"
           >
-            <i class="fas fa-history mr-1"></i> History bookmarks
+            <i class="fas fa-history mr-1"></i> History bookmarks (<b>Ctrl</b>+<b>h</b>)
           </a>
           <ng-container
             *ngFor="let bookmark of latestVisitedBookmarks; let i = index"
@@ -76,15 +76,15 @@
                 <i class="fa fa-xs fa-bookmark mr-1"></i>
                 <span
                   *ngIf="!hoveringLastVisited[i]; else longVersionLastVisited"
-                  >{{
-                    bookmark.name.length > 33
-                      ? bookmark.name.substring(0, 33) + '...'
-                      : bookmark.name
+                >{{
+                  bookmark.name.length > 33
+                    ? bookmark.name.substring(0, 33) + '...'
+                    : bookmark.name
                   }}</span
                 >
                 <ng-template #longVersionLastVisited>{{
                   bookmark.name
-                }}</ng-template>
+                  }}</ng-template>
               </a>
             </span>
           </ng-container>
@@ -92,7 +92,7 @@
 
         <ng-container *ngIf="latestSearches$ | async as latestSearches">
           <span class="list-group-item list-group-item-action bg-light"
-            ><i class="fa fa-search mr-1"></i> Latest searches</span
+          ><i class="fa fa-search mr-1"></i> Latest searches</span
           >
           <div class="mt-1" (mouseout)="resetHoveringLastSearches()">
             <ng-container
@@ -133,7 +133,7 @@
                     mySearch.text.length > 30
                       ? mySearch.text.substring(0, 30) + '...'
                       : mySearch.text
-                  }}</span>
+                    }}</span>
                   <ng-template #longVersion>{{ mySearch.text }}</ng-template>
                   <i
                     *ngIf="
@@ -172,7 +172,7 @@
               <li>
                 👉 &nbsp;Go to
                 <a [routerLink]="['/dashboard']"
-                  ><i class="fas fa-tachometer-alt"></i> My Dashboard</a
+                ><i class="fas fa-tachometer-alt"></i> My Dashboard</a
                 >
                 where you can <strong>import</strong> your browser bookmarks,
                 view your latest activity and your used tags or searches
@@ -180,11 +180,11 @@
               <li class="mt-1">
                 👉 &nbsp;See our
                 <a [routerLink]="['/howto']"
-                  ><i class="fas fa-info-circle"></i> HowTo Guides</a
+                ><i class="fas fa-info-circle"></i> HowTo Guides</a
                 >
                 and use
                 <a [routerLink]="['/extensions']"
-                  >one of our extensions <i class="fas fa-wrench"></i
+                >one of our extensions <i class="fas fa-wrench"></i
                 ></a>
                 to help you easily manage your bookmarks and snippets from your
                 favorite browser or IDE
@@ -217,7 +217,7 @@
   | <a routerLink="about" routerLinkActive="active">About</a> |
   <a routerLink="privacy-policy" routerLinkActive="active">Privacy</a> |
   <a routerLink="terms-and-conditions" routerLinkActive="active"
-    >Terms & Conditions</a
+  >Terms & Conditions</a
   >
   | <a href="http://www.codepedia.org/tags/#codever" target="_blank">Blog</a> |
   <a href="mailto:bookmarks@codingpedia.org">Contact</a>
