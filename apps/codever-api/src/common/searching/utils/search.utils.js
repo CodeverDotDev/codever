@@ -4,61 +4,46 @@ const { SearchInclude } = require('../constant/searchInclude.constant');
 const { SpecialSearchTerm } = require('../constant/specialSearchTerm.constant');
 const { DocType } = require('../../constants');
 
-let splitSearchQuery = function (query) {
-  const terms = [];
-  let term = '';
-  const tags = [];
-  let tag = '';
+let parseQueryString = function (queryString) {
+  let searchTerms = [];
+  let tags = [];
+  let inTag = false;
+  let currentWord = '';
 
-  let isInsideTerm = false;
-  let isInsideTag = false;
+  for (let i = 0; i < queryString.length; i++) {
+    let char = queryString.charAt(i);
 
-  for (let i = 0; i < query.length; i++) {
-    const currentCharacter = query[i];
-    if (currentCharacter === ' ') {
-      if (!isInsideTag) {
-        if (!isInsideTerm) {
-          continue;
-        } else {
-          terms.push(term);
-          isInsideTerm = false;
-          term = '';
-        }
-      } else {
-        tag += ' ';
+    if (char === '[') {
+      inTag = true;
+      if (currentWord !== '') {
+        searchTerms.push(currentWord);
+        currentWord = '';
       }
-    } else if (currentCharacter === '[') {
-      if (!isInsideTag) {
-        isInsideTag = true;
-      }
-    } else if (currentCharacter === ']') {
-      if (isInsideTag) {
-        isInsideTag = false;
-        tags.push(tag.trim());
-        tag = '';
+    } else if (char === ']') {
+      inTag = false;
+      tags.push(currentWord);
+      currentWord = '';
+    } else if (char === ' ') {
+      if (inTag) {
+        currentWord += char;
+      } else if (currentWord !== '') {
+        searchTerms.push(currentWord);
+        currentWord = '';
       }
     } else {
-      if (isInsideTag) {
-        tag += currentCharacter;
-      } else {
-        isInsideTerm = true;
-        term += currentCharacter;
-      }
+      currentWord += char;
     }
   }
 
-  if (tag.length > 0) {
-    tags.push(tag.trim());
+  if (currentWord !== '') {
+    if (inTag) {
+      tags.push(currentWord);
+    } else {
+      searchTerms.push(currentWord);
+    }
   }
 
-  if (term.length > 0) {
-    terms.push(term);
-  }
-
-  return {
-    searchTerms: terms,
-    searchTags: tags,
-  };
+  return [searchTerms, tags];
 };
 
 let extractFulltextAndSpecialSearchTerms = function (searchedTerms) {
@@ -223,11 +208,11 @@ const generateSearchFilterAndSortBy = (
   docType,
   isPublic,
   userId,
-  query,
+  queryString,
   searchInclude,
   sort
 ) => {
-  const { searchTerms, searchTags } = splitSearchQuery(query);
+  const [searchTerms, searchTags] = parseQueryString(queryString);
 
   const { specialSearchTerms, fulltextSearchTerms } =
     extractFulltextAndSpecialSearchTerms(searchTerms);
@@ -256,7 +241,7 @@ const generateSearchFilterAndSortBy = (
 };
 
 module.exports = {
-  splitSearchQuery: splitSearchQuery,
+  parseQueryString: parseQueryString,
   extractFulltextAndSpecialSearchTerms: extractFulltextAndSpecialSearchTerms,
   generateFullSearchText: generateFullSearchText,
   setFulltextSearchTermsFilter: setFulltextSearchTermsFilter,

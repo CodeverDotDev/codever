@@ -7,15 +7,39 @@ const { OrderBy } = require('../constant/orderby.constant');
 const { CreatedAt } = require('../constant/createtAt.constant');
 const { DocType } = require('../../constants');
 
-describe('splitSearchQuery', () => {
-  it('should split search query into terms and tags', () => {
-    const query = 'term1 [tag1] term2 [tag2]';
-    const expectedResult = {
-      searchTerms: ['term1', 'term2'],
-      searchTags: ['tag1', 'tag2'],
-    };
-    expect(searchUtils.splitSearchQuery(query)).toEqual(expectedResult);
-  });
+describe('parseQueryString', () => {
+  test.each([
+    ['parsing text [javascript]', ['parsing', 'text'], ['javascript']],
+    ['[html] css', ['css'], ['html']],
+    ['[html template] css', ['css'], ['html template']],
+    ['[html-template] css', ['css'], ['html-template']],
+    [
+      '[react native]    [javascript]  web',
+      ['web'],
+      ['react native', 'javascript'],
+    ],
+    ['  [ruby]   hello world', ['hello', 'world'], ['ruby']],
+    ['no tags', ['no', 'tags'], []],
+    ['no tags private:only', ['no', 'tags', 'private:only'], []],
+    [
+      'no tags private:only   site:github.com',
+      ['no', 'tags', 'private:only', 'site:github.com'],
+      [],
+    ],
+    [
+      'no tags user:12345678-abcd-1234-abcd-123456789abc',
+      ['no', 'tags', 'user:12345678-abcd-1234-abcd-123456789abc'],
+      [],
+    ],
+  ])(
+    "parses '%s' correctly",
+    (queryString, expectedSearchTerms, expectedTags) => {
+      const [searchTerms, searchTags] =
+        searchUtils.parseQueryString(queryString);
+      expect(searchTerms).toEqual(expectedSearchTerms);
+      expect(searchTags).toEqual(expectedTags);
+    }
+  );
 });
 
 describe('extractFulltextAndSpecialSearchTerms', () => {

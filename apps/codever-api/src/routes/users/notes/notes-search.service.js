@@ -10,7 +10,7 @@ let findPersonalNotes = async function (
   searchInclude
 ) {
   //split in text and tags
-  const { searchTerms, searchTags } = searchUtils.splitSearchQuery(query);
+  const [searchTerms, searchTags] = searchUtils.parseQueryString(query);
   const { fulltextSearchTerms } =
     searchUtils.extractFulltextAndSpecialSearchTerms(searchTerms);
 
