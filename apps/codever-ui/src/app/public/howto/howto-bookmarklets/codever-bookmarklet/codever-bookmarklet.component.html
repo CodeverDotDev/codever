@@ -1,0 +1,17 @@
+<a
+  *ngIf="withWindowDialog; else noPopup"
+  class="text-decoration-none, bookmarklet-link"
+  title="Drag to your browser bookmark bar for easy bookmarking"
+  href="javascript:(function(){let l=location.href;let s=document.getSelection().toString();let t=document.title;let w,h;if(innerWidth>1400){w=930}else{w=(innerWidth*65)/100}if(innerHeight>1400){h=1150}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=${innerHeight-h},left=${innerWidth - w}`;if(s === '') {open(`https://www.codever.dev/my-bookmarks/new?url=${encodeURIComponent(l)}&title=${encodeURIComponent(t)}&popup=true&initiator=bookmarklet`,'Codever',features);} else {open(`https://www.codever.dev/new-entry?url=${encodeURIComponent(l)}&selection=${encodeURIComponent(s)}&title=${encodeURIComponent(t)}&popup=true&initiator=bookmarklet`,'Codever',features);}})();"
+>
+  +Codever <i class="fas fas fa-arrows-alt ml-1"></i>
+</a>
+<ng-template #noPopup>
+  <a
+    class="text-decoration-none, bookmarklet-link"
+    title="Drag to your browser bookmark bar for easy bookmarking"
+    href="javascript:(function(){let q=location.href;let s=document.getSelection().toString();t=document.title;if(s===''){location.href=`https://www.codever.dev/my-bookmarks/new?url=${encodeURIComponent(q)}&title=${encodeURIComponent(t)}&initiator=bookmarklet`} else {location.href=`https://www.codever.dev/new-entry?url=${encodeURIComponent(q)}&selection=${encodeURIComponent(s)}&title=${encodeURIComponent(t)}&initiator=bookmarklet`}})();"
+  >
+    +Codever - no popup <i class="fas fas fa-arrows-alt ml-1"></i>
+  </a>
+</ng-template>

@@ -11,27 +11,18 @@ module.exports = {
       : converter.makeHtml(req.body.description);
     const youtubeVideoId = req.body.youtubeVideoId;
     const stackoverflowQuestionId = req.body.stackoverflowQuestionId;
-    const bookmark = new Bookmark({
-      _id: req.body._id,
-      name: req.body.name,
-      location: req.body.location,
-      language: req.body.language,
-      description: req.body.description,
-      descriptionHtml: descriptionHtml,
-      tags: req.body.tags,
-      publishedOn: req.body.publishedOn,
-      sourceCodeURL: req.body.sourceCodeURL,
+    req.body = {
+      ...req.body,
       userId: req.body.userId || req.params.userId,
-      userDisplayName: req.body.userDisplayName,
-      public: req.body.public,
-      lastAccessedAt: req.body.lastAccessedAt,
-      likeCount: req.body.likeCount || 0,
       youtubeVideoId: youtubeVideoId ? youtubeVideoId : null,
+      likeCount: req.body.likeCount || 0,
       stackoverflowQuestionId: stackoverflowQuestionId
         ? stackoverflowQuestionId
         : null,
-    });
+      descriptionHtml: descriptionHtml,
+    };
 
+    const bookmark = new Bookmark(req.body);
     return bookmark;
   },
 };

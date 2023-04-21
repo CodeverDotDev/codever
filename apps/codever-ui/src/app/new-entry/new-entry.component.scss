@@ -1,9 +1,21 @@
 .btn-container {
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+
+  button {
+    width: 9rem;
+  }
 }
+
+.selected-text-effect {
+  background: lightblue;
+  padding: 0.2rem;
+}
+
 
 .page-wrapper {
   margin-top: 7rem;

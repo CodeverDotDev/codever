@@ -14,6 +14,7 @@ export class CreateSnippetComponent implements OnInit {
   tagsStr; // value of "tags" query parameter if present
   comment; // value of "comment" query parameter if present
   ext; // which extension the call is coming from (e.g 'vscode' from visual studio code extension)
+  initiator; // which extension the call is coming from (e.g 'vscode' from visual studio code extension)
 
   constructor(private route: ActivatedRoute) {}
 
@@ -25,5 +26,6 @@ export class CreateSnippetComponent implements OnInit {
     this.tagsStr = this.route.snapshot.queryParamMap.get('tags');
     this.comment = this.route.snapshot.queryParamMap.get('comment');
     this.ext = this.route.snapshot.queryParamMap.get('ext');
+    this.initiator = this.route.snapshot.queryParamMap.get('initiator');
   }
 }

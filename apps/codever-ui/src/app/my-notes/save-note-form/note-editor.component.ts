@@ -90,6 +90,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   note: Note;
 
+  @Input()
+  initiator: string;
+
   scrollStrategy: ScrollStrategy;
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -246,6 +249,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     note.createdAt = now;
     note.updatedAt = now;
     note.userId = this.userId;
+    note.initiator = this.initiator;
     this.personalNotesService
       .createNote(this.userId, note)
       .subscribe((response) => {

@@ -233,10 +233,10 @@
           <a
             title="How to use bookmarklets"
             class="dropdown-item"
-            [routerLink]="['/howto/bookmarklets']"
+            [routerLink]="['/howto/bookmarklet']"
           >
             <i class="fas fa-info-circle"></i>
-            Bookmarklets
+            Bookmarklet
             <i class="fas fa-bookmark right-font-icon"></i>
           </a>
           <div class="dropdown-divider"></div>
@@ -269,15 +269,15 @@
           class="dropdown-menu dropdown-menu-right"
           aria-labelledby="navbarDropdown-new"
         >
-          <a class="dropdown-item" routerLink="/my-bookmarks/new">
-            <i class="fa fa-bookmark"></i>
-            Bookmark
-          </a>
-          <a class="dropdown-item" routerLink="/my-snippets/new">
+  <a class="dropdown-item" [routerLink]="['/my-bookmarks/new']" [queryParams]="{initiator: 'browser'}">
+    <i class="fa fa-bookmark"></i>
+    Bookmark
+  </a>
+          <a class="dropdown-item" [routerLink]="['/my-snippets/new']" [queryParams]="{initiator: 'browser'}">
             <i class="fa fa-code"></i>
             Snippet
           </a>
-          <a class="dropdown-item" routerLink="/my-notes/new">
+          <a class="dropdown-item" [routerLink]="['/my-notes/new']" [queryParams]="{initiator: 'browser'}">
             <i class="fas fa-sticky-note"></i>
             Note
           </a>

@@ -21,6 +21,7 @@ const snippetSchema = new Schema(
     tags: [String],
     userId: { type: String, ref: 'User' },
     userDisplayName: String,
+    initiator: {type:String, select: false},
     public: Boolean,
     language: String,
     sourceUrl: String,

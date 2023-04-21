@@ -18,8 +18,13 @@ const howToRoutes: Routes = [
   },
   {
     path: 'bookmarklets',
+    redirectTo: 'bookmarklet', // needed for already installed extension or bookmarklets
+  },
+  {
+    path: 'bookmarklet',
     component: HowToBookmarkletComponent,
   },
+
   {
     path: 'bookmarks',
     component: HowToBookmarksComponent,

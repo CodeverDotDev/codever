@@ -1,5 +1,5 @@
 <div class="mb-4 page-wrapper">
-  <h3 style="text-align: center">Pass the selected meta-data to a new</h3>
+  <h3 style="text-align: center">Create new</h3>
   <div class="btn-container">
     <div class="mt-2">
       <button
@@ -11,11 +11,19 @@
       </button>
       <button
         type="button"
-        class="btn btn-primary btn-lg mr-2"
+        class="btn btn-primary btn-lg mr-3"
         (click)="redirectToNewSnippet()"
       >
         <i class="fa fa-code"></i> Snippet
       </button>
+      <button
+        type="button"
+        class="btn btn-primary btn-lg mr-2"
+        (click)="redirectToNewNote()"
+      >
+        <i class="fas fa-sticky-note"></i> Note
+      </button>
     </div>
   </div>
+  <h4 class="mt-4" style="text-align: center">with the <span class="selected-text-effect">text you selected</span></h4>
 </div>

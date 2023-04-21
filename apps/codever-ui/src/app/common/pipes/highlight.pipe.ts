@@ -4,7 +4,10 @@ import { PipeTransform } from '@angular/core';
 /**
  * Angular doc - https://angular.io/guide/pipes
  */
-@Pipe({ name: 'highlight' })
+@Pipe({
+  name: 'highlight',
+  standalone: true,
+})
 export class HighLightPipe implements PipeTransform {
   // piece of code taken from https://gist.github.com/adamrecsko/0f28f474eca63e0279455476cc11eca7 (thank you andrei)
   transform(text: string, search): string {

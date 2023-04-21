@@ -12,7 +12,7 @@ const PaginationQueryParamsHelper = require('../../common/pagination-query-param
  */
 router.get('/shared/:shareableId', async (request, response) => {
   const shareableId = request.params.shareableId;
-  const sharedSnippet = await PublicSnippetsService.getSnippetBySharableId(
+  const sharedSnippet = await PublicSnippetsService.getSnippetByShareableId(
     shareableId
   );
 

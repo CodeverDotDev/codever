@@ -93,7 +93,7 @@ let getMostUsedPublicTagsForSnippets = async function (limit) {
 };
 
 /* GET snippet of user by shareableId */
-let getSnippetBySharableId = async (shareableId) => {
+let getSnippetByShareableId = async (shareableId) => {
   const snippet = await Snippet.findOne({
     shareableId: shareableId,
   }).select('+shareableId');
@@ -112,5 +112,5 @@ module.exports = {
   getLatestPublicSnippets: getLatestPublicSnippets,
   getPublicSnippetsForTag: getPublicSnippetsForTag,
   getMostUsedPublicTagsForSnippets: getMostUsedPublicTagsForSnippets,
-  getSnippetBySharableId: getSnippetBySharableId,
+  getSnippetByShareableId: getSnippetByShareableId,
 };

@@ -1,5 +1,10 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { tagsValidator } from '../../shared/directive/tags-validation.directive';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { Logger } from '../../core/logger.service';
@@ -52,7 +57,10 @@ export class CreateSnippetFormComponent
   popup; // if it's popup window
 
   @Input()
-  ext; // there the call is coming fron
+  ext; // there the call is coming from
+
+  @Input()
+  initiator; // hint where the save of the snippet might have been triggered
 
   constructor(
     protected formBuilder: UntypedFormBuilder,

@@ -1,6 +1,11 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { snippet_common_tags } from '../../shared/constants/snippet-common-tags';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { CodeSnippet, Snippet } from '../../core/model/snippet';
@@ -162,9 +167,15 @@ export class SnippetFormBaseComponent implements OnInit {
     this.codeSnippetsFormArray.removeAt(index);
   }
 
-  createSnippet(snippet: Snippet, copyToMine: boolean, popup: any) {
+  createSnippet(
+    snippet: Snippet,
+    copyToMine: boolean,
+    popup: any,
+    initiator: string
+  ) {
     snippet.userId = this.userId;
     snippet.shareableId = undefined;
+    snippet.initiator = initiator;
     const now = new Date();
     snippet.lastAccessedAt = now;
     if (copyToMine) {

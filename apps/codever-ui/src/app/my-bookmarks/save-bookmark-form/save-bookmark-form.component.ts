@@ -89,13 +89,13 @@ export class SaveBookmarkFormComponent implements OnInit {
   popup; // if present will go popup to the submitted url
 
   @Input()
-  popupExt; // if present will go popup to the submitted url
-
-  @Input()
   desc; // value of "desc" query parameter if present
 
   @Input()
   title; // value of "title" query parameter if present
+
+  @Input()
+  initiator;
 
   @Input()
   bookmark$: Observable<Bookmark>;
@@ -471,6 +471,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       location: bookmark.location,
       language: bookmark.language,
       tags: bookmark.tags,
+      initiator: this.initiator,
       publishedOn: bookmark.publishedOn,
       sourceCodeURL: bookmark.sourceCodeURL,
       description: bookmark.description,
@@ -515,18 +516,6 @@ export class SaveBookmarkFormComponent implements OnInit {
             .subscribe(() => {
               this.publishInUserDataStores(newBookmark, readLater, pinned);
               this.navigateToBookmarkDetails(newBookmark);
-
-              /*            if (this.url) {
-                          if (this.popup) {
-                            this.navigateToBookmarkDetails(newBookmark);
-                          } else if (this.popupExt) {
-                            this.navigateToHomePageHistoryTab();
-                          } else {
-                            window.location.href = this.url;
-                          }
-                        } else {
-                          this.navigateToHomePageHistoryTab();
-                        }*/
             });
         },
         (error: HttpResponse<any>) => {

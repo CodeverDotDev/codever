@@ -2,7 +2,7 @@
   <form
     [formGroup]="snippetFormGroup"
     novalidate
-    (ngSubmit)="createSnippet(snippetFormGroup.value, false, popup)"
+    (ngSubmit)="createSnippet(snippetFormGroup.value, false, popup, initiator)"
   >
     <div class="form-group pb-1">
       <label for="title" class="space-btw-wrapper"

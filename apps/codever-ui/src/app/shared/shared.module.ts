@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { HighLightPipe } from './pipe/highlight.pipe';
 import { HighLightHtmlPipe } from './pipe/highlight.no-html-tags.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -44,6 +43,7 @@ import { AsyncNoteListComponent } from './async-note-list/async-note-list.compon
 import { MarkedImageWidthDirective } from './directive/marked-image-width.directive';
 import { SnippetSocialShareDialogComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
 import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
+import { HighLightPipe } from '../common/pipes/highlight.pipe';
 
 /**
  * Add a SharedModule to hold the common components, directives, and pipes and share them with the modules that need them.
@@ -64,9 +64,9 @@ import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-socia
     MatFormFieldModule,
     MatChipsModule,
     MatIconModule,
+    HighLightPipe,
   ],
   declarations: [
-    HighLightPipe,
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
     BookmarksFilterPipe,
@@ -104,7 +104,6 @@ import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-socia
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HighLightPipe,
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
     SearchFilterPipe,

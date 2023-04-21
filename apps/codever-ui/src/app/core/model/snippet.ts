@@ -1,12 +1,13 @@
 export interface Snippet {
   _id?: string;
   shareableId?: string;
-  type: string; // should always by 'snippet'
+  type: string; // should always be 'snippet'
   title: string;
   codeSnippets: CodeSnippet[];
   tags: string[];
   userId?: string;
-  sourceUrl: string; // the location the snippet might have been inspired from to follow for further analysis
+  initiator?: string;
+  sourceUrl?: string; // the location the snippet might have been inspired from to follow for further analysis
   public?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

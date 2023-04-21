@@ -2,18 +2,19 @@ export interface Bookmark {
   _id?: string;
   shareableId?: string;
   name: string;
-  type: string; // should always by 'bookmark'
   location: string;
+  type: string; // should always be 'bookmark'
+  tags: string[];
+  initiator?: string;
   description?: string;
   descriptionHtml?: string;
-  tags: string[];
   tagsLine?: string;
   publishedOn?: Date;
   sourceCodeURL?: string;
   userId?: string;
   userDisplayName: string;
   public?: boolean;
-  language: string;
+  language?: string;
   createdAt?: Date;
   updatedAt?: Date;
   lastAccessedAt?: Date;

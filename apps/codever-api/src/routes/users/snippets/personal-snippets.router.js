@@ -24,10 +24,10 @@ personalSnippetsRouter.post(
   keycloak.protect(),
   async (request, response) => {
     UserIdValidator.validateUserId(request);
-    const codeletData = request.body;
+    const snippetData = request.body;
     let newSnippet = await PersonalSnippetsService.createSnippet(
       request.params.userId,
-      codeletData
+      snippetData
     );
 
     response

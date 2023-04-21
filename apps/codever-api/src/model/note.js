@@ -7,6 +7,7 @@ const noteSchema = new Schema(
     type: { type: String, required: true, default: 'note' },
     content: String,
     reference: String,
+    initiator: {type:String, select: false},
     tags: [String],
     public: Boolean,
     userId: { type: String, ref: 'User' },

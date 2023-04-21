@@ -129,7 +129,7 @@ export class UpdateSnippetFormComponent
 
   saveSnippet(snippet: Snippet) {
     if (this.copyToMine) {
-      super.createSnippet(snippet, this.copyToMine, null);
+      super.createSnippet(snippet, this.copyToMine, null, 'copy-to-mine');
     } else {
       this.updateSnippet(snippet);
     }

@@ -5,11 +5,12 @@ const bookmarkSchema = new Schema(
   {
     shareableId: { type: String, select: false },
     name: { type: String, required: true },
-    type: { type: String, required: true, default: 'bookmark' },
+    type: { type: String, required:  true, default: 'bookmark' },
     location: { type: String, required: true },
     description: String,
     descriptionHtml: String,
     tags: [String],
+    initiator: {type:String, select: false},
     publishedOn: Date,
     sourceCodeURL: { type: String },
     userId: { type: String, ref: 'User' },

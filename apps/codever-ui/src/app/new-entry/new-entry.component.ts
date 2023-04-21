@@ -9,9 +9,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class NewEntryComponent implements OnInit {
   url; // value of "url" query parameter if present
   popup; // if present will go popup to the submitted url
-  popupExt; // set from the popup of the extension (firefox currently)}
   selection; // value of "selection" query parameter if present
   title; // value of "title" query parameter if present
+  initiator; // value of "initiator" query parameter if present
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
@@ -22,7 +22,7 @@ export class NewEntryComponent implements OnInit {
       this.route.snapshot.queryParamMap.get('desc');
     this.title = this.route.snapshot.queryParamMap.get('title');
     this.popup = this.route.snapshot.queryParamMap.get('popup');
-    this.popupExt = this.route.snapshot.queryParamMap.get('popupExt');
+    this.initiator = this.route.snapshot.queryParamMap.get('initiator');
   }
 
   redirectToNewBookmark() {
@@ -32,6 +32,7 @@ export class NewEntryComponent implements OnInit {
         desc: this.selection,
         title: this.title,
         popup: this.popup,
+        initiator: this.initiator,
       },
     });
   }
@@ -43,6 +44,19 @@ export class NewEntryComponent implements OnInit {
         code: this.selection,
         title: this.title,
         popup: this.popup,
+        initiator: this.initiator,
+      },
+    });
+  }
+
+  redirectToNewNote() {
+    this.router.navigate(['/my-notes/new'], {
+      queryParams: {
+        sourceUrl: this.url,
+        code: this.selection,
+        title: this.title,
+        popup: this.popup,
+        initiator: this.initiator,
       },
     });
   }
