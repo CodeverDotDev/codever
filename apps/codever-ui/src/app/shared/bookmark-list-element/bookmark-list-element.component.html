@@ -62,7 +62,7 @@
             -
           </span>
           <span
-            *ngIf="bookmark.location.length <= 100; else sliceLocation"
+            *ngIf="bookmark?.location?.length <= 100; else sliceLocation"
             [innerHtml]="
               bookmark.location | highlight : filterText | highlight : queryText
             "
