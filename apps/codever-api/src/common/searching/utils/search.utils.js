@@ -184,7 +184,7 @@ let setSpecialSearchTermsFilter = function (
     if (docType === DocType.BOOKMARK) {
       newFilter.location = new RegExp(specialSearchFilters.site, 'i');
     } else if (docType === DocType.SNIPPET) {
-      newFilter.sourceUrl = new RegExp(specialSearchFilters.site, 'i'); //TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
+      newFilter.reference = new RegExp(specialSearchFilters.site, 'i'); //TODO when performance becomes an issue extract domains from URLs and make a direct comparison with the domain
     } else {
       throw new Error(`${docType} is not supported as document type`);
     }

@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { snippet_common_tags } from '../../shared/constants/snippet-common-tags';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { CodeSnippet, Snippet } from '../../core/model/snippet';
+import { CodeSnippet, Origin, Snippet } from '../../core/model/snippet';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
 import {
@@ -171,11 +171,13 @@ export class SnippetFormBaseComponent implements OnInit {
     snippet: Snippet,
     copyToMine: boolean,
     popup: any,
-    initiator: string
+    initiator: string,
+    origin?: Origin
   ) {
     snippet.userId = this.userId;
     snippet.shareableId = undefined;
     snippet.initiator = initiator;
+    snippet.origin = origin;
     const now = new Date();
     snippet.lastAccessedAt = now;
     if (copyToMine) {

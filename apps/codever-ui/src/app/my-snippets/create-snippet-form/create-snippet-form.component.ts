@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorService } from '../../core/error/error.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { SuggestedTagsStore } from '../../core/user/suggested-tags.store';
-import { Snippet } from '../../core/model/snippet';
+import { Origin, Snippet } from '../../core/model/snippet';
 import { PersonalSnippetsService } from '../../core/personal-snippets.service';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service';
@@ -45,7 +45,7 @@ export class CreateSnippetFormComponent
   title; // value of "title" query parameter if present
 
   @Input()
-  sourceUrl; // value of "url" query parameter if present
+  location; // value of "url" query parameter if present
 
   @Input()
   tagsStr; // tags received - string with comma separated values
@@ -60,7 +60,18 @@ export class CreateSnippetFormComponent
   ext; // there the call is coming from
 
   @Input()
-  initiator; // hint where the save of the snippet might have been triggered
+  initiator;
+
+  @Input()
+  file;
+
+  @Input()
+  project;
+
+  @Input()
+  workspace;
+
+  origin: Origin;
 
   constructor(
     protected formBuilder: UntypedFormBuilder,
@@ -86,16 +97,17 @@ export class CreateSnippetFormComponent
   }
 
   ngOnInit(): void {
+    this.setSnippetOrigin();
     super.ngOnInit();
     this.buildInitialForm();
     this.codeSnippetsFormArray = this.snippetFormGroup.get(
       'codeSnippets'
     ) as UntypedFormArray;
 
-    if (this.sourceUrl) {
+    if (this.location) {
       const stackoverflowQuestionId =
         this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(
-          this.sourceUrl
+          this.location
         );
       if (stackoverflowQuestionId) {
         this.webpageInfoService
@@ -126,6 +138,17 @@ export class CreateSnippetFormComponent
     this.setTagsFromQueryParameter();
   }
 
+  private setSnippetOrigin() {
+    if (this.file || this.project || this.workspace || this.location) {
+      this.origin = {
+        location: this.location, // holds either the URL from the web or file path if it comes from IDE extensions
+        file: this.file,
+        project: this.project,
+        workspace: this.workspace,
+      };
+    }
+  }
+
   private setTagsFromQueryParameter() {
     if (this.tagsStr) {
       const tags: string[] = this.tagsStr.split(',');
@@ -150,7 +173,7 @@ export class CreateSnippetFormComponent
       ],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       codeSnippets: new UntypedFormArray([this.createInitialCodeSnippet()]),
-      sourceUrl: this.sourceUrl ? this.sourceUrl : '',
+      reference: this.location ? this.location : '',
       public: false,
     });
   }

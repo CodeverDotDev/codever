@@ -40,7 +40,7 @@ export class NewEntryComponent implements OnInit {
   redirectToNewSnippet() {
     this.router.navigate(['/my-snippets/new'], {
       queryParams: {
-        sourceUrl: this.url,
+        location: this.url,
         code: this.selection,
         title: this.title,
         popup: this.popup,
@@ -52,7 +52,7 @@ export class NewEntryComponent implements OnInit {
   redirectToNewNote() {
     this.router.navigate(['/my-notes/new'], {
       queryParams: {
-        sourceUrl: this.url,
+        reference: this.url,
         code: this.selection,
         title: this.title,
         popup: this.popup,

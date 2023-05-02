@@ -117,7 +117,7 @@ export class UpdateSnippetFormComponent
       title: ['', Validators.required],
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       codeSnippets: new UntypedFormArray([this.createInitialCodeSnippet()]),
-      sourceUrl: '',
+      reference: '',
       public: false,
       copiedFromId: null,
     });

@@ -55,22 +55,22 @@
           </h4>
         </ng-template>
         <h6 class="card-subtitle mb-2 text-muted url-under-title">
-          <span *ngIf="snippet.sourceUrl"
+          <span *ngIf="snippet.reference"
             ><strong>Ref</strong> -
             <span
               *ngIf="
-                snippet.sourceUrl.startsWith('http:') ||
-                  snippet.sourceUrl.startsWith('https:');
+                snippet.reference.startsWith('http:') ||
+                  snippet.reference.startsWith('https:');
                 else justText
               "
             >
-              <a href="{{ snippet.sourceUrl }}" target="_blank">{{
-                snippet.sourceUrl
+              <a href="{{ snippet.reference }}" target="_blank">{{
+                snippet.reference
               }}</a>
               <sup class="ml-1"><i class="fas fa-external-link-alt"></i></sup>
             </span>
             <ng-template #justText>
-              <span>{{ snippet.sourceUrl }}</span>
+              <span>{{ snippet.reference }}</span>
             </ng-template>
           </span>
         </h6>

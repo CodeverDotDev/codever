@@ -149,13 +149,13 @@ describe('setSpecialSearchTermsFilter', () => {
         { public: false },
       ],
       [
-        'should set the sourceUrl filter when specialSearchTerms.site is present for snippets',
+        'should set the reference filter when specialSearchTerms.site is present for snippets',
         {},
         DocType.SNIPPET,
         { site: 'example.com' },
         false,
         '123',
-        { sourceUrl: /example.com/i },
+        { reference: /example.com/i },
       ],
       [
         'should set the location filter when specialSearchTerms.site is present for bookmarks',
@@ -375,7 +375,7 @@ describe('generateSearchFilterAndSortBy', () => {
       {
         userId: input.userId,
         $text: { $search: 'jest testing' },
-        sourceUrl: new RegExp('codever.dev', 'i'),
+        reference: new RegExp('codever.dev', 'i'),
         tags: {
           $all: ['javascript'],
         },

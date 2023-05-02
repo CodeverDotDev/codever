@@ -154,7 +154,7 @@ db.snippets.createIndex(
     tags: "text",
     "codeSnippets.comment": "text",
     "codeSnippets.code": "text",
-    sourceUrl: "text"
+    reference: "text"
   },
   {
     weights: {
@@ -162,7 +162,7 @@ db.snippets.createIndex(
       tags: 13,
       "codeSnippets.comment": 3,
       "codeSnippets.code": 3,
-      sourceUrl: 1
+      reference: 1
     },
     name: "full_text_search",
     default_language: "none",
