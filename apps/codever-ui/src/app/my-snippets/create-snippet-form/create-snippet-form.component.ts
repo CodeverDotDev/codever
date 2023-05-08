@@ -51,9 +51,6 @@ export class CreateSnippetFormComponent
   tagsStr; // tags received - string with comma separated values
 
   @Input()
-  comment; // comment received via query
-
-  @Input()
   popup; // if it's popup window
 
   @Input()
@@ -192,9 +189,34 @@ export class CreateSnippetFormComponent
           : '',
         textSizeValidator(10000, 1000),
       ],
-      comment: [this.comment ? this.comment : '', textSizeValidator(1000, 30)],
-      commentAfter: ['', textSizeValidator(1000, 30)],
+      comment: ['', textSizeValidator(1000, 30)],
+      commentAfter: [
+        this.getComment(this.project, this.workspace, this.file),
+        textSizeValidator(1000, 30),
+      ],
     });
+  }
+
+  private getComment(
+    project: string | undefined,
+    workspace: string | undefined,
+    file: string | undefined
+  ): string {
+    let comment = '';
+
+    if (workspace) {
+      comment += `**Workspace**: \`${workspace}\``;
+    }
+
+    if (project) {
+      comment += `**Project**: \`${project}\``;
+    }
+
+    if (file) {
+      comment += `**File**: \`${file}\``;
+    }
+
+    return comment.trim();
   }
 
   decodeTextVsCode(text: string): string {
