@@ -110,6 +110,19 @@ This starts
 
 ## Testing
 
+### E2E (integration) tests with Cypress
+
+> Keycloak and mongodb have to be started as specified above (`docker-compose up` command)
+
+Run the integration test by issuing the following command.
+
+```bash
+cd apps/codever-ui
+npm run cy:run
+```
+
+> To open Cypress you can run the following task `npm run cy:open`
+
 ### API (backend)
 
 ### Integration tests

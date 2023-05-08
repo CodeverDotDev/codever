@@ -9,7 +9,8 @@
     "build:aot": "ng build --configuration production --aot",
     "test": "ng test",
     "lint": "ng lint",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run --config-file cypress/cypress.config.ts",
+    "cy:open": "cypress open --config-file cypress/cypress.config.ts"
   },
   "private": true,
   "dependencies": {

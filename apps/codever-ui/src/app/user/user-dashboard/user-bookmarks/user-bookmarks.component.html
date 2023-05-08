@@ -1,5 +1,5 @@
 <div class="mt-3 sorting-import-buttons">
-  <div class="btn-group" role="group">
+  <div class="btn-group" role="group" data-test="bookmarks-sorting-btn-group">
     <button
       type="button"
       class="btn"
@@ -10,6 +10,7 @@
       }"
       [disabled]="orderBy === 'LAST_CREATED'"
       (click)="getLastCreatedBookmarks()"
+      data-test="bookmarks-sorting-btn-group-btn-latest"
     >
       Latest <i class="fas fa-long-arrow-alt-down"></i>
     </button>
@@ -23,8 +24,9 @@
       }"
       [disabled]="orderBy === 'MOST_USED'"
       (click)="getMostUsedBookmarks()"
+      data-test="bookmarks-sorting-btn-group-btn-most-visited"
     >
-      Visited <i class="fas fa-long-arrow-alt-down"></i>
+      Most Visited <i class="fas fa-long-arrow-alt-down"></i>
     </button>
     <!-- TODO remove when all private modus is implemented -->
     <button

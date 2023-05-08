@@ -1,0 +1,27 @@
+[
+  {
+    "type": "bookmark",
+    "tags": [
+      "programming",
+      "blog",
+      "open-source"
+    ],
+    "_id": "60bc5eb7fee9c5cf09841cc0",
+    "name": "Share coding knowledge – CodepediaOrg",
+    "location": "https://www.codepedia.org/",
+    "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
+    "userDisplayName": "Mock",
+    "language": "en",
+    "description": "Coding knowledge hub, providing free educational content for professionals involved in software development. The website covers different topics and technologies with posts whose difficulty levels range from beginner to “hard-core” programming.",
+    "descriptionHtml": "<p>Coding knowledge hub, providing free educational content for professionals involved in software development. The website covers different topics and technologies with posts whose difficulty levels range from beginner to “hard-core” programming.</p>\n",
+    "publishedOn": null,
+    "sourceCodeURL": "https://github.com/CodepediaOrg/codepediaorg.github.io",
+    "public": true,
+    "likeCount": 0,
+    "createdAt": "2019-10-23T12:22:10.526Z",
+    "updatedAt": "2023-05-08T06:35:17.014Z",
+    "stackoverflowQuestionId": null,
+    "youtubeVideoId": null,
+    "ownerVisitCount": 1
+  }
+]

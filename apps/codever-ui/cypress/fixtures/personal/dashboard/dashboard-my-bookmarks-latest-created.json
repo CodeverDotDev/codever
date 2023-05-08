@@ -1,0 +1,50 @@
+[
+  {
+    "type": "bookmark",
+    "tags": [
+      "codever",
+      "productivity",
+      "tools"
+    ],
+    "_id": "645897f3729b9a77c7252f69",
+    "name": "Codever home page",
+    "location": "https://www.codever.dev",
+    "language": null,
+    "publishedOn": null,
+    "sourceCodeURL": "https://github.com/CodeverDotDev/codever",
+    "description": "Open source Bookmarks and Code Snippets Manager for Developers & Co. Easy bookmarking with bookmarklets, browser extensions and IDE plugins. Quick retrieval of dev bookmarks with custom and rapid search, history, read later and custom tags",
+    "descriptionHtml": "<p>Open source Bookmarks and Code Snippets Manager for Developers &amp; Co. Easy bookmarking with bookmarklets, browser extensions and IDE plugins. Quick retrieval of dev bookmarks with custom and rapid search, history, read later and custom tags</p>\n",
+    "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
+    "userDisplayName": "Mock",
+    "public": false,
+    "likeCount": 0,
+    "youtubeVideoId": null,
+    "stackoverflowQuestionId": null,
+    "createdAt": "2023-05-08T06:34:27.649Z",
+    "updatedAt": "2023-05-08T06:34:27.649Z"
+  },
+  {
+    "type": "bookmark",
+    "tags": [
+      "programming",
+      "blog",
+      "open-source"
+    ],
+    "_id": "60bc5eb7fee9c5cf09841cc0",
+    "name": "Share coding knowledge – CodepediaOrg",
+    "location": "https://www.codepedia.org/",
+    "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
+    "userDisplayName": "Mock",
+    "language": "en",
+    "description": "Coding knowledge hub, providing free educational content for professionals involved in software development. The website covers different topics and technologies with posts whose difficulty levels range from beginner to “hard-core” programming.",
+    "descriptionHtml": "<p>Coding knowledge hub, providing free educational content for professionals involved in software development. The website covers different topics and technologies with posts whose difficulty levels range from beginner to “hard-core” programming.</p>\n",
+    "publishedOn": null,
+    "sourceCodeURL": "https://github.com/CodepediaOrg/codepediaorg.github.io",
+    "public": true,
+    "likeCount": 0,
+    "createdAt": "2019-10-23T12:22:10.526Z",
+    "updatedAt": "2023-05-08T06:35:17.014Z",
+    "stackoverflowQuestionId": null,
+    "youtubeVideoId": null
+  }
+]

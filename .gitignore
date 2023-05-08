@@ -5,4 +5,4 @@ dist.zip
 apps/codever-keycloak-theme/keycloak-original-themes/*
 documentation/keycloak-upgrade/*
 /documentation/keycloak-upgrade/
-/apps/codever-ui/cypress/videos/
+/apps/codever-ui/cypress/dist/videos/
