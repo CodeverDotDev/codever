@@ -45,18 +45,18 @@
             <span
               *ngIf="snippet.public === false; else publicPill"
               class="badge badge-pill badge-light ml-3 font-weight-normal"
-              >Private</span
+            >Private</span
             >
             <ng-template #publicPill>
               <span class="badge badge-pill badge-light ml-3 font-weight-normal"
-                >Public</span
+              >Public</span
               >
             </ng-template>
           </h4>
         </ng-template>
         <h6 class="card-subtitle mb-2 text-muted url-under-title">
           <span *ngIf="snippet.reference"
-            ><strong>Ref</strong> -
+          ><strong>Ref</strong> -
             <span
               *ngIf="
                 snippet.reference.startsWith('http:') ||
@@ -64,9 +64,12 @@
                 else justText
               "
             >
-              <a href="{{ snippet.reference }}" target="_blank">{{
-                snippet.reference
-              }}</a>
+              <a href="{{ snippet.reference }}" target="_blank" title="{{ snippet.reference }}">
+                {{
+                snippet.reference.length > 89
+                  ? snippet.reference.substring(0, 89) + '...'
+                  : snippet.reference
+                }}</a>
               <sup class="ml-1"><i class="fas fa-external-link-alt"></i></sup>
             </span>
             <ng-template #justText>
@@ -77,7 +80,7 @@
       </div>
     </div>
 
-    <hr class="title-content-separator" />
+    <hr class="title-content-separator"/>
 
     <app-snippet-card-body
       [snippet]="snippet"
