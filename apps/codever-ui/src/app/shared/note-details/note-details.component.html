@@ -5,8 +5,11 @@
       {{ note.title }}
     </h5>
     <h6 class="card-subtitle mb-2 text-muted url-under-title">
+      <span title="last updated">
+        <i class="far fa-calendar-alt"></i>  {{ note.updatedAt | date : 'yyyy-MM-dd' }}
+      </span>
       <span *ngIf="note.reference"
-      ><strong>Ref</strong> -
+      ><strong> - ref</strong>:
         <span
           *ngIf="
             note.reference.startsWith('http:') ||
