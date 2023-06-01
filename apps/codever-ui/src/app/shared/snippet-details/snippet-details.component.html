@@ -108,6 +108,10 @@
               ></i>
             </span>
           </ng-template>
+          <span class="ml-3 font" style="font-size: 0.9rem" title="last updated">
+            <i class="fa fa-calendar-alt"></i>
+            {{ snippet.updatedAt | date : 'yyyy-MM-dd' }}
+          </span>
         </div>
         <div
           *ngFor="let tag of snippet.tags"
