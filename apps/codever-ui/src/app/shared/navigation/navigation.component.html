@@ -255,7 +255,7 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
         <a
-          class="nav-link dropdown-toggle"
+          class="nav-link dropdown-toggle btn btn-primary"
           href="#"
           id="navbarDropdown-new"
           role="button"
@@ -269,10 +269,11 @@
           class="dropdown-menu dropdown-menu-right"
           aria-labelledby="navbarDropdown-new"
         >
-  <a class="dropdown-item" [routerLink]="['/my-bookmarks/new']" [queryParams]="{initiator: 'browser'}">
-    <i class="fa fa-bookmark"></i>
-    Bookmark
-  </a>
+          <a class="dropdown-item"
+             [routerLink]="['/my-bookmarks/new']" [queryParams]="{initiator: 'browser'}">
+            <i class="fa fa-bookmark"></i>
+            Bookmark
+          </a>
           <a class="dropdown-item" [routerLink]="['/my-snippets/new']" [queryParams]="{initiator: 'browser'}">
             <i class="fa fa-code"></i>
             Snippet
@@ -308,7 +309,7 @@
           >
           <span class="dropdown-item-text">{{
             (userInfoOidc$ | async).email
-          }}</span>
+            }}</span>
           <div class="dropdown-divider"></div>
           <a
             class="dropdown-item"
@@ -342,7 +343,7 @@
             title="Go To Login/Registration Form"
             class="nav-link"
             (click)="login()"
-            >Login/Register
+          >Login/Register
           </a>
         </li>
       </ng-template>
