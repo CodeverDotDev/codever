@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 import {
   AfterViewInit,
   Component,
@@ -8,6 +8,7 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -34,13 +35,14 @@ import { searchDomains } from '../../core/model/search-domains-map';
 import { AddTagFilterToSearchDialogComponent } from './add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
 import { DialogMeasurementsHelper } from '../../core/helper/dialog-measurements.helper';
 import iziToast, { IziToastSettings } from 'izitoast';
+import { LatestSearchClickNotificationService } from '../../core/latest-search-click.notification.service';
 
 @Component({
   selector: 'app-searchbar',
   templateUrl: './searchbar.component.html',
   styleUrls: ['./searchbar.component.scss'],
 })
-export class SearchbarComponent implements OnInit, AfterViewInit {
+export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   context: string;
 
@@ -84,6 +86,8 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
   currentPage: number;
   callerPaginationSearchResults = 'search-results';
 
+  private ngUnsubscribe = new Subject<void>();
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -95,15 +99,21 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
     private keycloakServiceWrapper: KeycloakServiceWrapper,
     private userDataStore: UserDataStore,
     private userInfoStore: UserInfoStore,
+    private latestSearchClickNotificationService: LatestSearchClickNotificationService,
     private dialogMeasurementsHelper: DialogMeasurementsHelper,
     private addTagsToSearchDialog: MatDialog,
     private loginDialog: MatDialog
   ) {}
 
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
   @Input()
   set userData$(userData$: Observable<UserData>) {
     if (userData$) {
-      userData$.subscribe((userData) => {
+      userData$.pipe(takeUntil(this.ngUnsubscribe)).subscribe((userData) => {
         this.userId = userData.userId;
         const emptyUserData =
           Object.keys(userData).length === 0 && userData.constructor === Object; // = {}
@@ -160,12 +170,21 @@ export class SearchbarComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.searchNotificationService.searchTriggeredFromNavbar$.subscribe(
-      (searchData) => {
+    this.searchNotificationService.searchTriggeredFromNavbar$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((searchData) => {
         this.searchDomain = searchData.searchDomain;
         this.searchControl.setValue(searchData.searchText);
-      }
-    );
+      });
+
+    this.latestSearchClickNotificationService.latestSearchesClickSource$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((text) => {
+        if (text === 'click on latest searches') {
+          this.searchBoxField.nativeElement.focus();
+          this.searchBoxField.nativeElement.select();
+        }
+      });
 
     this.watchSearchBoxValueChanges();
   }

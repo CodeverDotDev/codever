@@ -22,6 +22,7 @@ import { AddToHistoryService } from './core/user/add-to-history.service';
 import { environment } from '../environments/environment';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { LoginDialogHelperService } from './core/login-dialog-helper.service';
+import { LatestSearchClickNotificationService } from './core/latest-search-click.notification.service';
 
 @Component({
   selector: 'app-root',
@@ -70,6 +71,7 @@ export class AppComponent implements OnInit {
     private loginDialogHelperService: LoginDialogHelperService,
     private cookieService: CookieService,
     private feedbackService: FeedbackService,
+    private latestSearchClickNotificationService: LatestSearchClickNotificationService,
     protected router: Router,
     private addToHistoryService: AddToHistoryService,
     private readonly scrollStrategyOptions: ScrollStrategyOptions
@@ -258,5 +260,11 @@ export class AppComponent implements OnInit {
       bookmark
     );
     window.open(bookmark.location, '_blank');
+  }
+
+  displaySearchBarSearches() {
+    this.latestSearchClickNotificationService.sendMessage(
+      'click on latest searches'
+    );
   }
 }

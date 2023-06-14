@@ -37,6 +37,7 @@ import { CookieService } from './cookies/cookie.service';
 import { PersonalSearchService } from './personal-search.service';
 import { PersonalNotesService } from './personal-notes.service';
 import { DeleteNotificationService } from './notifications/delete-notification.service';
+import { LatestSearchClickNotificationService } from './latest-search-click.notification.service';
 
 /**
  * Gather services and components that are used by several modules, in a single CoreModule, that you import once when
@@ -84,6 +85,7 @@ import { DeleteNotificationService } from './notifications/delete-notification.s
     SystemService,
     CookieService,
     DeleteNotificationService,
+    LatestSearchClickNotificationService,
   ],
 })
 export class CoreModule {
