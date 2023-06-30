@@ -51,6 +51,9 @@ export class CreateSnippetFormComponent
   tagsStr; // tags received - string with comma separated values
 
   @Input()
+  comment; // comment received via query
+
+  @Input()
   popup; // if it's popup window
 
   @Input()
@@ -191,32 +194,37 @@ export class CreateSnippetFormComponent
       ],
       comment: ['', textSizeValidator(1000, 30)],
       commentAfter: [
-        this.getComment(this.project, this.workspace, this.file),
+        this.getComment(this.comment, this.project, this.workspace, this.file),
         textSizeValidator(1000, 30),
       ],
     });
   }
 
   private getComment(
+    comment: string | undefined,
     project: string | undefined,
     workspace: string | undefined,
     file: string | undefined
   ): string {
-    let comment = '';
+    if (comment) {
+      // this is backwards compatibilitay to old intellij plugin version
+      return comment;
+    } else {
+      let newComment = '';
+      if (workspace) {
+        newComment += `**Workspace**: \`${workspace}\``;
+      }
 
-    if (workspace) {
-      comment += `**Workspace**: \`${workspace}\``;
+      if (project) {
+        newComment += `**Project**: \`${project}\``;
+      }
+
+      if (file) {
+        newComment += `**File**: \`${file}\``;
+      }
+
+      return newComment.trim();
     }
-
-    if (project) {
-      comment += `**Project**: \`${project}\``;
-    }
-
-    if (file) {
-      comment += `**File**: \`${file}\``;
-    }
-
-    return comment.trim();
   }
 
   decodeTextVsCode(text: string): string {

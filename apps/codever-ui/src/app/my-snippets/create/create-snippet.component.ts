@@ -12,6 +12,7 @@ export class CreateSnippetComponent implements OnInit {
   location; // value of "url" query parameter if present
   popup; // value of "url" query parameter if present
   tagsStr; // value of "tags" query parameter if present
+  comment; // value of "comment" query parameter if present
   ext; // which extension the call is coming from (e.g 'vscode' from visual studio code extension)
   initiator; // which extension the call is coming from (e.g 'vscode' from visual studio code extension)
   file; // which extension the call is coming from (e.g 'vscode' from visual studio code extension)
@@ -28,6 +29,7 @@ export class CreateSnippetComponent implements OnInit {
       this.route.snapshot.queryParamMap.get('location');
     this.popup = this.route.snapshot.queryParamMap.get('popup');
     this.tagsStr = this.route.snapshot.queryParamMap.get('tags');
+    this.comment = this.route.snapshot.queryParamMap.get('comment');
     this.ext = this.route.snapshot.queryParamMap.get('ext');
     this.initiator = this.route.snapshot.queryParamMap.get('initiator');
     this.file = this.route.snapshot.queryParamMap.get('file');
