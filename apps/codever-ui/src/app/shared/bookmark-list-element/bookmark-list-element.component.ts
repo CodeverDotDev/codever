@@ -328,6 +328,11 @@ export class BookmarkListElementComponent
     }
   }
 
+  cloneBookmark(bookmark: Bookmark): void {
+    const link = [`./my-bookmarks/${bookmark._id}/clone`];
+    this.router.navigate(link, { state: { bookmark: bookmark } });
+  }
+
   ngOnDestroy(): void {
     if (this.navigationSubscription) {
       this.navigationSubscription.unsubscribe();

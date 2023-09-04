@@ -18,12 +18,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
+import { CloneBookmarkComponent } from './clone-bookmark/clone-bookmark.component';
 
 @NgModule({
   declarations: [
     CreatePersonalBookmarkComponent,
     UpdatePersonalBookmarkComponent,
     CopyToMineBookmarkComponent,
+    CloneBookmarkComponent,
     MyBookmarksEntryPointComponent,
     PublicBookmarkPresentDialogComponent,
     SaveBookmarkFormComponent,

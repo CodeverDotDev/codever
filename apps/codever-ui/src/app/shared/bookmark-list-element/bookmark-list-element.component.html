@@ -335,6 +335,15 @@
           <i class="far fa-copy"></i> Copy to mine
         </button>
         <button
+          *ngIf="bookmark.userId === (userData$ | async)?.userId"
+          type="button"
+          class="btn btn-light btn-sm"
+          (click)="cloneBookmark(bookmark)"
+          title="Clone bookmark"
+        >
+          <i class="far fa-clone"></i> Clone
+        </button>
+        <button
           class="btn btn-light btn-sm float-right"
           title="Share via email or on social media"
           (click)="shareBookmarkDialog(bookmark)"

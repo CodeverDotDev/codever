@@ -1,5 +1,6 @@
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Input,
@@ -55,6 +56,7 @@ import { DeleteNotificationService } from '../../core/notifications/delete-notif
 @Component({
   selector: 'app-note-editor',
   templateUrl: './note-editor.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   noteForm: UntypedFormGroup;

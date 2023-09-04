@@ -109,6 +109,9 @@ export class SaveBookmarkFormComponent implements OnInit {
   @Input()
   copyToMine = false;
 
+  @Input()
+  cloneBookmark = false;
+
   bookmark: Bookmark;
 
   constructor(
@@ -159,7 +162,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
-    if (this.isUpdate || this.copyToMine) {
+    if (this.isUpdate || this.copyToMine || this.cloneBookmark) {
       this.bookmark$.subscribe((bookmark) => {
         this.bookmark = bookmark;
         this.makePublic = this.bookmark.public;
@@ -168,6 +171,12 @@ export class SaveBookmarkFormComponent implements OnInit {
           this.bookmark._id = null;
           this.bookmark.public = false;
           this.verifyExistenceInPersonalBookmarks(bookmark.location);
+        }
+        if (this.cloneBookmark) {
+          this.bookmark._id = null;
+          this.makePublic = false;
+          this.bookmark.public = false;
+          this.bookmark.location = 'CHANGE ME';
         }
         this.bookmarkForm.patchValue(this.bookmark);
         this.bookmarkForm
@@ -210,7 +219,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   private onChanges() {
-    const isNewBookmark = !this.isUpdate && !this.copyToMine;
+    const isNewBookmark = !this.isUpdate && !this.copyToMine && !this.cloneBookmark
     if (isNewBookmark) {
       this.bookmarkForm
         .get('location')
@@ -404,7 +413,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   saveBookmark(bookmark: Bookmark) {
     if (this.isUpdate) {
       this.updateBookmark(bookmark);
-    } else if (this.copyToMine) {
+    } else if (this.copyToMine || this.cloneBookmark) {
       this.copyBookmarkToMine(bookmark);
     } else {
       this.createBookmark(bookmark);

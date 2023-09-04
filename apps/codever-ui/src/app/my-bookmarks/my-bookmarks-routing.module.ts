@@ -6,6 +6,7 @@ import { UpdatePersonalBookmarkComponent } from './update/update-personal-bookma
 import { CreatePersonalBookmarkComponent } from './create/create-personal-bookmark.component';
 import { CopyToMineBookmarkComponent } from './copy-to-mine/copy-to-mine-bookmark.component';
 import { BookmarkDetailsComponent } from './bookmark-details/bookmark-details.component';
+import { CloneBookmarkComponent } from './clone-bookmark/clone-bookmark.component';
 
 const myBookmarksRoutes: Routes = [
   {
@@ -20,6 +21,10 @@ const myBookmarksRoutes: Routes = [
       {
         path: ':id/copy-to-mine',
         component: CopyToMineBookmarkComponent,
+      },
+      {
+        path: ':id/clone',
+        component: CloneBookmarkComponent,
       },
       {
         path: ':id/details',
