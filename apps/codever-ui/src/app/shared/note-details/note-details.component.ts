@@ -53,4 +53,9 @@ export class NoteDetailsComponent implements OnInit {
     const link = [`/my-notes/${note._id}/edit`];
     this.router.navigate(link, { state: { note: note } });
   }
+
+  cloneNote(note: Note) {
+    const link = [`/my-notes/${note._id}/clone`];
+    this.router.navigate(link, { state: { note: note } });
+  }
 }

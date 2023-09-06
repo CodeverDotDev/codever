@@ -93,6 +93,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   note: Note;
 
   @Input()
+  cloneNote = false;
+
+  @Input()
   initiator: string;
 
   scrollStrategy: ScrollStrategy;
@@ -151,7 +154,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-    if (!this.isEditMode) {
+    if (!this.isEditMode && !this.cloneNote) {
       this.buildForm();
     }
   }
@@ -169,7 +172,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.noteForm) {
       this.buildForm();
     }
-    if (this.isEditMode && this.note) {
+    if (this.note && (this.isEditMode || this.cloneNote)) {
       this.noteForm.patchValue({
         title: this.note.title,
         content: this.note.content,
@@ -241,8 +244,10 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   saveNote(note: Note) {
     if (this.isEditMode) {
       this.updateNote(note);
-    } else {
+    } else if (this.cloneNote) {
       this.createNote(note);
+    } else {
+      this.cloneNoteFunction(note);
     }
   }
 
@@ -254,17 +259,18 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     note.initiator = this.initiator;
     this.personalNotesService
       .createNote(this.userId, note)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((response) => {
         const headers = response.headers;
         // get the snippet id, which lies in the "location" response header
         const lastSlashIndex = headers.get('location').lastIndexOf('/');
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
-        this.navigateToSnippetDetails(note, {});
+        this.navigateToNoteDetails(note, {});
       });
   }
 
-  navigateToSnippetDetails(note: Note, queryParams: Params): void {
+  navigateToNoteDetails(note: Note, queryParams: Params): void {
     const link = [`./my-notes/${note._id}/details`];
     this.router.navigate(link, {
       state: { snippet: note },
@@ -277,16 +283,29 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     note.updatedAt = now;
     note.userId = this.note.userId;
     note._id = this.note._id;
-    this.personalNotesService.updateNote(note).subscribe(() => {
-      this.navigateToSnippetDetails(note, {});
-    });
+    this.personalNotesService
+      .updateNote(note)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.navigateToNoteDetails(note, {});
+      });
   }
 
-  navigateToNoteDetails(note: Note): void {
-    const link = [`./my-notes/${note._id}/details`];
-    this.router.navigate(link, {
-      state: { note: note },
-    });
+  cloneNoteFunction(note: Note): void {
+    const now = new Date();
+    note.createdAt = now;
+    note.userId = this.note.userId;
+    note._id = null;
+    this.personalNotesService
+      .createNote(this.note.userId, note)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        const headers = response.headers;
+        const lastSlashIndex = headers.get('location').lastIndexOf('/');
+        const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
+        note._id = newNoteId;
+        this.navigateToNoteDetails(note, {});
+      });
   }
 
   get tags() {
@@ -328,18 +347,21 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   deleteNote(note: Note) {
-    this.personalNotesService.deleteNoteById(this.userId, note._id).subscribe(
-      () => {
-        this.router.navigate(['']);
-        this.deleteNotificationService.showSuccessNotification(
-          `Note - "${note.title}" was deleted`
-        );
-      },
-      () => {
-        this.deleteNotificationService.showErrorNotification(
-          'Note could not be deleted. Please try again later!'
-        );
-      }
-    );
+    this.personalNotesService
+      .deleteNoteById(this.userId, note._id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        () => {
+          this.router.navigate(['']);
+          this.deleteNotificationService.showSuccessNotification(
+            `Note - "${note.title}" was deleted`
+          );
+        },
+        () => {
+          this.deleteNotificationService.showErrorNotification(
+            'Note could not be deleted. Please try again later!'
+          );
+        }
+      );
   }
 }

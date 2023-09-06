@@ -66,6 +66,15 @@
         >
           <i class="far fa-edit"></i> Edit
         </button>
+        <button
+          *ngIf="(userId$ | async) && note.userId === (userId$ | async)"
+          type="button"
+          class="btn btn-light btn-sm"
+          (click)="cloneNote(note)"
+          title="Clone note"
+        >
+          <i class="far fa-clone"></i> Clone
+        </button>
       </div>
     </div>
   </div>

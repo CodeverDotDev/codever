@@ -19,8 +19,9 @@ import { UpdatePersonalNoteComponent } from './update-note/update-personal-note.
 import { NoteEditorComponent } from './save-note-form/note-editor.component';
 import { NoteDetailsComponent } from '../shared/note-details/note-details.component';
 import { PersonalNotesService } from '../core/personal-notes.service';
+import { CloneNoteComponent } from './clone-note/clone-note.component';
 
-const snippetRoutes: Routes = [
+const notesRoutes: Routes = [
   {
     path: 'new',
     canActivate: [AuthGuard],
@@ -30,6 +31,11 @@ const snippetRoutes: Routes = [
     path: ':id/edit',
     canActivate: [AuthGuard],
     component: UpdatePersonalNoteComponent,
+  },
+  {
+    path: ':id/clone',
+    canActivate: [AuthGuard],
+    component: CloneNoteComponent,
   },
   {
     path: ':id/details',
@@ -43,9 +49,10 @@ const snippetRoutes: Routes = [
     CreatePersonalNoteComponent,
     UpdatePersonalNoteComponent,
     NoteEditorComponent,
+    CloneNoteComponent,
   ],
   imports: [
-    RouterModule.forChild(snippetRoutes),
+    RouterModule.forChild(notesRoutes),
     SharedModule,
     MatTabsModule,
     MatAutocompleteModule,
