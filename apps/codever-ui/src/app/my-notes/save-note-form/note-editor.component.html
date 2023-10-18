@@ -88,7 +88,7 @@
         >
         </textarea>
         <div class="description-chars-counter">
-          {{ content.value ? content.value.length : 0 }} / 5000
+          {{ content.value ? content.value.length : 0 }} / 10000
         </div>
         <div class="clear"></div>
         <div
@@ -102,7 +102,7 @@
           <div *ngIf="content.errors.tooManyCharacters">
             Your description has
             {{ content.errors.tooManyCharacters.value }} characters. Maximum
-            5000 characters are allowed.
+            10000 characters are allowed.
           </div>
         </div>
       </div>

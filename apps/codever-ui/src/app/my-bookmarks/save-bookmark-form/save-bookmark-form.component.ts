@@ -202,7 +202,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
       sourceCodeURL: '',
-      description: [this.desc ? this.desc : '', textSizeValidator(5000, 500)],
+      description: [this.desc ? this.desc : '', textSizeValidator(10000, 500)],
       public: false,
       readLater: false,
       pinned: false,

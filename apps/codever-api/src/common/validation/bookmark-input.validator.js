@@ -130,7 +130,7 @@ let verifyPublicBookmarkExistenceOnUpdate = async function (bookmark, userId) {
 };
 
 const BookmarkValidationRules = {
-  MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION: 5000,
+  MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION: 10000,
   MAX_NUMBER_OF_LINES_FOR_DESCRIPTION: 500,
   MAX_NUMBER_OF_TAGS: 8,
 };
