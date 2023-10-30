@@ -40,8 +40,11 @@ export function initializer(
           },
           initOptions: {
             onLoad: 'check-sso',
+            checkLoginIframe: false,
+            flow: 'standard',
             silentCheckSsoRedirectUri:
               window.location.origin + '/assets/silent-check-sso.html',
+
           },
           bearerExcludedUrls: ['/api/public', '/assets'],
         });
