@@ -10,6 +10,9 @@ const NoteInputValidator = require('./note-input.validator');
 let createNote = async function (userId, noteData) {
   NoteInputValidator.validateNoteInput(userId, noteData);
 
+  // Remove the _id field to ensure Mongoose generates a new _id (might happen when cloning)
+  delete noteData._id;
+
   const note = new Note(noteData);
   let newNote = await note.save();
 

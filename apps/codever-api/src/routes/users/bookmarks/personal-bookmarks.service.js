@@ -12,6 +12,8 @@ const { v4: uuidv4 } = require('uuid');
 let createBookmark = async function (userId, bookmark) {
   BookmarkInputValidator.validateBookmarkInput(userId, bookmark);
   bookmark.shareableId = undefined;
+  // Remove the _id field to ensure Mongoose generates a new _id (might happen when cloning)
+  delete bookmark._id;
 
   await BookmarkInputValidator.verifyPublicBookmarkExistenceOnCreation(
     bookmark

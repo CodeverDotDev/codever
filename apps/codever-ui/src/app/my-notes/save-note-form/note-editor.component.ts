@@ -245,9 +245,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     if (this.isEditMode) {
       this.updateNote(note);
     } else if (this.cloneNote) {
-      this.createNote(note);
-    } else {
       this.cloneNoteFunction(note);
+    } else {
+      this.createNote(note);
     }
   }
 
@@ -295,7 +295,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     const now = new Date();
     note.createdAt = now;
     note.userId = this.note.userId;
-    note._id = null;
+    delete note._id;
     this.personalNotesService
       .createNote(this.note.userId, note)
       .pipe(takeUntil(this.destroy$))

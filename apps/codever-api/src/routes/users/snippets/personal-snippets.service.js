@@ -11,6 +11,8 @@ const { v4: uuidv4 } = require('uuid');
 let createSnippet = async function (userId, snippetData) {
   SnippetInputValidator.validateSnippetInput(userId, snippetData);
   snippetData.shareableId = undefined;
+  // Remove the _id field to ensure Mongoose generates a new _id (might happen when cloning)
+  delete snippetData._id;
   const snippet = new Snippet(snippetData);
 
   let newSnippet = await snippet.save();
