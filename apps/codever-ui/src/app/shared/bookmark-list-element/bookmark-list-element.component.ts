@@ -346,4 +346,11 @@ export class BookmarkListElementComponent
       setTimeout(() => (this.copyLinkButtonText = ''), 1300);
     }
   }
+
+  addToHistory() {
+    this.addToHistoryService.promoteInHistoryIfLoggedIn(
+      this.userIsLoggedIn,
+      this.bookmark
+    );
+  }
 }

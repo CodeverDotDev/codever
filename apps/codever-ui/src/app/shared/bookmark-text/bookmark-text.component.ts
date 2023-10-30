@@ -8,6 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
+import { AddToHistoryService } from '../../core/user/add-to-history.service';
 
 @Component({
   selector: 'app-bookmark-text',
@@ -17,6 +18,9 @@ import { Bookmark } from '../../core/model/bookmark';
 export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @Input()
   bookmark: Bookmark;
+
+  @Input()
+  userIsLoggedIn = false;
 
   @Input()
   queryText: string;
@@ -29,7 +33,10 @@ export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @ViewChild('bookmarkText', { static: false }) elementView: ElementRef;
   public viewHeight: number;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+  constructor(
+    private addToHistoryService: AddToHistoryService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
 
   ngAfterViewInit(): void {
     this.viewHeight = this.elementView.nativeElement.offsetHeight;
@@ -42,5 +49,21 @@ export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
       this.show = show;
       this.changeDetectorRef.detectChanges();
     }
+  }
+
+  addToHistoryWhenClickOnLink(event: Event) {
+    this.addToHistoryService.onClickInDescription(
+      this.userIsLoggedIn,
+      event,
+      this.bookmark
+    );
+  }
+
+  addToHistoryWhenMiddleClickOnLink(event: MouseEvent) {
+    this.addToHistoryService.onMiddleClickInDescription(
+      this.userIsLoggedIn,
+      event,
+      this.bookmark
+    );
   }
 }

@@ -31,21 +31,11 @@
             [innerHtml]="
               bookmark.name | highlight : filterText | highlight : queryText
             "
-            (click)="
-              addToHistoryService.promoteInHistoryIfLoggedIn(
-                userIsLoggedIn,
-                bookmark
-              )
-            "
-            (auxclick)="
-              addToHistoryService.promoteInHistoryIfLoggedIn(
-                userIsLoggedIn,
-                bookmark
-              )
-            "
+            (auxclick)="addToHistory()"
+            (click)="addToHistory()"
           ></a>
           <sup class="external-link-hint"
-            ><i class="fas fa-external-link-alt"></i
+          ><i class="fas fa-external-link-alt"></i
           ></sup>
         </h5>
         <h6 class="card-subtitle mb-2 text-muted url-under-title">
@@ -57,7 +47,7 @@
                 bookmark.userId,
                 bookmark.userDisplayName
               ]"
-              >{{ bookmark.userDisplayName }}</a
+            >{{ bookmark.userDisplayName }}</a
             >
             -
           </span>
@@ -106,7 +96,7 @@
             class="clock-wrapper"
             title="Unpin bookmark"
             (click)="removeFromPinned(bookmark)"
-            ><i class="fas fa-thumbtack fa-rotate-90 pinned"></i
+          ><i class="fas fa-thumbtack fa-rotate-90 pinned"></i
           ></span>
         </ng-template>
         <span
@@ -125,32 +115,19 @@
             class="clock-wrapper"
             title="Remove from Read later"
             (click)="removeFromReadLater(bookmark)"
-            ><i class="fas fa-clock"></i
+          ><i class="fas fa-clock"></i
           ></span>
         </ng-template>
       </div>
     </div>
 
     <div *ngIf="bookmark.description">
-      <hr class="title-content-separator" />
+      <hr class="title-content-separator"/>
       <app-bookmark-text
         [showMoreText]="showMoreText"
         [bookmark]="bookmark"
+        [userIsLoggedIn]="userIsLoggedIn"
         [queryText]="queryText"
-        (click)="
-          addToHistoryService.onClickInDescription(
-            userIsLoggedIn,
-            $event,
-            bookmark
-          )
-        "
-        (auxclick)="
-          addToHistoryService.onMiddleClickInDescription(
-            userIsLoggedIn,
-            $event,
-            bookmark
-          )
-        "
       >
       </app-bookmark-text>
     </div>
@@ -160,6 +137,7 @@
       href="{{ bookmark.sourceCodeURL }}"
       target="_blank"
       title="Source code URL"
+      (click)="addToHistory()"
     >
       <i class="fab fa-github"></i> Source code
       <sup><i class="fas fa-external-link-alt fa-sm"></i></sup>
@@ -179,10 +157,10 @@
     <div class="tags-group">
       <div class="input-group-sm mb-2 mb-sm-0 star-group">
         <span *ngIf="!bookmark.public; else showLikeButton"
-          ><i
-            class="fas fa-eye-slash anthracite-gray"
-            title="Private bookmark"
-          ></i
+        ><i
+          class="fas fa-eye-slash anthracite-gray"
+          title="Private bookmark"
+        ></i
         ></span>
         <ng-template #showLikeButton>
           <span
@@ -257,11 +235,11 @@
             "
             class="dropdown-item"
             (click)="unwatchTag(tag)"
-            ><i class="fas fa-eye-slash"> </i> Unwatch tag
+          ><i class="fas fa-eye-slash"> </i> Unwatch tag
           </a>
           <ng-template #watchTagOption>
             <a (click)="watchTag(tag, userIsLoggedIn)" class="dropdown-item"
-              ><i class="fas fa-eye"></i> Watch tag
+            ><i class="fas fa-eye"></i> Watch tag
             </a>
           </ng-template>
           <a
@@ -272,11 +250,11 @@
             "
             class="dropdown-item"
             (click)="unignoreTag(tag)"
-            ><i class="fas fa-ban"></i> Unignore tag
+          ><i class="fas fa-ban"></i> Unignore tag
           </a>
           <ng-template #ignoreTagOption>
             <a (click)="ignoreTag(tag, userIsLoggedIn)" class="dropdown-item"
-              ><i class="fas fa-ban"></i> Ignore tag
+            ><i class="fas fa-ban"></i> Ignore tag
             </a>
           </ng-template>
           <ng-container *ngIf="userIsLoggedIn">

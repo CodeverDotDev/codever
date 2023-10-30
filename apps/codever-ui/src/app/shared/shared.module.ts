@@ -44,6 +44,7 @@ import { MarkedImageWidthDirective } from './directive/marked-image-width.direct
 import { SnippetSocialShareDialogComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
 import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
 import { HighLightPipe } from '../common/pipes/highlight.pipe';
+import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
 
 /**
  * Add a SharedModule to hold the common components, directives, and pipes and share them with the modules that need them.
@@ -76,6 +77,7 @@ import { HighLightPipe } from '../common/pipes/highlight.pipe';
     AsyncSearchResultListComponent,
     BookmarkTextComponent,
     TagsValidatorDirective,
+    OpenInNewTabDirective,
     MarkedImageWidthDirective,
     DeleteResourceDialogComponent,
     SocialShareDialogComponent,

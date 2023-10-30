@@ -1,4 +1,5 @@
-<div #bookmarkText>
+<div #bookmarkText (click)="addToHistoryWhenClickOnLink($event)" (auxclick)="addToHistoryWhenMiddleClickOnLink($event)"
+     appOpenInNewTab>
   <div *ngIf="viewHeight > 120; else wholeText" class="mb-2">
     <div
       [ngClass]="{ more_text: showMoreText, less_text: !showMoreText }"
