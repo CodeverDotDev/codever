@@ -41,7 +41,7 @@ services:
     depends_on:
       - mysql
     #command: -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import
-    #command: -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
+    #command: -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
     volumes:
       - ./docker-compose-setup/keycloak-export-import:/tmp/keycloak/export-import/
       - ./apps/codever-keycloak-theme/codever/:/opt/jboss/keycloak/themes/codever/
