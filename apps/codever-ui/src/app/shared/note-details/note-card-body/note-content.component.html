@@ -1,5 +1,5 @@
 <div #noteContentDiv appMarkedImageWidth>
-  <div *ngIf="inList && viewHeight > 180; else wholeText">
+  <div *ngIf="partOfList && viewHeight > maxNoteHeightInList; else wholeText">
     <div [ngClass]="{ more_text: showMoreText, less_text: !showMoreText }">
       <p [innerHtml]="note.content | md2html"></p>
     </div>

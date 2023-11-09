@@ -20,6 +20,9 @@ export class NoteDetailsComponent implements OnInit {
   @Input()
   inSearchResults = false;
 
+  @Input()
+  partOfList = false;
+
   userId$: Observable<string>;
   noteId: string;
 

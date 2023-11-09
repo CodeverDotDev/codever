@@ -13,6 +13,7 @@ import { Note } from '../../../core/model/note';
 @Component({
   selector: 'app-note-content',
   templateUrl: './note-content.component.html',
+  styleUrls: ['./note-content.component.scss'],
 })
 export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   @Input()
@@ -22,7 +23,7 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   queryText: string;
 
   @Input()
-  inList = false;
+  partOfList = false;
 
   show = false; // add one more property
   public showMoreText = false;
@@ -34,10 +35,13 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
 
   ngAfterViewInit(): void {
     this.viewHeight = this.elementView.nativeElement.offsetHeight;
+    console.log('viewHeight: ' + this.viewHeight);
   }
 
+  private readonly maxNoteHeightInList = 200;
+
   ngAfterViewChecked(): void {
-    const show = this.viewHeight > 180;
+    const show = this.viewHeight > this.maxNoteHeightInList;
     if (show !== this.show) {
       // check if it change, tell CD update view
       this.show = show;
