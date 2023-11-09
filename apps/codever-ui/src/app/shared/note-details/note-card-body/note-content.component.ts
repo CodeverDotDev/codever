@@ -13,7 +13,6 @@ import { Note } from '../../../core/model/note';
 @Component({
   selector: 'app-note-content',
   templateUrl: './note-content.component.html',
-  styleUrls: ['./note-content.component.scss'],
 })
 export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   @Input()
@@ -38,7 +37,7 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
     console.log('viewHeight: ' + this.viewHeight);
   }
 
-  private readonly maxNoteHeightInList = 200;
+  readonly maxNoteHeightInList = 200;
 
   ngAfterViewChecked(): void {
     const show = this.viewHeight > this.maxNoteHeightInList;

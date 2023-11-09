@@ -1,6 +1,22 @@
+$lessTextHeight: 90px; // Define a variable for the height
+
 .less_text {
-  height: 300px;
+  height: $lessTextHeight;
   overflow: hidden;
+}
+
+.less_text_bookmark {
+  @extend .less_text;
+}
+
+.less_text_snippet {
+  @extend .less_text; // Inherit styles from .less_text
+  height: calc(#{$lessTextHeight} + 210px); // Set height with 20px added
+}
+
+.less_text_note {
+  @extend .less_text; // Inherit styles from .less_text
+  height: calc(#{$lessTextHeight} + 100px); // Set height with 20px added
 }
 
 .more_text {

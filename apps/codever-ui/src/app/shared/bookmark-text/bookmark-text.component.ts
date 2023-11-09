@@ -13,7 +13,6 @@ import { AddToHistoryService } from '../../core/user/add-to-history.service';
 @Component({
   selector: 'app-bookmark-text',
   templateUrl: './bookmark-text.component.html',
-  styleUrls: ['./bookmark-text.component.scss'],
 })
 export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @Input()

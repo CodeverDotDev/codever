@@ -13,7 +13,6 @@ import * as screenfull from 'screenfull';
 @Component({
   selector: 'app-snippet-card-body',
   templateUrl: './snippet-card-body.component.html',
-  styleUrls: ['./snippet-card-body.component.scss'],
 })
 export class SnippetCardBodyComponent
   implements AfterViewInit, AfterViewChecked
@@ -30,7 +29,7 @@ export class SnippetCardBodyComponent
   show = false; // add one more property
   public showMoreText = false;
 
-  @ViewChild('codeletCardBody', { static: false }) elementView: ElementRef;
+  @ViewChild('snippetCardBody', { static: false }) elementView: ElementRef;
   public viewHeight: number;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}

@@ -2,7 +2,7 @@
      appOpenInNewTab>
   <div *ngIf="viewHeight > 120; else wholeText" class="mb-2">
     <div
-      [ngClass]="{ more_text: showMoreText, less_text: !showMoreText }"
+      [ngClass]="{ more_text: showMoreText, less_text_bookmark: !showMoreText }"
       *ngIf="bookmark.descriptionHtml"
       [innerHtml]="bookmark.descriptionHtml | highlightHtml : queryText"
     ></div>

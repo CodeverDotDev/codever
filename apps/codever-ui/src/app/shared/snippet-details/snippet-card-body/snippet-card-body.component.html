@@ -1,6 +1,6 @@
-<div #codeletCardBody>
+<div #snippetCardBody>
   <div *ngIf="inList && viewHeight > 180; else wholeText">
-    <div [ngClass]="{ more_text: showMoreText, less_text: !showMoreText }">
+    <div [ngClass]="{ more_text: showMoreText, less_text_snippet: !showMoreText }">
       <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast = last">
         <p
           *ngIf="codeSnippet.comment"
