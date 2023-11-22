@@ -1,14 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { Note } from '../../core/model/note';
 import { Observable, of } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
+import * as screenfull from 'screenfull';
 
 @Component({
   selector: 'app-note-details',
   templateUrl: './note-details.component.html',
+  styleUrls: ['./note-details.component.scss'],
 })
 export class NoteDetailsComponent implements OnInit {
   @Input()
@@ -25,6 +27,8 @@ export class NoteDetailsComponent implements OnInit {
 
   userId$: Observable<string>;
   noteId: string;
+
+  isFullScreen = false;
 
   constructor(
     private personalNotesService: PersonalNotesService,
@@ -60,5 +64,17 @@ export class NoteDetailsComponent implements OnInit {
   cloneNote(note: Note) {
     const link = [`/my-notes/${note._id}/clone`];
     this.router.navigate(link, { state: { note: note } });
+  }
+
+  toggleFullScreen(part: HTMLElement) {
+    if (screenfull.isEnabled) {
+      this.isFullScreen = !this.isFullScreen;
+      screenfull.toggle(part);
+    }
+  }
+
+  @HostListener('document:fullscreenchange', ['$event'])
+  fullscreenChangeHandler(event: Event) {
+    this.isFullScreen = !!document.fullscreenElement;
   }
 }

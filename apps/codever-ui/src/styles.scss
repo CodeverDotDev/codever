@@ -282,3 +282,12 @@ label {
 #sidebar-wrapper .list-group {
   width: 18rem;
 }
+
+.title-content-separator {
+  margin: 0 0 0.5rem 0;
+}
+
+.scrollable-div-fullscreen {
+  overflow-y: auto;
+  max-height: calc(100vh - 150px);
+}

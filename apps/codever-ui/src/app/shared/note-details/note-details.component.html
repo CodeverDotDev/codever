@@ -1,15 +1,17 @@
-<div *ngIf="note$ | async as note" class="card">
-  <div class="card-body show-hide note-bg">
-    <h5 class="card-title">
-      <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
-      {{ note.title }}
-    </h5>
-    <h6 class="card-subtitle mb-2 text-muted url-under-title">
+<div *ngIf="note$ | async as note" class="card" #noteEntry >
+  <div class="card-body show-hide note-bg note-container">
+    <div class="note-header">
+      <div class="title-and-subtitle">
+        <h5 class="card-title">
+          <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
+          {{ note.title }}
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted url-under-title">
       <span title="last updated">
         <i class="far fa-calendar-alt"></i>  {{ note.updatedAt | date : 'yyyy-MM-dd' }}
       </span>
-      <span *ngIf="note.reference"
-      ><strong> - ref</strong>:
+          <span *ngIf="note.reference"
+          ><strong> - ref</strong>:
         <span
           *ngIf="
             note.reference.startsWith('http:') ||
@@ -30,9 +32,20 @@
           <span>{{ note.reference }}</span>
         </ng-template>
       </span>
-    </h6>
+        </h6>
+      </div>
+      <div>
+        <span title="Toggle Fullscreen" (click)="toggleFullScreen(noteEntry)">
+             <i *ngIf="!isFullScreen" class="fas fa-expand fa-lg"></i>
+             <i *ngIf="isFullScreen" class="fas fa-compress fa-lg"></i>
+        </span>
+      </div>
+    </div>
 
-    <app-note-content [note]="note" [queryText]="queryText" [partOfList]="partOfList"></app-note-content>
+    <hr class="title-content-separator"/>
+    <div [ngClass]="{'scrollable-div-fullscreen': isFullScreen}">
+      <app-note-content [note]="note" [queryText]="queryText" [partOfList]="partOfList" [isFullScreen]="isFullScreen"></app-note-content>
+    </div>
   </div>
 
   <div class="card-footer" style="padding-right: 0.3rem">

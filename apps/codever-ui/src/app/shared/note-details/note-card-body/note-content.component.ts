@@ -24,6 +24,9 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   @Input()
   partOfList = false;
 
+  @Input()
+  isFullScreen = false;
+
   show = false; // add one more property
   public showMoreText = false;
 
@@ -45,12 +48,6 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
       // check if it change, tell CD update view
       this.show = show;
       this.changeDetectorRef.detectChanges();
-    }
-  }
-
-  toggleFullScreen(codePart: HTMLElement) {
-    if (screenfull.isEnabled) {
-      screenfull.toggle(codePart);
     }
   }
 }
