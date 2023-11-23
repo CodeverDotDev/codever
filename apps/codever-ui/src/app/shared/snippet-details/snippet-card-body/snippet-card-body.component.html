@@ -1,5 +1,5 @@
 <div #snippetCardBody>
-  <div *ngIf="inList && viewHeight > 180; else wholeText">
+  <div *ngIf="inList && viewHeight > 180 && !isFullScreen; else wholeText">
     <div [ngClass]="{ more_text: showMoreText, less_text_snippet: !showMoreText }">
       <div *ngFor="let codeSnippet of snippet.codeSnippets; let isLast = last">
         <p
@@ -14,7 +14,7 @@
           <button
             class="btn btn-sm btn-light float-right mr-1"
             (click)="toggleFullScreen(codePart)"
-            placeholder="Click to copy code snippet"
+            placeholder="Toggle fullscreen"
           >
             Fullscreen <i class="fas fa-expand"></i>
           </button>
@@ -52,7 +52,7 @@
         <app-button-copy-snippet
           [codeSnippet]="codeSnippet.code"
         ></app-button-copy-snippet>
-        <button
+        <button *ngIf="!isFullScreen"
           class="btn btn-sm btn-light float-right mr-1"
           (click)="toggleFullScreen(codePart)"
           placeholder="Click to copy code snippet"

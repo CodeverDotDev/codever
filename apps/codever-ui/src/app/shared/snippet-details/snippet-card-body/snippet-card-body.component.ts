@@ -26,6 +26,9 @@ export class SnippetCardBodyComponent
   @Input()
   inList = false;
 
+  @Input()
+  isFullScreen = true;
+
   show = false; // add one more property
   public showMoreText = false;
 

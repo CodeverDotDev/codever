@@ -1,4 +1,4 @@
-<div *ngIf="snippet" class="card">
+<div *ngIf="snippet" class="card" #snippetEntry>
   <div class="card-body show-hide">
     <div class="header-wrapper">
       <div class="titles">
@@ -78,15 +78,24 @@
           </span>
         </h6>
       </div>
+      <div class="cursor-pointer">
+        <span title="Toggle Fullscreen" (click)="toggleFullScreen(snippetEntry)">
+             <i *ngIf="!isFullScreen" class="fas fa-expand fa-lg" title="Toggle fullscreen"></i>
+             <i *ngIf="isFullScreen" class="fas fa-compress fa-lg" title="Toggle fullscreen"></i>
+        </span>
+      </div>
     </div>
 
     <hr class="title-content-separator"/>
 
-    <app-snippet-card-body
-      [snippet]="snippet"
-      [queryText]="queryText"
-      [inList]="inlist"
-    ></app-snippet-card-body>
+    <div [ngClass]="{'scrollable-div-fullscreen': isFullScreen}">
+      <app-snippet-card-body
+        [snippet]="snippet"
+        [queryText]="queryText"
+        [inList]="inlist"
+        [isFullScreen]="isFullScreen"
+      ></app-snippet-card-body>
+    </div>
   </div>
 
   <ng-container

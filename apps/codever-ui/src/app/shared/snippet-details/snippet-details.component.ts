@@ -1,5 +1,6 @@
 import {
   Component,
+  HostListener,
   Input,
   OnChanges,
   OnInit,
@@ -18,6 +19,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { SnippetSocialShareDialogComponent } from '../dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
+import * as screenfull from 'screenfull';
 
 @Component({
   selector: 'app-snippet-details',
@@ -40,6 +42,8 @@ export class SnippetDetailsComponent implements OnInit, OnChanges {
   inlist = false; // whether it is displayed in list (search results) or singular (details)
 
   scrollStrategy: ScrollStrategy;
+
+  isFullScreen = false;
 
   constructor(
     public loginDialog: MatDialog,
@@ -147,5 +151,17 @@ export class SnippetDetailsComponent implements OnInit, OnChanges {
       SnippetSocialShareDialogComponent,
       dialogConfig
     );
+  }
+
+  toggleFullScreen(part: HTMLElement) {
+    if (screenfull.isEnabled) {
+      this.isFullScreen = !this.isFullScreen;
+      screenfull.toggle(part);
+    }
+  }
+
+  @HostListener('document:fullscreenchange', ['$event'])
+  fullscreenChangeHandler(event: Event) {
+    this.isFullScreen = !!document.fullscreenElement;
   }
 }

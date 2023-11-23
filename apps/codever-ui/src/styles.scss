@@ -291,3 +291,23 @@ label {
   overflow-y: auto;
   max-height: calc(100vh - 150px);
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+//used to wrap titles and buttons in bookmarks, snippets and notes
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  .clock-wrapper {
+    font-size: 1.4rem;
+    margin-left: 1rem;
+    cursor: pointer;
+  }
+
+  .pinned {
+    color: red;
+  }
+}

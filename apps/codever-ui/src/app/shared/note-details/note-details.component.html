@@ -1,6 +1,6 @@
 <div *ngIf="note$ | async as note" class="card" #noteEntry >
   <div class="card-body show-hide note-bg note-container">
-    <div class="note-header">
+    <div class="header-wrapper">
       <div class="title-and-subtitle">
         <h5 class="card-title">
           <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
@@ -34,7 +34,7 @@
       </span>
         </h6>
       </div>
-      <div>
+      <div class="cursor-pointer">
         <span title="Toggle Fullscreen" (click)="toggleFullScreen(noteEntry)">
              <i *ngIf="!isFullScreen" class="fas fa-expand fa-lg"></i>
              <i *ngIf="isFullScreen" class="fas fa-compress fa-lg"></i>
