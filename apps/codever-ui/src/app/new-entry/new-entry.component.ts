@@ -62,7 +62,7 @@ export class NewEntryComponent implements OnInit {
     this.router.navigate(['/my-notes/new'], {
       queryParams: {
         reference: this.url,
-        code: this.selection,
+        content: this.selection,
         title: this.title,
         popup: this.popup,
         initiator: this.initiator,

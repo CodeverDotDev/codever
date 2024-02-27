@@ -81,7 +81,11 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   filteredTags: Observable<any[]>;
 
+  @Input()
   title; // value of "title" query parameter if present
+
+  @Input()
+  passedContent = ''; // value of "title" query parameter if present
 
   @Input()
   isEditMode = false;
@@ -97,6 +101,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input()
   initiator: string;
+
+  @Input()
+  reference = '';
 
   scrollStrategy: ScrollStrategy;
 
@@ -162,9 +169,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   buildForm(): void {
     this.noteForm = this.formBuilder.group({
       title: [this.title ? this.title : '', Validators.required],
-      reference: '',
+      reference: this.reference,
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
-      content: ['', textSizeValidator(5000, 500)],
+      content: [this.passedContent, textSizeValidator(5000, 500)],
     });
   }
 
