@@ -1,0 +1,93 @@
+// START side-navigation
+#wrapper {
+  overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+  margin-top: 100px;
+  //min-height: 100vh;
+  margin-left: -15rem;
+  -webkit-transition: margin 0.25s ease-out;
+  -moz-transition: margin 0.25s ease-out;
+  -o-transition: margin 0.25s ease-out;
+  transition: margin 0.25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+  width: 16.5rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+#sidebar-wrapper {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  #sidebar-wrapper {
+    display: flex;
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}
+
+
+.my-snippets-last-search {
+  background: black;
+  color: white;
+}
+
+.last-search-border {
+  border-width: 0.05rem;
+  border-style: solid;
+  border-color: #495057;
+}
+
+.public-bookmarks-last-search {
+  @extend .last-search-border;
+  background: #f0f2f5;
+  color: black;
+}
+
+.public-snippets-last-search {
+  @extend .last-search-border;
+  background: darkgray;
+  color: white;
+}
+
+.my-bookmarks-last-search {
+  @extend .last-search-border;
+  background: linen;
+  color: #495057;
+}
+
+.my-notes-last-search {
+  @extend .last-search-border;
+  background: lightgoldenrodyellow;
+  color: #495057;
+}
+
+.on-top {
+  position: relative;
+  z-index: 900;
+}
+// END side-navigation

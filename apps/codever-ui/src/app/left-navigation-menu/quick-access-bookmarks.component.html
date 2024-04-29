@@ -1,0 +1,53 @@
+<div
+  *ngIf="quickAccessBookmarks && quickAccessBookmarks.length > 0"
+  class="mt-3"
+  (mouseout)="resetHovering()"
+>
+  <a *ngIf="source === 'last_visited'"
+     class="ml-2 bg-light"
+     title="Ctrl+h for quick access"
+     (click)="addNewSectionTitleEvent(source)"
+  >
+    <i class="fas fa-history mr-1"></i> History bookmarks (<b>Ctrl</b>+<b>h</b>)
+  </a>
+  <a *ngIf="source === 'pinned'"
+     class="ml-2 bg-light"
+     title="Ctrl+p for quick access"
+     (click)="addNewSectionTitleEvent(source)"
+  >
+    <i class="fas fa-thumbtack mr-1"></i> Pinned bookmarks (<b>Ctrl</b>+<b>p</b>)
+  </a>
+  <ng-container
+    *ngFor="let bookmark of quickAccessBookmarks; let i = index"
+    class="mt-1"
+  >
+    <span class="mt-1 mr-2 on-top">
+      <a
+        (mouseover)="hovering[i] = true"
+        (mouseout)="hovering[i] = false"
+        class="badge badge-secondary mb-1 ml-2"
+        [class.my-bookmarks-last-search]="bookmark.public === false"
+        [class.public-bookmarks-last-search]="bookmark.public === true"
+        title="See bookmark details. Right click to go directly to main link - {{
+          bookmark.location
+        }}"
+        (click)="navigateToBookmarkDetails(bookmark)"
+        (auxclick)="goToMainLink(bookmark)"
+        target="_blank"
+      >
+        <i class="fa fa-xs fa-bookmark mr-1"></i>
+        <span
+          *ngIf="!hovering[i]; else longVersion"
+        >{{
+          bookmark.name.length > 33
+            ? bookmark.name.substring(0, 33) + '...'
+            : bookmark.name
+          }}</span
+        >
+        <ng-template #longVersion>{{
+          bookmark.name
+          }}</ng-template>
+      </a>
+    </span>
+  </ng-container>
+</div>

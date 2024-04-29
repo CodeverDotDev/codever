@@ -43,56 +43,20 @@
         >
           <i class="fas fa-cog mr-1"></i> Settings
         </a>
-        <div
-          *ngIf="latestVisitedBookmarks$ | async as latestVisitedBookmarks"
-          class="mt-1"
-          (mouseout)="resetHoveringLastVisited()"
-        >
-          <a
-            class="list-group-item list-group-item-action bg-light"
-            title="Ctrl+H for quick access"
-            (click)="launchHistoryDialog()"
-          >
-            <i class="fas fa-history mr-1"></i> History bookmarks (<b>Ctrl</b>+<b>h</b>)
-          </a>
-          <ng-container
-            *ngFor="let bookmark of latestVisitedBookmarks; let i = index"
-            class="mt-1"
-          >
-            <span class="mt-1 mr-2 on-top">
-              <a
-                (mouseover)="hoveringLastVisited[i] = true"
-                (mouseout)="hoveringLastVisited[i] = false"
-                class="badge badge-secondary mb-1 ml-2"
-                [class.my-bookmarks-last-search]="bookmark.public === false"
-                [class.public-bookmarks-last-search]="bookmark.public === true"
-                title="See bookmark details. Right click to go directly to main link - {{
-                  bookmark.location
-                }}"
-                (click)="navigateToBookmarkDetails(bookmark)"
-                (auxclick)="goToMainLink(bookmark)"
-                target="_blank"
-              >
-                <i class="fa fa-xs fa-bookmark mr-1"></i>
-                <span
-                  *ngIf="!hoveringLastVisited[i]; else longVersionLastVisited"
-                >{{
-                  bookmark.name.length > 33
-                    ? bookmark.name.substring(0, 33) + '...'
-                    : bookmark.name
-                  }}</span
-                >
-                <ng-template #longVersionLastVisited>{{
-                  bookmark.name
-                  }}</ng-template>
-              </a>
-            </span>
-          </ng-container>
-        </div>
+        <app-quick-access-bookmarks
+          [quickAccessBookmarks]="latestPinnedBookmarks$ | async"
+          [source]="'pinned'"
+          (newSectionTitleEvent)="launchDialogFromQuickAccess($event)">
+        </app-quick-access-bookmarks>
+        <app-quick-access-bookmarks
+          [quickAccessBookmarks]="latestVisitedBookmarks$ | async"
+          [source]="'last_visited'"
+          (newSectionTitleEvent)="launchDialogFromQuickAccess($event)">
+        </app-quick-access-bookmarks>
 
         <ng-container *ngIf="latestSearches$ | async as latestSearches">
           <a
-            class="list-group-item list-group-item-action bg-light"
+            class="ml-2 mt-3 bg-light"
             title="Ctrl+S for quick access"
             (click)="displaySearchBarSearches()"
           >

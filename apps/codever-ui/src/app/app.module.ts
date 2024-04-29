@@ -38,6 +38,7 @@ import {
 import { SnippetNotFoundComponent } from './not-found/snippet-not-found.component';
 import { SystemService } from './core/cache/system.service';
 import { NewEntryComponent } from './new-entry/new-entry.component';
+import { QuickAccessBookmarksComponent } from './left-navigation-menu/quick-access-bookmarks.component';
 
 function initializeKeycloak(
   keycloak: KeycloakService,
@@ -132,6 +133,7 @@ function initializeKeycloak(
   ],
   declarations: [
     AppComponent,
+    QuickAccessBookmarksComponent,
     PageNotFoundComponent,
     SnippetNotFoundComponent,
     LoaderComponent,

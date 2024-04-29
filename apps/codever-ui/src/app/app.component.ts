@@ -40,20 +40,9 @@ export class AppComponent implements OnInit {
   showAcknowledgeMigrationHeader = false;
   latestSearches$: Observable<Search[]>;
   latestVisitedBookmarks$: Observable<Bookmark[]>;
+  latestPinnedBookmarks$: Observable<Bookmark[]>;
 
   private hoveringLastSearches: boolean[] = [];
-  private hoveringLastVisited: boolean[] = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
 
   favIcon: HTMLLinkElement = document.querySelector('#favicon');
   readonly environment = environment;
@@ -99,6 +88,8 @@ export class AppComponent implements OnInit {
             this.userId,
             1
           );
+          this.latestPinnedBookmarks$ =
+            this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1);
         });
         this.userData$ = this.userDataStore.getUserData$();
         this.latestSearches$ = this.userData$.pipe(
@@ -124,29 +115,30 @@ export class AppComponent implements OnInit {
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
       event.preventDefault();
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = false;
-      dialogConfig.autoFocus = true;
-      dialogConfig.width = this.getRelativeWidth();
-      dialogConfig.height = this.getRelativeHeight();
-      dialogConfig.scrollStrategy = this.scrollStrategy;
-      dialogConfig.data = {
-        bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(
-          this.userId,
-          1
-        ),
-        title: '<i class="fas fa-thumbtack"></i> Pinned',
-      };
-
-      const dialogRef = this.historyDialog.open(
-        HotKeysDialogComponent,
-        dialogConfig
-      );
-      dialogRef.afterClosed().subscribe((data) => {
-        console.log('Dialog output:', data);
-      });
+      this.launchPinnedDialog();
     }
+  }
+
+  private launchPinnedDialog() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = this.getRelativeWidth();
+    dialogConfig.height = this.getRelativeHeight();
+    dialogConfig.scrollStrategy = this.scrollStrategy;
+    dialogConfig.data = {
+      bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1),
+      title: '<i class="fas fa-thumbtack"></i> Pinned',
+    };
+
+    const dialogRef = this.historyDialog.open(
+      HotKeysDialogComponent,
+      dialogConfig
+    );
+    dialogRef.afterClosed().subscribe((data) => {
+      console.log('Dialog output:', data);
+    });
   }
 
   private getRelativeWidth() {
@@ -236,35 +228,18 @@ export class AppComponent implements OnInit {
     this.hoveringLastSearches.forEach((item) => (item = false));
   }
 
-  resetHoveringLastVisited() {
-    this.hoveringLastVisited.forEach((item) => (item = false));
-  }
-
-  navigateToBookmarkDetails(bookmark: Bookmark): void {
-    let link = [`./my-bookmarks/${bookmark._id}/details`];
-    if (bookmark.public) {
-      link = [`./bookmarks/${bookmark._id}/details`];
-    }
-    this.router.navigate(link, {
-      state: { bookmark: bookmark },
-    });
-    this.addToHistoryService.promoteInHistoryIfLoggedIn(
-      this.userIsLoggedIn,
-      bookmark
-    );
-  }
-
-  goToMainLink(bookmark: Bookmark) {
-    this.addToHistoryService.promoteInHistoryIfLoggedIn(
-      this.userIsLoggedIn,
-      bookmark
-    );
-    window.open(bookmark.location, '_blank');
-  }
-
   displaySearchBarSearches() {
     this.latestSearchClickNotificationService.sendMessage(
       'click on latest searches'
     );
+  }
+
+  launchDialogFromQuickAccess(source: string) {
+    if (source === 'last_visited') {
+      this.launchHistoryDialog();
+    }
+    if (source === 'pinned') {
+      this.launchPinnedDialog();
+    }
   }
 }

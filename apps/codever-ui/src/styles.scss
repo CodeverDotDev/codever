@@ -244,6 +244,7 @@ pre {
 // version 4
 @import 'src/scss/variables';
 @import '~bootstrap/scss/bootstrap';
+@import 'src/scss/left-menu-quick-access';
 @import 'src/scss/bootstrap-override';
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
@@ -279,10 +280,6 @@ label {
   height: 6rem;
 }
 
-#sidebar-wrapper .list-group {
-  width: 18rem;
-}
-
 .title-content-separator {
   margin: 0 0 0.5rem 0;
 }
@@ -311,3 +308,5 @@ label {
     color: red;
   }
 }
+
+
