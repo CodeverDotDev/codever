@@ -39,6 +39,7 @@ import { SnippetNotFoundComponent } from './not-found/snippet-not-found.componen
 import { SystemService } from './core/cache/system.service';
 import { NewEntryComponent } from './new-entry/new-entry.component';
 import { QuickAccessBookmarksComponent } from './left-navigation-menu/quick-access-bookmarks.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 function initializeKeycloak(
   keycloak: KeycloakService,
@@ -104,6 +105,7 @@ function initializeKeycloak(
     ServiceWorkerModule.register('/ngsw-worker.js', {
       enabled: environment.production,
     }),
+    MatTooltipModule,
   ],
   providers: [
     {

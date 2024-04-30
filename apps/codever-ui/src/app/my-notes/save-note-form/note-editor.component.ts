@@ -64,7 +64,6 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   private userData: UserData;
 
   // chips
-  selectable = true;
   removable = true;
   addOnBlur = true;
 

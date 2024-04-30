@@ -72,13 +72,13 @@
         <span
           *ngIf="
             searchDomain === 'my-snippets';
-            else uncheckedMyCodeletsSelection
+            else uncheckedMySnippetsSelection
           "
           class="search-domain-selection my-snippets-selection float-right pl-1 pr-1"
         >
           <i class="fas fa-check"></i>
         </span>
-        <ng-template #uncheckedMyCodeletsSelection>
+        <ng-template #uncheckedMySnippetsSelection>
           <span class="my-snippets-selection-unchecked float-right">
             <i class="fa fa-square fa-lg"></i>
           </span>
@@ -186,28 +186,37 @@
       searchBookmarksFromSearchBox(publicSearchBox.value)
     "
   />
-  <mat-autocomplete
-    #auto="matAutocomplete"
-    (optionSelected)="onAutocompleteSelectionChanged($event)"
-  >
+  <mat-autocomplete #auto="matAutocomplete"
+                    (optionSelected)="onAutocompleteSelectionChanged($event)">
     <mat-option
       *ngFor="let search of filteredSearches | async"
       [value]="search.text"
+      (mouseenter)="hoveringOverSearchHistory = search.text" (mouseleave)="hoveringOverSearchHistory = null"
     >
-      <i class="fas fa-history mr-2 search-history-clock"></i>
-      <span class="search-history-text">
-        {{ search.text }}
-        <span
-          class="float-right rm-search-trashbin"
-          (click)="removeSearch(search, $event)"
-          title="Remove search from history"
+      <div style="display: flex; justify-content: space-between">
+        <div>
+          <i class="fas fa-history mr-2 search-history-clock"></i>
+        </div>
+        <div style="flex-grow: 1">
+          <span class="search-history-text">
+            {{ search.text }}
+          </span>
+        </div>
+        <div [ngStyle]="{'display': hoveringOverSearchHistory === search.text ? 'block' : 'none'}">
+          <span
+            class="rm-search-trashbin"
+            (click)="removeSearch(search, $event)"
+            title="Remove query from search history"
           ><i class="far fa-trash-alt fa-sm"></i
-        ></span>
-      </span>
+          > delete </span>
+        </div>
+
+      </div>
+
     </mat-option>
   </mat-autocomplete>
   <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete"
-    >ß
+  >
     <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
       {{ option }}
     </mat-option>
@@ -239,7 +248,7 @@
         role="button"
         (click)="addTagFilter()"
         text="Add tag filter"
-        ><i class="fas fa-tags"></i> Tag(s)</a
+      ><i class="fas fa-tags"></i> Tag(s)</a
       >
     </div>
     <button

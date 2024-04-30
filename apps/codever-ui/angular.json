@@ -24,8 +24,10 @@
             "styles": [
               "src/styles.scss",
               "./node_modules/highlight.js/styles/github-dark.css",
-              "./node_modules/izitoast/dist/css/iziToast.min.css"
-              // "./node_modules/highlight.js/styles/github.css"
+              "./node_modules/izitoast/dist/css/iziToast.min.css",
+              "./node_modules/bootstrap/scss/bootstrap.scss",
+              //"./node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss",
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
             "scripts": [],
             "aot": false,
