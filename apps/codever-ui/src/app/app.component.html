@@ -15,14 +15,14 @@
         >
           <i class="fas fa-home mr-1"></i> Home
         </a>
-        <a
+        <a *ngIf="!userIsLoggedIn"
           class="list-group-item list-group-item-action bg-light"
           title="Get started, save & search bookmarks"
           [routerLink]="['/howto']"
         >
           <i class="fas fa-info-circle mr-1"></i> How to
         </a>
-        <a
+        <a *ngIf="userIsLoggedIn"
           class="list-group-item list-group-item-action bg-light"
           title="Overview of your bookmarks, tags & searches"
           [routerLink]="['/dashboard']"
@@ -35,13 +35,6 @@
           [routerLink]="['/snippets']"
         >
           <i class="fas fa-code mr-1"></i> Snippets
-        </a>
-        <a
-          class="list-group-item list-group-item-action bg-light"
-          title="Your settings"
-          [routerLink]="['/settings']"
-        >
-          <i class="fas fa-cog mr-1"></i> Settings
         </a>
         <app-quick-access-bookmarks
           [quickAccessBookmarks]="latestPinnedBookmarks$ | async"
