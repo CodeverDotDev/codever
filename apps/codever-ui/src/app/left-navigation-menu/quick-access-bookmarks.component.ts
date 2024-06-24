@@ -6,21 +6,9 @@ import { AddToHistoryService } from '../core/user/add-to-history.service';
 @Component({
   selector: 'app-quick-access-bookmarks',
   templateUrl: './quick-access-bookmarks.component.html',
+  styleUrls: ['./quick-access-bookmarks.component.scss'],
 })
 export class QuickAccessBookmarksComponent {
-  private hovering: boolean[] = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
-
   @Input()
   quickAccessBookmarks: Bookmark[];
 
@@ -49,10 +37,6 @@ export class QuickAccessBookmarksComponent {
   goToMainLink(bookmark: Bookmark) {
     this.addToHistoryService.promoteInHistoryIfLoggedIn(true, bookmark);
     window.open(bookmark.location, '_blank');
-  }
-
-  resetHovering() {
-    this.hovering.forEach((item) => (item = false));
   }
 
   addNewSectionTitleEvent(value: string) {

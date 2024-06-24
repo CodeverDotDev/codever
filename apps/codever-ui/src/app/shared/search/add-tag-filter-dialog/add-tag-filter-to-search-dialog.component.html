@@ -1,19 +1,18 @@
 <h2 mat-dialog-title>Select tag(s) to add to search query</h2>
 
-<hr />
+<hr/>
 
 <mat-form-field class="example-chip-list">
   <mat-label>{{ tagsLabel }}</mat-label>
-  <mat-chip-list #chipList aria-label="Tag selection">
-    <mat-chip
+  <mat-chip-grid #chipList aria-label="Tag selection">
+    <mat-chip-row
       *ngFor="let tag of tags"
-      [selectable]="selectable"
       [removable]="removable"
       (removed)="remove(tag)"
     >
       {{ tag.name }}
       <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-    </mat-chip>
+    </mat-chip-row>
     <input
       placeholder="Type to filter..."
       #tagInput
@@ -23,7 +22,7 @@
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       (matChipInputTokenEnd)="add($event)"
     />
-  </mat-chip-list>
+  </mat-chip-grid>
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
     <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
       {{ tag.name }} <span class="badge badge-light">{{ tag.count }}</span>

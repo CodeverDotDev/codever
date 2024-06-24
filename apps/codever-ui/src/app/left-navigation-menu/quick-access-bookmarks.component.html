@@ -1,7 +1,6 @@
 <div
   *ngIf="quickAccessBookmarks && quickAccessBookmarks.length > 0"
   class="mt-3"
-  (mouseout)="resetHovering()"
 >
   <a *ngIf="source === 'last_visited'"
      class="ml-2 bg-light"
@@ -23,30 +22,30 @@
   >
     <span class="mt-1 mr-2 on-top">
       <a
-        (mouseover)="hovering[i] = true"
-        (mouseout)="hovering[i] = false"
         class="badge badge-secondary mb-1 ml-2"
         [class.my-bookmarks-last-search]="bookmark.public === false"
         [class.public-bookmarks-last-search]="bookmark.public === true"
-        title="See bookmark details. Right click to go directly to main link - {{
-          bookmark.location
-        }}"
         (click)="navigateToBookmarkDetails(bookmark)"
         (auxclick)="goToMainLink(bookmark)"
         target="_blank"
+        matTooltip="{{bookmark.name}} - {{bookmark.location}}"
+        [matTooltipPosition]="'right'"
       >
         <i class="fa fa-xs fa-bookmark mr-1"></i>
         <span
-          *ngIf="!hovering[i]; else longVersion"
         >{{
-          bookmark.name.length > 33
-            ? bookmark.name.substring(0, 33) + '...'
+          bookmark.name.length > 30
+            ? bookmark.name.substring(0, 30) + '...'
             : bookmark.name
-          }}</span
+          }}</span>
+
+        <span class="jump-to-main-link-icon"
+              (click)="goToMainLink(bookmark)"
+              title="Jump to main link"
         >
-        <ng-template #longVersion>{{
-          bookmark.name
-          }}</ng-template>
+          <i class="fas fa-external-link-alt"></i
+          >
+        </span>
       </a>
     </span>
   </ng-container>

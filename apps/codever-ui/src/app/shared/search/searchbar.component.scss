@@ -30,6 +30,7 @@ $background-gray: rgb(240, 242, 245);
 
 .rm-search-trashbin {
   display: none;
+  margin-left: 1em;
 }
 
 // inspired from https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
@@ -57,6 +58,7 @@ $background-gray: rgb(240, 242, 245);
 
   .rm-search-trashbin {
     display: inherit;
+    margin-left: 3rem;
     &:hover {
       color: red;
       font-weight: bolder;
@@ -150,4 +152,8 @@ input {
 .search-history-text {
   color: #52188c;
   font-size: 1.05rem;
+}
+
+mat-option {
+  justify-content: space-between;
 }

@@ -73,9 +73,8 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   isFocusOnSearchControl = false;
 
-  autoSelector = 'auto';
+  hoveringOverSearchHistory: string | null = null;
 
-  showSearchResults = false;
   hover = false;
 
   public innerWidth: any;

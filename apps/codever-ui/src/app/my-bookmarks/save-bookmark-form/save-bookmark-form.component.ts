@@ -66,7 +66,6 @@ export class SaveBookmarkFormComponent implements OnInit {
   existingPersonalBookmark: Bookmark;
 
   // chips
-  selectable = true;
   removable = true;
 
   autocompleteTagsOptionActivated = false;

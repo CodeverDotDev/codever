@@ -35,7 +35,6 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
   tagsLabel: any;
 
   visible = true;
-  selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new UntypedFormControl();

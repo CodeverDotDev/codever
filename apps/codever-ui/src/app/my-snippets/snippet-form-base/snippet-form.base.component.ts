@@ -33,7 +33,6 @@ export class SnippetFormBaseComponent implements OnInit {
   userId = null;
 
   // chips
-  selectable = true;
   removable = true;
   addOnBlur = true;
 

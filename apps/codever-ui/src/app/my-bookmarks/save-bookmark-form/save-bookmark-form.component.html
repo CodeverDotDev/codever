@@ -118,18 +118,18 @@
     </div>
     <div id="tags" class="form-group-distanced mb-4 border rounded p-2">
       <mat-form-field class="full-width">
-        <mat-chip-list #chipList>
-          <mat-chip
+        <mat-label>Tags*</mat-label>
+        <mat-chip-grid #chipList>
+          <mat-chip-row
             *ngFor="let tag of tags.controls; let i = index"
-            [selectable]="selectable"
             [removable]="removable"
             (removed)="removeTagByIndex(i)"
           >
             {{ tag.value }}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-          </mat-chip>
+          </mat-chip-row>
           <input
-            placeholder="&nbsp; Tags*"
+            placeholder="New tag..."
             #tagInput
             [formControl]="tagsControl"
             [matAutocomplete]="auto"
@@ -138,7 +138,7 @@
             (matChipInputTokenEnd)="addTag($event)"
             formArrayName="tags"
           />
-        </mat-chip-list>
+        </mat-chip-grid>
         <mat-hint>Enter comma-separated values</mat-hint>
         <mat-autocomplete
           #auto="matAutocomplete"
