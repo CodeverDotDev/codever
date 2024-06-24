@@ -29,14 +29,16 @@ export class CreateSnippetFormComponent
   extends SnippetFormBaseComponent
   implements OnInit
 {
-  snippetFormGroup: UntypedFormGroup;
-  codeSnippetsFormArray: UntypedFormArray;
+
+  declare snippetFormGroup: UntypedFormGroup;
+
+  declare codeSnippetsFormArray: UntypedFormArray;
   userId = null;
 
   @ViewChild('tagInput', { static: false })
-  tagInput: ElementRef;
+  declare tagInput: ElementRef;
 
-  snippet: Snippet;
+  declare snippet: Snippet;
 
   @Input()
   code; // value of "desc" query parameter if present

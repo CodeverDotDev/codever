@@ -33,15 +33,15 @@ export class UpdateSnippetFormComponent
   extends SnippetFormBaseComponent
   implements OnInit, OnChanges
 {
-  snippetFormGroup: UntypedFormGroup;
-  codeSnippetsFormArray: UntypedFormArray;
+  declare snippetFormGroup: UntypedFormGroup;
+  declare codeSnippetsFormArray: UntypedFormArray;
   userId = null;
 
   @Input()
-  snippet: Snippet;
+  declare snippet: Snippet;
 
   @ViewChild('tagInput', { static: false })
-  tagInput: ElementRef;
+  declare tagInput: ElementRef;
 
   @Input()
   isUpdate: boolean;
