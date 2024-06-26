@@ -21,7 +21,7 @@ import { Note } from '../../core/model/note';
   styleUrls: ['./async-search-result-list.component.scss'],
 })
 export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
-  verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
+  declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
   @Input()
   searchResults$: Observable<(Bookmark | Snippet | Note)[]>;

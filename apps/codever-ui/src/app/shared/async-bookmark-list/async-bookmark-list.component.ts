@@ -19,7 +19,7 @@ import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-f
   styleUrls: ['./async-bookmark-list.component.scss'],
 })
 export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
-  verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
+  declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
   @Input()
   bookmarks$: Observable<Bookmark[]>;
