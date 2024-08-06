@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 .navbar-title {
-    background: url('apps/codever-keycloak-theme/codever/account/resources/img/codever-keycloak.logo-199x46.png') no-repeat;
+    background: url('../img/codever-keycloak.logo-199x46.png') no-repeat;
     height: 50px;
     width: 155px;
 }

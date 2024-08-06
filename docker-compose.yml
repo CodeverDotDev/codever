@@ -24,7 +24,7 @@ services:
       MYSQL_PASSWORD: password
   keycloak:
     container_name: codever-keycloak
-    image: jboss/keycloak:12.0.4
+    image: quay.io/keycloak/keycloak:16.1.1
     networks:
       - backend
     environment:

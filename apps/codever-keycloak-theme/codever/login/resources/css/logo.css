@@ -16,7 +16,7 @@
  */
 
 #kc-logo-wrapper {
-    background: url("apps/codever-keycloak-theme/codever/login/resources/img/codever-keycloak.logo-199x46.png") no-repeat top right;
+    background: url("../img/codever-keycloak.logo-199x46.png") no-repeat top right;
     height: 50px;
     width: 200px;
 }

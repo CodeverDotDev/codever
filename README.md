@@ -108,6 +108,12 @@ This starts
 > create a _nodemon.json_ file based on the [backend/nodemon.json.example](apps/codever-api/nodemon.json.example) 
 > and add your own youtube api key
 
+### Keycloak
+
+Keycloak Admin console reachable at [http://localhost:8080/auth](http://localhost:8080/auth) with the user/password **`admin/Pa55w0rd`** 
+(see docker compose file)
+
+
 ## Testing
 
 ### E2E (integration) tests with Cypress
