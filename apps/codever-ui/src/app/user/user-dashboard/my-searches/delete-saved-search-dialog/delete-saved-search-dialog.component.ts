@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-bookmarks-by-tag-dialog',
+  selector: 'app-delete-saved-search-dialog',
   templateUrl: './delete-saved-search-dialog.component.html',
   styleUrls: ['./delete-saved-search-dialog.component.scss'],
 })

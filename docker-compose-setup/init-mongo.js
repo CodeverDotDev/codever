@@ -92,7 +92,7 @@ db.bookmarks.insert(
         "blog",
         "open-source"
       ],
-      "name": "Getting started with www.codever.land",
+      "name": "Getting started with Codever",
       "location": "https://www.codever.dev/howto",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
