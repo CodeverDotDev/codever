@@ -113,6 +113,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   bookmark: Bookmark;
 
+  hidePublicCheckbox = false;
   constructor(
     private publicBookmarkPresentDialog: MatDialog,
     private formBuilder: UntypedFormBuilder,
@@ -192,6 +193,9 @@ export class SaveBookmarkFormComponent implements OnInit {
         this.tags.markAsDirty();
       });
     }
+
+    this.hidePublicCheckbox =
+      this.route.snapshot.queryParams.hidePublicCheckbox;
   }
 
   buildForm(): void {
@@ -218,7 +222,8 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   private onChanges() {
-    const isNewBookmark = !this.isUpdate && !this.copyToMine && !this.cloneBookmark
+    const isNewBookmark =
+      !this.isUpdate && !this.copyToMine && !this.cloneBookmark;
     if (isNewBookmark) {
       this.bookmarkForm
         .get('location')
@@ -657,7 +662,11 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   cancelUpdate() {
-    this._location.back();
-    console.log('goBAck()...');
+    if (this.popup) {
+      window.close();
+    } else {
+      this._location.back();
+      console.log('goBAck()...');
+    }
   }
 }
