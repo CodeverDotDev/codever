@@ -30,7 +30,7 @@ $background-gray: rgb(240, 242, 245);
 
 .rm-search-trashbin {
   display: none;
-  margin-left: 1em;
+  margin-left: 3em;
 }
 
 // inspired from https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
@@ -58,7 +58,7 @@ $background-gray: rgb(240, 242, 245);
 
   .rm-search-trashbin {
     display: inherit;
-    margin-left: 3rem;
+    margin-left: 8rem;
     &:hover {
       color: red;
       font-weight: bolder;
