@@ -194,10 +194,10 @@ export class CreateSnippetFormComponent
           : '',
         textSizeValidator(10000, 1000),
       ],
-      comment: ['', textSizeValidator(1000, 30)],
+      comment: ['', textSizeValidator(10000, 300)],
       commentAfter: [
         this.getComment(this.comment, this.project, this.workspace, this.file),
-        textSizeValidator(1000, 30),
+        textSizeValidator(1000, 300),
       ],
     });
   }
