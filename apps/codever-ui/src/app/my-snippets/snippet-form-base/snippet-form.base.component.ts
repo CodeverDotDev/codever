@@ -145,16 +145,16 @@ export class SnippetFormBaseComponent implements OnInit {
   createInitialCodeSnippet(): UntypedFormGroup {
     return this.formBuilder.group({
       code: ['', textSizeValidator(10000, 1000)],
-      comment: ['', textSizeValidator(1000, 30)],
-      commentAfter: ['', textSizeValidator(1000, 30)],
+      comment: ['', textSizeValidator(10000, 1000)],
+      commentAfter: ['', textSizeValidator(10000, 1000)],
     });
   }
 
   createEmptyCodeSnippet(): UntypedFormGroup {
     return this.formBuilder.group({
       code: ['', textSizeValidator(10000, 1000)],
-      comment: ['', textSizeValidator(1000, 30)],
-      commentAfter: ['', textSizeValidator(1000, 30)],
+      comment: ['', textSizeValidator(10000, 1000)],
+      commentAfter: ['', textSizeValidator(10000, 1000)],
     });
   }
 
