@@ -80,6 +80,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   filteredTags: Observable<any[]>;
 
+  readonly maxNumberOfCharacters = 30000;
+
   @Input()
   title; // value of "title" query parameter if present
 
@@ -170,7 +172,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       title: [this.title ? this.title : '', Validators.required],
       reference: this.reference,
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
-      content: [this.passedContent, textSizeValidator(5000, 500)],
+      content: [this.passedContent, textSizeValidator(this.maxNumberOfCharacters, 10000)],
     });
   }
 
