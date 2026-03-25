@@ -41,6 +41,7 @@ import { NoteDetailsComponent } from './note-details/note-details.component';
 import { NoteContentComponent } from './note-details/note-card-body/note-content.component';
 import { AsyncNoteListComponent } from './async-note-list/async-note-list.component';
 import { MarkedImageWidthDirective } from './directive/marked-image-width.directive';
+import { CopyCodeButtonDirective } from './directive/copy-code-button.directive';
 import { SnippetSocialShareDialogComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
 import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
 import { HighLightPipe } from '../common/pipes/highlight.pipe';
@@ -79,6 +80,7 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     TagsValidatorDirective,
     OpenInNewTabDirective,
     MarkedImageWidthDirective,
+    CopyCodeButtonDirective,
     DeleteResourceDialogComponent,
     SocialShareDialogComponent,
     SnippetSocialShareDialogComponent,
