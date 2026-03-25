@@ -172,7 +172,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       title: [this.title ? this.title : '', Validators.required],
       reference: this.reference,
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
-      content: [this.passedContent, textSizeValidator(this.maxNumberOfCharacters, 10000)],
+      content: [this.passedContent, textSizeValidator(this.maxNumberOfCharacters, 30000)],
     });
   }
 
