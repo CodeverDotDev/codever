@@ -78,12 +78,53 @@
             ><span class="ml-1">Markdown is supported</span></a
           ></label
         >
+
+        <!-- Notebook upload: file input + indicator when a notebook is loaded -->
+        <div class="mb-2">
+          <div *ngIf="!isNotebookMode">
+            <label class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-file-upload"></i> Upload Jupyter Notebook (.ipynb)
+              <input
+                type="file"
+                accept=".ipynb"
+                (change)="onNotebookFileSelected($event)"
+                style="display: none"
+              />
+            </label>
+          </div>
+          <div *ngIf="isNotebookMode" class="alert alert-info d-flex align-items-center py-2 mb-2">
+            <i class="fas fa-book mr-2"></i>
+            <span>Notebook loaded: <strong>{{ notebookFileName }}</strong></span>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger ml-auto"
+              (click)="removeNotebook()"
+              title="Remove notebook and switch back to markdown"
+            >
+              <i class="fas fa-times"></i> Remove
+            </button>
+          </div>
+        </div>
+
+        <!-- Markdown textarea: hidden when a notebook is loaded -->
         <textarea
+          *ngIf="!isNotebookMode"
           class="form-control"
           id="content"
           formControlName="content"
           placeholder="Note text (searchable)"
           style="height: 300px"
+        >
+        </textarea>
+        <!-- When notebook is loaded, show the extracted searchable text as readonly preview -->
+        <textarea
+          *ngIf="isNotebookMode"
+          class="form-control"
+          id="content"
+          formControlName="content"
+          placeholder="Extracted searchable text from notebook"
+          style="height: 120px"
+          readonly
         >
         </textarea>
         <div class="description-chars-counter">

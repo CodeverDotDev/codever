@@ -82,6 +82,14 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   readonly maxNumberOfCharacters = 30000;
 
+  // --- Notebook upload state ---
+  /** Whether a notebook file has been loaded (switches UI from textarea to notebook indicator) */
+  isNotebookMode = false;
+  /** Name of the uploaded .ipynb file (shown in the UI) */
+  notebookFileName = '';
+  /** Raw .ipynb JSON string to be stored in notebookContent */
+  notebookRawJson = '';
+
   @Input()
   title; // value of "title" query parameter if present
 
@@ -191,6 +199,13 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         formTags.push(this.formBuilder.control(this.note.tags[i]));
       }
 
+      // Restore notebook mode if editing/cloning a notebook note
+      if (this.note.contentType === 'notebook' && this.note.notebookContent) {
+        this.isNotebookMode = true;
+        this.notebookRawJson = this.note.notebookContent;
+        this.notebookFileName = this.note.title + '.ipynb';
+      }
+
       this.tagsControl.setValue(null);
       this.tags.markAsDirty();
     }
@@ -250,6 +265,14 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveNote(note: Note) {
+    // Attach notebook fields before saving
+    if (this.isNotebookMode) {
+      note.contentType = 'notebook';
+      note.notebookContent = this.notebookRawJson;
+    } else {
+      note.contentType = 'markdown';
+    }
+
     if (this.isEditMode) {
       this.updateNote(note);
     } else if (this.cloneNote) {
@@ -322,6 +345,102 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   get content() {
     return this.noteForm.get('content');
+  }
+
+  // ---------------------------------------------------------------------------
+  // Notebook (.ipynb) file upload handling
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Called when the user selects a .ipynb file.
+   * Reads the file, validates it's a valid notebook JSON, extracts searchable
+   * text into the 'content' form field, and stores the raw JSON for notebookContent.
+   */
+  onNotebookFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+      return;
+    }
+
+    const file = input.files[0];
+    if (!file.name.endsWith('.ipynb')) {
+      alert('Please select a .ipynb file');
+      return;
+    }
+
+    // 5 MB limit matching backend MAX_NUMBER_OF_CHARS_FOR_NOTEBOOK_CONTENT
+    if (file.size > 5_000_000) {
+      alert('Notebook file is too large. Maximum 5 MB allowed.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const json = reader.result as string;
+        const nb = JSON.parse(json);
+
+        // Basic validation: must have a cells array (nbformat v4)
+        if (!nb.cells || !Array.isArray(nb.cells)) {
+          alert('Invalid notebook file: missing "cells" array.');
+          return;
+        }
+
+        this.notebookRawJson = json;
+        this.notebookFileName = file.name;
+        this.isNotebookMode = true;
+
+        // Extract readable text from markdown + code cells for full-text search
+        const searchableText = this.extractSearchableText(nb);
+        this.noteForm.patchValue({ content: searchableText });
+
+        // Clear the content size validator — extracted text from notebooks can exceed
+        // the normal 30k char limit; the backend validates notebookContent separately
+        this.noteForm.get('content').clearValidators();
+        this.noteForm.get('content').updateValueAndValidity();
+
+        // Auto-fill the title from the filename if empty
+        if (!this.noteForm.get('title').value) {
+          const titleFromFile = file.name.replace(/\.ipynb$/, '');
+          this.noteForm.patchValue({ title: titleFromFile });
+        }
+      } catch (e) {
+        alert('Failed to parse notebook JSON: ' + e.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  /** Remove the uploaded notebook and switch back to markdown mode */
+  removeNotebook(): void {
+    this.isNotebookMode = false;
+    this.notebookFileName = '';
+    this.notebookRawJson = '';
+    this.noteForm.patchValue({ content: '' });
+
+    // Restore the default content size validator for markdown notes
+    this.noteForm
+      .get('content')
+      .setValidators(textSizeValidator(this.maxNumberOfCharacters, 30000));
+    this.noteForm.get('content').updateValueAndValidity();
+  }
+
+  /**
+   * Extract readable text from notebook cells for the full-text search index.
+   * Concatenates markdown cell text and code cell source, separated by newlines.
+   * This goes into the 'content' field (indexed by MongoDB), NOT the raw JSON.
+   */
+  private extractSearchableText(nb: any): string {
+    const parts: string[] = [];
+    for (const cell of nb.cells) {
+      const source = Array.isArray(cell.source)
+        ? cell.source.join('')
+        : cell.source || '';
+      if (cell.cell_type === 'markdown' || cell.cell_type === 'code') {
+        parts.push(source);
+      }
+    }
+    return parts.join('\n\n');
   }
 
   cancelUpdate() {
