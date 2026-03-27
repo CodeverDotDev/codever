@@ -1,0 +1,40 @@
+<!-- Notebook renderer: iterates over parsed cells and renders them by type -->
+<div class="notebook-container" appCopyCodeButton>
+  <div *ngFor="let cell of cells; let i = index" class="notebook-cell"
+       [ngClass]="{
+         'notebook-cell-markdown': cell.type === 'markdown',
+         'notebook-cell-code': cell.type === 'code',
+         'notebook-cell-raw': cell.type === 'raw',
+         'notebook-cell-error': cell.type === 'error'
+       }">
+    <!-- Code cell: show In [n] label + highlighted source + outputs -->
+    <div *ngIf="cell.type === 'code'" class="notebook-code-cell">
+      <div class="notebook-input">
+        <span class="notebook-prompt notebook-prompt-in">
+          In [{{ cell.executionCount ?? ' ' }}]:
+        </span>
+        <div class="notebook-source" [innerHTML]="cell.sourceHtml"></div>
+      </div>
+      <!-- Outputs for code cells -->
+      <div *ngFor="let output of cell.outputs" class="notebook-output">
+        <span *ngIf="output.type !== 'error' && output.type !== 'stderr'"
+              class="notebook-prompt notebook-prompt-out">
+          Out:
+        </span>
+        <span *ngIf="output.type === 'error' || output.type === 'stderr'"
+              class="notebook-prompt notebook-prompt-err">
+        </span>
+        <div class="notebook-output-content" [innerHTML]="output.html"></div>
+      </div>
+    </div>
+    <!-- Markdown cell: rendered HTML -->
+    <div *ngIf="cell.type === 'markdown'" class="notebook-markdown-cell"
+         [innerHTML]="cell.sourceHtml">
+    </div>
+    <!-- Raw / error cell: preformatted text -->
+    <div *ngIf="cell.type === 'raw' || cell.type === 'error'"
+         class="notebook-raw-cell"
+         [innerHTML]="cell.sourceHtml">
+    </div>
+  </div>
+</div>

@@ -76,7 +76,7 @@ setUpLogging();
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swagger docs are not protected
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '6mb' })); // raised from default 100kb to support Jupyter notebook uploads
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set('trust proxy', 'loopback');
