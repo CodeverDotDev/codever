@@ -164,12 +164,13 @@ export class NotebookRendererComponent implements OnChanges {
       };
     }
     if (data['image/svg+xml']) {
-      // SVG needs the svg profile enabled in DOMPurify, otherwise <svg> tags get stripped
+      // Encode SVG as a base64 data URI in an <img> tag rather than inlining it,
+      // because DOMPurify strips critical SVG elements even with the svg profile enabled
+      const svgRaw = this.joinSource(data['image/svg+xml']);
+      const base64Svg = btoa(unescape(encodeURIComponent(svgRaw)));
       return {
         type: 'image',
-        html: DOMPurify.sanitize(this.joinSource(data['image/svg+xml']), {
-          USE_PROFILES: { svg: true, svgFilters: true },
-        }),
+        html: `<img src="data:image/svg+xml;base64,${base64Svg}" alt="output image" class="notebook-output-image" />`,
       };
     }
     if (data['text/html']) {
