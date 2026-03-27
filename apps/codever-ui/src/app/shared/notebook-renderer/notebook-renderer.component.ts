@@ -142,17 +142,12 @@ export class NotebookRendererComponent implements OnChanges {
     }
 
     // Rich display output (execute_result or display_data)
-    // Priority: HTML > image/png > image/jpeg > image/svg+xml > text/plain
-    // Note: text/plain often contains a fallback label like "<Figure size 1200x400 ...>"
-    //       which should NOT be shown when an image is available
+    // Priority: image/png > image/jpeg > image/svg+xml > text/html > text/plain
+    // Images are checked FIRST because text/html in display_data outputs (e.g. matplotlib)
+    // often contains just metadata, not the actual plot.
+    // text/plain is checked last — it's usually a fallback label like "<Figure size 1200x400 ...>"
     const data = output.data || {};
 
-    if (data['text/html']) {
-      return {
-        type: 'html',
-        html: DOMPurify.sanitize(this.joinSource(data['text/html'])),
-      };
-    }
     if (data['image/png']) {
       // Image data can be a string or an array of base64 lines — join and strip whitespace
       const base64 = this.joinBase64(data['image/png']);
@@ -169,10 +164,18 @@ export class NotebookRendererComponent implements OnChanges {
       };
     }
     if (data['image/svg+xml']) {
-      // SVG can be inline XML — sanitize it before rendering
+      // SVG needs the svg profile enabled in DOMPurify, otherwise <svg> tags get stripped
       return {
         type: 'image',
-        html: DOMPurify.sanitize(this.joinSource(data['image/svg+xml'])),
+        html: DOMPurify.sanitize(this.joinSource(data['image/svg+xml']), {
+          USE_PROFILES: { svg: true, svgFilters: true },
+        }),
+      };
+    }
+    if (data['text/html']) {
+      return {
+        type: 'html',
+        html: DOMPurify.sanitize(this.joinSource(data['text/html'])),
       };
     }
     if (data['text/plain']) {
