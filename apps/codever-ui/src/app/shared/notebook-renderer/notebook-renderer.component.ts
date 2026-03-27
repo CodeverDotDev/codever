@@ -142,9 +142,11 @@ export class NotebookRendererComponent implements OnChanges {
     }
 
     // Rich display output (execute_result or display_data)
+    // Priority: HTML > image/png > image/jpeg > image/svg+xml > text/plain
+    // Note: text/plain often contains a fallback label like "<Figure size 1200x400 ...>"
+    //       which should NOT be shown when an image is available
     const data = output.data || {};
 
-    // Prefer HTML, then images, then plain text
     if (data['text/html']) {
       return {
         type: 'html',
@@ -152,15 +154,25 @@ export class NotebookRendererComponent implements OnChanges {
       };
     }
     if (data['image/png']) {
+      // Image data can be a string or an array of base64 lines — join and strip whitespace
+      const base64 = this.joinBase64(data['image/png']);
       return {
         type: 'image',
-        html: `<img src="data:image/png;base64,${data['image/png']}" alt="output image" class="notebook-output-image" />`,
+        html: `<img src="data:image/png;base64,${base64}" alt="output image" class="notebook-output-image" />`,
       };
     }
     if (data['image/jpeg']) {
+      const base64 = this.joinBase64(data['image/jpeg']);
       return {
         type: 'image',
-        html: `<img src="data:image/jpeg;base64,${data['image/jpeg']}" alt="output image" class="notebook-output-image" />`,
+        html: `<img src="data:image/jpeg;base64,${base64}" alt="output image" class="notebook-output-image" />`,
+      };
+    }
+    if (data['image/svg+xml']) {
+      // SVG can be inline XML — sanitize it before rendering
+      return {
+        type: 'image',
+        html: DOMPurify.sanitize(this.joinSource(data['image/svg+xml'])),
       };
     }
     if (data['text/plain']) {
@@ -180,6 +192,15 @@ export class NotebookRendererComponent implements OnChanges {
   /** Notebook cell sources can be a string or an array of strings */
   private joinSource(source: string | string[]): string {
     return Array.isArray(source) ? source.join('') : source || '';
+  }
+
+  /**
+   * Join base64 image data that may be a string or an array of strings (split across lines).
+   * Strips all whitespace/newlines so the data URI is valid.
+   */
+  private joinBase64(data: string | string[]): string {
+    const raw = Array.isArray(data) ? data.join('') : data || '';
+    return raw.replace(/\s/g, '');
   }
 
   /** Strip ANSI escape codes (used in error tracebacks) */
