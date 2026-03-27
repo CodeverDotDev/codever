@@ -3,7 +3,23 @@
 <div #noteContentDiv appMarkedImageWidth appCopyCodeButton>
   <!-- Notebook rendering: use the dedicated renderer for .ipynb content -->
   <div *ngIf="note.contentType === 'notebook'; else markdownBlock">
-    <app-notebook-renderer [ipynbJson]="note.notebookContent"></app-notebook-renderer>
+    <div *ngIf="partOfList && viewHeight > maxNoteHeightInList && !isFullScreen; else wholeNotebook">
+      <div [ngClass]="{ more_text: showMoreText, less_text_note: !showMoreText }">
+        <app-notebook-renderer [ipynbJson]="note.notebookContent"></app-notebook-renderer>
+      </div>
+      <button
+        (click)="showMoreText = !showMoreText"
+        [ngClass]="{
+          show_less_button: showMoreText,
+          show_more_button: !showMoreText
+        }"
+        class="toggle-show-more-button"
+        [title]="showMoreText ? 'Show less' : 'Show more'"
+      ></button>
+    </div>
+    <ng-template #wholeNotebook>
+      <app-notebook-renderer [ipynbJson]="note.notebookContent"></app-notebook-renderer>
+    </ng-template>
   </div>
 
   <!-- Markdown rendering (default): same as before -->
@@ -19,7 +35,7 @@
           show_more_button: !showMoreText
         }"
         class="toggle-show-more-button"
-        title="Show more"
+        [title]="showMoreText ? 'Show less' : 'Show more'"
       ></button>
     </div>
     <ng-template #wholeText>
