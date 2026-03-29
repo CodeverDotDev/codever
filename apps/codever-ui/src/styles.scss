@@ -169,6 +169,12 @@ pre {
   border-radius: 3px;
 }
 
+// Remove the light grey background/border when the code block uses highlight.js dark theme
+pre:has(code.hljs) {
+  background-color: transparent;
+  padding: 0;
+}
+
 .note_normal {
   border-style: solid;
   border-width: 1px;

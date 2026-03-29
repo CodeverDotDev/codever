@@ -6,6 +6,10 @@ export interface Note {
   reference?: string;
   initiator?: string;
   content: string;
+  // 'markdown' (default) or 'notebook' — determines how content is rendered
+  contentType?: 'markdown' | 'notebook';
+  // Raw .ipynb JSON for notebook notes; content holds extracted searchable text
+  notebookContent?: string;
   color: string;
   tags: string[];
   createdAt?: Date;

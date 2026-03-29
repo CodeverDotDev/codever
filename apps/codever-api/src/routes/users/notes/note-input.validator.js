@@ -15,8 +15,28 @@ let validateNoteInput = function (userId, note) {
     validationErrorMessages.push(NoteValidationErrorMessages.MISSING_TITLE);
   }
 
-  if (!note.content) {
-    validationErrorMessages.push(NoteValidationErrorMessages.MISSING_CONTENT);
+  // For notebook notes, content holds the extracted searchable text;
+  // the raw .ipynb JSON is in notebookContent
+  if (note.contentType === 'notebook') {
+    if (!note.notebookContent) {
+      validationErrorMessages.push(
+        NoteValidationErrorMessages.MISSING_NOTEBOOK_CONTENT
+      );
+    }
+    if (
+      note.notebookContent &&
+      note.notebookContent.length >
+        NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_NOTEBOOK_CONTENT
+    ) {
+      validationErrorMessages.push(
+        NoteValidationErrorMessages.NOTEBOOK_CONTENT_TOO_LONG
+      );
+    }
+  } else {
+    // Standard markdown note — content is required
+    if (!note.content) {
+      validationErrorMessages.push(NoteValidationErrorMessages.MISSING_CONTENT);
+    }
   }
 
   if (note.content) {
@@ -38,7 +58,9 @@ let validateNoteInput = function (userId, note) {
 };
 
 const NoteValidationRules = {
-  MAX_NUMBER_OF_CHARS_FOR_CONTENT: 10000,
+  MAX_NUMBER_OF_CHARS_FOR_CONTENT: 30_000,
+  // Notebook raw JSON can be up to 5 MB (well within MongoDB's 16 MB BSON limit)
+  MAX_NUMBER_OF_CHARS_FOR_NOTEBOOK_CONTENT: 5_000_000,
   MAX_NUMBER_OF_TAGS: 8,
 };
 
@@ -50,6 +72,9 @@ const NoteValidationErrorMessages = {
   MISSING_TITLE: 'Missing required attribute - title',
   MISSING_CONTENT: 'Missing required attribute - content',
   CONTENT_TOO_LONG: `The content is too long. Only ${NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_CONTENT} allowed`,
+  MISSING_NOTEBOOK_CONTENT:
+    'Missing required attribute - notebookContent for notebook notes',
+  NOTEBOOK_CONTENT_TOO_LONG: `The notebook content is too long. Only ${NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_NOTEBOOK_CONTENT} characters allowed`,
 };
 
 module.exports = {
