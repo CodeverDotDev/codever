@@ -202,6 +202,24 @@ export class NotebookRendererComponent implements OnChanges {
         };
       }
     }
+    // text/latex — rendered by SymPy, Sage, etc.
+    if (data['text/latex']) {
+      const latex = this.joinSource(data['text/latex'])
+        .replace(/^\$\$([\s\S]*)\$\$$/, '$1')  // strip outer $$ if present
+        .replace(/^\$([\s\S]*)\$$/, '$1')        // strip outer $ if present
+        .trim();
+      try {
+        return {
+          type: 'html',
+          html: katex.renderToString(latex, { displayMode: true, throwOnError: false, trust: true }),
+        };
+      } catch (_e) {
+        return {
+          type: 'text',
+          html: `<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(data['text/latex']))}</pre>`,
+        };
+      }
+    }
     if (data['text/html']) {
       return {
         type: 'html',
