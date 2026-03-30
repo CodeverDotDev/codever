@@ -145,3 +145,18 @@
   font-size: 13px;
 }
 
+/* --- KaTeX math rendering --- */
+
+/* Display math should be centered (like Jupyter) */
+.notebook-markdown-cell .katex-display,
+.notebook-output-content .katex-display {
+  text-align: center;
+  margin: 1em 0;
+}
+
+/* Fallback style for malformed LaTeX that KaTeX couldn't parse */
+.katex-error {
+  color: #cc0000;
+  font-family: Consolas, Menlo, Monaco, monospace;
+  font-size: 0.9em;
+}

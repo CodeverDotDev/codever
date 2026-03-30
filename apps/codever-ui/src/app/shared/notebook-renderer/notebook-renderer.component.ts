@@ -8,14 +8,17 @@ import {
 import * as DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
+import katex from 'katex';
+import { renderLatex } from '../render-latex.util';
 
 /**
  * Renders a Jupyter Notebook (.ipynb) from its raw JSON string.
  *
  * Supports:
  *  - Markdown cells   → rendered via marked + DOMPurify (same as md2html pipe)
+ *  - LaTeX math       → $...$, $$...$$, \(...\), \[...\] via KaTeX
  *  - Code cells        → syntax-highlighted via highlight.js with the notebook's kernel language
- *  - Outputs           → text/plain, text/html, image/png, image/jpeg, error tracebacks
+ *  - Outputs           → text/plain, text/html, text/latex, image/png, image/jpeg, error tracebacks
  *
  * The raw .ipynb JSON is passed via the [ipynbJson] input.
  * Parsed once on change and stored as a list of renderable cells.
@@ -75,10 +78,13 @@ export class NotebookRendererComponent implements OnChanges {
     const source = this.joinSource(cell.source);
 
     if (cell.cell_type === 'markdown') {
+      // Pre-process LaTeX math ($...$, $$...$$, \(...\), \[...\]) before
+      // passing through marked, so that _ and other TeX chars aren't mangled.
+      const withLatex = renderLatex(source);
       return {
         type: 'markdown',
         executionCount: null,
-        sourceHtml: DOMPurify.sanitize(marked.parse(source)),
+        sourceHtml: this.sanitizeWithKatex(marked.parse(withLatex)),
         outputs: [],
       };
     }
@@ -142,9 +148,11 @@ export class NotebookRendererComponent implements OnChanges {
     }
 
     // Rich display output (execute_result or display_data)
-    // Priority: image/png > image/jpeg > image/svg+xml > text/html > text/plain
+    // Priority: image/png > image/jpeg > image/svg+xml > text/latex > text/html > text/plain
     // Images are checked FIRST because text/html in display_data outputs (e.g. matplotlib)
     // often contains just metadata, not the actual plot.
+    // text/latex is checked before text/html because libraries like SymPy emit both,
+    // and the LaTeX version renders much more cleanly.
     // text/plain is checked last — it's usually a fallback label like "<Figure size 1200x400 ...>"
     const data = output.data || {};
 
@@ -173,10 +181,28 @@ export class NotebookRendererComponent implements OnChanges {
         html: `<img src="data:image/svg+xml;base64,${base64Svg}" alt="output image" class="notebook-output-image" />`,
       };
     }
+    // text/latex — rendered by SymPy, Sage, etc.
+    if (data['text/latex']) {
+      const latex = this.joinSource(data['text/latex'])
+        .replace(/^\$\$([\s\S]*)\$\$$/, '$1')  // strip outer $$ if present
+        .replace(/^\$([\s\S]*)\$$/, '$1')        // strip outer $ if present
+        .trim();
+      try {
+        return {
+          type: 'html',
+          html: katex.renderToString(latex, { displayMode: true, throwOnError: false, trust: true }),
+        };
+      } catch (_e) {
+        return {
+          type: 'text',
+          html: `<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(data['text/latex']))}</pre>`,
+        };
+      }
+    }
     if (data['text/html']) {
       return {
         type: 'html',
-        html: DOMPurify.sanitize(this.joinSource(data['text/html'])),
+        html: this.sanitizeWithKatex(this.joinSource(data['text/html'])),
       };
     }
     if (data['text/plain']) {
@@ -221,6 +247,25 @@ export class NotebookRendererComponent implements OnChanges {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  /**
+   * DOMPurify.sanitize() with extra allowed tags/attrs for KaTeX output.
+   * KaTeX renders math as nested <span> elements with class + style, which
+   * default DOMPurify allows.  But KaTeX also emits MathML elements for
+   * accessibility (e.g. <math>, <semantics>, <annotation>, <mrow>, etc.)
+   * that need to be explicitly whitelisted.
+   */
+  private sanitizeWithKatex(html: string): string {
+    return DOMPurify.sanitize(html, {
+      ADD_TAGS: [
+        'math', 'semantics', 'annotation', 'mrow', 'mi', 'mo', 'mn',
+        'msup', 'msub', 'mfrac', 'msqrt', 'mroot', 'mover', 'munder',
+        'munderover', 'mtable', 'mtr', 'mtd', 'mtext', 'mspace', 'mpadded',
+        'menclose', 'mglyph', 'mmultiscripts', 'mprescripts', 'none',
+      ],
+      ADD_ATTR: ['encoding', 'xmlns', 'mathvariant', 'displaystyle', 'scriptlevel'],
+    });
   }
 }
 
