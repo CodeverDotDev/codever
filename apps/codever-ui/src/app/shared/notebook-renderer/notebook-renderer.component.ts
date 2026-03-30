@@ -5,6 +5,7 @@ import {
   SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
@@ -38,6 +39,8 @@ export class NotebookRendererComponent implements OnChanges {
   /** Language detected from notebook metadata (e.g. 'python') */
   language = '';
 
+  constructor(private sanitizer: DomSanitizer) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['ipynbJson'] && this.ipynbJson) {
       this.parseNotebook();
@@ -67,7 +70,7 @@ export class NotebookRendererComponent implements OnChanges {
         {
           type: 'error',
           executionCount: null,
-          sourceHtml: `<pre class="notebook-error">Failed to parse notebook: ${e.message}</pre>`,
+          sourceHtml: this.trustHtml(`<pre class="notebook-error">Failed to parse notebook: ${e.message}</pre>`),
           outputs: [],
         },
       ];
@@ -84,7 +87,7 @@ export class NotebookRendererComponent implements OnChanges {
       return {
         type: 'markdown',
         executionCount: null,
-        sourceHtml: this.sanitizeWithKatex(marked.parse(withLatex)),
+        sourceHtml: this.trustHtml(this.sanitizeWithKatex(marked.parse(withLatex))),
         outputs: [],
       };
     }
@@ -93,7 +96,7 @@ export class NotebookRendererComponent implements OnChanges {
       return {
         type: 'code',
         executionCount: cell.execution_count ?? null,
-        sourceHtml: this.highlightCode(source),
+        sourceHtml: this.trustHtml(this.highlightCode(source)),
         outputs: (cell.outputs || []).map((o: any) => this.parseOutput(o)),
       };
     }
@@ -102,7 +105,7 @@ export class NotebookRendererComponent implements OnChanges {
     return {
       type: 'raw',
       executionCount: null,
-      sourceHtml: `<pre>${this.escapeHtml(source)}</pre>`,
+      sourceHtml: this.trustHtml(`<pre>${this.escapeHtml(source)}</pre>`),
       outputs: [],
     };
   }
@@ -132,7 +135,7 @@ export class NotebookRendererComponent implements OnChanges {
     if (output.output_type === 'stream') {
       return {
         type: output.name === 'stderr' ? 'stderr' : 'text',
-        html: `<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(output.text))}</pre>`,
+        html: this.trustHtml(`<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(output.text))}</pre>`),
       };
     }
 
@@ -143,7 +146,7 @@ export class NotebookRendererComponent implements OnChanges {
         .join('\n');
       return {
         type: 'error',
-        html: `<pre class="notebook-output-error">${this.escapeHtml(traceback)}</pre>`,
+        html: this.trustHtml(`<pre class="notebook-output-error">${this.escapeHtml(traceback)}</pre>`),
       };
     }
 
@@ -161,14 +164,14 @@ export class NotebookRendererComponent implements OnChanges {
       const base64 = this.joinBase64(data['image/png']);
       return {
         type: 'image',
-        html: `<img src="data:image/png;base64,${base64}" alt="output image" class="notebook-output-image" />`,
+        html: this.trustHtml(`<img src="data:image/png;base64,${base64}" alt="output image" class="notebook-output-image" />`),
       };
     }
     if (data['image/jpeg']) {
       const base64 = this.joinBase64(data['image/jpeg']);
       return {
         type: 'image',
-        html: `<img src="data:image/jpeg;base64,${base64}" alt="output image" class="notebook-output-image" />`,
+        html: this.trustHtml(`<img src="data:image/jpeg;base64,${base64}" alt="output image" class="notebook-output-image" />`),
       };
     }
     if (data['image/svg+xml']) {
@@ -178,7 +181,7 @@ export class NotebookRendererComponent implements OnChanges {
       const base64Svg = btoa(unescape(encodeURIComponent(svgRaw)));
       return {
         type: 'image',
-        html: `<img src="data:image/svg+xml;base64,${base64Svg}" alt="output image" class="notebook-output-image" />`,
+        html: this.trustHtml(`<img src="data:image/svg+xml;base64,${base64Svg}" alt="output image" class="notebook-output-image" />`),
       };
     }
     // text/latex — rendered by SymPy, Sage, etc.
@@ -190,29 +193,29 @@ export class NotebookRendererComponent implements OnChanges {
       try {
         return {
           type: 'html',
-          html: katex.renderToString(latex, { displayMode: true, throwOnError: false, trust: true }),
+          html: this.trustHtml(katex.renderToString(latex, { displayMode: true, throwOnError: false, trust: true })),
         };
       } catch (_e) {
         return {
           type: 'text',
-          html: `<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(data['text/latex']))}</pre>`,
+          html: this.trustHtml(`<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(data['text/latex']))}</pre>`),
         };
       }
     }
     if (data['text/html']) {
       return {
         type: 'html',
-        html: this.sanitizeWithKatex(this.joinSource(data['text/html'])),
+        html: this.trustHtml(this.sanitizeWithKatex(this.joinSource(data['text/html']))),
       };
     }
     if (data['text/plain']) {
       return {
         type: 'text',
-        html: `<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(data['text/plain']))}</pre>`,
+        html: this.trustHtml(`<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(data['text/plain']))}</pre>`),
       };
     }
 
-    return { type: 'text', html: '' };
+    return { type: 'text', html: this.trustHtml('') };
   }
 
   // ---------------------------------------------------------------------------
@@ -267,6 +270,15 @@ export class NotebookRendererComponent implements OnChanges {
       ADD_ATTR: ['encoding', 'xmlns', 'mathvariant', 'displaystyle', 'scriptlevel'],
     });
   }
+
+  /**
+   * Bypass Angular's built-in sanitizer for HTML that has already been
+   * sanitized by DOMPurify.  Angular's [innerHTML] binding strips inline
+   * `style` attributes, which KaTeX needs for proper math layout.
+   */
+  private trustHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -276,12 +288,12 @@ export class NotebookRendererComponent implements OnChanges {
 export interface NotebookCell {
   type: 'markdown' | 'code' | 'raw' | 'error';
   executionCount: number | null;
-  sourceHtml: string;
+  sourceHtml: SafeHtml;
   outputs: NotebookOutput[];
 }
 
 export interface NotebookOutput {
   type: 'text' | 'html' | 'image' | 'error' | 'stderr';
-  html: string;
+  html: SafeHtml;
 }
 

@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as DOMPurify from 'dompurify';
 
 import { marked } from 'marked';
@@ -31,9 +32,14 @@ const KATEX_SANITIZE_CONFIG = {
 
 @Pipe({ name: 'md2html' })
 export class Markdown2HtmlPipe implements PipeTransform {
-  transform(text: string): string {
+  constructor(private sanitizer: DomSanitizer) {}
+
+  transform(text: string): SafeHtml {
     // Pre-process LaTeX math delimiters before markdown parsing
     const withLatex = renderLatex(text);
-    return DOMPurify.sanitize(marked.parse(withLatex), KATEX_SANITIZE_CONFIG);
+    const clean = DOMPurify.sanitize(marked.parse(withLatex), KATEX_SANITIZE_CONFIG);
+    // Bypass Angular's built-in sanitizer which strips inline style attributes
+    // that KaTeX needs for proper math layout. DOMPurify already handles sanitization.
+    return this.sanitizer.bypassSecurityTrustHtml(clean);
   }
 }
