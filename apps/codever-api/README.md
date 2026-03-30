@@ -53,6 +53,39 @@ Based on that a GUI is generated to test the API directly from browser:
 
 We currently use [pm2](https://pm2.keymetrics.io/) to start the project in production
 
+### Important – restart PM2 after deploying backend changes
+
+PM2 keeps the old Node.js process running until explicitly restarted.
+After pulling new backend code (e.g. body-parser limit changes), **always**
+reload or restart the PM2 process:
+
+```shell
+pm2 reload pm2-process-cluster.json   # zero-downtime reload (preferred)
+# or
+pm2 restart pm2-process-cluster.json  # hard restart
+```
+
+> **Example:** The Express body-parser is configured to accept up to **6 MB** JSON
+> payloads (`app.js`). If you deploy this change but forget to restart PM2,
+> production still runs with the old default limit (100 KB) and larger requests
+> (e.g. Jupyter notebook uploads) will fail with **413 Request Entity Too Large**.
+
+### Nginx reverse proxy – large request bodies
+
+If nginx sits in front of the API, its default `client_max_body_size` of **1 MB**
+can also reject large requests before they reach Node.js. Add the following to the
+nginx `server` or `location` block that proxies to the API:
+
+```nginx
+client_max_body_size 6m;
+```
+
+Then reload nginx:
+
+```shell
+sudo nginx -t && sudo systemctl reload nginx
+```
+
 Undo local changes if needed:
 
 ```

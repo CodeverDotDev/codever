@@ -76,8 +76,12 @@ setUpLogging();
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swagger docs are not protected
 
-app.use(bodyParser.json({ limit: '6mb' })); // raised from default 100kb to support Jupyter notebook uploads
-app.use(bodyParser.urlencoded({ extended: false }));
+// Raised from the default 100kb to support Jupyter notebook uploads (up to 5 MB).
+// IMPORTANT: if a reverse proxy (e.g. nginx) sits in front of this server, its own
+// body-size limit must also be raised.  For nginx add to server/location block:
+//   client_max_body_size 6m;
+app.use(bodyParser.json({ limit: '6mb' }));
+app.use(bodyParser.urlencoded({ limit: '6mb', extended: false }));
 
 app.set('trust proxy', 'loopback');
 
