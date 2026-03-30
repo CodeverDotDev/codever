@@ -1,10 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as DOMPurify from 'dompurify';
 
 import { marked } from 'marked';
 import hljs from 'highlight.js';
-import { renderLatex } from '../render-latex.util';
 
 // Custom renderer to apply highlight.js syntax highlighting to fenced code blocks
 // and add the 'hljs' CSS class so the github-dark theme (included in angular.json) is applied
@@ -19,27 +17,9 @@ renderer.code = function (code: string, language: string) {
 
 marked.setOptions({ renderer });
 
-// DOMPurify config that allows KaTeX-generated MathML elements
-const KATEX_SANITIZE_CONFIG = {
-  ADD_TAGS: [
-    'math', 'semantics', 'annotation', 'mrow', 'mi', 'mo', 'mn',
-    'msup', 'msub', 'mfrac', 'msqrt', 'mroot', 'mover', 'munder',
-    'munderover', 'mtable', 'mtr', 'mtd', 'mtext', 'mspace', 'mpadded',
-    'menclose', 'mglyph', 'mmultiscripts', 'mprescripts', 'none',
-  ],
-  ADD_ATTR: ['encoding', 'xmlns', 'mathvariant', 'displaystyle', 'scriptlevel'],
-};
-
 @Pipe({ name: 'md2html' })
 export class Markdown2HtmlPipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) {}
-
-  transform(text: string): SafeHtml {
-    // Pre-process LaTeX math delimiters before markdown parsing
-    const withLatex = renderLatex(text);
-    const clean = DOMPurify.sanitize(marked.parse(withLatex), KATEX_SANITIZE_CONFIG);
-    // Bypass Angular's built-in sanitizer which strips inline style attributes
-    // that KaTeX needs for proper math layout. DOMPurify already handles sanitization.
-    return this.sanitizer.bypassSecurityTrustHtml(clean);
+  transform(text: string): string {
+    return DOMPurify.sanitize(marked.parse(text));
   }
 }

@@ -87,7 +87,7 @@ export class NotebookRendererComponent implements OnChanges {
       return {
         type: 'markdown',
         executionCount: null,
-        sourceHtml: this.trustHtml(this.sanitizeWithKatex(marked.parse(withLatex))),
+        sourceHtml: DOMPurify.sanitize(marked.parse(source)),
         outputs: [],
       };
     }
