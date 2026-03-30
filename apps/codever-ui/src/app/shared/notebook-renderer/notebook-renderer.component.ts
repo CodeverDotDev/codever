@@ -211,12 +211,12 @@ export class NotebookRendererComponent implements OnChanges {
       try {
         return {
           type: 'html',
-          html: katex.renderToString(latex, { displayMode: true, throwOnError: false, trust: true }),
+          html: this.trustHtml(katex.renderToString(latex, { displayMode: true, throwOnError: false, trust: true })),
         };
       } catch (_e) {
         return {
           type: 'text',
-          html: `<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(data['text/latex']))}</pre>`,
+          html: this.trustHtml(`<pre class="notebook-output-text">${this.escapeHtml(this.joinSource(data['text/latex']))}</pre>`),
         };
       }
     }
