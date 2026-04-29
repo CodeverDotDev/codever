@@ -48,10 +48,10 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
         copyBtn.title = 'Copy code';
         copyBtn.innerHTML = '<i class="far fa-copy"></i> Copy';
 
-        // Code content
+        // Code content - use innerHTML to preserve syntax highlighting
         const preClone = document.createElement('pre');
         const codeClone = document.createElement('code');
-        codeClone.textContent = codeElement.textContent || '';
+        codeClone.innerHTML = codeElement.innerHTML;
         if (code && code.className) {
           codeClone.className = code.className;
         }
