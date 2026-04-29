@@ -43,6 +43,7 @@ import { AsyncNoteListComponent } from './async-note-list/async-note-list.compon
 import { NotebookRendererComponent } from './notebook-renderer/notebook-renderer.component';
 import { MarkedImageWidthDirective } from './directive/marked-image-width.directive';
 import { CopyCodeButtonDirective } from './directive/copy-code-button.directive';
+import { FullscreenCodeButtonDirective } from './directive/fullscreen-code-button.directive';
 import { SnippetSocialShareDialogComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
 import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
 import { HighLightPipe } from '../common/pipes/highlight.pipe';
@@ -82,6 +83,7 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     OpenInNewTabDirective,
     MarkedImageWidthDirective,
     CopyCodeButtonDirective,
+    FullscreenCodeButtonDirective,
     DeleteResourceDialogComponent,
     SocialShareDialogComponent,
     SnippetSocialShareDialogComponent,
