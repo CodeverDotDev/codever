@@ -161,6 +161,30 @@
           </span>
         </ng-template>
       </a>
+      <a
+        class="dropdown-item"
+        role="button"
+        title="Search in public notes"
+        (click)="onSearchDomainChange('public-notes')"
+      >
+        Public Notes
+        <span
+          *ngIf="
+            searchDomain === 'public-notes';
+            else uncheckedPublicNotesSelection
+          "
+          class="search-domain-selection note-bg float-right pl-1 pr-1"
+        >
+          <i class="fas fa-check"></i>
+        </span>
+        <ng-template #uncheckedPublicNotesSelection>
+          <span class="public-notes-selection-unchecked float-right">
+            <i
+              class="fa fa-square fa-lg ml-1 public-notes-selection-unchecked"
+            ></i>
+          </span>
+        </ng-template>
+      </a>
     </div>
   </div>
 
@@ -179,6 +203,7 @@
     [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
     [class.my-notes-selection]="searchDomain === 'my-notes'"
     [class.public-snippets-selection]="searchDomain === 'public-snippets'"
+    [class.note-bg]="searchDomain === 'public-notes'"
     (keyup)="watchForTags(publicSearchBox.value)"
     (keyup.enter)="
       $event.target.blur();

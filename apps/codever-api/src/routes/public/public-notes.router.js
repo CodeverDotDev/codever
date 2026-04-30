@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const PublicNotesService = require('./public-notes.service');
+const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
 
 /**
  * Get note by shareableId
@@ -12,6 +13,27 @@ router.get('/shared/:shareableId', async (request, response) => {
   );
 
   return response.json(sharedNote);
+});
+
+/**
+ * Search public notes with query text
+ */
+router.get('/', async (request, response, next) => {
+  const searchText = request.query.q;
+  const searchInclude = request.query.include || 'all';
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+
+  if (searchText) {
+    const notes = await PublicNotesService.searchPublicNotes(
+      searchText,
+      page,
+      limit,
+      searchInclude
+    );
+    return response.send(notes);
+  } else {
+    next();
+  }
 });
 
 /**

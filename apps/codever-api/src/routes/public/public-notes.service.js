@@ -1,5 +1,36 @@
 const Note = require('../../model/note');
 const NotFoundError = require('../../error/not-found.error');
+const searchUtils = require('../../common/searching/utils/search.utils');
+
+let searchPublicNotes = async function (query, page, limit, searchInclude) {
+  const [searchTerms, searchTags] = searchUtils.parseQueryString(query);
+  const { fulltextSearchTerms } =
+    searchUtils.extractFulltextAndSpecialSearchTerms(searchTerms);
+
+  let filter = {};
+  filter['public'] = true;
+  filter = searchUtils.setTagsToFilter(searchTags, filter);
+  filter = searchUtils.setFulltextSearchTermsFilter(
+    fulltextSearchTerms,
+    filter,
+    searchInclude
+  );
+
+  let notes = await Note.find(filter, {
+    score: { $meta: 'textScore' },
+  })
+    .sort(
+      searchTerms.length > 0
+        ? { score: { $meta: 'textScore' } }
+        : { createdAt: -1 }
+    )
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .lean()
+    .exec();
+
+  return notes;
+};
 
 let getNoteById = async function (noteId) {
   const note = await Note.findOne({
@@ -28,6 +59,7 @@ let getNoteByShareableId = async (shareableId) => {
 };
 
 module.exports = {
+  searchPublicNotes: searchPublicNotes,
   getNoteById: getNoteById,
   getNoteByShareableId: getNoteByShareableId,
 };

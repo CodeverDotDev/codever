@@ -271,6 +271,45 @@
       </app-async-snippet-list>
     </ng-template>
   </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"
+        ><i class="fa fa-sticky-note"></i> Public Notes</span
+      >
+    </ng-template>
+    <ng-template matTabContent>
+      <div
+        *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+        class="alert alert-info no-search-results mt-2"
+        role="alert"
+      >
+        No results found for <strong>{{ this.searchInclude }}</strong> of
+        <em
+          ><code>{{ searchText }}</code></em
+        >
+        in <strong>Public Notes</strong>.
+        <span *ngIf="searchInclude === 'all'">
+          Try searching for <strong>any</strong> of the terms -
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="tryPublicNotes('any')"
+          >
+            <i class="fa fa-search"></i> Search any
+          </button>
+        </span>
+        <br />
+        <br />
+        {{ searchInOtherCategoriesTip }}
+      </div>
+      <app-async-note-list
+        [notes$]="searchResults$"
+        [callerPagination]="callerPaginationSearchResults"
+        [queryText]="searchText"
+      >
+      </app-async-note-list>
+    </ng-template>
+  </mat-tab>
 </mat-tab-group>
 
 <app-find-elsewhere [searchText]="searchText"> </app-find-elsewhere>
