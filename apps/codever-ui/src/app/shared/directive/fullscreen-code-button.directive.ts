@@ -163,7 +163,7 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
 
       .fullscreen-code-container {
         width: 100%;
-        max-width: 960px;
+        max-width: 80vw;
         max-height: 90vh;
         display: flex;
         flex-direction: column;
