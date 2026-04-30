@@ -218,7 +218,8 @@
       [value]="search.text"
       (mouseenter)="hoveringOverSearchHistory = search.text" (mouseleave)="hoveringOverSearchHistory = null"
     >
-      <div style="display: flex; justify-content: space-between">
+      <div style="display: flex; justify-content: space-between"
+           [ngClass]="{'note-public-bg': searchDomain === 'public-notes', 'note-bg': searchDomain === 'my-notes'}">
         <div>
           <i class="fas fa-history mr-2 search-history-clock"></i>
         </div>
