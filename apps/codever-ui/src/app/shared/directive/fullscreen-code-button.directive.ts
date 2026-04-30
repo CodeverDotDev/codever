@@ -163,7 +163,7 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
 
       .fullscreen-code-container {
         width: 100%;
-        max-width: 80vw;
+        max-width: 70vw;
         max-height: 90vh;
         display: flex;
         flex-direction: column;
@@ -171,6 +171,18 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+
+      @media (max-width: 1400px) {
+        .fullscreen-code-container {
+          max-width: 80vw;
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .fullscreen-code-container {
+          max-width: 90vw;
+        }
       }
 
       .fullscreen-code-toolbar {
