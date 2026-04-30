@@ -6,6 +6,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import * as screenfull from 'screenfull';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { NoteSocialShareDialogComponent } from '../dialog/note-social-share-dialog/note-social-share-dialog.component';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-note-details',
@@ -25,7 +28,7 @@ export class NoteDetailsComponent implements OnInit {
   @Input()
   partOfList = false;
 
-  userId$: Observable<string>;
+  userId$: Observable<string> = of(null);
   noteId: string;
 
   isFullScreen = false;
@@ -34,26 +37,31 @@ export class NoteDetailsComponent implements OnInit {
     private personalNotesService: PersonalNotesService,
     private userInfoStore: UserInfoStore,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private noteShareDialog: MatDialog,
+    private keycloakService: KeycloakService
   ) {}
 
   ngOnInit(): void {
-    this.userId$ = this.userInfoStore.getUserId$();
-    if (!this.inSearchResults) {
-      if (window.history.state.note) {
-        this.note$ = of(window.history.state.snippet);
-      } else {
-        this.note$ = this.userId$.pipe(
-          switchMap((userId) => {
-            this.noteId = this.route.snapshot.paramMap.get('id');
-            return this.personalNotesService.getPersonalNoteById(
-              userId,
-              this.noteId
-            );
-          })
-        );
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
+      this.userId$ = isLoggedIn ? this.userInfoStore.getUserId$() : of(null);
+
+      if (!this.inSearchResults && !this.note$) {
+        if (window.history.state.note) {
+          this.note$ = of(window.history.state.snippet);
+        } else {
+          this.note$ = this.userId$.pipe(
+            switchMap((userId) => {
+              this.noteId = this.route.snapshot.paramMap.get('id');
+              return this.personalNotesService.getPersonalNoteById(
+                userId,
+                this.noteId
+              );
+            })
+          );
+        }
       }
-    }
+    });
   }
 
   editNote(note: Note) {
@@ -64,6 +72,19 @@ export class NoteDetailsComponent implements OnInit {
   cloneNote(note: Note) {
     const link = [`/my-notes/${note._id}/clone`];
     this.router.navigate(link, { state: { note: note } });
+  }
+
+  shareNoteDialog(note: Note, userId: string) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.minWidth = 380;
+    dialogConfig.data = {
+      note: note,
+      userId: userId,
+    };
+
+    this.noteShareDialog.open(NoteSocialShareDialogComponent, dialogConfig);
   }
 
   toggleFullScreen(part: HTMLElement) {

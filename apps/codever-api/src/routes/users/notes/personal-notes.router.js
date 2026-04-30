@@ -86,6 +86,22 @@ personalNotesRouter.get(
   }
 );
 
+/* GET shareableId for note */
+personalNotesRouter.get(
+  '/shareable/:noteId',
+  keycloak.protect(),
+  async (request, response) => {
+    UserIdValidator.validateUserId(request);
+
+    const { userId, noteId } = request.params;
+    const shareableId = await PersonalNotesService.getOrCreateShareableId(
+      userId,
+      noteId
+    );
+    return response.json({ shareableId: shareableId });
+  }
+);
+
 /**
  * Find personal notes
  */

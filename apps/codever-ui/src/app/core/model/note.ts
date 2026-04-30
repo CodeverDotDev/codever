@@ -1,5 +1,6 @@
 export interface Note {
   _id?: string;
+  shareableId?: string;
   type: string; // should always be 'note'
   userId?: string;
   title: string;
@@ -12,6 +13,7 @@ export interface Note {
   notebookContent?: string;
   color: string;
   tags: string[];
+  public?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -3,12 +3,14 @@ const Note = require('../../../model/note');
 const NotFoundError = require('../../../error/not-found.error');
 
 const NoteInputValidator = require('./note-input.validator');
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * CREATE note for user
  */
 let createNote = async function (userId, noteData) {
   NoteInputValidator.validateNoteInput(userId, noteData);
+  noteData.shareableId = undefined;
 
   // Remove the _id field to ensure Mongoose generates a new _id (might happen when cloning)
   delete noteData._id;
@@ -138,6 +140,35 @@ let getUserNoteTags = async (userId) => {
   return userTags;
 };
 
+let getOrCreateShareableId = async (userId, noteId) => {
+  const note = await Note.findOne({
+    _id: noteId,
+    userId: userId,
+  }).select('+shareableId');
+
+  if (note) {
+    if (note.shareableId) {
+      return note.shareableId;
+    }
+
+    const uuid = uuidv4();
+    const updatedNote = await Note.findOneAndUpdate(
+      {
+        _id: noteId,
+        userId: userId,
+      },
+      {
+        $set: { shareableId: uuid },
+      },
+      { new: true }
+    ).select('+shareableId');
+
+    return updatedNote.shareableId;
+  }
+
+  throw new NotFoundError(`Note NOT_FOUND the userId: ${userId} AND id: ${noteId}`);
+};
+
 module.exports = {
   createNote: createNote,
   getSuggestedNoteTags: getSuggestedNoteTags,
@@ -147,4 +178,5 @@ module.exports = {
   getAllMyNotes: getAllMyNotes,
   updateNote: updateNote,
   deleteNoteById: deleteNoteById,
+  getOrCreateShareableId: getOrCreateShareableId,
 };

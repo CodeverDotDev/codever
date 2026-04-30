@@ -181,6 +181,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       reference: this.reference,
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       content: [this.passedContent, textSizeValidator(this.maxNumberOfCharacters, 30000)],
+      public: false,
     });
   }
 
@@ -193,6 +194,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         title: this.note.title,
         content: this.note.content,
         reference: this.note.reference,
+        public: !!this.note.public,
       });
       for (let i = 0; i < this.note.tags.length; i++) {
         const formTags = this.noteForm.get('tags') as UntypedFormArray;
