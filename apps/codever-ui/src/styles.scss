@@ -246,6 +246,10 @@ pre:has(code.hljs) {
   background-color: lightgoldenrodyellow;
 }
 
+.note-public-bg {
+  background-color: #e8f5e9; /* light green for public notes */
+}
+
 @media (max-width: 1349px) {
   .github-fork-ribbon {
     display: none;

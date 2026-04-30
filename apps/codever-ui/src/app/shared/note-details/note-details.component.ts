@@ -74,6 +74,11 @@ export class NoteDetailsComponent implements OnInit {
     this.router.navigate(link, { state: { note: note } });
   }
 
+  copyToMine(note: Note) {
+    const link = [`/my-notes/${note._id}/copy-to-mine`];
+    this.router.navigate(link, { state: { note: note } });
+  }
+
   shareNoteDialog(note: Note, userId: string) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = false;

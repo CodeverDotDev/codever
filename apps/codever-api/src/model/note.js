@@ -13,6 +13,12 @@ const noteSchema = new Schema(
     notebookContent: { type: String, select: true },
     reference: String,
     initiator: {type:String, select: false},
+    origin: {
+      location:  String, // URL (web) or file path (IDE extension)
+      file:      String,
+      project:   String,
+      workspace: String,
+    },
     tags: [String],
     public: Boolean,
     userId: { type: String, ref: 'User' },

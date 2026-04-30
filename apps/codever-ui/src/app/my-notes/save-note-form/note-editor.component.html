@@ -1,4 +1,5 @@
-<div class="navigation-space-buffer rounded shadow-sm note-bg">
+<div class="navigation-space-buffer rounded shadow-sm"
+     [ngClass]="noteForm?.get('public')?.value ? 'note-public-bg' : 'note-bg'">
   <form [formGroup]="noteForm" novalidate (ngSubmit)="saveNote(noteForm.value)">
     <div class="form-group pb-1">
       <label for="title" class="space-btw-wrapper"

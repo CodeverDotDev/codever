@@ -1,10 +1,23 @@
 <div *ngIf="note$ | async as note" class="card" #noteEntry >
-  <div class="card-body show-hide note-bg note-container">
+  <div class="card-body show-hide note-container"
+       [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
     <div class="header-wrapper">
       <div class="title-and-subtitle">
         <h5 class="card-title">
           <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
           {{ note.title }}
+          <span *ngIf="note.public"
+                class="badge badge-pill ml-2 font-weight-normal"
+                style="background-color:#81c784; color:#1b5e20; font-size:0.7rem; vertical-align:middle;"
+                title="Public note">
+            <i class="fas fa-eye mr-1"></i>Public
+          </span>
+          <span *ngIf="!note.public"
+                class="badge badge-pill ml-2 font-weight-normal"
+                style="background-color:#fff9c4; color:#795548; border:1px solid #f0cc70; font-size:0.7rem; vertical-align:middle;"
+                title="Private note">
+            <i class="fas fa-eye-slash mr-1"></i>Private
+          </span>
         </h5>
         <h6 class="card-subtitle mb-2 text-muted url-under-title">
       <span title="last updated">
@@ -52,14 +65,6 @@
     <div class="card-footer" style="padding-right: 0.3rem">
       <div class="tags-group">
         <div class="input-group-sm mb-2 mb-sm-0 star-group">
-          <span *ngIf="note.public; else privateIcon">
-            <i class="fas fa-eye anthracite-gray" title="Public note"></i>
-          </span>
-          <ng-template #privateIcon>
-            <span>
-              <i class="fas fa-eye-slash anthracite-gray" title="Private note"></i>
-            </span>
-          </ng-template>
         </div>
       <div *ngFor="let tag of note.tags" class="btn-group tag-list mr-2 mt-1">
         <a
@@ -93,6 +98,15 @@
           title="Clone note"
         >
           <i class="far fa-clone"></i> Clone
+        </button>
+        <button
+          *ngIf="note.public && note.userId !== observables.userId"
+          type="button"
+          class="btn btn-light btn-sm"
+          (click)="copyToMine(note)"
+          title="Save a copy to my notes"
+        >
+          <i class="far fa-copy"></i> Copy to mine
         </button>
         <button
           *ngIf="note.public || (!note.public && note.userId === observables.userId)"

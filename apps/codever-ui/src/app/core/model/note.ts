@@ -6,6 +6,12 @@ export interface Note {
   title: string;
   reference?: string;
   initiator?: string;
+  origin?: {
+    location?: string; // URL (web) or file path (IDE extension)
+    file?: string;
+    project?: string;
+    workspace?: string;
+  };
   content: string;
   // 'markdown' (default) or 'notebook' — determines how content is rendered
   contentType?: 'markdown' | 'notebook';
