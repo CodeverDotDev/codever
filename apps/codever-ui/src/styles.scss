@@ -250,6 +250,17 @@ pre:has(code.hljs) {
   background-color: #e8f5e9; /* light green for public notes */
 }
 
+/* Autocomplete panel colours per search domain */
+.public-notes-autocomplete-panel .mat-option,
+.public-notes-autocomplete-panel .mat-mdc-option {
+  background-color: #e8f5e9 !important;
+}
+
+.my-notes-autocomplete-panel .mat-option,
+.my-notes-autocomplete-panel .mat-mdc-option {
+  background-color: lightgoldenrodyellow !important;
+}
+
 @media (max-width: 1349px) {
   .github-fork-ribbon {
     display: none;
