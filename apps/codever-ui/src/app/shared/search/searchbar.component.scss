@@ -128,6 +128,10 @@ $background-gray: rgb(240, 242, 245);
   color: lightgoldenrodyellow;
 }
 
+.public-notes-selection-unchecked {
+  color: #e8f5e9;
+}
+
 //overwrite bootsrap's class for local usage only
 .dropdown-item {
   padding-left: 0.8rem;
