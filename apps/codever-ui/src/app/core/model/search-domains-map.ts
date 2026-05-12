@@ -7,4 +7,5 @@ export const searchDomains: any = new Map([
   [SearchDomain.MY_SNIPPETS, 'My Snippets'],
   [SearchDomain.PUBLIC_SNIPPETS, 'Public Snippets'],
   [SearchDomain.MY_NOTES, 'My Notes'],
+  [SearchDomain.PUBLIC_NOTES, 'Public Notes'],
 ]);

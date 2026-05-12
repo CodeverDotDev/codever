@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const noteSchema = new Schema(
   {
+    shareableId: { type: String, select: false },
     title: { type: String, required: true },
     type: { type: String, required: true, default: 'note' },
     content: String,
@@ -12,6 +13,12 @@ const noteSchema = new Schema(
     notebookContent: { type: String, select: true },
     reference: String,
     initiator: {type:String, select: false},
+    origin: {
+      location:  String, // URL (web) or file path (IDE extension)
+      file:      String,
+      project:   String,
+      workspace: String,
+    },
     tags: [String],
     public: Boolean,
     userId: { type: String, ref: 'User' },

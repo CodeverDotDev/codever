@@ -1,10 +1,23 @@
 <div *ngIf="note$ | async as note" class="card" #noteEntry >
-  <div class="card-body show-hide note-bg note-container">
+  <div class="card-body show-hide note-container"
+       [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
     <div class="header-wrapper">
       <div class="title-and-subtitle">
         <h5 class="card-title">
           <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
           {{ note.title }}
+          <span *ngIf="note.public"
+                class="badge badge-pill ml-2 font-weight-normal"
+                style="background-color:#81c784; color:#1b5e20; font-size:0.7rem; vertical-align:middle;"
+                title="Public note">
+            <i class="fas fa-eye mr-1"></i>Public
+          </span>
+          <span *ngIf="!note.public"
+                class="badge badge-pill ml-2 font-weight-normal"
+                style="background-color:#fff9c4; color:#795548; border:1px solid #f0cc70; font-size:0.7rem; vertical-align:middle;"
+                title="Private note">
+            <i class="fas fa-eye-slash mr-1"></i>Private
+          </span>
         </h5>
         <h6 class="card-subtitle mb-2 text-muted url-under-title">
       <span title="last updated">
@@ -48,19 +61,17 @@
     </div>
   </div>
 
-  <div class="card-footer" style="padding-right: 0.3rem">
-    <div class="tags-group">
-      <div class="input-group-sm mb-2 mb-sm-0 star-group">
-        <span>
-          <i class="fas fa-eye-slash anthracite-gray" title="Private note"></i>
-        </span>
-      </div>
+  <ng-container *ngIf="{ userId: userId$ | async } as observables">
+    <div class="card-footer" style="padding-right: 0.3rem">
+      <div class="tags-group">
+        <div class="input-group-sm mb-2 mb-sm-0 star-group">
+        </div>
       <div *ngFor="let tag of note.tags" class="btn-group tag-list mr-2 mt-1">
         <a
           class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
           [routerLink]="['/search']"
           [queryParams]="{
-            q: '[' + tag + '] user:' + (userId$ | async),
+            q: '[' + tag + '] user:' + observables.userId,
             sd: 'my-notes'
           }"
           title="Search my notes tagged [{{ tag }}]"
@@ -71,7 +82,7 @@
       </div>
       <div class="float-right mt-1">
         <button
-          *ngIf="(userId$ | async) && note.userId === (userId$ | async)"
+          *ngIf="observables.userId && note.userId === observables.userId"
           type="button"
           class="btn btn-light btn-sm"
           (click)="editNote(note)"
@@ -80,7 +91,7 @@
           <i class="far fa-edit"></i> Edit
         </button>
         <button
-          *ngIf="(userId$ | async) && note.userId === (userId$ | async)"
+          *ngIf="observables.userId && note.userId === observables.userId"
           type="button"
           class="btn btn-light btn-sm"
           (click)="cloneNote(note)"
@@ -88,7 +99,26 @@
         >
           <i class="far fa-clone"></i> Clone
         </button>
+        <button
+          *ngIf="note.public && note.userId !== observables.userId"
+          type="button"
+          class="btn btn-light btn-sm"
+          (click)="copyToMine(note)"
+          title="Save a copy to my notes"
+        >
+          <i class="far fa-copy"></i> Copy to mine
+        </button>
+        <button
+          *ngIf="note.public || (!note.public && note.userId === observables.userId)"
+          class="btn btn-light btn-sm float-right"
+          title="Share via email or on social media"
+          (click)="shareNoteDialog(note, observables.userId)"
+        >
+          <i class="fas fa-share"></i>
+          Share
+        </button>
       </div>
     </div>
-  </div>
+    </div>
+  </ng-container>
 </div>

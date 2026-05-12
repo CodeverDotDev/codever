@@ -1,4 +1,5 @@
-<div class="navigation-space-buffer rounded shadow-sm note-bg">
+<div class="navigation-space-buffer rounded shadow-sm"
+     [ngClass]="noteForm?.get('public')?.value ? 'note-public-bg' : 'note-bg'">
   <form [formGroup]="noteForm" novalidate (ngSubmit)="saveNote(noteForm.value)">
     <div class="form-group pb-1">
       <label for="title" class="space-btw-wrapper"
@@ -159,12 +160,34 @@
       />
     </div>
 
+    <div class="form-check mb-4 mt-1">
+      <label class="form-check-label">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value="true"
+          formControlName="public"
+        />
+        <strong> Make Public </strong
+        ><span class="make-public-notes">
+          - visible and searchable for everyone (<em>spam will not be tolerated</em>)</span
+        >
+      </label>
+    </div>
+
     <button
       type="submit"
       class="btn btn-primary mr-2"
       [disabled]="!noteForm.valid"
     >
-      Save note
+      <span *ngIf="noteForm.get('public').value; else textBtnPrivateNote"
+        >Save <strong>public</strong> note <i class="far fa-eye"></i
+      ></span>
+      <ng-template #textBtnPrivateNote>
+        <span
+          >Save <strong>private</strong> note <i class="far fa-eye-slash"></i
+        ></span>
+      </ng-template>
     </button>
     <button
       type="button"

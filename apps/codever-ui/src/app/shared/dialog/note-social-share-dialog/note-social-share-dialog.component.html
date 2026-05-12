@@ -1,0 +1,24 @@
+<ng-container *ngIf="note.public; else privateNote">
+  <h2 mat-dialog-title>Share <b>public</b> note</h2>
+  <app-note-social-share-dialog-content
+    [note]="note"
+    [shareableUrl]="environment.HOST + '/notes/' + note._id"
+  >
+  </app-note-social-share-dialog-content>
+</ng-container>
+<ng-template #privateNote>
+  <h2 mat-dialog-title>
+    <i class="fas fa-eye-slash"></i> Share <b>private</b> note
+  </h2>
+  <app-note-social-share-dialog-content
+    *ngIf="(shareableId$ | async)?.shareableId as shareableId"
+    [note]="note"
+    [shareableUrl]="environment.HOST + '/notes/shared/' + shareableId"
+  >
+  </app-note-social-share-dialog-content>
+</ng-template>
+
+<mat-dialog-actions class="app-dialog-actions" align="end">
+  <button type="button" class="btn btn-primary" (click)="close()">Close</button>
+</mat-dialog-actions>
+

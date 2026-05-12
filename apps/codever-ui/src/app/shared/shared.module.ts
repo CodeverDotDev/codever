@@ -46,6 +46,8 @@ import { CopyCodeButtonDirective } from './directive/copy-code-button.directive'
 import { FullscreenCodeButtonDirective } from './directive/fullscreen-code-button.directive';
 import { SnippetSocialShareDialogComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
 import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
+import { NoteSocialShareDialogComponent } from './dialog/note-social-share-dialog/note-social-share-dialog.component';
+import { NoteSocialShareDialogContentComponent } from './dialog/note-social-share-dialog/note-social-share-dialog-content/note-social-share-dialog-content.component';
 import { HighLightPipe } from '../common/pipes/highlight.pipe';
 import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
 
@@ -88,6 +90,8 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     SocialShareDialogComponent,
     SnippetSocialShareDialogComponent,
     SnippetSocialShareDialogContentComponent,
+    NoteSocialShareDialogComponent,
+    NoteSocialShareDialogContentComponent,
     LoginRequiredDialogComponent,
     PlayYoutubeVideoDialogComponent,
     BackupBookmarksDialogComponent,

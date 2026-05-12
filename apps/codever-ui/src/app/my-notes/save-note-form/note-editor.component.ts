@@ -109,6 +109,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   cloneNote = false;
 
   @Input()
+  copyToMine = false;
+
+  @Input()
   initiator: string;
 
   @Input()
@@ -170,7 +173,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-    if (!this.isEditMode && !this.cloneNote) {
+    if (!this.isEditMode && !this.cloneNote && !this.copyToMine) {
       this.buildForm();
     }
   }
@@ -181,6 +184,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       reference: this.reference,
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       content: [this.passedContent, textSizeValidator(this.maxNumberOfCharacters, 30000)],
+      public: false,
     });
   }
 
@@ -188,11 +192,13 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.noteForm) {
       this.buildForm();
     }
-    if (this.note && (this.isEditMode || this.cloneNote)) {
+    if (this.note && (this.isEditMode || this.cloneNote || this.copyToMine)) {
       this.noteForm.patchValue({
-        title: this.note.title,
+        title: this.cloneNote ? `CLONE - ${this.note.title}` : this.note.title,
         content: this.note.content,
         reference: this.note.reference,
+        // cloned and copy-to-mine notes are always private
+        public: (this.cloneNote || this.copyToMine) ? false : !!this.note.public,
       });
       for (let i = 0; i < this.note.tags.length; i++) {
         const formTags = this.noteForm.get('tags') as UntypedFormArray;
@@ -325,10 +331,12 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   cloneNoteFunction(note: Note): void {
     const now = new Date();
     note.createdAt = now;
-    note.userId = this.note.userId;
+    // For copy-to-mine, assign to the currently logged-in user; for clone, keep original owner
+    note.userId = this.copyToMine ? this.userId : this.note.userId;
+    note.public = false;
     delete note._id;
     this.personalNotesService
-      .createNote(this.note.userId, note)
+      .createNote(note.userId, note)
       .pipe(takeUntil(this.destroy$))
       .subscribe((response) => {
         const headers = response.headers;

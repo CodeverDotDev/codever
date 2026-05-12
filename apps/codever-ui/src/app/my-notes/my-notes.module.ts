@@ -20,6 +20,8 @@ import { NoteEditorComponent } from './save-note-form/note-editor.component';
 import { NoteDetailsComponent } from '../shared/note-details/note-details.component';
 import { PersonalNotesService } from '../core/personal-notes.service';
 import { CloneNoteComponent } from './clone-note/clone-note.component';
+import { CopyToMineNoteComponent } from './copy-to-mine-note/copy-to-mine-note.component';
+import { PublicNotesService } from '../public/notes/public-notes.service';
 
 const notesRoutes: Routes = [
   {
@@ -38,6 +40,11 @@ const notesRoutes: Routes = [
     component: CloneNoteComponent,
   },
   {
+    path: ':id/copy-to-mine',
+    canActivate: [AuthGuard],
+    component: CopyToMineNoteComponent,
+  },
+  {
     path: ':id/details',
     canActivate: [AuthGuard],
     component: NoteDetailsComponent,
@@ -50,6 +57,7 @@ const notesRoutes: Routes = [
     UpdatePersonalNoteComponent,
     NoteEditorComponent,
     CloneNoteComponent,
+    CopyToMineNoteComponent,
   ],
   imports: [
     RouterModule.forChild(notesRoutes),
@@ -66,6 +74,7 @@ const notesRoutes: Routes = [
   exports: [NoteDetailsComponent],
   providers: [
     PersonalNotesService,
+    PublicNotesService,
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: <HighlightOptions>{

@@ -23,6 +23,7 @@ import { PublicSnippetsService } from '../public/snippets/public-snippets.servic
 import { PersonalSearchService } from '../core/personal-search.service';
 import { PersonalNotesService } from '../core/personal-notes.service';
 import { Note } from '../core/model/note';
+import { PublicNotesService } from '../public/notes/public-notes.service';
 
 @Component({
   selector: 'app-search-results',
@@ -57,6 +58,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private publicBookmarksService: PublicBookmarksService,
     private publicSnippetsService: PublicSnippetsService,
+    private publicNotesService: PublicNotesService,
     private personalSearchService: PersonalSearchService,
     private personalBookmarksService: PersonalBookmarksService,
     private personalSnippetsService: PersonalSnippetsService,
@@ -119,6 +121,14 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
             );
             break;
           }
+          case SearchDomain.PUBLIC_NOTES: {
+            this.searchResults(
+              this.searchText,
+              SearchDomain.PUBLIC_NOTES,
+              'all'
+            );
+            break;
+          }
           default: {
             this.searchPublicBookmarks_when_SearchText_but_No_SearchDomain();
           }
@@ -152,6 +162,10 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
             }
             case SearchDomain.PUBLIC_SNIPPETS: {
               this.selectedTabIndex = 5;
+              break;
+            }
+            case SearchDomain.PUBLIC_NOTES: {
+              this.selectedTabIndex = 6;
               break;
             }
             default: {
@@ -209,6 +223,10 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       }
       case SearchDomain.PUBLIC_SNIPPETS: {
         this.selectedTabIndex = 5;
+        break;
+      }
+      case SearchDomain.PUBLIC_NOTES: {
+        this.selectedTabIndex = 6;
         break;
       }
     }
@@ -283,6 +301,16 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       }
       case SearchDomain.PUBLIC_SNIPPETS: {
         this.searchResults$ = this.publicSnippetsService.searchPublicSnippets(
+          searchText,
+          environment.PAGINATION_PAGE_SIZE,
+          this.currentPage,
+          'relevant',
+          searchInclude
+        );
+        break;
+      }
+      case SearchDomain.PUBLIC_NOTES: {
+        this.searchResults$ = this.publicNotesService.searchPublicNotes(
           searchText,
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
@@ -380,6 +408,21 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  tryPublicNotes(searchInclude: string) {
+    this.selectedTabIndex = 6;
+    this.currentPage = 1;
+    this.searchInclude = searchInclude;
+    this.router.navigate(['.'], {
+      relativeTo: this.route,
+      queryParams: {
+        q: this.searchText,
+        sd: SearchDomain.PUBLIC_NOTES,
+        page: '1',
+        include: searchInclude,
+      },
+    });
+  }
+
   private tryPublicBookmarks(searchInclude: string) {
     this.selectedTabIndex = 1;
     this.currentPage = 1;
@@ -443,6 +486,10 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       }
       case 5: {
         this.tryPublicSnippets('all');
+        break;
+      }
+      case 6: {
+        this.tryPublicNotes('all');
         break;
       }
     }

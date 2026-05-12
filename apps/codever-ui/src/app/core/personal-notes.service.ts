@@ -107,4 +107,12 @@ export class PersonalNotesService {
       .get<Note[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes`)
       .pipe(shareReplay(1));
   }
+
+  createOrGetShareableId(userId: string, noteId: string): Observable<any> {
+    return this.httpClient
+      .get<string>(
+        `${this.personalNotesApiBaseUrl}/${userId}/notes/shareable/${noteId}`
+      )
+      .pipe(shareReplay(1));
+  }
 }
