@@ -15,8 +15,6 @@ import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
 import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
 import { ShareableSnippetDetailsComponent } from './snippets/shareable-snippet-details/shareable-snippet-details.component';
-import { PublicNoteDetailsComponent } from './notes/public-note-details.component';
-import { ShareableNoteDetailsComponent } from './notes/shareable-note-details/shareable-note-details.component';
 
 const publicRoutes: Routes = [
   {
@@ -123,17 +121,12 @@ const publicRoutes: Routes = [
   },
   {
     path: 'notes/shared/:shareableId',
-    component: ShareableNoteDetailsComponent,
+    redirectTo: '/notes/shared/:shareableId',
   },
   {
+    // Redirect old /public/notes/:id URLs to the canonical /notes/:id/details
     path: 'notes/:id',
-    component: PublicNoteDetailsComponent,
-    children: [
-      {
-        path: '**',
-        component: PublicNoteDetailsComponent,
-      },
-    ],
+    redirectTo: '/notes/:id/details',
   },
   {
     path: 'snippets/:id',

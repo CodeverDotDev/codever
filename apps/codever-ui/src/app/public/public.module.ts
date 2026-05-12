@@ -27,9 +27,6 @@ import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
 import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
 import { ShareableSnippetDetailsComponent } from './snippets/shareable-snippet-details/shareable-snippet-details.component';
-import { PublicNotesService } from './notes/public-notes.service';
-import { PublicNoteDetailsComponent } from './notes/public-note-details.component';
-import { ShareableNoteDetailsComponent } from './notes/shareable-note-details/shareable-note-details.component';
 
 @NgModule({
   declarations: [
@@ -48,8 +45,6 @@ import { ShareableNoteDetailsComponent } from './notes/shareable-note-details/sh
     SnippetTaggedComponent,
     ShareableBookmarkDetailsComponent,
     ShareableSnippetDetailsComponent,
-    PublicNoteDetailsComponent,
-    ShareableNoteDetailsComponent,
   ],
   imports: [
     SharedModule,
@@ -62,7 +57,6 @@ import { ShareableNoteDetailsComponent } from './notes/shareable-note-details/sh
   providers: [
     PublicBookmarksService,
     PublicSnippetsService,
-    PublicNotesService,
     PublicBookmarksStore,
     UserPublicService,
     BookmarksTaggedService,

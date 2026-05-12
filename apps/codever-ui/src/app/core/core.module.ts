@@ -23,7 +23,6 @@ import { UserDataReadLaterStore } from './user/userdata.readlater.store';
 import { UserDataFavoritesStore } from './user/userdata.favorites.store';
 import { AuthGuard } from './auth/auth-guard.service';
 import { FeedStore } from './user/feed-store.service';
-import { PersonalSnippetsService } from './personal-snippets.service';
 import { MarkdownService } from './markdown/markdown.service';
 import { SearchNotificationService } from './search-notification.service';
 import { StackoverflowHelper } from './helper/stackoverflow.helper';
@@ -54,7 +53,6 @@ import { LatestSearchClickNotificationService } from './latest-search-click.noti
     ErrorService,
     AuthGuard,
     PersonalBookmarksService,
-    PersonalSnippetsService,
     PersonalNotesService,
     PersonalSearchService,
     AdminService,

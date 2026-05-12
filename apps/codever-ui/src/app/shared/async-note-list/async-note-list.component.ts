@@ -21,6 +21,7 @@ export class AsyncNoteListComponent {
   @Input()
   showPagination = true;
 
+  @Input()
   currentPage = 1;
 
   constructor(private route: ActivatedRoute) {}

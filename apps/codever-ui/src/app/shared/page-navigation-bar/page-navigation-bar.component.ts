@@ -49,8 +49,8 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
       page: page,
     };
     this.currentPage = page;
-    this.syncPageQueryParam();
     this.paginationNotificationService.clickPageNavigation(paginationAction);
+    this.syncPageQueryParam();
   }
 
   syncPageQueryParam() {
@@ -71,11 +71,17 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const page = this.route.snapshot.queryParamMap.get('page');
-    if (page) {
-      this.currentPage = parseInt(page, 0);
-    } else {
-      this.currentPage = 1;
+    // When parent explicitly provides a currentPage > 1, use it
+    if (changes['currentPage'] && changes['currentPage'].currentValue > 1) {
+      this.currentPage = changes['currentPage'].currentValue;
+    } else if (changes['callerPagination']) {
+      // On first initialization, read from route snapshot
+      const page = this.route.snapshot.queryParamMap.get('page');
+      if (page) {
+        this.currentPage = parseInt(page, 10);
+      } else {
+        this.currentPage = 1;
+      }
     }
   }
 }

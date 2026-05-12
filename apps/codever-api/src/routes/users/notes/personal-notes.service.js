@@ -37,10 +37,11 @@ let getNoteById = async (userId, noteId) => {
   }
 };
 
-/* GET last created snippets of the user */
-let getLatestNotes = async (userId, limit) => {
+/* GET latest notes of the user with pagination */
+let getLatestNotes = async (userId, page, limit) => {
   const notes = await Note.find({ userId: userId })
     .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
     .limit(limit);
 
   return notes;

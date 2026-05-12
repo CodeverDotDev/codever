@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { PageNotFoundComponent } from './not-found.component';
-import { SnippetNotFoundComponent } from './not-found/snippet-not-found.component';
+import { NoteNotFoundComponent } from './not-found/note-not-found.component';
 import { NewEntryComponent } from './new-entry/new-entry.component';
 import { AuthGuard } from './core/auth/auth-guard.service';
 
@@ -47,15 +47,32 @@ const routes: Routes = [
       import('./my-notes/my-notes.module').then((m) => m.MyNotesModule),
   },
   {
-    path: 'my-snippets',
+    // Top-level public note URLs: /notes/:id/details and /notes/shared/:shareableId
+    path: 'notes',
     loadChildren: () =>
-      import('./my-snippets/my-snippets.module').then(
-        (m) => m.MySnippetsModule
+      import('./public/notes/public-notes.module').then(
+        (m) => m.PublicNotesModule
       ),
   },
   {
+    // Phase 2 (intermediate): redirect public snippet URLs → notes (IDs are preserved by DB migration)
+    path: 'snippets/:id/details',
+    redirectTo: 'notes/:id/details',
+  },
+  {
+    path: 'snippets/:id',
+    redirectTo: 'notes/:id',
+  },
+  {
+    // Phase 2 (intermediate): redirect all /my-snippets/** → /my-notes/**
+    // (catches /my-snippets/new, /my-snippets/:id/details, etc.)
+    path: 'my-snippets',
+    redirectTo: 'my-notes',
+    pathMatch: 'prefix',
+  },
+  {
     path: 'my-codelets',
-    redirectTo: 'my-snippets', // needed for already installed extension or bookmarklets
+    redirectTo: 'my-notes', // needed for already installed extension or bookmarklets
   },
   {
     path: 'search',
@@ -69,7 +86,8 @@ const routes: Routes = [
     redirectTo: 'public',
     pathMatch: 'full',
   },
-  { path: '404-snippet', component: SnippetNotFoundComponent },
+  { path: '404-snippet', redirectTo: '404-note' },
+  { path: '404-note', component: NoteNotFoundComponent },
   { path: '**', component: PageNotFoundComponent },
 ];
 

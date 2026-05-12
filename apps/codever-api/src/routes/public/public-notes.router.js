@@ -37,6 +37,18 @@ router.get('/', async (request, response, next) => {
 });
 
 /**
+ * GET latest public notes (no search query)
+ */
+router.get('/', async (request, response) => {
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const notes = await PublicNotesService.getLatestPublicNotes(
+    page || 1,
+    limit || 20
+  );
+  return response.send(notes);
+});
+
+/**
  * GET public note by id
  */
 router.get('/:id', async (request, response) => {

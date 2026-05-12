@@ -2,22 +2,27 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../../../core/model/bookmark';
 import { UserData } from '../../../core/model/user-data';
-import { MyBookmarksStore } from '../../../core/user/my-bookmarks.store';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BackupBookmarksDialogComponent } from '../../../shared/dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
 import { ImportBookmarksDialogComponent } from '../../../shared/dialog/import-bookmarks-dialog/import-bookmarks-dialog.component';
 import { UserDataHistoryStore } from '../../../core/user/userdata.history.store';
 import { UserDataStore } from '../../../core/user/userdata.store';
+import { MyBookmarksStore } from '../../../core/user/my-bookmarks.store';
+import { PaginationNotificationService } from '../../../core/pagination-notification.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
-  selector: 'app-user-bookmarks',
+  selector: 'app-my-bookmarks',
   templateUrl: './user-bookmarks.component.html',
   styleUrls: ['./user-bookmarks.component.scss'],
 })
 export class UserBookmarksComponent implements OnChanges {
   userBookmarks$: Observable<Bookmark[]>;
-  orderBy = 'LAST_CREATED'; // TODO move to enum orderBy values
+  orderBy = 'LAST_CREATED';
+  callerPaginationMyBookmarks = 'my-bookmarks';
+  currentPage = 1;
+  private initialized = false;
 
   @Input()
   userData$: Observable<UserData>;
@@ -31,41 +36,48 @@ export class UserBookmarksComponent implements OnChanges {
     private userDataHistoryStore: UserDataHistoryStore,
     private userDataStore: UserDataStore,
     private importBookmarksDialog: MatDialog,
-    private backupBookmarksDialog: MatDialog
+    private backupBookmarksDialog: MatDialog,
+    private paginationNotificationService: PaginationNotificationService
   ) {}
 
   ngOnChanges() {
-    if (this.userId) {
-      // TODO - maybe consider doing different to pass the userId to child component
-      this.userBookmarks$ = this.myBookmarksStore.getLastCreated$(
-        this.userId,
-        this.orderBy
+    if (this.userId && !this.initialized) {
+      this.initialized = true;
+      this.loadBookmarks(1);
+
+      this.paginationNotificationService.pageNavigationClicked$.subscribe(
+        (paginationAction) => {
+          if (paginationAction.caller === this.callerPaginationMyBookmarks) {
+            this.loadBookmarks(paginationAction.page);
+          }
+        }
       );
     }
   }
 
+  private loadBookmarks(page: number) {
+    this.currentPage = page;
+    this.userBookmarks$ = this.personalBookmarksService.getPersonalBookmarkOrderedBy(
+      this.userId,
+      this.orderBy,
+      page,
+      environment.PAGINATION_PAGE_SIZE
+    );
+  }
+
   getLastCreatedBookmarks() {
     this.orderBy = 'LAST_CREATED';
-    this.userBookmarks$ = this.myBookmarksStore.getLastCreated$(
-      this.userId,
-      this.orderBy
-    );
+    this.loadBookmarks(1);
   }
 
   getMostLikedBookmarks() {
     this.orderBy = 'MOST_LIKES';
-    this.userBookmarks$ = this.myBookmarksStore.getMostLiked$(
-      this.userId,
-      this.orderBy
-    );
+    this.loadBookmarks(1);
   }
 
   getMostUsedBookmarks() {
     this.orderBy = 'MOST_USED';
-    this.userBookmarks$ = this.myBookmarksStore.getMostUsed$(
-      this.userId,
-      this.orderBy
-    );
+    this.loadBookmarks(1);
   }
 
   exportMyBookmarks() {

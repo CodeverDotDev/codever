@@ -102,9 +102,18 @@ export class PersonalNotesService {
       .pipe(shareReplay(1));
   }
 
-  getLatestNotes(userId: string) {
+  getLatestNotes(userId: string, page: number = 1, limit: number = 10) {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
     return this.httpClient
-      .get<Note[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes`)
+      .get<Note[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes`, { params })
+      .pipe(shareReplay(1));
+  }
+
+  getAllMyNotes(userId: string): Observable<Note[]> {
+    return this.httpClient
+      .get<Note[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes/export`)
       .pipe(shareReplay(1));
   }
 

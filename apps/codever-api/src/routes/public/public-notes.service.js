@@ -32,6 +32,17 @@ let searchPublicNotes = async function (query, page, limit, searchInclude) {
   return notes;
 };
 
+let getLatestPublicNotes = async function (page, limit) {
+  const notes = await Note.find({ public: true })
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .lean()
+    .exec();
+
+  return notes;
+};
+
 let getNoteById = async function (noteId) {
   const note = await Note.findOne({
     public: true,
@@ -60,6 +71,7 @@ let getNoteByShareableId = async (shareableId) => {
 
 module.exports = {
   searchPublicNotes: searchPublicNotes,
+  getLatestPublicNotes: getLatestPublicNotes,
   getNoteById: getNoteById,
   getNoteByShareableId: getNoteByShareableId,
 };

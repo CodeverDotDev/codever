@@ -44,7 +44,8 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
 
   readonly route: ActivatedRoute;
 
-  currentPage: number;
+  @Input()
+  currentPage = 1;
 
   Arr = Array; // Array type captured in a variable
 

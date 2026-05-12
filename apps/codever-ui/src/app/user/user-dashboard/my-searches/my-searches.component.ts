@@ -26,6 +26,7 @@ export class MySearchesComponent implements OnInit {
   @Input()
   userId: string;
 
+
   buttonEnabled: boolean;
 
   searchDomain = SearchDomain.MY_BOOKMARKS.valueOf();
@@ -53,9 +54,16 @@ export class MySearchesComponent implements OnInit {
       this.buttonEnabled = this.autocompleteSearches.some(
         (e) => e.text === value && e.searchDomain === this.searchDomain
       );
-    }); // TODO check this one
+    });
   }
 
+  recentSearches(userData: UserData): Search[] {
+    return userData.searches
+      .filter((s) => s.searchDomain !== 'my-snippets' && s.searchDomain !== 'public-snippets')
+      .filter((s) => !s.saved);
+  }
+
+  // ...existing code...
   private setFilteredSearches$(searchDomain: string) {
     this.filteredSearches = this.selectSavedSearchControl.valueChanges.pipe(
       startWith(null),
@@ -71,7 +79,6 @@ export class MySearchesComponent implements OnInit {
 
   private _filter(value: string): Search[] {
     const filterValue = value.toLowerCase();
-
     return this.autocompleteSearches.filter(
       (item) =>
         item.text.toLowerCase().includes(filterValue) &&
@@ -99,7 +106,6 @@ export class MySearchesComponent implements OnInit {
     });
   }
 
-  // TODO group saved searches nach SearchDomain and delete it coresspondingly
   deleteSavedSearch(savedSearchText: string) {
     const index = this._userData.searches.findIndex(
       (search: Search) =>
@@ -115,3 +121,4 @@ export class MySearchesComponent implements OnInit {
     this.searchDomain = selectedSearchDomain;
   }
 }
+

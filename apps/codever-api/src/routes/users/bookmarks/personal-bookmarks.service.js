@@ -124,33 +124,36 @@ let getAllMyBookmarks = async (userId) => {
   return bookmarks;
 };
 
-/* GET last created bookmarks of the user - currently there is a limit set to 100 */
-let getLastCreatedBookmarks = async (userId) => {
+/* GET last created bookmarks of the user with pagination */
+let getLastCreatedBookmarks = async (userId, page, limit) => {
   const bookmarks = await Bookmark.find({ userId: userId })
     .sort({ createdAt: -1 })
-    .limit(30);
+    .skip((page - 1) * limit)
+    .limit(limit);
 
   return bookmarks;
 };
 
-/* GET last created bookmarks of the user - currently there is a limit set to 100 */
-let getMostLikedBookmarks = async (userId) => {
+/* GET most liked bookmarks of the user with pagination */
+let getMostLikedBookmarks = async (userId, page, limit) => {
   const bookmarks = await Bookmark.find({ userId: userId })
     .sort({ likeCount: -1 })
-    .limit(30);
+    .skip((page - 1) * limit)
+    .limit(limit);
 
   return bookmarks;
 };
 
-/* GET last created bookmarks of the user - currently there is a limit set to 100 */
-let getMostUsedBookmarks = async (userId) => {
+/* GET most used bookmarks of the user with pagination */
+let getMostUsedBookmarks = async (userId, page, limit) => {
   const bookmarks = await Bookmark.find({
     userId: userId,
     ownerVisitCount: { $exists: true },
   })
     .select('+ownerVisitCount')
     .sort({ ownerVisitCount: -1 })
-    .limit(30);
+    .skip((page - 1) * limit)
+    .limit(limit);
 
   return bookmarks;
 };
