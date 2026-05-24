@@ -5,7 +5,6 @@ import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.ser
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../core/model/bookmark';
-import { Snippet } from '../core/model/snippet';
 import { SearchNotificationService } from '../core/search-notification.service';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakServiceWrapper } from '../core/keycloak-service-wrapper.service';
@@ -39,7 +38,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   userIsLoggedIn = false;
 
   searchResults$: Observable<
-    Bookmark[] | Note[] | (Bookmark | Snippet | Note)[]
+    Bookmark[] | Note[] | (Bookmark | Note)[]
   >;
   private userData$: Observable<UserData>;
 

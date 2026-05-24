@@ -55,13 +55,13 @@ export class UserDashboardComponent implements OnInit {
 
   private initSelectedTab() {
     const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
-    // Tab order: 0=Bookmarks, 1=Notes/Snippets, 2=Tags, 3=Searches, 4=Following, 5=Followers
+    // Tab order: 0=Bookmarks, 1=Notes, 2=Tags, 3=Searches, 4=Following, 5=Followers
     switch (tabQueryParam) {
       case 'bookmarks':
         this.selectedTabIndex = 0;
         break;
       case 'notes':
-      case 'snippets':
+      case 'snippets': // legacy param – redirect to notes tab
         this.selectedTabIndex = 1;
         break;
       case 'tags':

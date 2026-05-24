@@ -7,11 +7,10 @@ import {
 } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Bookmark } from '../../core/model/bookmark';
-import { Snippet } from '../../core/model/snippet';
+import { Note } from '../../core/model/note';
 import { PaginationAction } from '../../core/model/pagination-action';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
-import { Note } from '../../core/model/note';
 
 @Component({
   selector: 'app-page-navigation-bar',
@@ -29,7 +28,7 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   callerPagination: string;
 
   @Input()
-  results: (Bookmark | Snippet | Note)[];
+  results: (Bookmark | Note)[];
 
   showPaginationDelayExpired = false;
 

@@ -6,15 +6,11 @@ import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
 import { VersionComponent } from './version/version.component';
-import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details.component';
-import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
-import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component';
 import { ExtensionsPageComponent } from './extensions/extensions-page.component';
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
 import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
-import { ShareableSnippetDetailsComponent } from './snippets/shareable-snippet-details/shareable-snippet-details.component';
 
 const publicRoutes: Routes = [
   {
@@ -101,7 +97,7 @@ const publicRoutes: Routes = [
   },
   {
     path: 'snippets',
-    component: PublicSnippetsComponent,
+    redirectTo: '/notes',
   },
   {
     path: 'snippets/tagged/:tag',
@@ -113,11 +109,11 @@ const publicRoutes: Routes = [
   },
   {
     path: 'snippets/t/:tag',
-    component: SnippetTaggedComponent,
+    redirectTo: '/search?q=%5B:tag%5D&sd=public-notes',
   },
   {
     path: 'snippets/shared/:shareableId',
-    component: ShareableSnippetDetailsComponent,
+    redirectTo: '/notes/shared/:shareableId',
   },
   {
     path: 'notes/shared/:shareableId',
@@ -130,16 +126,7 @@ const publicRoutes: Routes = [
   },
   {
     path: 'snippets/:id',
-    component: PublicSnippetDetailsComponent,
-    children: [
-      // This is a WILDCARD CATCH-ALL route that is scoped to the "/snippets/:snippetid"
-      // route prefix. It will only catch non-matching routes that live
-      // within this portion of the router tree.
-      {
-        path: '**',
-        component: PublicSnippetDetailsComponent,
-      },
-    ],
+    redirectTo: '/notes/:id/details',
   },
   {
     path: 'bookmarks/shared/:shareableId',
