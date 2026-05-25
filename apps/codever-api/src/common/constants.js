@@ -6,7 +6,6 @@ const ENV = {
 
 const DocType = {
   BOOKMARK: 'bookmark',
-  SNIPPET: 'snippet',
   NOTE: 'note',
 };
 const MAX_NUMBER_RETURNED_RESULTS = 55;

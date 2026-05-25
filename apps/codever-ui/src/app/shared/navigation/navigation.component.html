@@ -330,7 +330,7 @@
           </a>
           <div class="dropdown-divider"></div>
 
-          <a class="dropdown-item" href="#" (click)="doLogout()">Sign out</a>
+          <a class="dropdown-item" href="#" (click)="doLogout(); $event.preventDefault()">Sign out</a>
         </div>
       </li>
       <ng-template #notLoggedIn>

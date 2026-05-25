@@ -115,7 +115,7 @@ describe('setSpecialSearchTermsFilter', () => {
       [
         'should set the userId filter when specialSearchTerms.userId is present and isPublic is true',
         {},
-        DocType.SNIPPET,
+        DocType.NOTE,
         { userId: '123' },
         true,
         '123',
@@ -124,7 +124,7 @@ describe('setSpecialSearchTermsFilter', () => {
       [
         'should set the userId filter when specialSearchTerms.userId is present and matches the userId',
         {},
-        DocType.SNIPPET,
+        DocType.NOTE,
         { userId: '123' },
         false,
         '123',
@@ -133,7 +133,7 @@ describe('setSpecialSearchTermsFilter', () => {
       [
         'should not set the userId filter when specialSearchTerms.userId is present and does not match the userId',
         {},
-        DocType.SNIPPET,
+        DocType.NOTE,
         { userId: '456' },
         false,
         '123',
@@ -142,16 +142,16 @@ describe('setSpecialSearchTermsFilter', () => {
       [
         'should set the public filter to false when specialSearchTerms.privateOnly is present',
         {},
-        DocType.SNIPPET,
+        DocType.NOTE,
         { privateOnly: true },
         false,
         '123',
         { public: false },
       ],
       [
-        'should set the reference filter when specialSearchTerms.site is present for snippets',
+        'should set the reference filter when specialSearchTerms.site is present for notes',
         {},
-        DocType.SNIPPET,
+        DocType.NOTE,
         { site: 'example.com' },
         false,
         '123',
@@ -274,7 +274,7 @@ describe('generateSearchFilterAndSortBy', () => {
 
   test.each([
     [
-      DocType.SNIPPET,
+      DocType.NOTE,
       {
         ...input,
         query: 'codever testing',
@@ -288,7 +288,7 @@ describe('generateSearchFilterAndSortBy', () => {
       },
     ],
     [
-      DocType.SNIPPET,
+      DocType.NOTE,
       {
         ...input,
         userId: undefined,
@@ -304,7 +304,7 @@ describe('generateSearchFilterAndSortBy', () => {
       },
     ],
     [
-      DocType.SNIPPET,
+      DocType.NOTE,
       {
         ...input,
         searchInclude: undefined,
@@ -319,7 +319,7 @@ describe('generateSearchFilterAndSortBy', () => {
       },
     ],
     [
-      DocType.SNIPPET,
+      DocType.NOTE,
       {
         ...input,
         searchInclude: undefined,
@@ -334,7 +334,7 @@ describe('generateSearchFilterAndSortBy', () => {
       },
     ],
     [
-      DocType.SNIPPET,
+      DocType.NOTE,
       {
         ...input,
         query: '[javascript]',
@@ -350,7 +350,7 @@ describe('generateSearchFilterAndSortBy', () => {
       },
     ],
     [
-      DocType.SNIPPET,
+      DocType.NOTE,
       {
         ...input,
         query: '[javascript] jest testing',
@@ -367,7 +367,7 @@ describe('generateSearchFilterAndSortBy', () => {
       },
     ],
     [
-      DocType.SNIPPET,
+      DocType.NOTE,
       {
         ...input,
         query: '[javascript] jest testing site:codever.dev',
