@@ -12,7 +12,6 @@ import { UserData } from '../../core/model/user-data';
 import { MatDialog } from '@angular/material/dialog';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
-import { Snippet } from '../../core/model/snippet';
 import { Note } from '../../core/model/note';
 
 @Component({
@@ -24,7 +23,7 @@ export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
   declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
   @Input()
-  searchResults$: Observable<(Bookmark | Snippet | Note)[]>;
+  searchResults$: Observable<(Bookmark | Note)[]>;
 
   @Input()
   queryText: string; // used for highlighting search terms in the bookmarks list
@@ -61,19 +60,15 @@ export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
     this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
   }
 
-  isBookmark(searchResult: Bookmark | Snippet | Note) {
+  isBookmark(searchResult: Bookmark | Note) {
     return searchResult.type === 'bookmark';
   }
 
-  isSnippet(searchResult: Bookmark | Snippet | Note) {
-    return searchResult.type === 'snippet';
-  }
-
-  isNote(searchResult: Bookmark | Snippet | Note) {
+  isNote(searchResult: Bookmark | Note) {
     return searchResult.type === 'note';
   }
 
-  of(searchResult: Snippet | Bookmark | Note) {
+  of(searchResult: Bookmark | Note) {
     return of(searchResult);
   }
 }

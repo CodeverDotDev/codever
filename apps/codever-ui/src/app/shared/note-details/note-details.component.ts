@@ -32,6 +32,8 @@ export class NoteDetailsComponent implements OnInit {
   noteId: string;
 
   isFullScreen = false;
+  markdownCopied = false;
+  private fullscreenEl: HTMLElement | null = null;
 
   constructor(
     private personalNotesService: PersonalNotesService,
@@ -92,15 +94,36 @@ export class NoteDetailsComponent implements OnInit {
     this.noteShareDialog.open(NoteSocialShareDialogComponent, dialogConfig);
   }
 
+  copyNoteMarkdown(note: Note) {
+    navigator.clipboard.writeText(note.content || '').then(() => {
+      this.markdownCopied = true;
+      setTimeout(() => (this.markdownCopied = false), 1300);
+    });
+  }
+
   toggleFullScreen(part: HTMLElement) {
     if (screenfull.isEnabled) {
-      this.isFullScreen = !this.isFullScreen;
-      screenfull.toggle(part);
+      // Use request/exit instead of toggle() so that clicking fullscreen on this element
+      // while a DIFFERENT element (e.g. a snippet) is already fullscreen causes the browser
+      // to SWITCH fullscreen to this element rather than simply exiting fullscreen entirely.
+      // toggle() internally calls exit() whenever anything is fullscreen, regardless of which element.
+      if (this.isFullScreen) {
+        screenfull.exit();
+        this.fullscreenEl = null;
+      } else {
+        screenfull.request(part);
+        this.fullscreenEl = part;
+      }
     }
   }
 
   @HostListener('document:fullscreenchange', ['$event'])
   fullscreenChangeHandler(event: Event) {
-    this.isFullScreen = !!document.fullscreenElement;
+    // Compare against our specific element — !!document.fullscreenElement alone would return true
+    // even when a DIFFERENT component's element is the active fullscreen element.
+    this.isFullScreen = !!document.fullscreenElement && document.fullscreenElement === this.fullscreenEl;
+    if (!document.fullscreenElement) {
+      this.fullscreenEl = null;
+    }
   }
 }

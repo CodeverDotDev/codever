@@ -1,11 +1,11 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HowToBookmarkletComponent } from './howto-bookmarklets/how-to-bookmarklet.component';
-import { HowToSnippetComponent } from './howto-snippets/how-to-snippet.component';
 import { HowtoComponent } from './howto.component';
 import { HowtoGetStartedComponent } from './howto-get-started/howto-get-started.component';
 import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
 import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.component';
+import { HowToNotesComponent } from './howto-notes/how-to-notes.component';
 
 const howToRoutes: Routes = [
   {
@@ -24,18 +24,18 @@ const howToRoutes: Routes = [
     path: 'bookmarklet',
     component: HowToBookmarkletComponent,
   },
-
   {
     path: 'bookmarks',
     component: HowToBookmarksComponent,
   },
   {
-    path: 'snippets',
-    component: HowToSnippetComponent,
+    path: 'notes',
+    component: HowToNotesComponent,
   },
   {
+    // Redirect old /howto/snippets URL to the new /howto/notes page
     path: 'snippets',
-    redirectTo: 'snippets',
+    redirectTo: 'notes',
   },
   {
     path: 'hotkeys',

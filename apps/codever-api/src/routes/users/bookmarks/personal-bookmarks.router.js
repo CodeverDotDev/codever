@@ -119,7 +119,9 @@ personalBookmarksRouter.get(
         break;
       case 'MOST_USED':
         bookmarks = await PersonalBookmarksService.getMostUsedBookmarks(
-          request.params.userId
+          request.params.userId,
+          page,
+          limit
         );
         break;
       default:

@@ -1,4 +1,4 @@
-<mat-tab-group [selectedIndex]="selectedTabIndex">
+<mat-tab-group [selectedIndex]="selectedTabIndex" (selectedIndexChange)="tabChanged($event)">
   <mat-tab>
     <ng-template mat-tab-label>
       <span class="app-tab-label"
@@ -6,18 +6,18 @@
       >
     </ng-template>
     <ng-template matTabContent>
-      <app-user-bookmarks
+      <app-my-bookmarks
         [userId]="userId"
         [userData$]="userData$"
-      ></app-user-bookmarks>
+      ></app-my-bookmarks>
     </ng-template>
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fas fa-code"></i> My snippets</span>
+      <span class="app-tab-label"><i class="fas fa-sticky-note"></i> My Notes</span>
     </ng-template>
     <ng-template matTabContent>
-      <app-my-snippets [userId]="userId"></app-my-snippets>
+      <app-my-notes [userId]="userId"></app-my-notes>
     </ng-template>
   </mat-tab>
   <mat-tab>
@@ -26,6 +26,14 @@
     </ng-template>
     <ng-template matTabContent>
       <app-user-tags [userId]="userId" [userData$]="userData$"></app-user-tags>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-search"></i> Searches</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <app-saved-searches [userId]="userId"></app-saved-searches>
     </ng-template>
   </mat-tab>
   <mat-tab>
@@ -44,14 +52,6 @@
     </ng-template>
     <ng-template matTabContent>
       <app-followers [userId]="userId"></app-followers>
-    </ng-template>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-search"></i> Searches</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <app-saved-searches></app-saved-searches>
     </ng-template>
   </mat-tab>
 </mat-tab-group>

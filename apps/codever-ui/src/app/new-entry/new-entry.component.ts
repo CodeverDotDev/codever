@@ -43,21 +43,6 @@ export class NewEntryComponent implements OnInit {
     });
   }
 
-  redirectToNewSnippet() {
-    this.router.navigate(['/my-snippets/new'], {
-      queryParams: {
-        location: this.url,
-        code: this.selection,
-        title: this.title,
-        popup: this.popup,
-        initiator: this.initiator,
-        workspace: this.workspace,
-        project: this.project,
-        file: this.file,
-      },
-    });
-  }
-
   redirectToNewNote() {
     this.router.navigate(['/my-notes/new'], {
       queryParams: {

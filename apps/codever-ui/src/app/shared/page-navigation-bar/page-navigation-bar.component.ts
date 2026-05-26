@@ -7,11 +7,10 @@ import {
 } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Bookmark } from '../../core/model/bookmark';
-import { Snippet } from '../../core/model/snippet';
+import { Note } from '../../core/model/note';
 import { PaginationAction } from '../../core/model/pagination-action';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
-import { Note } from '../../core/model/note';
 
 @Component({
   selector: 'app-page-navigation-bar',
@@ -29,7 +28,7 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   callerPagination: string;
 
   @Input()
-  results: (Bookmark | Snippet | Note)[];
+  results: (Bookmark | Note)[];
 
   showPaginationDelayExpired = false;
 
@@ -49,8 +48,8 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
       page: page,
     };
     this.currentPage = page;
-    this.syncPageQueryParam();
     this.paginationNotificationService.clickPageNavigation(paginationAction);
+    this.syncPageQueryParam();
   }
 
   syncPageQueryParam() {
@@ -71,11 +70,17 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const page = this.route.snapshot.queryParamMap.get('page');
-    if (page) {
-      this.currentPage = parseInt(page, 0);
-    } else {
-      this.currentPage = 1;
+    // When parent explicitly provides a currentPage > 1, use it
+    if (changes['currentPage'] && changes['currentPage'].currentValue > 1) {
+      this.currentPage = changes['currentPage'].currentValue;
+    } else if (changes['callerPagination']) {
+      // On first initialization, read from route snapshot
+      const page = this.route.snapshot.queryParamMap.get('page');
+      if (page) {
+        this.currentPage = parseInt(page, 10);
+      } else {
+        this.currentPage = 1;
+      }
     }
   }
 }

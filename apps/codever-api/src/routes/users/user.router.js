@@ -2,7 +2,6 @@ const express = require('express');
 const usersRouter = express.Router();
 
 const personalBookmarksRouter = require('./bookmarks/personal-bookmarks.router');
-const personalSnippetsRouter = require('./snippets/personal-snippets.router');
 const personalNotesRouter = require('./notes/personal-notes.router');
 
 const Keycloak = require('keycloak-connect');
@@ -65,7 +64,6 @@ const uploadBookmarks = multer({
 });
 
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
-usersRouter.use('/:userId/snippets', personalSnippetsRouter);
 usersRouter.use('/:userId/notes', personalNotesRouter);
 
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
@@ -253,7 +251,7 @@ usersRouter.get(
   }
 );
 
-/* GET search results from user's both bookmarks and snippets */
+/* GET search results from user's bookmarks and notes */
 usersRouter.get(
   '/:userId/search-results',
   keycloak.protect(),

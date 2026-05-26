@@ -99,15 +99,21 @@ export class PersonalBookmarksService {
 
   getPersonalBookmarkOrderedBy(
     userId: string,
-    orderBy: string
+    orderBy: string,
+    page: number = 1,
+    limit: number = 10
   ): Observable<Bookmark[]> {
-    let params = new HttpParams();
-    params = params.append('orderBy', orderBy);
+    let params = new HttpParams()
+      .append('orderBy', orderBy)
+      .append('page', page.toString())
+      .append('limit', limit.toString());
 
-    return this.httpClient.get<Bookmark[]>(
-      `${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks`,
-      { params: params }
-    );
+    return this.httpClient
+      .get<Bookmark[]>(
+        `${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks`,
+        { params: params }
+      )
+      .pipe(shareReplay(1));
   }
 
   updateBookmark(bookmark: Bookmark): Observable<any> {

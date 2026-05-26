@@ -117,6 +117,23 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   reference = '';
 
+  /** Tags pre-populated from IDE extension params (e.g. language tag + 'code-snippet') */
+  @Input()
+  passedTags: string[] = [];
+
+  /** Origin metadata from IDE extensions */
+  @Input()
+  originLocation: string;
+
+  @Input()
+  originFile: string;
+
+  @Input()
+  originProject: string;
+
+  @Input()
+  originWorkspace: string;
+
   scrollStrategy: ScrollStrategy;
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -186,6 +203,13 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       content: [this.passedContent, textSizeValidator(this.maxNumberOfCharacters, 30000)],
       public: false,
     });
+
+    // Pre-populate tags passed from IDE extensions
+    if (this.passedTags && this.passedTags.length > 0) {
+      const formTags = this.noteForm.get('tags') as UntypedFormArray;
+      this.passedTags.forEach((tag) => formTags.push(this.formBuilder.control(tag)));
+      this.tags.markAsDirty();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -294,6 +318,17 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     note.updatedAt = now;
     note.userId = this.userId;
     note.initiator = this.initiator;
+
+    // Attach origin metadata when coming from IDE extensions
+    if (this.originLocation || this.originFile || this.originProject || this.originWorkspace) {
+      note.origin = {
+        location: this.originLocation || null,
+        file: this.originFile || null,
+        project: this.originProject || null,
+        workspace: this.originWorkspace || null,
+      };
+    }
+
     this.personalNotesService
       .createNote(this.userId, note)
       .pipe(takeUntil(this.destroy$))

@@ -35,7 +35,7 @@ import {
   MAT_CHIPS_DEFAULT_OPTIONS,
   MatChipsModule,
 } from '@angular/material/chips';
-import { SnippetNotFoundComponent } from './not-found/snippet-not-found.component';
+import { NoteNotFoundComponent } from './not-found/note-not-found.component';
 import { SystemService } from './core/cache/system.service';
 import { NewEntryComponent } from './new-entry/new-entry.component';
 import { QuickAccessBookmarksComponent } from './left-navigation-menu/quick-access-bookmarks.component';
@@ -137,7 +137,7 @@ function initializeKeycloak(
     AppComponent,
     QuickAccessBookmarksComponent,
     PageNotFoundComponent,
-    SnippetNotFoundComponent,
+    NoteNotFoundComponent,
     LoaderComponent,
     NewEntryComponent,
   ],

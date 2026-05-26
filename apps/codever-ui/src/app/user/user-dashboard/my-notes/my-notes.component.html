@@ -1,0 +1,39 @@
+<div class="btn-group my-bookmarks-btn-group mt-3" role="group">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    [disabled]="true"
+    title="Notes you've created recently"
+  >
+    Recent notes
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-outline-primary"
+    title="Export all my notes"
+    (click)="exportMyNotes()"
+  >
+    Export my notes <i class="fas fa-file-download"></i>
+  </button>
+</div>
+
+<app-async-note-list
+  *ngIf="
+    (myNotes$ | async) && (myNotes$ | async).length > 0;
+    else showNotesMessage
+  "
+  [notes$]="myNotes$"
+  [callerPagination]="callerPaginationMyNotes"
+  [currentPage]="currentPage"
+  [showPagination]="false"
+>
+</app-async-note-list>
+
+<ng-template #showNotesMessage>
+  <div class="alert alert-info mt-4">
+    👉 &nbsp;You haven't created any <strong>notes</strong> yet. Start by
+    <a [routerLink]="['/my-notes/new']">creating your first note</a>.
+  </div>
+</ng-template>
+

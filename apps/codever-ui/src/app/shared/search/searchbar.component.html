@@ -65,28 +65,6 @@
       <a
         class="dropdown-item"
         role="button"
-        title="Search in My Snippets"
-        (click)="onSearchDomainChange('my-snippets')"
-      >
-        My Snippets
-        <span
-          *ngIf="
-            searchDomain === 'my-snippets';
-            else uncheckedMySnippetsSelection
-          "
-          class="search-domain-selection my-snippets-selection float-right pl-1 pr-1"
-        >
-          <i class="fas fa-check"></i>
-        </span>
-        <ng-template #uncheckedMySnippetsSelection>
-          <span class="my-snippets-selection-unchecked float-right">
-            <i class="fa fa-square fa-lg"></i>
-          </span>
-        </ng-template>
-      </a>
-      <a
-        class="dropdown-item"
-        role="button"
         title="Search in My Notes"
         (click)="onSearchDomainChange('my-notes')"
       >
@@ -140,30 +118,6 @@
       <a
         class="dropdown-item"
         role="button"
-        title="Search in public snippets"
-        (click)="onSearchDomainChange('public-snippets')"
-      >
-        Public Snippets
-        <span
-          *ngIf="
-            searchDomain === 'public-snippets';
-            else uncheckedPublicSnippetsSelection
-          "
-          class="search-domain-selection public-snippets-selection float-right pl-1 pr-1"
-        >
-          <i class="fas fa-check"></i>
-        </span>
-        <ng-template #uncheckedPublicSnippetsSelection>
-          <span class="public-snippets-selection-unchecked float-right">
-            <i
-              class="fa fa-square fa-lg ml-1 public-snippets-selection-unchecked"
-            ></i>
-          </span>
-        </ng-template>
-      </a>
-      <a
-        class="dropdown-item"
-        role="button"
         title="Search in public notes"
         (click)="onSearchDomainChange('public-notes')"
       >
@@ -199,10 +153,8 @@
     [matAutocomplete]="auto"
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
-    [class.my-snippets-selection]="searchDomain === 'my-snippets'"
     [class.my-bookmarks-selection]="searchDomain === 'my-bookmarks'"
     [class.my-notes-selection]="searchDomain === 'my-notes'"
-    [class.public-snippets-selection]="searchDomain === 'public-snippets'"
     [class.note-public-bg]="searchDomain === 'public-notes'"
     (keyup)="watchForTags(publicSearchBox.value)"
     (keyup.enter)="

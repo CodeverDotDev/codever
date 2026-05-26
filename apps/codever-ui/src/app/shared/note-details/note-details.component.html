@@ -5,7 +5,18 @@
       <div class="title-and-subtitle">
         <h5 class="card-title">
           <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
-          {{ note.title }}
+          <ng-container *ngIf="partOfList; else plainTitle">
+            <a *ngIf="(userId$ | async) === note.userId; else publicNoteLink"
+               [routerLink]="['/my-notes', note._id, 'details']"
+               [innerHtml]="note.title | highlight : queryText">
+            </a>
+            <ng-template #publicNoteLink>
+              <a [routerLink]="['/notes', note._id, 'details']"
+                 [innerHtml]="note.title | highlight : queryText">
+              </a>
+            </ng-template>
+          </ng-container>
+          <ng-template #plainTitle>{{ note.title }}</ng-template>
           <span *ngIf="note.public"
                 class="badge badge-pill ml-2 font-weight-normal"
                 style="background-color:#81c784; color:#1b5e20; font-size:0.7rem; vertical-align:middle;"
@@ -47,10 +58,18 @@
       </span>
         </h6>
       </div>
-      <div class="cursor-pointer">
-        <span title="Toggle Fullscreen" (click)="toggleFullScreen(noteEntry)">
-             <i *ngIf="!isFullScreen" class="fas fa-expand fa-lg"></i>
-             <i *ngIf="isFullScreen" class="fas fa-compress fa-lg"></i>
+      <div class="cursor-pointer d-flex align-items-center" style="gap: 0.75rem;">
+        <span
+          *ngIf="(note$ | async)?.contentType !== 'notebook'"
+          class="note-action-btn"
+          title="Copy markdown content"
+          (click)="copyNoteMarkdown(note)"
+        >
+          <i class="far fa-copy fa-lg"></i><span *ngIf="markdownCopied" class="ml-1" style="font-size:0.85rem;">Copied</span>
+        </span>
+        <span class="note-action-btn" title="Toggle Fullscreen" (click)="toggleFullScreen(noteEntry)">
+          <i *ngIf="!isFullScreen" class="fas fa-expand fa-lg"></i>
+          <i *ngIf="isFullScreen" class="fas fa-compress fa-lg"></i>
         </span>
       </div>
     </div>
@@ -67,18 +86,25 @@
         <div class="input-group-sm mb-2 mb-sm-0 star-group">
         </div>
       <div *ngFor="let tag of note.tags" class="btn-group tag-list mr-2 mt-1">
+        <!-- Own note (logged in): search My Notes with just the tag -->
         <a
+          *ngIf="observables.userId && observables.userId === note.userId; else publicTagLink"
           class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
           [routerLink]="['/search']"
-          [queryParams]="{
-            q: '[' + tag + '] user:' + observables.userId,
-            sd: 'my-notes'
-          }"
+          [queryParams]="{ q: '[' + tag + ']', sd: 'my-notes' }"
           title="Search my notes tagged [{{ tag }}]"
           [innerHtml]="tag | highlight : queryText"
-        >
-          {{ tag }}
-        </a>
+        ></a>
+        <!-- Not logged in OR someone else's note: search Public Notes with just the tag -->
+        <ng-template #publicTagLink>
+          <a
+            class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
+            [routerLink]="['/search']"
+            [queryParams]="{ q: '[' + tag + ']', sd: 'public-notes' }"
+            title="Search public notes tagged [{{ tag }}]"
+            [innerHtml]="tag | highlight : queryText"
+          ></a>
+        </ng-template>
       </div>
       <div class="float-right mt-1">
         <button

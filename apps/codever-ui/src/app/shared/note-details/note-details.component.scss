@@ -1,4 +1,12 @@
+.note-action-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out;
+  cursor: pointer;
 
-
-
-
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+}

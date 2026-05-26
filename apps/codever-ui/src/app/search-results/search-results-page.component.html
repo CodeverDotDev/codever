@@ -20,7 +20,7 @@
           <em
             ><code>{{ searchText }}</code></em
           >
-          in <strong>My Bookmarks and My Snippets</strong>.
+          in <strong>My Bookmarks and My Notes</strong>.
           <span *ngIf="searchInclude === 'all'">
             Try searching for <strong>any</strong> of the terms -
             <button
@@ -93,47 +93,9 @@
 
   <mat-tab>
     <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-code"></i> My Snippets</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
-        <div
-          *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
-          class="alert alert-info no-search-results mt-2"
-          role="alert"
-        >
-          No results found for <strong>{{ this.searchInclude }}</strong> of
-          <em
-            ><code>{{ searchText }}</code></em
-          >
-          in <strong>My Snippets</strong>.
-          <span *ngIf="searchInclude === 'all'">
-            Try a more permissive search (use <strong>any</strong> of the terms)
-            -
-            <button
-              class="btn btn-outline-primary btn-sm"
-              (click)="tryMySnippets('any')"
-            >
-              <i class="fa fa-search"></i> Search any
-            </button>
-          </span>
-          <br />
-          <br />
-          {{ searchInOtherCategoriesTip }}
-        </div>
-        <app-async-snippet-list
-          [snippets$]="searchResults$"
-          [callerPagination]="callerPaginationSearchResults"
-          [queryText]="searchText"
-        >
-        </app-async-snippet-list>
-      </div>
-    </ng-template>
-  </mat-tab>
-
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-code"></i> My Notes</span>
+      <span class="app-tab-label"
+        ><i class="fa fa-sticky-note"></i> My Notes</span
+      >
     </ng-template>
     <ng-template matTabContent>
       <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
@@ -229,48 +191,9 @@
       >
         Login / Register
       </button>
-      to search your personal bookmarks and code snippets.
+      to search your personal bookmarks and notes.
     </div>
   </ng-template>
-
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"
-        ><i class="fa fa-code"></i> Public Snippets</span
-      >
-    </ng-template>
-    <ng-template matTabContent>
-      <div
-        *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
-        class="alert alert-info no-search-results mt-2"
-        role="alert"
-      >
-        No results found for <strong>{{ this.searchInclude }}</strong> of
-        <em
-          ><code>{{ searchText }}</code></em
-        >
-        in <strong>Public Snippets</strong>.
-        <span *ngIf="searchInclude === 'all'">
-          Try searching for <strong>any</strong> of the terms -
-          <button
-            class="btn btn-outline-primary btn-sm"
-            (click)="tryPublicSnippets('any')"
-          >
-            <i class="fa fa-search"></i> Search any
-          </button>
-        </span>
-        <br />
-        <br />
-        {{ searchInOtherCategoriesTip }}
-      </div>
-      <app-async-snippet-list
-        [snippets$]="searchResults$"
-        [callerPagination]="callerPaginationSearchResults"
-        [queryText]="searchText"
-      >
-      </app-async-snippet-list>
-    </ng-template>
-  </mat-tab>
 
   <mat-tab>
     <ng-template mat-tab-label>

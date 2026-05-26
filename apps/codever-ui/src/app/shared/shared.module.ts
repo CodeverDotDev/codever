@@ -22,11 +22,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BookmarksFilterPipe } from './pipe/bookmarks-filter.pipe';
-import { SnippetDetailsComponent } from './snippet-details/snippet-details.component';
-import { CopySnippetButtonComponent } from './snippet-details/copy-snippet-button/copy-snippet-button.component';
 import { HighlightModule } from 'ngx-highlightjs';
-import { SnippetCardBodyComponent } from './snippet-details/snippet-card-body/snippet-card-body.component';
-import { AsyncSnippetListComponent } from './async-snippet-list/async-snippet-list.component';
 import { SearchFilterPipe } from './pipe/search-filter.pipe';
 import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
 import { AddTagFilterToSearchDialogComponent } from './search/add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
@@ -44,8 +40,6 @@ import { NotebookRendererComponent } from './notebook-renderer/notebook-renderer
 import { MarkedImageWidthDirective } from './directive/marked-image-width.directive';
 import { CopyCodeButtonDirective } from './directive/copy-code-button.directive';
 import { FullscreenCodeButtonDirective } from './directive/fullscreen-code-button.directive';
-import { SnippetSocialShareDialogComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog.component';
-import { SnippetSocialShareDialogContentComponent } from './dialog/snippet-social-share-dialog/snippet-social-share-dialog-content/snippet-social-share-dialog-content.component';
 import { NoteSocialShareDialogComponent } from './dialog/note-social-share-dialog/note-social-share-dialog.component';
 import { NoteSocialShareDialogContentComponent } from './dialog/note-social-share-dialog/note-social-share-dialog-content/note-social-share-dialog-content.component';
 import { HighLightPipe } from '../common/pipes/highlight.pipe';
@@ -78,7 +72,6 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     BookmarksFilterPipe,
     SearchFilterPipe,
     AsyncBookmarkListComponent,
-    AsyncSnippetListComponent,
     AsyncSearchResultListComponent,
     BookmarkTextComponent,
     TagsValidatorDirective,
@@ -88,8 +81,6 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     FullscreenCodeButtonDirective,
     DeleteResourceDialogComponent,
     SocialShareDialogComponent,
-    SnippetSocialShareDialogComponent,
-    SnippetSocialShareDialogContentComponent,
     NoteSocialShareDialogComponent,
     NoteSocialShareDialogContentComponent,
     LoginRequiredDialogComponent,
@@ -102,9 +93,6 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     PageNavigationBarComponent,
     HotKeysDialogComponent,
     BookmarkListElementComponent,
-    SnippetDetailsComponent,
-    CopySnippetButtonComponent,
-    SnippetCardBodyComponent,
     AddTagFilterToSearchDialogComponent,
     ExtensionsComponent,
     NoteDetailsComponent,
@@ -120,15 +108,12 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     Markdown2HtmlPipe,
     SearchFilterPipe,
     AsyncBookmarkListComponent,
-    AsyncSnippetListComponent,
     AsyncSearchResultListComponent,
     BookmarkTextComponent,
     MatProgressSpinnerModule,
     NavigationComponent,
     SearchbarComponent,
     BookmarkListElementComponent,
-    SnippetDetailsComponent,
-    CopySnippetButtonComponent,
     ExtensionsComponent,
     NoteDetailsComponent,
     AsyncNoteListComponent,

@@ -16,11 +16,9 @@ import {
 } from '@angular/material/autocomplete';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { PersonalSnippetsService } from '../../../core/personal-snippets.service';
 import { SearchDomain } from '../../../core/model/search-domain.enum';
 import { PublicBookmarksService } from '../../../public/bookmarks/public-bookmarks.service';
 import { UsedTag } from '../../../core/model/used-tag';
-import { PublicSnippetsService } from '../../../public/snippets/public-snippets.service';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
 
 @Component({
@@ -47,10 +45,8 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
 
   constructor(
     private personalBookmarksService: PersonalBookmarksService,
-    private personalSnippetsService: PersonalSnippetsService,
     private personalNotesService: PersonalNotesService,
     private publicBookmarksService: PublicBookmarksService,
-    private publicSnippetsService: PublicSnippetsService,
     private dialogRef: MatDialogRef<AddTagFilterToSearchDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data
   ) {
@@ -70,13 +66,7 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
         break;
 
       case SearchDomain.MY_SNIPPETS:
-        {
-          this.personalSnippetsService
-            .getUserTagsForSnippets(this.userId)
-            .subscribe(this.setTags());
-        }
-        break;
-
+        // legacy domain — fall through to MY_NOTES
       case SearchDomain.MY_NOTES:
         {
           this.personalNotesService
@@ -93,11 +83,8 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
         }
         break;
 
-      case SearchDomain.PUBLIC_SNIPPETS: {
-        this.publicSnippetsService
-          .getMostUsedPublicTagsForSnippets(300)
-          .subscribe(this.setTags());
-      }
+      case SearchDomain.PUBLIC_SNIPPETS:
+      // legacy domain — no tags source; fall through silently
     }
   }
 

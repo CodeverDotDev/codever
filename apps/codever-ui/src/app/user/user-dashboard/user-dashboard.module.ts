@@ -16,7 +16,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MySearchesTemplateComponent } from './my-searches/my-searches-template/my-searches-template.component';
-import { MySnippetsComponent } from './my-snippets/my-snippets.component';
+import { MyNotesComponent } from './my-notes/my-notes.component';
+import { PersonalNotesService } from '../../core/personal-notes.service';
+import { PaginationNotificationService } from '../../core/pagination-notification.service';
 
 const userDashboardRoutes: Routes = [
   {
@@ -42,7 +44,7 @@ const userDashboardRoutes: Routes = [
     FollowingComponent,
     FollowersComponent,
     MySearchesTemplateComponent,
-    MySnippetsComponent,
+    MyNotesComponent,
   ],
   imports: [
     RouterModule.forChild(userDashboardRoutes),
@@ -53,7 +55,7 @@ const userDashboardRoutes: Routes = [
     MatDialogModule,
     CommonModule,
   ],
-  providers: [AuthGuard],
+  providers: [AuthGuard, PersonalNotesService, PaginationNotificationService],
   exports: [RouterModule],
 })
 export class UserDashboardModule {}

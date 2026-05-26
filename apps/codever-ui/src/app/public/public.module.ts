@@ -10,26 +10,16 @@ import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
 import { UserPublicService } from './user-public-profile/user-public.service';
-import { MySnippetsModule } from '../my-snippets/my-snippets.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { VersionComponent } from './version/version.component';
-import { PublicSnippetsService } from './snippets/public-snippets.service';
-import { PublicSnippetDetailsComponent } from './snippets/public-snippet-details.component';
-import { PublicSnippetsComponent } from './public-snippets/public-snippets.component';
-import { SnippetTaggedComponent } from './snippets/tag/snippet-tagged.component';
-import { SnippetTagService } from './snippets/tag/snippet-tag.service';
 import { FeedbackService } from './feedback/feedback.service';
 import { ExtensionsPageComponent } from './extensions/extensions-page.component';
 import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
 import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
-import { ShareableSnippetDetailsComponent } from './snippets/shareable-snippet-details/shareable-snippet-details.component';
-import { PublicNotesService } from './notes/public-notes.service';
-import { PublicNoteDetailsComponent } from './notes/public-note-details.component';
-import { ShareableNoteDetailsComponent } from './notes/shareable-note-details/shareable-note-details.component';
 
 @NgModule({
   declarations: [
@@ -42,14 +32,8 @@ import { ShareableNoteDetailsComponent } from './notes/shareable-note-details/sh
     UserPublicProfileComponent,
     BookmarksTaggedComponent,
     VersionComponent,
-    PublicSnippetDetailsComponent,
-    PublicSnippetsComponent,
     PublicBookmarkDetailsComponent,
-    SnippetTaggedComponent,
     ShareableBookmarkDetailsComponent,
-    ShareableSnippetDetailsComponent,
-    PublicNoteDetailsComponent,
-    ShareableNoteDetailsComponent,
   ],
   imports: [
     SharedModule,
@@ -57,16 +41,12 @@ import { ShareableNoteDetailsComponent } from './notes/shareable-note-details/sh
     MatTabsModule,
     MatAutocompleteModule,
     MatSelectModule,
-    MySnippetsModule,
   ],
   providers: [
     PublicBookmarksService,
-    PublicSnippetsService,
-    PublicNotesService,
     PublicBookmarksStore,
     UserPublicService,
     BookmarksTaggedService,
-    SnippetTagService,
     FeedbackService,
   ],
 })

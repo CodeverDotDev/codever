@@ -54,7 +54,6 @@ export class LocalStorageService {
       localStorageKeys.userLocalStorageConsent,
       localStorageKeys.userInfoOidc,
       localStorageKeys.personalTagsBookmarks,
-      localStorageKeys.personalTagsSnippets,
       localStorageKeys.userHistoryBookmarks,
     ]);
   }

@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 export class DeleteResourceDialogComponent {
   resourceName: string;
   isPublic = false;
-  type: 'bookmark' | 'snippet' | 'note';
+  type: 'bookmark' | 'note';
 
   constructor(
     private dialogRef: MatDialogRef<DeleteResourceDialogComponent>,

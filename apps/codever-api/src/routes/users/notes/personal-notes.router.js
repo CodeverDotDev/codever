@@ -143,8 +143,8 @@ personalNotesRouter.get('/', keycloak.protect(), async (request, response) => {
   UserIdValidator.validateUserId(request);
 
   const { userId } = request.params;
-  const { limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
-  const notes = await PersonalNotesService.getLatestNotes(userId, limit || 20);
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+  const notes = await PersonalNotesService.getLatestNotes(userId, page || 1, limit || 10);
 
   return response.status(HttpStatus.OK).send(notes);
 });

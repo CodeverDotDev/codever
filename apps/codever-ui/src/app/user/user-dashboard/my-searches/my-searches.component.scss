@@ -10,3 +10,44 @@
     font-size: 1rem;
   }
 }
+
+.last-search-border {
+  border-width: 0.05rem;
+  border-style: solid;
+  border-color: #495057;
+}
+
+.my-snippets-last-search {
+  background: black;
+  color: white;
+}
+
+.public-snippets-last-search {
+  @extend .last-search-border;
+  background: darkgray;
+  color: white;
+}
+
+.my-bookmarks-last-search {
+  @extend .last-search-border;
+  background: linen;
+  color: #495057;
+}
+
+.public-bookmarks-last-search {
+  @extend .last-search-border;
+  background: #f0f2f5;
+  color: black;
+}
+
+.my-notes-last-search {
+  @extend .last-search-border;
+  background: lightgoldenrodyellow;
+  color: #495057;
+}
+
+.public-notes-last-search {
+  @extend .last-search-border;
+  background: #c8e6c9;
+  color: #1b5e20;
+}
