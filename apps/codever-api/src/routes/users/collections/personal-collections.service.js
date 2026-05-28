@@ -1,4 +1,6 @@
 const Collection = require('../../../model/collection');
+const Bookmark = require('../../../model/bookmark');
+const Note = require('../../../model/note');
 const NotFoundError = require('../../../error/not-found.error');
 const ValidationError = require('../../../error/validation.error');
 
@@ -50,7 +52,42 @@ let getCollectionById = async (userId, collectionId) => {
   collection.lastVisitedAt = new Date();
   await collection.save();
 
-  return collection;
+  // Populate items in bulk — two queries instead of N
+  const bookmarkIds = collection.items
+    .filter((i) => i.resourceType === 'bookmark')
+    .map((i) => i.resourceId);
+  const noteIds = collection.items
+    .filter((i) => i.resourceType === 'note')
+    .map((i) => i.resourceId);
+
+  const [bookmarks, notes] = await Promise.all([
+    bookmarkIds.length > 0
+      ? Bookmark.find({ _id: { $in: bookmarkIds }, userId }).lean()
+      : Promise.resolve([]),
+    noteIds.length > 0
+      ? Note.find({ _id: { $in: noteIds }, userId }).lean()
+      : Promise.resolve([]),
+  ]);
+
+  // Build a lookup map for O(1) access
+  const resourceMap = new Map();
+  bookmarks.forEach((b) => resourceMap.set(b._id.toString(), b));
+  notes.forEach((n) => resourceMap.set(n._id.toString(), n));
+
+  // Return collection with populated items in their original order
+  const collectionObj = collection.toObject();
+  collectionObj.populatedItems = collectionObj.items
+    .map((item) => {
+      const resource = resourceMap.get(item.resourceId.toString());
+      if (!resource) return null; // item was deleted
+      return {
+        ...item,
+        resource,
+      };
+    })
+    .filter(Boolean);
+
+  return collectionObj;
 };
 
 let updateCollection = async (userId, collectionId, collectionData) => {

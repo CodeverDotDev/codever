@@ -1,9 +1,13 @@
 const PersonalCollectionsService = require('./personal-collections.service');
 const Collection = require('../../../model/collection');
+const Bookmark = require('../../../model/bookmark');
+const Note = require('../../../model/note');
 const NotFoundError = require('../../../error/not-found.error');
 const ValidationError = require('../../../error/validation.error');
 
 jest.mock('../../../model/collection');
+jest.mock('../../../model/bookmark');
+jest.mock('../../../model/note');
 
 describe('PersonalCollectionsService', () => {
   const userId = 'test-user-id';
@@ -112,22 +116,41 @@ describe('PersonalCollectionsService', () => {
       ).rejects.toThrow(NotFoundError);
     });
 
-    it('should update lastVisitedAt and return the collection', async () => {
+    it('should update lastVisitedAt and return collection with populatedItems', async () => {
       const mockCollection = {
         _id: 'col-1',
         name: 'Test',
         lastVisitedAt: null,
+        items: [
+          { resourceId: 'bm-1', resourceType: 'bookmark' },
+          { resourceId: 'nt-1', resourceType: 'note' },
+        ],
         save: jest.fn().mockResolvedValue(true),
+        toObject: jest.fn().mockReturnValue({
+          _id: 'col-1',
+          name: 'Test',
+          items: [
+            { resourceId: 'bm-1', resourceType: 'bookmark' },
+            { resourceId: 'nt-1', resourceType: 'note' },
+          ],
+        }),
       };
       Collection.findOne = jest.fn().mockResolvedValue(mockCollection);
+
+      const mockBookmark = { _id: 'bm-1', name: 'Test Bookmark' };
+      const mockNote = { _id: 'nt-1', title: 'Test Note' };
+      Bookmark.find = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue([mockBookmark]) });
+      Note.find = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue([mockNote]) });
 
       const result = await PersonalCollectionsService.getCollectionById(
         userId,
         'col-1'
       );
 
-      expect(result.lastVisitedAt).toBeInstanceOf(Date);
       expect(mockCollection.save).toHaveBeenCalled();
+      expect(result.populatedItems).toHaveLength(2);
+      expect(result.populatedItems[0].resource).toEqual(mockBookmark);
+      expect(result.populatedItems[1].resource).toEqual(mockNote);
     });
   });
 

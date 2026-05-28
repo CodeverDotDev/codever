@@ -3,12 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Collection } from '../../core/model/collection';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
-import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
-import { PersonalNotesService } from '../../core/personal-notes.service';
 import { Bookmark } from '../../core/model/bookmark';
 import { Note } from '../../core/model/note';
-import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-collection-detail',
@@ -26,8 +22,6 @@ export class CollectionDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private personalCollectionsService: PersonalCollectionsService,
-    private personalBookmarksService: PersonalBookmarksService,
-    private personalNotesService: PersonalNotesService,
     private userInfoStore: UserInfoStore
   ) {}
 
@@ -45,46 +39,18 @@ export class CollectionDetailComponent implements OnInit {
       .getCollectionById(this.userId, collectionId)
       .subscribe((collection) => {
         this.collection = collection;
-        this.loadItems();
+
+        // Extract populated items by type — already fetched in a single API call
+        const populated = collection.populatedItems || [];
+        this.bookmarks = populated
+          .filter((item) => item.resourceType === 'bookmark')
+          .map((item) => item.resource as Bookmark);
+        this.notes = populated
+          .filter((item) => item.resourceType === 'note')
+          .map((item) => item.resource as Note);
+
+        this.loading = false;
       });
-  }
-
-  private loadItems(): void {
-    const bookmarkItems = this.collection.items.filter(
-      (i) => i.resourceType === 'bookmark'
-    );
-    const noteItems = this.collection.items.filter(
-      (i) => i.resourceType === 'note'
-    );
-
-    const bookmarkRequests = bookmarkItems.map((item) =>
-      this.personalBookmarksService
-        .getPersonalBookmarkById(this.userId, item.resourceId)
-        .pipe(catchError(() => of(null)))
-    );
-    const noteRequests = noteItems.map((item) =>
-      this.personalNotesService
-        .getPersonalNoteById(this.userId, item.resourceId)
-        .pipe(catchError(() => of(null)))
-    );
-
-    forkJoin([...bookmarkRequests]).subscribe((results) => {
-      this.bookmarks = results.filter((b) => b !== null) as Bookmark[];
-    });
-
-    forkJoin([...noteRequests]).subscribe((results) => {
-      this.notes = results.filter((n) => n !== null) as Note[];
-      this.loading = false;
-    });
-
-    // Handle case where there are no items
-    if (bookmarkItems.length === 0) {
-      this.bookmarks = [];
-    }
-    if (noteItems.length === 0) {
-      this.notes = [];
-      this.loading = false;
-    }
   }
 
   removeItem(resourceId: string): void {
