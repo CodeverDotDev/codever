@@ -62,10 +62,16 @@ let getCollectionById = async (userId, collectionId) => {
 
   const [bookmarks, notes] = await Promise.all([
     bookmarkIds.length > 0
-      ? Bookmark.find({ _id: { $in: bookmarkIds }, userId }).lean()
+      ? Bookmark.find({
+          _id: { $in: bookmarkIds },
+          $or: [{ userId }, { public: true }],
+        }).lean()
       : Promise.resolve([]),
     noteIds.length > 0
-      ? Note.find({ _id: { $in: noteIds }, userId }).lean()
+      ? Note.find({
+          _id: { $in: noteIds },
+          $or: [{ userId }, { public: true }],
+        }).lean()
       : Promise.resolve([]),
   ]);
 
