@@ -32,6 +32,13 @@
             {{ bookmark.description.length > 120 ? bookmark.description.substring(0, 120) + '...' : bookmark.description }}
           </div>
           <span *ngFor="let tag of bookmark.tags" class="badge badge-secondary mr-1">{{ tag }}</span>
+          <a
+            [routerLink]="[bookmark.userId === userId ? '/my-bookmarks' : '/bookmarks', bookmark._id, 'details']"
+            class="small ml-1"
+            title="View bookmark details"
+          >
+            <i class="fas fa-info-circle"></i> details
+          </a>
         </div>
         <button
           class="btn btn-light btn-sm text-danger"
