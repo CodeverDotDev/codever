@@ -33,6 +33,8 @@ import { AddToHistoryService } from '../../core/user/add-to-history.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
+import { PersonalCollectionsService } from '../../core/personal-collections.service';
+import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -352,5 +354,24 @@ export class BookmarkListElementComponent
       this.userIsLoggedIn,
       this.bookmark
     );
+  }
+
+  openAddToCollectionDialog(bookmark: Bookmark): void {
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
+        'You need to be logged in to add bookmarks to a collection'
+      );
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.width = '420px';
+      dialogConfig.scrollStrategy = this.scrollStrategy;
+      dialogConfig.data = {
+        resourceId: bookmark._id,
+        resourceType: 'bookmark',
+        userId: this.userId,
+      };
+      this.shareDialog.open(AddToCollectionDialogComponent, dialogConfig);
+    }
   }
 }

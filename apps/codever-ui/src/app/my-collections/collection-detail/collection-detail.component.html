@@ -1,0 +1,126 @@
+<div *ngIf="loading" class="text-center mt-4">
+  <i class="fas fa-spinner fa-spin fa-2x"></i>
+</div>
+
+<div *ngIf="!loading && collection" class="collection-detail">
+  <div class="d-flex align-items-center mb-3">
+    <button class="btn btn-light btn-sm mr-2" (click)="goBack()" title="Back to My Collections">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h3 class="mb-0">
+      <i class="fas fa-folder mr-2" [style.color]="collection.color || '#6c757d'"></i>
+      {{ collection.name }}
+    </h3>
+  </div>
+
+  <p *ngIf="collection.description" class="text-muted">
+    {{ collection.description }}
+  </p>
+
+  <hr />
+
+  <!-- Bookmarks Section -->
+  <div *ngIf="bookmarks.length > 0" class="mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <h5 class="mb-0"><i class="fas fa-bookmark mr-1"></i> Bookmarks ({{ filteredBookmarks.length }}/{{ bookmarks.length }})</h5>
+      <div *ngIf="bookmarks.length > 3" class="filter-wrapper">
+        <input
+          type="text"
+          class="form-control form-control-sm pr-4"
+          placeholder="Filter bookmarks by name…"
+          [(ngModel)]="bookmarkFilter"
+          (ngModelChange)="filterBookmarks()"
+        />
+        <button
+          *ngIf="bookmarkFilter"
+          type="button"
+          class="btn btn-sm filter-clear-btn"
+          title="Clear filter"
+          (click)="bookmarkFilter = ''; filterBookmarks()"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div *ngFor="let bookmark of filteredBookmarks" class="card mb-2 shadow-sm">
+      <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center"
+           [ngClass]="{ 'private-bookmark': !bookmark.public }">
+        <div>
+          <a [href]="bookmark.location" target="_blank" class="font-weight-bold"
+             [innerHTML]="highlightText(bookmark.name, bookmarkFilter)">
+          </a>
+          <div class="text-muted small" *ngIf="bookmark.description">
+            {{ bookmark.description.length > 120 ? bookmark.description.substring(0, 120) + '...' : bookmark.description }}
+          </div>
+          <span *ngFor="let tag of bookmark.tags" class="badge badge-secondary mr-1">{{ tag }}</span>
+          <a
+            [routerLink]="[bookmark.userId === userId ? '/my-bookmarks' : '/bookmarks', bookmark._id, 'details']"
+            class="small ml-1"
+            title="View bookmark details"
+          >
+            <i class="fas fa-info-circle"></i> details
+          </a>
+        </div>
+        <button
+          class="btn btn-light btn-sm text-danger"
+          title="Remove from collection"
+          (click)="removeItem(bookmark._id)"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Section -->
+  <div *ngIf="notes.length > 0" class="mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <h5 class="mb-0"><i class="fas fa-sticky-note mr-1"></i> Notes ({{ filteredNotes.length }}/{{ notes.length }})</h5>
+      <div *ngIf="notes.length > 3" class="filter-wrapper">
+        <input
+          type="text"
+          class="form-control form-control-sm pr-4"
+          placeholder="Filter notes by title…"
+          [(ngModel)]="noteFilter"
+          (ngModelChange)="filterNotes()"
+        />
+        <button
+          *ngIf="noteFilter"
+          type="button"
+          class="btn btn-sm filter-clear-btn"
+          title="Clear filter"
+          (click)="noteFilter = ''; filterNotes()"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div *ngFor="let note of filteredNotes" class="card mb-2 shadow-sm">
+      <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center"
+           [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
+        <div>
+          <a [routerLink]="[note.userId === userId ? '/my-notes' : '/notes', note._id, 'details']"
+             class="font-weight-bold"
+             [innerHTML]="highlightText(note.title, noteFilter)">
+          </a>
+          <div>
+            <span *ngFor="let tag of note.tags" class="badge badge-secondary mr-1">{{ tag }}</span>
+          </div>
+        </div>
+        <button
+          class="btn btn-light btn-sm text-danger"
+          title="Remove from collection"
+          (click)="removeItem(note._id)"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="bookmarks.length === 0 && notes.length === 0" class="alert alert-info mt-3">
+    This collection is empty. Add bookmarks or notes from their detail pages or search results.
+  </div>
+</div>
+
