@@ -12,6 +12,13 @@ const routes: Routes = [
     component: NewEntryComponent,
   },
   {
+    path: 'my-collections',
+    loadChildren: () =>
+      import('./my-collections/my-collections.module').then(
+        (m) => m.MyCollectionsModule
+      ),
+  },
+  {
     path: 'my-bookmarks',
     loadChildren: () =>
       import('./my-bookmarks/my-bookmarks.module').then(

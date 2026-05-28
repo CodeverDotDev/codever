@@ -35,6 +35,7 @@ import { SystemService } from './cache/system.service';
 import { CookieService } from './cookies/cookie.service';
 import { PersonalSearchService } from './personal-search.service';
 import { PersonalNotesService } from './personal-notes.service';
+import { PersonalCollectionsService } from './personal-collections.service';
 import { DeleteNotificationService } from './notifications/delete-notification.service';
 import { LatestSearchClickNotificationService } from './latest-search-click.notification.service';
 
@@ -54,6 +55,7 @@ import { LatestSearchClickNotificationService } from './latest-search-click.noti
     AuthGuard,
     PersonalBookmarksService,
     PersonalNotesService,
+    PersonalCollectionsService,
     PersonalSearchService,
     AdminService,
     UserDataService,

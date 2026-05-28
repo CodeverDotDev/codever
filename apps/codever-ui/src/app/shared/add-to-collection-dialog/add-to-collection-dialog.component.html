@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>
+  <i class="fas fa-layer-group mr-2"></i>Add to Collection
+</h2>
+<mat-dialog-content>
+  <div *ngIf="loading" class="text-center py-3">
+    <i class="fas fa-spinner fa-spin fa-lg"></i>
+  </div>
+
+  <div *ngIf="!loading">
+    <!-- Create new collection inline -->
+    <div class="mb-3">
+      <button
+        *ngIf="!showCreateForm"
+        class="btn btn-outline-primary btn-sm"
+        (click)="showCreateForm = true"
+      >
+        <i class="fas fa-plus mr-1"></i> Create new collection
+      </button>
+      <div *ngIf="showCreateForm" class="d-flex">
+        <input
+          type="text"
+          class="form-control form-control-sm mr-2"
+          [(ngModel)]="newCollectionName"
+          placeholder="Collection name"
+          (keyup.enter)="createNewCollection()"
+          autofocus
+        />
+        <button
+          class="btn btn-primary btn-sm mr-1"
+          [disabled]="!newCollectionName.trim()"
+          (click)="createNewCollection()"
+        >
+          <i class="fas fa-check"></i>
+        </button>
+        <button
+          class="btn btn-light btn-sm"
+          (click)="showCreateForm = false; newCollectionName = ''"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="mb-2" *ngIf="collections.length > 5">
+      <input
+        type="text"
+        class="form-control form-control-sm"
+        placeholder="Filter collections..."
+        [(ngModel)]="filterText"
+      />
+    </div>
+
+    <!-- Collections list -->
+    <div class="collections-checklist">
+      <div
+        *ngFor="let collection of filteredCollections"
+        class="form-check collection-check-item py-1"
+      >
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [id]="'col-' + collection._id"
+          [checked]="isSelected(collection._id)"
+          (change)="toggleCollection(collection)"
+        />
+        <label class="form-check-label" [for]="'col-' + collection._id">
+          <i class="fas fa-folder mr-1" [style.color]="collection.color || '#6c757d'"></i>
+          {{ collection.name }}
+          <small class="text-muted ml-1">({{ collection.items?.length || 0 }})</small>
+        </label>
+      </div>
+      <div *ngIf="filteredCollections.length === 0" class="text-muted small py-2">
+        No collections found.
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button class="btn btn-secondary btn-sm" (click)="close()">Done</button>
+</mat-dialog-actions>
+

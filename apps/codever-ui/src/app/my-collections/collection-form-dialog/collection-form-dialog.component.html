@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>
+  {{ mode === 'create' ? 'New Collection' : 'Edit Collection' }}
+</h2>
+<mat-dialog-content>
+  <div class="form-group">
+    <label for="collectionName">Name <span class="text-danger">*</span></label>
+    <input
+      type="text"
+      id="collectionName"
+      class="form-control"
+      [(ngModel)]="name"
+      placeholder="e.g. Spring Boot project"
+      autofocus
+    />
+  </div>
+  <div class="form-group">
+    <label for="collectionDescription">Description</label>
+    <textarea
+      id="collectionDescription"
+      class="form-control"
+      [(ngModel)]="description"
+      placeholder="Optional short description"
+      rows="2"
+    ></textarea>
+  </div>
+  <div class="form-group">
+    <label for="collectionColor">Color</label>
+    <input
+      type="color"
+      id="collectionColor"
+      class="form-control form-control-color"
+      [(ngModel)]="color"
+      style="width: 60px; height: 36px; padding: 2px;"
+    />
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button class="btn btn-secondary btn-sm mr-2" (click)="cancel()">Cancel</button>
+  <button
+    class="btn btn-primary btn-sm"
+    [disabled]="!name.trim()"
+    (click)="save()"
+  >
+    {{ mode === 'create' ? 'Create' : 'Save' }}
+  </button>
+</mat-dialog-actions>
+
