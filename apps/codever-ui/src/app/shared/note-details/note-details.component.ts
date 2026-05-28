@@ -9,6 +9,8 @@ import * as screenfull from 'screenfull';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NoteSocialShareDialogComponent } from '../dialog/note-social-share-dialog/note-social-share-dialog.component';
 import { KeycloakService } from 'keycloak-angular';
+import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
+import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 
 @Component({
   selector: 'app-note-details',
@@ -92,6 +94,27 @@ export class NoteDetailsComponent implements OnInit {
     };
 
     this.noteShareDialog.open(NoteSocialShareDialogComponent, dialogConfig);
+  }
+
+  openAddToCollectionDialog(note: Note, userId: string): void {
+    if (!userId) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to add notes to a collection',
+      };
+      this.noteShareDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.width = '420px';
+      dialogConfig.data = {
+        resourceId: note._id,
+        resourceType: 'note',
+        userId: userId,
+      };
+      this.noteShareDialog.open(AddToCollectionDialogComponent, dialogConfig);
+    }
   }
 
   copyNoteMarkdown(note: Note) {

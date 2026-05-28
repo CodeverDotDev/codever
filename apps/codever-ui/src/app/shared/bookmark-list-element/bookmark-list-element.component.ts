@@ -353,4 +353,23 @@ export class BookmarkListElementComponent
       this.bookmark
     );
   }
+
+  openAddToCollectionDialog(bookmark: Bookmark): void {
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
+        'You need to be logged in to add bookmarks to a collection'
+      );
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+    } else {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.width = '420px';
+      dialogConfig.scrollStrategy = this.scrollStrategy;
+      dialogConfig.data = {
+        resourceId: bookmark._id,
+        resourceType: 'bookmark',
+        userId: this.userId,
+      };
+      this.shareDialog.open(AddToCollectionDialogComponent, dialogConfig);
+    }
+  }
 }
