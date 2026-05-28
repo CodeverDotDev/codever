@@ -144,7 +144,7 @@
           Share
         </button>
         <button
-          *ngIf="observables.userId && note.userId === observables.userId"
+          *ngIf="observables.userId && (note.userId === observables.userId || note.public)"
           class="btn btn-light btn-sm float-right mr-1"
           title="Add to collection"
           (click)="openAddToCollectionDialog(note, observables.userId)"
