@@ -16,6 +16,10 @@ export class CollectionDetailComponent implements OnInit {
   userId: string;
   bookmarks: Bookmark[] = [];
   notes: Note[] = [];
+  filteredBookmarks: Bookmark[] = [];
+  filteredNotes: Note[] = [];
+  bookmarkFilter = '';
+  noteFilter = '';
   loading = true;
 
   constructor(
@@ -49,8 +53,24 @@ export class CollectionDetailComponent implements OnInit {
           .filter((item) => item.resourceType === 'note')
           .map((item) => item.resource as Note);
 
+        this.filteredBookmarks = [...this.bookmarks];
+        this.filteredNotes = [...this.notes];
         this.loading = false;
       });
+  }
+
+  filterBookmarks(): void {
+    const q = this.bookmarkFilter.toLowerCase().trim();
+    this.filteredBookmarks = q
+      ? this.bookmarks.filter((b) => b.name?.toLowerCase().includes(q))
+      : [...this.bookmarks];
+  }
+
+  filterNotes(): void {
+    const q = this.noteFilter.toLowerCase().trim();
+    this.filteredNotes = q
+      ? this.notes.filter((n) => n.title?.toLowerCase().includes(q))
+      : [...this.notes];
   }
 
   removeItem(resourceId: string): void {
@@ -60,6 +80,8 @@ export class CollectionDetailComponent implements OnInit {
         this.collection = updated;
         this.bookmarks = this.bookmarks.filter((b) => b._id !== resourceId);
         this.notes = this.notes.filter((n) => n._id !== resourceId);
+        this.filterBookmarks();
+        this.filterNotes();
       });
   }
 
