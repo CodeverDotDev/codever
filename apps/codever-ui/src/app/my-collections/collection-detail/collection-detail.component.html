@@ -23,7 +23,7 @@
   <div *ngIf="bookmarks.length > 0" class="mb-4">
     <div class="d-flex align-items-center justify-content-between mb-2">
       <h5 class="mb-0"><i class="fas fa-bookmark mr-1"></i> Bookmarks ({{ filteredBookmarks.length }}/{{ bookmarks.length }})</h5>
-      <div *ngIf="bookmarks.length > 3" class="position-relative" style="max-width: 220px;">
+      <div *ngIf="bookmarks.length > 3" class="filter-wrapper">
         <input
           type="text"
           class="form-control form-control-sm pr-4"
@@ -34,8 +34,7 @@
         <button
           *ngIf="bookmarkFilter"
           type="button"
-          class="btn btn-sm position-absolute"
-          style="top: 0; right: 0; line-height: 1; padding: 0.25rem 0.4rem; color: #999;"
+          class="btn btn-sm filter-clear-btn"
           title="Clear filter"
           (click)="bookmarkFilter = ''; filterBookmarks()"
         >
@@ -47,8 +46,8 @@
       <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center"
            [ngClass]="{ 'private-bookmark': !bookmark.public }">
         <div>
-          <a [href]="bookmark.location" target="_blank" class="font-weight-bold">
-            {{ bookmark.name }}
+          <a [href]="bookmark.location" target="_blank" class="font-weight-bold"
+             [innerHTML]="highlightText(bookmark.name, bookmarkFilter)">
           </a>
           <div class="text-muted small" *ngIf="bookmark.description">
             {{ bookmark.description.length > 120 ? bookmark.description.substring(0, 120) + '...' : bookmark.description }}
@@ -77,7 +76,7 @@
   <div *ngIf="notes.length > 0" class="mb-4">
     <div class="d-flex align-items-center justify-content-between mb-2">
       <h5 class="mb-0"><i class="fas fa-sticky-note mr-1"></i> Notes ({{ filteredNotes.length }}/{{ notes.length }})</h5>
-      <div *ngIf="notes.length > 3" class="position-relative" style="max-width: 220px;">
+      <div *ngIf="notes.length > 3" class="filter-wrapper">
         <input
           type="text"
           class="form-control form-control-sm pr-4"
@@ -88,8 +87,7 @@
         <button
           *ngIf="noteFilter"
           type="button"
-          class="btn btn-sm position-absolute"
-          style="top: 0; right: 0; line-height: 1; padding: 0.25rem 0.4rem; color: #999;"
+          class="btn btn-sm filter-clear-btn"
           title="Clear filter"
           (click)="noteFilter = ''; filterNotes()"
         >
@@ -102,8 +100,8 @@
            [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
         <div>
           <a [routerLink]="[note.userId === userId ? '/my-notes' : '/notes', note._id, 'details']"
-             class="font-weight-bold">
-            {{ note.title }}
+             class="font-weight-bold"
+             [innerHTML]="highlightText(note.title, noteFilter)">
           </a>
           <div>
             <span *ngFor="let tag of note.tags" class="badge badge-secondary mr-1">{{ tag }}</span>

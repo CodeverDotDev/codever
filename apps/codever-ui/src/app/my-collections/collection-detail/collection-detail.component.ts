@@ -88,5 +88,14 @@ export class CollectionDetailComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/my-collections']);
   }
+
+  highlightText(text: string, filter: string): string {
+    if (!filter || !text) {
+      return text || '';
+    }
+    const escaped = filter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escaped})`, 'gi');
+    return text.replace(regex, '<mark class="filter-highlight">$1</mark>');
+  }
 }
 
