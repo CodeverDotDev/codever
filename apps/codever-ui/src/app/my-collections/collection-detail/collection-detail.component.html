@@ -23,15 +23,25 @@
   <div *ngIf="bookmarks.length > 0" class="mb-4">
     <div class="d-flex align-items-center justify-content-between mb-2">
       <h5 class="mb-0"><i class="fas fa-bookmark mr-1"></i> Bookmarks ({{ filteredBookmarks.length }}/{{ bookmarks.length }})</h5>
-      <input
-        *ngIf="bookmarks.length > 3"
-        type="text"
-        class="form-control form-control-sm"
-        style="max-width: 220px;"
-        placeholder="Filter bookmarks by name…"
-        [(ngModel)]="bookmarkFilter"
-        (ngModelChange)="filterBookmarks()"
-      />
+      <div *ngIf="bookmarks.length > 3" class="position-relative" style="max-width: 220px;">
+        <input
+          type="text"
+          class="form-control form-control-sm pr-4"
+          placeholder="Filter bookmarks by name…"
+          [(ngModel)]="bookmarkFilter"
+          (ngModelChange)="filterBookmarks()"
+        />
+        <button
+          *ngIf="bookmarkFilter"
+          type="button"
+          class="btn btn-sm position-absolute"
+          style="top: 0; right: 0; line-height: 1; padding: 0.25rem 0.4rem; color: #999;"
+          title="Clear filter"
+          (click)="bookmarkFilter = ''; filterBookmarks()"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
     </div>
     <div *ngFor="let bookmark of filteredBookmarks" class="card mb-2 shadow-sm">
       <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center"
@@ -67,15 +77,25 @@
   <div *ngIf="notes.length > 0" class="mb-4">
     <div class="d-flex align-items-center justify-content-between mb-2">
       <h5 class="mb-0"><i class="fas fa-sticky-note mr-1"></i> Notes ({{ filteredNotes.length }}/{{ notes.length }})</h5>
-      <input
-        *ngIf="notes.length > 3"
-        type="text"
-        class="form-control form-control-sm"
-        style="max-width: 220px;"
-        placeholder="Filter notes by title…"
-        [(ngModel)]="noteFilter"
-        (ngModelChange)="filterNotes()"
-      />
+      <div *ngIf="notes.length > 3" class="position-relative" style="max-width: 220px;">
+        <input
+          type="text"
+          class="form-control form-control-sm pr-4"
+          placeholder="Filter notes by title…"
+          [(ngModel)]="noteFilter"
+          (ngModelChange)="filterNotes()"
+        />
+        <button
+          *ngIf="noteFilter"
+          type="button"
+          class="btn btn-sm position-absolute"
+          style="top: 0; right: 0; line-height: 1; padding: 0.25rem 0.4rem; color: #999;"
+          title="Clear filter"
+          (click)="noteFilter = ''; filterNotes()"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
     </div>
     <div *ngFor="let note of filteredNotes" class="card mb-2 shadow-sm">
       <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center"
