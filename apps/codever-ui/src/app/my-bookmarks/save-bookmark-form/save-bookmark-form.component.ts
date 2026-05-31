@@ -51,6 +51,8 @@ import {
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
 import iziToast, { IziToastSettings } from 'izitoast';
+import { AddToCollectionDialogComponent } from '../../shared/add-to-collection-dialog/add-to-collection-dialog.component';
+import { PersonalCollectionsService } from '../../core/personal-collections.service';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -114,6 +116,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   bookmark: Bookmark;
 
   hidePublicCheckbox = false;
+  selectedCollectionIds: string[] = [];
   constructor(
     private publicBookmarkPresentDialog: MatDialog,
     private formBuilder: UntypedFormBuilder,
@@ -138,7 +141,8 @@ export class SaveBookmarkFormComponent implements OnInit {
     private logger: Logger,
     private router: Router,
     private route: ActivatedRoute,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private personalCollectionsService: PersonalCollectionsService
   ) {
     this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
       this.userId = userInfo.sub;
@@ -471,6 +475,44 @@ export class SaveBookmarkFormComponent implements OnInit {
     }
   }
 
+  openAddToCollectionDialog(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '420px';
+    dialogConfig.data = {
+      resourceType: 'bookmark' as const,
+      userId: this.userId as unknown as string,
+    };
+
+    const dialogRef = this.publicBookmarkPresentDialog.open(
+      AddToCollectionDialogComponent,
+      dialogConfig
+    );
+    dialogRef.afterClosed().subscribe((selectedIds: string[] | undefined) => {
+      if (selectedIds) {
+        this.selectedCollectionIds = selectedIds;
+      }
+    });
+  }
+
+  /** After resource is saved, add it to each selected collection */
+  private addToSelectedCollections(resourceId: string): void {
+    if (this.selectedCollectionIds.length === 0) {
+      return;
+    }
+    const ids = [...this.selectedCollectionIds];
+    this.selectedCollectionIds = [];
+    ids.forEach((collectionId) => {
+      this.personalCollectionsService
+        .addItemToCollection(
+          this.userId as unknown as string,
+          collectionId,
+          resourceId,
+          'bookmark'
+        )
+        .subscribe();
+    });
+  }
+
   navigateToHomePageHistoryTab(): void {
     this.router.navigate(['/'], {
       queryParams: { tab: 'history' },
@@ -528,6 +570,7 @@ export class SaveBookmarkFormComponent implements OnInit {
             .updateHistoryReadLaterAndPinned$(newBookmark, readLater, pinned)
             .subscribe(() => {
               this.publishInUserDataStores(newBookmark, readLater, pinned);
+              this.addToSelectedCollections(newBookmarkId);
               this.navigateToBookmarkDetails(newBookmark);
             });
         },
@@ -644,6 +687,7 @@ export class SaveBookmarkFormComponent implements OnInit {
             .updateHistoryReadLaterAndPinned$(bookmark, readLater, pinned)
             .subscribe(() => {
               this.publishInUserDataStores(bookmark, readLater, pinned);
+              this.addToSelectedCollections(newBookmarkId);
               this.navigateToHomePageHistoryTab();
             });
         },

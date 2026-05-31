@@ -1,6 +1,7 @@
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -52,6 +53,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteResourceDialogComponent } from '../../shared/dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
+import { AddToCollectionDialogComponent } from '../../shared/add-to-collection-dialog/add-to-collection-dialog.component';
+import { PersonalCollectionsService } from '../../core/personal-collections.service';
 
 @Component({
   selector: 'app-note-editor',
@@ -89,6 +92,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   notebookFileName = '';
   /** Raw .ipynb JSON string to be stored in notebookContent */
   notebookRawJson = '';
+
+  /** When true, after saving the dialog to add to collection is opened */
+  selectedCollectionIds: string[] = [];
 
   @Input()
   title; // value of "title" query parameter if present
@@ -162,7 +168,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     private errorService: ErrorService,
     private readonly scrollStrategyOptions: ScrollStrategyOptions,
     private deleteDialog: MatDialog,
-    private deleteNotificationService: DeleteNotificationService
+    private deleteNotificationService: DeleteNotificationService,
+    private personalCollectionsService: PersonalCollectionsService,
+    private cd: ChangeDetectorRef
   ) {
     combineLatest([
       this.userInfoStore.getUserId$(),
@@ -295,6 +303,15 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveNote(note: Note) {
+    // Validate content is not empty before proceeding
+    const contentControl = this.noteForm.get('content');
+    if (!contentControl.value || !contentControl.value.trim()) {
+      contentControl.setErrors({ required: true });
+      contentControl.markAsTouched();
+      contentControl.markAsDirty();
+      return;
+    }
+
     // Attach notebook fields before saving
     if (this.isNotebookMode) {
       note.contentType = 'notebook';
@@ -310,6 +327,45 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.createNote(note);
     }
+  }
+
+  openAddToCollectionDialog(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '420px';
+    dialogConfig.data = {
+      resourceType: 'note' as const,
+      userId: this.userId as unknown as string,
+    };
+
+    const dialogRef = this.deleteDialog.open(
+      AddToCollectionDialogComponent,
+      dialogConfig
+    );
+    dialogRef.afterClosed().subscribe((selectedIds: string[] | undefined) => {
+      if (selectedIds) {
+        this.selectedCollectionIds = selectedIds;
+        this.cd.markForCheck();
+      }
+    });
+  }
+
+  /** After resource is saved, add it to each selected collection */
+  private addToSelectedCollections(resourceId: string): void {
+    if (this.selectedCollectionIds.length === 0) {
+      return;
+    }
+    const ids = [...this.selectedCollectionIds];
+    this.selectedCollectionIds = [];
+    ids.forEach((collectionId) => {
+      this.personalCollectionsService
+        .addItemToCollection(
+          this.userId as unknown as string,
+          collectionId,
+          resourceId,
+          'note'
+        )
+        .subscribe();
+    });
   }
 
   createNote(note: Note): void {
@@ -338,6 +394,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         const lastSlashIndex = headers.get('location').lastIndexOf('/');
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
+        this.addToSelectedCollections(newNoteId);
         this.navigateToNoteDetails(note, {});
       });
   }
@@ -378,6 +435,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         const lastSlashIndex = headers.get('location').lastIndexOf('/');
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
+        this.addToSelectedCollections(newNoteId);
         this.navigateToNoteDetails(note, {});
       });
   }
@@ -435,11 +493,11 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
         // Extract readable text from markdown + code cells for full-text search
         const searchableText = this.extractSearchableText(nb);
-        this.noteForm.patchValue({ content: searchableText });
 
         // Clear the content size validator — extracted text from notebooks can exceed
         // the normal 30k char limit; the backend validates notebookContent separately
         this.noteForm.get('content').clearValidators();
+        this.noteForm.patchValue({ content: searchableText });
         this.noteForm.get('content').updateValueAndValidity();
 
         // Auto-fill the title from the filename if empty
@@ -448,7 +506,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
           this.noteForm.patchValue({ title: titleFromFile });
         }
       } catch (e) {
-        alert('Failed to parse notebook JSON: ' + e.message);
+        alert('Failed to parse notebook JSON: ' + (e as Error).message);
       }
     };
     reader.readAsText(file);

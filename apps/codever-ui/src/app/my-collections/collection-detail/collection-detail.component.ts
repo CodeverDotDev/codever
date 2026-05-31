@@ -18,8 +18,7 @@ export class CollectionDetailComponent implements OnInit {
   notes: Note[] = [];
   filteredBookmarks: Bookmark[] = [];
   filteredNotes: Note[] = [];
-  bookmarkFilter = '';
-  noteFilter = '';
+  unifiedFilter = '';
   loading = true;
 
   constructor(
@@ -59,18 +58,24 @@ export class CollectionDetailComponent implements OnInit {
       });
   }
 
-  filterBookmarks(): void {
-    const q = this.bookmarkFilter.toLowerCase().trim();
-    this.filteredBookmarks = q
-      ? this.bookmarks.filter((b) => b.name?.toLowerCase().includes(q))
-      : [...this.bookmarks];
-  }
-
-  filterNotes(): void {
-    const q = this.noteFilter.toLowerCase().trim();
-    this.filteredNotes = q
-      ? this.notes.filter((n) => n.title?.toLowerCase().includes(q))
-      : [...this.notes];
+  applyFilter(): void {
+    const q = this.unifiedFilter.toLowerCase().trim();
+    if (!q) {
+      this.filteredBookmarks = [...this.bookmarks];
+      this.filteredNotes = [...this.notes];
+    } else {
+      this.filteredBookmarks = this.bookmarks.filter(
+        (b) =>
+          b.name?.toLowerCase().includes(q) ||
+          b.tags?.some((t) => t.toLowerCase().includes(q)) ||
+          b.description?.toLowerCase().includes(q)
+      );
+      this.filteredNotes = this.notes.filter(
+        (n) =>
+          n.title?.toLowerCase().includes(q) ||
+          n.tags?.some((t) => t.toLowerCase().includes(q))
+      );
+    }
   }
 
   removeItem(resourceId: string): void {
@@ -80,8 +85,7 @@ export class CollectionDetailComponent implements OnInit {
         this.collection = updated;
         this.bookmarks = this.bookmarks.filter((b) => b._id !== resourceId);
         this.notes = this.notes.filter((n) => n._id !== resourceId);
-        this.filterBookmarks();
-        this.filterNotes();
+        this.applyFilter();
       });
   }
 
@@ -98,4 +102,3 @@ export class CollectionDetailComponent implements OnInit {
     return text.replace(regex, '<mark class="filter-highlight">$1</mark>');
   }
 }
-
