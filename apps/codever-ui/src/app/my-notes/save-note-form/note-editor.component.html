@@ -136,6 +136,9 @@
           *ngIf="content.invalid && (content.dirty || content.touched)"
           class="alert alert-danger"
         >
+          <div *ngIf="content.errors.required">
+            Content is required
+          </div>
           <div *ngIf="content.errors.tooManyLines">
             Your description has {{ content.errors.tooManyLines.value }} lines.
             Maximum 300 lines are allowed.

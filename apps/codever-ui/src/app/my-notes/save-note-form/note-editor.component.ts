@@ -295,6 +295,15 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveNote(note: Note) {
+    // Validate content is not empty before proceeding
+    const contentControl = this.noteForm.get('content');
+    if (!contentControl.value || !contentControl.value.trim()) {
+      contentControl.setErrors({ required: true });
+      contentControl.markAsTouched();
+      contentControl.markAsDirty();
+      return;
+    }
+
     // Attach notebook fields before saving
     if (this.isNotebookMode) {
       note.contentType = 'notebook';
@@ -435,11 +444,11 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
         // Extract readable text from markdown + code cells for full-text search
         const searchableText = this.extractSearchableText(nb);
-        this.noteForm.patchValue({ content: searchableText });
 
         // Clear the content size validator — extracted text from notebooks can exceed
         // the normal 30k char limit; the backend validates notebookContent separately
         this.noteForm.get('content').clearValidators();
+        this.noteForm.patchValue({ content: searchableText });
         this.noteForm.get('content').updateValueAndValidity();
 
         // Auto-fill the title from the filename if empty
@@ -448,7 +457,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
           this.noteForm.patchValue({ title: titleFromFile });
         }
       } catch (e) {
-        alert('Failed to parse notebook JSON: ' + e.message);
+        alert('Failed to parse notebook JSON: ' + (e as Error).message);
       }
     };
     reader.readAsText(file);
