@@ -1,6 +1,7 @@
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -52,6 +53,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteResourceDialogComponent } from '../../shared/dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
+import { AddToCollectionDialogComponent } from '../../shared/add-to-collection-dialog/add-to-collection-dialog.component';
+import { PersonalCollectionsService } from '../../core/personal-collections.service';
 
 @Component({
   selector: 'app-note-editor',
@@ -89,6 +92,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   notebookFileName = '';
   /** Raw .ipynb JSON string to be stored in notebookContent */
   notebookRawJson = '';
+
+  /** When true, after saving the dialog to add to collection is opened */
+  selectedCollectionIds: string[] = [];
 
   @Input()
   title; // value of "title" query parameter if present
@@ -162,7 +168,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     private errorService: ErrorService,
     private readonly scrollStrategyOptions: ScrollStrategyOptions,
     private deleteDialog: MatDialog,
-    private deleteNotificationService: DeleteNotificationService
+    private deleteNotificationService: DeleteNotificationService,
+    private personalCollectionsService: PersonalCollectionsService,
+    private cd: ChangeDetectorRef
   ) {
     combineLatest([
       this.userInfoStore.getUserId$(),
@@ -321,6 +329,45 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  openAddToCollectionDialog(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '420px';
+    dialogConfig.data = {
+      resourceType: 'note' as const,
+      userId: this.userId as unknown as string,
+    };
+
+    const dialogRef = this.deleteDialog.open(
+      AddToCollectionDialogComponent,
+      dialogConfig
+    );
+    dialogRef.afterClosed().subscribe((selectedIds: string[] | undefined) => {
+      if (selectedIds) {
+        this.selectedCollectionIds = selectedIds;
+        this.cd.markForCheck();
+      }
+    });
+  }
+
+  /** After resource is saved, add it to each selected collection */
+  private addToSelectedCollections(resourceId: string): void {
+    if (this.selectedCollectionIds.length === 0) {
+      return;
+    }
+    const ids = [...this.selectedCollectionIds];
+    this.selectedCollectionIds = [];
+    ids.forEach((collectionId) => {
+      this.personalCollectionsService
+        .addItemToCollection(
+          this.userId as unknown as string,
+          collectionId,
+          resourceId,
+          'note'
+        )
+        .subscribe();
+    });
+  }
+
   createNote(note: Note): void {
     const now = new Date();
     note.createdAt = now;
@@ -347,6 +394,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         const lastSlashIndex = headers.get('location').lastIndexOf('/');
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
+        this.addToSelectedCollections(newNoteId);
         this.navigateToNoteDetails(note, {});
       });
   }
@@ -387,6 +435,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         const lastSlashIndex = headers.get('location').lastIndexOf('/');
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
+        this.addToSelectedCollections(newNoteId);
         this.navigateToNoteDetails(note, {});
       });
   }

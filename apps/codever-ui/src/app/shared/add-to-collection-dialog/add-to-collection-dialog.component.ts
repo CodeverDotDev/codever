@@ -4,7 +4,7 @@ import { Collection } from '../../core/model/collection';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
 
 export interface AddToCollectionDialogData {
-  resourceId: string;
+  resourceId?: string;
   resourceType: 'bookmark' | 'note';
   userId: string;
 }
@@ -43,16 +43,20 @@ export class AddToCollectionDialogComponent implements OnInit {
       .subscribe((collections) => {
         this.collections = collections;
 
-        // Load which collections already contain this resource
-        this.personalCollectionsService
-          .getCollectionsContainingResource(
-            this.data.userId,
-            this.data.resourceId
-          )
-          .subscribe((containing) => {
-            containing.forEach((c) => this.selectedCollectionIds.add(c._id));
-            this.loading = false;
-          });
+        // Load which collections already contain this resource (only if we have a resourceId)
+        if (this.data.resourceId) {
+          this.personalCollectionsService
+            .getCollectionsContainingResource(
+              this.data.userId,
+              this.data.resourceId
+            )
+            .subscribe((containing) => {
+              containing.forEach((c) => this.selectedCollectionIds.add(c._id));
+              this.loading = false;
+            });
+        } else {
+          this.loading = false;
+        }
       });
   }
 
@@ -73,27 +77,37 @@ export class AddToCollectionDialogComponent implements OnInit {
   toggleCollection(collection: Collection): void {
     if (this.isSelected(collection._id)) {
       // Remove from collection
-      this.personalCollectionsService
-        .removeItemFromCollection(
-          this.data.userId,
-          collection._id,
-          this.data.resourceId
-        )
-        .subscribe(() => {
-          this.selectedCollectionIds.delete(collection._id);
-        });
+      if (this.data.resourceId) {
+        this.personalCollectionsService
+          .removeItemFromCollection(
+            this.data.userId,
+            collection._id,
+            this.data.resourceId
+          )
+          .subscribe(() => {
+            this.selectedCollectionIds.delete(collection._id);
+          });
+      } else {
+        // Deferred mode — just track locally
+        this.selectedCollectionIds.delete(collection._id);
+      }
     } else {
       // Add to collection
-      this.personalCollectionsService
-        .addItemToCollection(
-          this.data.userId,
-          collection._id,
-          this.data.resourceId,
-          this.data.resourceType
-        )
-        .subscribe(() => {
-          this.selectedCollectionIds.add(collection._id);
-        });
+      if (this.data.resourceId) {
+        this.personalCollectionsService
+          .addItemToCollection(
+            this.data.userId,
+            collection._id,
+            this.data.resourceId,
+            this.data.resourceType
+          )
+          .subscribe(() => {
+            this.selectedCollectionIds.add(collection._id);
+          });
+      } else {
+        // Deferred mode — just track locally
+        this.selectedCollectionIds.add(collection._id);
+      }
     }
   }
 
@@ -107,24 +121,33 @@ export class AddToCollectionDialogComponent implements OnInit {
       })
       .subscribe((newCollection) => {
         this.collections.unshift(newCollection);
-        // Auto-add the resource to the new collection
-        this.personalCollectionsService
-          .addItemToCollection(
-            this.data.userId,
-            newCollection._id,
-            this.data.resourceId,
-            this.data.resourceType
-          )
-          .subscribe(() => {
-            this.selectedCollectionIds.add(newCollection._id);
-            this.newCollectionName = '';
-            this.showCreateForm = false;
-          });
+        // Auto-add the resource to the new collection if we have a resourceId
+        if (this.data.resourceId) {
+          this.personalCollectionsService
+            .addItemToCollection(
+              this.data.userId,
+              newCollection._id,
+              this.data.resourceId,
+              this.data.resourceType
+            )
+            .subscribe(() => {
+              this.selectedCollectionIds.add(newCollection._id);
+              this.newCollectionName = '';
+              this.showCreateForm = false;
+            });
+        } else {
+          // Deferred mode — just select the new collection locally
+          this.selectedCollectionIds.add(newCollection._id);
+          this.newCollectionName = '';
+          this.showCreateForm = false;
+        }
       });
   }
 
   close(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(
+      this.data.resourceId ? undefined : Array.from(this.selectedCollectionIds)
+    );
   }
 }
 
