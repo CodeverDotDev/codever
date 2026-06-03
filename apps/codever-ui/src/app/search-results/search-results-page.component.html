@@ -7,7 +7,7 @@
 >
   <mat-tab>
     <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-search"></i> All mine</span>
+      <span class="app-tab-label"><i class="fa fa-search"></i> Personal</span>
     </ng-template>
     <ng-template matTabContent>
       <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
@@ -34,9 +34,41 @@
           <br />
           {{ searchInOtherCategoriesTip }}
         </div>
+
+        <!-- Type filter toggle -->
+        <div
+          *ngIf="(searchResults$ | async)?.length"
+          class="type-filter-toggle mt-3 mb-2"
+        >
+          <button
+            class="btn btn-sm"
+            [class.btn-primary]="(typeFilter$ | async) === 'all'"
+            [class.btn-outline-secondary]="(typeFilter$ | async) !== 'all'"
+            (click)="setTypeFilter('all')"
+          >
+            All
+          </button>
+          <button
+            class="btn btn-sm ml-1"
+            [class.btn-primary]="(typeFilter$ | async) === 'bookmark'"
+            [class.btn-outline-secondary]="(typeFilter$ | async) !== 'bookmark'"
+            (click)="setTypeFilter('bookmark')"
+          >
+            <i class="fas fa-bookmark"></i> Bookmarks
+          </button>
+          <button
+            class="btn btn-sm ml-1"
+            [class.btn-primary]="(typeFilter$ | async) === 'note'"
+            [class.btn-outline-secondary]="(typeFilter$ | async) !== 'note'"
+            (click)="setTypeFilter('note')"
+          >
+            <i class="fas fa-sticky-note"></i> Notes
+          </button>
+        </div>
+
         <app-async-search-result-list
           [callerPagination]="callerPaginationSearchResults"
-          [searchResults$]="searchResults$"
+          [searchResults$]="filteredSearchResults$"
           [queryText]="searchText"
           [userData$]="userData$"
           [isSearchResultsPage]="true"

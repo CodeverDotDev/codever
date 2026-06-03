@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Bookmark } from '../core/model/bookmark';
 import { SearchNotificationService } from '../core/search-notification.service';
 import { KeycloakService } from 'keycloak-angular';
@@ -45,6 +46,9 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   selectedTabIndex = 3; // default search in public bookmarks
   private searchInclude: string;
 
+  typeFilter$ = new BehaviorSubject<'all' | 'bookmark' | 'note'>('all');
+  filteredSearchResults$: Observable<(Bookmark | Note)[]>;
+
   searchTriggeredSubscription: any;
 
   searchInOtherCategoriesTip =
@@ -77,11 +81,37 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     this.searchInclude =
       this.route.snapshot.queryParamMap.get('include') || 'all';
 
+    // Read persisted type filter from URL
+    const typeParam = this.route.snapshot.queryParamMap.get('type') as
+      | 'all'
+      | 'bookmark'
+      | 'note';
+    this.typeFilter$.next(typeParam || 'all');
+
     // Remap legacy snippet domains to notes
     if (this.searchDomain === SearchDomain.MY_SNIPPETS) {
       this.searchDomain = SearchDomain.MY_NOTES;
     } else if (this.searchDomain === SearchDomain.PUBLIC_SNIPPETS) {
       this.searchDomain = SearchDomain.PUBLIC_NOTES;
+    }
+
+    // Remap old personal domains to all-mine with type filter
+    if (
+      this.searchDomain === SearchDomain.MY_BOOKMARKS ||
+      this.searchDomain === SearchDomain.MY_NOTES
+    ) {
+      const mappedType =
+        this.searchDomain === SearchDomain.MY_BOOKMARKS ? 'bookmark' : 'note';
+      if (!typeParam) {
+        this.typeFilter$.next(mappedType);
+      }
+      this.searchDomain = SearchDomain.ALL_MINE;
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { sd: 'all-mine', type: mappedType },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
     }
 
     this.initSelectedTabIndex(this.searchDomain);
@@ -256,6 +286,19 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
         break;
       }
     }
+    this.filteredSearchResults$ = combineLatest([
+      this.searchResults$,
+      this.typeFilter$,
+    ]).pipe(
+      map(([results, filter]) => {
+        if (filter === 'all') {
+          return results as (Bookmark | Note)[];
+        }
+        return (results as (Bookmark | Note)[]).filter(
+          (r) => r.type === filter
+        );
+      })
+    );
     this.searchResults$.subscribe((results) => {
       if (results && results.length > 0) {
         this.saveRecentSearch(searchText, searchDomain);
@@ -369,6 +412,15 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   private getSearchDomainForTabIndex(index: number): string {
     const map = [SearchDomain.ALL_MINE, SearchDomain.MY_BOOKMARKS, SearchDomain.MY_NOTES, SearchDomain.PUBLIC_BOOKMARKS, SearchDomain.PUBLIC_NOTES];
     return map[index] || '';
+  }
+
+  setTypeFilter(filter: 'all' | 'bookmark' | 'note'): void {
+    this.typeFilter$.next(filter);
+    this.router.navigate(['.'], {
+      relativeTo: this.route,
+      queryParams: { type: filter === 'all' ? undefined : filter },
+      queryParamsHandling: 'merge',
+    });
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {

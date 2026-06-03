@@ -4,6 +4,7 @@ import { PageNotFoundComponent } from './not-found.component';
 import { NoteNotFoundComponent } from './not-found/note-not-found.component';
 import { NewEntryComponent } from './new-entry/new-entry.component';
 import { AuthGuard } from './core/auth/auth-guard.service';
+import { SearchRedirectGuard } from './core/search-redirect.guard';
 
 const routes: Routes = [
   {
@@ -83,6 +84,7 @@ const routes: Routes = [
   },
   {
     path: 'search',
+    canActivate: [SearchRedirectGuard],
     loadChildren: () =>
       import('./search-results/search-results.module').then(
         (m) => m.SearchResultsModule

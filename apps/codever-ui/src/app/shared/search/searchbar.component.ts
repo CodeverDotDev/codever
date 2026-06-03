@@ -165,7 +165,7 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
     this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.searchDomain = SearchDomain.MY_BOOKMARKS;
+        this.searchDomain = SearchDomain.ALL_MINE;
       }
     });
 
@@ -205,10 +205,7 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
     this.watchSearchBoxValueChanges();
     this.setFilteredSearches$(selectedSearchDomain);
     if (
-      (selectedSearchDomain === SearchDomain.MY_BOOKMARKS ||
-        selectedSearchDomain === SearchDomain.ALL_MINE ||
-        selectedSearchDomain === SearchDomain.MY_SNIPPETS ||
-        selectedSearchDomain === SearchDomain.MY_NOTES) &&
+      selectedSearchDomain === SearchDomain.ALL_MINE &&
       !this.userIsLoggedIn
     ) {
       this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
