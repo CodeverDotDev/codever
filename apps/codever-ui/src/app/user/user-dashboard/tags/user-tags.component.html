@@ -247,7 +247,8 @@
               [routerLink]="['/search']"
               [queryParams]="{
                 q: 'private:only [' + tag.name + ']',
-                sd: 'my-bookmarks'
+                sd: 'all-mine',
+                type: 'bookmark'
               }"
               class="btn btn-secondary btn-sm"
               title="Show my private bookmarks tagged {{ tag.name }}"
@@ -301,7 +302,8 @@
                 [routerLink]="['/search']"
                 [queryParams]="{
                   q: 'private:only [' + tag.name + ']',
-                  sd: 'my-bookmarks'
+                  sd: 'all-mine',
+                  type: 'bookmark'
                 }"
                 class="dropdown-item"
               >

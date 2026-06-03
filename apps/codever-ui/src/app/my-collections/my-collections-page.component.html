@@ -6,14 +6,23 @@
     </button>
   </div>
 
-  <div class="mb-3">
+  <div class="filter-wrapper mb-3">
     <input
       type="text"
-      class="form-control"
+      class="form-control form-control-sm pr-4"
       placeholder="Filter collections by name..."
       [(ngModel)]="filterText"
       (ngModelChange)="onFilterChange()"
     />
+    <button
+      *ngIf="filterText"
+      type="button"
+      class="btn btn-sm filter-clear-btn"
+      title="Clear filter"
+      (click)="filterText = ''; onFilterChange()"
+    >
+      <i class="fas fa-times"></i>
+    </button>
   </div>
 
   <div *ngIf="loading" class="text-center mt-4">

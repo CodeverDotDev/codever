@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
-import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Bookmark } from '../core/model/bookmark';
 import { SearchNotificationService } from '../core/search-notification.service';
 import { KeycloakService } from 'keycloak-angular';
@@ -12,15 +12,14 @@ import { UserInfoStore } from '../core/user/user-info.store';
 import { UserDataStore } from '../core/user/userdata.store';
 import { UserData } from '../core/model/user-data';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { PaginationNotificationService } from '../core/pagination-notification.service';
+
 import { SearchDomain } from '../core/model/search-domain.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogHelperService } from '../core/login-dialog-helper.service';
 import { LoginRequiredDialogComponent } from '../shared/dialog/login-required-dialog/login-required-dialog.component';
 import { PersonalSearchService } from '../core/personal-search.service';
-import { PersonalNotesService } from '../core/personal-notes.service';
+import { PublicSearchService } from '../core/public-search.service';
 import { Note } from '../core/model/note';
-import { PublicNotesService } from '../public/notes/public-notes.service';
 
 @Component({
   selector: 'app-search-results',
@@ -37,13 +36,14 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   userId: string;
   userIsLoggedIn = false;
 
-  searchResults$: Observable<
-    Bookmark[] | Note[] | (Bookmark | Note)[]
-  >;
+  searchResults$: Observable<(Bookmark | Note)[]>;
   private userData$: Observable<UserData>;
 
-  selectedTabIndex = 3; // default search in public bookmarks
+  selectedTabIndex = 1; // default search in public
   private searchInclude: string;
+
+  typeFilter$ = new BehaviorSubject<'all' | 'bookmark' | 'note'>('all');
+  filteredSearchResults$: Observable<(Bookmark | Note)[]>;
 
   searchTriggeredSubscription: any;
 
@@ -53,19 +53,16 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private publicBookmarksService: PublicBookmarksService,
-    private publicNotesService: PublicNotesService,
     private personalSearchService: PersonalSearchService,
-    private personalBookmarksService: PersonalBookmarksService,
-    private personalNotesService: PersonalNotesService,
+    private publicSearchService: PublicSearchService,
     private keycloakService: KeycloakService,
     private keycloakServiceWrapper: KeycloakServiceWrapper,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private searchNotificationService: SearchNotificationService,
-    private paginationNotificationService: PaginationNotificationService,
     private loginDialogHelperService: LoginDialogHelperService,
-    public loginDialog: MatDialog
+    public loginDialog: MatDialog,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -73,15 +70,60 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     this.searchText = this.route.snapshot.queryParamMap.get('q');
     this.searchDomain =
       this.route.snapshot.queryParamMap.get('sd') ||
-      SearchDomain.PUBLIC_BOOKMARKS;
+      SearchDomain.ALL_PUBLIC;
     this.searchInclude =
       this.route.snapshot.queryParamMap.get('include') || 'all';
 
-    // Remap legacy snippet domains to notes
+    // Read persisted type filter from URL
+    const typeParam = this.route.snapshot.queryParamMap.get('type') as
+      | 'all'
+      | 'bookmark'
+      | 'note';
+    this.typeFilter$.next(typeParam || 'all');
+
+    // Remap legacy domains to unified domains
     if (this.searchDomain === SearchDomain.MY_SNIPPETS) {
       this.searchDomain = SearchDomain.MY_NOTES;
     } else if (this.searchDomain === SearchDomain.PUBLIC_SNIPPETS) {
       this.searchDomain = SearchDomain.PUBLIC_NOTES;
+    }
+
+    // Remap old personal domains to all-mine with type filter
+    if (
+      this.searchDomain === SearchDomain.MY_BOOKMARKS ||
+      this.searchDomain === SearchDomain.MY_NOTES
+    ) {
+      const mappedType =
+        this.searchDomain === SearchDomain.MY_BOOKMARKS ? 'bookmark' : 'note';
+      if (!typeParam) {
+        this.typeFilter$.next(mappedType);
+      }
+      this.searchDomain = SearchDomain.ALL_MINE;
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { sd: SearchDomain.ALL_MINE, type: mappedType },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    }
+
+    // Remap old public domains to all-public with type filter
+    if (
+      this.searchDomain === SearchDomain.PUBLIC_BOOKMARKS ||
+      this.searchDomain === SearchDomain.PUBLIC_NOTES
+    ) {
+      const mappedType =
+        this.searchDomain === SearchDomain.PUBLIC_BOOKMARKS ? 'bookmark' : 'note';
+      if (!typeParam) {
+        this.typeFilter$.next(mappedType);
+      }
+      this.searchDomain = SearchDomain.ALL_PUBLIC;
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { sd: SearchDomain.ALL_PUBLIC, type: mappedType },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
     }
 
     this.initSelectedTabIndex(this.searchDomain);
@@ -107,27 +149,13 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
           );
         });
       } else {
-        switch (this.searchDomain) {
-          case SearchDomain.PUBLIC_BOOKMARKS: {
-            this.searchResults(
-              this.searchText,
-              SearchDomain.PUBLIC_BOOKMARKS,
-              'all'
-            );
-            break;
-          }
-          case SearchDomain.PUBLIC_NOTES: {
-            this.searchResults(
-              this.searchText,
-              SearchDomain.PUBLIC_NOTES,
-              'all'
-            );
-            break;
-          }
-          default: {
-            this.searchPublicBookmarks_when_SearchText_but_No_SearchDomain();
-          }
-        }
+        this.searchResults(
+          this.searchText,
+          this.searchDomain === SearchDomain.ALL_MINE
+            ? SearchDomain.ALL_PUBLIC
+            : this.searchDomain,
+          this.searchInclude
+        );
       }
     });
 
@@ -151,47 +179,25 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     } else {
       this.currentPage = 1;
     }
-    this.paginationNotificationService.pageNavigationClicked$.subscribe(
-      (paginationAction) => {
-        if (paginationAction.caller === this.callerPaginationSearchResults) {
-          this.currentPage = paginationAction.page;
-          this.searchResults(this.searchText, this.searchDomain, 'all');
-        }
-      }
-    );
   }
 
   private initSelectedTabIndex(searchDomain: string) {
     switch (searchDomain) {
-      case SearchDomain.ALL_MINE: {
+      case SearchDomain.ALL_MINE:
+      case SearchDomain.MY_BOOKMARKS:
+      case SearchDomain.MY_NOTES: {
         this.selectedTabIndex = 0;
         break;
       }
-      case SearchDomain.MY_BOOKMARKS: {
+      case SearchDomain.ALL_PUBLIC:
+      case SearchDomain.PUBLIC_BOOKMARKS:
+      case SearchDomain.PUBLIC_NOTES: {
         this.selectedTabIndex = 1;
         break;
       }
-      case SearchDomain.MY_NOTES: {
-        this.selectedTabIndex = 2;
-        break;
-      }
-      case SearchDomain.PUBLIC_BOOKMARKS: {
-        this.selectedTabIndex = 3;
-        break;
-      }
-      case SearchDomain.PUBLIC_NOTES: {
-        this.selectedTabIndex = 4;
-        break;
-      }
       default: {
-        this.selectedTabIndex = 3;
+        this.selectedTabIndex = 1;
       }
-    }
-  }
-
-  private searchPublicBookmarks_when_SearchText_but_No_SearchDomain() {
-    if (this.searchText) {
-      this.searchResults(this.searchText, SearchDomain.PUBLIC_BOOKMARKS, 'all');
     }
   }
 
@@ -213,49 +219,29 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
         );
         break;
       }
-      case SearchDomain.MY_BOOKMARKS: {
-        this.searchResults$ =
-          this.personalBookmarksService.getFilteredPersonalBookmarks(
-            this.searchText,
-            environment.PAGINATION_PAGE_SIZE,
-            this.currentPage,
-            this.userId,
-            searchInclude
-          );
-        break;
-      }
-      case SearchDomain.MY_NOTES: {
-        this.searchResults$ =
-          this.personalNotesService.getFilteredPersonalNotes(
-            searchText,
-            environment.PAGINATION_PAGE_SIZE,
-            this.currentPage,
-            this.userId,
-            searchInclude
-          );
-        break;
-      }
-      case SearchDomain.PUBLIC_BOOKMARKS: {
-        this.searchResults$ = this.publicBookmarksService.searchPublicBookmarks(
+      case SearchDomain.ALL_PUBLIC: {
+        this.searchResults$ = this.publicSearchService.getSearchResults(
           searchText,
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
-          'relevant',
-          searchInclude
-        );
-        break;
-      }
-      case SearchDomain.PUBLIC_NOTES: {
-        this.searchResults$ = this.publicNotesService.searchPublicNotes(
-          searchText,
-          environment.PAGINATION_PAGE_SIZE,
-          this.currentPage,
-          'relevant',
           searchInclude
         );
         break;
       }
     }
+    this.filteredSearchResults$ = combineLatest([
+      this.searchResults$,
+      this.typeFilter$,
+    ]).pipe(
+      map(([results, filter]) => {
+        if (filter === 'all') {
+          return results as (Bookmark | Note)[];
+        }
+        return (results as (Bookmark | Note)[]).filter(
+          (r) => r.type === filter
+        );
+      })
+    );
     this.searchResults$.subscribe((results) => {
       if (results && results.length > 0) {
         this.saveRecentSearch(searchText, searchDomain);
@@ -266,26 +252,6 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   private saveRecentSearch(searchText: string, searchDomain) {
     if (this.userIsLoggedIn) {
       this.userDataStore.saveRecentSearch(searchText, searchDomain);
-    }
-  }
-
-  private tryMyNotes(searchInclude: string) {
-    if (this.userIsLoggedIn) {
-      this.selectedTabIndex = 2;
-      this.searchInclude = searchInclude;
-      this.router.navigate(['.'], {
-        relativeTo: this.route,
-        queryParams: {
-          q: this.searchText,
-          sd: SearchDomain.MY_NOTES,
-          include: searchInclude,
-        },
-      });
-    } else {
-      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
-        'You need to be logged in to search through your notes'
-      );
-      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     }
   }
 
@@ -303,72 +269,52 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       });
     } else {
       const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
-        'You need to be logged in to search through personal bookmarks'
+        'You need to be logged in to search through personal bookmarks and notes'
       );
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     }
   }
 
-  tryPublicNotes(searchInclude: string) {
-    this.selectedTabIndex = 4;
+  tryAllPublic(searchInclude: string) {
+    this.selectedTabIndex = 1;
     this.currentPage = 1;
     this.searchInclude = searchInclude;
     this.router.navigate(['.'], {
       relativeTo: this.route,
       queryParams: {
         q: this.searchText,
-        sd: SearchDomain.PUBLIC_NOTES,
+        sd: SearchDomain.ALL_PUBLIC,
         page: '1',
         include: searchInclude,
       },
     });
-  }
-
-  private tryPublicBookmarks(searchInclude: string) {
-    this.selectedTabIndex = 3;
-    this.currentPage = 1;
-    this.searchInclude = searchInclude;
-    this.router.navigate(['.'], {
-      relativeTo: this.route,
-      queryParams: {
-        q: this.searchText,
-        sd: SearchDomain.PUBLIC_BOOKMARKS,
-        page: '1',
-        include: searchInclude,
-      },
-    });
-  }
-
-  private tryMyBookmarks(searchInclude) {
-    if (this.userIsLoggedIn) {
-      this.selectedTabIndex = 1;
-      this.searchDomain = SearchDomain.MY_BOOKMARKS;
-      this.currentPage = 1;
-      this.searchInclude = searchInclude;
-      this.router.navigate(['.'], {
-        relativeTo: this.route,
-        queryParams: {
-          q: this.searchText,
-          sd: SearchDomain.MY_BOOKMARKS,
-          page: '1',
-          include: searchInclude,
-        },
-      });
-    } else {
-      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
-        'You need to be logged in to search through personal bookmarks'
-      );
-      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    }
   }
 
   /**
    * Maps a tab index to its search domain.
-   * Tabs: 0=All Mine, 1=My Bookmarks, 2=My Notes, 3=Public Bookmarks, 4=Public Notes
+   * Tabs: 0=Personal, 1=Public
    */
   private getSearchDomainForTabIndex(index: number): string {
-    const map = [SearchDomain.ALL_MINE, SearchDomain.MY_BOOKMARKS, SearchDomain.MY_NOTES, SearchDomain.PUBLIC_BOOKMARKS, SearchDomain.PUBLIC_NOTES];
-    return map[index] || '';
+    const domainMap = [SearchDomain.ALL_MINE, SearchDomain.ALL_PUBLIC];
+    return domainMap[index] || '';
+  }
+
+  setTypeFilter(filter: 'all' | 'bookmark' | 'note'): void {
+    this.typeFilter$.next(filter);
+
+    // Update the URL to persist the filter without triggering a router navigation.
+    // router.navigate() would destroy & re-create the component (shouldReuseRoute = false)
+    // causing a redundant backend call — the results are already fetched and only need
+    // client-side filtering via filteredSearchResults$.
+    const params = new URLSearchParams(window.location.search);
+    if (filter === 'all') {
+      params.delete('type');
+    } else {
+      params.set('type', filter);
+    }
+    const queryString = params.toString();
+    const path = window.location.pathname + (queryString ? '?' + queryString : '');
+    this.location.replaceState(path);
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {
@@ -381,10 +327,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
       case 0: { this.tryAllMine('all'); break; }
-      case 1: { this.tryMyBookmarks('all'); break; }
-      case 2: { this.tryMyNotes('all'); break; }
-      case 3: { this.tryPublicBookmarks('all'); break; }
-      case 4: { this.tryPublicNotes('all'); break; }
+      case 1: { this.tryAllPublic('all'); break; }
     }
   }
 

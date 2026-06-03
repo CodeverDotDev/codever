@@ -11,7 +11,7 @@
         <span class="my-saved-search mr-2">
           <a
             [routerLink]="['/search']"
-            [queryParams]="{ q: mySearch.text, sd: 'my-bookmarks' }"
+            [queryParams]="{ q: mySearch.text, sd: mySearch.searchDomain }"
             class="badge badge-secondary mb-2"
           >
             <i class="fa fa-xs fa-search"></i> {{ mySearch.text }}

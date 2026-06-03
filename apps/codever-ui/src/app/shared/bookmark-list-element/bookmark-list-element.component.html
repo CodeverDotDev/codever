@@ -209,7 +209,7 @@
           <a
             class="btn btn-secondary btn-sm"
             [routerLink]="['/search']"
-            [queryParams]="{ q: '[' + tag + ']', sd: 'my-bookmarks' }"
+            [queryParams]="{ q: '[' + tag + ']', sd: 'all-mine', type: 'bookmark' }"
             title="Search my bookmarks tagged {{ tag }}"
             [innerHtml]="tag | highlight : filterText | highlight : queryText"
           >
@@ -269,7 +269,7 @@
             <a
               class="dropdown-item"
               [routerLink]="['/search']"
-              [queryParams]="{ q: '[' + tag + ']', sd: 'my-bookmarks' }"
+              [queryParams]="{ q: '[' + tag + ']', sd: 'all-mine', type: 'bookmark' }"
               title="Search my bookmarks tagged &quot;{{ tag }}&quot;"
             >
               <i class="fas fa-tag"></i> Personal
