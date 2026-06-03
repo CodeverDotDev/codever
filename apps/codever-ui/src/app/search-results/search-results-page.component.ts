@@ -43,7 +43,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   >;
   private userData$: Observable<UserData>;
 
-  selectedTabIndex = 3; // default search in public bookmarks
+  selectedTabIndex = 1; // default search in personal data
   private searchInclude: string;
 
   typeFilter$ = new BehaviorSubject<'all' | 'bookmark' | 'note'>('all');
@@ -193,28 +193,22 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
 
   private initSelectedTabIndex(searchDomain: string) {
     switch (searchDomain) {
-      case SearchDomain.ALL_MINE: {
+      case SearchDomain.ALL_MINE:
+      case SearchDomain.MY_BOOKMARKS:
+      case SearchDomain.MY_NOTES: {
         this.selectedTabIndex = 0;
         break;
       }
-      case SearchDomain.MY_BOOKMARKS: {
+      case SearchDomain.PUBLIC_BOOKMARKS: {
         this.selectedTabIndex = 1;
         break;
       }
-      case SearchDomain.MY_NOTES: {
+      case SearchDomain.PUBLIC_NOTES: {
         this.selectedTabIndex = 2;
         break;
       }
-      case SearchDomain.PUBLIC_BOOKMARKS: {
-        this.selectedTabIndex = 3;
-        break;
-      }
-      case SearchDomain.PUBLIC_NOTES: {
-        this.selectedTabIndex = 4;
-        break;
-      }
       default: {
-        this.selectedTabIndex = 3;
+        this.selectedTabIndex = 1;
       }
     }
   }
@@ -353,7 +347,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   }
 
   tryPublicNotes(searchInclude: string) {
-    this.selectedTabIndex = 4;
+    this.selectedTabIndex = 2;
     this.currentPage = 1;
     this.searchInclude = searchInclude;
     this.router.navigate(['.'], {
@@ -368,7 +362,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   }
 
   private tryPublicBookmarks(searchInclude: string) {
-    this.selectedTabIndex = 3;
+    this.selectedTabIndex = 1;
     this.currentPage = 1;
     this.searchInclude = searchInclude;
     this.router.navigate(['.'], {
@@ -410,7 +404,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
    * Tabs: 0=All Mine, 1=My Bookmarks, 2=My Notes, 3=Public Bookmarks, 4=Public Notes
    */
   private getSearchDomainForTabIndex(index: number): string {
-    const map = [SearchDomain.ALL_MINE, SearchDomain.MY_BOOKMARKS, SearchDomain.MY_NOTES, SearchDomain.PUBLIC_BOOKMARKS, SearchDomain.PUBLIC_NOTES];
+    const map = [SearchDomain.ALL_MINE, SearchDomain.PUBLIC_BOOKMARKS, SearchDomain.PUBLIC_NOTES];
     return map[index] || '';
   }
 
@@ -433,10 +427,8 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
       case 0: { this.tryAllMine('all'); break; }
-      case 1: { this.tryMyBookmarks('all'); break; }
-      case 2: { this.tryMyNotes('all'); break; }
-      case 3: { this.tryPublicBookmarks('all'); break; }
-      case 4: { this.tryPublicNotes('all'); break; }
+      case 1: { this.tryPublicBookmarks('all'); break; }
+      case 2: { this.tryPublicNotes('all'); break; }
     }
   }
 
