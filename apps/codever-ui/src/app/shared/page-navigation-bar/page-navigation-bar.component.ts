@@ -53,9 +53,20 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   }
 
   syncPageQueryParam() {
+    // Read the current type filter from the URL (it may have been set via
+    // Location.replaceState in SearchResultsPageComponent, so the router's
+    // ActivatedRoute snapshot might not have it).
+    const urlParams = new URLSearchParams(window.location.search);
+    const typeFilter = urlParams.get('type');
+
+    const queryParams: any = { page: this.currentPage };
+    if (typeFilter) {
+      queryParams.type = typeFilter;
+    }
+
     this.router.navigate(['.'], {
       relativeTo: this.route,
-      queryParams: { page: this.currentPage },
+      queryParams,
       queryParamsHandling: 'merge',
     });
   }
