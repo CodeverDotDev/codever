@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
 import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Bookmark } from '../core/model/bookmark';
 import { SearchNotificationService } from '../core/search-notification.service';
@@ -68,7 +69,8 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     private userDataStore: UserDataStore,
     private searchNotificationService: SearchNotificationService,
     private loginDialogHelperService: LoginDialogHelperService,
-    public loginDialog: MatDialog
+    public loginDialog: MatDialog,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -408,11 +410,20 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
 
   setTypeFilter(filter: 'all' | 'bookmark' | 'note'): void {
     this.typeFilter$.next(filter);
-    this.router.navigate(['.'], {
-      relativeTo: this.route,
-      queryParams: { type: filter === 'all' ? undefined : filter },
-      queryParamsHandling: 'merge',
-    });
+
+    // Update the URL to persist the filter without triggering a router navigation.
+    // router.navigate() would destroy & re-create the component (shouldReuseRoute = false)
+    // causing a redundant backend call — the results are already fetched and only need
+    // client-side filtering via filteredSearchResults$.
+    const params = new URLSearchParams(window.location.search);
+    if (filter === 'all') {
+      params.delete('type');
+    } else {
+      params.set('type', filter);
+    }
+    const queryString = params.toString();
+    const path = window.location.pathname + (queryString ? '?' + queryString : '');
+    this.location.replaceState(path);
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {
