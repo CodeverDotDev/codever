@@ -13,7 +13,7 @@ import { UserInfoStore } from '../core/user/user-info.store';
 import { UserDataStore } from '../core/user/userdata.store';
 import { UserData } from '../core/model/user-data';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { PaginationNotificationService } from '../core/pagination-notification.service';
+
 import { SearchDomain } from '../core/model/search-domain.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogHelperService } from '../core/login-dialog-helper.service';
@@ -67,7 +67,6 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private searchNotificationService: SearchNotificationService,
-    private paginationNotificationService: PaginationNotificationService,
     private loginDialogHelperService: LoginDialogHelperService,
     public loginDialog: MatDialog
   ) {}
@@ -181,14 +180,13 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     } else {
       this.currentPage = 1;
     }
-    this.paginationNotificationService.pageNavigationClicked$.subscribe(
-      (paginationAction) => {
-        if (paginationAction.caller === this.callerPaginationSearchResults) {
-          this.currentPage = paginationAction.page;
-          this.searchResults(this.searchText, this.searchDomain, 'all');
-        }
-      }
-    );
+    // No need to subscribe to pageNavigationClicked$ here.
+    // PageNavigationBarComponent.navigate() already calls syncPageQueryParam(),
+    // which updates the URL ?page= param. Because shouldReuseRoute returns false,
+    // the route change destroys and re-creates this component, so ngOnInit()
+    // picks up the new page from the query params and triggers the search.
+    // Subscribing here caused a DUPLICATE API call: one from this handler and
+    // another from the component re-initialisation after the route change.
   }
 
   private initSelectedTabIndex(searchDomain: string) {
