@@ -57,6 +57,7 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
 
   ngOnInit() {
     switch (this.searchDomain) {
+      case SearchDomain.ALL_MINE:
       case SearchDomain.MY_BOOKMARKS:
         {
           this.personalBookmarksService
@@ -75,6 +76,7 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
         }
         break;
 
+      case SearchDomain.ALL_PUBLIC:
       case SearchDomain.PUBLIC_BOOKMARKS:
         {
           this.publicBookmarksService

@@ -79,7 +79,7 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public innerWidth: any;
 
-  searchDomain = SearchDomain.PUBLIC_BOOKMARKS.valueOf();
+  searchDomain = SearchDomain.ALL_PUBLIC.valueOf();
   searchDomains = searchDomains;
 
   currentPage: number;
@@ -208,7 +208,7 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
       selectedSearchDomain === SearchDomain.ALL_MINE &&
       !this.userIsLoggedIn
     ) {
-      this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
+      this.searchDomain = SearchDomain.ALL_PUBLIC;
       this.showLoginRequiredDialog(
         'You need to be logged in to search in your personal assets'
       );

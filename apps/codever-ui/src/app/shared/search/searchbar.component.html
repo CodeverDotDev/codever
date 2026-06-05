@@ -66,45 +66,23 @@
       <a
         class="dropdown-item"
         role="button"
-        title="Search in public bookmarks"
-        (click)="onSearchDomainChange('public-bookmarks')"
+        title="Search in public bookmarks &amp; notes"
+        (click)="onSearchDomainChange('all-public')"
       >
-        Public Bookmarks
-        <i
-          *ngIf="
-            searchDomain === 'public-bookmarks';
-            else uncheckedPublicBookmarksSelection
-          "
-          class="fas fa-check ml-1"
-        ></i>
-        <ng-template #uncheckedPublicBookmarksSelection>
-          <span class="public-snippets-selection-unchecked float-right">
-            <i
-              class="fa fa-square fa-lg ml-1 unchecked-public-bookmarks-selection"
-            ></i>
-          </span>
-        </ng-template>
-      </a>
-      <a
-        class="dropdown-item"
-        role="button"
-        title="Search in public notes"
-        (click)="onSearchDomainChange('public-notes')"
-      >
-        Public Notes
+        Public
         <span
           *ngIf="
-            searchDomain === 'public-notes';
-            else uncheckedPublicNotesSelection
+            searchDomain === 'all-public';
+            else uncheckedPublicSelection
           "
-          class="search-domain-selection note-public-bg float-right pl-1 pr-1"
+          class="search-domain-selection float-right pl-1 pr-1"
         >
           <i class="fas fa-check"></i>
         </span>
-        <ng-template #uncheckedPublicNotesSelection>
-          <span class="public-notes-selection-unchecked float-right">
+        <ng-template #uncheckedPublicSelection>
+          <span class="public-snippets-selection-unchecked float-right">
             <i
-              class="fa fa-square fa-lg ml-1 public-notes-selection-unchecked"
+              class="fa fa-square fa-lg ml-1"
             ></i>
           </span>
         </ng-template>
@@ -124,7 +102,6 @@
     (focus)="focusOnSearchControl()"
     (focusout)="unFocusOnSearchControl()"
     [class.my-bookmarks-selection]="searchDomain === 'all-mine'"
-    [class.note-public-bg]="searchDomain === 'public-notes'"
     (keyup)="watchForTags(publicSearchBox.value)"
     (keyup.enter)="
       $event.target.blur();
@@ -140,8 +117,7 @@
       [value]="search.text"
       (mouseenter)="hoveringOverSearchHistory = search.text" (mouseleave)="hoveringOverSearchHistory = null"
     >
-      <div style="display: flex; justify-content: space-between"
-           [ngClass]="{'note-public-bg': searchDomain === 'public-notes'}">
+      <div style="display: flex; justify-content: space-between">
         <div>
           <i class="fas fa-history mr-2 search-history-clock"></i>
         </div>

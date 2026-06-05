@@ -34,6 +34,7 @@ import { HttpClientLocalStorageService } from './cache/http-client-local-storage
 import { SystemService } from './cache/system.service';
 import { CookieService } from './cookies/cookie.service';
 import { PersonalSearchService } from './personal-search.service';
+import { PublicSearchService } from './public-search.service';
 import { PersonalNotesService } from './personal-notes.service';
 import { PersonalCollectionsService } from './personal-collections.service';
 import { DeleteNotificationService } from './notifications/delete-notification.service';
@@ -57,6 +58,7 @@ import { LatestSearchClickNotificationService } from './latest-search-click.noti
     PersonalNotesService,
     PersonalCollectionsService,
     PersonalSearchService,
+    PublicSearchService,
     AdminService,
     UserDataService,
     UserDataStore,

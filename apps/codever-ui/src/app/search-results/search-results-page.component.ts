@@ -2,8 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { PublicBookmarksService } from '../public/bookmarks/public-bookmarks.service';
-import { PersonalBookmarksService } from '../core/personal-bookmarks.service';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Bookmark } from '../core/model/bookmark';
@@ -20,9 +18,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogHelperService } from '../core/login-dialog-helper.service';
 import { LoginRequiredDialogComponent } from '../shared/dialog/login-required-dialog/login-required-dialog.component';
 import { PersonalSearchService } from '../core/personal-search.service';
-import { PersonalNotesService } from '../core/personal-notes.service';
+import { PublicSearchService } from '../core/public-search.service';
 import { Note } from '../core/model/note';
-import { PublicNotesService } from '../public/notes/public-notes.service';
 
 @Component({
   selector: 'app-search-results',
@@ -39,12 +36,10 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   userId: string;
   userIsLoggedIn = false;
 
-  searchResults$: Observable<
-    Bookmark[] | Note[] | (Bookmark | Note)[]
-  >;
+  searchResults$: Observable<(Bookmark | Note)[]>;
   private userData$: Observable<UserData>;
 
-  selectedTabIndex = 1; // default search in personal data
+  selectedTabIndex = 1; // default search in public
   private searchInclude: string;
 
   typeFilter$ = new BehaviorSubject<'all' | 'bookmark' | 'note'>('all');
@@ -58,11 +53,8 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private publicBookmarksService: PublicBookmarksService,
-    private publicNotesService: PublicNotesService,
     private personalSearchService: PersonalSearchService,
-    private personalBookmarksService: PersonalBookmarksService,
-    private personalNotesService: PersonalNotesService,
+    private publicSearchService: PublicSearchService,
     private keycloakService: KeycloakService,
     private keycloakServiceWrapper: KeycloakServiceWrapper,
     private userInfoStore: UserInfoStore,
@@ -78,7 +70,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     this.searchText = this.route.snapshot.queryParamMap.get('q');
     this.searchDomain =
       this.route.snapshot.queryParamMap.get('sd') ||
-      SearchDomain.PUBLIC_BOOKMARKS;
+      SearchDomain.ALL_PUBLIC;
     this.searchInclude =
       this.route.snapshot.queryParamMap.get('include') || 'all';
 
@@ -89,7 +81,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       | 'note';
     this.typeFilter$.next(typeParam || 'all');
 
-    // Remap legacy snippet domains to notes
+    // Remap legacy domains to unified domains
     if (this.searchDomain === SearchDomain.MY_SNIPPETS) {
       this.searchDomain = SearchDomain.MY_NOTES;
     } else if (this.searchDomain === SearchDomain.PUBLIC_SNIPPETS) {
@@ -109,7 +101,26 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       this.searchDomain = SearchDomain.ALL_MINE;
       this.router.navigate([], {
         relativeTo: this.route,
-        queryParams: { sd: 'all-mine', type: mappedType },
+        queryParams: { sd: SearchDomain.ALL_MINE, type: mappedType },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    }
+
+    // Remap old public domains to all-public with type filter
+    if (
+      this.searchDomain === SearchDomain.PUBLIC_BOOKMARKS ||
+      this.searchDomain === SearchDomain.PUBLIC_NOTES
+    ) {
+      const mappedType =
+        this.searchDomain === SearchDomain.PUBLIC_BOOKMARKS ? 'bookmark' : 'note';
+      if (!typeParam) {
+        this.typeFilter$.next(mappedType);
+      }
+      this.searchDomain = SearchDomain.ALL_PUBLIC;
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { sd: SearchDomain.ALL_PUBLIC, type: mappedType },
         queryParamsHandling: 'merge',
         replaceUrl: true,
       });
@@ -138,27 +149,13 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
           );
         });
       } else {
-        switch (this.searchDomain) {
-          case SearchDomain.PUBLIC_BOOKMARKS: {
-            this.searchResults(
-              this.searchText,
-              SearchDomain.PUBLIC_BOOKMARKS,
-              'all'
-            );
-            break;
-          }
-          case SearchDomain.PUBLIC_NOTES: {
-            this.searchResults(
-              this.searchText,
-              SearchDomain.PUBLIC_NOTES,
-              'all'
-            );
-            break;
-          }
-          default: {
-            this.searchPublicBookmarks_when_SearchText_but_No_SearchDomain();
-          }
-        }
+        this.searchResults(
+          this.searchText,
+          this.searchDomain === SearchDomain.ALL_MINE
+            ? SearchDomain.ALL_PUBLIC
+            : this.searchDomain,
+          this.searchInclude
+        );
       }
     });
 
@@ -182,13 +179,6 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     } else {
       this.currentPage = 1;
     }
-    // No need to subscribe to pageNavigationClicked$ here.
-    // PageNavigationBarComponent.navigate() already calls syncPageQueryParam(),
-    // which updates the URL ?page= param. Because shouldReuseRoute returns false,
-    // the route change destroys and re-creates this component, so ngOnInit()
-    // picks up the new page from the query params and triggers the search.
-    // Subscribing here caused a DUPLICATE API call: one from this handler and
-    // another from the component re-initialisation after the route change.
   }
 
   private initSelectedTabIndex(searchDomain: string) {
@@ -199,23 +189,15 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
         this.selectedTabIndex = 0;
         break;
       }
-      case SearchDomain.PUBLIC_BOOKMARKS: {
-        this.selectedTabIndex = 1;
-        break;
-      }
+      case SearchDomain.ALL_PUBLIC:
+      case SearchDomain.PUBLIC_BOOKMARKS:
       case SearchDomain.PUBLIC_NOTES: {
-        this.selectedTabIndex = 2;
+        this.selectedTabIndex = 1;
         break;
       }
       default: {
         this.selectedTabIndex = 1;
       }
-    }
-  }
-
-  private searchPublicBookmarks_when_SearchText_but_No_SearchDomain() {
-    if (this.searchText) {
-      this.searchResults(this.searchText, SearchDomain.PUBLIC_BOOKMARKS, 'all');
     }
   }
 
@@ -237,44 +219,11 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
         );
         break;
       }
-      case SearchDomain.MY_BOOKMARKS: {
-        this.searchResults$ =
-          this.personalBookmarksService.getFilteredPersonalBookmarks(
-            this.searchText,
-            environment.PAGINATION_PAGE_SIZE,
-            this.currentPage,
-            this.userId,
-            searchInclude
-          );
-        break;
-      }
-      case SearchDomain.MY_NOTES: {
-        this.searchResults$ =
-          this.personalNotesService.getFilteredPersonalNotes(
-            searchText,
-            environment.PAGINATION_PAGE_SIZE,
-            this.currentPage,
-            this.userId,
-            searchInclude
-          );
-        break;
-      }
-      case SearchDomain.PUBLIC_BOOKMARKS: {
-        this.searchResults$ = this.publicBookmarksService.searchPublicBookmarks(
+      case SearchDomain.ALL_PUBLIC: {
+        this.searchResults$ = this.publicSearchService.getSearchResults(
           searchText,
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
-          'relevant',
-          searchInclude
-        );
-        break;
-      }
-      case SearchDomain.PUBLIC_NOTES: {
-        this.searchResults$ = this.publicNotesService.searchPublicNotes(
-          searchText,
-          environment.PAGINATION_PAGE_SIZE,
-          this.currentPage,
-          'relevant',
           searchInclude
         );
         break;
@@ -306,26 +255,6 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private tryMyNotes(searchInclude: string) {
-    if (this.userIsLoggedIn) {
-      this.selectedTabIndex = 2;
-      this.searchInclude = searchInclude;
-      this.router.navigate(['.'], {
-        relativeTo: this.route,
-        queryParams: {
-          q: this.searchText,
-          sd: SearchDomain.MY_NOTES,
-          include: searchInclude,
-        },
-      });
-    } else {
-      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
-        'You need to be logged in to search through your notes'
-      );
-      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    }
-  }
-
   tryAllMine(searchInclude: string) {
     if (this.userIsLoggedIn) {
       this.selectedTabIndex = 0;
@@ -340,28 +269,13 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       });
     } else {
       const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
-        'You need to be logged in to search through personal bookmarks'
+        'You need to be logged in to search through personal bookmarks and notes'
       );
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     }
   }
 
-  tryPublicNotes(searchInclude: string) {
-    this.selectedTabIndex = 2;
-    this.currentPage = 1;
-    this.searchInclude = searchInclude;
-    this.router.navigate(['.'], {
-      relativeTo: this.route,
-      queryParams: {
-        q: this.searchText,
-        sd: SearchDomain.PUBLIC_NOTES,
-        page: '1',
-        include: searchInclude,
-      },
-    });
-  }
-
-  private tryPublicBookmarks(searchInclude: string) {
+  tryAllPublic(searchInclude: string) {
     this.selectedTabIndex = 1;
     this.currentPage = 1;
     this.searchInclude = searchInclude;
@@ -369,43 +283,20 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       relativeTo: this.route,
       queryParams: {
         q: this.searchText,
-        sd: SearchDomain.PUBLIC_BOOKMARKS,
+        sd: SearchDomain.ALL_PUBLIC,
         page: '1',
         include: searchInclude,
       },
     });
   }
 
-  private tryMyBookmarks(searchInclude) {
-    if (this.userIsLoggedIn) {
-      this.selectedTabIndex = 1;
-      this.searchDomain = SearchDomain.MY_BOOKMARKS;
-      this.currentPage = 1;
-      this.searchInclude = searchInclude;
-      this.router.navigate(['.'], {
-        relativeTo: this.route,
-        queryParams: {
-          q: this.searchText,
-          sd: SearchDomain.MY_BOOKMARKS,
-          page: '1',
-          include: searchInclude,
-        },
-      });
-    } else {
-      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
-        'You need to be logged in to search through personal bookmarks'
-      );
-      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
-    }
-  }
-
   /**
    * Maps a tab index to its search domain.
-   * Tabs: 0=All Mine, 1=My Bookmarks, 2=My Notes, 3=Public Bookmarks, 4=Public Notes
+   * Tabs: 0=Personal, 1=Public
    */
   private getSearchDomainForTabIndex(index: number): string {
-    const map = [SearchDomain.ALL_MINE, SearchDomain.PUBLIC_BOOKMARKS, SearchDomain.PUBLIC_NOTES];
-    return map[index] || '';
+    const domainMap = [SearchDomain.ALL_MINE, SearchDomain.ALL_PUBLIC];
+    return domainMap[index] || '';
   }
 
   setTypeFilter(filter: 'all' | 'bookmark' | 'note'): void {
@@ -436,8 +327,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
       case 0: { this.tryAllMine('all'); break; }
-      case 1: { this.tryPublicBookmarks('all'); break; }
-      case 2: { this.tryPublicNotes('all'); break; }
+      case 1: { this.tryAllPublic('all'); break; }
     }
   }
 
