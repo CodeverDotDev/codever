@@ -285,7 +285,8 @@ export class HomepageComponent
     this.router.navigate(['./search'], {
       queryParams: {
         q: '[' + tag + ']',
-        sd: SearchDomain.PUBLIC_BOOKMARKS,
+        sd: SearchDomain.ALL_PUBLIC,
+        type: 'bookmark',
         page: this.FIRST_PAGE,
       },
     });

@@ -136,6 +136,9 @@
           *ngIf="content.invalid && (content.dirty || content.touched)"
           class="alert alert-danger"
         >
+          <div *ngIf="content.errors.required">
+            Content is required
+          </div>
           <div *ngIf="content.errors.tooManyLines">
             Your description has {{ content.errors.tooManyLines.value }} lines.
             Maximum 300 lines are allowed.
@@ -158,6 +161,22 @@
         formControlName="reference"
         placeholder="Optional reference (web url, project, topic etc.)"
       />
+    </div>
+
+    <div *ngIf="!isEditMode" class="form-group mb-3">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="openAddToCollectionDialog()"
+        title="Add to collection"
+      >
+        <i class="fas fa-layer-group"></i> Add to Collection
+        <span
+          *ngIf="selectedCollectionIds.length > 0"
+          class="badge badge-primary ml-1"
+          >{{ selectedCollectionIds.length }}</span
+        >
+      </button>
     </div>
 
     <div class="form-check mb-4 mt-1">

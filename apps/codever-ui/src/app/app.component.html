@@ -29,6 +29,14 @@
         >
           <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
         </a>
+        <a *ngIf="userIsLoggedIn"
+          class="list-group-item list-group-item-action bg-light"
+          title="Manage your collections of bookmarks and notes"
+          [routerLink]="['/my-collections']"
+        >
+          <i class="fas fa-layer-group mr-1"></i> My Collections
+          <span class="badge badge-pill badge-success ml-1" style="font-size: 0.65rem; vertical-align: middle;">NEW</span>
+        </a>
         <a
           class="list-group-item list-group-item-action bg-light"
           title="Latest public notes"

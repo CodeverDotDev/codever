@@ -79,7 +79,7 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public innerWidth: any;
 
-  searchDomain = SearchDomain.PUBLIC_BOOKMARKS.valueOf();
+  searchDomain = SearchDomain.ALL_PUBLIC.valueOf();
   searchDomains = searchDomains;
 
   currentPage: number;
@@ -165,7 +165,7 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
     this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
-        this.searchDomain = SearchDomain.MY_BOOKMARKS;
+        this.searchDomain = SearchDomain.ALL_MINE;
       }
     });
 
@@ -205,13 +205,10 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
     this.watchSearchBoxValueChanges();
     this.setFilteredSearches$(selectedSearchDomain);
     if (
-      (selectedSearchDomain === SearchDomain.MY_BOOKMARKS ||
-        selectedSearchDomain === SearchDomain.ALL_MINE ||
-        selectedSearchDomain === SearchDomain.MY_SNIPPETS ||
-        selectedSearchDomain === SearchDomain.MY_NOTES) &&
+      selectedSearchDomain === SearchDomain.ALL_MINE &&
       !this.userIsLoggedIn
     ) {
-      this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
+      this.searchDomain = SearchDomain.ALL_PUBLIC;
       this.showLoginRequiredDialog(
         'You need to be logged in to search in your personal assets'
       );

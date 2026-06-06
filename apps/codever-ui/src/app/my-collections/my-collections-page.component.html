@@ -1,0 +1,81 @@
+<div class="my-collections-page">
+  <div class="header-wrapper mb-3">
+    <h2><i class="fas fa-layer-group mr-2"></i>My Collections</h2>
+    <button class="btn btn-primary btn-sm" (click)="openCreateDialog()">
+      <i class="fas fa-plus mr-1"></i> New Collection
+    </button>
+  </div>
+
+  <div class="filter-wrapper mb-3">
+    <input
+      type="text"
+      class="form-control form-control-sm pr-4"
+      placeholder="Filter collections by name..."
+      [(ngModel)]="filterText"
+      (ngModelChange)="onFilterChange()"
+    />
+    <button
+      *ngIf="filterText"
+      type="button"
+      class="btn btn-sm filter-clear-btn"
+      title="Clear filter"
+      (click)="filterText = ''; onFilterChange()"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="text-center mt-4">
+    <i class="fas fa-spinner fa-spin fa-2x"></i>
+  </div>
+
+  <div *ngIf="!loading && collections.length === 0" class="alert alert-info mt-3">
+    <span *ngIf="!filterText">
+      You don't have any collections yet. Click <strong>New Collection</strong> to create one!
+    </span>
+    <span *ngIf="filterText">
+      No collections matching "<strong>{{ filterText }}</strong>".
+    </span>
+  </div>
+
+  <div class="collections-list" *ngIf="!loading && collections.length > 0">
+    <div
+      *ngFor="let collection of collections"
+      class="card mb-2 shadow-sm collection-card"
+      [style.border-left]="collection.color ? '4px solid ' + collection.color : ''"
+    >
+      <div class="card-body d-flex justify-content-between align-items-center py-2 px-3">
+        <div class="collection-info cursor-pointer" (click)="openCollection(collection)">
+          <h5 class="mb-0">
+            <i class="fas fa-folder mr-2" [style.color]="collection.color || '#6c757d'"></i>
+            {{ collection.name }}
+          </h5>
+          <small class="text-muted" *ngIf="collection.description">
+            {{ collection.description }}
+          </small>
+          <small class="text-muted d-block">
+            {{ collection.items?.length || 0 }} item(s)
+            <span *ngIf="collection.updatedAt"> · Updated {{ collection.updatedAt | date:'short' }}</span>
+          </small>
+        </div>
+        <div class="collection-actions">
+          <button
+            class="btn btn-light btn-sm mr-1"
+            title="Edit collection"
+            (click)="openEditDialog(collection); $event.stopPropagation()"
+          >
+            <i class="fas fa-edit"></i>
+          </button>
+          <button
+            class="btn btn-light btn-sm text-danger"
+            title="Delete collection"
+            (click)="deleteCollection(collection); $event.stopPropagation()"
+          >
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -91,7 +91,7 @@
           *ngIf="observables.userId && observables.userId === note.userId; else publicTagLink"
           class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
           [routerLink]="['/search']"
-          [queryParams]="{ q: '[' + tag + ']', sd: 'my-notes' }"
+          [queryParams]="{ q: '[' + tag + ']', sd: 'all-mine', type: 'note' }"
           title="Search my notes tagged [{{ tag }}]"
           [innerHtml]="tag | highlight : queryText"
         ></a>
@@ -142,6 +142,14 @@
         >
           <i class="fas fa-share"></i>
           Share
+        </button>
+        <button
+          *ngIf="observables.userId && (note.userId === observables.userId || note.public)"
+          class="btn btn-light btn-sm float-right mr-1"
+          title="Add to collection"
+          (click)="openAddToCollectionDialog(note, observables.userId)"
+        >
+          <i class="fas fa-layer-group"></i> Collect
         </button>
       </div>
     </div>

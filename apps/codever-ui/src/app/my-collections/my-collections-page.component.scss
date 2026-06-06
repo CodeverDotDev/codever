@@ -1,0 +1,37 @@
+.my-collections-page {
+  margin-top: 1rem;
+}
+
+.collection-card:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.collection-info {
+  flex: 1;
+}
+
+.collection-actions {
+  white-space: nowrap;
+}
+
+.filter-wrapper {
+  position: relative;
+  width: 400px;
+  max-width: 100%;
+}
+
+.filter-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  color: #999;
+
+  &:hover {
+    color: #333;
+  }
+}
+

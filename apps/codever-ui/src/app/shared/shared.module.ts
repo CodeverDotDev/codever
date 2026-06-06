@@ -44,6 +44,7 @@ import { NoteSocialShareDialogComponent } from './dialog/note-social-share-dialo
 import { NoteSocialShareDialogContentComponent } from './dialog/note-social-share-dialog/note-social-share-dialog-content/note-social-share-dialog-content.component';
 import { HighLightPipe } from '../common/pipes/highlight.pipe';
 import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
+import { AddToCollectionDialogComponent } from './add-to-collection-dialog/add-to-collection-dialog.component';
 
 /**
  * Add a SharedModule to hold the common components, directives, and pipes and share them with the modules that need them.
@@ -99,6 +100,7 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     NoteContentComponent,
     AsyncNoteListComponent,
     NotebookRendererComponent,
+    AddToCollectionDialogComponent,
   ],
   exports: [
     CommonModule,
@@ -117,6 +119,7 @@ import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
     ExtensionsComponent,
     NoteDetailsComponent,
     AsyncNoteListComponent,
+    AddToCollectionDialogComponent,
   ],
 })
 export class SharedModule {}

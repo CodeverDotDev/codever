@@ -1,0 +1,28 @@
+.collection-detail {
+  margin-top: 1rem;
+}
+
+.filter-wrapper {
+  position: relative;
+  width: 400px;
+  max-width: 100%;
+}
+
+.filter-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  color: #999;
+
+  &:hover {
+    color: #333;
+  }
+}
+
+::ng-deep mark.filter-highlight {
+  background-color: yellow;
+  padding: 0;
+}
