@@ -422,6 +422,25 @@ usersRouter.patch(
 );
 
 /*
+ * Acknowledge a generic notification by key
+ */
+usersRouter.patch(
+  '/:userId/acknowledge-notification/:notificationKey',
+  keycloak.protect(),
+  async (request, response) => {
+    userIdTokenValidator.validateUserId(request);
+    await UserDataService.acknowledgeNotification(
+      request.params.userId,
+      request.params.notificationKey
+    );
+
+    return response
+      .status(HttpStatus.OK)
+      .send({ acknowledgedNotification: request.params.notificationKey });
+  }
+);
+
+/*
  * DELETE user
  */
 usersRouter.delete(

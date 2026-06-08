@@ -80,6 +80,18 @@ let updateUserDataWelcomeAck = async function (userId) {
   return updatedUserData;
 };
 
+let acknowledgeNotification = async function (userId, notificationKey) {
+  const updatedUserData = await User.findOneAndUpdate(
+    { userId: userId },
+    {
+      $addToSet: { acknowledgedNotifications: notificationKey },
+    },
+    { new: true }
+  );
+
+  return updatedUserData;
+};
+
 let updateLocalStorageOption = async function (enableLocalStorage, userId) {
   const updatedUserData = await User.findOneAndUpdate(
     { userId: userId },
@@ -675,6 +687,7 @@ module.exports = {
   updateUserDataFeedToggle: updateUserDataFeedToggle,
   updateLocalStorageOption: updateLocalStorageOption,
   updateUserDataWelcomeAck: updateUserDataWelcomeAck,
+  acknowledgeNotification: acknowledgeNotification,
   createUserData: createUserData,
   getUserData: getUserData,
   deleteUserData: deleteUserData,

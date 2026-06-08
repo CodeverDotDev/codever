@@ -16,6 +16,7 @@ export interface UserData {
   showAllPublicInFeed?: boolean;
   enableLocalStorage?: boolean;
   welcomeAck?: boolean; // acknowledges the welcome dialog
+  acknowledgedNotifications?: string[]; // keys of acknowledged notifications
 }
 
 export interface Profile {

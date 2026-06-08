@@ -11,9 +11,6 @@ import { UserInfoStore } from './core/user/user-info.store';
 import { KeycloakService } from 'keycloak-angular';
 import { LoginRequiredDialogComponent } from './shared/dialog/login-required-dialog/login-required-dialog.component';
 import iziToast, { IziToastSettings } from 'izitoast';
-import { Feedback } from './core/model/feedback';
-import { CookieService } from './core/cookies/cookie.service';
-import { FeedbackService } from './public/feedback/feedback.service';
 import { UserDataStore } from './core/user/userdata.store';
 import { Search, UserData } from './core/model/user-data';
 import { Observable } from 'rxjs';
@@ -39,7 +36,8 @@ export class AppComponent implements OnInit {
   userId: string;
 
   userData$: Observable<UserData>;
-  showAcknowledgeMigrationHeader = false;
+  showWhatsNewNotification = false;
+  readonly whatsNewNotificationKey = 'whats-new-2026-06-snipptes_2_notes-my_collections-simplified_search';
   latestSearches$: Observable<Search[]>;
   latestVisitedBookmarks$: Observable<Bookmark[]>;
   latestPinnedBookmarks$: Observable<Bookmark[]>;
@@ -60,8 +58,6 @@ export class AppComponent implements OnInit {
     private historyDialog: MatDialog,
     private loginDialog: MatDialog,
     private loginDialogHelperService: LoginDialogHelperService,
-    private cookieService: CookieService,
-    private feedbackService: FeedbackService,
     private latestSearchClickNotificationService: LatestSearchClickNotificationService,
     protected router: Router,
     private addToHistoryService: AddToHistoryService,
@@ -73,12 +69,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     if (environment.production === false) {
       this.favIcon.href = 'assets/logo/logo-green.svg';
-    }
-    const acknowledgedCodeverMigration = this.cookieService.readCookie(
-      'acknowledge-codever-migration'
-    );
-    if (acknowledgedCodeverMigration !== 'true') {
-      this.showAcknowledgeMigrationHeader = true;
     }
 
     this.keycloakService.isLoggedIn().then((isLoggedIn) => {
@@ -94,6 +84,15 @@ export class AppComponent implements OnInit {
             this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1);
         });
         this.userData$ = this.userDataStore.getUserData$();
+
+        // Show "What's New" notification if not yet acknowledged by this user
+        this.userData$.subscribe((userData) => {
+          const acknowledged = userData.acknowledgedNotifications || [];
+          if (!acknowledged.includes(this.whatsNewNotificationKey)) {
+            this.showWhatsNewNotification = true;
+          }
+        });
+
         this.latestSearches$ = this.userData$.pipe(
           map((userData) => {
             for (let i = 0; i < 10; i++) {
@@ -197,29 +196,16 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public acknowledgeCodeverRebranding(response: string) {
-    this.cookieService.createCookie(
-      'acknowledge-codever-migration',
-      'true',
-      365
-    );
-    this.showAcknowledgeMigrationHeader = false;
+  public acknowledgeWhatsNew() {
+    this.userDataStore.acknowledgeNotification$(this.whatsNewNotificationKey);
+    this.showWhatsNewNotification = false;
 
     const iziToastSettings: IziToastSettings = {
-      title: 'Thank you for your feedback',
+      title: 'Got it! Stay tuned for more updates.',
       timeout: 3000,
       position: 'topRight',
     };
     iziToast.success(iziToastSettings);
-
-    const feedback: Feedback = {
-      question: 'Bookmarks.dev rebranding to Codever',
-      userResponse: response,
-      userId: this.userId ? this.userId : null,
-      userAgent: navigator.userAgent,
-    };
-
-    this.feedbackService.createFeedback(feedback).subscribe();
   }
 
   acknowledgeWelcomeMessage() {

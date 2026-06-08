@@ -49,6 +49,7 @@ const userSchema = new Schema(
     showAllPublicInFeed: Boolean,
     enableLocalStorage: Boolean,
     welcomeAck: Boolean,
+    acknowledgedNotifications: [String],
     __v: { type: Number, select: false },
   },
   {

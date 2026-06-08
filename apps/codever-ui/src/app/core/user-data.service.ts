@@ -319,4 +319,17 @@ export class UserDataService {
       })
       .pipe(shareReplay(1));
   }
+
+  acknowledgeNotification(
+    userId: string,
+    notificationKey: string
+  ): Observable<any> {
+    return this.httpClient
+      .patch(
+        `${this.usersApiBaseUrl}/${userId}/acknowledge-notification/${notificationKey}`,
+        {},
+        { headers: this.headers }
+      )
+      .pipe(shareReplay(1));
+  }
 }

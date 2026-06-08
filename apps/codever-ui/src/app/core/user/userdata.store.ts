@@ -511,4 +511,20 @@ export class UserDataStore {
 
     return obs;
   }
+
+  acknowledgeNotification$(notificationKey: string): Observable<any> {
+    const obs: Observable<any> = this.userService.acknowledgeNotification(
+      this.userId,
+      notificationKey
+    );
+    obs.subscribe(() => {
+      if (!this.userData.acknowledgedNotifications) {
+        this.userData.acknowledgedNotifications = [];
+      }
+      this.userData.acknowledgedNotifications.push(notificationKey);
+      this._userData.next(this.userData);
+    });
+
+    return obs;
+  }
 }
