@@ -37,6 +37,12 @@ export class NoteDetailsComponent implements OnInit {
   markdownCopied = false;
   private fullscreenEl: HTMLElement | null = null;
 
+  readonly ZOOM_STEP = 10;
+  readonly ZOOM_MIN = 50;
+  readonly ZOOM_MAX = 200;
+  readonly ZOOM_DEFAULT = 100;
+  contentFontSize = this.ZOOM_DEFAULT;
+
   constructor(
     private personalNotesService: PersonalNotesService,
     private userInfoStore: UserInfoStore,
@@ -148,5 +154,23 @@ export class NoteDetailsComponent implements OnInit {
     if (!document.fullscreenElement) {
       this.fullscreenEl = null;
     }
+  }
+
+  zoomIn() {
+    this.contentFontSize = Math.min(
+      this.contentFontSize + this.ZOOM_STEP,
+      this.ZOOM_MAX
+    );
+  }
+
+  zoomOut() {
+    this.contentFontSize = Math.max(
+      this.contentFontSize - this.ZOOM_STEP,
+      this.ZOOM_MIN
+    );
+  }
+
+  resetZoom() {
+    this.contentFontSize = this.ZOOM_DEFAULT;
   }
 }

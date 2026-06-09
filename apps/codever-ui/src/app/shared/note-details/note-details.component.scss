@@ -10,3 +10,32 @@
     background-color: rgba(0, 0, 0, 0.06);
   }
 }
+
+.zoom-bar {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 0.4rem 0;
+}
+
+.title-content-separator {
+  margin-bottom: 0.1rem;
+}
+
+.zoom-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+
+  .zoom-btn {
+    padding: 0.1rem;
+  }
+
+  .zoom-indicator {
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 2.2rem;
+    text-align: center;
+    cursor: default;
+    color: #666;
+  }
+}

@@ -27,6 +27,9 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   @Input()
   isFullScreen = false;
 
+  @Input()
+  contentFontSize = 100;
+
   show = false; // add one more property
   public showMoreText = false;
 

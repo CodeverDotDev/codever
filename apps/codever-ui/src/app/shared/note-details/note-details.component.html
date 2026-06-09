@@ -58,7 +58,7 @@
       </span>
         </h6>
       </div>
-      <div class="cursor-pointer d-flex align-items-center" style="gap: 0.75rem;">
+      <div class="cursor-pointer d-flex align-items-center" style="gap: 0.5rem;">
         <span
           *ngIf="(note$ | async)?.contentType !== 'notebook'"
           class="note-action-btn"
@@ -75,8 +75,19 @@
     </div>
 
     <hr class="title-content-separator"/>
+    <div class="zoom-bar">
+      <span class="zoom-group">
+        <span class="note-action-btn zoom-btn" title="Zoom out" (click)="zoomOut()">
+          <i class="fas fa-search-minus"></i>
+        </span>
+        <span class="zoom-indicator" title="Zoom level">{{ contentFontSize }}%</span>
+        <span class="note-action-btn zoom-btn" title="Zoom in" (click)="zoomIn()">
+          <i class="fas fa-search-plus"></i>
+        </span>
+      </span>
+    </div>
     <div [ngClass]="{'scrollable-div-fullscreen': isFullScreen}">
-      <app-note-content [note]="note" [queryText]="queryText" [partOfList]="partOfList" [isFullScreen]="isFullScreen"></app-note-content>
+      <app-note-content [note]="note" [queryText]="queryText" [partOfList]="partOfList" [isFullScreen]="isFullScreen" [contentFontSize]="contentFontSize"></app-note-content>
     </div>
   </div>
 
