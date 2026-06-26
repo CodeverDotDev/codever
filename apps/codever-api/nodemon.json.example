@@ -8,6 +8,7 @@
     "MONGODB_BOOKMARKS_COLLECTION": "dev-bookmarks",
     "MONGODB_HOST": "localhost",
     "KEYCLOAK_REALM": "bookmarks",
-    "KEYCLOAK_SERVER_URL": "http://localhost:8480/auth"
+    "KEYCLOAK_SERVER_URL": "http://localhost:8480/auth",
+    "DEEPSEEK_API_KEY": "CHANGE_ME_WITH_VALID_DEEPSEEK_API_KEY"
   }
 }

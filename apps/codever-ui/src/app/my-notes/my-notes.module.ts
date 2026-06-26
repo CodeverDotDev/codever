@@ -17,6 +17,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreatePersonalNoteComponent } from './create-note/create-personal-note.component';
 import { UpdatePersonalNoteComponent } from './update-note/update-personal-note.component';
 import { NoteEditorComponent } from './save-note-form/note-editor.component';
+import { NotePreviewDialogComponent } from './save-note-form/note-preview-dialog/note-preview-dialog.component';
+import { AiRefineDialogComponent } from './save-note-form/ai-refine-dialog/ai-refine-dialog.component';
+import { AiRefineResultDialogComponent } from './save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.component';
 import { NoteDetailsComponent } from '../shared/note-details/note-details.component';
 import { PersonalNotesService } from '../core/personal-notes.service';
 import { CloneNoteComponent } from './clone-note/clone-note.component';
@@ -56,6 +59,9 @@ const notesRoutes: Routes = [
     CreatePersonalNoteComponent,
     UpdatePersonalNoteComponent,
     NoteEditorComponent,
+    NotePreviewDialogComponent,
+    AiRefineDialogComponent,
+    AiRefineResultDialogComponent,
     CloneNoteComponent,
     CopyToMineNoteComponent,
   ],

@@ -9,6 +9,7 @@ const apiBasePathRouter = require('./routes');
 const versionRouter = require('./routes/version/version');
 const userRouter = require('./routes/users/user.router');
 const webPageInfoRouter = require('./routes/webpage-info/webpage-info.router');
+const featureToggleRouter = require('./routes/feature-toggle/feature-toggle.router');
 const adminRouter = require('./routes/admin/admin.router');
 const publicBookmarksRouter = require('./routes/public/public-bookmarks.router');
 const feedbackRouter = require('./routes/public/feedback/feedback.router');
@@ -113,6 +114,7 @@ app.use('/api/public/notes', publicNotesRouter);
 app.use('/api/public/search-results', publicSearchRouter);
 app.use('/api/personal/users', userRouter);
 app.use('/api/webpage-info', webPageInfoRouter);
+app.use('/api/feature-toggle', featureToggleRouter);
 app.use('/api/admin', adminRouter);
 
 // catch 404 and forward to error handler

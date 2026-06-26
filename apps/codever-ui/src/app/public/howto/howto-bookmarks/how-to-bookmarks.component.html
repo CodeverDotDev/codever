@@ -1,7 +1,7 @@
 <div id="howto-snippets-content" class="jumbotron">
   <h2>Bookmarks <i class="fa fa-bookmark"></i></h2>
   <p class="lead">
-    <strong>Bookmarks management</strong> tailored for Developers & Co.
+    <strong>Bookmarks & Notes Manager for Developers </strong> — with Markdown and Code Snippets support
   </p>
 
   <mat-tab-group>
@@ -191,14 +191,14 @@
         <div class="mt-4">
           <p class="lead">
             You can search bookmarks by placing your search terms in the Search
-            bar. You can choose to search in <strong>Public Bookmarks</strong>,
-            in <strong>My Bookmarks</strong> or <strong>My Snippets</strong> by
+            bar. You can choose to search in <strong>Personal</strong>,
+            and <strong>Public</strong> resources (Bookmarks or notes) by
             selecting one of the options besides the
             <i class="fa fa-search"></i> in the Search Bar. When logged in, the
             <strong>default</strong> search domain is
-            <strong>My Bookmarks</strong> and when <strong>not</strong> logged
+            <strong>Personal</strong> and when <strong>not</strong> logged
             in, the <strong>default</strong> search domain is
-            <strong>Public Bookmarks</strong>. <br /><br />
+            <strong>Public</strong>. <br /><br />
             Tags must be embedded in
             <strong>square bracktes - e.g. [java]</strong>
           </p>
@@ -219,13 +219,13 @@
           <br />
           <h3>Example</h3>
           <p>
-            Let's say you want to look for personal bookmarks that contain the
+            Let's say you want to look for personal items that contain the
             text
             <strong><em>exception handling</em></strong> and are tagged with
             <strong><em>java</em></strong
             >. Then would put
             <strong><em>exception handling [java]</em></strong> in the search
-            bar, and use the <strong>My Bookmarks</strong> option (which is the
+            bar, and use the <strong>Personal</strong> option (which is the
             <strong>default</strong> when you are logged in) :
           </p>
 
@@ -241,7 +241,7 @@
             query -
             <code
               [innerHTML]="
-                'https://www.codever.dev/search?q={query}&sd=my-bookmarks'
+                'https://www.codever.dev/search?q={query}&sd=all-mine'
               "
             ></code>
           </p>
@@ -305,8 +305,8 @@
             URL:
 
             <a
-              href="https://www.codever.dev/search?q=exception [java]&sd=my-bookmarks"
-              >https://www.codever.dev/search?q=exception [java]&sd=personal</a
+              href="https://www.codever.dev/search?q=exception [java]&sd=all-mine"
+              >https://www.codever.dev/search?q=exception [java]&sd=all-mine</a
             >
             <ul>
               <li><strong>q</strong> - here is your input search text</li>

@@ -120,6 +120,7 @@ import { AddToCollectionDialogComponent } from './add-to-collection-dialog/add-t
     NoteDetailsComponent,
     AsyncNoteListComponent,
     AddToCollectionDialogComponent,
+    NotebookRendererComponent,
   ],
 })
 export class SharedModule {}

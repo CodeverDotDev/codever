@@ -6,6 +6,7 @@ const PersonalNotesService = require('./personal-notes.service');
 const NotesSearchService = require('./notes-search.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
+const AiRefineService = require('../../ai/ai-refine.service');
 
 const common = require('../../../common/config');
 const config = common.config();
@@ -34,6 +35,45 @@ personalNotesRouter.post('/', keycloak.protect(), async (request, response) => {
     )
     .status(HttpStatus.CREATED)
     .send(newNote);
+});
+
+/**
+ * AI-refine note content, tags, and title via DeepSeek API
+ */
+personalNotesRouter.post('/ai-refine', keycloak.protect(), async (request, response) => {
+  UserIdValidator.validateUserId(request);
+  const { title, content, tags, reference } = request.body;
+
+  try {
+    const result = await AiRefineService.refineNoteContent(
+      request.params.userId,
+      { title, content, tags, reference }
+    );
+    response.status(HttpStatus.OK).json(result);
+  } catch (err) {
+    if (err.isUnreachable) {
+      return response.status(HttpStatus.SERVICE_UNAVAILABLE).json({
+        message: err.message,
+        unreachable: true,
+      });
+    }
+    if (err.isAuthError) {
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: err.message,
+        authError: true,
+      });
+    }
+    if (err.isRateLimit) {
+      return response.status(HttpStatus.TOO_MANY_REQUESTS).json({
+        message: err.message,
+        rateLimit: true,
+      });
+    }
+    console.error('AI refine error:', err.message);
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      message: err.message,
+    });
+  }
 });
 
 /**

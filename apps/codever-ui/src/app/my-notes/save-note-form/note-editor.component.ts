@@ -54,7 +54,17 @@ import { DeleteResourceDialogComponent } from '../../shared/dialog/delete-bookma
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
 import { AddToCollectionDialogComponent } from '../../shared/add-to-collection-dialog/add-to-collection-dialog.component';
+import { NotePreviewDialogComponent } from './note-preview-dialog/note-preview-dialog.component';
+import {
+  AiRefineDialogComponent,
+  AiRefineDialogResult,
+} from './ai-refine-dialog/ai-refine-dialog.component';
+import {
+  AiRefineResultDialogComponent,
+  AiRefineAcceptedChanges,
+} from './ai-refine-result-dialog/ai-refine-result-dialog.component';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
+import { FeatureToggleService } from '../../core/feature-toggle.service';
 
 @Component({
   selector: 'app-note-editor',
@@ -95,6 +105,11 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   /** When true, after saving the dialog to add to collection is opened */
   selectedCollectionIds: string[] = [];
+
+  /** Whether the AI note refine feature is enabled for the current user */
+  isAiNoteRefineEnabled$: Observable<boolean>;
+  /** Whether an AI refine request is in progress (shows loader on button) */
+  isRefining = false;
 
   @Input()
   title; // value of "title" query parameter if present
@@ -170,6 +185,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     private deleteDialog: MatDialog,
     private deleteNotificationService: DeleteNotificationService,
     private personalCollectionsService: PersonalCollectionsService,
+    private featureToggleService: FeatureToggleService,
     private cd: ChangeDetectorRef
   ) {
     combineLatest([
@@ -198,6 +214,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
+    this.isAiNoteRefineEnabled$ = this.featureToggleService.isAiNoteRefineEnabled();
+
     if (!this.isEditMode && !this.cloneNote && !this.copyToMine) {
       this.buildForm();
     }
@@ -349,6 +367,145 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  /**
+   * Open a dialog showing the rendered markdown preview of the note content.
+   */
+  openPreview(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '95vw';
+    dialogConfig.maxHeight = '90vh';
+    dialogConfig.data = {
+      title: this.noteForm.get('title').value || 'Untitled',
+      content: this.noteForm.get('content').value || '',
+      contentType: this.isNotebookMode ? 'notebook' : 'markdown',
+      notebookContent: this.isNotebookMode ? this.notebookRawJson : undefined,
+    };
+
+    this.deleteDialog.open(NotePreviewDialogComponent, dialogConfig);
+  }
+
+  /**
+   * Open a dialog where the user can review and customize the AI system prompt,
+   * then trigger the AI refine. On success, patches the form with the result.
+   */
+  refineWithAi(): void {
+    if (this.isNotebookMode) {
+      return;
+    }
+
+    const DEFAULT_INSTRUCTIONS = `You are a helpful assistant that refines markdown notes.
+Given a note's title, content, tags, and optional reference URL, you should:
+1. Polish the content for grammar, clarity, and structure while preserving the original meaning and markdown formatting.
+2. Suggest relevant tags (lowercase, hyphenated for multi-word, max 8 tags).
+3. Suggest a better title if the current one could be improved.`;
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '700px';
+    dialogConfig.maxHeight = '90vh';
+    dialogConfig.disableClose = true;
+    dialogConfig.data = {
+      userId: this.userId,
+      title: this.noteForm.get('title').value || '',
+      content: this.noteForm.get('content').value || '',
+      tags: this.noteForm.get('tags').value || [],
+      reference: this.noteForm.get('reference').value || '',
+      defaultPrompt: DEFAULT_INSTRUCTIONS,
+    };
+
+    const dialogRef = this.deleteDialog.open(
+      AiRefineDialogComponent,
+      dialogConfig
+    );
+
+    dialogRef.afterClosed().subscribe((result: AiRefineDialogResult | undefined) => {
+      if (!result) {
+        return; // user cancelled
+      }
+
+      this.isRefining = true;
+      this.cd.markForCheck();
+
+      // Open the result comparison dialog
+      this.openRefineResultDialog({
+        originalTitle: this.noteForm.get('title').value || '',
+        originalContent: this.noteForm.get('content').value || '',
+        originalTags: this.noteForm.get('tags').value || [],
+        refinedTitle: result.suggestedTitle,
+        refinedContent: result.refinedContent,
+        suggestedTags: result.suggestedTags,
+      });
+
+      this.isRefining = false;
+      this.cd.markForCheck();
+    });
+  }
+
+  /**
+   * Open a dialog showing the before/after comparison of AI-refined content,
+   * letting the user choose which changes to apply.
+   */
+  private openRefineResultDialog(data: {
+    originalTitle: string;
+    originalContent: string;
+    originalTags: string[];
+    refinedTitle: string;
+    refinedContent: string;
+    suggestedTags: string[];
+  }): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '95vw';
+    dialogConfig.maxHeight = '95vh';
+    dialogConfig.disableClose = true;
+    dialogConfig.data = data;
+
+    const dialogRef = this.deleteDialog.open(
+      AiRefineResultDialogComponent,
+      dialogConfig
+    );
+
+    dialogRef
+      .afterClosed()
+      .subscribe((accepted: AiRefineAcceptedChanges | null) => {
+        if (!accepted) {
+          return; // user discarded all
+        }
+
+        // Apply only the accepted changes
+        if (accepted.content) {
+          this.noteForm
+            .get('content')
+            .patchValue(accepted.content, { emitEvent: false });
+          this.noteForm.get('content').markAsDirty();
+        }
+
+        if (
+          accepted.title &&
+          accepted.title !== this.noteForm.get('title').value
+        ) {
+          this.noteForm
+            .get('title')
+            .patchValue(accepted.title, { emitEvent: false });
+          this.noteForm.get('title').markAsDirty();
+        }
+
+        if (accepted.tags && accepted.tags.length > 0) {
+          const formTags = this.noteForm.get('tags') as UntypedFormArray;
+          const existingTags = formTags.value.map((t: string) =>
+            t.toLowerCase()
+          );
+          accepted.tags.forEach((tag) => {
+            const normalized = tag.toLowerCase().trim();
+            if (!existingTags.includes(normalized) && formTags.length < 8) {
+              formTags.push(this.formBuilder.control(normalized));
+            }
+          });
+          this.tags.markAsDirty();
+        }
+
+        this.cd.markForCheck();
+      });
+  }
+
   /** After resource is saved, add it to each selected collection */
   private addToSelectedCollections(resourceId: string): void {
     if (this.selectedCollectionIds.length === 0) {
@@ -490,6 +647,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         this.notebookRawJson = json;
         this.notebookFileName = file.name;
         this.isNotebookMode = true;
+        this.cd.markForCheck();
 
         // Extract readable text from markdown + code cells for full-text search
         const searchableText = this.extractSearchableText(nb);
@@ -518,6 +676,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     this.notebookFileName = '';
     this.notebookRawJson = '';
     this.noteForm.patchValue({ content: '' });
+    this.cd.markForCheck();
 
     // Restore the default content size validator for markdown notes
     this.noteForm

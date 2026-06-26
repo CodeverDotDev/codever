@@ -37,6 +37,8 @@ import { PersonalSearchService } from './personal-search.service';
 import { PublicSearchService } from './public-search.service';
 import { PersonalNotesService } from './personal-notes.service';
 import { PersonalCollectionsService } from './personal-collections.service';
+import { FeatureToggleService } from './feature-toggle.service';
+import { AiRefineService } from './ai-refine.service';
 import { DeleteNotificationService } from './notifications/delete-notification.service';
 import { LatestSearchClickNotificationService } from './latest-search-click.notification.service';
 
@@ -57,6 +59,8 @@ import { LatestSearchClickNotificationService } from './latest-search-click.noti
     PersonalBookmarksService,
     PersonalNotesService,
     PersonalCollectionsService,
+    FeatureToggleService,
+    AiRefineService,
     PersonalSearchService,
     PublicSearchService,
     AdminService,
