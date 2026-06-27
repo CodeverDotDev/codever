@@ -1,0 +1,25 @@
+<nav *ngIf="headings.length" class="toc-nav" aria-label="Table of contents">
+  <div class="toc-title">On this page</div>
+  <ul class="toc-list">
+    <li
+      *ngFor="let heading of headings"
+      class="toc-item"
+      [ngClass]="{
+        'toc-active': heading.id === activeHeadingId,
+        'toc-h1': heading.level === 1,
+        'toc-h2': heading.level === 2,
+        'toc-h3': heading.level === 3,
+        'toc-h4': heading.level === 4
+      }"
+    >
+      <a
+        class="toc-link"
+        [href]="'#' + heading.id"
+        (click)="$event.preventDefault(); scrollToHeading(heading.id)"
+        [title]="heading.text"
+      >
+        {{ heading.text }}
+      </a>
+    </li>
+  </ul>
+</nav>

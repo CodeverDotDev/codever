@@ -1,4 +1,11 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { Note } from '../../core/model/note';
 import { Observable, of } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
@@ -11,13 +18,14 @@ import { NoteSocialShareDialogComponent } from '../dialog/note-social-share-dial
 import { KeycloakService } from 'keycloak-angular';
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
+import { TocHeading } from './note-toc/note-toc.component';
 
 @Component({
   selector: 'app-note-details',
   templateUrl: './note-details.component.html',
   styleUrls: ['./note-details.component.scss'],
 })
-export class NoteDetailsComponent implements OnInit {
+export class NoteDetailsComponent implements OnInit, AfterViewInit {
   @Input()
   note$: Observable<Note>;
 
@@ -43,13 +51,16 @@ export class NoteDetailsComponent implements OnInit {
   readonly ZOOM_DEFAULT = 100;
   contentFontSize = this.ZOOM_DEFAULT;
 
+  tocHeadings: TocHeading[] = [];
+
   constructor(
     private personalNotesService: PersonalNotesService,
     private userInfoStore: UserInfoStore,
     private route: ActivatedRoute,
     private router: Router,
     private noteShareDialog: MatDialog,
-    private keycloakService: KeycloakService
+    private keycloakService: KeycloakService,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +83,50 @@ export class NoteDetailsComponent implements OnInit {
         }
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Headings are rendered via [innerHtml] after the async note$ emits.
+    // Defer extraction to let Angular's rendering settle.
+    setTimeout(() => this.extractHeadings(), 150);
+  }
+
+  /** Scan the rendered markdown content for h1–h4, assign IDs, and build the TOC. */
+  extractHeadings(): void {
+    const host: HTMLElement = this.elementRef.nativeElement;
+    const headingElements = host.querySelectorAll('h1, h2, h3, h4');
+
+    const headings: TocHeading[] = [];
+    const usedIds = new Set<string>();
+
+    headingElements.forEach((el: Element) => {
+      const htmlEl = el as HTMLElement;
+      const level = parseInt(htmlEl.tagName.charAt(1), 10);
+      const rawText = htmlEl.textContent?.trim() || '';
+
+      // Generate a stable ID from the text
+      let baseId = rawText
+        .toLowerCase()
+        .replace(/[^a-z0-9\u4e00-\u9fff]+/g, '-')
+        .replace(/^-|-$/g, '');
+      if (!baseId) {
+        baseId = `heading-${headings.length}`;
+      }
+
+      // Ensure uniqueness
+      let id = baseId;
+      let suffix = 0;
+      while (usedIds.has(id)) {
+        suffix++;
+        id = `${baseId}-${suffix}`;
+      }
+      usedIds.add(id);
+
+      htmlEl.id = id;
+      headings.push({ id, text: rawText, level });
+    });
+
+    this.tocHeadings = headings;
   }
 
   editNote(note: Note) {

@@ -34,6 +34,7 @@ import { ExtensionsComponent } from './extensions/extensions.component';
 import { AsyncSearchResultListComponent } from './async-search-result-list/async-search-result-list.component';
 import { PageNavigationBarComponent } from './page-navigation-bar/page-navigation-bar.component';
 import { NoteDetailsComponent } from './note-details/note-details.component';
+import { NoteTocComponent } from './note-details/note-toc/note-toc.component';
 import { NoteContentComponent } from './note-details/note-card-body/note-content.component';
 import { AsyncNoteListComponent } from './async-note-list/async-note-list.component';
 import { NotebookRendererComponent } from './notebook-renderer/notebook-renderer.component';
@@ -97,6 +98,7 @@ import { AddToCollectionDialogComponent } from './add-to-collection-dialog/add-t
     AddTagFilterToSearchDialogComponent,
     ExtensionsComponent,
     NoteDetailsComponent,
+    NoteTocComponent,
     NoteContentComponent,
     AsyncNoteListComponent,
     NotebookRendererComponent,

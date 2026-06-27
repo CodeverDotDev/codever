@@ -1,6 +1,8 @@
-<div *ngIf="note$ | async as note" class="card" #noteEntry >
-  <div class="card-body show-hide note-container"
-       [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
+<div *ngIf="note$ | async as note" class="note-details-wrapper">
+  <div class="note-details-main">
+    <div class="card" #noteEntry>
+      <div class="card-body show-hide note-container"
+           [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
     <div class="header-wrapper">
       <div class="title-and-subtitle">
         <h5 class="card-title">
@@ -166,4 +168,9 @@
     </div>
     </div>
   </ng-container>
+    </div>
+  </div>
+  <aside class="note-details-toc" *ngIf="!partOfList">
+    <app-note-toc [headings]="tocHeadings"></app-note-toc>
+  </aside>
 </div>

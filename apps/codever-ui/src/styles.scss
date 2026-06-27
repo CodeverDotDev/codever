@@ -329,7 +329,11 @@ label {
 
 // START side-navigation
 #wrapper {
-  overflow-x: hidden;
+  // Use `clip` instead of `hidden`: it still clips the off-screen sidebar
+  // horizontally, but (unlike `hidden`) it does NOT establish a scroll
+  // container, so `position: sticky` descendants (e.g. the note details TOC)
+  // keep working relative to the viewport.
+  overflow-x: clip;
 }
 
 #sidebar-wrapper {
