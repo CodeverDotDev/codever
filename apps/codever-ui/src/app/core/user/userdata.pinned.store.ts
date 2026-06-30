@@ -30,10 +30,14 @@ export class UserDataPinnedStore {
     });
   }
 
-  getPinnedBookmarks$(userId: string, page: number): Observable<Bookmark[]> {
+  getPinnedBookmarks$(
+    userId: string,
+    page: number,
+    limit: number = environment.PAGINATION_PAGE_SIZE
+  ): Observable<Bookmark[]> {
     if (this.loadedPage !== page || !this.pinnedBookmarksHaveBeenLoaded) {
       this.userService
-        .getPinnedBookmarks(userId, page, environment.PAGINATION_PAGE_SIZE)
+        .getPinnedBookmarks(userId, page, limit)
         .subscribe((data) => {
           if (!this.pinnedBookmarksHaveBeenLoaded) {
             this.pinnedBookmarksHaveBeenLoaded = true;
@@ -45,6 +49,18 @@ export class UserDataPinnedStore {
     }
     return this._pinned.asObservable();
   }
+
+  /**
+   * Persists a new ordering for the currently shown pinned bookmarks.
+   * Only the displayed bookmarks are reordered; any remaining pinned ids
+   * (not shown in the quick-access panel) are appended afterwards.
+   */
+  reorderPinnedBookmarks(reorderedBookmarks: Bookmark[]) {
+    this._pinned.next(reorderedBookmarks);
+    const reorderedIds = reorderedBookmarks.map((bookmark) => bookmark._id);
+    this.userDataStore.reorderUserDataPinned$(reorderedIds).subscribe();
+  }
+
 
   addToPinnedBookmarks(bookmark: Bookmark) {
     this.userDataStore.addToUserDataPinned$(bookmark).subscribe(() => {

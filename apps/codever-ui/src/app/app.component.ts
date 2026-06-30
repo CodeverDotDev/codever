@@ -1,10 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 
 import { UserDataHistoryStore } from './core/user/userdata.history.store';
-import {
-  MatDialog,
-  MatDialogConfig,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HotKeysDialogComponent } from './shared/dialog/history-dialog/hot-keys-dialog.component';
 import { UserDataPinnedStore } from './core/user/userdata.pinned.store';
 import { UserInfoStore } from './core/user/user-info.store';
@@ -12,16 +9,13 @@ import { KeycloakService } from 'keycloak-angular';
 import { LoginRequiredDialogComponent } from './shared/dialog/login-required-dialog/login-required-dialog.component';
 import iziToast, { IziToastSettings } from 'izitoast';
 import { UserDataStore } from './core/user/userdata.store';
-import { Search, UserData } from './core/model/user-data';
+import { UserData } from './core/model/user-data';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Bookmark } from './core/model/bookmark';
 import { Router } from '@angular/router';
-import { AddToHistoryService } from './core/user/add-to-history.service';
 import { environment } from '../environments/environment';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { LoginDialogHelperService } from './core/login-dialog-helper.service';
-import { LatestSearchClickNotificationService } from './core/latest-search-click.notification.service';
 
 @Component({
   selector: 'app-root',
@@ -37,12 +31,12 @@ export class AppComponent implements OnInit {
 
   userData$: Observable<UserData>;
   showWhatsNewNotification = false;
-  readonly whatsNewNotificationKey = 'whats-new-2026-06-snipptes_2_notes-my_collections-simplified_search';
-  latestSearches$: Observable<Search[]>;
+  readonly whatsNewNotificationKey =
+    'whats-new-2026-06-snipptes_2_notes-my_collections-simplified_search';
   latestVisitedBookmarks$: Observable<Bookmark[]>;
   latestPinnedBookmarks$: Observable<Bookmark[]>;
 
-  private hoveringLastSearches: boolean[] = [];
+  private readonly pinnedQuickAccessLimit = 15;
 
   favIcon: HTMLLinkElement = document.querySelector('#favicon');
   readonly environment = environment;
@@ -58,9 +52,7 @@ export class AppComponent implements OnInit {
     private historyDialog: MatDialog,
     private loginDialog: MatDialog,
     private loginDialogHelperService: LoginDialogHelperService,
-    private latestSearchClickNotificationService: LatestSearchClickNotificationService,
     protected router: Router,
-    private addToHistoryService: AddToHistoryService,
     private readonly scrollStrategyOptions: ScrollStrategyOptions
   ) {
     this.innerWidth = 100;
@@ -81,7 +73,11 @@ export class AppComponent implements OnInit {
             1
           );
           this.latestPinnedBookmarks$ =
-            this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1);
+            this.userDataPinnedStore.getPinnedBookmarks$(
+              this.userId,
+              1,
+              this.pinnedQuickAccessLimit
+            );
         });
         this.userData$ = this.userDataStore.getUserData$();
 
@@ -92,15 +88,6 @@ export class AppComponent implements OnInit {
             this.showWhatsNewNotification = true;
           }
         });
-
-        this.latestSearches$ = this.userData$.pipe(
-          map((userData) => {
-            for (let i = 0; i < 10; i++) {
-              this.hoveringLastSearches.push(false);
-            }
-            return userData.searches.slice(0, 10);
-          })
-        );
       }
     });
     this.scrollStrategy = this.scrollStrategyOptions.noop();
@@ -210,16 +197,6 @@ export class AppComponent implements OnInit {
 
   acknowledgeWelcomeMessage() {
     this.userDataStore.updateWelcomeAcknowledge$();
-  }
-
-  resetHoveringLastSearches() {
-    this.hoveringLastSearches.forEach((item) => (item = false));
-  }
-
-  displaySearchBarSearches() {
-    this.latestSearchClickNotificationService.sendMessage(
-      'click on latest searches'
-    );
   }
 
   launchDialogFromQuickAccess(source: string) {

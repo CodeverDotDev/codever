@@ -16,37 +16,82 @@
   >
     <i class="fas fa-thumbtack mr-1"></i> Pinned bookmarks (<b>Ctrl</b>+<b>p</b>)
   </a>
-  <ng-container
-    *ngFor="let bookmark of quickAccessBookmarks; let i = index"
-    class="mt-1"
-  >
-    <span class="mt-1 mr-2 on-top">
-      <a
-        class="badge badge-secondary mb-1 ml-2"
-        [class.my-bookmarks-last-search]="bookmark.public === false"
-        [class.public-bookmarks-last-search]="bookmark.public === true"
-        (click)="navigateToBookmarkDetails(bookmark)"
-        (auxclick)="goToMainLink(bookmark)"
-        target="_blank"
-        matTooltip="{{bookmark.name}} - {{bookmark.location}}"
-        [matTooltipPosition]="'right'"
+  <ng-container *ngIf="source === 'pinned'; else nonReorderableList">
+    <div
+      cdkDropList
+      class="pinned-drop-list"
+      (cdkDropListDropped)="dropPinnedBookmark($event)"
+    >
+      <span
+        *ngFor="let bookmark of quickAccessBookmarks; let i = index"
+        class="mt-1 mr-2 on-top pinned-drag-item"
+        cdkDrag
       >
-        <i class="fa fa-xs fa-bookmark mr-1"></i>
-        <span
-        >{{
-          bookmark.name.length > 30
-            ? bookmark.name.substring(0, 30) + '...'
-            : bookmark.name
+        <i
+          class="fas fa-grip-vertical drag-handle"
+          cdkDragHandle
+          title="Drag to reorder"
+        ></i>
+        <a
+          class="badge badge-secondary mb-1 ml-2"
+          [class.my-bookmarks-last-search]="bookmark.public === false"
+          [class.public-bookmarks-last-search]="bookmark.public === true"
+          (click)="navigateToBookmarkDetails(bookmark)"
+          (auxclick)="goToMainLink(bookmark)"
+          target="_blank"
+          matTooltip="{{ bookmark.name }} - {{ bookmark.location }}"
+          [matTooltipPosition]="'right'"
+        >
+          <i class="fa fa-xs fa-bookmark mr-1"></i>
+          <span>{{
+            bookmark.name.length > 30
+              ? bookmark.name.substring(0, 30) + '...'
+              : bookmark.name
           }}</span>
 
-        <span class="jump-to-main-link-icon"
-              (click)="goToMainLink(bookmark)"
-              title="Jump to main link"
-        >
-          <i class="fas fa-external-link-alt"></i
+          <span
+            class="jump-to-main-link-icon"
+            (click)="goToMainLink(bookmark)"
+            title="Jump to main link"
           >
-        </span>
-      </a>
-    </span>
+            <i class="fas fa-external-link-alt"></i>
+          </span>
+        </a>
+      </span>
+    </div>
   </ng-container>
+  <ng-template #nonReorderableList>
+    <ng-container
+      *ngFor="let bookmark of quickAccessBookmarks; let i = index"
+      class="mt-1"
+    >
+      <span class="mt-1 mr-2 on-top">
+        <a
+          class="badge badge-secondary mb-1 ml-2"
+          [class.my-bookmarks-last-search]="bookmark.public === false"
+          [class.public-bookmarks-last-search]="bookmark.public === true"
+          (click)="navigateToBookmarkDetails(bookmark)"
+          (auxclick)="goToMainLink(bookmark)"
+          target="_blank"
+          matTooltip="{{ bookmark.name }} - {{ bookmark.location }}"
+          [matTooltipPosition]="'right'"
+        >
+          <i class="fa fa-xs fa-bookmark mr-1"></i>
+          <span>{{
+            bookmark.name.length > 30
+              ? bookmark.name.substring(0, 30) + '...'
+              : bookmark.name
+          }}</span>
+
+          <span
+            class="jump-to-main-link-icon"
+            (click)="goToMainLink(bookmark)"
+            title="Jump to main link"
+          >
+            <i class="fas fa-external-link-alt"></i>
+          </span>
+        </a>
+      </span>
+    </ng-container>
+  </ng-template>
 </div>

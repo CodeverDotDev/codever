@@ -18,6 +18,7 @@ import { PageNotFoundComponent } from './not-found.component';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { LoaderInterceptorService } from './core/loader/loader-interceptor.service';
@@ -99,6 +100,7 @@ function initializeKeycloak(
     PublicResourcesModule,
     SocialButtonsModule,
     OverlayModule,
+    DragDropModule,
     // routing module
     AppRoutingModule,
     HighlightModule,

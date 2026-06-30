@@ -273,6 +273,27 @@ export class UserDataStore {
     return obs;
   }
 
+  /**
+   * Reorders the pinned bookmarks. The provided ids represent the new order
+   * of the bookmarks shown in the quick-access panel; any remaining pinned
+   * ids (not currently shown) are appended afterwards, preserving them.
+   */
+  reorderUserDataPinned$(shownPinnedIds: string[]): Observable<UserData> {
+    const remainingIds = this.userData.pinned.filter(
+      (id) => !shownPinnedIds.includes(id)
+    );
+    this.userData.pinned = [...shownPinnedIds, ...remainingIds];
+    const obs: Observable<any> = this.userService.updateUserDataPinned(
+      this.userId,
+      this.userData.pinned
+    );
+    obs.subscribe(() => {
+      this._userData.next(this.userData);
+    });
+
+    return obs;
+  }
+
   removeFromUserDataPinned$(bookmark: Bookmark): Observable<UserData> {
     this.userData.pinned = this.userData.pinned.filter(
       (x) => x !== bookmark._id
