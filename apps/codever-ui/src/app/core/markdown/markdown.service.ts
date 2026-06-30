@@ -12,8 +12,14 @@ const KATEX_SANITIZE_CONFIG = {
     'msup', 'msub', 'mfrac', 'msqrt', 'mroot', 'mover', 'munder',
     'munderover', 'mtable', 'mtr', 'mtd', 'mtext', 'mspace', 'mpadded',
     'menclose', 'mglyph', 'mmultiscripts', 'mprescripts', 'none',
+    // Keep interactive task-list checkboxes through sanitization
+    'input',
   ],
-  ADD_ATTR: ['encoding', 'xmlns', 'mathvariant', 'displaystyle', 'scriptlevel'],
+  ADD_ATTR: [
+    'encoding', 'xmlns', 'mathvariant', 'displaystyle', 'scriptlevel',
+    // Attributes needed for task-list checkboxes
+    'type', 'checked',
+  ],
 };
 
 @Injectable()

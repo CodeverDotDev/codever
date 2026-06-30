@@ -89,7 +89,7 @@
       </span>
     </div>
     <div [ngClass]="{'scrollable-div-fullscreen': isFullScreen}">
-      <app-note-content [note]="note" [queryText]="queryText" [partOfList]="partOfList" [isFullScreen]="isFullScreen" [contentFontSize]="contentFontSize"></app-note-content>
+      <app-note-content [note]="note" [queryText]="queryText" [partOfList]="partOfList" [isFullScreen]="isFullScreen" [contentFontSize]="contentFontSize" [editable]="(userId$ | async) === note.userId"></app-note-content>
     </div>
   </div>
 
