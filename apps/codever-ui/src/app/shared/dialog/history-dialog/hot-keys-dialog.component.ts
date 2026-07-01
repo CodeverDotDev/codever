@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { Bookmark } from '../../../core/model/bookmark';
+import { UserDataResource } from '../../../core/model/user-data-resource.type';
 import { AddToHistoryService } from '../../../core/user/add-to-history.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { AddToHistoryService } from '../../../core/user/add-to-history.service';
   styleUrls: ['./hot-keys-dialog.component.scss'],
 })
 export class HotKeysDialogComponent {
-  bookmarks$: Observable<Bookmark[]>;
+  userDataResources$: Observable<UserDataResource[]>;
   title: string;
   filterText: '';
 
@@ -19,7 +19,17 @@ export class HotKeysDialogComponent {
     public addToHistoryService: AddToHistoryService,
     @Inject(MAT_DIALOG_DATA) data
   ) {
-    this.bookmarks$ = data.bookmarks$;
+    this.userDataResources$ = data.bookmarks$;
     this.title = data.title;
+  }
+
+  isNote(resource: UserDataResource): boolean {
+    return resource.type === 'note';
+  }
+
+  noteDetailsLink(resource: UserDataResource): string {
+    return resource.public
+      ? `/notes/${resource._id}/details`
+      : `/my-notes/${resource._id}/details`;
   }
 }

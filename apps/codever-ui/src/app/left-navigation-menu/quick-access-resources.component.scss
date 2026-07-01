@@ -11,7 +11,7 @@
 #sidebar-wrapper {
   margin-top: 100px;
   //min-height: 100vh;
-  margin-left: -15rem;
+  margin-left: -17rem;
   -webkit-transition: margin 0.25s ease-out;
   -moz-transition: margin 0.25s ease-out;
   -o-transition: margin 0.25s ease-out;
@@ -24,7 +24,7 @@
 }
 
 #sidebar-wrapper .list-group {
-  width: 16.5rem;
+  width: 18.5rem;
 }
 
 #page-content-wrapper {
@@ -51,7 +51,7 @@
   }
 
   #wrapper.toggled #sidebar-wrapper {
-    margin-left: -15rem;
+    margin-left: -17rem;
   }
 }
 
@@ -90,8 +90,77 @@
   color: #495057;
 }
 
+.public-notes-last-search {
+  @extend .last-search-border;
+  background: #c8e6c9;
+  color: #1b5e20;
+}
+
 .on-top {
   position: relative;
   z-index: 900;
 }
 // END side-navigation
+
+// START pinned drag & drop
+// Styles for the reorderable pinned bookmarks list in the left sidebar.
+// Each entry is a flex row (drag handle + bookmark badge) capped at the menu
+// width; long bookmark names are truncated with an ellipsis so a single entry
+// never overflows the sidebar. The .cdk-* rules style the Angular CDK
+// drag preview/placeholder and the reorder animation.
+.pinned-drop-list {
+  display: block;
+}
+
+.pinned-drag-item {
+  display: flex;
+  align-items: center;
+  max-width: 18rem;
+
+  .badge {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+
+    > span:first-of-type {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+.drag-handle {
+  cursor: grab;
+  color: #adb5bd;
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+  flex: 0 0 auto;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 0.25rem;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.4;
+}
+
+.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.pinned-drop-list.cdk-drop-list-dragging
+  .pinned-drag-item:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+// END pinned drag & drop
+

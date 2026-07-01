@@ -551,7 +551,9 @@ Given a note's title, content, tags, and optional reference URL, you should:
         const lastSlashIndex = headers.get('location').lastIndexOf('/');
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
+        note.type = 'note';
         this.addToSelectedCollections(newNoteId);
+        this.userDataStore.updateUserDataHistory$(note).subscribe();
         this.navigateToNoteDetails(note, {});
       });
   }
@@ -569,10 +571,12 @@ Given a note's title, content, tags, and optional reference URL, you should:
     note.updatedAt = now;
     note.userId = this.note.userId;
     note._id = this.note._id;
+    note.type = 'note';
     this.personalNotesService
       .updateNote(note)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.userDataStore.updateUserDataHistory$(note).subscribe();
         this.navigateToNoteDetails(note, {});
       });
   }
@@ -752,3 +756,4 @@ Given a note's title, content, tags, and optional reference URL, you should:
       );
   }
 }
+

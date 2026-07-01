@@ -1,41 +1,41 @@
-import { BookmarksFilterPipe } from './bookmarks-filter.pipe';
+import { ResourceFilterPipe } from './resource-filter.pipe';
 import { Bookmark } from '../../core/model/bookmark';
 
-describe('BookmarkFilter Pipe', () => {
-  let bookmarksFilterPipe: BookmarksFilterPipe;
+describe('ResourceFilter Pipe', () => {
+  let resourceFilterPipe: ResourceFilterPipe;
   let bookmarks: Bookmark[];
 
   beforeEach(() => {
-    bookmarksFilterPipe = new BookmarksFilterPipe();
+    resourceFilterPipe = new ResourceFilterPipe();
     bookmarks = [];
     initTestBookmarks();
   });
 
   it('should be defined', () => {
-    expect(bookmarksFilterPipe).toBeDefined();
+    expect(resourceFilterPipe).toBeDefined();
   });
 
   it('should return empty list for empty bookmarks list', () => {
-    expect(bookmarksFilterPipe.transform([], 'graphql').length).toBe(0);
+    expect(resourceFilterPipe.transform([], 'graphql').length).toBe(0);
   });
 
   it('should return complete list for empty filter text', () => {
-    expect(bookmarksFilterPipe.transform(bookmarks, '').length).toBe(2);
+    expect(resourceFilterPipe.transform(bookmarks, '').length).toBe(2);
   });
 
   it('should find both bookmarks ', () => {
     expect(
-      bookmarksFilterPipe.transform(bookmarks, 'node.js').length
+      resourceFilterPipe.transform(bookmarks, 'node.js').length
     ).toBeGreaterThan(1);
   });
 
   it('should find only one ', () => {
-    expect(bookmarksFilterPipe.transform(bookmarks, 'graphql').length).toBe(1);
+    expect(resourceFilterPipe.transform(bookmarks, 'graphql').length).toBe(1);
   });
 
   it('should find only one with two strings in input filterText', () => {
     expect(
-      bookmarksFilterPipe.transform(bookmarks, 'async-await node.js').length
+      resourceFilterPipe.transform(bookmarks, 'async-await node.js').length
     ).toBe(1);
   });
 

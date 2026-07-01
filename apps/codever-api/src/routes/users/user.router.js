@@ -193,13 +193,13 @@ usersRouter.get(
     userIdTokenValidator.validateUserId(request);
     const { page, limit } =
       PaginationQueryParamsHelper.getPageAndLimit(request);
-    const pinnedBookmarks = await UserDataService.getPinnedBookmarks(
+    const pinnedResources = await UserDataService.getPinnedResources(
       request.params.userId,
       page,
       limit
     );
 
-    response.send(pinnedBookmarks);
+    response.send(pinnedResources);
   }
 );
 

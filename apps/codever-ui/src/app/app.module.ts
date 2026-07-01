@@ -18,6 +18,7 @@ import { PageNotFoundComponent } from './not-found.component';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { LoaderInterceptorService } from './core/loader/loader-interceptor.service';
@@ -38,7 +39,7 @@ import {
 import { NoteNotFoundComponent } from './not-found/note-not-found.component';
 import { SystemService } from './core/cache/system.service';
 import { NewEntryComponent } from './new-entry/new-entry.component';
-import { QuickAccessBookmarksComponent } from './left-navigation-menu/quick-access-bookmarks.component';
+import { QuickAccessResourcesComponent } from './left-navigation-menu/quick-access-resources.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 function initializeKeycloak(
@@ -99,6 +100,7 @@ function initializeKeycloak(
     PublicResourcesModule,
     SocialButtonsModule,
     OverlayModule,
+    DragDropModule,
     // routing module
     AppRoutingModule,
     HighlightModule,
@@ -135,7 +137,7 @@ function initializeKeycloak(
   ],
   declarations: [
     AppComponent,
-    QuickAccessBookmarksComponent,
+    QuickAccessResourcesComponent,
     PageNotFoundComponent,
     NoteNotFoundComponent,
     LoaderComponent,

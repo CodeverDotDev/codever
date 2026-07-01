@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
+import { UserDataResource } from '../../core/model/user-data-resource.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
 import { allTags } from '../../core/model/all-tags.const.en';
@@ -38,8 +39,8 @@ export class HomepageComponent
   userData$: Observable<UserData>;
   private userData: UserData;
 
-  history$: Observable<Bookmark[]>;
-  pinned$: Observable<Bookmark[]>;
+  history$: Observable<UserDataResource[]>;
+  pinned$: Observable<UserDataResource[]>;
   readLater$: Observable<Bookmark[]>;
 
   userIsLoggedIn = false;
@@ -191,7 +192,7 @@ export class HomepageComponent
             this.selectedTabIndex === TabIndex.Pinned
           ) {
             this.currentPagePinned = paginationAction.page;
-            this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(
+            this.pinned$ = this.userDataPinnedStore.getPinnedResources$(
               this.userId,
               paginationAction.page
             );
@@ -224,7 +225,7 @@ export class HomepageComponent
           );
           break;
         case TabIndex.Pinned:
-          this.pinned$ = this.userDataPinnedStore.getPinnedBookmarks$(
+          this.pinned$ = this.userDataPinnedStore.getPinnedResources$(
             this.userId,
             this.currentPagePinned
           );

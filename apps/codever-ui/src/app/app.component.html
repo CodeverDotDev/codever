@@ -44,94 +44,16 @@
         >
           <i class="fas fa-sticky-note mr-1"></i> Notes (snippets)
         </a>
-        <app-quick-access-bookmarks
-          [quickAccessBookmarks]="latestPinnedBookmarks$ | async"
+        <app-quick-access-resources
+          [quickAccessResources]="latestPinnedResources$ | async"
           [source]="'pinned'"
           (newSectionTitleEvent)="launchDialogFromQuickAccess($event)">
-        </app-quick-access-bookmarks>
-        <app-quick-access-bookmarks
-          [quickAccessBookmarks]="latestVisitedBookmarks$ | async"
+        </app-quick-access-resources>
+        <app-quick-access-resources
+          [quickAccessResources]="latestVisitedResources$ | async"
           [source]="'last_visited'"
           (newSectionTitleEvent)="launchDialogFromQuickAccess($event)">
-        </app-quick-access-bookmarks>
-
-        <ng-container *ngIf="latestSearches$ | async as latestSearches">
-          <a
-            class="ml-2 mt-3 bg-light"
-            title="Ctrl+S for quick access"
-            (click)="displaySearchBarSearches()"
-          >
-            <i class="fas fa-history mr-1"></i> Latest searches (<b>Ctrl</b>+<b>s</b>)
-          </a>
-          <div class="mt-1" (mouseout)="resetHoveringLastSearches()">
-            <ng-container
-              *ngFor="let mySearch of latestSearches; let i = index"
-              class="mt-1"
-            >
-              <span class="mt-1 mr-2 on-top">
-                <a
-                  (mouseover)="hoveringLastSearches[i] = true"
-                  (mouseout)="hoveringLastSearches[i] = false"
-                  [routerLink]="['/search']"
-                  [queryParams]="{
-                    q: mySearch.text,
-                    sd: mySearch.searchDomain
-                  }"
-                  class="badge badge-secondary mb-1 ml-2"
-                  [class.my-bookmarks-last-search]="
-                    mySearch.searchDomain === 'my-bookmarks'
-                  "
-                  [class.my-notes-last-search]="
-                    mySearch.searchDomain === 'my-notes'
-                  "
-                  [class.public-notes-last-search]="
-                    mySearch.searchDomain === 'public-notes'
-                  "
-                  [class.public-bookmarks-last-search]="
-                    mySearch.searchDomain === 'public-bookmarks'
-                  "
-                  title="{{
-                    'Search in ' + mySearch.searchDomain + ': ' + mySearch.text
-                  }}"
-                >
-                  <i class="fa fa-xs fa-search mr-1"></i>
-                  <span *ngIf="!hoveringLastSearches[i]; else longVersion">{{
-                    mySearch.text.length > 30
-                      ? mySearch.text.substring(0, 30) + '...'
-                      : mySearch.text
-                    }}</span>
-                  <ng-template #longVersion>{{ mySearch.text }}</ng-template>
-                  <i
-                    *ngIf="
-                      mySearch.searchDomain === 'my-bookmarks' ||
-                      mySearch.searchDomain === 'public-bookmarks'
-                    "
-                    class="fa fa-xs fa-bookmark ml-1"
-                  ></i>
-                  <i
-                    *ngIf="
-                      mySearch.searchDomain === 'my-notes' ||
-                      mySearch.searchDomain === 'public-notes'
-                    "
-                    class="fa fa-xs fa-sticky-note ml-1"
-                  ></i>
-                  <span *ngIf="mySearch.searchDomain === 'all-mine'">
-                    <i class="fa fa-xs fa-bookmark ml-1"></i>
-                    <i class="fa fa-xs fa-sticky-note ml-1"></i>
-                  </span>
-                </a>
-              </span>
-            </ng-container>
-          </div>
-          <a
-            class="ml-2 mt-1 d-inline-block"
-            [routerLink]="['/dashboard']"
-            [queryParams]="{ tab: 'searches' }"
-            title="See all searches in Dashboard"
-          >
-            <i class="fas fa-xs fa-external-link-alt mr-1"></i><small>See more in Dashboard</small>
-          </a>
-        </ng-container>
+        </app-quick-access-resources>
       </div>
     </div>
     <div class="container">

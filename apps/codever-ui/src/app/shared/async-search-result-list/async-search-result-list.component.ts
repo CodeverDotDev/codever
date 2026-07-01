@@ -45,7 +45,8 @@ export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
 
   readonly route: ActivatedRoute;
 
-  currentPage: number;
+  @Input()
+  currentPage = 1;
 
   @Input()
   showFilterBox = true;

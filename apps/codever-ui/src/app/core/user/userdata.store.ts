@@ -1,14 +1,11 @@
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-import { Logger } from '../logger.service';
-import { ErrorService } from '../error/error.service';
 import { Following, Profile, Search, UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
-import { UserInfoService } from './user-info.service';
-import { UserInfoStore } from './user-info.store';
+import { UserDataResource } from '../model/user-data-resource.type';
 import {
   RateBookmarkRequest,
   RatingActionType,
@@ -40,10 +37,6 @@ export class UserDataStore {
 
   constructor(
     private userService: UserDataService,
-    private logger: Logger,
-    private errorService: ErrorService,
-    private userInfoService: UserInfoService,
-    private userInfoStore: UserInfoStore,
     private notifyStoresService: NotifyStoresService,
     private userDataHistoryStore: UserDataHistoryStore,
     private personalBookmarksService: PersonalBookmarksService,
@@ -185,19 +178,20 @@ export class UserDataStore {
     return obs;
   }
 
-  updateUserDataHistory$(bookmark: Bookmark): Observable<UserData> {
+  updateUserDataHistory$(resource: UserDataResource): Observable<UserData> {
     // history
-    this.placeOnTopOfUserHistoryIds(bookmark._id);
+    this.placeOnTopOfUserHistoryIds(resource._id);
 
     const obs: Observable<any> = this.userService.updateUserDataHistory(
       this.userId,
       this.userData.history
     );
     obs.subscribe(() => {
-      this.userDataHistoryStore.updateHistoryStore(bookmark);
-      if (this.userId === bookmark.userId) {
+      this.userDataHistoryStore.updateHistoryStore(resource);
+      // Owner-visit-count tracking only applies to bookmarks
+      if (resource.type === 'bookmark' && this.userId === resource.userId) {
         this.personalBookmarksService
-          .increaseOwnerVisitCount(bookmark)
+          .increaseOwnerVisitCount(resource as Bookmark)
           .subscribe();
       }
       this._userData.next(this.userData);
@@ -234,8 +228,8 @@ export class UserDataStore {
     this.userData.history.unshift(bookmarkId);
   }
 
-  addToUserDataPinned$(bookmark: Bookmark): Observable<UserData> {
-    this.userData.pinned.unshift(bookmark._id);
+  addToUserDataPinned$(resource: UserDataResource): Observable<UserData> {
+    this.userData.pinned.unshift(resource._id);
     const obs: Observable<any> = this.userService.updateUserDataPinned(
       this.userId,
       this.userData.pinned
@@ -273,9 +267,30 @@ export class UserDataStore {
     return obs;
   }
 
-  removeFromUserDataPinned$(bookmark: Bookmark): Observable<UserData> {
+  /**
+   * Reorders the pinned bookmarks. The provided ids represent the new order
+   * of the bookmarks shown in the quick-access panel; any remaining pinned
+   * ids (not currently shown) are appended afterwards, preserving them.
+   */
+  reorderUserDataPinned$(shownPinnedIds: string[]): Observable<UserData> {
+    const remainingIds = this.userData.pinned.filter(
+      (id) => !shownPinnedIds.includes(id)
+    );
+    this.userData.pinned = [...shownPinnedIds, ...remainingIds];
+    const obs: Observable<any> = this.userService.updateUserDataPinned(
+      this.userId,
+      this.userData.pinned
+    );
+    obs.subscribe(() => {
+      this._userData.next(this.userData);
+    });
+
+    return obs;
+  }
+
+  removeFromUserDataPinned$(resource: UserDataResource): Observable<UserData> {
     this.userData.pinned = this.userData.pinned.filter(
-      (x) => x !== bookmark._id
+      (x) => x !== resource._id
     );
     const obs: Observable<any> = this.userService.updateUserDataPinned(
       this.userId,

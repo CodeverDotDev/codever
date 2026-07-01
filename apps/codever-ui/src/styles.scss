@@ -329,7 +329,11 @@ label {
 
 // START side-navigation
 #wrapper {
-  overflow-x: hidden;
+  // Use `clip` instead of `hidden`: it still clips the off-screen sidebar
+  // horizontally, but (unlike `hidden`) it does NOT establish a scroll
+  // container, so `position: sticky` descendants (e.g. the note details TOC)
+  // keep working relative to the viewport.
+  overflow-x: clip;
 }
 
 #sidebar-wrapper {
@@ -425,5 +429,46 @@ label {
   z-index: 900;
 }
 // END side-navigation
+
+// Interactive GFM task-list checkboxes inside rendered notes (todo items)
+input.note-task-checkbox {
+  cursor: pointer;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+// Hide the default list bullet/number for task-list items (GitHub-style),
+// so only the checkbox shows. Plain list items are unaffected.
+li.note-task-list-item {
+  list-style: none;
+  margin-left: -1.2em;
+}
+
+// "Reset" button auto-appended after a checklist — unchecks all its items.
+button.note-task-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0.15rem 0 0.6rem;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #6c757d;
+  background-color: transparent;
+  border: 1px solid #ced4da;
+  border-radius: 0.2rem;
+  cursor: pointer;
+
+  &:hover {
+    color: #495057;
+    background-color: #f1f3f5;
+  }
+}
+
+// The reset button only does anything for the note owner, so hide it on
+// read-only/public notes (host lacks the `note-content-editable` class).
+app-note-content:not(.note-content-editable) button.note-task-reset {
+  display: none;
+}
 
 

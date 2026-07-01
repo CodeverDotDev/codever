@@ -1,0 +1,109 @@
+<div
+  *ngIf="quickAccessResources && quickAccessResources.length > 0"
+  class="mt-3"
+>
+  <a *ngIf="source === 'last_visited'"
+     class="ml-2 bg-light"
+     title="Ctrl+h for quick access"
+     (click)="addNewSectionTitleEvent(source)"
+  >
+    <i class="fas fa-history mr-1"></i> History (<b>Ctrl</b>+<b>h</b>)
+  </a>
+  <a *ngIf="source === 'pinned'"
+     class="ml-2 bg-light"
+     title="Ctrl+p for quick access"
+     (click)="addNewSectionTitleEvent(source)"
+  >
+    <i class="fas fa-thumbtack mr-1"></i> Pinned (<b>Ctrl</b>+<b>p</b>)
+  </a>
+  <ng-container *ngIf="source === 'pinned'; else nonReorderableList">
+    <div
+      cdkDropList
+      class="pinned-drop-list"
+      (cdkDropListDropped)="dropUserDataResource($event)"
+    >
+      <span
+        *ngFor="let resource of quickAccessResources; let i = index"
+        class="mt-1 mr-2 on-top pinned-drag-item"
+        cdkDrag
+      >
+        <i
+          class="fas fa-grip-vertical drag-handle"
+          cdkDragHandle
+          title="Drag to reorder"
+        ></i>
+        <a
+          class="badge badge-secondary mb-1 ml-2"
+          [class.my-bookmarks-last-search]="!isNote(resource) && resource.public === false"
+          [class.public-bookmarks-last-search]="!isNote(resource) && resource.public === true"
+          [class.my-notes-last-search]="isNote(resource) && resource.public === false"
+          [class.public-notes-last-search]="isNote(resource) && resource.public === true"
+          (click)="navigateToDetails(resource)"
+          (auxclick)="!isNote(resource) && goToMainLink(resource)"
+          target="_blank"
+          matTooltip="{{ getTooltip(resource) }}"
+          [matTooltipPosition]="'right'"
+        >
+          <i
+            class="fa fa-xs mr-1"
+            [ngClass]="isNote(resource) ? 'fa-sticky-note' : 'fa-bookmark'"
+          ></i>
+          <span>{{
+            getLabel(resource).length > 30
+              ? getLabel(resource).substring(0, 30) + '...'
+              : getLabel(resource)
+          }}</span>
+
+          <span
+            *ngIf="!isNote(resource)"
+            class="jump-to-main-link-icon"
+            (click)="goToMainLink(resource)"
+            title="Jump to main link"
+          >
+            <i class="fas fa-external-link-alt"></i>
+          </span>
+        </a>
+      </span>
+    </div>
+  </ng-container>
+  <ng-template #nonReorderableList>
+    <ng-container
+      *ngFor="let resource of quickAccessResources; let i = index"
+      class="mt-1"
+    >
+      <span class="mt-1 mr-2 on-top">
+        <a
+          class="badge badge-secondary mb-1 ml-2"
+          [class.my-bookmarks-last-search]="!isNote(resource) && resource.public === false"
+          [class.public-bookmarks-last-search]="!isNote(resource) && resource.public === true"
+          [class.my-notes-last-search]="isNote(resource) && resource.public === false"
+          [class.public-notes-last-search]="isNote(resource) && resource.public === true"
+          (click)="navigateToDetails(resource)"
+          (auxclick)="!isNote(resource) && goToMainLink(resource)"
+          target="_blank"
+          matTooltip="{{ getTooltip(resource) }}"
+          [matTooltipPosition]="'right'"
+        >
+          <i
+            class="fa fa-xs mr-1"
+            [ngClass]="isNote(resource) ? 'fa-sticky-note' : 'fa-bookmark'"
+          ></i>
+          <span>{{
+            getLabel(resource).length > 30
+              ? getLabel(resource).substring(0, 30) + '...'
+              : getLabel(resource)
+          }}</span>
+
+          <span
+            *ngIf="!isNote(resource)"
+            class="jump-to-main-link-icon"
+            (click)="goToMainLink(resource)"
+            title="Jump to main link"
+          >
+            <i class="fas fa-external-link-alt"></i>
+          </span>
+        </a>
+      </span>
+    </ng-container>
+  </ng-template>
+</div>

@@ -15,7 +15,7 @@
   <div class="clear"></div>
   <div
     class="mt-3"
-    *ngFor="let searchResult of searchResults | bookmarkFilter : filterText"
+    *ngFor="let searchResult of searchResults | resourceFilter : filterText"
   >
     <app-bookmark-list-element
       *ngIf="isBookmark(searchResult)"

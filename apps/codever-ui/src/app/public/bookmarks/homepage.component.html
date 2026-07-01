@@ -152,12 +152,14 @@
             <strong>Ctrl + H</strong>
           </p>
         </div>
-        <app-async-bookmark-list
-          [bookmarks$]="history$"
+        <app-async-search-result-list
+          [searchResults$]="history$"
           [userData$]="userData$"
           [callerPagination]="callerPaginationHistory"
+          [currentPage]="currentPageHistory"
+          [showFilterBox]="false"
         >
-        </app-async-bookmark-list>
+        </app-async-search-result-list>
       </ng-template>
     </mat-tab>
 
@@ -199,12 +201,14 @@
             <strong>Pinned</strong> list. Quick access with
             <strong>Ctrl + P</strong>
           </div>
-          <app-async-bookmark-list
-            [bookmarks$]="pinned$"
+          <app-async-search-result-list
+            [searchResults$]="pinned$"
             [userData$]="userData$"
             [callerPagination]="callerPaginationPinned"
+            [currentPage]="currentPagePinned"
+            [showFilterBox]="false"
           >
-          </app-async-bookmark-list>
+          </app-async-search-result-list>
         </ng-template>
       </ng-template>
     </mat-tab>

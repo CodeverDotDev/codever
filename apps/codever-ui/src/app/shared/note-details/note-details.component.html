@@ -1,6 +1,8 @@
-<div *ngIf="note$ | async as note" class="card" #noteEntry >
-  <div class="card-body show-hide note-container"
-       [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
+<div *ngIf="note$ | async as note" class="note-details-wrapper">
+  <div class="note-details-main">
+    <div class="card" #noteEntry>
+      <div class="card-body show-hide note-container"
+           [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
     <div class="header-wrapper">
       <div class="title-and-subtitle">
         <h5 class="card-title">
@@ -59,6 +61,25 @@
         </h6>
       </div>
       <div class="cursor-pointer d-flex align-items-center" style="gap: 0.5rem;">
+        <ng-container *ngIf="(userId$ | async) === note.userId">
+          <span
+            *ngIf="!(userData$ | async)?.pinned?.includes(note._id); else notePinned"
+            class="note-action-btn"
+            title="Pin note"
+            (click)="addToPinned(note)"
+          >
+            <i class="fas fa-thumbtack fa-lg"></i>
+          </span>
+          <ng-template #notePinned>
+            <span
+              class="note-action-btn"
+              title="Unpin note"
+              (click)="removeFromPinned(note)"
+            >
+              <i class="fas fa-thumbtack fa-rotate-90 fa-lg pinned"></i>
+            </span>
+          </ng-template>
+        </ng-container>
         <span
           *ngIf="(note$ | async)?.contentType !== 'notebook'"
           class="note-action-btn"
@@ -87,7 +108,7 @@
       </span>
     </div>
     <div [ngClass]="{'scrollable-div-fullscreen': isFullScreen}">
-      <app-note-content [note]="note" [queryText]="queryText" [partOfList]="partOfList" [isFullScreen]="isFullScreen" [contentFontSize]="contentFontSize"></app-note-content>
+      <app-note-content [note]="note" [queryText]="queryText" [partOfList]="partOfList" [isFullScreen]="isFullScreen" [contentFontSize]="contentFontSize" [editable]="(userId$ | async) === note.userId"></app-note-content>
     </div>
   </div>
 
@@ -166,4 +187,9 @@
     </div>
     </div>
   </ng-container>
+    </div>
+  </div>
+  <aside class="note-details-toc" *ngIf="!partOfList">
+    <app-note-toc [headings]="tocHeadings"></app-note-toc>
+  </aside>
 </div>

@@ -1,0 +1,77 @@
+.toc-nav {
+  // Sticky offset is 5.5rem (below the fixed navbar); keep the panel within
+  // the viewport and let long TOCs scroll internally.
+  max-height: calc(100vh - 7rem);
+  overflow-y: auto;
+  padding: 0.85rem 1rem;
+  font-size: 0.82rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+
+  // Scrollbar styling
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+  }
+}
+
+.toc-title {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.5rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-item {
+  line-height: 1.35;
+  margin-bottom: 0.15rem;
+
+  &.toc-h1 {
+    padding-left: 0;
+    font-weight: 600;
+  }
+  &.toc-h2 {
+    padding-left: 0.6rem;
+  }
+  &.toc-h3 {
+    padding-left: 1.2rem;
+  }
+  &.toc-h4 {
+    padding-left: 1.8rem;
+  }
+}
+
+.toc-link {
+  color: #666;
+  text-decoration: none;
+  display: block;
+  padding: 0.15rem 0.3rem;
+  border-radius: 3px;
+  transition: color 0.15s, background-color 0.15s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    color: #1976d2;
+    background-color: rgba(25, 118, 210, 0.06);
+  }
+}
+
+.toc-active .toc-link {
+  color: #1976d2;
+  font-weight: 700;
+  background-color: rgba(25, 118, 210, 0.08);
+}

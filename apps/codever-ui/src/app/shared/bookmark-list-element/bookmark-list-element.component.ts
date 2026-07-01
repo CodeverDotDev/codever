@@ -172,12 +172,12 @@ export class BookmarkListElementComponent
       );
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.userDataPinnedStore.addToPinnedBookmarks(bookmark);
+      this.userDataPinnedStore.addToPinned(bookmark);
     }
   }
 
   removeFromPinned(bookmark: Bookmark) {
-    this.userDataPinnedStore.removeFromPinnedBookmarks(bookmark);
+    this.userDataPinnedStore.removeFromPinned(bookmark);
   }
 
   addToReadLater(bookmark: Bookmark) {
