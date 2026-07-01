@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { UserData } from './model/user-data';
 import { Bookmark } from './model/bookmark';
+import { UserDataResource } from './model/user-data-resource.type';
 import { shareReplay } from 'rxjs/operators';
 import { RateBookmarkRequest } from './model/rate-bookmark.request';
 import { UsedTags } from './model/used-tag';
@@ -188,16 +189,16 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
-  getPinnedBookmarks(
+  getPinnedResources(
     userId: string,
     page: number,
     limit: number
-  ): Observable<Bookmark[]> {
+  ): Observable<UserDataResource[]> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/pinned`, {
+      .get<UserDataResource[]>(`${this.usersApiBaseUrl}/${userId}/pinned`, {
         params: params,
       })
       .pipe(shareReplay(1));
@@ -240,18 +241,18 @@ export class UserDataService {
     userId: string,
     page: number,
     limit: number
-  ): Observable<Bookmark[]> {
+  ): Observable<UserDataResource[]> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
     return this.httpClient
-      .get<Bookmark[]>(`${this.usersApiBaseUrl}/${userId}/history`, {
+      .get<UserDataResource[]>(`${this.usersApiBaseUrl}/${userId}/history`, {
         params: params,
       })
       .pipe(shareReplay(1));
   }
 
-  getAllHistory$(userId: string): Observable<Bookmark[]> {
+  getAllHistory$(userId: string): Observable<UserDataResource[]> {
     const options: HttpOptions = {
       url: `${this.usersApiBaseUrl}/${userId}/history`,
       key: localStorageKeys.userHistoryBookmarks,
@@ -260,7 +261,7 @@ export class UserDataService {
     }; // cache it for a day
 
     return this.httpClientLocalStorageService
-      .get<Bookmark[]>(options)
+      .get<UserDataResource[]>(options)
       .pipe(shareReplay(1));
   }
 

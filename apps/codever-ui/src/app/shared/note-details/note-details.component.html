@@ -61,6 +61,25 @@
         </h6>
       </div>
       <div class="cursor-pointer d-flex align-items-center" style="gap: 0.5rem;">
+        <ng-container *ngIf="(userId$ | async) === note.userId">
+          <span
+            *ngIf="!(userData$ | async)?.pinned?.includes(note._id); else notePinned"
+            class="note-action-btn"
+            title="Pin note"
+            (click)="addToPinned(note)"
+          >
+            <i class="fas fa-thumbtack fa-lg"></i>
+          </span>
+          <ng-template #notePinned>
+            <span
+              class="note-action-btn"
+              title="Unpin note"
+              (click)="removeFromPinned(note)"
+            >
+              <i class="fas fa-thumbtack fa-rotate-90 fa-lg pinned"></i>
+            </span>
+          </ng-template>
+        </ng-container>
         <span
           *ngIf="(note$ | async)?.contentType !== 'notebook'"
           class="note-action-btn"

@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
+import { UserDataResource } from '../model/user-data-resource.type';
 import { NotifyStoresService } from './notify-stores.service';
 import { UserDataStore } from './userdata.store';
 import { environment } from '../../../environments/environment';
@@ -13,7 +14,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class UserDataPinnedStore {
-  private _pinned: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
+  private _pinned: BehaviorSubject<UserDataResource[]> = new BehaviorSubject(null);
   private pinnedBookmarksHaveBeenLoaded = false;
 
   loadedPage: number;
@@ -30,14 +31,14 @@ export class UserDataPinnedStore {
     });
   }
 
-  getPinnedBookmarks$(
+  getPinnedResources$(
     userId: string,
     page: number,
     limit: number = environment.PAGINATION_PAGE_SIZE
-  ): Observable<Bookmark[]> {
+  ): Observable<UserDataResource[]> {
     if (this.loadedPage !== page || !this.pinnedBookmarksHaveBeenLoaded) {
       this.userService
-        .getPinnedBookmarks(userId, page, limit)
+        .getPinnedResources(userId, page, limit)
         .subscribe((data) => {
           if (!this.pinnedBookmarksHaveBeenLoaded) {
             this.pinnedBookmarksHaveBeenLoaded = true;
@@ -51,50 +52,49 @@ export class UserDataPinnedStore {
   }
 
   /**
-   * Persists a new ordering for the currently shown pinned bookmarks.
-   * Only the displayed bookmarks are reordered; any remaining pinned ids
+   * Persists a new ordering for the currently shown pinned resources.
+   * Only the displayed resources are reordered; any remaining pinned ids
    * (not shown in the quick-access panel) are appended afterwards.
    */
-  reorderPinnedBookmarks(reorderedBookmarks: Bookmark[]) {
-    this._pinned.next(reorderedBookmarks);
-    const reorderedIds = reorderedBookmarks.map((bookmark) => bookmark._id);
+  reorderPinnedBookmarks(reorderedResources: UserDataResource[]) {
+    this._pinned.next(reorderedResources);
+    const reorderedIds = reorderedResources.map((resource) => resource._id);
     this.userDataStore.reorderUserDataPinned$(reorderedIds).subscribe();
   }
 
-
-  addToPinnedBookmarks(bookmark: Bookmark) {
-    this.userDataStore.addToUserDataPinned$(bookmark).subscribe(() => {
+  addToPinned(resource: UserDataResource) {
+    this.userDataStore.addToUserDataPinned$(resource).subscribe(() => {
       if (this.pinnedBookmarksHaveBeenLoaded) {
-        const pinnedBookmarks: Bookmark[] = this._pinned.getValue();
-        pinnedBookmarks.unshift(bookmark);
+        const pinnedResources: UserDataResource[] = this._pinned.getValue();
+        pinnedResources.unshift(resource);
 
-        this._pinned.next(pinnedBookmarks); // insert at the top (index 0)
+        this._pinned.next(pinnedResources); // insert at the top (index 0)
       }
     });
   }
 
-  removeFromPinnedBookmarks(bookmark: Bookmark) {
-    this.userDataStore.removeFromUserDataPinned$(bookmark).subscribe(() => {
-      this.publishedPinnedAfterDeletion(bookmark);
+  removeFromPinned(resource: UserDataResource) {
+    this.userDataStore.removeFromUserDataPinned$(resource).subscribe(() => {
+      this.publishedPinnedAfterDeletion(resource);
     });
   }
 
-  private publishedPinnedAfterDeletion(bookmark: Bookmark) {
+  private publishedPinnedAfterDeletion(resource: UserDataResource) {
     if (this.pinnedBookmarksHaveBeenLoaded) {
-      const pinnedBookmarks: Bookmark[] = this._pinned.getValue();
-      const index = pinnedBookmarks.findIndex(
-        (pinnedBookmark) => bookmark._id === pinnedBookmark._id
+      const pinnedResources: UserDataResource[] = this._pinned.getValue();
+      const index = pinnedResources.findIndex(
+        (pinnedResource) => resource._id === pinnedResource._id
       );
       if (index !== -1) {
-        pinnedBookmarks.splice(index, 1);
-        this._pinned.next(pinnedBookmarks);
+        pinnedResources.splice(index, 1);
+        this._pinned.next(pinnedResources);
       }
     }
   }
 
   public publishPinnedAfterCreation(bookmark: Bookmark) {
     if (this.pinnedBookmarksHaveBeenLoaded) {
-      const pinned: Bookmark[] = this._pinned.getValue();
+      const pinned: UserDataResource[] = this._pinned.getValue();
       pinned.unshift(bookmark);
       this._pinned.next(pinned); // insert at the top (index 0)
     }

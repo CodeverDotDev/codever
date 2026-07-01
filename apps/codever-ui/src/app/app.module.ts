@@ -39,7 +39,7 @@ import {
 import { NoteNotFoundComponent } from './not-found/note-not-found.component';
 import { SystemService } from './core/cache/system.service';
 import { NewEntryComponent } from './new-entry/new-entry.component';
-import { QuickAccessBookmarksComponent } from './left-navigation-menu/quick-access-bookmarks.component';
+import { QuickAccessResourcesComponent } from './left-navigation-menu/quick-access-resources.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 function initializeKeycloak(
@@ -137,7 +137,7 @@ function initializeKeycloak(
   ],
   declarations: [
     AppComponent,
-    QuickAccessBookmarksComponent,
+    QuickAccessResourcesComponent,
     PageNotFoundComponent,
     NoteNotFoundComponent,
     LoaderComponent,

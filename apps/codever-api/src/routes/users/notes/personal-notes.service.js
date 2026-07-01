@@ -1,4 +1,5 @@
 const Note = require('../../../model/note');
+const User = require('../../../model/user');
 
 const NotFoundError = require('../../../error/not-found.error');
 
@@ -92,6 +93,17 @@ let deleteNoteById = async (userId, noteId) => {
   if (!note) {
     throw new NotFoundError('Note NOT_FOUND with id: ' + noteId);
   }
+
+  // Remove the note from users' pinned and history lists, in case it was there
+  await User.updateMany(
+    {},
+    {
+      $pull: {
+        pinned: noteId,
+        history: noteId,
+      },
+    }
+  );
 };
 
 /* GET suggested tags used for user */

@@ -11,7 +11,7 @@ import iziToast, { IziToastSettings } from 'izitoast';
 import { UserDataStore } from './core/user/userdata.store';
 import { UserData } from './core/model/user-data';
 import { Observable } from 'rxjs';
-import { Bookmark } from './core/model/bookmark';
+import { UserDataResource } from './core/model/user-data-resource.type';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
@@ -33,8 +33,8 @@ export class AppComponent implements OnInit {
   showWhatsNewNotification = false;
   readonly whatsNewNotificationKey =
     'whats-new-2026-06-snipptes_2_notes-my_collections-simplified_search';
-  latestVisitedBookmarks$: Observable<Bookmark[]>;
-  latestPinnedBookmarks$: Observable<Bookmark[]>;
+  latestVisitedResources$: Observable<UserDataResource[]>;
+  latestPinnedResources$: Observable<UserDataResource[]>;
 
   private readonly pinnedQuickAccessLimit = 15;
 
@@ -68,12 +68,12 @@ export class AppComponent implements OnInit {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userId = userInfo.sub;
-          this.latestVisitedBookmarks$ = this.userDataHistoryStore.getHistory$(
+          this.latestVisitedResources$ = this.userDataHistoryStore.getHistory$(
             this.userId,
             1
           );
-          this.latestPinnedBookmarks$ =
-            this.userDataPinnedStore.getPinnedBookmarks$(
+          this.latestPinnedResources$ =
+            this.userDataPinnedStore.getPinnedResources$(
               this.userId,
               1,
               this.pinnedQuickAccessLimit
@@ -116,7 +116,7 @@ export class AppComponent implements OnInit {
     dialogConfig.height = this.getRelativeHeight();
     dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
-      bookmarks$: this.userDataPinnedStore.getPinnedBookmarks$(this.userId, 1),
+      bookmarks$: this.userDataPinnedStore.getPinnedResources$(this.userId, 1),
       title: '<i class="fas fa-thumbtack"></i> Pinned',
     };
 

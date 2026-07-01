@@ -90,6 +90,12 @@
   color: #495057;
 }
 
+.public-notes-last-search {
+  @extend .last-search-border;
+  background: #c8e6c9;
+  color: #1b5e20;
+}
+
 .on-top {
   position: relative;
   z-index: 900;

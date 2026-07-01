@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 import { UserDataService } from '../user-data.service';
-import { Bookmark } from '../model/bookmark';
+import { UserDataResource } from '../model/user-data-resource.type';
 import { UserInfoStore } from './user-info.store';
 import { NotifyStoresService } from './notify-stores.service';
 import { environment } from '../../../environments/environment';
@@ -16,7 +16,9 @@ import { localStorageKeys } from '../model/localstorage.cache-keys';
   providedIn: 'root',
 })
 export class UserDataHistoryStore {
-  private _history: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
+  private _history: BehaviorSubject<UserDataResource[]> = new BehaviorSubject(
+    null
+  );
   private historyHasBeenLoaded = false;
 
   loadedPage: number;
@@ -33,7 +35,7 @@ export class UserDataHistoryStore {
     });
   }
 
-  getHistory$(userId: string, page: number): Observable<Bookmark[]> {
+  getHistory$(userId: string, page: number): Observable<UserDataResource[]> {
     if (this.loadedPage !== page || !this.historyHasBeenLoaded) {
       if (!this.historyHasBeenLoaded) {
         this.historyHasBeenLoaded = true;
@@ -50,74 +52,74 @@ export class UserDataHistoryStore {
     return this._history.asObservable();
   }
 
-  getAllHistory$(userId: string): Observable<Bookmark[]> {
+  getAllHistory$(userId: string): Observable<UserDataResource[]> {
     return this.userService.getAllHistory$(userId);
   }
 
-  public updateHistoryStoreBulk(bookmarks: Bookmark[]) {
-    for (const bookmark of bookmarks) {
-      this.updateHistoryStore(bookmark);
+  public updateHistoryStoreBulk(resources: UserDataResource[]) {
+    for (const resource of resources) {
+      this.updateHistoryStore(resource);
     }
   }
 
-  public updateHistoryStore(bookmark: Bookmark) {
+  public updateHistoryStore(resource: UserDataResource) {
     if (this.historyHasBeenLoaded) {
-      let lastVisitedBookmarks: Bookmark[] = this._history.getValue();
-      lastVisitedBookmarks = lastVisitedBookmarks.filter(
-        (item) => item._id !== bookmark._id
+      let lastVisitedResources: UserDataResource[] = this._history.getValue();
+      lastVisitedResources = lastVisitedResources.filter(
+        (item) => item._id !== resource._id
       );
-      lastVisitedBookmarks.unshift(bookmark);
+      lastVisitedResources.unshift(resource);
 
-      this._history.next(lastVisitedBookmarks);
+      this._history.next(lastVisitedResources);
     }
-    this.updateEntryLocalStorage(bookmark);
+    this.updateEntryLocalStorage(resource);
   }
 
-  private updateEntryLocalStorage(bookmark: Bookmark) {
-    let bookmarks = this.localStorageService.load(
+  private updateEntryLocalStorage(resource: UserDataResource) {
+    let resources = this.localStorageService.load(
       localStorageKeys.userHistoryBookmarks
     );
-    if (bookmarks) {
-      bookmarks = bookmarks.filter((item) => item._id !== bookmark._id);
-      bookmarks.unshift(bookmark);
+    if (resources) {
+      resources = resources.filter((item) => item._id !== resource._id);
+      resources.unshift(resource);
 
       const options: LocalStorageSaveOptions = {
         key: localStorageKeys.userHistoryBookmarks,
-        data: bookmarks.slice(0, 100), // in "backend" are max 50 stored
+        data: resources.slice(0, 100), // in "backend" are max 50 stored
         expirationHours: 24,
       };
       this.localStorageService.save(options);
     }
   }
 
-  public deleteFromHistoryStore(bookmark: Bookmark) {
+  public deleteFromHistoryStore(resource: UserDataResource) {
     if (this.historyHasBeenLoaded) {
-      const lastVisitedBookmarks: Bookmark[] = this._history.getValue();
-      const indexHistory = lastVisitedBookmarks.findIndex(
-        (lastVisitedBookmark) => bookmark._id === lastVisitedBookmark._id
+      const lastVisitedResources: UserDataResource[] = this._history.getValue();
+      const indexHistory = lastVisitedResources.findIndex(
+        (lastVisitedResource) => resource._id === lastVisitedResource._id
       );
       if (indexHistory !== -1) {
-        lastVisitedBookmarks.splice(indexHistory, 1);
-        this._history.next(lastVisitedBookmarks);
+        lastVisitedResources.splice(indexHistory, 1);
+        this._history.next(lastVisitedResources);
       }
     }
 
-    this.deleteEntryFromLocalStorage(bookmark);
+    this.deleteEntryFromLocalStorage(resource);
   }
 
-  private deleteEntryFromLocalStorage(bookmark: Bookmark) {
-    const bookmarks = this.localStorageService.load(
+  private deleteEntryFromLocalStorage(resource: UserDataResource) {
+    const resources = this.localStorageService.load(
       localStorageKeys.userHistoryBookmarks
     );
-    if (bookmarks) {
-      const indexHistory = bookmarks.findIndex(
-        (lastVisitedBookmark) => bookmark._id === lastVisitedBookmark._id
+    if (resources) {
+      const indexHistory = resources.findIndex(
+        (lastVisitedResource) => resource._id === lastVisitedResource._id
       );
       if (indexHistory !== -1) {
-        bookmarks.splice(indexHistory, 1);
+        resources.splice(indexHistory, 1);
         const options: LocalStorageSaveOptions = {
           key: localStorageKeys.userHistoryBookmarks,
-          data: bookmarks,
+          data: resources,
           expirationHours: 24,
         };
         this.localStorageService.save(options);

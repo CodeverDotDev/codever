@@ -2,6 +2,7 @@ const constants = require('../../common/constants');
 
 const User = require('../../model/user');
 const Bookmark = require('../../model/bookmark');
+const Note = require('../../model/note');
 
 const ValidationError = require('../../error/validation.error');
 const NotFoundError = require('../../error/not-found.error');
@@ -347,7 +348,7 @@ let getUsedTagsForPrivateBookmarks = async function (userId) {
   return usedTags;
 };
 
-let getPinnedBookmarks = async function (userId, page, limit) {
+let getPinnedResources = async function (userId, page, limit) {
   const userData = await User.findOne({
     userId: userId,
   });
@@ -358,14 +359,22 @@ let getPinnedBookmarks = async function (userId, page, limit) {
       (page - 1) * limit,
       (page - 1) * limit + limit
     );
-    const bookmarks = await Bookmark.find({ _id: { $in: pinnedRangeIds } });
-    //we need to order the bookmarks to correspond the one in the userData.pinned array
-    const orderedBookmarksAsInPinned = bookmarks.sort(function (a, b) {
-      return pinnedRangeIds.indexOf(a._id) - pinnedRangeIds.indexOf(b._id);
+    // Pinned entries can be either bookmarks or notes; look both collections up
+    const [bookmarks, notes] = await Promise.all([
+      Bookmark.find({ _id: { $in: pinnedRangeIds } }),
+      Note.find({ _id: { $in: pinnedRangeIds } }),
+    ]);
+    const pinnedResources = [...bookmarks, ...notes];
+    //we need to order the resources to correspond the one in the userData.pinned array
+    const orderedResourcesAsInPinned = pinnedResources.sort(function (a, b) {
+      return (
+        pinnedRangeIds.indexOf(a._id.toString()) -
+        pinnedRangeIds.indexOf(b._id.toString())
+      );
     });
 
-    return orderedBookmarksAsInPinned.filter(
-      (bookmark) => bookmark !== undefined
+    return orderedResourcesAsInPinned.filter(
+      (resource) => resource !== undefined
     );
   }
 };
@@ -408,16 +417,22 @@ let getBookmarksFromHistory = async function (userId, page, limit) {
       (page - 1) * limit,
       (page - 1) * limit + limit
     );
-    const bookmarks = await Bookmark.find({ _id: { $in: historyRangeIds } });
+    // History entries can be either bookmarks or notes; look both collections up
+    const [bookmarks, notes] = await Promise.all([
+      Bookmark.find({ _id: { $in: historyRangeIds } }),
+      Note.find({ _id: { $in: historyRangeIds } }),
+    ]);
+    const historyResources = [...bookmarks, ...notes];
 
-    //we need to order the bookmarks to correspond the one in the userData.history array
-    const orderedBookmarksAsInHistory = bookmarks.sort(function (a, b) {
-      return historyRangeIds.indexOf(a._id) - historyRangeIds.indexOf(b._id);
+    //we need to order the resources to correspond the one in the userData.history array
+    const orderedResourcesAsInHistory = historyResources.sort(function (a, b) {
+      return (
+        historyRangeIds.indexOf(a._id.toString()) -
+        historyRangeIds.indexOf(b._id.toString())
+      );
     });
 
-    //check for "potentially" deleted bookmarks via "delete all private for tag"
-    //return orderedBookmarksAsInHistory.filter(bookmark => bookmark !== undefined);
-    return orderedBookmarksAsInHistory;
+    return orderedResourcesAsInHistory;
   }
 };
 
@@ -428,16 +443,25 @@ let getAllBookmarksFromHistory = async function (userId) {
   if (!userData) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const bookmarks = await Bookmark.find({ _id: { $in: userData.history } });
+    // History entries can be either bookmarks or notes; look both collections up
+    const [bookmarks, notes] = await Promise.all([
+      Bookmark.find({ _id: { $in: userData.history } }),
+      Note.find({ _id: { $in: userData.history } }),
+    ]);
+    const historyResources = [...bookmarks, ...notes];
 
-    //we need to order the bookmarks to correspond the one in the userData.history array
-    const allBookmarksOrderedFromHistory = bookmarks.sort(function (a, b) {
-      return userData.history.indexOf(a._id) - userData.history.indexOf(b._id);
+    //we need to order the resources to correspond the one in the userData.history array
+    const allResourcesOrderedFromHistory = historyResources.sort(function (
+      a,
+      b
+    ) {
+      return (
+        userData.history.indexOf(a._id.toString()) -
+        userData.history.indexOf(b._id.toString())
+      );
     });
 
-    //check for "potentially" deleted bookmarks via "delete all private for tag"
-    //return orderedBookmarksAsInHistory.filter(bookmark => bookmark !== undefined);
-    return allBookmarksOrderedFromHistory;
+    return allResourcesOrderedFromHistory;
   }
 };
 
@@ -695,7 +719,7 @@ module.exports = {
   getLikedBookmarks: getLikedBookmarks,
   getUsedTagsForPublicBookmarks: getUsedTagsForPublicBookmarks,
   getUsedTagsForPrivateBookmarks: getUsedTagsForPrivateBookmarks,
-  getPinnedBookmarks: getPinnedBookmarks,
+  getPinnedResources: getPinnedResources,
   getFavoriteBookmarks: getFavoriteBookmarks,
   getBookmarksFromHistory: getBookmarksFromHistory,
   getAllBookmarksFromHistory: getAllBookmarksFromHistory,

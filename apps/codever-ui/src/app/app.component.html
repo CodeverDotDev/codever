@@ -44,16 +44,16 @@
         >
           <i class="fas fa-sticky-note mr-1"></i> Notes (snippets)
         </a>
-        <app-quick-access-bookmarks
-          [quickAccessBookmarks]="latestPinnedBookmarks$ | async"
+        <app-quick-access-resources
+          [quickAccessResources]="latestPinnedResources$ | async"
           [source]="'pinned'"
           (newSectionTitleEvent)="launchDialogFromQuickAccess($event)">
-        </app-quick-access-bookmarks>
-        <app-quick-access-bookmarks
-          [quickAccessBookmarks]="latestVisitedBookmarks$ | async"
+        </app-quick-access-resources>
+        <app-quick-access-resources
+          [quickAccessResources]="latestVisitedResources$ | async"
           [source]="'last_visited'"
           (newSectionTitleEvent)="launchDialogFromQuickAccess($event)">
-        </app-quick-access-bookmarks>
+        </app-quick-access-resources>
       </div>
     </div>
     <div class="container">

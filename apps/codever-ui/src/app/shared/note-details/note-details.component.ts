@@ -10,7 +10,7 @@ import { Note } from '../../core/model/note';
 import { Observable, of } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { shareReplay, switchMap, tap } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import * as screenfull from 'screenfull';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -19,6 +19,9 @@ import { KeycloakService } from 'keycloak-angular';
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 import { TocHeading } from './note-toc/note-toc.component';
+import { UserDataStore } from '../../core/user/userdata.store';
+import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
+import { UserData } from '../../core/model/user-data';
 
 @Component({
   selector: 'app-note-details',
@@ -39,6 +42,7 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   partOfList = false;
 
   userId$: Observable<string> = of(null);
+  userData$: Observable<UserData>;
   noteId: string;
 
   isFullScreen = false;
@@ -60,16 +64,19 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     private router: Router,
     private noteShareDialog: MatDialog,
     private keycloakService: KeycloakService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private userDataStore: UserDataStore,
+    private userDataPinnedStore: UserDataPinnedStore
   ) {}
 
   ngOnInit(): void {
     this.keycloakService.isLoggedIn().then((isLoggedIn) => {
       this.userId$ = isLoggedIn ? this.userInfoStore.getUserId$() : of(null);
+      this.userData$ = isLoggedIn ? this.userDataStore.getUserData$() : of(null);
 
       if (!this.inSearchResults && !this.note$) {
         if (window.history.state.note) {
-          this.note$ = of(window.history.state.snippet);
+          this.note$ = of(window.history.state.note);
         } else {
           this.note$ = this.userId$.pipe(
             switchMap((userId) => {
@@ -79,6 +86,16 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
                 this.noteId
               );
             })
+          );
+        }
+
+        if (isLoggedIn) {
+          // Visiting a note's details page promotes it to the user's history,
+          // mirroring how visiting a bookmark records it. Works regardless of
+          // where the navigation originated (search, pinned, quick access…).
+          this.note$ = this.note$.pipe(
+            tap((note) => this.promoteNoteInHistory(note)),
+            shareReplay(1)
           );
         }
       }
@@ -183,6 +200,22 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
       this.markdownCopied = true;
       setTimeout(() => (this.markdownCopied = false), 1300);
     });
+  }
+
+  addToPinned(note: Note) {
+    this.userDataPinnedStore.addToPinned(note);
+  }
+
+  removeFromPinned(note: Note) {
+    this.userDataPinnedStore.removeFromPinned(note);
+  }
+
+  /** Record the visited note in the user's history (logged-in users only). */
+  private promoteNoteInHistory(note: Note): void {
+    if (note) {
+      note.type = 'note';
+      this.userDataStore.updateUserDataHistory$(note).subscribe();
+    }
   }
 
   toggleFullScreen(part: HTMLElement) {

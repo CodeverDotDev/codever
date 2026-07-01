@@ -21,7 +21,6 @@ import { BookmarkListElementComponent } from './bookmark-list-element/bookmark-l
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
-import { BookmarksFilterPipe } from './pipe/bookmarks-filter.pipe';
 import { HighlightModule } from 'ngx-highlightjs';
 import { SearchFilterPipe } from './pipe/search-filter.pipe';
 import { BackupBookmarksDialogComponent } from './dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
@@ -46,6 +45,7 @@ import { NoteSocialShareDialogContentComponent } from './dialog/note-social-shar
 import { HighLightPipe } from '../common/pipes/highlight.pipe';
 import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
 import { AddToCollectionDialogComponent } from './add-to-collection-dialog/add-to-collection-dialog.component';
+import { ResourceFilterPipe } from './pipe/resource-filter.pipe';
 
 /**
  * Add a SharedModule to hold the common components, directives, and pipes and share them with the modules that need them.
@@ -71,7 +71,7 @@ import { AddToCollectionDialogComponent } from './add-to-collection-dialog/add-t
   declarations: [
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
-    BookmarksFilterPipe,
+    ResourceFilterPipe,
     SearchFilterPipe,
     AsyncBookmarkListComponent,
     AsyncSearchResultListComponent,
