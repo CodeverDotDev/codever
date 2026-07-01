@@ -68,6 +68,22 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   onContentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
 
+    // Ensure links inside the rendered markdown open in a new tab. Resolve the
+    // nearest anchor with `closest('a')` so clicks landing on inline children
+    // (emoji, bold text, inline code) are handled too. Setting the attributes
+    // during the click event takes effect before the browser performs the
+    // default navigation, so this works even if `target` was missing/stripped
+    // after markdown rendering or HTML sanitization.
+    const anchor =
+      target && typeof target.closest === 'function'
+        ? (target.closest('a') as HTMLAnchorElement | null)
+        : null;
+    if (anchor) {
+      anchor.setAttribute('target', '_blank');
+      anchor.setAttribute('rel', 'noopener noreferrer');
+      return;
+    }
+
     // "Reset" button rendered after a checklist — uncheck every item in it.
     if (
       target instanceof HTMLButtonElement &&
