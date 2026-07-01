@@ -42,6 +42,14 @@ renderer.listitem = function (text: string, task: boolean) {
     : `<li>${text}</li>\n`;
 };
 
+// Open links in a new tab so clicking a URL inside a note doesn't navigate the
+// user away from Codever. `rel="noopener noreferrer"` prevents the opened page
+// from accessing `window.opener` and avoids leaking the referrer.
+renderer.link = function (href: string, title: string | null, text: string) {
+  const titleAttr = title ? ` title="${title}"` : '';
+  return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
+};
+
 // Append a single "Reset" button after each *top-level* checklist. A nested
 // sub-list renders first and returns its own button inside the parent's `body`;
 // we strip those bubbled-up buttons so only the outermost list keeps one — and
