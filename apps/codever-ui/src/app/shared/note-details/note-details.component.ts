@@ -10,7 +10,7 @@ import { Note } from '../../core/model/note';
 import { Observable, of } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { shareReplay, switchMap, tap } from 'rxjs/operators';
+import { shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import * as screenfull from 'screenfull';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -75,29 +75,34 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
       this.userData$ = isLoggedIn ? this.userDataStore.getUserData$() : of(null);
 
       if (!this.inSearchResults && !this.note$) {
-        if (window.history.state.note) {
-          this.note$ = of(window.history.state.note);
-        } else {
-          this.note$ = this.userId$.pipe(
-            switchMap((userId) => {
-              this.noteId = this.route.snapshot.paramMap.get('id');
-              return this.personalNotesService.getPersonalNoteById(
-                userId,
-                this.noteId
-              );
-            })
-          );
-        }
+        this.noteId = this.route.snapshot.paramMap.get('id');
+
+        // Always fetch the latest version from the API so edits made elsewhere
+        // (e.g. on another device) are reflected. A note passed through router
+        // state (e.g. from the pinned / quick-access panel or search results)
+        // can be stale, so it is only used as an instant placeholder while the
+        // fresh copy loads.
+        const stateNote: Note = window.history.state.note;
+
+        let note$ = this.userId$.pipe(
+          switchMap((userId) =>
+            this.personalNotesService.getPersonalNoteById(userId, this.noteId)
+          )
+        );
 
         if (isLoggedIn) {
           // Visiting a note's details page promotes it to the user's history,
           // mirroring how visiting a bookmark records it. Works regardless of
           // where the navigation originated (search, pinned, quick access…).
-          this.note$ = this.note$.pipe(
+          note$ = note$.pipe(
             tap((note) => this.promoteNoteInHistory(note)),
             shareReplay(1)
           );
         }
+
+        // Seed with the (possibly stale) router-state note for instant render,
+        // then replace it with the freshly fetched copy.
+        this.note$ = stateNote ? note$.pipe(startWith(stateNote)) : note$;
       }
     });
   }

@@ -3,7 +3,8 @@ import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-update-bookmark',
@@ -22,16 +23,19 @@ export class UpdatePersonalBookmarkComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-      this.userId = userInfo.sub;
-      this.bookmark$ = of(window.history.state.bookmark);
-      if (!window.history.state.bookmark) {
+    // Always load the latest version from the API before editing. Relying on a
+    // bookmark passed via router state (e.g. from the pinned / quick-access
+    // panel, history or search) could load a stale copy and, on save,
+    // overwrite newer changes made elsewhere (a lost update).
+    this.bookmark$ = this.userInfoStore.getUserInfoOidc$().pipe(
+      switchMap((userInfo) => {
+        this.userId = userInfo.sub;
         this.bookmarkId = this.route.snapshot.paramMap.get('id');
-        this.bookmark$ = this.personalBookmarksService.getPersonalBookmarkById(
+        return this.personalBookmarksService.getPersonalBookmarkById(
           this.userId,
           this.bookmarkId
         );
-      }
-    });
+      })
+    );
   }
 }

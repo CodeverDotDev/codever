@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { Note } from '../../core/model/note';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -22,19 +22,19 @@ export class UpdatePersonalNoteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (window.history.state.note) {
-      this.note$ = of(window.history.state.note);
-    } else {
-      this.note$ = this.userInfoStore.getUserInfoOidc$().pipe(
-        switchMap((userInfo) => {
-          this.userId = userInfo.sub;
-          this.noteId = this.route.snapshot.paramMap.get('id');
-          return this.personalNotesService.getPersonalNoteById(
-            this.userId,
-            this.noteId
-          );
-        })
-      );
-    }
+    // Always load the latest version from the API before editing. Relying on a
+    // note passed via router state (e.g. from the pinned / quick-access panel,
+    // history or search) could load a stale copy and, on save, overwrite newer
+    // changes made elsewhere (a lost update).
+    this.note$ = this.userInfoStore.getUserInfoOidc$().pipe(
+      switchMap((userInfo) => {
+        this.userId = userInfo.sub;
+        this.noteId = this.route.snapshot.paramMap.get('id');
+        return this.personalNotesService.getPersonalNoteById(
+          this.userId,
+          this.noteId
+        );
+      })
+    );
   }
 }

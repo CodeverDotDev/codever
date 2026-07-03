@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 import { UserData } from '../../core/model/user-data';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { UserDataStore } from '../../core/user/userdata.store';
@@ -29,15 +30,22 @@ export class BookmarkDetailsComponent implements OnInit {
 
     this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
       this.userData$ = this.userDataStore.getUserData$();
-      if (!window.history.state.bookmark) {
-        const bookmarkId = this.route.snapshot.paramMap.get('id');
-        this.bookmark$ = this.personalBookmarksService.getPersonalBookmarkById(
-          userInfo.sub,
-          bookmarkId
-        );
-      } else {
-        this.bookmark$ = of(window.history.state.bookmark);
-      }
+
+      // Always fetch the latest version from the API so edits made elsewhere
+      // (e.g. on another device) are reflected. A bookmark passed through
+      // router state (e.g. from the pinned / quick-access panel, history or
+      // search results) can be stale, so it is only used as an instant
+      // placeholder while the fresh copy loads.
+      const bookmarkId = this.route.snapshot.paramMap.get('id');
+      const freshBookmark$ = this.personalBookmarksService.getPersonalBookmarkById(
+        userInfo.sub,
+        bookmarkId
+      );
+
+      const stateBookmark: Bookmark = window.history.state.bookmark;
+      this.bookmark$ = stateBookmark
+        ? freshBookmark$.pipe(startWith(stateBookmark))
+        : freshBookmark$;
     });
   }
 
