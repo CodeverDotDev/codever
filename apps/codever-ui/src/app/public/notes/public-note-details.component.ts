@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { Note } from '../../core/model/note';
 import { PublicNotesService } from './public-notes.service';
 import { KeycloakService } from 'keycloak-angular';
@@ -24,16 +24,24 @@ export class PublicNoteDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      this.userIsLoggedIn = isLoggedIn;
-    });
-
     this.note$ = this.route.paramMap.pipe(
       switchMap((params) => {
         return this.publicNotesService.getPublicNoteById(params.get('id'));
       }),
-      tap((note) => this.promoteNoteInHistory(note))
+      shareReplay(1)
     );
+
+    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
+      this.userIsLoggedIn = isLoggedIn;
+      if (isLoggedIn) {
+        // Record the visit only once the user data is loaded — on a hard
+        // refresh the note can arrive before the user data, and promoting then
+        // would read history off an undefined userData object.
+        combineLatest([this.note$, this.userDataStore.getUserData$()])
+          .pipe(take(1))
+          .subscribe(([note]) => this.promoteNoteInHistory(note));
+      }
+    });
   }
 
   /** Record the visited public note in the user's history (logged-in users only). */

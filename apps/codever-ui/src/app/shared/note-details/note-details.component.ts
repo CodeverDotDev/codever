@@ -7,10 +7,10 @@ import {
   OnInit,
 } from '@angular/core';
 import { Note } from '../../core/model/note';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { shareReplay, startWith, switchMap, take } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import * as screenfull from 'screenfull';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -91,13 +91,15 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
         );
 
         if (isLoggedIn) {
+          note$ = note$.pipe(shareReplay(1));
           // Visiting a note's details page promotes it to the user's history,
-          // mirroring how visiting a bookmark records it. Works regardless of
-          // where the navigation originated (search, pinned, quick access…).
-          note$ = note$.pipe(
-            tap((note) => this.promoteNoteInHistory(note)),
-            shareReplay(1)
-          );
+          // mirroring how visiting a bookmark records it. Wait for the user
+          // data to be loaded first — on a hard refresh the note can arrive
+          // before the user data, and promoting then would read history off an
+          // undefined userData object and throw.
+          combineLatest([note$, this.userData$])
+            .pipe(take(1))
+            .subscribe(([note]) => this.promoteNoteInHistory(note));
         }
 
         // Seed with the (possibly stale) router-state note for instant render,

@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, of } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 import { Following, Profile, Search, UserData } from '../model/user-data';
@@ -179,6 +179,12 @@ export class UserDataStore {
   }
 
   updateUserDataHistory$(resource: UserDataResource): Observable<UserData> {
+    if (!this.userData) {
+      // User data may not have finished loading yet (e.g. a hard refresh on a
+      // details page fetches the resource before the user data HTTP call
+      // resolves). Skip recording history rather than throwing on undefined.
+      return of(null);
+    }
     // history
     this.placeOnTopOfUserHistoryIds(resource._id);
 
