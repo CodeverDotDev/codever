@@ -427,6 +427,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
 
       // Open the result comparison dialog
       this.openRefineResultDialog({
+        resourceType: 'note',
         originalTitle: this.noteForm.get('title').value || '',
         originalContent: this.noteForm.get('content').value || '',
         originalTags: this.noteForm.get('tags').value || [],
@@ -445,6 +446,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
    * letting the user choose which changes to apply.
    */
   private openRefineResultDialog(data: {
+    resourceType: 'note' | 'bookmark';
     originalTitle: string;
     originalContent: string;
     originalTags: string[];

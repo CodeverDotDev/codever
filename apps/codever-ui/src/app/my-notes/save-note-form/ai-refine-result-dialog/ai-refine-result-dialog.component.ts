@@ -3,12 +3,15 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MarkdownService } from '../../../core/markdown/markdown.service';
 
 export interface AiRefineResultDialogData {
+  resourceType: 'note' | 'bookmark';
   originalTitle: string;
   originalContent: string;
   originalTags: string[];
   refinedTitle: string;
   refinedContent: string;
   suggestedTags: string[];
+  /** For bookmarks: whether the page was reachable for scraping */
+  pageReachable?: boolean;
 }
 
 export interface AiRefineAcceptedChanges {
@@ -68,6 +71,14 @@ export class AiRefineResultDialogComponent implements OnInit {
     this.refinedContentHtml =
       this.markdownService.toHtml(this.data.refinedContent) ||
       '<em class="text-muted">(empty)</em>';
+  }
+
+  get titleLabel(): string {
+    return this.data.resourceType === 'bookmark' ? 'Name' : 'Title';
+  }
+
+  get contentLabel(): string {
+    return this.data.resourceType === 'bookmark' ? 'Description' : 'Content';
   }
 
   get originalTagsDisplay(): string {

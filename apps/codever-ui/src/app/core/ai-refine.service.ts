@@ -17,23 +17,45 @@ export interface AiRefineResult {
   suggestedTitle: string;
 }
 
+export interface AiRefineBookmarkPayload {
+  name: string;
+  location: string;
+  tags: string[];
+  description?: string;
+  customPrompt?: string;
+}
+
+export interface AiRefineBookmarkResult {
+  refinedName: string;
+  suggestedTags: string[];
+  refinedDescription: string;
+  pageReachable: boolean;
+}
+
 @Injectable()
 export class AiRefineService {
-  private personalNotesApiBaseUrl = environment.API_URL + '/personal/users';
+  private personalApiBaseUrl = environment.API_URL + '/personal/users';
   private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private httpClient: HttpClient) {}
 
-  /**
-   * Call the AI refine endpoint to polish note content, suggest tags,
-   * and suggest a better title.
-   */
   refineNote(
     userId: string,
     payload: AiRefinePayload
   ): Observable<AiRefineResult> {
     return this.httpClient.post<AiRefineResult>(
-      `${this.personalNotesApiBaseUrl}/${userId}/notes/ai-refine`,
+      `${this.personalApiBaseUrl}/${userId}/notes/ai-refine`,
+      JSON.stringify(payload),
+      { headers: this.headers }
+    );
+  }
+
+  refineBookmark(
+    userId: string,
+    payload: AiRefineBookmarkPayload
+  ): Observable<AiRefineBookmarkResult> {
+    return this.httpClient.post<AiRefineBookmarkResult>(
+      `${this.personalApiBaseUrl}/${userId}/bookmarks/ai-refine`,
       JSON.stringify(payload),
       { headers: this.headers }
     );

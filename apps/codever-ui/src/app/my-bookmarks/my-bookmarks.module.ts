@@ -19,6 +19,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CloneBookmarkComponent } from './clone-bookmark/clone-bookmark.component';
+import { AiRefineBookmarkDialogComponent } from './save-bookmark-form/ai-refine-bookmark-dialog/ai-refine-bookmark-dialog.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { CloneBookmarkComponent } from './clone-bookmark/clone-bookmark.componen
     UpdatePersonalBookmarkComponent,
     CopyToMineBookmarkComponent,
     CloneBookmarkComponent,
+    AiRefineBookmarkDialogComponent,
     MyBookmarksEntryPointComponent,
     PublicBookmarkPresentDialogComponent,
     SaveBookmarkFormComponent,

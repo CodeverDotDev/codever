@@ -55,6 +55,26 @@
         </button>
       </div>
     </div>
+
+    <!-- AI Refine button -->
+    <div *ngIf="isAiRefineEnabled$ | async" class="form-group">
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        [disabled]="isRefining"
+        (click)="refineBookmarkWithAi()"
+      >
+        <span *ngIf="isRefining; else aiButtonLabel">
+          <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+          Refining...
+        </span>
+        <ng-template #aiButtonLabel>
+          <i class="fas fa-magic mr-1"></i> Refine with AI ✨
+        </ng-template>
+      </button>
+      <small class="text-muted ml-2">AI summarizes the page or refines your fields (powered by DeepSeek)</small>
+    </div>
+
     <div class="form-group form-group-distanced">
       <label for="name">Title*</label>
       <input

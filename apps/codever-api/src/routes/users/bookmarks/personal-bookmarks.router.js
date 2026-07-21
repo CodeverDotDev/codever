@@ -7,6 +7,7 @@ const personalBookmarksSearchService = require('../../../common/searching/bookma
 const PersonalBookmarksService = require('./personal-bookmarks.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
+const AiRefineBookmarkService = require('../../ai/ai-refine-bookmark.service');
 
 const ValidationError = require('../../../error/validation.error');
 
@@ -44,6 +45,50 @@ personalBookmarksRouter.post(
       .send({
         response: 'Bookmark created for userId ' + request.params.userId,
       });
+  }
+);
+
+/**
+ * AI-refine bookmark name, description, and tags via DeepSeek API.
+ * Tries to scrape the URL first; falls back to refining existing fields.
+ */
+personalBookmarksRouter.post(
+  '/ai-refine',
+  keycloak.protect(),
+  async (request, response) => {
+    UserIdValidator.validateUserId(request);
+    const { name, location, tags, description, customPrompt } = request.body;
+
+    try {
+      const result = await AiRefineBookmarkService.refineBookmark(
+        request.params.userId,
+        { name, location, tags, description, customPrompt }
+      );
+      response.status(HttpStatus.OK).json(result);
+    } catch (err) {
+      if (err.isUnreachable) {
+        return response.status(HttpStatus.SERVICE_UNAVAILABLE).json({
+          message: err.message,
+          unreachable: true,
+        });
+      }
+      if (err.isAuthError) {
+        return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          message: err.message,
+          authError: true,
+        });
+      }
+      if (err.isRateLimit) {
+        return response.status(HttpStatus.TOO_MANY_REQUESTS).json({
+          message: err.message,
+          rateLimit: true,
+        });
+      }
+      console.error('AI refine bookmark error:', err.message);
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: err.message,
+      });
+    }
   }
 );
 

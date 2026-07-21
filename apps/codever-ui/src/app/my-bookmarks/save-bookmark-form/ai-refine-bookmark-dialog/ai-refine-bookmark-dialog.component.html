@@ -1,0 +1,55 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="mb-0"><i class="fas fa-magic mr-1"></i> Refine Bookmark with AI ✨</h5>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <hr class="mt-1 mb-2" />
+
+  <div class="mb-3 p-2 border rounded bg-light small">
+    <div><strong>Name:</strong> {{ data.name || '(empty)' }}</div>
+    <div><strong>URL:</strong> {{ data.location }}</div>
+    <div><strong>Tags:</strong> {{ tagSummary }}</div>
+    <div *ngIf="data.description"><strong>Description:</strong> {{ data.description.length }} characters</div>
+  </div>
+
+  <div class="form-group">
+    <label for="customPrompt"><strong>Instructions</strong></label>
+    <textarea
+      id="customPrompt"
+      class="form-control"
+      [(ngModel)]="customPrompt"
+      rows="8"
+      style="font-family: monospace; font-size: 0.85rem;"
+    ></textarea>
+    <small class="text-muted">
+      For public URLs: the page will be scraped and summarized.
+      For unreachable URLs: the existing fields will be refined.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label><strong>Output Format</strong> <span class="badge badge-secondary">read-only</span></label>
+    <pre class="border rounded bg-light p-2 small text-muted mb-0" style="font-family: monospace; font-size: 0.8rem; white-space: pre-wrap;">{{ outputFormatInstructions }}</pre>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-warning py-2 mb-2">
+    {{ errorMessage }}
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-secondary mr-2" (click)="close()" [disabled]="isRefining">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="refine()" [disabled]="isRefining">
+      <span *ngIf="isRefining; else refineLabel">
+        <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+        Refining...
+      </span>
+      <ng-template #refineLabel>
+        <i class="fas fa-magic mr-1"></i> Refine
+      </ng-template>
+    </button>
+  </div>
+</div>

@@ -53,6 +53,15 @@ import {
 import iziToast, { IziToastSettings } from 'izitoast';
 import { AddToCollectionDialogComponent } from '../../shared/add-to-collection-dialog/add-to-collection-dialog.component';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
+import { FeatureToggleService } from '../../core/feature-toggle.service';
+import {
+  AiRefineBookmarkDialogComponent,
+  AiRefineBookmarkDialogResult,
+} from './ai-refine-bookmark-dialog/ai-refine-bookmark-dialog.component';
+import {
+  AiRefineResultDialogComponent,
+  AiRefineAcceptedChanges,
+} from '../../my-notes/save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.component';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -117,6 +126,11 @@ export class SaveBookmarkFormComponent implements OnInit {
 
   hidePublicCheckbox = false;
   selectedCollectionIds: string[] = [];
+
+  /** Whether the AI refine feature is enabled for the current user */
+  isAiRefineEnabled$: Observable<boolean>;
+  /** Whether an AI refine request is in progress */
+  isRefining = false;
   constructor(
     private publicBookmarkPresentDialog: MatDialog,
     private formBuilder: UntypedFormBuilder,
@@ -142,7 +156,8 @@ export class SaveBookmarkFormComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private errorService: ErrorService,
-    private personalCollectionsService: PersonalCollectionsService
+    private personalCollectionsService: PersonalCollectionsService,
+    private featureToggleService: FeatureToggleService
   ) {
     this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
       this.userId = userInfo.sub;
@@ -165,6 +180,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isAiRefineEnabled$ = this.featureToggleService.isAiNoteRefineEnabled();
     this.buildForm();
     if (this.isUpdate || this.copyToMine || this.cloneBookmark) {
       this.bookmark$.subscribe((bookmark) => {
@@ -647,6 +663,114 @@ export class SaveBookmarkFormComponent implements OnInit {
         this.userDataStore.likeBookmark(bookmark);
       }
     });
+  }
+
+  /**
+   * Open the AI refine prompt dialog, then the result comparison dialog,
+   * then apply accepted changes to the form.
+   */
+  refineBookmarkWithAi(): void {
+    const DEFAULT_INSTRUCTIONS = `You are a helpful assistant that refines bookmark metadata.
+Given a bookmark's URL, name, tags, and description:
+1. If the URL page content is provided, create a concise summary as the description.
+2. Suggest relevant tags (lowercase, hyphenated for multi-word, max 8 tags).
+3. Suggest a better bookmark name if the current one could be improved.`;
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '700px';
+    dialogConfig.maxHeight = '90vh';
+    dialogConfig.disableClose = true;
+    dialogConfig.data = {
+      userId: this.userId,
+      name: this.bookmarkForm.get('name').value || '',
+      location: this.bookmarkForm.get('location').value || '',
+      tags: this.bookmarkForm.get('tags').value || [],
+      description: this.bookmarkForm.get('description').value || '',
+      defaultPrompt: DEFAULT_INSTRUCTIONS,
+    };
+
+    const dialogRef = this.publicBookmarkPresentDialog.open(
+      AiRefineBookmarkDialogComponent,
+      dialogConfig
+    );
+
+    dialogRef
+      .afterClosed()
+      .subscribe(
+        (result: AiRefineBookmarkDialogResult | undefined) => {
+          if (!result) {
+            return;
+          }
+
+          this.isRefining = true;
+
+          const resultDialogConfig = new MatDialogConfig();
+          resultDialogConfig.width = '95vw';
+          resultDialogConfig.maxHeight = '95vh';
+          resultDialogConfig.disableClose = true;
+          resultDialogConfig.data = {
+            resourceType: 'bookmark' as const,
+            originalTitle: this.bookmarkForm.get('name').value || '',
+            originalContent:
+              this.bookmarkForm.get('description').value || '',
+            originalTags: this.bookmarkForm.get('tags').value || [],
+            refinedTitle: result.refinedName,
+            refinedContent: result.refinedDescription,
+            suggestedTags: result.suggestedTags,
+            pageReachable: result.pageReachable,
+          };
+
+          const resultDialogRef = this.publicBookmarkPresentDialog.open(
+            AiRefineResultDialogComponent,
+            resultDialogConfig
+          );
+
+          resultDialogRef
+            .afterClosed()
+            .subscribe((accepted: AiRefineAcceptedChanges | null) => {
+              this.isRefining = false;
+              if (!accepted) {
+                return;
+              }
+
+              if (accepted.content) {
+                this.bookmarkForm
+                  .get('description')
+                  .patchValue(accepted.content, { emitEvent: false });
+                this.bookmarkForm.get('description').markAsDirty();
+              }
+
+              if (
+                accepted.title &&
+                accepted.title !== this.bookmarkForm.get('name').value
+              ) {
+                this.bookmarkForm
+                  .get('name')
+                  .patchValue(accepted.title, { emitEvent: false });
+                this.bookmarkForm.get('name').markAsDirty();
+              }
+
+              if (accepted.tags && accepted.tags.length > 0) {
+                const formTags = this.bookmarkForm.get(
+                  'tags'
+                ) as UntypedFormArray;
+                const existingTags = formTags.value.map((t: string) =>
+                  t.toLowerCase()
+                );
+                accepted.tags.forEach((tag) => {
+                  const normalized = tag.toLowerCase().trim();
+                  if (
+                    !existingTags.includes(normalized) &&
+                    formTags.length < 8
+                  ) {
+                    formTags.push(this.formBuilder.control(normalized));
+                  }
+                });
+                this.bookmarkForm.get('tags').markAsDirty();
+              }
+            });
+        }
+      );
   }
 
   get tags() {

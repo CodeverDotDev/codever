@@ -7,10 +7,15 @@
   </div>
   <hr class="mt-1 mb-3" />
 
-  <!-- Title comparison -->
+  <!-- Page reachability notice for bookmarks -->
+  <div *ngIf="data.resourceType === 'bookmark' && data.pageReachable === false" class="alert alert-info py-2 mb-3">
+    <i class="fas fa-info-circle mr-1"></i> The URL was not reachable for scraping. Suggestions are based on your existing fields.
+  </div>
+
+  <!-- Title/Name comparison -->
   <div class="card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center py-2">
-      <strong>Title</strong>
+      <strong>{{ titleLabel }}</strong>
       <div class="form-check mb-0">
         <input
           class="form-check-input"
@@ -72,10 +77,10 @@
     </div>
   </div>
 
-  <!-- Content comparison -->
+  <!-- Content/Description comparison -->
   <div class="card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center py-2">
-      <strong>Content</strong>
+      <strong>{{ contentLabel }}</strong>
       <div class="form-check mb-0">
         <input
           class="form-check-input"
