@@ -1,7 +1,8 @@
 
 
 <div #noteContentDiv appMarkedImageWidth appCopyCodeButton appFullscreenCodeButton
-     [style.fontSize.%]="contentFontSize">
+     [style.fontSize.%]="contentFontSize"
+     [attr.data-content-font-size]="contentFontSize">
   <!-- Notebook rendering: use the dedicated renderer for .ipynb content -->
   <div *ngIf="note.contentType === 'notebook'; else markdownBlock">
     <div *ngIf="partOfList && viewHeight > maxNoteHeightInList && !isFullScreen; else wholeNotebook">

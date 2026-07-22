@@ -6,8 +6,20 @@ import { AfterViewChecked, Directive, ElementRef } from '@angular/core';
 export class FullscreenCodeButtonDirective implements AfterViewChecked {
   private static stylesInjected = false;
 
+  private static readonly ZOOM_STEP = 10;
+  private static readonly ZOOM_MIN = 50;
+  private static readonly ZOOM_MAX = 200;
+  private static readonly ZOOM_DEFAULT = 100;
+  private static readonly BASE_FONT_SIZE = 14;
+
   constructor(private el: ElementRef) {
     FullscreenCodeButtonDirective.injectStyles();
+  }
+
+  private getInitialFontSizePercent(): number {
+    const attr = this.el.nativeElement.getAttribute('data-content-font-size');
+    const parsed = attr ? parseInt(attr, 10) : FullscreenCodeButtonDirective.ZOOM_DEFAULT;
+    return isNaN(parsed) ? FullscreenCodeButtonDirective.ZOOM_DEFAULT : parsed;
   }
 
   ngAfterViewChecked(): void {
@@ -28,6 +40,14 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
       button.addEventListener('click', () => {
         const code = pre.querySelector('code');
         const codeElement = code || pre;
+        const d = FullscreenCodeButtonDirective;
+        let currentZoom = this.getInitialFontSizePercent();
+
+        const updateFontSize = () => {
+          const px = (d.BASE_FONT_SIZE * currentZoom) / 100;
+          preClone.style.fontSize = px + 'px';
+          zoomIndicator.textContent = currentZoom + '%';
+        };
 
         // Create fullscreen overlay
         const overlay = document.createElement('div');
@@ -36,17 +56,33 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
         const container = document.createElement('div');
         container.className = 'fullscreen-code-container';
 
-        // Close button
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'fullscreen-code-close-btn';
-        closeBtn.title = 'Exit fullscreen (Esc)';
-        closeBtn.innerHTML = '<i class="fas fa-compress"></i> Close';
+        // Zoom out button
+        const zoomOutBtn = document.createElement('button');
+        zoomOutBtn.className = 'fullscreen-code-zoom-btn';
+        zoomOutBtn.title = 'Zoom out';
+        zoomOutBtn.innerHTML = '<i class="fas fa-search-minus"></i>';
+
+        // Zoom indicator
+        const zoomIndicator = document.createElement('span');
+        zoomIndicator.className = 'fullscreen-code-zoom-indicator';
+
+        // Zoom in button
+        const zoomInBtn = document.createElement('button');
+        zoomInBtn.className = 'fullscreen-code-zoom-btn';
+        zoomInBtn.title = 'Zoom in';
+        zoomInBtn.innerHTML = '<i class="fas fa-search-plus"></i>';
 
         // Copy button inside fullscreen
         const copyBtn = document.createElement('button');
         copyBtn.className = 'fullscreen-code-copy-btn';
         copyBtn.title = 'Copy code';
         copyBtn.innerHTML = '<i class="far fa-copy"></i> Copy';
+
+        // Close button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'fullscreen-code-close-btn';
+        closeBtn.title = 'Exit fullscreen (Esc)';
+        closeBtn.innerHTML = '<i class="fas fa-compress"></i> Close';
 
         // Code content - use innerHTML to preserve syntax highlighting
         const preClone = document.createElement('pre');
@@ -58,10 +94,31 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
         preClone.appendChild(codeClone);
         preClone.className = 'fullscreen-code-content';
 
+        // Apply initial zoom
+        updateFontSize();
+
+        // Zoom handlers
+        zoomOutBtn.addEventListener('click', () => {
+          currentZoom = Math.max(currentZoom - d.ZOOM_STEP, d.ZOOM_MIN);
+          updateFontSize();
+        });
+        zoomInBtn.addEventListener('click', () => {
+          currentZoom = Math.min(currentZoom + d.ZOOM_STEP, d.ZOOM_MAX);
+          updateFontSize();
+        });
+
         // Toolbar
         const toolbar = document.createElement('div');
         toolbar.className = 'fullscreen-code-toolbar';
         toolbar.appendChild(copyBtn);
+
+        const zoomGroup = document.createElement('div');
+        zoomGroup.className = 'fullscreen-code-zoom-group';
+        zoomGroup.appendChild(zoomOutBtn);
+        zoomGroup.appendChild(zoomIndicator);
+        zoomGroup.appendChild(zoomInBtn);
+        toolbar.appendChild(zoomGroup);
+
         toolbar.appendChild(closeBtn);
 
         container.appendChild(toolbar);
@@ -187,11 +244,48 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
 
       .fullscreen-code-toolbar {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
         gap: 8px;
         padding: 8px 12px;
         background: #2d2d2d;
         border-bottom: 1px solid #444;
+      }
+
+      .fullscreen-code-zoom-group {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        margin: 0 auto;
+      }
+
+      .fullscreen-code-zoom-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ddd;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background-color 0.15s ease, color 0.15s ease;
+      }
+
+      .fullscreen-code-zoom-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+
+      .fullscreen-code-zoom-indicator {
+        font-size: 13px;
+        font-weight: 600;
+        color: #ccc;
+        min-width: 36px;
+        text-align: center;
       }
 
       .fullscreen-code-close-btn,
@@ -222,7 +316,6 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
         flex: 1;
         background: #1e1e1e;
         color: #d4d4d4;
-        font-size: 14px;
         line-height: 1.6;
       }
     `;

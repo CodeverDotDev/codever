@@ -9,7 +9,6 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import * as screenfull from 'screenfull';
 import { Note } from '../../../core/model/note';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
 
@@ -117,8 +116,7 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
       return;
     }
 
-    const container: HTMLElement | undefined =
-      this.elementView?.nativeElement;
+    const container: HTMLElement | undefined = this.elementView?.nativeElement;
     if (!container) {
       return;
     }
@@ -244,4 +242,3 @@ export function resetTaskMarkers(
     }
   );
 }
-
