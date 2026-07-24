@@ -1,5 +1,16 @@
 # Additional Migration Tasks
-## 1. Remove AWS S3 — Store Profile Images Locally
+
+> Tasks are labeled **[MIGRATION]** (part of the infra phase, no app code changes) or
+> **[DEFERRED — Phase 10]** (code changes, done *after* the new infra is stable —
+> see [migration-plan.md](migration-plan.md) §5, Phase 10).
+
+## 1. [DEFERRED — Phase 10] Remove AWS S3 — Store Profile Images Locally
+
+> ⚠️ **Not part of this migration.** The brief explicitly preserves S3 profile-image uploads and
+> forbids app code changes in this phase. During the migration, simply pass `AWS_ACCESS_KEY_ID`,
+> `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` into the `codever-api` container via `.env` (§2) and S3
+> keeps working unchanged. The plan below is kept for the later code phase.
+
 ### What it does today
 - Users upload profile pictures via `POST /api/personal/users/:userId/profile-picture`
 - Images stored in AWS S3 bucket `bookmarks.dev` under `user-profile-images/<env>/`
@@ -63,7 +74,8 @@ npm uninstall aws-sdk multer-s3
 - Update `imageUrl` in MongoDB `users` collection
 - Or let users re-upload if few users affected
 ---
-## 2. Environment Variables (.env with placeholders)
+## 2. [MIGRATION] Environment Variables (.env with placeholders)
+
 Create `.env` on the server (never commit to git):
 ```bash
 # /opt/codever/.env
@@ -79,10 +91,12 @@ KEYCLOAK_REALM=bookmarks
 # External API Keys
 YOUTUBE_API_KEY=CHANGE_ME_YOUTUBE_KEY
 STACK_EXCHANGE_API_KEY=CHANGE_ME_STACK_EXCHANGE_KEY
+# AWS S3 (profile images — KEPT during this phase)
+AWS_ACCESS_KEY_ID=CHANGE_ME_AWS_KEY_ID
+AWS_SECRET_ACCESS_KEY=CHANGE_ME_AWS_SECRET
+AWS_REGION=eu-central-1
 # Node
 NODE_ENV=production
-# Uploads
-UPLOAD_DIR=/data/codever/uploads/profile-images
 ```
 In `docker-compose.prod.yml`:
 ```yaml
@@ -99,16 +113,26 @@ services:
       STACK_EXCHANGE_API_KEY: ${STACK_EXCHANGE_API_KEY}
       KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
-      UPLOAD_DIR: ${UPLOAD_DIR}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
 ```
-> Add `.env` to `.gitignore`.
+> Add `.env` to `.gitignore`. `env.json` (keyed by `NODE_ENV`) stays as today and is either baked
+> per-server or mounted read-only — it is already git-ignored.
 ---
-## 3. Logging — Use Docker Logs (no file rotation)
+## 3. [MIGRATION — minimal, flagged code change] Logging — Use Docker Logs
 ### Why
 - `docker logs codever-api` works out of the box
 - Docker handles rotation natively
 - No log directories to manage on the host
-### Change in `app.js`
+
+> ⚠️ **This is an app code change** (removing `rotating-file-stream` from `app.js`), flagged
+> explicitly per the brief's "unavoidable changes must be called out" rule. It is small, isolated,
+> and containers make file-based rotation pointless.
+> **Zero-code alternative:** keep `app.js` untouched and bind-mount the log directory
+> (`- /var/log/codever/api:/usr/src/app/log`). Choose one; the code change is recommended.
+
+### Change in `app.js` (recommended)
 ```javascript
 // REMOVE rotating-file-stream setup entirely
 // REMOVE: const rfs = require('rotating-file-stream/index');
@@ -135,20 +159,54 @@ docker compose logs --tail 100 codever-api  # last 100 lines
 docker compose logs codever-api | grep error # search
 ```
 ---
-## 4. CI/CD with GitHub Actions (free)
+## 4. [MIGRATION] CI/CD with GitHub Actions (free)
+
 ### Free tier
 - **Public repos:** unlimited minutes
 - **Private repos:** 2,000 min/month free
-### Simple approach: SSH deploy on push to master
+
+### Recommended flow: build → GHCR → `compose pull && up`
+
+Answers the "commit → deployment" stakeholder question (see
+[migration-plan.md](migration-plan.md) §6.3): images are built in CI, pushed to GHCR
+(`latest` + git-SHA tags), and the server only ever pulls — no Node/Angular toolchain on the server.
+
 `.github/workflows/deploy.yml`:
 ```yaml
-name: Deploy to Production
+name: Build and Deploy to Production
 on:
   push:
     branches: [master]
   workflow_dispatch:  # manual trigger from GitHub UI
 jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, packages: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: apps/codever-api
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/codever-api:latest
+            ghcr.io/${{ github.repository_owner }}/codever-api:${{ github.sha }}
+      - name: Build & push UI image (multi-stage: ng build → nginx)
+        uses: docker/build-push-action@v6
+        with:
+          context: apps/codever-ui
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/codever-ui:latest
+            ghcr.io/${{ github.repository_owner }}/codever-ui:${{ github.sha }}
   deploy:
+    needs: build-push
     runs-on: ubuntu-latest
     steps:
       - name: Deploy via SSH
@@ -159,15 +217,23 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /opt/codever
-            git pull origin master
-            # Rebuild and restart API
-            docker compose -f docker-compose.prod.yml build codever-api
-            docker compose -f docker-compose.prod.yml up -d --no-deps codever-api
-            # Rebuild frontend
-            cd apps/codever-ui && npm ci && npx ng build --configuration production
-            cp -r dist/codever-ui/* /data/codever/nginx/html/
-            docker exec codever-nginx nginx -s reload
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
 ```
+
+### Simpler alternative / manual fallback: build on the server
+
+No registry involved — good as a fallback if CI is down, or as the initial setup before CI exists:
+```bash
+ssh deploy@server
+cd /opt/codever
+git pull origin master
+docker compose -f docker-compose.prod.yml build codever-api
+docker compose -f docker-compose.prod.yml up -d --no-deps codever-api
+# UI (if not using the UI image): build locally/CI and copy dist to /data/codever/ui-dist,
+# then: docker exec codever-nginx nginx -s reload
+```
+
 ### GitHub Secrets to set
 Repo > Settings > Secrets > Actions:
 | Secret | Value |
@@ -189,11 +255,23 @@ ssh-keygen -t ed25519 -f ~/.ssh/deploy_key -N ""
 cat ~/.ssh/deploy_key.pub >> ~/.ssh/authorized_keys
 # Copy private key content to GitHub Secret: SSH_PRIVATE_KEY
 ```
-### Manual deploy still works
-```bash
-ssh deploy@server
-cd /opt/codever
-git pull
-docker compose -f docker-compose.prod.yml build codever-api
-docker compose -f docker-compose.prod.yml up -d --no-deps codever-api
-```
+
+---
+## 5. [DEFERRED — Phase 10] Auth adapter modernization
+
+> Recorded here so it isn't lost; **do not do this during the migration**
+> (see [keycloak-migration.md](keycloak-migration.md), Step 6).
+
+Replace/upgrade `keycloak-connect@16.1.1` (deprecated upstream) with a newer `keycloak-connect`
+or a generic OIDC middleware (`express-openid-connect`, `passport-openidconnect`).
+Files that need changes (7 files):
+
+- `src/routes/admin/admin.router.js`
+- `src/routes/users/user.router.js`
+- `src/routes/users/bookmarks/personal-bookmarks.router.js`
+- `src/routes/users/snippets/personal-snippets.router.js`
+- `src/routes/users/notes/personal-notes.router.js`
+- `src/routes/users/userid.validator.js`
+- `src/routes/webpage-info/webpage-info.router.js`
+
+On the UI side: upgrade `keycloak-js` / `keycloak-angular` together with the Angular upgrade.

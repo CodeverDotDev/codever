@@ -712,16 +712,6 @@
         "uris" : [ "/*" ]
       } ],
       "policies" : [ {
-        "id" : "37dbe10b-9186-4c72-ae06-318276d3870d",
-        "name" : "Default Policy",
-        "description" : "A policy that grants access only for users within this realm",
-        "type" : "js",
-        "logic" : "POSITIVE",
-        "decisionStrategy" : "AFFIRMATIVE",
-        "config" : {
-          "code" : "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
-        }
-      }, {
         "id" : "b65d1da1-e0c1-4f44-bc95-036503d112c3",
         "name" : "Default Permission",
         "description" : "A permission that applies to the default resource type",
@@ -730,7 +720,7 @@
         "decisionStrategy" : "UNANIMOUS",
         "config" : {
           "defaultResourceType" : "urn:bookmarks-api:resources:default",
-          "applyPolicies" : "[\"Default Policy\"]"
+          "applyPolicies" : "[]"
         }
       } ],
       "scopes" : [ ],
@@ -1384,8 +1374,8 @@
     "ssl" : "false",
     "user" : "codever@codepedia.org"
   },
-  "loginTheme" : "keycloak",
-  "accountTheme" : "codever",
+  "loginTheme" : "codever",
+  "accountTheme" : "keycloak.v2",
   "emailTheme" : "codever",
   "eventsEnabled" : false,
   "eventsListeners" : [ "jboss-logging" ],

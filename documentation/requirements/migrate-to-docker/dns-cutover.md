@@ -74,7 +74,7 @@ certbot certonly \
 # The cert is generated without needing the A record to point here.
 ```
 
-Mount the certs into the nginx container:
+Mount the certs into the nginx container (full stack in [docker-compose-prod.md](docker-compose-prod.md)):
 ```yaml
 # In docker-compose.prod.yml
 services:
@@ -83,10 +83,12 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
 ```
 
-Set up auto-renewal:
+Auto-renewal is handled by the **certbot sidecar container** (webroot challenge) defined in
+[docker-compose-prod.md](docker-compose-prod.md) §6 — it starts working automatically once DNS
+points at the new server. Only the nginx reload cron is needed on the host:
 ```bash
-# Add to crontab
-0 3 1,15 * * certbot renew --quiet && docker exec codever-nginx nginx -s reload
+# Add to crontab — reload nginx to pick up renewed certs
+0 4 1,15 * * docker exec codever-nginx nginx -s reload
 ```
 
 **5. Update the DNS A record**

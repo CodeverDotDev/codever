@@ -12,10 +12,12 @@ db.createUser(
 );
 
 
-db.auth("bookmarks", "secret");
+// NOTE: db.auth() removed — init scripts run with root privileges automatically
+// (MONGO_INITDB_* env vars); it also fails under mongosh (mongo:5.0+ images).
 
 //insert initial public dev bookmarks
-db.bookmarks.insert(
+// insertMany() instead of insert(): insert() was removed in mongosh (mongo:5.0+ images)
+db.bookmarks.insertMany(
   [
     {
       "tags": [

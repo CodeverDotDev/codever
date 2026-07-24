@@ -1,0 +1,100 @@
+# =============================================================================
+# LOCAL MIGRATION TEST STACK — "local compatibility gate" (Phase 0.3)
+# See documentation/requirements/migrate-to-docker/migration-plan.md
+#
+# Runs the TARGET infrastructure (Keycloak 24 + PostgreSQL 16 + MongoDB 5.0)
+# on the SAME ports as the regular dev stack (8480, 27017), so the unchanged
+# app (npm start) works against it without any config changes.
+#
+# Usage:
+#   docker compose down                                   # stop the old dev stack first (port clash!)
+#   docker compose -f docker-compose.migration-test.yml up
+#   npm start                                             # backend + frontend as usual
+#
+# Then verify:
+#   - Login via UI (keycloak-js 12 against Keycloak 24, custom 'codever' theme)
+#   - Protected API calls (keycloak-connect 16.1.1 bearer validation)
+#   - CRUD + full-text search (mongoose 5 against mongo:5.0)
+#   - cd apps/codever-api && npm run test:integration
+#
+# Notes:
+#   - Keycloak runs in dev mode (start-dev): no TLS/hostname config needed AND
+#     theme caching is disabled -> edit the theme and just refresh the browser.
+#   - Realm + users are imported automatically from the existing legacy export
+#     (docker-compose-setup/keycloak-export-import). Watch the logs for import
+#     warnings — this also validates Step 5 of keycloak-migration.md.
+#   - mongo:5.0 requires a CPU with AVX (most dev machines have it).
+#   - Data lives in separate volumes (*_migration_test) — your dev volumes stay
+#     untouched; wipe with:  docker compose -f docker-compose.migration-test.yml down -v
+# =============================================================================
+
+volumes:
+  postgres_data_migration_test:
+  mongo_data_migration_test:
+
+networks:
+  backend:
+
+services:
+
+  postgres:
+    container_name: codever-postgres-migration-test
+    image: postgres:16-alpine
+    networks:
+      - backend
+    volumes:
+      - postgres_data_migration_test:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U keycloak" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    container_name: codever-keycloak-migration-test
+    image: quay.io/keycloak/keycloak:24.0
+    networks:
+      - backend
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HTTP_RELATIVE_PATH: /auth          # CRITICAL: keeps keycloak-js 12 + env.json working
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin    # KC 24 fallback: KEYCLOAK_ADMIN also works
+      KC_BOOTSTRAP_ADMIN_PASSWORD: Pa55w0rd
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: Pa55w0rd
+    # dev mode: HTTP allowed, theme cache OFF (live theme editing), realm auto-import
+    command: start-dev --import-realm
+    ports:
+      - "8480:8080"                          # same port as the dev stack
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # legacy dir-format export (realm + users files) — --import-realm understands it;
+      # 'master' realm file is skipped automatically ("already exists")
+      - ./docker-compose-setup/keycloak-export-import:/opt/keycloak/data/import:ro
+      # custom theme at the NEW Quarkus path (was /opt/jboss/keycloak/themes on KC 16)
+      - ./apps/codever-keycloak-theme/codever/:/opt/keycloak/themes/codever/
+
+  mongo:
+    container_name: codever-mongo-migration-test
+    image: mongo:5.0
+    networks:
+      - backend
+    environment:
+      - MONGO_INITDB_DATABASE=dev-bookmarks
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    ports:
+      - "27017:27017"                        # same port as the dev stack
+    volumes:
+      - ./docker-compose-setup/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongo_data_migration_test:/data/db
+

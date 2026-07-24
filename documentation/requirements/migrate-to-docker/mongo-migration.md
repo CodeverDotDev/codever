@@ -1,10 +1,17 @@
-# MongoDB Migration: 3.4 → 7.0 (Dockerized with Host Volume)
+# MongoDB Migration: 3.2 → 5.0 (Dockerized with Host Volume)
+
+> **Version rationale (infrastructure-first, no code changes):** MongoDB **5.0** is the highest
+> server version officially supported by the app's pinned `mongoose ^5.13` — going to Mongo 6/7
+> would require upgrading to mongoose 7/8 (code changes), which is **deferred to the later code
+> phase** (see [migration-plan.md](migration-plan.md), Phase 10).
+> ⚠️ `mongo:5.0+` images require a CPU with **AVX** — verify with `grep avx /proc/cpuinfo` on the
+> new Linode; if unavailable, fall back to `mongo:4.4` (also supported by mongoose 5).
 
 ## Current State
 
 | Component | Detail |
 |---|---|
-| MongoDB version | 3.4 (bare-metal on Ubuntu 16 in production, `mongo:3.4` Docker image in dev) |
+| MongoDB version | **3.2.11** (bare-metal on Ubuntu 16 in production; `mongo:3.4` Docker image in dev) |
 | Database name | `dev-bookmarks` |
 | Auth user | `bookmarks` (readWrite role on `dev-bookmarks`) |
 | Admin user | `mongoadmin` (root) |
@@ -29,10 +36,10 @@
 
 | Component | Detail |
 |---|---|
-| MongoDB version | `mongo:7.0` (Docker container) |
+| MongoDB version | **`mongo:5.0`** (Docker container) — fallback `mongo:4.4` if no AVX |
 | Data storage | Named Docker volume **or** bind-mount to host directory |
-| Mongoose driver | `mongoose@7.x` or `8.x` (required for MongoDB 7 compatibility) |
-| `mongodb` Node.js driver | `6.x` (comes with mongoose 7/8) |
+| Mongoose driver | **`mongoose@5.13.x` — UNCHANGED** (MongoDB 5.0 is within its support matrix) |
+| `mongodb` Node.js driver | `3.7.x` (bundled with mongoose 5) — unchanged |
 
 ---
 
@@ -49,7 +56,7 @@ volumes:
 
 services:
   mongo:
-    image: mongo:7.0
+    image: mongo:5.0
     volumes:
       - mongo_data:/data/db
 ```
@@ -73,7 +80,7 @@ You choose exactly where on the server the data lives. This is better for produc
 ```yaml
 services:
   mongo:
-    image: mongo:7.0
+    image: mongo:5.0
     volumes:
       - /data/codever/mongodb:/data/db
     user: "999:999"   # mongodb user inside the container
@@ -112,9 +119,9 @@ sudo chown -R 999:999 /data/codever/mongodb
 
 ## Step-by-step Migration
 
-### Step 1 — Dump data from production MongoDB 3.4
+### Step 1 — Dump data from production MongoDB 3.2
 
-On your current Ubuntu 16 server where MongoDB 3.4 is running bare-metal:
+On your current Ubuntu 16 server where MongoDB 3.2.11 is running bare-metal:
 
 ```bash
 # Create a backup directory
@@ -154,7 +161,7 @@ mongodump \
   --out ~/mongo-migration-backup/
 ```
 
-> **Important:** `mongodump`/`mongorestore` output is version-independent BSON. You can dump from 3.4 and restore directly into 7.0 — no need to step through intermediate versions. The stepping-through-versions requirement only applies to **in-place upgrades** (reusing the same data directory).
+> **Important:** `mongodump`/`mongorestore` output is version-independent BSON. You can dump from 3.2 and restore directly into 5.0 — no need to step through intermediate versions (3.4→3.6→4.0→…). The stepping-through-versions requirement (with `featureCompatibilityVersion` bumps) only applies to **in-place upgrades** (reusing the same data directory), which we are NOT doing.
 
 ### Step 2 — Copy the dump to the new server
 
@@ -186,9 +193,9 @@ sudo mkdir -p /var/log/codever/mongodb
 sudo chown -R 999:999 /var/log/codever/mongodb
 ```
 
-### Step 4 — Start MongoDB 7.0 container (empty, for initial setup)
+### Step 4 — Start MongoDB 5.0 container (empty, for initial setup)
 
-Add this to your `docker-compose.prod.yml`:
+Add this to your `docker-compose.prod.yml` (full stack in [docker-compose-prod.md](docker-compose-prod.md)):
 
 ```yaml
 volumes:
@@ -203,7 +210,7 @@ networks:
 
 services:
   mongo:
-    image: mongo:7.0
+    image: mongo:5.0
     container_name: codever-mongo
     networks:
       - backend
@@ -227,19 +234,19 @@ services:
     restart: unless-stopped
 ```
 
-> **Note:** MongoDB 7.0 uses `mongosh` instead of the legacy `mongo` shell.
+> **Note:** MongoDB 5.0 images ship `mongosh` (the init entrypoint uses it); the legacy `mongo` shell is deprecated.
 
 Start it up:
 ```bash
 docker compose -f docker-compose.prod.yml up -d mongo
 ```
 
-### Step 5 — Update `init-mongo.js` for MongoDB 7.0 compatibility
+### Step 5 — Update `init-mongo.js` for mongosh compatibility
 
-The existing `init-mongo.js` uses `db.bookmarks.insert()` which is **removed** in MongoDB 7.0. Update to use `insertMany()`:
+The existing `init-mongo.js` uses `db.bookmarks.insert()` which is deprecated (and removed in `mongosh`). Update to use `insertMany()`:
 
 ```javascript
-// db.bookmarks.insert([...])    // ❌ Removed in MongoDB 5.0+
+// db.bookmarks.insert([...])    // ❌ Deprecated / removed in mongosh
 db.bookmarks.insertMany([...])   // ✅ Works in all versions
 ```
 
@@ -287,7 +294,7 @@ db.notes.createIndex(
 );
 ```
 
-### Step 6 — Restore the dump into MongoDB 7.0
+### Step 6 — Restore the dump into MongoDB 5.0
 
 ```bash
 # Copy the dump into the running container
@@ -351,49 +358,29 @@ db.bookmarks.find({ $text: { $search: "codever" } }).limit(5)
 db.bookmarks.getIndexes().filter(i => i.name === "unique_user_and_location")
 ```
 
-### Step 8 — Upgrade Mongoose in `codever-api`
+### Step 8 — Mongoose: NO upgrade in this phase
 
-`mongoose@5.13.23` does **not** support MongoDB 7.0. You need to upgrade:
+**`mongoose@5.13.x` stays as-is.** MongoDB 5.0 was chosen precisely so the pinned mongoose 5 driver
+keeps working **without any application code changes** (guiding principle of
+[migration-plan.md](migration-plan.md)).
 
-| Current | Target | MongoDB 7 support |
-|---|---|---|
-| `mongoose@5.13.23` | `mongoose@7.8.x` or `8.x` | ✅ |
-| `mongodb` driver `3.7.4` | `6.x` (bundled with mongoose 7/8) | ✅ |
-
-```bash
-cd apps/codever-api
-npm install mongoose@8
-```
-
-**Breaking changes to address:**
-
-1. **Removed options** — Remove from `app.js`:
-   ```javascript
-   // ❌ These options are removed in Mongoose 7+
-   // useNewUrlParser: true,
-   // useUnifiedTopology: true,
-   // useFindAndModify: false,
-
-   // ✅ Just use:
-   const mongooseConnectOptions = {};
-   ```
-
-2. **`findOneAndUpdate()` returns the document differently** — In Mongoose 7+, `returnDocument: 'after'` replaces `new: true`. Check all `.findOneAndUpdate()` / `.findOneAndDelete()` calls.
-
-3. **`remove()` is removed** — Replace with `deleteOne()` or `deleteMany()`.
-
-4. **Callback-based queries removed** — All queries must use `await` or `.then()`. Your code likely already uses promises/async-await, but check for any remaining callbacks.
-
-5. **`Schema.Types.ObjectId` validation is stricter** — Ensure all ObjectIds are valid.
-
-**Quick way to find all affected calls:**
-```bash
-cd apps/codever-api
-grep -rn "\.remove(" src/
-grep -rn "useNewUrlParser\|useUnifiedTopology\|useFindAndModify" src/
-grep -rn "{ new: true }" src/
-grep -rn "callback\|function(err" src/
-```
+> **Deferred to the code-modernization phase (Phase 10):** upgrading to `mongoose@7/8` (which
+> unlocks MongoDB 6/7). When that phase starts, plan for these known breaking changes:
+>
+> 1. Removed connect options (`useNewUrlParser`, `useUnifiedTopology`, `useFindAndModify`) in `app.js`
+> 2. `findOneAndUpdate()`: `returnDocument: 'after'` replaces `new: true`
+> 3. `remove()` removed — replace with `deleteOne()` / `deleteMany()`
+> 4. Callback-based queries removed — everything must be `await`/`.then()`
+> 5. Stricter `Schema.Types.ObjectId` validation
+>
+> Quick scan for affected call sites when the time comes:
+> ```bash
+> cd apps/codever-api
+> grep -rn "\.remove(" src/
+> grep -rn "useNewUrlParser\|useUnifiedTopology\|useFindAndModify" src/
+> grep -rn "{ new: true }" src/
+> grep -rn "callback\|function(err" src/
+> ```
 
 ### Step 9 — Update environment variables for Docker
 
@@ -469,38 +456,38 @@ sudo crontab -e
 
 ## Migration Checklist
 
-- [ ] `mongodump` from production MongoDB 3.4 completed
+- [ ] AVX support verified on the new server (`grep avx /proc/cpuinfo`) — else use `mongo:4.4`
+- [ ] `mongodump` from production MongoDB 3.2.11 completed
 - [ ] Dump files transferred to new server
 - [ ] Host directories created with correct permissions (`/data/codever/mongodb`)
-- [ ] `init-mongo.js` updated for MongoDB 7.0 compatibility (`insertMany`, remove `db.auth()`)
-- [ ] MongoDB 7.0 container started and healthy
+- [ ] `init-mongo.js` updated for mongosh compatibility (`insertMany`, remove `db.auth()`)
+- [ ] MongoDB 5.0 container started and healthy
 - [ ] `mongorestore` completed successfully
 - [ ] All collections present with correct document counts
 - [ ] All indexes verified (especially text-search and unique indexes)
 - [ ] Full-text search queries return correct results
-- [ ] `mongoose` upgraded to v7 or v8 in `codever-api`
-- [ ] Removed deprecated Mongoose options (`useNewUrlParser`, etc.)
-- [ ] Fixed any `remove()` → `deleteOne()`/`deleteMany()` calls
+- [ ] **mongoose left untouched at `5.13.x`** — API connects to MongoDB 5.0 without code changes
 - [ ] Environment variables updated for Docker networking (`MONGODB_HOST=mongo`)
-- [ ] API starts and connects to MongoDB 7.0 successfully
+- [ ] API starts and connects to MongoDB 5.0 successfully
 - [ ] End-to-end test: create, read, update, delete bookmarks/snippets/notes
 - [ ] Backup cron job configured and tested
-- [ ] Old bare-metal MongoDB 3.4 kept running until verification complete
+- [ ] Old bare-metal MongoDB 3.2 kept running until verification complete
 
 ## Rollback Plan
 
-1. The old MongoDB 3.4 on Ubuntu 16 is untouched during this entire process
+1. The old MongoDB 3.2 on Ubuntu 16 is untouched during this entire process
 2. If restore fails or data is corrupt → dump again from old server and retry
-3. If Mongoose upgrade causes issues → pin `mongoose@6.x` as an intermediate step (supports both Mongo 5 and 6)
+3. If MongoDB 5.0 misbehaves against mongoose 5 → drop to `mongo:4.4` (also within mongoose 5's support matrix) and re-restore
 4. If all else fails → keep running the bare-metal Mongo and only dockerize Keycloak + Node.js
 
 ## Risk Assessment
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| `mongodump` from 3.4 incompatible with 7.0 `mongorestore` | High | Test locally first; `mongodump`/`mongorestore` is designed for cross-version portability |
-| Text indexes behave differently in 7.0 | Medium | Run full-text search queries after restore and compare results with production |
-| Mongoose 5 → 8 breaking changes | Medium | Run full test suite; use Mongoose migration guide; consider interim step to v6 |
+| `mongodump` from 3.2 incompatible with 5.0 `mongorestore` | High | Test locally first; `mongodump`/`mongorestore` is designed for cross-version portability |
+| Text indexes behave differently in 5.0 | Medium | Run full-text search queries after restore and compare results with production |
+| mongoose 5 driver edge cases against Mongo 5.0 | Medium | Local compatibility gate (Phase 0.3): run the API test suites against `mongo:5.0` before touching prod; fallback `mongo:4.4` |
+| Host CPU lacks AVX (mongo:5.0 won't start) | Medium | Check before provisioning; fallback `mongo:4.4` |
 | Data directory permissions wrong | Low | Verify with `docker exec codever-mongo ls -la /data/db` |
 | Large dump file transfer fails | Low | Use `rsync` with resume capability; compress before transfer |
 
