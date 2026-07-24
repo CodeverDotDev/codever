@@ -8,20 +8,22 @@ import katex from 'katex';
  *  - Display math:  $$...$$ and \[...\]
  *  - Inline math:   $...$ and \(...\)
  *
- * Fenced code blocks (``` ... ```) are skipped so that dollar signs
- * inside code are not treated as math delimiters.
+ * Fenced code blocks (``` ... ```) and inline code spans (`...`) are skipped
+ * so that dollar signs inside code are not treated as math delimiters.
  */
 export function renderLatex(text: string): string {
   if (!text) {
     return text;
   }
 
-  // Split on fenced code blocks so we never touch code
-  // The regex captures ``` blocks (with optional language) as separate tokens
-  const parts = text.split(/(```[\s\S]*?```)/g);
+  // Split on fenced code blocks AND inline code spans so we never touch code.
+  // Each capturing group becomes an odd-indexed token that we skip:
+  //  - ```...``` fenced blocks (with optional language)
+  //  - ``...`` / `...` inline code spans
+  const parts = text.split(/(```[\s\S]*?```|`+[^`\n]*?`+)/g);
 
   for (let i = 0; i < parts.length; i++) {
-    // Odd indices are fenced code blocks — skip them
+    // Odd indices are code (fenced or inline) — skip them
     if (i % 2 === 1) {
       continue;
     }
@@ -46,11 +48,17 @@ export function renderLatex(text: string): string {
     // Inline math: $...$
     // Negative lookbehind for \ (escaped dollar) and $ (to avoid matching $$)
     // The content must not start or end with a space (standard TeX convention
-    // to distinguish currency from math).
+    // to distinguish currency from math) and must not span line breaks.
+    //
+    // Option A (conservative): only render when the content contains a TeX
+    // "signal" character (\, ^, _, { or }). This prevents ordinary prose with
+    // stray dollar signs — currency ($5/mo, $40), inline `$text`, etc. — from
+    // being greedily paired and mangled into garbage math. The trade-off is
+    // that bare single-variable math like `$x$` is left as plain text.
     segment = segment.replace(
-      /(?<![\\$])\$(?!\$)(\S(?:[^$\\]|\\.)*?\S|\S)\$(?!\d)/g,
-      (_match, math) => {
-        return renderKatex(math.trim(), false);
+      /(?<![\\$])\$(?!\$)(\S(?:[^$\\\n]|\\.)*?\S|\S)\$(?!\d)/g,
+      (match, math) => {
+        return hasTexSignal(math) ? renderKatex(math.trim(), false) : match;
       }
     );
 
@@ -58,6 +66,20 @@ export function renderLatex(text: string): string {
   }
 
   return parts.join('');
+}
+
+/**
+ * Heuristic to decide whether the content between two `$` signs is genuine
+ * LaTeX math rather than incidental prose (currency, `$text`, etc.).
+ *
+ * Real inline math almost always contains a TeX control/structure character:
+ *   \  — commands (\alpha, \frac, \int)
+ *   ^  — superscript (x^2)
+ *   _  — subscript (a_1)
+ *   {} — grouping (\frac{a}{b})
+ */
+function hasTexSignal(math: string): boolean {
+  return /[\\^_{}]/.test(math);
 }
 
 /**

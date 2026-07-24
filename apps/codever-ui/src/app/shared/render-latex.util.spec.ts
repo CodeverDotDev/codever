@@ -36,12 +36,12 @@ describe('renderLatex', () => {
   });
 
   it('should render multiple inline math expressions in the same text', () => {
-    const result = renderLatex('We have $a$ and $b$ here.');
+    const result = renderLatex('We have $a_1$ and $b^2$ here.');
     // Both should be rendered — count katex occurrences
     const matches = result.match(/katex/g);
     expect(matches.length).toBeGreaterThanOrEqual(2);
-    expect(result).not.toContain('$a$');
-    expect(result).not.toContain('$b$');
+    expect(result).not.toContain('$a_1$');
+    expect(result).not.toContain('$b^2$');
   });
 
   // ---------------------------------------------------------------------------
@@ -128,17 +128,17 @@ describe('renderLatex', () => {
   // ---------------------------------------------------------------------------
 
   it('should handle mixed inline and display math', () => {
-    const input = 'Inline $a+b$ and display:\n$$c+d$$\nDone.';
+    const input = 'Inline $a+b^2$ and display:\n$$c+d$$\nDone.';
     const result = renderLatex(input);
     expect(result).toContain('katex');
     expect(result).toContain('Done.');
-    expect(result).not.toContain('$a+b$');
+    expect(result).not.toContain('$a+b^2$');
     expect(result).not.toContain('$$c+d$$');
   });
 
   it('should handle all four delimiter styles together', () => {
     const input = [
-      'Inline dollar: $a$',
+      'Inline dollar: $a^2$',
       'Inline paren: \\(b\\)',
       'Display dollar: $$c$$',
       'Display bracket: \\[d\\]',
@@ -153,9 +153,18 @@ describe('renderLatex', () => {
   // Edge cases
   // ---------------------------------------------------------------------------
 
-  it('should handle single character inline math', () => {
-    const result = renderLatex('$x$');
+  it('should render single-token math that has a TeX signal char', () => {
+    const result = renderLatex('$x^2$');
     expect(result).toContain('katex');
+  });
+
+  it('should NOT render bare single-variable math without a TeX signal', () => {
+    // Option A trade-off: `$x$` has no \ ^ _ { } signal, so it stays literal
+    // to avoid mis-rendering everyday dollar-sign prose.
+    const input = 'The value $x$ is small.';
+    const result = renderLatex(input);
+    expect(result).not.toContain('class="katex"');
+    expect(result).toBe(input);
   });
 
   it('should not treat adjacent dollar signs in text as math (e.g. $$ with nothing)', () => {
@@ -169,6 +178,32 @@ describe('renderLatex', () => {
     const input = 'This costs $ and that costs $.';
     const result = renderLatex(input);
     // No katex rendering — single $ with space after is not math
+    expect(result).toBe(input);
+  });
+
+  // ---------------------------------------------------------------------------
+  // Regression: prose with stray dollar signs must NOT be mangled into math
+  // ---------------------------------------------------------------------------
+
+  it('should NOT render currency amounts as math', () => {
+    const input = 'Pro is ~$4–6/month or ~$40–50/year with a $2 GB cap.';
+    const result = renderLatex(input);
+    expect(result).not.toContain('class="katex"');
+    expect(result).toBe(input);
+  });
+
+  it('should NOT process dollar signs inside inline code spans', () => {
+    const input = 'MongoDB `$text` cannot search ciphertext.';
+    const result = renderLatex(input);
+    expect(result).not.toContain('class="katex"');
+    expect(result).toBe(input);
+  });
+
+  it('should NOT pair dollar signs across a table of prose (mixed currency + `$text`)', () => {
+    const input =
+      'Storage/disk-level at rest lets `$text` search work, priced at ~$5/mo up to $40.';
+    const result = renderLatex(input);
+    expect(result).not.toContain('class="katex"');
     expect(result).toBe(input);
   });
 });
