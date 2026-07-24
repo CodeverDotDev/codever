@@ -456,8 +456,8 @@ location /auth {
 ## Migration Checklist
 
 - [ ] Fresh realm + users export from production Keycloak 16 (CLI export)
-- [ ] Realm JSON **sanitized** (Step 1b): `js` Default Policy removed, `accountTheme` → `keycloak.v2`, `post.logout.redirect.uris` added to the `bookmarks` client (users file untouched)
-- [ ] Logout verified against KC 24 (requires the `doLogout()` fix in `navigation.component.ts` — see [additional-tasks.md](additional-tasks.md) §5)
+- [x] Realm JSON **sanitized** (Step 1b): `js` Default Policy removed, `accountTheme` → `keycloak.v2`, `post.logout.redirect.uris` added to the `bookmarks` client (users file untouched) — *verified in local gate 2026-07-24; repeat on the prod export*
+- [x] Logout verified against KC 24 (requires the `doLogout()` fix in `navigation.component.ts` — see [additional-tasks.md](additional-tasks.md) §5) — *verified in local gate 2026-07-24*
 - [ ] PostgreSQL 16 container running and healthy
 - [ ] Keycloak 24 container starts with `--import-realm`
 - [ ] Realm `bookmarks` imported successfully (check logs)

@@ -329,6 +329,14 @@ mongorestore \
 
 ### Step 7 — Verify the restored data
 
+> **Indexes migrate automatically:** `mongodump` stores every index definition (including the
+> text-index `weights`, `default_language: "none"`, `language_override: "none"` options and the
+> unique compound index) in the per-collection `*.metadata.json`, and `mongorestore` **rebuilds
+> them all** on Mongo 5.0 after loading the data (only skipped with `--noIndexRestore` — don't use
+> it). No manual `createIndex` calls are needed; `init-mongo.js` is dev-seed only and plays no role
+> in the prod restore. Index rebuilds add time to the restore on large datasets. The checks below
+> confirm the definitions survived intact.
+
 ```bash
 # Connect to the container with mongosh
 docker exec -it codever-mongo mongosh \

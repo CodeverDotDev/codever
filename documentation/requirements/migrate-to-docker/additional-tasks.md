@@ -303,3 +303,17 @@ Files that need changes (7 files):
 - `src/routes/webpage-info/webpage-info.router.js`
 
 On the UI side: upgrade `keycloak-js` / `keycloak-angular` together with the Angular upgrade.
+
+### 5.3 [REJECTED for migration — revisit only if ever worth it] Rename realm `bookmarks` → `codever`
+
+Considered during the migration (2026-07-24) and **explicitly deferred**:
+
+- The realm name is part of every auth URL (`/auth/realms/bookmarks/...`) — i.e., the token
+  **issuer** — hardcoded not only in `env.json` (4 blocks) and the UI `environment*.ts` files
+  (4 files), but also in the separately-published **browser extensions and IDE plugins**.
+  A rename breaks every installed client until users update.
+- During the migration it would change two variables at once (KC 16→24 *and* the issuer),
+  invalidate the passed compatibility gate, and degrade the DNS rollback path (old server
+  still serves realm `bookmarks`).
+- Benefit is purely cosmetic → not worth it now; questionable even later.
+

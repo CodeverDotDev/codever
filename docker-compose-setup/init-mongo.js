@@ -26,6 +26,7 @@ db.bookmarks.insertMany(
         "open-source"
       ],
       "name": "Share coding knowledge – CodepediaOrg",
+      "type": "bookmark",
       "location": "https://www.codepedia.org/",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
@@ -49,6 +50,7 @@ db.bookmarks.insertMany(
         "open-source"
       ],
       "name": "Bookmarks and Snippets Manager for Developers & Co",
+      "type": "bookmark",
       "location": "https://www.codever.dev/",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
@@ -72,6 +74,7 @@ db.bookmarks.insertMany(
         "open-source"
       ],
       "name": "Collection of public dev bookmarks, shared with love from www.codever.land",
+      "type": "bookmark",
       "location": "https://github.com/CodeverDotDev/bookmarks#readme",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
@@ -95,6 +98,7 @@ db.bookmarks.insertMany(
         "open-source"
       ],
       "name": "Getting started with Codever",
+      "type": "bookmark",
       "location": "https://www.codever.dev/howto",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
