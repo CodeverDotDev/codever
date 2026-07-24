@@ -257,7 +257,35 @@ cat ~/.ssh/deploy_key.pub >> ~/.ssh/authorized_keys
 ```
 
 ---
-## 5. [DEFERRED — Phase 10] Auth adapter modernization
+## 5. Auth adapters
+
+### 5.1 [MIGRATION — REQUIRED code change] Logout fix for Keycloak 24
+
+> ⚠️ Found in the local compatibility gate (2026-07-24). This is the migration's **one unavoidable
+> app code change**, flagged per the brief's rule.
+
+**Symptom:** clicking *Logout* lands on Keycloak's error page `Invalid parameter: redirect_uri`
+(URL contains `…/logout?redirect_uri=…`).
+
+**Cause:** Keycloak 18 replaced the legacy `redirect_uri` logout parameter with
+`post_logout_redirect_uri` + `id_token_hint` (OIDC RP-Initiated Logout spec). `keycloak-js 12`
+predates this and still sends `redirect_uri`. KC 18–23 offered a server-side compatibility switch
+(`--spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true`), but it was **removed in
+Keycloak 24** — so no server configuration can fix this.
+
+**Fix (applied):** two paired changes:
+
+1. `apps/codever-ui/src/app/shared/navigation/navigation.component.ts` — `doLogout()` builds the
+   OIDC-compliant logout URL manually instead of calling `keycloakService.logout()`:
+   `…/protocol/openid-connect/logout?post_logout_redirect_uri=<APP_HOME_URL>&id_token_hint=<idToken>`
+2. Realm export — the `bookmarks` client needs the attribute
+   `"post.logout.redirect.uris": "+"` (did not exist in KC 16 exports); see
+   [keycloak-migration.md](keycloak-migration.md) Step 1b.
+
+This workaround becomes obsolete once `keycloak-js` is upgraded (§5.2), which handles the new
+logout parameters natively.
+
+### 5.2 [DEFERRED — Phase 10] Auth adapter modernization
 
 > Recorded here so it isn't lost; **do not do this during the migration**
 > (see [keycloak-migration.md](keycloak-migration.md), Step 6).

@@ -45,7 +45,21 @@ export class NavigationComponent implements OnInit {
 
   async doLogout() {
     this.localStorageService.cleanUserRelatedData();
-    await this.keycloakService.logout(environment.APP_HOME_URL);
+    // keycloak-js 12's logout() still sends the legacy 'redirect_uri' parameter, which
+    // Keycloak 18+ rejects ("Invalid parameter: redirect_uri") — the server-side compatibility
+    // switch was removed in Keycloak 24. Build the OIDC-compliant logout URL manually
+    // (post_logout_redirect_uri + id_token_hint) until the Keycloak adapters are upgraded.
+    // See documentation/requirements/migrate-to-docker/additional-tasks.md
+    const keycloak = this.keycloakService.getKeycloakInstance();
+    const logoutUrl =
+      `${keycloak.authServerUrl.replace(/\/$/, '')}/realms/${keycloak.realm}` +
+      '/protocol/openid-connect/logout' +
+      `?post_logout_redirect_uri=${encodeURIComponent(
+        environment.APP_HOME_URL
+      )}` +
+      `&id_token_hint=${keycloak.idToken}`;
+    keycloak.clearToken();
+    window.location.href = logoutUrl;
   }
 
   login() {

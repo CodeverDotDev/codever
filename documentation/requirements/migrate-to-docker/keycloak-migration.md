@@ -166,7 +166,26 @@ grep -n 'Theme' bookmarks-realm-full-export.json
 "emailTheme" : "codever",        // fine — parent 'base' still exists
 ```
 
-**3. Nothing else.** Other deprecated fields import gracefully with warnings — check the logs
+**3. Allow post-logout redirects on the `bookmarks` frontend client** (KC 18 changed OIDC logout;
+the client attribute `post.logout.redirect.uris` did not exist in KC 16 exports). Add it to the
+`bookmarks` client's `attributes`:
+
+```json
+"attributes" : {
+  "post.logout.redirect.uris" : "+",   // "+" = same as the client's Valid Redirect URIs
+  ...
+}
+```
+
+> ⚠️ **Paired with a small UI code change** (found in the local gate, 2026-07-24): logging out
+> against KC 24 fails with `Invalid parameter: redirect_uri` because `keycloak-js 12` still sends
+> the legacy parameter and the server-side compatibility switch
+> (`--spi-login-protocol-openid-connect-legacy-logout-redirect-uri`) was **removed in KC 24**.
+> `navigation.component.ts#doLogout()` now builds the OIDC-compliant logout URL manually
+> (`post_logout_redirect_uri` + `id_token_hint`). This is the migration's one unavoidable code
+> change — see [additional-tasks.md](additional-tasks.md) §5.
+
+**4. Nothing else.** Other deprecated fields import gracefully with warnings — check the logs
 (Step 5) rather than editing preemptively.
 
 ---
@@ -437,7 +456,8 @@ location /auth {
 ## Migration Checklist
 
 - [ ] Fresh realm + users export from production Keycloak 16 (CLI export)
-- [ ] Realm JSON **sanitized** (Step 1b): `js` Default Policy removed, `accountTheme` → `keycloak.v2` (users file untouched)
+- [ ] Realm JSON **sanitized** (Step 1b): `js` Default Policy removed, `accountTheme` → `keycloak.v2`, `post.logout.redirect.uris` added to the `bookmarks` client (users file untouched)
+- [ ] Logout verified against KC 24 (requires the `doLogout()` fix in `navigation.component.ts` — see [additional-tasks.md](additional-tasks.md) §5)
 - [ ] PostgreSQL 16 container running and healthy
 - [ ] Keycloak 24 container starts with `--import-realm`
 - [ ] Realm `bookmarks` imported successfully (check logs)

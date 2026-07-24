@@ -595,6 +595,7 @@
     "frontchannelLogout" : false,
     "protocol" : "openid-connect",
     "attributes" : {
+      "post.logout.redirect.uris" : "+",
       "saml.assertion.signature" : "false",
       "saml.force.post.binding" : "false",
       "saml.multivalued.roles" : "false",
