@@ -1,20 +1,17 @@
-FROM node:10-slim
+# Production image for the Codever API (built by docker-compose.prod.yml).
+# node:22-slim = maintained LTS (until 2027-04; node 20 went EOL 2026-04) verified
+# against the pinned deps (mongoose 5, keycloak-connect 16, aws-sdk v2, express 4).
+FROM node:22-slim
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
 ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+ENV NODE_ENV=$NODE_ENV
 
 # default to port 3000 for node, and 9229 and 9230 (tests) for debug
 ARG PORT=3000
-ENV PORT $PORT
+ENV PORT=$PORT
 EXPOSE $PORT 9229 9230
-
-# you'll likely want the latest npm, regardless of node version, for speed and fixes
-# but pin this version for the best stability
-RUN npm i npm@latest -g
-
-RUN npm install -g nodemon
 
 # install dependencies first, in a different location for easier app bind mounting for local development
 # due to default /opt permissions we have to create the dir with root and change perms
@@ -26,21 +23,15 @@ WORKDIR /opt/node_app
 # user who runs the app.
 # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
 USER node
-COPY package.json package-lock.json* ./
-RUN npm install --no-optional && npm cache clean --force
-ENV PATH /opt/node_app/node_modules/.bin:$PATH
-
-
-
-# If you are building your code for production
-# RUN npm ci --only=production
+COPY --chown=node:node package.json package-lock.json* ./
+# production deps only — no devDependencies (nodemon/jest) in the image
+RUN npm ci --omit=dev --no-optional && npm cache clean --force
+ENV PATH=/opt/node_app/node_modules/.bin:$PATH
 
 # copy in our source code last, as it changes the most
 WORKDIR /opt/node_app/app
-COPY . .
+COPY --chown=node:node . .
 
-# if you want to use npm start instead, then use `docker run --init in production`
-# so that signals are passed properly. Note the code in index.js is needed to catch Docker signals
-# using node here is still more graceful stopping then npm with --init afaik
-# I still can't come up with a good production way to run with npm and graceful shutdown
+# exec form (no shell wrapper) so SIGTERM reaches Node directly → graceful shutdown;
+# Docker's restart policy replaces pm2 (migration plan §6.1)
 CMD [ "node", "./bin/www" ]
