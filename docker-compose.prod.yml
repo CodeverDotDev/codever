@@ -97,6 +97,10 @@ services:
       # appends KC_HTTP_RELATIVE_PATH; a full URL here produced the mangled issuer
       # "https://https//www.codever.dev/auth/auth/realms/bookmarks" (found 2026-07-31)
       KC_HOSTNAME: www.codever.dev
+      # pin BACKCHANNEL urls (token/userinfo/jwks) to the hostname too — without this
+      # they are derived from the request's Host header (e.g. "localhost" in curl checks);
+      # harmless for our adapters (they don't use discovery) but deterministic is better:
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
       KC_HTTP_RELATIVE_PATH: /auth       # CRITICAL: keeps keycloak-js 12 + nginx /auth/ working
       KC_HTTP_ENABLED: "true"            # plain HTTP inside the Docker network
       KC_PROXY_HEADERS: xforwarded       # trust X-Forwarded-* from nginx
