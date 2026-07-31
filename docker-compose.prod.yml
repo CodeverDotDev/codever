@@ -36,7 +36,9 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro               # certs (shared with certbot)
       - /data/codever/certbot-webroot:/var/www/certbot:ro  # ACME http-01 webroot
     healthcheck:
-      test: ["CMD", "curl", "-fsk", "https://localhost/"]
+      # no -f: until the UI is deployed (Part 6) the root returns 403 — any HTTP
+      # response over TLS proves nginx + cert are working
+      test: ["CMD", "curl", "-ks", "-o", "/dev/null", "https://localhost/"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -97,6 +99,7 @@ services:
       KC_PROXY_HEADERS: xforwarded       # trust X-Forwarded-* from nginx
       KC_BOOTSTRAP_ADMIN_USERNAME: admin # first boot only
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:?set in .env}
+      KC_HEALTH_ENABLED: "true"          # serves /auth/health/* on 8080 (used by healthcheck)
     # --import-realm is safe to keep permanently: existing realms are SKIPPED on
     # startup ("Realm 'bookmarks' already exists. Import skipped") — it only
     # imports into an empty DB (first boot, or after the Postgres wipe in the
@@ -106,10 +109,13 @@ services:
       - ./docker-compose-setup/keycloak-export-import:/opt/keycloak/data/import:ro
       - ./apps/codever-keycloak-theme/codever:/opt/keycloak/themes/codever:ro
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /auth/health/ready HTTP/1.1\r\nHost: localhost\r\n\r\n' >&3 && head -1 <&3 | grep 200"]
+      # KC image has no curl/wget — use bash's /dev/tcp against the health endpoint
+      # (enabled via KC_HEALTH_ENABLED; served under the /auth relative path on 8080 in KC 24)
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && printf 'GET /auth/health/ready HTTP/1.0\\r\\n\\r\\n' >&3 && head -1 <&3 | grep -q 200"]
       interval: 30s
       timeout: 5s
       retries: 5
+      start_period: 60s                  # JVM + import can take a while on first boot
     depends_on:
       postgres:
         condition: service_healthy
