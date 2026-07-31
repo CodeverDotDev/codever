@@ -123,12 +123,10 @@ services:
     restart: unless-stopped
     networks: [backend]
     environment:
-      MONGO_INITDB_DATABASE: dev-bookmarks
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ADMIN_PASSWORD:?set in .env}
     volumes:
       - /data/codever/mongodb:/data/db   # bind mount → obvious backup location
-      - ./docker-compose-setup/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     command: ["mongod", "--auth", "--bind_ip_all"]
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
