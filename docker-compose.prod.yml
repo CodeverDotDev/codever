@@ -93,7 +93,10 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: ${KC_DB_PASSWORD:?set in .env}
-      KC_HOSTNAME: https://www.codever.dev/auth
+      # BARE hostname only — NOT the full URL: KC 24 prepends https:// itself and
+      # appends KC_HTTP_RELATIVE_PATH; a full URL here produced the mangled issuer
+      # "https://https//www.codever.dev/auth/auth/realms/bookmarks" (found 2026-07-31)
+      KC_HOSTNAME: www.codever.dev
       KC_HTTP_RELATIVE_PATH: /auth       # CRITICAL: keeps keycloak-js 12 + nginx /auth/ working
       KC_HTTP_ENABLED: "true"            # plain HTTP inside the Docker network
       KC_PROXY_HEADERS: xforwarded       # trust X-Forwarded-* from nginx
