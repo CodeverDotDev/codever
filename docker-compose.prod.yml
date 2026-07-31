@@ -16,7 +16,17 @@ services:
     image: nginx:stable
     container_name: codever-nginx
     restart: unless-stopped
-    networks: [backend]
+    networks:
+      backend:
+        aliases:
+          # Inside the Docker network, www.codever.dev resolves to THIS nginx.
+          # Required: the API's env.json auth-server-url MUST be the public
+          # https://www.codever.dev/auth (keycloak-connect validates the token
+          # issuer against it, and KC_HOSTNAME makes Keycloak issue that iss).
+          # The alias makes that URL reachable from codever-api even BEFORE the
+          # DNS cutover (and keeps auth traffic on-host after it).
+          - www.codever.dev
+          - codever.dev
     ports:
       - "80:80"
       - "443:443"
