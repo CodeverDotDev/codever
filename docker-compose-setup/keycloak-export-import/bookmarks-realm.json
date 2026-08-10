@@ -1376,7 +1376,7 @@
     "user" : "codever@codepedia.org"
   },
   "loginTheme" : "codever",
-  "accountTheme" : "keycloak.v2",
+  "accountTheme" : "codever",
   "emailTheme" : "codever",
   "eventsEnabled" : false,
   "eventsListeners" : [ "jboss-logging" ],
