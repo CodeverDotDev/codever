@@ -18,21 +18,32 @@
     <mat-expansion-panel
       *ngFor="
         let userDataResource of userDataResources
-          | resourceFilter : filterText as filteredBookmarks;
+          | resourceFilter : filterText as filteredResources;
         index as i
       "
-      [expanded]="filteredBookmarks.length === 1"
+      [expanded]="filteredResources.length === 1"
     >
-      <!-- NOTE entry -->
-      <ng-container *ngIf="isNote(userDataResource); else bookmarkEntry">
-        <mat-expansion-panel-header *ngIf="i < 15">
-          <div class="p-3">
+      <!--
+        `mat-expansion-panel-header` and `ng-template[matExpansionPanelContent]`
+        MUST stay direct children of `mat-expansion-panel`: the panel projects
+        its header via `ng-content select="mat-expansion-panel-header"`, which
+        only matches direct lexical children. Wrapping them in per-type
+        `*ngIf`/`ng-template` branches breaks the projection and the panel
+        renders empty (the bug that hid every entry). The note/bookmark
+        distinction is switched INSIDE the header and the lazy content instead.
+      -->
+      <mat-expansion-panel-header *ngIf="i < 15">
+        <div class="p-3">
+          <!-- NOTE header -->
+          <ng-container *ngIf="isNote(userDataResource); else bookmarkHeader">
             <h5 class="card-title">
               <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
               <a
                 [routerLink]="noteDetailsLink(userDataResource)"
                 [mat-dialog-close]="true"
-                [innerHTML]="userDataResource.title | slice : 0 : 100 | highlightHtml : filterText"
+                [innerHTML]="
+                  userDataResource.title | slice : 0 : 100 | highlightHtml : filterText
+                "
               >
                 {{ 'see innerhtml' }}
               </a>
@@ -41,18 +52,10 @@
               <i class="far fa-calendar-alt"></i>
               {{ userDataResource.updatedAt | date : 'yyyy-MM-dd' }}
             </h6>
-          </div>
-        </mat-expansion-panel-header>
+          </ng-container>
 
-        <ng-template matExpansionPanelContent>
-          <app-note-content [note]="userDataResource" [partOfList]="true"></app-note-content>
-        </ng-template>
-      </ng-container>
-
-      <!-- BOOKMARK entry -->
-      <ng-template #bookmarkEntry>
-        <mat-expansion-panel-header *ngIf="i < 15">
-          <div class="p-3">
+          <!-- BOOKMARK header -->
+          <ng-template #bookmarkHeader>
             <h5 class="card-title">
               <a
                 href="{{ userDataResource.location }}"
@@ -85,10 +88,20 @@
             >
               {{ 'see innerhtml' }}
             </h6>
-          </div>
-        </mat-expansion-panel-header>
+          </ng-template>
+        </div>
+      </mat-expansion-panel-header>
 
-        <ng-template matExpansionPanelContent>
+      <ng-template matExpansionPanelContent>
+        <!-- NOTE content -->
+        <app-note-content
+          *ngIf="isNote(userDataResource); else bookmarkContent"
+          [note]="userDataResource"
+          [partOfList]="true"
+        ></app-note-content>
+
+        <!-- BOOKMARK content -->
+        <ng-template #bookmarkContent>
           <app-bookmark-text
             [bookmark]="userDataResource"
             [showMoreText]="true"

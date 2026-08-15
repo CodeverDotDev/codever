@@ -116,7 +116,9 @@ export class AppComponent implements OnInit {
     dialogConfig.height = this.getRelativeHeight();
     dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
-      bookmarks$: this.userDataPinnedStore.getPinnedResources$(this.userId, 1),
+      resources$:
+        this.latestPinnedResources$ ||
+        this.userDataPinnedStore.getPinnedResources$(this.userId, 1),
       title: '<i class="fas fa-thumbtack"></i> Pinned',
     };
 
@@ -170,7 +172,9 @@ export class AppComponent implements OnInit {
     dialogConfig.height = this.getRelativeHeight();
     dialogConfig.scrollStrategy = this.scrollStrategy;
     dialogConfig.data = {
-      bookmarks$: this.userDataHistoryStore.getAllHistory$(this.userId),
+      resources$:
+        this.latestVisitedResources$ ||
+        this.userDataHistoryStore.getHistory$(this.userId, 1),
       title: '<i class="fas fa-history"></i> History',
     };
 

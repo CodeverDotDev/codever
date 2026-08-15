@@ -19,7 +19,7 @@ export class HotKeysDialogComponent {
     public addToHistoryService: AddToHistoryService,
     @Inject(MAT_DIALOG_DATA) data
   ) {
-    this.userDataResources$ = data.bookmarks$;
+    this.userDataResources$ = data.resources$;
     this.title = data.title;
   }
 
