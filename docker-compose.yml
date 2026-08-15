@@ -1,53 +1,58 @@
 version: '3.7'
 
 volumes:
-  mysql_data:
-    driver: local
-  mongo_data:
-  notused:
+  postgres_data:
+  mongo_data_v5:
 
 networks:
   backend:
 
 services:
-  mysql:
-    container_name: codever-mysql
-    image: mysql:5.7
+  postgres:
+    container_name: codever-postgres
+    image: postgres:16-alpine
     networks:
       - backend
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: keycloak
-      MYSQL_USER: keycloak
-      MYSQL_PASSWORD: password
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U keycloak" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   keycloak:
     container_name: codever-keycloak
-    image: quay.io/keycloak/keycloak:16.1.1
+    image: quay.io/keycloak/keycloak:24.0
     networks:
       - backend
     environment:
-      DB_VENDOR: MYSQL
-      DB_ADDR: mysql
-      DB_DATABASE: keycloak
-      DB_USER: keycloak
-      DB_SCHEMA: public
-      DB_PASSWORD: password
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: Pa55w0rd
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: Pa55w0rd
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: Pa55w0rd
+    command: start-dev --import-realm
     ports:
       - 8480:8080
     depends_on:
-      - mysql
-    #command: -Dkeycloak.migration.action=export -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import
-    #command: -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
+      postgres:
+        condition: service_healthy
     volumes:
-      - ./docker-compose-setup/keycloak-export-import:/tmp/keycloak/export-import/
-      - ./apps/codever-keycloak-theme/codever/:/opt/jboss/keycloak/themes/codever/
+      - ./docker-compose-setup/keycloak-export-import:/opt/keycloak/data/import:ro
+      - ./apps/codever-keycloak-theme/codever/:/opt/keycloak/themes/codever/
+
   mongo:
-    image: mongo:3.4
     container_name: codever-mongo
+    image: mongo:5.0
     networks:
       - backend
     environment:
@@ -58,4 +63,4 @@ services:
       - 27017:27017
     volumes:
       - ./docker-compose-setup/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - mongo_data:/data/db
+      - mongo_data_v5:/data/db
