@@ -100,6 +100,28 @@
   position: relative;
   z-index: 900;
 }
+
+.quick-access-filter-box {
+  width: calc(100% - 3rem);
+  margin-left: 0.5rem;
+  margin-top: 0.25rem;
+  margin-right: 0;
+  margin-bottom: 0.5rem;
+
+  .form-control {
+    height: 24px;
+    font-size: 0.75rem;
+    padding-left: 1.75rem;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .form-control-feedback {
+    width: 1.75rem;
+    height: 24px;
+    line-height: 24px;
+  }
+}
 // END side-navigation
 
 // START pinned drag & drop

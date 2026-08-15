@@ -22,6 +22,8 @@ export class QuickAccessResourcesComponent {
   @Input()
   source: string;
 
+  pinnedFilterText = '';
+
   @Output()
   newSectionTitleEvent = new EventEmitter<string>();
 
@@ -41,6 +43,17 @@ export class QuickAccessResourcesComponent {
     return this.isNote(resource)
       ? (resource as Note).title
       : (resource as Bookmark).name;
+  }
+
+  get filteredPinnedResources(): UserDataResource[] {
+    const filterText = this.pinnedFilterText.trim().toLocaleLowerCase();
+    if (!filterText) {
+      return this.quickAccessResources;
+    }
+
+    return this.quickAccessResources.filter((resource) =>
+      this.getLabel(resource).toLocaleLowerCase().includes(filterText)
+    );
   }
 
   /** Tooltip: note title or bookmark "name - location". */
@@ -88,7 +101,10 @@ export class QuickAccessResourcesComponent {
   }
 
   dropUserDataResource(event: CdkDragDrop<UserDataResource[]>) {
-    if (event.previousIndex === event.currentIndex) {
+    if (
+      this.pinnedFilterText.trim() ||
+      event.previousIndex === event.currentIndex
+    ) {
       return;
     }
     const reordered = [...this.quickAccessResources];

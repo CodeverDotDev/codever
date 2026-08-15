@@ -16,14 +16,29 @@
   >
     <i class="fas fa-thumbtack mr-1"></i> Pinned (<b>Ctrl</b>+<b>p</b>)
   </a>
+  <div
+    *ngIf="source === 'pinned' && quickAccessResources.length > 5"
+    class="form-group has-search quick-access-filter-box"
+  >
+    <span class="fas fa-search form-control-feedback"></span>
+    <input
+      type="search"
+      [(ngModel)]="pinnedFilterText"
+      class="form-control"
+      placeholder="Filter by title"
+      aria-label="Filter pinned entries by title"
+      data-test="pinned-resources-filter"
+    />
+  </div>
   <ng-container *ngIf="source === 'pinned'; else nonReorderableList">
     <div
       cdkDropList
       class="pinned-drop-list"
+      [cdkDropListDisabled]="pinnedFilterText.trim().length > 0"
       (cdkDropListDropped)="dropUserDataResource($event)"
     >
       <span
-        *ngFor="let resource of quickAccessResources; let i = index"
+        *ngFor="let resource of filteredPinnedResources; let i = index"
         class="mt-1 mr-2 on-top pinned-drag-item"
         cdkDrag
       >
