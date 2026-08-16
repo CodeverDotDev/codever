@@ -46,6 +46,7 @@ import { HighLightPipe } from '../common/pipes/highlight.pipe';
 import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
 import { AddToCollectionDialogComponent } from './add-to-collection-dialog/add-to-collection-dialog.component';
 import { ResourceFilterPipe } from './pipe/resource-filter.pipe';
+import { ResourceTitleFilterPipe } from './pipe/resource-title-filter.pipe';
 
 /**
  * Add a SharedModule to hold the common components, directives, and pipes and share them with the modules that need them.
@@ -72,6 +73,7 @@ import { ResourceFilterPipe } from './pipe/resource-filter.pipe';
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
     ResourceFilterPipe,
+    ResourceTitleFilterPipe,
     SearchFilterPipe,
     AsyncBookmarkListComponent,
     AsyncSearchResultListComponent,

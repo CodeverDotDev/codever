@@ -6,7 +6,7 @@
       type="search"
       [(ngModel)]="filterText"
       class="form-control"
-      placeholder="Filter..."
+      placeholder="Filter by title"
     />
   </div>
 </div>
@@ -18,7 +18,7 @@
     <mat-expansion-panel
       *ngFor="
         let userDataResource of userDataResources
-          | resourceFilter : filterText as filteredResources;
+          | resourceTitleFilter : filterText as filteredResources;
         index as i
       "
       [expanded]="filteredResources.length === 1"
