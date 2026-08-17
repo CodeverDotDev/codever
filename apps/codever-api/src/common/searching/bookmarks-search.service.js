@@ -40,10 +40,13 @@ let findBookmarks = async function (
     searchInclude,
     sort
   );
+  // MongoDB only provides textScore metadata when the filter contains $text.
+  // Tag-only searches must not request that metadata or MongoDB returns a 503.
+  const projection = filter.$text
+    ? { score: { $meta: OrderBy.TEXT_SCORE } }
+    : {};
 
-  const bookmarks = await Bookmark.find(filter, {
-    score: { $meta: OrderBy.TEXT_SCORE },
-  })
+  const bookmarks = await Bookmark.find(filter, projection)
     .sort(sortBy)
     .skip((page - 1) * limit)
     .limit(limit)
