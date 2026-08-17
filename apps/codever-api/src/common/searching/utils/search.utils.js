@@ -5,6 +5,12 @@ const { SpecialSearchTerm } = require('../constant/specialSearchTerm.constant');
 const { DocType } = require('../../constants');
 
 let parseQueryString = function (queryString) {
+  try {
+    queryString = decodeURIComponent(queryString);
+  } catch (error) {
+    // Keep the original value when a malformed percent-encoded query is received.
+  }
+
   let searchTerms = [];
   let tags = [];
   let inTag = false;

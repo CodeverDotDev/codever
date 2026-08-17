@@ -31,6 +31,13 @@ describe('parseQueryString', () => {
       ['no', 'tags', 'user:12345678-abcd-1234-abcd-123456789abc'],
       [],
     ],
+    ['%5Bmobi%5D', [], ['mobi']],
+    ['%5Bjava%5D%20some%20text', ['some', 'text'], ['java']],
+    [
+      '%5Bjavascript%5D%20user%3A33d22b0e-9474-46b3-9da4-b1fb5d273abc',
+      ['user:33d22b0e-9474-46b3-9da4-b1fb5d273abc'],
+      ['javascript'],
+    ],
   ])(
     "parses '%s' correctly",
     (queryString, expectedSearchTerms, expectedTags) => {
@@ -416,6 +423,26 @@ describe('generateSearchFilterAndSortBy', () => {
         tags: {
           $all: ['javascript'],
         },
+      },
+      {
+        createdAt: -1,
+      },
+    ],
+    [
+      DocType.BOOKMARK,
+      {
+        ...input,
+        query:
+          '%5Bjavascript%5D%20user%3A33d22b0e-9474-46b3-9da4-b1fb5d273abc',
+        isPublic: true,
+        userId: undefined,
+      },
+      {
+        public: true,
+        tags: {
+          $all: ['javascript'],
+        },
+        userId: '33d22b0e-9474-46b3-9da4-b1fb5d273abc',
       },
       {
         createdAt: -1,
