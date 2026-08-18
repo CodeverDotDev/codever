@@ -261,6 +261,13 @@ pre:has(code.hljs) {
   background-color: lightgoldenrodyellow !important;
 }
 
+/* Let search-history option content span the full width of the panel
+   so the delete button can be pushed to the far right */
+.search-history-autocomplete-panel .mat-mdc-option .mdc-list-item__primary-text {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
 @media (max-width: 1349px) {
   .github-fork-ribbon {
     display: none;

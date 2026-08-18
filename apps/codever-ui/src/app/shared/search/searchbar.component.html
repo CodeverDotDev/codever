@@ -111,6 +111,7 @@
   />
   <mat-autocomplete #auto="matAutocomplete"
                     [class]="searchDomain + '-autocomplete-panel'"
+                    panelClass="search-history-autocomplete-panel"
                     (optionSelected)="onAutocompleteSelectionChanged($event)">
     <mat-option
       *ngFor="let search of filteredSearches | async"
