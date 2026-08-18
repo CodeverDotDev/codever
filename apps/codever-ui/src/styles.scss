@@ -263,6 +263,11 @@ pre:has(code.hljs) {
 
 /* Let search-history option content span the full width of the panel
    so the delete button can be pushed to the far right */
+.search-history-autocomplete-panel .mat-mdc-option,
+.search-history-autocomplete-panel .mat-option {
+  position: relative;
+}
+
 .search-history-autocomplete-panel .mat-mdc-option .mdc-list-item__primary-text {
   width: 100%;
   flex: 1 1 auto;

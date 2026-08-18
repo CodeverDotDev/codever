@@ -38,8 +38,14 @@ $background-gray: rgb(240, 242, 245);
   align-items: center;
 }
 
+// forced to the right edge of the mat-option (which is position: relative)
 .search-history-delete {
-  margin-left: auto;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  background-color: inherit;
 }
 
 // inspired from https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
