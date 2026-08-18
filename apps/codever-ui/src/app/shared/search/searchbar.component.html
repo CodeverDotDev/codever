@@ -117,7 +117,7 @@
       [value]="search.text"
       (mouseenter)="hoveringOverSearchHistory = search.text" (mouseleave)="hoveringOverSearchHistory = null"
     >
-      <div style="display: flex; justify-content: space-between">
+      <div class="search-history-row">
         <div>
           <i class="fas fa-history mr-2 search-history-clock"></i>
         </div>
@@ -126,7 +126,10 @@
             {{ search.text }}
           </span>
         </div>
-        <div [ngStyle]="{'display': hoveringOverSearchHistory === search.text ? 'block' : 'none'}">
+        <div
+          class="search-history-delete"
+          [ngStyle]="{'display': hoveringOverSearchHistory === search.text ? 'block' : 'none'}"
+        >
           <span
             class="rm-search-trashbin"
             (click)="removeSearch(search, $event)"
