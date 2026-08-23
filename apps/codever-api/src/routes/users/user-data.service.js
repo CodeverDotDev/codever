@@ -512,7 +512,7 @@ let likeBookmark = async function (userData, userId, bookmarkId) {
       'You already starred this bookmark',
     ]);
   } else {
-    await User.update({ userId: userId }, { $push: { likes: bookmarkId } });
+    await User.updateOne({ userId: userId }, { $push: { likes: bookmarkId } });
 
     const bookmark = await Bookmark.findOneAndUpdate(
       { _id: bookmarkId },
@@ -536,7 +536,7 @@ let unlikeBookmark = async function (userData, userId, bookmarkId) {
       'You did not like this bookmark',
     ]);
   } else {
-    await User.update({ userId: userId }, { $pull: { likes: bookmarkId } });
+    await User.updateOne({ userId: userId }, { $pull: { likes: bookmarkId } });
 
     const bookmark = await Bookmark.findOneAndUpdate(
       { _id: bookmarkId },

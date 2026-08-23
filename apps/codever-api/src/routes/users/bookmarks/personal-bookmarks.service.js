@@ -247,7 +247,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
   if (response.deletedCount !== 1) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId);
   } else {
-    await User.update(
+    await User.updateMany(
       {},
       {
         $pull: {

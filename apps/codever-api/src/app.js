@@ -50,6 +50,7 @@ const mongoHost = process.env.MONGODB_HOST || 'localhost';
 const mongoPort = process.env.MONGODB_PORT || '27017';
 
 const mongoUrl = `mongodb://${mongoUserName}:${mongoUserPwd}@${mongoHost}:${mongoPort}/${mongoBookmarksCollectionName}`;
+mongoose.set('strictQuery', true); // Preserve Mongoose 6 behavior: Mongoose 7 defaults strictQuery to false.
 mongoose.connect(mongoUrl);
 
 // sets port 3000 to default or unless otherwise specified in the environment
