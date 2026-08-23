@@ -225,7 +225,7 @@ let getUserData = async function (userId) {
 };
 
 let deleteUserData = async function (userId) {
-  const userData = await User.findOneAndRemove({
+  const userData = await User.findOneAndDelete({
     userId: userId,
   });
 
