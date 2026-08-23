@@ -1,6 +1,6 @@
 # Production image for the Codever API (built by docker-compose.prod.yml).
 # node:22-slim = maintained LTS (until 2027-04; node 20 went EOL 2026-04) verified
-# against the pinned deps (mongoose 5, keycloak-connect 16, aws-sdk v2, express 4).
+# against the pinned deps (mongoose 7, keycloak-connect 24, AWS SDK v3, express 4).
 FROM node:22-slim
 
 # set our node environment, either development or production

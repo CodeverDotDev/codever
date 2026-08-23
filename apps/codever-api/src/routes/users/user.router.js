@@ -24,14 +24,18 @@ const HttpStatus = require('http-status-codes/index');
 const keycloak = new Keycloak({ scope: 'openid' }, config.keycloak);
 usersRouter.use(keycloak.middleware());
 
-const aws = require('aws-sdk');
-aws.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const { S3Client } = require('@aws-sdk/client-s3');
+const awsCredentials =
+  process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
+    ? {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      }
+    : undefined;
+const s3 = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: awsCredentials,
 });
-
-const s3 = new aws.S3();
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const path = require('path');
