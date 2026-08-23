@@ -85,7 +85,7 @@ let updateNote = async (userId, noteId, noteData) => {
  * DELETE note for user
  */
 let deleteNoteById = async (userId, noteId) => {
-  const note = await Note.findOneAndRemove({
+  const note = await Note.findOneAndDelete({
     _id: noteId,
     userId: userId,
   });

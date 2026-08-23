@@ -268,7 +268,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
  * DELETE bookmark for user by "location"
  */
 let deleteBookmarkByLocation = async (userId, location) => {
-  const bookmark = await Bookmark.findOneAndRemove({
+  const bookmark = await Bookmark.findOneAndDelete({
     location: location,
     userId: userId,
   });

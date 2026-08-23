@@ -25,7 +25,7 @@
     "helmet": "^3.23.3",
     "http-status-codes": "^1.4.0",
     "keycloak-connect": "16.1.1",
-    "mongoose": "^5.13.23",
+    "mongoose": "^6.13.11",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
     "multer-s3": "^2.10.0",
