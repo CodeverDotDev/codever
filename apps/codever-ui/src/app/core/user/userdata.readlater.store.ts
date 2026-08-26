@@ -14,6 +14,7 @@ import { environment } from '../../../environments/environment';
 export class UserDataReadLaterStore {
   private _readLater: BehaviorSubject<Bookmark[]> = new BehaviorSubject(null);
   private readLaterHaveBeenLoaded = false;
+  private loadingPage: number | null = null;
 
   loadedPage: number;
 
@@ -30,15 +31,20 @@ export class UserDataReadLaterStore {
   }
 
   getReadLater$(userId: string, page: number): Observable<Bookmark[]> {
-    if (this.loadedPage !== page || !this.readLaterHaveBeenLoaded) {
+    if (
+      this.loadingPage !== page &&
+      (this.loadedPage !== page || !this.readLaterHaveBeenLoaded)
+    ) {
+      this.loadingPage = page;
       this.userService
         .getReadLater(userId, page, environment.PAGINATION_PAGE_SIZE)
         .subscribe((data) => {
-          if (!this.readLaterHaveBeenLoaded) {
-            this.readLaterHaveBeenLoaded = true;
-          }
+          this.readLaterHaveBeenLoaded = true;
           this.loadedPage = page;
+          this.loadingPage = null;
           this._readLater.next(data);
+        }, () => {
+          this.loadingPage = null;
         });
     }
     return this._readLater.asObservable();
