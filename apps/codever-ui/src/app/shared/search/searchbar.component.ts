@@ -332,26 +332,12 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchControl.patchValue('');
   }
 
-  @HostListener('window:keydown.control.s', ['$event'])
+  @HostListener('window:keydown.control.k', ['$event'])
+  @HostListener('window:keydown.meta.k', ['$event'])
   focusOnSearchBoxHotKey(event: KeyboardEvent) {
     event.preventDefault();
     this.searchBoxField.nativeElement.focus();
     this.searchBoxField.nativeElement.select();
-  }
-
-  getPlaceholderTextForSearchbar() {
-    let response = 'Search';
-    if (this.innerWidth <= 1400) {
-      response += ' ' + this.searchDomains.get(this.searchDomain);
-    } else {
-      if (this.userIsLoggedIn) {
-        response += '...';
-      } else {
-        response += ' Codever';
-      }
-    }
-
-    return response;
   }
 
   watchForTags(value: string) {
