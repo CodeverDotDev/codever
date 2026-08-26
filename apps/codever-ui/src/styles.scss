@@ -284,6 +284,65 @@ label {
   font-weight: 600;
 }
 
+.content-label {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.fullscreen-toggle-btn {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0.5rem;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.fullscreen-toggle-btn:hover,
+.fullscreen-toggle-btn:focus {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.fullscreen-toggle-btn:focus {
+  outline: 1px dotted;
+  outline-offset: 2px;
+}
+
+.markdown-editor-fullscreen {
+  box-sizing: border-box;
+}
+
+.note-markdown-textarea {
+  height: 450px;
+}
+
+.bookmark-description-textarea {
+  height: 400px;
+}
+
+.markdown-editor-fullscreen:fullscreen,
+.markdown-editor-fullscreen:-webkit-full-screen {
+  background-color: #ffffff;
+  box-sizing: border-box;
+  height: 100vh;
+  margin: 0;
+  min-height: 100vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  width: 100vw;
+}
+
+.markdown-editor-fullscreen:fullscreen .note-markdown-textarea,
+.markdown-editor-fullscreen:-webkit-full-screen .note-markdown-textarea,
+.markdown-editor-fullscreen:fullscreen .bookmark-description-textarea,
+.markdown-editor-fullscreen:-webkit-full-screen .bookmark-description-textarea {
+  height: calc(100vh - 9rem);
+  min-height: 20rem;
+}
+
 .full-width {
   width: 100%;
 }

@@ -69,9 +69,9 @@
         </span>
       </div>
 
-      <div class="form-group">
-        <label for="content" style="width: 100%"
-          >Content* - <i class="fab fa-markdown"></i>
+      <div #contentEditor class="form-group markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
+        <label for="content" class="content-label"
+          ><span>Content* - <i class="fab fa-markdown"></i>
           <a
             class="markdown-link"
             href="https://daringfireball.net/projects/markdown/"
@@ -94,8 +94,18 @@
               >checklists</a
             >
             (<code>- [ ] todo</code>)</span
-          ></label
-        >
+          ></span>
+          <button
+            *ngIf="!isNotebookMode"
+            type="button"
+            class="fullscreen-toggle-btn"
+            (click)="toggleFullScreen(contentEditor)"
+            [title]="isFullScreen ? 'Exit fullscreen' : 'Edit content fullscreen'"
+            [attr.aria-label]="isFullScreen ? 'Exit fullscreen' : 'Edit content fullscreen'"
+          >
+            <i [class.fa-expand]="!isFullScreen" [class.fa-compress]="isFullScreen" class="fas"></i>
+          </button>
+        </label>
 
         <!-- Notebook upload: file input + indicator when a notebook is loaded -->
         <div class="mb-2">
@@ -127,11 +137,10 @@
         <!-- Markdown textarea: hidden when a notebook is loaded -->
         <textarea
           *ngIf="!isNotebookMode"
-          class="form-control"
+          class="form-control note-markdown-textarea"
           id="content"
           formControlName="content"
           placeholder="Note text (searchable)"
-          style="height: 300px"
         >
         </textarea>
         <!-- When notebook is loaded, show the extracted searchable text as readonly preview -->

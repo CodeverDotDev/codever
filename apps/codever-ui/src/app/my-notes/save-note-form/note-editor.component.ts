@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   Input,
   OnChanges,
   OnDestroy,
@@ -65,6 +66,7 @@ import {
 } from './ai-refine-result-dialog/ai-refine-result-dialog.component';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
 import { FeatureToggleService } from '../../core/feature-toggle.service';
+import * as screenfull from 'screenfull';
 
 @Component({
   selector: 'app-note-editor',
@@ -110,6 +112,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   isAiNoteRefineEnabled$: Observable<boolean>;
   /** Whether an AI refine request is in progress (shows loader on button) */
   isRefining = false;
+  isFullScreen = false;
+  private fullscreenEl: HTMLElement | null = null;
 
   @Input()
   title; // value of "title" query parameter if present
@@ -382,6 +386,31 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     };
 
     this.deleteDialog.open(NotePreviewDialogComponent, dialogConfig);
+  }
+
+  toggleFullScreen(part: HTMLElement): void {
+    if (!screenfull.isEnabled) {
+      return;
+    }
+
+    if (this.isFullScreen) {
+      screenfull.exit();
+      this.fullscreenEl = null;
+    } else {
+      screenfull.request(part);
+      this.fullscreenEl = part;
+    }
+  }
+
+  @HostListener('document:fullscreenchange')
+  fullscreenChangeHandler(): void {
+    this.isFullScreen =
+      !!document.fullscreenElement &&
+      document.fullscreenElement === this.fullscreenEl;
+    if (!document.fullscreenElement) {
+      this.fullscreenEl = null;
+    }
+    this.cd.markForCheck();
   }
 
   /**

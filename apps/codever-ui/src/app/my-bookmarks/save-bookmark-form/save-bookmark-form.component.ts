@@ -5,7 +5,14 @@ import {
   map,
   startWith,
 } from 'rxjs/operators';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import {
   UntypedFormArray,
@@ -62,6 +69,7 @@ import {
   AiRefineResultDialogComponent,
   AiRefineAcceptedChanges,
 } from '../../my-notes/save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.component';
+import * as screenfull from 'screenfull';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -131,6 +139,8 @@ export class SaveBookmarkFormComponent implements OnInit {
   isAiRefineEnabled$: Observable<boolean>;
   /** Whether an AI refine request is in progress */
   isRefining = false;
+  isFullScreen = false;
+  private fullscreenEl: HTMLElement | null = null;
   constructor(
     private publicBookmarkPresentDialog: MatDialog,
     private formBuilder: UntypedFormBuilder,
@@ -779,6 +789,30 @@ Given a bookmark's URL, name, tags, and description:
 
   get description() {
     return this.bookmarkForm.get('description');
+  }
+
+  toggleFullScreen(part: HTMLElement): void {
+    if (!screenfull.isEnabled) {
+      return;
+    }
+
+    if (this.isFullScreen) {
+      screenfull.exit();
+      this.fullscreenEl = null;
+    } else {
+      screenfull.request(part);
+      this.fullscreenEl = part;
+    }
+  }
+
+  @HostListener('document:fullscreenchange')
+  fullscreenChangeHandler(): void {
+    this.isFullScreen =
+      !!document.fullscreenElement &&
+      document.fullscreenElement === this.fullscreenEl;
+    if (!document.fullscreenElement) {
+      this.fullscreenEl = null;
+    }
   }
 
   private copyBookmarkToMine(bookmark: Bookmark) {
