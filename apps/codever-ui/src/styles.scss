@@ -315,14 +315,6 @@ label {
   box-sizing: border-box;
 }
 
-.note-markdown-textarea {
-  height: 300px;
-}
-
-.bookmark-description-textarea {
-  height: 250px;
-}
-
 .markdown-editor-fullscreen:fullscreen,
 .markdown-editor-fullscreen:-webkit-full-screen {
   background-color: #ffffff;
@@ -339,7 +331,7 @@ label {
 .markdown-editor-fullscreen:-webkit-full-screen .note-markdown-textarea,
 .markdown-editor-fullscreen:fullscreen .bookmark-description-textarea,
 .markdown-editor-fullscreen:-webkit-full-screen .bookmark-description-textarea {
-  height: calc(100vh - 9rem);
+  height: calc(100vh - 9rem) !important;
   min-height: 20rem;
 }
 
