@@ -90,7 +90,8 @@ export class QuickAccessResourcesComponent {
     this.addToHistoryService.promoteInHistoryIfLoggedIn(true, bookmark);
   }
 
-  goToMainLink(resource: UserDataResource) {
+  goToMainLink(event: Event, resource: UserDataResource): void {
+    event.stopPropagation();
     const bookmark = resource as Bookmark;
     this.addToHistoryService.promoteInHistoryIfLoggedIn(true, bookmark);
     window.open(bookmark.location, '_blank');

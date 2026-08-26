@@ -54,7 +54,7 @@
           [class.my-notes-last-search]="isNote(resource) && resource.public === false"
           [class.public-notes-last-search]="isNote(resource) && resource.public === true"
           (click)="navigateToDetails(resource)"
-          (auxclick)="!isNote(resource) && goToMainLink(resource)"
+          (auxclick)="!isNote(resource) && goToMainLink($event, resource)"
           target="_blank"
           matTooltip="{{ getTooltip(resource) }}"
           [matTooltipPosition]="'right'"
@@ -72,7 +72,7 @@
           <span
             *ngIf="!isNote(resource)"
             class="jump-to-main-link-icon"
-            (click)="goToMainLink(resource)"
+            (click)="goToMainLink($event, resource)"
             title="Jump to main link"
           >
             <i class="fas fa-external-link-alt"></i>
@@ -94,7 +94,7 @@
           [class.my-notes-last-search]="isNote(resource) && resource.public === false"
           [class.public-notes-last-search]="isNote(resource) && resource.public === true"
           (click)="navigateToDetails(resource)"
-          (auxclick)="!isNote(resource) && goToMainLink(resource)"
+          (auxclick)="!isNote(resource) && goToMainLink($event, resource)"
           target="_blank"
           matTooltip="{{ getTooltip(resource) }}"
           [matTooltipPosition]="'right'"
@@ -112,7 +112,7 @@
           <span
             *ngIf="!isNote(resource)"
             class="jump-to-main-link-icon"
-            (click)="goToMainLink(resource)"
+            (click)="goToMainLink($event, resource)"
             title="Jump to main link"
           >
             <i class="fas fa-external-link-alt"></i>
