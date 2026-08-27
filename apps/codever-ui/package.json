@@ -3,6 +3,7 @@
   "version": "13.0.0",
   "license": "MIT",
   "scripts": {
+    "update-angular": "ng update @angular/core@17 @angular/cli@17",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -40,7 +41,7 @@
     "rxjs": "^6.5.3",
     "screenfull": "^5.1.0",
     "ts-md5": "^1.2.7",
-    "zone.js": "~0.13.3"
+    "zone.js": "~0.14.10"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.14",
