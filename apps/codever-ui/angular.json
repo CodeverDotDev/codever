@@ -85,24 +85,24 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "codever-ui:build"
+            "buildTarget": "codever-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "codever-ui:build:production"
+              "buildTarget": "codever-ui:build:production"
             },
             "non-docker": {
-              "browserTarget": "codever-ui:build:non-docker"
+              "buildTarget": "codever-ui:build:non-docker"
             },
             "prod-backend": {
-              "browserTarget": "codever-ui:build:prod-local-testing"
+              "buildTarget": "codever-ui:build:prod-local-testing"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "codever-ui:build"
+            "buildTarget": "codever-ui:build"
           }
         },
         "test": {

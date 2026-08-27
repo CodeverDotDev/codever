@@ -135,7 +135,8 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
 
     this.initPageNavigation();
 
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
@@ -157,7 +158,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
           this.searchInclude
         );
       }
-    });
+    }
 
     this.searchTriggeredSubscription =
       this.searchNotificationService.searchTriggeredSource$.subscribe(

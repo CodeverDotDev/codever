@@ -34,16 +34,15 @@ export class UserDataFavoritesStore {
     private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-          this.userId = userInfo.sub;
-          this.userDataStore.getUserData$().subscribe((userData) => {
-            this.userData = userData;
-          });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
+        this.userId = userInfo.sub;
+        this.userDataStore.getUserData$().subscribe((userData) => {
+          this.userData = userData;
         });
-      }
-    });
+      });
+    }
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.publishedFavoritesAfterDeletion(bookmark);
     });

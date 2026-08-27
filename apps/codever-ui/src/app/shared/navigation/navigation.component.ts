@@ -32,15 +32,14 @@ export class NavigationComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userInfoOidc$ = this.userInfoStore.getUserInfoOidc$();
-        this.isLoggedIn = true;
-        this.userData$ = this.userDataStore.getUserData$();
-      } else {
-        this.isLoggedIn = false;
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userInfoOidc$ = this.userInfoStore.getUserInfoOidc$();
+      this.isLoggedIn = true;
+      this.userData$ = this.userDataStore.getUserData$();
+    } else {
+      this.isLoggedIn = false;
+    }
   }
 
   async doLogout() {

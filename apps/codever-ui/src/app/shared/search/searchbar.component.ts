@@ -162,12 +162,11 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
 
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.searchDomain = SearchDomain.ALL_MINE;
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userIsLoggedIn = true;
+      this.searchDomain = SearchDomain.ALL_MINE;
+    }
 
     this.searchNotificationService.searchTriggeredFromNavbar$
       .pipe(takeUntil(this.ngUnsubscribe))

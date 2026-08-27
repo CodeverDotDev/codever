@@ -28,15 +28,14 @@ export class UserDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-          this.userId = userInfo.sub;
-          this.userData$ = this.userDataStore.getUserData$();
-          this.initSelectedTab();
-        });
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
+        this.userId = userInfo.sub;
+        this.userData$ = this.userDataStore.getUserData$();
+        this.initSelectedTab();
+      });
+    }
   }
 
   tabChanged(index: number) {

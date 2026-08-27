@@ -127,14 +127,13 @@ export class BookmarkListElementComponent
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-          this.userId = userInfo.sub;
-        });
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userIsLoggedIn = true;
+      this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
+        this.userId = userInfo.sub;
+      });
+    }
   }
 
   playYoutubeVideo(bookmark: Bookmark) {

@@ -49,14 +49,13 @@ export class UserPublicProfileComponent
   }
 
   ngOnInit() {
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfoOidc$().subscribe(() => {
-          this.userData$ = this.userDataStore.getUserData$();
-        });
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userIsLoggedIn = true;
+      this.userInfoStore.getUserInfoOidc$().subscribe(() => {
+        this.userData$ = this.userDataStore.getUserData$();
+      });
+    }
     this.userId = this.route.snapshot.params['userId'];
     this.userPublicData$ = this.userPublicService.getUserPublicData$(
       this.userId,

@@ -70,14 +70,13 @@ export class BookmarksTaggedComponent implements OnInit {
       }
     });
 
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-          this.userData$ = this.userDataStore.getUserData$();
-        });
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userIsLoggedIn = true;
+      this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
+        this.userData$ = this.userDataStore.getUserData$();
+      });
+    }
 
     this.paginationNotificationService.pageNavigationClicked$.subscribe(
       (paginationAction) => {

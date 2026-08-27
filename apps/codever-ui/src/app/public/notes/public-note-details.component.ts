@@ -31,17 +31,16 @@ export class PublicNoteDetailsComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      this.userIsLoggedIn = isLoggedIn;
-      if (isLoggedIn) {
-        // Record the visit only once the user data is loaded — on a hard
-        // refresh the note can arrive before the user data, and promoting then
-        // would read history off an undefined userData object.
-        combineLatest([this.note$, this.userDataStore.getUserData$()])
-          .pipe(take(1))
-          .subscribe(([note]) => this.promoteNoteInHistory(note));
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    this.userIsLoggedIn = isLoggedIn;
+    if (isLoggedIn) {
+      // Record the visit only once the user data is loaded — on a hard
+      // refresh the note can arrive before the user data, and promoting then
+      // would read history off an undefined userData object.
+      combineLatest([this.note$, this.userDataStore.getUserData$()])
+        .pipe(take(1))
+        .subscribe(([note]) => this.promoteNoteInHistory(note));
+    }
   }
 
   /** Record the visited public note in the user's history (logged-in users only). */

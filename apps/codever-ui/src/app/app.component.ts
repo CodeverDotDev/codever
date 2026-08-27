@@ -63,7 +63,8 @@ export class AppComponent implements OnInit {
       this.favIcon.href = 'assets/logo/logo-green.svg';
     }
 
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
@@ -89,7 +90,7 @@ export class AppComponent implements OnInit {
           }
         });
       }
-    });
+    }
     this.scrollStrategy = this.scrollStrategyOptions.noop();
   }
 

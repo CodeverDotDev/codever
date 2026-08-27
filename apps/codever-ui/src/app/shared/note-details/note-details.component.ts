@@ -70,9 +70,9 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      this.userId$ = isLoggedIn ? this.userInfoStore.getUserId$() : of(null);
-      this.userData$ = isLoggedIn ? this.userDataStore.getUserData$() : of(null);
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    this.userId$ = isLoggedIn ? this.userInfoStore.getUserId$() : of(null);
+    this.userData$ = isLoggedIn ? this.userDataStore.getUserData$() : of(null);
 
       if (!this.inSearchResults && !this.note$) {
         this.noteId = this.route.snapshot.paramMap.get('id');
@@ -106,7 +106,6 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
         // then replace it with the freshly fetched copy.
         this.note$ = stateNote ? note$.pipe(startWith(stateNote)) : note$;
       }
-    });
   }
 
   ngAfterViewInit(): void {
