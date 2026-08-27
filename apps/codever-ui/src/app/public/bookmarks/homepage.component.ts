@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
 import { allTags } from '../../core/model/all-tags.const.en';
 import { KeycloakService } from 'keycloak-angular';
+import { KeycloakLoginOptions } from 'keycloak-js';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { MatDialog } from '@angular/material/dialog';
@@ -253,7 +254,7 @@ export class HomepageComponent
   }
 
   login(selectedTab: string) {
-    const options: Keycloak.KeycloakLoginOptions = {};
+    const options: KeycloakLoginOptions = {};
     options.redirectUri = `${environment.APP_HOME_URL}?tab=${selectedTab}`;
     this.keycloakService.login(options);
   }
