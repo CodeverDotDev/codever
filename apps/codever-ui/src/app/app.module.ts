@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app.routing';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
 import { PublicResourcesModule } from './public/public.module';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   KeycloakAngularModule,
   KeycloakEventType,
@@ -85,64 +85,58 @@ function initializeKeycloak(
   };
 }
 
-@NgModule({
-  exports: [MatChipsModule],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    RouterModule,
-    // app modules - notice that MyBookmarksModule is not listed, as it is lazy loaded
-    SharedModule,
-    CoreModule,
-    KeycloakAngularModule,
-    PublicResourcesModule,
-    SocialButtonsModule,
-    OverlayModule,
-    DragDropModule,
-    // routing module
-    AppRoutingModule,
-    HighlightModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', {
-      enabled: environment.production,
-    }),
-    MatTooltipModule,
-  ],
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializer,
-      multi: true,
-      deps: [KeycloakService, UserInfoStore, UserDataStore, SystemService],
-    },
-    {
-      provide: MAT_CHIPS_DEFAULT_OPTIONS,
-      useValue: {
-        separatorKeyCodes: [ENTER, COMMA],
-      },
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: LoaderInterceptorService,
-      multi: true,
-    },
-    {
-      provide: HIGHLIGHT_OPTIONS,
-      useValue: {
-        fullLibraryLoader: () => import('highlight.js'),
-      },
-    },
-    AppService,
-  ],
-  declarations: [
-    AppComponent,
-    QuickAccessResourcesComponent,
-    PageNotFoundComponent,
-    NoteNotFoundComponent,
-    LoaderComponent,
-    NewEntryComponent,
-  ],
-  bootstrap: [AppComponent],
-})
+@NgModule({ exports: [MatChipsModule],
+    declarations: [
+        AppComponent,
+        QuickAccessResourcesComponent,
+        PageNotFoundComponent,
+        NoteNotFoundComponent,
+        LoaderComponent,
+        NewEntryComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        RouterModule,
+        // app modules - notice that MyBookmarksModule is not listed, as it is lazy loaded
+        SharedModule,
+        CoreModule,
+        KeycloakAngularModule,
+        PublicResourcesModule,
+        SocialButtonsModule,
+        OverlayModule,
+        DragDropModule,
+        // routing module
+        AppRoutingModule,
+        HighlightModule,
+        ServiceWorkerModule.register('/ngsw-worker.js', {
+            enabled: environment.production,
+        }),
+        MatTooltipModule], providers: [
+        {
+            provide: APP_INITIALIZER,
+            useFactory: initializer,
+            multi: true,
+            deps: [KeycloakService, UserInfoStore, UserDataStore, SystemService],
+        },
+        {
+            provide: MAT_CHIPS_DEFAULT_OPTIONS,
+            useValue: {
+                separatorKeyCodes: [ENTER, COMMA],
+            },
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: LoaderInterceptorService,
+            multi: true,
+        },
+        {
+            provide: HIGHLIGHT_OPTIONS,
+            useValue: {
+                fullLibraryLoader: () => import('highlight.js'),
+            },
+        },
+        AppService,
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule {}
