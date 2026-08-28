@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import * as DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { marked } from 'marked';
 import { renderLatex } from '../../shared/render-latex.util';
