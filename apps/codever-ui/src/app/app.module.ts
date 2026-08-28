@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
@@ -41,6 +41,7 @@ import { SystemService } from './core/cache/system.service';
 import { NewEntryComponent } from './new-entry/new-entry.component';
 import { QuickAccessResourcesComponent } from './left-navigation-menu/quick-access-resources.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ChunkLoadErrorHandler } from './core/error/chunk-load-error.handler';
 
 function initializeKeycloak(
   keycloak: KeycloakService,
@@ -135,6 +136,10 @@ function initializeKeycloak(
             useValue: {
                 fullLibraryLoader: () => import('highlight.js'),
             },
+        },
+        {
+            provide: ErrorHandler,
+            useClass: ChunkLoadErrorHandler,
         },
         AppService,
         provideHttpClient(withInterceptorsFromDi()),
