@@ -42,7 +42,7 @@
     "keycloak-js": "24.x.x",
     "marked": "^4.2.5",
     "ngx-highlightjs": "^6.1.1",
-    "rxjs": "^6.5.3",
+    "rxjs": "^7.8.0",
     "screenfull": "^5.1.0",
     "ts-md5": "^1.2.7",
     "zone.js": "~0.15.1"

@@ -15,7 +15,7 @@ import { PersonalNotesService } from '../../core/personal-notes.service';
 import * as screenfull from 'screenfull';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NoteSocialShareDialogComponent } from '../dialog/note-social-share-dialog/note-social-share-dialog.component';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 import { TocHeading } from './note-toc/note-toc.component';
@@ -64,7 +64,7 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private noteShareDialog: MatDialog,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private elementRef: ElementRef,
     private userDataStore: UserDataStore,
     private userDataPinnedStore: UserDataPinnedStore

@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Bookmark } from '../core/model/bookmark';
 import { SearchNotificationService } from '../core/search-notification.service';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../core/auth/authentication.service';
 import { KeycloakServiceWrapper } from '../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../core/user/user-info.store';
 import { UserDataStore } from '../core/user/userdata.store';
@@ -56,7 +56,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private personalSearchService: PersonalSearchService,
     private publicSearchService: PublicSearchService,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private keycloakServiceWrapper: KeycloakServiceWrapper,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,

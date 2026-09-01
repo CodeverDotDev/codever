@@ -64,7 +64,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "serviceWorker": true
+              "serviceWorker": "ngsw-config.json"
             },
             "non-docker": {
               "fileReplacements": [

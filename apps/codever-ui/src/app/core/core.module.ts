@@ -22,6 +22,7 @@ import { UserDataPinnedStore } from './user/userdata.pinned.store';
 import { UserDataReadLaterStore } from './user/userdata.readlater.store';
 import { UserDataFavoritesStore } from './user/userdata.favorites.store';
 import { AuthGuard } from './auth/auth-guard.service';
+import { AuthenticationService } from './auth/authentication.service';
 import { FeedStore } from './user/feed-store.service';
 import { MarkdownService } from './markdown/markdown.service';
 import { SearchNotificationService } from './search-notification.service';
@@ -56,6 +57,7 @@ import { LatestSearchClickNotificationService } from './latest-search-click.noti
     Logger,
     ErrorService,
     AuthGuard,
+    AuthenticationService,
     PersonalBookmarksService,
     PersonalNotesService,
     PersonalCollectionsService,

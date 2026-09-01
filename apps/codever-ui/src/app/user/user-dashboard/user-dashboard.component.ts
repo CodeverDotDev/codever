@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Observable } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
@@ -21,7 +21,7 @@ export class UserDashboardComponent implements OnInit {
   private readonly tabNames = ['bookmarks', 'notes', 'tags', 'searches', 'following', 'followers'];
 
   constructor(
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private route: ActivatedRoute,

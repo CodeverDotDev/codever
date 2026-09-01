@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../auth/authentication.service';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
 import { UserDataResource } from '../model/user-data-resource.type';
@@ -22,7 +22,7 @@ export class UserDataPinnedStore {
   constructor(
     private userService: UserDataService,
     private userDataStore: UserDataStore,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;

@@ -22,7 +22,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MarkdownService } from '../../core/markdown/markdown.service';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Observable, throwError as observableThrowError } from 'rxjs';
@@ -145,7 +145,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   constructor(
     private publicBookmarkPresentDialog: MatDialog,
     private formBuilder: UntypedFormBuilder,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private publicBookmarksService: PublicBookmarksService,
     private userDataService: UserDataService,
     private markdownService: MarkdownService,

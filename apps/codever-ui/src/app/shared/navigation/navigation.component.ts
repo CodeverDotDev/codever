@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { environment } from '../../../environments/environment';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 import { UserInfoOidc } from '../../core/model/user-info.oidc';
@@ -25,7 +25,7 @@ export class NavigationComponent implements OnInit {
 
   constructor(
     private appService: AppService,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private localStorageService: LocalStorageService,
@@ -45,21 +45,12 @@ export class NavigationComponent implements OnInit {
 
   async doLogout() {
     this.localStorageService.cleanUserRelatedData();
-    // keycloak-js 12's logout() still sends the legacy 'redirect_uri' parameter, which
-    // Keycloak 18+ rejects ("Invalid parameter: redirect_uri") — the server-side compatibility
-    // switch was removed in Keycloak 24. Build the OIDC-compliant logout URL manually
-    // (post_logout_redirect_uri + id_token_hint) until the Keycloak adapters are upgraded.
-    // See documentation/requirements/migrate-to-docker/additional-tasks.md
-    const keycloak = this.keycloakService.getKeycloakInstance();
-    const logoutUrl =
-      `${keycloak.authServerUrl.replace(/\/$/, '')}/realms/${keycloak.realm}` +
-      '/protocol/openid-connect/logout' +
-      `?post_logout_redirect_uri=${encodeURIComponent(
-        environment.APP_HOME_URL
-      )}` +
-      `&id_token_hint=${keycloak.idToken}`;
-    keycloak.clearToken();
-    window.location.href = logoutUrl;
+    // keycloak-js 24 performs an OIDC-compliant RP-initiated logout: it sends
+    // post_logout_redirect_uri (from `redirectUri`) and id_token_hint automatically,
+    // and clears the local tokens — so no manual logout URL is needed anymore.
+    await this.keycloakService.getKeycloakInstance().logout({
+      redirectUri: environment.APP_HOME_URL,
+    });
   }
 
   login() {

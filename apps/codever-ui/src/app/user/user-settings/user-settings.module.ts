@@ -5,7 +5,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserSettingsComponent } from './user-settings.component';
 import { AuthGuard } from '../../core/auth/auth-guard.service';
-import { CoreModule } from 'keycloak-angular';
 import { MatTabsModule } from '@angular/material/tabs';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ImageUploadService } from './user-profile/image-upload.service';
@@ -32,7 +31,6 @@ const userSettingsRoutes: Routes = [
     RouterModule.forChild(userSettingsRoutes),
     ReactiveFormsModule,
     SharedModule,
-    CoreModule,
     CommonModule,
     MatTabsModule,
     MatRadioModule,

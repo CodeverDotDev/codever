@@ -20,7 +20,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { MarkdownService } from '../../core/markdown/markdown.service';
-import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { languages } from '../../shared/constants/language-options';
@@ -166,7 +165,6 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private formBuilder: UntypedFormBuilder,
-    private keycloakService: KeycloakService,
     private userDataService: UserDataService,
     private markdownService: MarkdownService,
     private personalNotesService: PersonalNotesService,

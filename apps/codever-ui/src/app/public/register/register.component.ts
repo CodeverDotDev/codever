@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { KeycloakLoginOptions } from 'keycloak-js';
 
 @Component({
@@ -12,7 +12,7 @@ import { KeycloakLoginOptions } from 'keycloak-js';
 export class RegisterComponent {
   environment = environment;
 
-  constructor(private keycloakService: KeycloakService) {}
+  constructor(private keycloakService: AuthenticationService) {}
 
   login() {
     const options: KeycloakLoginOptions = {};

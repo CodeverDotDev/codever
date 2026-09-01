@@ -4,7 +4,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { Note } from '../../core/model/note';
 import { PublicNotesService } from './public-notes.service';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserDataStore } from '../../core/user/userdata.store';
 
 @Component({
@@ -20,7 +20,7 @@ export class PublicNoteDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private publicNotesService: PublicNotesService,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userDataStore: UserDataStore
   ) {}
 

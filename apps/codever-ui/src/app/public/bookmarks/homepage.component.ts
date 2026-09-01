@@ -5,7 +5,7 @@ import { UserDataResource } from '../../core/model/user-data-resource.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
 import { allTags } from '../../core/model/all-tags.const.en';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { KeycloakLoginOptions } from 'keycloak-js';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
@@ -65,7 +65,7 @@ export class HomepageComponent
     private publicBookmarksStore: PublicBookmarksStore,
     private router: Router,
     private route: ActivatedRoute,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userDataStore: UserDataStore,
     private userDataHistoryStore: UserDataHistoryStore,
     private userDataPinnedStore: UserDataPinnedStore,

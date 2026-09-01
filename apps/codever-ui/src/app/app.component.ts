@@ -5,7 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HotKeysDialogComponent } from './shared/dialog/history-dialog/hot-keys-dialog.component';
 import { UserDataPinnedStore } from './core/user/userdata.pinned.store';
 import { UserInfoStore } from './core/user/user-info.store';
-import { KeycloakService } from 'keycloak-angular';
+import Keycloak from 'keycloak-js';
 import { LoginRequiredDialogComponent } from './shared/dialog/login-required-dialog/login-required-dialog.component';
 import iziToast, { IziToastSettings } from 'izitoast';
 import { UserDataStore } from './core/user/userdata.store';
@@ -60,7 +60,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private keycloakService: KeycloakService,
+    private keycloak: Keycloak,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private userDataHistoryStore: UserDataHistoryStore,
@@ -82,12 +82,21 @@ export class AppComponent implements OnInit, OnDestroy {
       this.favIcon.href = 'assets/logo/logo-green.svg';
     }
 
-    const isLoggedIn = this.keycloakService.isLoggedIn();
+    const isLoggedIn = this.keycloak.authenticated;
     if (isLoggedIn) {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userId = userInfo.sub;
+          // Load the user's data document on every authenticated page load.
+          // (With keycloak-angular v19, KEYCLOAK_EVENT_SIGNAL only holds the
+          // latest event, so relying on the transient AuthSuccess event is
+          // unreliable — this runs deterministically after Keycloak init.)
+          this.userDataStore.loadInitialUserDataFromDb(
+            userInfo.sub,
+            userInfo.given_name,
+            userInfo.email
+          );
           this.latestVisitedResources$ = this.userDataHistoryStore.getHistory$(
             this.userId,
             1

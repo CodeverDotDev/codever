@@ -9,7 +9,7 @@ import {
 import { Bookmark } from '../../core/model/bookmark';
 import { PlayYoutubeVideoDialogComponent } from '../dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Observable, Subscription } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
@@ -87,7 +87,7 @@ export class BookmarkListElementComponent
     public loginDialog: MatDialog,
     private deleteDialog: MatDialog,
     private shareDialog: MatDialog,
-    public keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private userDataHistoryStore: UserDataHistoryStore,
     private personalBookmarksService: PersonalBookmarksService,

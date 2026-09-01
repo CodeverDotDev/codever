@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Bookmark } from '../../core/model/bookmark';
 import { Observable } from 'rxjs';
 import { UserDataStore } from '../../core/user/userdata.store';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserData } from '../../core/model/user-data';
 import {
   MatDialog,
@@ -37,7 +37,7 @@ export class BookmarksTaggedComponent implements OnInit {
     private userDataStore: UserDataStore,
     private userDataWatchedTagsStore: UserDataWatchedTagsStore,
     private userInfoStore: UserInfoStore,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private paginationNotificationService: PaginationNotificationService,
     private route: ActivatedRoute,
     private loginDialog: MatDialog
