@@ -10,9 +10,10 @@ import {
 import { localStorageKeys } from '../../../core/model/localstorage.cache-keys';
 
 @Component({
-  selector: 'app-user-local-storage-setup',
-  templateUrl: './user-local-storage-setup.component.html',
-  styleUrls: ['./user-local-storage-setup.component.scss'],
+    selector: 'app-user-local-storage-setup',
+    templateUrl: './user-local-storage-setup.component.html',
+    styleUrls: ['./user-local-storage-setup.component.scss'],
+    standalone: false
 })
 export class UserLocalStorageSetupComponent implements OnInit {
   localStorageEnabled = false;

@@ -11,8 +11,9 @@ import { Bookmark } from '../../core/model/bookmark';
 import { AddToHistoryService } from '../../core/user/add-to-history.service';
 
 @Component({
-  selector: 'app-bookmark-text',
-  templateUrl: './bookmark-text.component.html',
+    selector: 'app-bookmark-text',
+    templateUrl: './bookmark-text.component.html',
+    standalone: false
 })
 export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @Input()

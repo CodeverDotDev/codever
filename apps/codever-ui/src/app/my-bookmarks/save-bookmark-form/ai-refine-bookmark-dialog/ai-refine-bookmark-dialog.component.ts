@@ -23,8 +23,9 @@ export interface AiRefineBookmarkDialogResult {
 }
 
 @Component({
-  selector: 'app-ai-refine-bookmark-dialog',
-  templateUrl: './ai-refine-bookmark-dialog.component.html',
+    selector: 'app-ai-refine-bookmark-dialog',
+    templateUrl: './ai-refine-bookmark-dialog.component.html',
+    standalone: false
 })
 export class AiRefineBookmarkDialogComponent {
   customPrompt: string;

@@ -7,8 +7,9 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-personal-note-update',
-  templateUrl: './update-personal-note.component.html',
+    selector: 'app-personal-note-update',
+    templateUrl: './update-personal-note.component.html',
+    standalone: false
 })
 export class UpdatePersonalNoteComponent implements OnInit {
   note$: Observable<Note>;

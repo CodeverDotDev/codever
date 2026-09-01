@@ -24,9 +24,10 @@ import { SearchDomain } from '../../core/model/search-domain.enum';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
-  selector: 'app-public-bookmarks',
-  templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.scss'],
+    selector: 'app-public-bookmarks',
+    templateUrl: './homepage.component.html',
+    styleUrls: ['./homepage.component.scss'],
+    standalone: false
 })
 export class HomepageComponent
   extends TagFollowingBaseComponent

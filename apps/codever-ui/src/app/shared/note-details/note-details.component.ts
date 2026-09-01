@@ -24,9 +24,10 @@ import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { UserData } from '../../core/model/user-data';
 
 @Component({
-  selector: 'app-note-details',
-  templateUrl: './note-details.component.html',
-  styleUrls: ['./note-details.component.scss'],
+    selector: 'app-note-details',
+    templateUrl: './note-details.component.html',
+    styleUrls: ['./note-details.component.scss'],
+    standalone: false
 })
 export class NoteDetailsComponent implements OnInit, AfterViewInit {
   @Input()

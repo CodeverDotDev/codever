@@ -69,9 +69,10 @@ import { FeatureToggleService } from '../../core/feature-toggle.service';
 import * as screenfull from 'screenfull';
 
 @Component({
-  selector: 'app-note-editor',
-  templateUrl: './note-editor.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-note-editor',
+    templateUrl: './note-editor.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   noteForm: UntypedFormGroup;

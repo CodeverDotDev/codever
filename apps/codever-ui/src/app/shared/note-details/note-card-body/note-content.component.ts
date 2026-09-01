@@ -13,8 +13,9 @@ import { Note } from '../../../core/model/note';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
 
 @Component({
-  selector: 'app-note-content',
-  templateUrl: './note-content.component.html',
+    selector: 'app-note-content',
+    templateUrl: './note-content.component.html',
+    standalone: false
 })
 export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   @Input()

@@ -37,9 +37,10 @@ import { PersonalCollectionsService } from '../../core/personal-collections.serv
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 
 @Component({
-  selector: 'app-bookmark-list-element',
-  templateUrl: './bookmark-list-element.component.html',
-  styleUrls: ['./bookmark-list-element.component.scss'],
+    selector: 'app-bookmark-list-element',
+    templateUrl: './bookmark-list-element.component.html',
+    styleUrls: ['./bookmark-list-element.component.scss'],
+    standalone: false
 })
 export class BookmarkListElementComponent
   extends TagFollowingBaseComponent

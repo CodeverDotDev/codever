@@ -3,9 +3,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Collection } from '../../core/model/collection';
 
 @Component({
-  selector: 'app-collection-form-dialog',
-  templateUrl: './collection-form-dialog.component.html',
-  styleUrls: ['./collection-form-dialog.component.scss'],
+    selector: 'app-collection-form-dialog',
+    templateUrl: './collection-form-dialog.component.html',
+    styleUrls: ['./collection-form-dialog.component.scss'],
+    standalone: false
 })
 export class CollectionFormDialogComponent implements OnInit {
   name = '';

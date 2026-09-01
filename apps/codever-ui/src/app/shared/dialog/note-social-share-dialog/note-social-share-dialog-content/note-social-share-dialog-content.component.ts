@@ -3,8 +3,9 @@ import { Note } from '../../../../core/model/note';
 import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
-  selector: 'app-note-social-share-dialog-content',
-  templateUrl: './note-social-share-dialog-content.component.html',
+    selector: 'app-note-social-share-dialog-content',
+    templateUrl: './note-social-share-dialog-content.component.html',
+    standalone: false
 })
 export class NoteSocialShareDialogContentComponent implements OnChanges {
   @Input()

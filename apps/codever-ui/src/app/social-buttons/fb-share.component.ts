@@ -5,14 +5,15 @@ import { AfterViewInit, Component, Input } from '@angular/core';
  */
 
 @Component({
-  selector: 'fb-share',
-  template: ` <div
+    selector: 'fb-share',
+    template: ` <div
     class="fb-share-button"
     [attr.data-href]="url"
     data-layout="button_count"
     data-size="large"
     data-share="true"
   ></div>`,
+    standalone: false
 })
 export class FbShareComponent implements AfterViewInit {
   @Input() url = location.href;

@@ -9,9 +9,10 @@ import { UserDataStore } from '../../core/user/userdata.store';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 
 @Component({
-  selector: 'app-bookmark-details',
-  templateUrl: './bookmark-details.component.html',
-  styleUrls: ['./bookmark-details.component.scss'],
+    selector: 'app-bookmark-details',
+    templateUrl: './bookmark-details.component.html',
+    styleUrls: ['./bookmark-details.component.scss'],
+    standalone: false
 })
 export class BookmarkDetailsComponent implements OnInit {
   bookmark$: Observable<Bookmark>;

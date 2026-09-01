@@ -11,9 +11,10 @@ import {
 import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
 
 @Component({
-  selector: 'app-quick-access-resources',
-  templateUrl: './quick-access-resources.component.html',
-  styleUrls: ['./quick-access-resources.component.scss'],
+    selector: 'app-quick-access-resources',
+    templateUrl: './quick-access-resources.component.html',
+    styleUrls: ['./quick-access-resources.component.scss'],
+    standalone: false
 })
 export class QuickAccessResourcesComponent {
   @Input()

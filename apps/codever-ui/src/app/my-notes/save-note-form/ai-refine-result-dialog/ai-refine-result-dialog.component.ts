@@ -21,9 +21,10 @@ export interface AiRefineAcceptedChanges {
 }
 
 @Component({
-  selector: 'app-ai-refine-result-dialog',
-  templateUrl: './ai-refine-result-dialog.component.html',
-  styleUrls: ['./ai-refine-result-dialog.component.scss'],
+    selector: 'app-ai-refine-result-dialog',
+    templateUrl: './ai-refine-result-dialog.component.html',
+    styleUrls: ['./ai-refine-result-dialog.component.scss'],
+    standalone: false
 })
 export class AiRefineResultDialogComponent implements OnInit {
   acceptTitle = false;

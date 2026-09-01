@@ -49,14 +49,15 @@ export const tagsValidator: ValidatorFn = (
 };
 
 @Directive({
-  selector: '[appTagsSizeValidator]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useExisting: TagsValidatorDirective,
-      multi: true,
-    },
-  ],
+    selector: '[appTagsSizeValidator]',
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useExisting: TagsValidatorDirective,
+            multi: true,
+        },
+    ],
+    standalone: false
 })
 export class TagsValidatorDirective implements Validator {
   validate(control: AbstractControl): ValidationErrors {

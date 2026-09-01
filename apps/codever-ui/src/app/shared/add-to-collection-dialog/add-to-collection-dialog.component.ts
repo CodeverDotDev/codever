@@ -10,9 +10,10 @@ export interface AddToCollectionDialogData {
 }
 
 @Component({
-  selector: 'app-add-to-collection-dialog',
-  templateUrl: './add-to-collection-dialog.component.html',
-  styleUrls: ['./add-to-collection-dialog.component.scss'],
+    selector: 'app-add-to-collection-dialog',
+    templateUrl: './add-to-collection-dialog.component.html',
+    styleUrls: ['./add-to-collection-dialog.component.scss'],
+    standalone: false
 })
 export class AddToCollectionDialogComponent implements OnInit {
   collections: Collection[] = [];

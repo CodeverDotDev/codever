@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-find-elsewhere',
-  templateUrl: './find-elsewhere.component.html',
-  styleUrls: ['./find-elsewhere.component.scss'],
+    selector: 'app-find-elsewhere',
+    templateUrl: './find-elsewhere.component.html',
+    styleUrls: ['./find-elsewhere.component.scss'],
+    standalone: false
 })
 export class FindElsewhereComponent {
   @Input()

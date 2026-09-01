@@ -9,7 +9,7 @@ import { PublicResourcesModule } from './public/public.module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   KeycloakAngularModule,
-  KeycloakEventType,
+  KeycloakEventTypeLegacy,
   KeycloakService,
 } from 'keycloak-angular';
 import { initializer } from './app-init';
@@ -52,7 +52,7 @@ function initializeKeycloak(
   return () => {
     _systemService.checkVersion();
     keycloak.keycloakEvents$.subscribe((event) => {
-      if (event.type === KeycloakEventType.OnAuthSuccess) {
+      if (event.type === KeycloakEventTypeLegacy.OnAuthSuccess) {
         userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           userDataStore.loadInitialUserDataFromDb(
             userInfo.sub,
@@ -62,10 +62,10 @@ function initializeKeycloak(
           console.log('load initial userInfo');
         });
       }
-      if (event.type === KeycloakEventType.OnAuthLogout) {
-        this.userDataStore.resetUserDataStore();
+      if (event.type === KeycloakEventTypeLegacy.OnAuthLogout) {
+        userDataStore.resetUserDataStore();
       }
-      if (event.type === KeycloakEventType.OnTokenExpired) {
+      if (event.type === KeycloakEventTypeLegacy.OnTokenExpired) {
         keycloak.updateToken(20);
       }
     });

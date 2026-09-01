@@ -8,8 +8,9 @@ import { KeycloakService } from 'keycloak-angular';
 import { UserDataStore } from '../../core/user/userdata.store';
 
 @Component({
-  selector: 'app-public-note-details',
-  templateUrl: './public-note-details.component.html',
+    selector: 'app-public-note-details',
+    templateUrl: './public-note-details.component.html',
+    standalone: false
 })
 export class PublicNoteDetailsComponent implements OnInit {
   note$: Observable<Note>;

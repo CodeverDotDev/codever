@@ -1,4 +1,4 @@
-import { KeycloakEventType, KeycloakService } from 'keycloak-angular';
+import { KeycloakEventTypeLegacy, KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environment';
 import { UserInfoStore } from './core/user/user-info.store';
 import { UserDataStore } from './core/user/userdata.store';
@@ -15,7 +15,7 @@ export function initializer(
       try {
         _systemService.checkVersion();
         keycloak.keycloakEvents$.subscribe((event) => {
-          if (event.type === KeycloakEventType.OnAuthSuccess) {
+          if (event.type === KeycloakEventTypeLegacy.OnAuthSuccess) {
             userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
               userDataStore.loadInitialUserDataFromDb(
                 userInfo.sub,
@@ -25,10 +25,10 @@ export function initializer(
               console.log('load initial userInfo');
             });
           }
-          if (event.type === KeycloakEventType.OnAuthLogout) {
-            this.userDataStore.resetUserDataStore();
+          if (event.type === KeycloakEventTypeLegacy.OnAuthLogout) {
+            userDataStore.resetUserDataStore();
           }
-          if (event.type === KeycloakEventType.OnTokenExpired) {
+          if (event.type === KeycloakEventTypeLegacy.OnTokenExpired) {
             keycloak.updateToken(20);
           }
         });

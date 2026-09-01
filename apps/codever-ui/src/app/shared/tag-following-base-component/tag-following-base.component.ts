@@ -5,7 +5,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 
 @Component({
-  template: '',
+    template: '',
+    standalone: false
 })
 export class TagFollowingBaseComponent {
   verifyForWatchedTag: Observable<string>;

@@ -7,9 +7,10 @@ import { UserDataStore } from '../../core/user/userdata.store';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.scss'],
+    selector: 'app-dashboard',
+    templateUrl: './user-dashboard.component.html',
+    styleUrls: ['./user-dashboard.component.scss'],
+    standalone: false
 })
 export class UserDashboardComponent implements OnInit {
   userId: string;

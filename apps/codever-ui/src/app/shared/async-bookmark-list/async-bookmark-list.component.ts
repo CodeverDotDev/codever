@@ -14,9 +14,10 @@ import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
 
 @Component({
-  selector: 'app-async-bookmark-list',
-  templateUrl: './async-bookmark-list.component.html',
-  styleUrls: ['./async-bookmark-list.component.scss'],
+    selector: 'app-async-bookmark-list',
+    templateUrl: './async-bookmark-list.component.html',
+    styleUrls: ['./async-bookmark-list.component.scss'],
+    standalone: false
 })
 export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
   declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template

@@ -5,9 +5,10 @@ import { Observable } from 'rxjs';
 import { MatRadioChange } from '@angular/material/radio';
 
 @Component({
-  selector: 'app-user-feed-setup',
-  templateUrl: './user-feed.component.html',
-  styleUrls: ['./user-feed.component.scss'],
+    selector: 'app-user-feed-setup',
+    templateUrl: './user-feed.component.html',
+    styleUrls: ['./user-feed.component.scss'],
+    standalone: false
 })
 export class UserFeedComponent implements OnInit {
   feedTopic: string;

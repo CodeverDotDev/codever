@@ -38,9 +38,10 @@ import iziToast, { IziToastSettings } from 'izitoast';
 import { LatestSearchClickNotificationService } from '../../core/latest-search-click.notification.service';
 
 @Component({
-  selector: 'app-searchbar',
-  templateUrl: './searchbar.component.html',
-  styleUrls: ['./searchbar.component.scss'],
+    selector: 'app-searchbar',
+    templateUrl: './searchbar.component.html',
+    styleUrls: ['./searchbar.component.scss'],
+    standalone: false
 })
 export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()

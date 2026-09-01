@@ -18,9 +18,10 @@ import { TagFollowingBaseComponent } from '../../shared/tag-following-base-compo
 import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
 
 @Component({
-  selector: 'app-user-public-profile',
-  templateUrl: './user-public-profile.component.html',
-  styleUrls: ['./user-public-profile.component.scss'],
+    selector: 'app-user-public-profile',
+    templateUrl: './user-public-profile.component.html',
+    styleUrls: ['./user-public-profile.component.scss'],
+    standalone: false
 })
 export class UserPublicProfileComponent
   extends TagFollowingBaseComponent

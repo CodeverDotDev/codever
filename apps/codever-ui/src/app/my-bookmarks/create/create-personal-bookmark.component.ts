@@ -3,9 +3,10 @@ import { Logger } from '../../core/logger.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-new-personal-bookmark-form',
-  templateUrl: './create-personal-bookmark.component.html',
-  styleUrls: ['./create-personal-bookmark.component.scss'],
+    selector: 'app-new-personal-bookmark-form',
+    templateUrl: './create-personal-bookmark.component.html',
+    styleUrls: ['./create-personal-bookmark.component.scss'],
+    standalone: false
 })
 export class CreatePersonalBookmarkComponent implements OnInit {
   url; // value of "url" query parameter if present

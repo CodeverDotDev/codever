@@ -5,9 +5,10 @@ import { Router } from '@angular/router';
 import { KeycloakServiceWrapper } from '../../../core/keycloak-service-wrapper.service';
 
 @Component({
-  selector: 'app-delete-bookmark-dialog',
-  templateUrl: './login-required-dialog.component.html',
-  styleUrls: ['./login-required-dialog.component.scss'],
+    selector: 'app-delete-bookmark-dialog',
+    templateUrl: './login-required-dialog.component.html',
+    styleUrls: ['./login-required-dialog.component.scss'],
+    standalone: false
 })
 export class LoginRequiredDialogComponent {
   message: string;

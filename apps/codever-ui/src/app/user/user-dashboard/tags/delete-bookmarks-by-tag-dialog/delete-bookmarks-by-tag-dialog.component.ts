@@ -2,9 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-bookmarks-by-tag-dialog',
-  templateUrl: './delete-bookmarks-by-tag-dialog.component.html',
-  styleUrls: ['./delete-bookmarks-by-tag-dialog.component.scss'],
+    selector: 'app-delete-bookmarks-by-tag-dialog',
+    templateUrl: './delete-bookmarks-by-tag-dialog.component.html',
+    styleUrls: ['./delete-bookmarks-by-tag-dialog.component.scss'],
+    standalone: false
 })
 export class DeleteBookmarksByTagDialogComponent {
   tag: string;

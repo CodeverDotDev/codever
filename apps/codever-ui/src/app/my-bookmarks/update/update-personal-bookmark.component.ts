@@ -7,9 +7,10 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-update-bookmark',
-  templateUrl: './update-personal-bookmark.component.html',
-  styleUrls: ['./update-personal-bookmark.component.scss'],
+    selector: 'app-update-bookmark',
+    templateUrl: './update-personal-bookmark.component.html',
+    styleUrls: ['./update-personal-bookmark.component.scss'],
+    standalone: false
 })
 export class UpdatePersonalBookmarkComponent implements OnInit {
   bookmark$: Observable<Bookmark>;

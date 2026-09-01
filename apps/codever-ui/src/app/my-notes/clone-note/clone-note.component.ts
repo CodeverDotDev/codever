@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Note } from '../../core/model/note';
 
 @Component({
-  selector: 'app-clone-note',
-  templateUrl: './clone-note.component.html',
-  styleUrls: ['./clone-note.component.scss'],
+    selector: 'app-clone-note',
+    templateUrl: './clone-note.component.html',
+    styleUrls: ['./clone-note.component.scss'],
+    standalone: false
 })
 export class CloneNoteComponent implements OnInit {
   note: Note;

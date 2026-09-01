@@ -4,9 +4,10 @@ import { Observable, of } from 'rxjs';
 import { Note } from '../../core/model/note';
 
 @Component({
-  selector: 'app-async-note-list',
-  templateUrl: './async-note-list.component.html',
-  styleUrls: ['./async-note-list.component.scss'],
+    selector: 'app-async-note-list',
+    templateUrl: './async-note-list.component.html',
+    styleUrls: ['./async-note-list.component.scss'],
+    standalone: false
 })
 export class AsyncNoteListComponent {
   @Input()

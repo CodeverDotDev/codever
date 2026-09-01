@@ -8,8 +8,9 @@ import { PaginationNotificationService } from '../../../core/pagination-notifica
 import { environment } from '../../../../environments/environment';
 
 @Component({
-  selector: 'app-my-notes',
-  templateUrl: './my-notes.component.html',
+    selector: 'app-my-notes',
+    templateUrl: './my-notes.component.html',
+    standalone: false
 })
 export class MyNotesComponent implements OnChanges {
   myNotes$: Observable<Note[]>;

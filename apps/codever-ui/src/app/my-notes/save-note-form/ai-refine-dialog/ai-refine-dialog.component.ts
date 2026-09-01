@@ -19,8 +19,9 @@ export interface AiRefineDialogResult {
 }
 
 @Component({
-  selector: 'app-ai-refine-dialog',
-  templateUrl: './ai-refine-dialog.component.html',
+    selector: 'app-ai-refine-dialog',
+    templateUrl: './ai-refine-dialog.component.html',
+    standalone: false
 })
 export class AiRefineDialogComponent {
   customPrompt: string;

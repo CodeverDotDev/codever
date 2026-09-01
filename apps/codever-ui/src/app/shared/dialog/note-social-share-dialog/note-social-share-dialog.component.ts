@@ -6,9 +6,10 @@ import { Note } from '../../../core/model/note';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
 
 @Component({
-  selector: 'app-note-social-share-dialog',
-  templateUrl: './note-social-share-dialog.component.html',
-  styleUrls: ['./note-social-share-dialog.component.scss'],
+    selector: 'app-note-social-share-dialog',
+    templateUrl: './note-social-share-dialog.component.html',
+    styleUrls: ['./note-social-share-dialog.component.scss'],
+    standalone: false
 })
 export class NoteSocialShareDialogComponent {
   shareableId$: Observable<any>;

@@ -72,9 +72,10 @@ import {
 import * as screenfull from 'screenfull';
 
 @Component({
-  selector: 'app-save-bookmark-form',
-  templateUrl: './save-bookmark-form.component.html',
-  styleUrls: ['./save-bookmark-form.component.scss'],
+    selector: 'app-save-bookmark-form',
+    templateUrl: './save-bookmark-form.component.html',
+    styleUrls: ['./save-bookmark-form.component.scss'],
+    standalone: false
 })
 export class SaveBookmarkFormComponent implements OnInit {
   bookmarkForm: UntypedFormGroup;

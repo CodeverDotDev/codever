@@ -17,9 +17,10 @@ import { PaginationNotificationService } from '../../core/pagination-notificatio
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 
 @Component({
-  selector: 'app-tag',
-  templateUrl: './bookmarks-tagged.component.html',
-  styleUrls: ['./bookmarks-tagged.component.css'],
+    selector: 'app-tag',
+    templateUrl: './bookmarks-tagged.component.html',
+    styleUrls: ['./bookmarks-tagged.component.css'],
+    standalone: false
 })
 export class BookmarksTaggedComponent implements OnInit {
   bookmarksForTag$: Observable<Bookmark[]>;

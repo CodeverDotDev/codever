@@ -8,9 +8,10 @@ import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
 import { LocalStorageService } from '../../core/cache/local-storage.service';
 
 @Component({
-  selector: 'app-user-settings',
-  templateUrl: './user-settings.component.html',
-  styleUrls: ['./user-settings.component.scss'],
+    selector: 'app-user-settings',
+    templateUrl: './user-settings.component.html',
+    styleUrls: ['./user-settings.component.scss'],
+    standalone: false
 })
 export class UserSettingsComponent implements OnInit {
   environment = environment;

@@ -6,9 +6,10 @@ import { Note } from '../../../core/model/note';
 import { PublicNotesService } from '../public-notes.service';
 
 @Component({
-  selector: 'app-shareable-note-details',
-  templateUrl: './shareable-note-details.component.html',
-  styleUrls: ['./shareable-note-details.component.scss'],
+    selector: 'app-shareable-note-details',
+    templateUrl: './shareable-note-details.component.html',
+    styleUrls: ['./shareable-note-details.component.scss'],
+    standalone: false
 })
 export class ShareableNoteDetailsComponent implements OnInit {
   note$: Observable<Note>;
