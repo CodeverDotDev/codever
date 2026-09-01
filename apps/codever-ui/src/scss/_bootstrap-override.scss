@@ -1,7 +1,5 @@
-@use "../../node_modules/bootstrap/scss/bootstrap.scss";
-
 .right-font-icon {
-  @extend .float-right;
+  float: right;
   line-height: inherit;
 }
 
@@ -10,7 +8,7 @@
 .alert-info,
 .btn-outline-primary,
 .btn-outline-secondary {
-  @extend .shadow-sm;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 
 .card {

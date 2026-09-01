@@ -1,8 +1,8 @@
-@import './scss/bootstrap-override';
-@import './scss/colors';
-@import './scss/left-menu-quick-access';
-@import './scss/show-more-button';
-@import './scss/variables';
+@use './scss/bootstrap-override';
+@use './scss/colors';
+@use './scss/left-menu-quick-access';
+@use './scss/show-more-button';
+@use './scss/variables';
 
 // styles in src/style directory are applied to the whole page
 body {

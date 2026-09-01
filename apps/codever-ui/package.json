@@ -31,7 +31,7 @@
     "@angular/pwa": "^19.2.27",
     "@angular/router": "19.2.25",
     "@angular/service-worker": "^19.2.25",
-    "bootstrap": "^4.4.1",
+    "bootstrap": "^4.6.2",
     "core-js": "^2.6.11",
     "dompurify": "^3.4.14",
     "immutable": "^4.0.0-rc.12",

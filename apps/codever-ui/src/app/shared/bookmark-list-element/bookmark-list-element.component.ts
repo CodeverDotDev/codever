@@ -87,7 +87,7 @@ export class BookmarkListElementComponent
     public loginDialog: MatDialog,
     private deleteDialog: MatDialog,
     private shareDialog: MatDialog,
-    private keycloakService: AuthenticationService,
+    public keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private userDataHistoryStore: UserDataHistoryStore,
     private personalBookmarksService: PersonalBookmarksService,
