@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../auth/authentication.service';
 import { UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
@@ -29,7 +29,7 @@ export class UserDataFavoritesStore {
   constructor(
     private userService: UserDataService,
     private userDataStore: UserDataStore,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private notifyStoresService: NotifyStoresService
   ) {

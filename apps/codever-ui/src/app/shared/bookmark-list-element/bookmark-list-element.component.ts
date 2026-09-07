@@ -9,7 +9,7 @@ import {
 import { Bookmark } from '../../core/model/bookmark';
 import { PlayYoutubeVideoDialogComponent } from '../dialog/play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Observable, Subscription } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
@@ -37,9 +37,10 @@ import { PersonalCollectionsService } from '../../core/personal-collections.serv
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 
 @Component({
-  selector: 'app-bookmark-list-element',
-  templateUrl: './bookmark-list-element.component.html',
-  styleUrls: ['./bookmark-list-element.component.scss'],
+    selector: 'app-bookmark-list-element',
+    templateUrl: './bookmark-list-element.component.html',
+    styleUrls: ['./bookmark-list-element.component.scss'],
+    standalone: false
 })
 export class BookmarkListElementComponent
   extends TagFollowingBaseComponent
@@ -86,7 +87,7 @@ export class BookmarkListElementComponent
     public loginDialog: MatDialog,
     private deleteDialog: MatDialog,
     private shareDialog: MatDialog,
-    public keycloakService: KeycloakService,
+    public keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private userDataHistoryStore: UserDataHistoryStore,
     private personalBookmarksService: PersonalBookmarksService,

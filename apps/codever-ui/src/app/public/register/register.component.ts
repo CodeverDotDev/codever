@@ -1,17 +1,18 @@
 import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { KeycloakLoginOptions } from 'keycloak-js';
 
 @Component({
-  selector: 'app-about',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
+    selector: 'app-about',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss'],
+    standalone: false
 })
 export class RegisterComponent {
   environment = environment;
 
-  constructor(private keycloakService: KeycloakService) {}
+  constructor(private keycloakService: AuthenticationService) {}
 
   login() {
     const options: KeycloakLoginOptions = {};

@@ -7,8 +7,9 @@ import { PaginationNotificationService } from '../../core/pagination-notificatio
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-public-notes',
-  templateUrl: './public-notes.component.html',
+    selector: 'app-public-notes',
+    templateUrl: './public-notes.component.html',
+    standalone: false
 })
 export class PublicNotesComponent implements OnInit {
   notes$: Observable<Note[]>;

@@ -13,9 +13,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 
 @Component({
-  selector: 'app-page-navigation-bar',
-  templateUrl: './page-navigation-bar.component.html',
-  styleUrls: ['./page-navigation-bar.component.scss'],
+    selector: 'app-page-navigation-bar',
+    templateUrl: './page-navigation-bar.component.html',
+    styleUrls: ['./page-navigation-bar.component.scss'],
+    standalone: false
 })
 export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   @Input()

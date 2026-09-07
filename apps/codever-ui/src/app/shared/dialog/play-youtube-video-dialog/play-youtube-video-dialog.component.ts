@@ -4,9 +4,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Bookmark } from '../../../core/model/bookmark';
 
 @Component({
-  selector: 'app-play-youtube-video-dialog',
-  templateUrl: './play-youtube-video-dialog.component.html',
-  styleUrls: ['./play-youtube-video-dialog.component.scss'],
+    selector: 'app-play-youtube-video-dialog',
+    templateUrl: './play-youtube-video-dialog.component.html',
+    styleUrls: ['./play-youtube-video-dialog.component.scss'],
+    standalone: false
 })
 export class PlayYoutubeVideoDialogComponent {
   bookmark: Bookmark;

@@ -20,7 +20,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { MarkdownService } from '../../core/markdown/markdown.service';
-import { KeycloakService } from 'keycloak-angular';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { languages } from '../../shared/constants/language-options';
@@ -69,9 +68,10 @@ import { FeatureToggleService } from '../../core/feature-toggle.service';
 import * as screenfull from 'screenfull';
 
 @Component({
-  selector: 'app-note-editor',
-  templateUrl: './note-editor.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-note-editor',
+    templateUrl: './note-editor.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   noteForm: UntypedFormGroup;
@@ -165,7 +165,6 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private formBuilder: UntypedFormBuilder,
-    private keycloakService: KeycloakService,
     private userDataService: UserDataService,
     private markdownService: MarkdownService,
     private personalNotesService: PersonalNotesService,

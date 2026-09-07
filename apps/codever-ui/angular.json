@@ -9,24 +9,27 @@
       "projectType": "application",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist",
+            "outputPath": {
+              "base": "dist"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
             "assets": [
               "src/assets",
               "src/assets/favicon.ico",
               "src/manifest.json"
             ],
             "styles": [
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss",
               "./node_modules/highlight.js/styles/github-dark.css",
               "./node_modules/katex/dist/katex.min.css",
               "./node_modules/izitoast/dist/css/iziToast.min.css",
-              "./node_modules/bootstrap/scss/bootstrap.scss",
               //"./node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
@@ -35,12 +38,11 @@
               "izitoast"
             ],
             "aot": false,
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
@@ -56,15 +58,13 @@
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "serviceWorker": true
+              "serviceWorker": "ngsw-config.json"
             },
             "non-docker": {
               "fileReplacements": [
@@ -128,5 +128,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

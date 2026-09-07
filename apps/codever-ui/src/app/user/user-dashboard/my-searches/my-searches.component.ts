@@ -10,9 +10,10 @@ import { SearchDomain } from '../../../core/model/search-domain.enum';
 import { searchDomains } from '../../../core/model/search-domains-map';
 
 @Component({
-  selector: 'app-saved-searches',
-  templateUrl: './my-searches.component.html',
-  styleUrls: ['./my-searches.component.scss'],
+    selector: 'app-saved-searches',
+    templateUrl: './my-searches.component.html',
+    styleUrls: ['./my-searches.component.scss'],
+    standalone: false
 })
 export class MySearchesComponent implements OnInit {
   userData$: Observable<UserData>;

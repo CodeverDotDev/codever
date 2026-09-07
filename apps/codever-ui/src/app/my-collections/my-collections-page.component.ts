@@ -7,9 +7,10 @@ import { CollectionFormDialogComponent } from './collection-form-dialog/collecti
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-my-collections-page',
-  templateUrl: './my-collections-page.component.html',
-  styleUrls: ['./my-collections-page.component.scss'],
+    selector: 'app-my-collections-page',
+    templateUrl: './my-collections-page.component.html',
+    styleUrls: ['./my-collections-page.component.scss'],
+    standalone: false
 })
 export class MyCollectionsPageComponent implements OnInit {
   collections: Collection[] = [];

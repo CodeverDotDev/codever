@@ -16,7 +16,7 @@ import {
 import { UntypedFormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { Search, UserData } from '../../core/model/user-data';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { UserDataStore } from '../../core/user/userdata.store';
@@ -38,9 +38,10 @@ import iziToast, { IziToastSettings } from 'izitoast';
 import { LatestSearchClickNotificationService } from '../../core/latest-search-click.notification.service';
 
 @Component({
-  selector: 'app-searchbar',
-  templateUrl: './searchbar.component.html',
-  styleUrls: ['./searchbar.component.scss'],
+    selector: 'app-searchbar',
+    templateUrl: './searchbar.component.html',
+    styleUrls: ['./searchbar.component.scss'],
+    standalone: false
 })
 export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
@@ -94,7 +95,7 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
     private bookmarkStore: PublicBookmarksStore,
     private publicBookmarksService: PublicBookmarksService,
     private paginationNotificationService: PaginationNotificationService,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private keycloakServiceWrapper: KeycloakServiceWrapper,
     private userDataStore: UserDataStore,
     private userInfoStore: UserInfoStore,

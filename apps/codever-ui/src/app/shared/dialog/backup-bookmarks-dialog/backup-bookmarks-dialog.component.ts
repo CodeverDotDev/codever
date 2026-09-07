@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-delete-bookmark-dialog',
-  templateUrl: './backup-bookmarks-dialog.component.html',
-  styleUrls: ['./backup-bookmarks-dialog.component.scss'],
+    selector: 'app-delete-bookmark-dialog',
+    templateUrl: './backup-bookmarks-dialog.component.html',
+    styleUrls: ['./backup-bookmarks-dialog.component.scss'],
+    standalone: false
 })
 export class BackupBookmarksDialogComponent {
   backupType: string; // 'bookmarks' | 'snippets';

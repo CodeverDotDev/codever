@@ -15,9 +15,10 @@ import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-f
 import { Note } from '../../core/model/note';
 
 @Component({
-  selector: 'app-async-search-result-list',
-  templateUrl: './async-search-result-list.component.html',
-  styleUrls: ['./async-search-result-list.component.scss'],
+    selector: 'app-async-search-result-list',
+    templateUrl: './async-search-result-list.component.html',
+    styleUrls: ['./async-search-result-list.component.scss'],
+    standalone: false
 })
 export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
   declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template

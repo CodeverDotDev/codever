@@ -25,10 +25,11 @@ import { renderLatex } from '../render-latex.util';
  * Parsed once on change and stored as a list of renderable cells.
  */
 @Component({
-  selector: 'app-notebook-renderer',
-  templateUrl: './notebook-renderer.component.html',
-  styleUrls: ['./notebook-renderer.component.scss'],
-  encapsulation: ViewEncapsulation.None, // allow hljs theme classes to apply
+    selector: 'app-notebook-renderer',
+    templateUrl: './notebook-renderer.component.html',
+    styleUrls: ['./notebook-renderer.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class NotebookRendererComponent implements OnChanges {
   @Input() ipynbJson: string;

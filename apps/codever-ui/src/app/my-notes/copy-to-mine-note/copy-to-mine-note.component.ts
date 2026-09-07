@@ -4,8 +4,9 @@ import { Note } from '../../core/model/note';
 import { PublicNotesService } from '../../public/notes/public-notes.service';
 
 @Component({
-  selector: 'app-copy-to-mine-note',
-  templateUrl: './copy-to-mine-note.component.html',
+    selector: 'app-copy-to-mine-note',
+    templateUrl: './copy-to-mine-note.component.html',
+    standalone: false
 })
 export class CopyToMineNoteComponent implements OnInit {
   note: Note;

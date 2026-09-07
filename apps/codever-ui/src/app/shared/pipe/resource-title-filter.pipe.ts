@@ -3,7 +3,10 @@ import { Bookmark } from '../../core/model/bookmark';
 import { Note } from '../../core/model/note';
 import { UserDataResource } from '../../core/model/user-data-resource.type';
 
-@Pipe({ name: 'resourceTitleFilter' })
+@Pipe({
+    name: 'resourceTitleFilter',
+    standalone: false
+})
 export class ResourceTitleFilterPipe implements PipeTransform {
   transform(
     resources: UserDataResource[],

@@ -5,9 +5,10 @@ import { Observable, of } from 'rxjs';
 import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
 
 @Component({
-  selector: 'app-copy-to-mine-bookmark',
-  templateUrl: './copy-to-mine-bookmark.component.html',
-  styleUrls: ['./copy-to-mine-bookmark.component.scss'],
+    selector: 'app-copy-to-mine-bookmark',
+    templateUrl: './copy-to-mine-bookmark.component.html',
+    styleUrls: ['./copy-to-mine-bookmark.component.scss'],
+    standalone: false
 })
 export class CopyToMineBookmarkComponent implements OnInit {
   bookmark$: Observable<Bookmark>;

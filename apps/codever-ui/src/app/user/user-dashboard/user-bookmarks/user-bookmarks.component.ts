@@ -13,9 +13,10 @@ import { PaginationNotificationService } from '../../../core/pagination-notifica
 import { environment } from '../../../../environments/environment';
 
 @Component({
-  selector: 'app-my-bookmarks',
-  templateUrl: './user-bookmarks.component.html',
-  styleUrls: ['./user-bookmarks.component.scss'],
+    selector: 'app-my-bookmarks',
+    templateUrl: './user-bookmarks.component.html',
+    styleUrls: ['./user-bookmarks.component.scss'],
+    standalone: false
 })
 export class UserBookmarksComponent implements OnChanges {
   userBookmarks$: Observable<Bookmark[]>;

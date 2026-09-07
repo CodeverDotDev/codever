@@ -32,7 +32,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro                # codever.dev server blocks
-      - /data/codever/ui-dist:/usr/share/nginx/html:ro     # Angular prod build
+      - /data/codever/ui-dist/browser:/usr/share/nginx/html:ro # Angular 19 browser build
       - /etc/letsencrypt:/etc/letsencrypt:ro               # certs (shared with certbot)
       - /data/codever/certbot-webroot:/var/www/certbot:ro  # ACME http-01 webroot
     healthcheck:

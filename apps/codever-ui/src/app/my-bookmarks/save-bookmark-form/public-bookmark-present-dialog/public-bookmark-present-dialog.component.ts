@@ -4,9 +4,10 @@ import { Bookmark } from '../../../core/model/bookmark';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-public-bookmark-present-dialog',
-  templateUrl: './public-bookmark-present-dialog.component.html',
-  styleUrls: ['./public-bookmark-present-dialog.component.scss'],
+    selector: 'app-public-bookmark-present-dialog',
+    templateUrl: './public-bookmark-present-dialog.component.html',
+    styleUrls: ['./public-bookmark-present-dialog.component.scss'],
+    standalone: false
 })
 export class PublicBookmarkPresentDialogComponent {
   bookmark: Bookmark;

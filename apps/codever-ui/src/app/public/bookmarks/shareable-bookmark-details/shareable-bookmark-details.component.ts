@@ -5,9 +5,10 @@ import { Observable } from 'rxjs';
 import { PublicBookmarksService } from '../public-bookmarks.service';
 
 @Component({
-  selector: 'app-bookmark-details',
-  templateUrl: './shareable-bookmark-details.component.html',
-  styleUrls: ['./shareable-bookmark-details.component.scss'],
+    selector: 'app-bookmark-details',
+    templateUrl: './shareable-bookmark-details.component.html',
+    styleUrls: ['./shareable-bookmark-details.component.scss'],
+    standalone: false
 })
 export class ShareableBookmarkDetailsComponent implements OnInit {
   bookmark$: Observable<Bookmark>;

@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Bookmark } from '../../core/model/bookmark';
 import { UserData } from '../../core/model/user-data';
 import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { UserPublicData } from '../../core/model/user-public-data';
@@ -18,9 +18,10 @@ import { TagFollowingBaseComponent } from '../../shared/tag-following-base-compo
 import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
 
 @Component({
-  selector: 'app-user-public-profile',
-  templateUrl: './user-public-profile.component.html',
-  styleUrls: ['./user-public-profile.component.scss'],
+    selector: 'app-user-public-profile',
+    templateUrl: './user-public-profile.component.html',
+    styleUrls: ['./user-public-profile.component.scss'],
+    standalone: false
 })
 export class UserPublicProfileComponent
   extends TagFollowingBaseComponent
@@ -34,7 +35,7 @@ export class UserPublicProfileComponent
 
   constructor(
     private userPublicService: UserPublicService,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private publicBookmarksService: PublicBookmarksService,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,

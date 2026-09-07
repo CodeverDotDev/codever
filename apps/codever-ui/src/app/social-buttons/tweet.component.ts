@@ -1,8 +1,8 @@
 import { Component, ElementRef, AfterViewInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'tweet',
-  template: `<a
+    selector: 'tweet',
+    template: `<a
     class="twitter-share-button"
     href="https://twitter.com/intent/tweet"
     [attr.data-size]="'large'"
@@ -13,6 +13,7 @@ import { Component, ElementRef, AfterViewInit, Input } from '@angular/core';
     [attr.related]="related"
   >
   </a>`,
+    standalone: false
 })
 
 /**

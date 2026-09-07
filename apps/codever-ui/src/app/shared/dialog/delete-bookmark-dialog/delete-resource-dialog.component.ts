@@ -2,9 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-bookmark-dialog',
-  templateUrl: './delete-resource-dialog.component.html',
-  styleUrls: ['./delete-resource-dialog.component.scss'],
+    selector: 'app-delete-bookmark-dialog',
+    templateUrl: './delete-resource-dialog.component.html',
+    styleUrls: ['./delete-resource-dialog.component.scss'],
+    standalone: false
 })
 export class DeleteResourceDialogComponent {
   resourceName: string;

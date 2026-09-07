@@ -5,9 +5,10 @@ import { debounceTime } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-loader',
-  templateUrl: './loader.component.html',
-  styleUrls: ['./loader.component.css'],
+    selector: 'app-loader',
+    templateUrl: './loader.component.html',
+    styleUrls: ['./loader.component.css'],
+    standalone: false
 })
 export class LoaderComponent implements OnInit, OnDestroy {
   color = 'primary';

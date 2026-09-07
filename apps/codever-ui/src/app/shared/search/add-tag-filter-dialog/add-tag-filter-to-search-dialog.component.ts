@@ -22,9 +22,10 @@ import { UsedTag } from '../../../core/model/used-tag';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
 
 @Component({
-  selector: 'app-delete-bookmark-dialog',
-  templateUrl: './add-tag-filter-to-search-dialog.component.html',
-  styleUrls: ['./add-tag-filter-to-search-dialog.component.scss'],
+    selector: 'app-delete-bookmark-dialog',
+    templateUrl: './add-tag-filter-to-search-dialog.component.html',
+    styleUrls: ['./add-tag-filter-to-search-dialog.component.scss'],
+    standalone: false
 })
 export class AddTagFilterToSearchDialogComponent implements OnInit {
   userId: string;
