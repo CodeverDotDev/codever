@@ -1,0 +1,18 @@
+/* styles scoped to the how-to-mcp page */
+
+.mcp-code {
+  background: #f6f8fa;
+  border: 1px solid #e1e4e8;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+
+  code {
+    color: #24292e;
+    white-space: pre;
+  }
+}
+
+.tab-body {
+  padding-top: 1rem;
+}

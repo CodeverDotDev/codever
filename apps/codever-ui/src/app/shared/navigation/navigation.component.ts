@@ -10,18 +10,21 @@ import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
 import { LocalStorageService } from '../../core/cache/local-storage.service';
+import { FeatureToggleService } from '../../core/feature-toggle.service';
 
 @Component({
-    selector: 'app-navigation',
-    templateUrl: './navigation.component.html',
-    styleUrls: ['./navigation.component.scss'],
-    standalone: false
+  selector: 'app-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrls: ['./navigation.component.scss'],
+  standalone: false,
 })
 export class NavigationComponent implements OnInit {
   isLoggedIn: boolean;
   userInfoOidc$: Observable<UserInfoOidc>;
   environment = environment;
   userData$: Observable<UserData>;
+  aiAssistantEnabled$: Observable<boolean>;
+  mcpServerEnabled$: Observable<boolean>;
 
   constructor(
     private appService: AppService,
@@ -29,7 +32,8 @@ export class NavigationComponent implements OnInit {
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private localStorageService: LocalStorageService,
-    private keycloakServiceWrapper: KeycloakServiceWrapper
+    private keycloakServiceWrapper: KeycloakServiceWrapper,
+    private featureToggleService: FeatureToggleService
   ) {}
 
   ngOnInit() {
@@ -38,6 +42,9 @@ export class NavigationComponent implements OnInit {
       this.userInfoOidc$ = this.userInfoStore.getUserInfoOidc$();
       this.isLoggedIn = true;
       this.userData$ = this.userDataStore.getUserData$();
+      this.aiAssistantEnabled$ =
+        this.featureToggleService.isAiAssistantEnabled();
+      this.mcpServerEnabled$ = this.featureToggleService.isMcpServerEnabled();
     } else {
       this.isLoggedIn = false;
     }

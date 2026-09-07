@@ -1,0 +1,211 @@
+<div id="howto-mcp-content" class="jumbotron">
+  <h2>Connect an AI client (MCP) <i class="fas fa-robot"></i></h2>
+  <p class="lead">
+    Codever ships its own <strong>MCP (Model Context Protocol)</strong> server,
+    so you can connect an AI client — like <strong>VS Code + Copilot</strong>,
+    <strong>Cursor</strong> or <strong>Claude Desktop</strong> — and let it
+    search and read <em>your own</em> bookmarks and notes, right inside your
+    editor or chat.
+  </p>
+
+  <div class="alert alert-info mb-3">
+    <i class="fas fa-info-circle mr-1"></i>
+    This is a <strong>power-user feature</strong>. If you just want to ask
+    questions over your bookmarks and notes without any setup, use the built-in
+    <a routerLink="/assistant"
+      ><strong><i class="fas fa-robot"></i> Ask Codever</strong></a
+    >
+    chat instead — no client, no configuration.
+  </div>
+
+  <hr />
+
+  <!-- What you get -->
+  <h3><i class="fas fa-toolbox"></i> What your AI client can do</h3>
+  <p>
+    The Codever MCP server is <strong>read-only by design</strong>. It exposes
+    exactly three tools:
+  </p>
+  <ul>
+    <li>
+      <strong><code>search_entries</code></strong> — search your bookmarks and
+      notes by text and tags.
+    </li>
+    <li>
+      <strong><code>get_entry</code></strong> — fetch a single bookmark or note
+      by id, with its full content.
+    </li>
+    <li>
+      <strong><code>list_tags</code></strong> — list your tags with usage
+      counts.
+    </li>
+  </ul>
+  <div class="alert alert-success">
+    <i class="fas fa-shield-alt mr-1"></i>
+    <strong>Read-only by architecture.</strong> There are no create, update or
+    delete tools, and the MCP connection uses a separate, scoped credential — a
+    connected client can never modify your data.
+  </div>
+
+  <hr />
+
+  <!-- Prerequisites -->
+  <h3><i class="fas fa-clipboard-check"></i> Before you start</h3>
+  <ul>
+    <li>You need a <strong>Codever account</strong> and must be logged in.</li>
+    <li>
+      The MCP feature must be <strong>enabled for your account</strong>. If it
+      isn't, the connection will be rejected — see
+      <a href="#howto-mcp-troubleshooting">Troubleshooting</a>.
+    </li>
+    <li>
+      An MCP-capable client that supports <strong>OAuth</strong> (see the
+      compatibility table below).
+    </li>
+  </ul>
+
+  <hr />
+
+  <!-- Connect -->
+  <h3><i class="fas fa-plug"></i> Connect your client</h3>
+  <p>
+    The server URL is the same everywhere. Authentication happens through your
+    browser — <strong>no token to copy or paste</strong>: on first connect the
+    client opens a Codever login, you approve, and it stores and refreshes the
+    token for you.
+  </p>
+
+  <p class="mb-1"><strong>MCP server URL</strong></p>
+  <pre class="mcp-code"><code>{{ mcpUrl }}</code></pre>
+
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"
+          ><i class="fas fa-laptop-code"></i> VS Code</span
+        >
+      </ng-template>
+      <div class="tab-body">
+        <p>
+          Create (or edit) <code>.vscode/mcp.json</code> in your workspace root
+          and add:
+        </p>
+        <pre class="mcp-code"><code>{{ vscodeConfig }}</code></pre>
+        <p>
+          Then start the server from the <code>mcp.json</code> editor (or via
+          <em>MCP: List Servers</em>). VS Code opens a browser login the first
+          time; after you approve, the <strong>codever</strong> tools appear in
+          Copilot's agent mode tool picker.
+        </p>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"
+          ><i class="fas fa-i-cursor"></i> Cursor / Claude Desktop</span
+        >
+      </ng-template>
+      <div class="tab-body">
+        <p>
+          Add Codever to your client's MCP configuration (for Cursor:
+          <em>Settings → MCP → Add server</em>; for Claude Desktop edit its
+          <code>claude_desktop_config.json</code>):
+        </p>
+        <pre class="mcp-code"><code>{{ genericConfig }}</code></pre>
+        <p>
+          On first use the client launches a browser login. Approve it once and
+          the Codever tools become available.
+        </p>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <hr />
+
+  <!-- Try it -->
+  <h3><i class="fas fa-comments"></i> Try it</h3>
+  <p>Once connected, ask your AI client things like:</p>
+  <ul>
+    <li>
+      <em
+        >"Search my Codever bookmarks for MCP and summarize the top
+        results."</em
+      >
+    </li>
+    <li><em>"What tags do I use most in Codever?"</em></li>
+    <li>
+      <em>"Open my note about &hellip; and turn it into a checklist."</em>
+    </li>
+  </ul>
+
+  <hr />
+
+  <!-- Compatibility -->
+  <h3><i class="fas fa-check-double"></i> Client compatibility</h3>
+  <div class="table-responsive">
+    <table class="table table-sm table-bordered">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Supported</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>VS Code + Copilot</td>
+          <td><i class="fas fa-check text-success"></i> Yes</td>
+          <td>Browser-based OAuth; tools appear in agent mode.</td>
+        </tr>
+        <tr>
+          <td>Cursor</td>
+          <td><i class="fas fa-check text-success"></i> Yes</td>
+          <td>Browser-based OAuth.</td>
+        </tr>
+        <tr>
+          <td>Claude Desktop</td>
+          <td><i class="fas fa-check text-success"></i> Yes</td>
+          <td>Add via config; browser-based OAuth.</td>
+        </tr>
+        <tr>
+          <td>GitHub Copilot CLI</td>
+          <td><i class="fas fa-times text-danger"></i> Not supported</td>
+          <td>
+            Requires Dynamic Client Registration, which Codever intentionally
+            does not allow. Use VS Code, Cursor or Claude Desktop instead.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr />
+
+  <!-- Troubleshooting -->
+  <h3 id="howto-mcp-troubleshooting">
+    <i class="fas fa-life-ring"></i> Troubleshooting
+  </h3>
+  <ul>
+    <li>
+      <strong>Connection rejected / 403</strong> — the MCP feature may not be
+      enabled for your account yet. It's rolled out gradually.
+    </li>
+    <li>
+      <strong>Browser login doesn't open</strong> — make sure your client
+      version supports OAuth for MCP and that pop-ups aren't blocked.
+    </li>
+    <li>
+      <strong>No tools appear</strong> — confirm the server URL is exactly
+      <code>{{ mcpUrl }}</code> and that you completed the browser login.
+    </li>
+  </ul>
+
+  <div class="alert alert-secondary mt-3">
+    <i class="fas fa-book mr-1"></i>
+    Prefer a no-setup option? The
+    <a routerLink="/assistant"><strong>Ask Codever</strong></a> chat gives you
+    the same grounded answers over your bookmarks and notes, directly in
+    Codever.
+  </div>
+</div>

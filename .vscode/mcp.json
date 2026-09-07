@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "codever": {
+      "type": "http",
+      "url": "http://localhost:3000/api/mcp"
+    },
+    "codever-prod": {
+      "type": "http",
+      "url": "https://www.codever.dev/api/mcp"
+    }
+  }
+}
+

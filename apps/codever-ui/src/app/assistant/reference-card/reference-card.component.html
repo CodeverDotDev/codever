@@ -1,0 +1,31 @@
+<div class="assistant-reference-card">
+  <div class="ref-header">
+    <span class="ref-type-badge" [class.note]="isNote" [class.bookmark]="!isNote">
+      <i class="fas" [class.fa-sticky-note]="isNote" [class.fa-bookmark]="!isNote"></i>
+      {{ reference.type }}
+    </span>
+  </div>
+
+  <a
+    *ngIf="isNote"
+    class="ref-title"
+    [routerLink]="['/my-notes', reference.id, 'details']"
+    [title]="reference.title"
+  >
+    {{ reference.title || '(untitled)' }}
+  </a>
+
+  <a
+    *ngIf="!isNote"
+    class="ref-title"
+    [href]="reference.url"
+    target="_blank"
+    rel="noopener noreferrer"
+    [title]="reference.url"
+  >
+    {{ reference.title || reference.url }}
+  </a>
+
+  <p class="ref-excerpt" *ngIf="reference.excerpt">{{ reference.excerpt }}</p>
+</div>
+

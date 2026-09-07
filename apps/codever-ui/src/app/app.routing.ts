@@ -55,6 +55,11 @@ const routes: Routes = [
       import('./my-notes/my-notes.module').then((m) => m.MyNotesModule),
   },
   {
+    path: 'assistant',
+    loadChildren: () =>
+      import('./assistant/assistant.module').then((m) => m.AssistantModule),
+  },
+  {
     // Top-level public note URLs: /notes/:id/details and /notes/shared/:shareableId
     path: 'notes',
     loadChildren: () =>

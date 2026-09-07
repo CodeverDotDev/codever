@@ -6,6 +6,7 @@ import { HowtoGetStartedComponent } from './howto-get-started/howto-get-started.
 import { HowtoHotkeysComponent } from './howto-hotkeys/howto-hotkeys.component';
 import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.component';
 import { HowToNotesComponent } from './howto-notes/how-to-notes.component';
+import { HowToMcpComponent } from './howto-mcp/how-to-mcp.component';
 
 const howToRoutes: Routes = [
   {
@@ -40,6 +41,10 @@ const howToRoutes: Routes = [
   {
     path: 'hotkeys',
     component: HowtoHotkeysComponent,
+  },
+  {
+    path: 'mcp',
+    component: HowToMcpComponent,
   },
   {
     path: '**',
