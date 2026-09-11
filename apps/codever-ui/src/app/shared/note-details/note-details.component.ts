@@ -233,7 +233,11 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
       // toggle() internally calls exit() whenever anything is fullscreen, regardless of which element.
       // Branch on the library's authoritative state (screenfull.element) instead of
       // this.isFullScreen, which can go stale if the fullscreenchange event is missed.
-      if (screenfull.isFullscreen && screenfull.element === part) {
+      // NOTE: use screenfull.element (an enumerable getter) rather than screenfull.isFullscreen,
+      // because isFullscreen is a NON-enumerable getter and is dropped to `undefined` when the
+      // library is imported via `import * as screenfull` (the bundler only copies enumerable
+      // properties). That made the exit branch unreachable, so clicking the toggle never exited.
+      if (screenfull.element === part) {
         screenfull.exit();
       } else {
         this.fullscreenEl = part;
@@ -244,12 +248,12 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:fullscreenchange', ['$event'])
   fullscreenChangeHandler(event: Event) {
-    // Compare against our specific element — screenfull.isFullscreen alone would return true
-    // even when a DIFFERENT component's element is the active fullscreen element.
+    // Compare against our specific element — a bare "is anything fullscreen" check would return
+    // true even when a DIFFERENT component's element is the active fullscreen element.
     if (screenfull.isEnabled) {
       this.isFullScreen =
-        screenfull.isFullscreen && screenfull.element === this.fullscreenEl;
-      if (!screenfull.isFullscreen) {
+        !!screenfull.element && screenfull.element === this.fullscreenEl;
+      if (!screenfull.element) {
         this.fullscreenEl = null;
       }
     }
