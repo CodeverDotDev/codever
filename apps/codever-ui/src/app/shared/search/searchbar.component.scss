@@ -156,6 +156,12 @@ $background-gray: rgb(240, 242, 245);
 input {
   border-color: #6c757d;
   background-color: $background-gray;
+  color: #212529;
+
+  &::placeholder {
+    color: #6c757d;
+    opacity: 1;
+  }
 }
 
 .unchecked-public-bookmarks-selection {
