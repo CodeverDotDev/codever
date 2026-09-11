@@ -79,4 +79,127 @@ describe('feature-toggle.service', () => {
       expect(featureToggleService.isAiNoteRefineEnabled('any-user')).toBe(false);
     });
   });
+
+  describe('isFeatureEnabled (generic)', () => {
+    const featureToggleService = require('./feature-toggle.service');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    test('returns true when userId is enabled for the named feature', () => {
+      fs.readFileSync.mockReturnValue(
+        JSON.stringify({
+          mcpServer: { enabledUserIds: ['user-abc'] },
+        })
+      );
+
+      expect(featureToggleService.isFeatureEnabled('mcpServer', 'user-abc')).toBe(
+        true
+      );
+    });
+
+    test('returns false when the named feature is missing', () => {
+      fs.readFileSync.mockReturnValue(
+        JSON.stringify({ aiNoteRefine: { enabledUserIds: ['user-abc'] } })
+      );
+
+      expect(
+        featureToggleService.isFeatureEnabled('nonExistent', 'user-abc')
+      ).toBe(false);
+    });
+  });
+
+  describe('isAiAssistantEnabled', () => {
+    const featureToggleService = require('./feature-toggle.service');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    test('returns true when userId is in the aiAssistant enabled list', () => {
+      fs.readFileSync.mockReturnValue(
+        JSON.stringify({ aiAssistant: { enabledUserIds: ['user-abc'] } })
+      );
+
+      expect(featureToggleService.isAiAssistantEnabled('user-abc')).toBe(true);
+    });
+
+    test('returns false when userId is not enabled', () => {
+      fs.readFileSync.mockReturnValue(
+        JSON.stringify({ aiAssistant: { enabledUserIds: [] } })
+      );
+
+      expect(featureToggleService.isAiAssistantEnabled('user-abc')).toBe(false);
+    });
+  });
+
+  describe('isMcpServerEnabled', () => {
+    const featureToggleService = require('./feature-toggle.service');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    test('returns true when userId is in the mcpServer enabled list', () => {
+      fs.readFileSync.mockReturnValue(
+        JSON.stringify({ mcpServer: { enabledUserIds: ['user-xyz'] } })
+      );
+
+      expect(featureToggleService.isMcpServerEnabled('user-xyz')).toBe(true);
+    });
+
+    test('returns false when userId is not enabled', () => {
+      fs.readFileSync.mockReturnValue(
+        JSON.stringify({ mcpServer: { enabledUserIds: [] } })
+      );
+
+      expect(featureToggleService.isMcpServerEnabled('user-xyz')).toBe(false);
+    });
+  });
+
+  describe('getFeatureToggles (batch)', () => {
+    const featureToggleService = require('./feature-toggle.service');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    test('reads the file once and returns all known toggles for the user', () => {
+      fs.readFileSync.mockReturnValue(
+        JSON.stringify({
+          aiNoteRefine: { enabledUserIds: ['user-abc'] },
+          aiAssistant: { enabledUserIds: ['user-abc', 'user-xyz'] },
+          mcpServer: { enabledUserIds: ['user-xyz'] },
+        })
+      );
+
+      expect(featureToggleService.getFeatureToggles('user-abc')).toEqual({
+        aiNoteRefine: true,
+        aiAssistant: true,
+        mcpServer: false,
+      });
+      expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+    });
+
+    test('defaults every known toggle to false when features are missing', () => {
+      fs.readFileSync.mockReturnValue(JSON.stringify({}));
+
+      expect(featureToggleService.getFeatureToggles('any-user')).toEqual({
+        aiNoteRefine: false,
+        aiAssistant: false,
+        mcpServer: false,
+      });
+    });
+
+    test('returns all false when JSON is malformed', () => {
+      fs.readFileSync.mockReturnValue('not valid json {{{');
+
+      expect(featureToggleService.getFeatureToggles('any-user')).toEqual({
+        aiNoteRefine: false,
+        aiAssistant: false,
+        mcpServer: false,
+      });
+    });
+  });
 });

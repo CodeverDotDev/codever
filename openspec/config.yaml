@@ -1,0 +1,77 @@
+schema: spec-driven
+githubCopilot:
+  cloudAgent: false
+
+# Project context (shown to AI when creating artifacts).
+context: |
+  Project: Codever - a bookmarks, snippets, and notes manager (MEAN stack).
+
+  Monorepo layout (two apps):
+    - apps/codever-api  - Express.js REST API (Node.js, MongoDB/Mongoose, Keycloak auth)
+    - apps/codever-ui   - Angular SPA (lazy-loaded modules, Angular Material + Bootstrap 4)
+
+  API architecture: Router -> Service -> Mongoose Model (no controller layer).
+    - Public routes:   /api/public/{bookmarks,snippets,notes,users}
+    - Personal routes: /api/personal/users/:userId/{bookmarks,snippets,notes}
+    - Every personal route calls keycloak.protect() then
+      UserIdValidator.validateUserId(request).
+    - Services throw custom error classes mapped to HTTP codes by middleware in
+      app.js (ValidationError=400, UseridValidationError=401, NotFoundError=404,
+      PublicBookmarkExistingError / MongoError 11000=409, other MongoError=503).
+
+  Three core resource types share a `type` field
+  ('bookmark' | 'snippet' | 'note') and `public: Boolean`:
+    - Bookmark: name, location (URL), description, tags[]
+    - Snippet:  title, codeSnippets[] (code, language, comment), tags[]
+    - Note:     title, content, contentType ('markdown' | 'notebook'), tags[]
+
+  Frontend: feature modules lazy-loaded via loadChildren in app.routing.ts;
+  services live in core/; shared components in shared/. GET responses can be
+  cached in localStorage via HttpClientLocalStorageService.
+
+  Conventions:
+    - Commits follow the Angular Commit Guidelines
+      (feat, fix, chore, refactor, docs, perf, ...).
+    - Backend tests: *.test.js (unit), *.integration-test.js (integration).
+    - API config lives in apps/codever-api/env.json keyed by NODE_ENV
+      (not committed).
+
+  Local dev commands (from repo root):
+    - npm run frontend  (ng serve  -> http://localhost:4200)
+    - npm run backend   (nodemon   -> http://localhost:3000/api)
+    - npm start         (both in parallel)
+    - docker-compose up (MongoDB + Keycloak; default dev user mock/mock)
+
+# Per-artifact rules (constrain only the named artifact when it is written).
+rules:
+  proposal:
+    - Name the affected app(s) explicitly (codever-api, codever-ui, or both).
+    - State whether the change touches public or personal (authenticated) routes.
+    - Include an Impact section covering APIs, Mongoose models, and dependencies.
+  specs:
+    - Describe observable behavior only; keep Angular/Express/Mongoose
+      implementation details out of requirements.
+    - For API behavior, specify inputs, outputs, and the error class / HTTP
+      status for failure cases.
+  design:
+    - Follow the Router -> Service -> Model layering for API designs; do not
+      introduce a controller layer.
+    - Note any auth impact (keycloak.protect, UserIdValidator) and localStorage
+      cache implications for UI GET calls.
+  tasks:
+    - Each task states how it is verified (unit test, integration test, lint,
+      build, or observable behavior).
+    - Prefer the project's existing test conventions
+      (*.test.js / *.integration-test.js for the API; Karma/Jasmine for the UI).
+
+# Per-operation guidance (advisory; separate from artifact rules above).
+operations:
+  apply:
+    guidance:
+      - Keep changes minimal and scoped to the current task.
+      - Use conventional-commit-style summaries when describing work.
+      - Run the most targeted test/lint/build available before marking a task done.
+  archive:
+    guidance:
+      - Confirm all tasks are checked off and specs are synced before archiving.
+      - Summarize the archive outcome and the synced capabilities when finished.

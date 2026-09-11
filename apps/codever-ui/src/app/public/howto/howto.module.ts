@@ -10,6 +10,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.component';
 import { HowToNotesComponent } from './howto-notes/how-to-notes.component';
 import { CodeverBookmarkletComponent } from './howto-bookmarklets/codever-bookmarklet/codever-bookmarklet.component';
+import { HowToMcpComponent } from './howto-mcp/how-to-mcp.component';
 import { SharedModule } from '../../shared/shared.module';
 import { RouterModule } from '@angular/router';
 
@@ -22,6 +23,7 @@ import { RouterModule } from '@angular/router';
     HowToNotesComponent,
     CodeverBookmarkletComponent,
     HowtoHotkeysComponent,
+    HowToMcpComponent,
   ],
   exports: [],
   imports: [

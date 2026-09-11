@@ -69,8 +69,10 @@ services:
       MONGODB_HOST: mongo              # Docker service name, not localhost
       MONGODB_PORT: "27017"
     volumes:
-      # env.json is git-ignored (server-side only) → not in the build context, must be mounted
-      - ./apps/codever-api/env.json:/usr/src/app/env.json:ro
+      # env.json is git-ignored + excluded via .dockerignore (server-side secret, never
+      # baked into the image) → must be mounted. Target MUST match the Dockerfile WORKDIR
+      # (/opt/node_app/app), which is where config.js resolves require('../../env.json').
+      - ./apps/codever-api/env.json:/opt/node_app/app/env.json:ro
     logging:
       driver: json-file
       options: { max-size: "50m", max-file: "5" }
