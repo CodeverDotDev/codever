@@ -96,6 +96,21 @@
   color: #1b5e20;
 }
 
+// Quick-access entries are links styled as badges. Bootstrap 5 underlines
+// links by default and no longer darkens badges on hover, so restore the
+// previous look: no underline and, on hover, a dark gray background with
+// white text matching the Angular Material tooltip (grey-700 / #616161).
+a.badge {
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    background: #616161;
+    color: #fff;
+    text-decoration: none;
+  }
+}
+
 .on-top {
   position: relative;
   z-index: 900;
