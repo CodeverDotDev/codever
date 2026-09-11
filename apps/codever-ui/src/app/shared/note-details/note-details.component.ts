@@ -231,23 +231,27 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
       // while a DIFFERENT element (e.g. a snippet) is already fullscreen causes the browser
       // to SWITCH fullscreen to this element rather than simply exiting fullscreen entirely.
       // toggle() internally calls exit() whenever anything is fullscreen, regardless of which element.
-      if (this.isFullScreen) {
+      // Branch on the library's authoritative state (screenfull.element) instead of
+      // this.isFullScreen, which can go stale if the fullscreenchange event is missed.
+      if (screenfull.isFullscreen && screenfull.element === part) {
         screenfull.exit();
-        this.fullscreenEl = null;
       } else {
-        screenfull.request(part);
         this.fullscreenEl = part;
+        screenfull.request(part);
       }
     }
   }
 
   @HostListener('document:fullscreenchange', ['$event'])
   fullscreenChangeHandler(event: Event) {
-    // Compare against our specific element — !!document.fullscreenElement alone would return true
+    // Compare against our specific element — screenfull.isFullscreen alone would return true
     // even when a DIFFERENT component's element is the active fullscreen element.
-    this.isFullScreen = !!document.fullscreenElement && document.fullscreenElement === this.fullscreenEl;
-    if (!document.fullscreenElement) {
-      this.fullscreenEl = null;
+    if (screenfull.isEnabled) {
+      this.isFullScreen =
+        screenfull.isFullscreen && screenfull.element === this.fullscreenEl;
+      if (!screenfull.isFullscreen) {
+        this.fullscreenEl = null;
+      }
     }
   }
 

@@ -392,22 +392,24 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
 
-    if (this.isFullScreen) {
+    // Branch on the library's authoritative state (screenfull.element) instead
+    // of this.isFullScreen, which can go stale if the fullscreenchange event is missed.
+    if (screenfull.isFullscreen && screenfull.element === part) {
       screenfull.exit();
-      this.fullscreenEl = null;
     } else {
-      screenfull.request(part);
       this.fullscreenEl = part;
+      screenfull.request(part);
     }
   }
 
   @HostListener('document:fullscreenchange')
   fullscreenChangeHandler(): void {
-    this.isFullScreen =
-      !!document.fullscreenElement &&
-      document.fullscreenElement === this.fullscreenEl;
-    if (!document.fullscreenElement) {
-      this.fullscreenEl = null;
+    if (screenfull.isEnabled) {
+      this.isFullScreen =
+        screenfull.isFullscreen && screenfull.element === this.fullscreenEl;
+      if (!screenfull.isFullscreen) {
+        this.fullscreenEl = null;
+      }
     }
     this.cd.markForCheck();
   }
