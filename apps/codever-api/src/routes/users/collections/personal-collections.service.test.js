@@ -200,7 +200,7 @@ describe('PersonalCollectionsService', () => {
 
   describe('deleteCollectionById', () => {
     it('should throw NotFoundError when collection does not exist', async () => {
-      Collection.findOneAndRemove = jest.fn().mockResolvedValue(null);
+      Collection.findOneAndDelete = jest.fn().mockResolvedValue(null);
 
       await expect(
         PersonalCollectionsService.deleteCollectionById(userId, 'non-existent')
@@ -208,7 +208,7 @@ describe('PersonalCollectionsService', () => {
     });
 
     it('should delete the collection', async () => {
-      Collection.findOneAndRemove = jest
+      Collection.findOneAndDelete = jest
         .fn()
         .mockResolvedValue({ _id: 'col-1' });
 

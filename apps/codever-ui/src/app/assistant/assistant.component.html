@@ -1,0 +1,107 @@
+<div class="assistant-container">
+  <div class="assistant-header">
+    <h1><i class="fas fa-robot"></i> Ask Codever</h1>
+    <p class="subtitle">
+      Ask questions about your own bookmarks and notes. Answers are grounded in
+      what you've saved to Codever.
+    </p>
+    <button
+      *ngIf="messages.length > 0"
+      class="btn btn-sm btn-outline-secondary clear-btn"
+      type="button"
+      (click)="clear()"
+    >
+      <i class="fas fa-trash-alt"></i> Clear
+    </button>
+  </div>
+
+  <!-- Feature disabled state -->
+  <div *ngIf="enabled === false" class="assistant-disabled">
+    <p>
+      The <strong>Ask Codever</strong> assistant is not enabled for your account
+      yet.
+    </p>
+  </div>
+
+  <ng-container *ngIf="enabled !== false">
+    <div class="messages" #scrollContainer>
+      <!-- Empty state with example prompts -->
+      <div *ngIf="messages.length === 0" class="empty-state">
+        <p>Try asking:</p>
+        <div class="example-prompts">
+          <button
+            *ngFor="let prompt of examplePrompts"
+            type="button"
+            class="example-prompt"
+            (click)="usePrompt(prompt)"
+          >
+            {{ prompt }}
+          </button>
+        </div>
+      </div>
+
+      <div
+        *ngFor="let message of messages"
+        class="message"
+        [class.user]="message.role === 'user'"
+        [class.assistant]="message.role === 'assistant'"
+        [class.error]="message.error"
+      >
+        <div class="message-bubble">
+          <div
+            *ngIf="message.role === 'assistant' && !message.error"
+            class="message-content markdown-body"
+            [innerHTML]="message.content | md2html"
+          ></div>
+          <div
+            *ngIf="message.role === 'user' || message.error"
+            class="message-content"
+          >
+            {{ message.content }}
+          </div>
+
+          <div
+            *ngIf="message.references && message.references.length > 0"
+            class="references"
+          >
+            <div class="references-label">References</div>
+            <div class="reference-cards">
+              <app-assistant-reference-card
+                *ngFor="let ref of message.references"
+                [reference]="ref"
+              ></app-assistant-reference-card>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading indicator -->
+      <div *ngIf="loading" class="message assistant">
+        <div class="message-bubble">
+          <div class="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <textarea
+        [(ngModel)]="inputText"
+        (keydown)="onKeydown($event)"
+        [disabled]="loading"
+        placeholder="Ask about your bookmarks and notes… (Enter to send, Shift+Enter for a new line)"
+        rows="2"
+      ></textarea>
+      <button
+        type="button"
+        class="btn btn-primary send-btn"
+        (click)="send()"
+        [disabled]="loading || !inputText.trim()"
+      >
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </ng-container>
+</div>
+

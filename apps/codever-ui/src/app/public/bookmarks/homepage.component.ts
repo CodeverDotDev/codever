@@ -5,7 +5,8 @@ import { UserDataResource } from '../../core/model/user-data-resource.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
 import { allTags } from '../../core/model/all-tags.const.en';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
+import { KeycloakLoginOptions } from 'keycloak-js';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,9 +24,10 @@ import { SearchDomain } from '../../core/model/search-domain.enum';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
-  selector: 'app-public-bookmarks',
-  templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.scss'],
+    selector: 'app-public-bookmarks',
+    templateUrl: './homepage.component.html',
+    styleUrls: ['./homepage.component.scss'],
+    standalone: false
 })
 export class HomepageComponent
   extends TagFollowingBaseComponent
@@ -46,7 +48,6 @@ export class HomepageComponent
   userIsLoggedIn = false;
   showLoginButton = false;
   userId: string;
-  userIsLoggedIn$: Promise<boolean>;
 
   selectedTabIndex: number;
 
@@ -64,7 +65,7 @@ export class HomepageComponent
     private publicBookmarksStore: PublicBookmarksStore,
     private router: Router,
     private route: ActivatedRoute,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userDataStore: UserDataStore,
     private userDataHistoryStore: UserDataHistoryStore,
     private userDataPinnedStore: UserDataPinnedStore,
@@ -81,33 +82,26 @@ export class HomepageComponent
   ngOnInit(): void {
     const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
     const page = this.route.snapshot.queryParamMap.get('page');
-    this.userIsLoggedIn$ = this.keycloakService.isLoggedIn();
-
-    this.userIsLoggedIn$.then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.userData$ = this.userDataStore.getUserData$();
-        this.userData$.subscribe((userData) => {
-          this.userId = userData.userId;
-          this.userData = userData;
-          this.setSelectedTabIndexFromQueryParam(tabQueryParam);
-          this.setCurrentPageFromQueryParam(page, this.selectedTabIndex);
-          if (this.selectedTabIndex === TabIndex.Feed) {
-            this.setFeedBookmarks$(true, this.currentPageFeed);
-          }
-        });
-      } else {
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userIsLoggedIn = true;
+      this.userData$ = this.userDataStore.getUserData$();
+      this.userData$.subscribe((userData) => {
+        this.userId = userData.userId;
+        this.userData = userData;
         this.setSelectedTabIndexFromQueryParam(tabQueryParam);
         this.setCurrentPageFromQueryParam(page, this.selectedTabIndex);
-        if (this.selectedTabIndex === TabIndex.Feed) {
-          this.setFeedBookmarks$(false, this.currentPageFeed);
-        }
+          this.loadTabData(this.selectedTabIndex);
+      });
+    } else {
+      this.setSelectedTabIndexFromQueryParam(tabQueryParam);
+      this.setCurrentPageFromQueryParam(page, this.selectedTabIndex);
+      if (this.selectedTabIndex === TabIndex.Feed) {
+        this.setFeedBookmarks$(false, this.currentPageFeed);
       }
-
-      this.listenToClickOnLogoEvent(isLoggedIn);
-
-      this.listenToPaginationNavigationEvents(isLoggedIn);
-    });
+    }
+    this.listenToClickOnLogoEvent(isLoggedIn);
+    this.listenToPaginationNavigationEvents(isLoggedIn);
   }
 
   private setSelectedTabIndexFromQueryParam(tabQueryParam) {
@@ -136,6 +130,32 @@ export class HomepageComponent
     } else {
       this.feedBookmarks$ =
         this.publicBookmarksStore.getRecentPublicBookmarks$(page);
+    }
+  }
+
+  private loadTabData(tabIndex: number) {
+    switch (tabIndex) {
+      case TabIndex.Feed:
+        this.setFeedBookmarks$(this.userIsLoggedIn, this.currentPageFeed);
+        break;
+      case TabIndex.History:
+        this.history$ = this.userDataHistoryStore.getHistory$(
+          this.userId,
+          this.currentPageHistory
+        );
+        break;
+      case TabIndex.Pinned:
+        this.pinned$ = this.userDataPinnedStore.getPinnedResources$(
+          this.userId,
+          this.currentPagePinned
+        );
+        break;
+      case TabIndex.ReadLater:
+        this.readLater$ = this.userDataReadLaterStore.getReadLater$(
+          this.userId,
+          this.currentPageReadLater
+        );
+        break;
     }
   }
 
@@ -213,30 +233,8 @@ export class HomepageComponent
 
   tabSelectionChanged(event: MatTabChangeEvent) {
     this.selectedTabIndex = event.index;
-    if (this.userIsLoggedIn) {
-      switch (event.index) {
-        case TabIndex.Feed:
-          this.setFeedBookmarks$(this.userIsLoggedIn, this.currentPageFeed);
-          break;
-        case TabIndex.History:
-          this.history$ = this.userDataHistoryStore.getHistory$(
-            this.userId,
-            this.currentPageHistory
-          );
-          break;
-        case TabIndex.Pinned:
-          this.pinned$ = this.userDataPinnedStore.getPinnedResources$(
-            this.userId,
-            this.currentPagePinned
-          );
-          break;
-        case TabIndex.ReadLater:
-          this.readLater$ = this.userDataReadLaterStore.getReadLater$(
-            this.userId,
-            this.currentPageReadLater
-          );
-          break;
-      }
+    if (this.userIsLoggedIn && this.userId) {
+      this.loadTabData(event.index);
     }
 
     const queryParamsFromIndex = this.getQueryParamsForSelectedTab(
@@ -253,7 +251,7 @@ export class HomepageComponent
   }
 
   login(selectedTab: string) {
-    const options: Keycloak.KeycloakLoginOptions = {};
+    const options: KeycloakLoginOptions = {};
     options.redirectUri = `${environment.APP_HOME_URL}?tab=${selectedTab}`;
     this.keycloakService.login(options);
   }
@@ -294,11 +292,9 @@ export class HomepageComponent
   }
 
   ngAfterViewInit(): void {
-    this.userIsLoggedIn$.then((isLoggedIn) => {
-      if (!isLoggedIn) {
-        this.showLoginButton = true;
-      }
-    });
+    if (!this.userIsLoggedIn) {
+      this.showLoginButton = true;
+    }
   }
 }
 

@@ -2,9 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-saved-search-dialog',
-  templateUrl: './delete-saved-search-dialog.component.html',
-  styleUrls: ['./delete-saved-search-dialog.component.scss'],
+    selector: 'app-delete-saved-search-dialog',
+    templateUrl: './delete-saved-search-dialog.component.html',
+    styleUrls: ['./delete-saved-search-dialog.component.scss'],
+    standalone: false
 })
 export class DeleteSavedSearchDialogComponent {
   savedSearchText: string;

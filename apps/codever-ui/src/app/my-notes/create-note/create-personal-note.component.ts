@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-personal-note-create',
-  templateUrl: './create-personal-note.component.html',
+    selector: 'app-personal-note-create',
+    templateUrl: './create-personal-note.component.html',
+    standalone: false
 })
 export class CreatePersonalNoteComponent implements OnInit {
   initiator: string;

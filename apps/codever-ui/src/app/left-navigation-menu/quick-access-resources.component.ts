@@ -11,9 +11,10 @@ import {
 import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
 
 @Component({
-  selector: 'app-quick-access-resources',
-  templateUrl: './quick-access-resources.component.html',
-  styleUrls: ['./quick-access-resources.component.scss'],
+    selector: 'app-quick-access-resources',
+    templateUrl: './quick-access-resources.component.html',
+    styleUrls: ['./quick-access-resources.component.scss'],
+    standalone: false
 })
 export class QuickAccessResourcesComponent {
   @Input()
@@ -21,6 +22,8 @@ export class QuickAccessResourcesComponent {
 
   @Input()
   source: string;
+
+  pinnedFilterText = '';
 
   @Output()
   newSectionTitleEvent = new EventEmitter<string>();
@@ -41,6 +44,17 @@ export class QuickAccessResourcesComponent {
     return this.isNote(resource)
       ? (resource as Note).title
       : (resource as Bookmark).name;
+  }
+
+  get filteredPinnedResources(): UserDataResource[] {
+    const filterText = this.pinnedFilterText.trim().toLocaleLowerCase();
+    if (!filterText) {
+      return this.quickAccessResources;
+    }
+
+    return this.quickAccessResources.filter((resource) =>
+      this.getLabel(resource).toLocaleLowerCase().includes(filterText)
+    );
   }
 
   /** Tooltip: note title or bookmark "name - location". */
@@ -77,7 +91,8 @@ export class QuickAccessResourcesComponent {
     this.addToHistoryService.promoteInHistoryIfLoggedIn(true, bookmark);
   }
 
-  goToMainLink(resource: UserDataResource) {
+  goToMainLink(event: Event, resource: UserDataResource): void {
+    event.stopPropagation();
     const bookmark = resource as Bookmark;
     this.addToHistoryService.promoteInHistoryIfLoggedIn(true, bookmark);
     window.open(bookmark.location, '_blank');
@@ -88,7 +103,10 @@ export class QuickAccessResourcesComponent {
   }
 
   dropUserDataResource(event: CdkDragDrop<UserDataResource[]>) {
-    if (event.previousIndex === event.currentIndex) {
+    if (
+      this.pinnedFilterText.trim() ||
+      event.previousIndex === event.currentIndex
+    ) {
       return;
     }
     const reordered = [...this.quickAccessResources];

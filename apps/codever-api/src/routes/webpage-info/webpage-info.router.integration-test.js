@@ -53,7 +53,7 @@ describe('Test scrape functionality', () => {
     expect(response.statusCode).toEqual(HttpStatus.OK);
     expect(response.body.title).toEqual('Codever');
     expect(response.body.metaDescription).toInclude(
-      'Open source Bookmarks and Code Snippets Manager for Developers & Co'
+      'Bookmarks & Notes Manager for Developers — with Markdown and Code Snippets support'
     );
   });
 });

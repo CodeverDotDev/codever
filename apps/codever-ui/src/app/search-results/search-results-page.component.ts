@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Bookmark } from '../core/model/bookmark';
 import { SearchNotificationService } from '../core/search-notification.service';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../core/auth/authentication.service';
 import { KeycloakServiceWrapper } from '../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../core/user/user-info.store';
 import { UserDataStore } from '../core/user/userdata.store';
@@ -22,9 +22,10 @@ import { PublicSearchService } from '../core/public-search.service';
 import { Note } from '../core/model/note';
 
 @Component({
-  selector: 'app-search-results',
-  templateUrl: './search-results-page.component.html',
-  styleUrls: ['./search-results-page.component.scss'],
+    selector: 'app-search-results',
+    templateUrl: './search-results-page.component.html',
+    styleUrls: ['./search-results-page.component.scss'],
+    standalone: false
 })
 export class SearchResultsPageComponent implements OnInit, OnDestroy {
   searchText: string; // holds the value in the search box
@@ -55,7 +56,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private personalSearchService: PersonalSearchService,
     private publicSearchService: PublicSearchService,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private keycloakServiceWrapper: KeycloakServiceWrapper,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
@@ -135,7 +136,8 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
 
     this.initPageNavigation();
 
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
@@ -157,7 +159,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
           this.searchInclude
         );
       }
-    });
+    }
 
     this.searchTriggeredSubscription =
       this.searchNotificationService.searchTriggeredSource$.subscribe(

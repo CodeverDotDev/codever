@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Bookmark } from '../../core/model/bookmark';
 import { Observable } from 'rxjs';
 import { UserDataStore } from '../../core/user/userdata.store';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserData } from '../../core/model/user-data';
 import {
   MatDialog,
@@ -17,9 +17,10 @@ import { PaginationNotificationService } from '../../core/pagination-notificatio
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 
 @Component({
-  selector: 'app-tag',
-  templateUrl: './bookmarks-tagged.component.html',
-  styleUrls: ['./bookmarks-tagged.component.css'],
+    selector: 'app-tag',
+    templateUrl: './bookmarks-tagged.component.html',
+    styleUrls: ['./bookmarks-tagged.component.css'],
+    standalone: false
 })
 export class BookmarksTaggedComponent implements OnInit {
   bookmarksForTag$: Observable<Bookmark[]>;
@@ -36,7 +37,7 @@ export class BookmarksTaggedComponent implements OnInit {
     private userDataStore: UserDataStore,
     private userDataWatchedTagsStore: UserDataWatchedTagsStore,
     private userInfoStore: UserInfoStore,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private paginationNotificationService: PaginationNotificationService,
     private route: ActivatedRoute,
     private loginDialog: MatDialog
@@ -70,14 +71,13 @@ export class BookmarksTaggedComponent implements OnInit {
       }
     });
 
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-          this.userData$ = this.userDataStore.getUserData$();
-        });
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userIsLoggedIn = true;
+      this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
+        this.userData$ = this.userDataStore.getUserData$();
+      });
+    }
 
     this.paginationNotificationService.pageNavigationClicked$.subscribe(
       (paginationAction) => {

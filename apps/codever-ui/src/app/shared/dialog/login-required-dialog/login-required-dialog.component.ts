@@ -1,19 +1,20 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../../core/auth/authentication.service';
 import { Router } from '@angular/router';
 import { KeycloakServiceWrapper } from '../../../core/keycloak-service-wrapper.service';
 
 @Component({
-  selector: 'app-delete-bookmark-dialog',
-  templateUrl: './login-required-dialog.component.html',
-  styleUrls: ['./login-required-dialog.component.scss'],
+    selector: 'app-delete-bookmark-dialog',
+    templateUrl: './login-required-dialog.component.html',
+    styleUrls: ['./login-required-dialog.component.scss'],
+    standalone: false
 })
 export class LoginRequiredDialogComponent {
   message: string;
 
   constructor(
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private keycloakServiceWrapper: KeycloakServiceWrapper,
     private dialogRef: MatDialogRef<LoginRequiredDialogComponent>,
     private router: Router,

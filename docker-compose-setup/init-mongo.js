@@ -12,10 +12,12 @@ db.createUser(
 );
 
 
-db.auth("bookmarks", "secret");
+// NOTE: db.auth() removed — init scripts run with root privileges automatically
+// (MONGO_INITDB_* env vars); it also fails under mongosh (mongo:5.0+ images).
 
 //insert initial public dev bookmarks
-db.bookmarks.insert(
+// insertMany() instead of insert(): insert() was removed in mongosh (mongo:5.0+ images)
+db.bookmarks.insertMany(
   [
     {
       "tags": [
@@ -24,6 +26,7 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Share coding knowledge – CodepediaOrg",
+      "type": "bookmark",
       "location": "https://www.codepedia.org/",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
@@ -47,6 +50,7 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Bookmarks and Snippets Manager for Developers & Co",
+      "type": "bookmark",
       "location": "https://www.codever.dev/",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
@@ -70,6 +74,7 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Collection of public dev bookmarks, shared with love from www.codever.land",
+      "type": "bookmark",
       "location": "https://github.com/CodeverDotDev/bookmarks#readme",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",
@@ -93,6 +98,7 @@ db.bookmarks.insert(
         "open-source"
       ],
       "name": "Getting started with Codever",
+      "type": "bookmark",
       "location": "https://www.codever.dev/howto",
       "userId": "a7908cb5-3b37-4cc1-a751-42f674d870e1",
       "userDisplayName": "Mock",

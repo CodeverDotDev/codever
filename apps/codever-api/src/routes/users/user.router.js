@@ -11,6 +11,8 @@ const browserBookmarksImportService = require('./browser-bookmarks-import.servic
 
 const UserDataService = require('./user-data.service');
 const PersonalSearchService = require('./personal-search.service');
+const AiAssistantService = require('../ai/assistant.service');
+const FeatureToggleService = require('../../common/feature-toggle.service');
 const userIdTokenValidator = require('./userid.validator');
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
 const FileTypeValidationHelper = require('./file-type-validation.helper');
@@ -24,14 +26,18 @@ const HttpStatus = require('http-status-codes/index');
 const keycloak = new Keycloak({ scope: 'openid' }, config.keycloak);
 usersRouter.use(keycloak.middleware());
 
-const aws = require('aws-sdk');
-aws.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const { S3Client } = require('@aws-sdk/client-s3');
+const awsCredentials =
+  process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
+    ? {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      }
+    : undefined;
+const s3 = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: awsCredentials,
 });
-
-const s3 = new aws.S3();
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const path = require('path');
@@ -273,6 +279,64 @@ usersRouter.get(
       );
 
     response.send(personalSearchResults);
+  }
+);
+
+/**
+ * "Ask Codever" — in-app AI assistant chat over the user's own bookmarks/notes.
+ * Level 1 RAG: retrieve with existing search, synthesize with one DeepSeek call.
+ * Gated per-user by the `aiAssistant` feature toggle.
+ */
+usersRouter.post(
+  '/:userId/assistant/chat',
+  keycloak.protect(),
+  async (request, response) => {
+    userIdTokenValidator.validateUserId(request);
+    const { userId } = request.params;
+
+    if (!FeatureToggleService.isAiAssistantEnabled(userId)) {
+      return response.status(HttpStatus.FORBIDDEN).json({
+        message: 'The AI assistant feature is not enabled for this user.',
+      });
+    }
+
+    const { message, history } = request.body;
+    if (!message || !String(message).trim()) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: 'A non-empty "message" is required.',
+      });
+    }
+
+    try {
+      const result = await AiAssistantService.askAssistant(userId, {
+        message,
+        history,
+      });
+      return response.status(HttpStatus.OK).json(result);
+    } catch (err) {
+      if (err.isUnreachable) {
+        return response.status(HttpStatus.SERVICE_UNAVAILABLE).json({
+          message: err.message,
+          unreachable: true,
+        });
+      }
+      if (err.isAuthError) {
+        return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          message: err.message,
+          authError: true,
+        });
+      }
+      if (err.isRateLimit) {
+        return response.status(HttpStatus.TOO_MANY_REQUESTS).json({
+          message: err.message,
+          rateLimit: true,
+        });
+      }
+      console.error('AI assistant error:', err.message);
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: err.message,
+      });
+    }
   }
 );
 

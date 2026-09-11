@@ -1,7 +1,8 @@
 import { AfterViewChecked, Directive, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[appFullscreenCodeButton]',
+    selector: '[appFullscreenCodeButton]',
+    standalone: false
 })
 export class FullscreenCodeButtonDirective implements AfterViewChecked {
   private static stylesInjected = false;

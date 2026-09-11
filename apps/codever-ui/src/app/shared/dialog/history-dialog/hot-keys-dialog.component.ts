@@ -5,9 +5,10 @@ import { UserDataResource } from '../../../core/model/user-data-resource.type';
 import { AddToHistoryService } from '../../../core/user/add-to-history.service';
 
 @Component({
-  selector: 'app-hotkeys-dialog',
-  templateUrl: './hot-keys-dialog.component.html',
-  styleUrls: ['./hot-keys-dialog.component.scss'],
+    selector: 'app-hotkeys-dialog',
+    templateUrl: './hot-keys-dialog.component.html',
+    styleUrls: ['./hot-keys-dialog.component.scss'],
+    standalone: false
 })
 export class HotKeysDialogComponent {
   userDataResources$: Observable<UserDataResource[]>;
@@ -19,7 +20,7 @@ export class HotKeysDialogComponent {
     public addToHistoryService: AddToHistoryService,
     @Inject(MAT_DIALOG_DATA) data
   ) {
-    this.userDataResources$ = data.bookmarks$;
+    this.userDataResources$ = data.resources$;
     this.title = data.title;
   }
 

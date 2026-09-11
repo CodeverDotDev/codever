@@ -122,7 +122,7 @@
         >
       </ng-template>
       <div
-        *ngIf="!(userIsLoggedIn$ | async); else isLoggedInLastVisited"
+        *ngIf="!userIsLoggedIn; else isLoggedInLastVisited"
         class="tabs-headline-message mt-2 alert alert-info"
         data-test="history-tab-alert"
       >
@@ -171,7 +171,7 @@
       </ng-template>
       <ng-template matTabContent>
         <div
-          *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToPin"
+          *ngIf="!userIsLoggedIn; else isLoggedInToPin"
           class="tabs-headline-message mt-2 alert alert-info"
           data-test="pinned-tab-alert"
         >
@@ -221,7 +221,7 @@
       </ng-template>
       <ng-template matTabContent>
         <div
-          *ngIf="!(userIsLoggedIn$ | async); else isLoggedInToReadLater"
+          *ngIf="!userIsLoggedIn; else isLoggedInToReadLater"
           class="tabs-headline-message mt-2 alert alert-info"
           data-test="readlater-tab-alert"
         >

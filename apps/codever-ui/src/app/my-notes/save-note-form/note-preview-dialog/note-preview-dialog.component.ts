@@ -10,9 +10,10 @@ export interface NotePreviewDialogData {
 }
 
 @Component({
-  selector: 'app-note-preview-dialog',
-  templateUrl: './note-preview-dialog.component.html',
-  styleUrls: ['./note-preview-dialog.component.scss'],
+    selector: 'app-note-preview-dialog',
+    templateUrl: './note-preview-dialog.component.html',
+    styleUrls: ['./note-preview-dialog.component.scss'],
+    standalone: false
 })
 export class NotePreviewDialogComponent implements OnInit {
   dialogTitle: string;

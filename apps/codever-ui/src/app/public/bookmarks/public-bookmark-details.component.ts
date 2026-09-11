@@ -5,8 +5,9 @@ import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksService } from './public-bookmarks.service';
 
 @Component({
-  selector: 'app-public-bookmark-details',
-  templateUrl: './public-bookmark-details.component.html',
+    selector: 'app-public-bookmark-details',
+    templateUrl: './public-bookmark-details.component.html',
+    standalone: false
 })
 export class PublicBookmarkDetailsComponent implements OnInit {
   showMoreText = false;

@@ -22,12 +22,16 @@ let findPersonalNotes = async function (
     filter,
     searchInclude
   );
+  // Tags narrow the result set but do not create MongoDB text-score metadata.
+  // Only project textScore and rank by it when actual full-text terms exist.
+  const projection = fulltextSearchTerms.length > 0
+    ? { score: { $meta: 'textScore' } }
+    : {};
 
-  let notes = await Note.find(filter, {
-    score: { $meta: 'textScore' },
-  })
+  let notes = await Note.find(filter, projection)
+    // Tag-only searches use newest-first ordering because no text score exists.
     .sort(
-      searchTerms.length > 0
+      fulltextSearchTerms.length > 0
         ? { score: { $meta: 'textScore' } }
         : { createdAt: -1 }
     )

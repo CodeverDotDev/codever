@@ -18,9 +18,10 @@ import { localStorageKeys } from '../../../core/model/localstorage.cache-keys';
 import iziToast, { IziToastSettings } from 'izitoast';
 
 @Component({
-  selector: 'app-user-tags',
-  templateUrl: './user-tags.component.html',
-  styleUrls: ['./user-tags.component.scss'],
+    selector: 'app-user-tags',
+    templateUrl: './user-tags.component.html',
+    styleUrls: ['./user-tags.component.scss'],
+    standalone: false
 })
 export class UserTagsComponent
   extends TagFollowingBaseComponent

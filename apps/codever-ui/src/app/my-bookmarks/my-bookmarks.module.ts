@@ -20,6 +20,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CloneBookmarkComponent } from './clone-bookmark/clone-bookmark.component';
 import { AiRefineBookmarkDialogComponent } from './save-bookmark-form/ai-refine-bookmark-dialog/ai-refine-bookmark-dialog.component';
+import { AiRefineResultDialogModule } from '../my-notes/save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.module';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { AiRefineBookmarkDialogComponent } from './save-bookmark-form/ai-refine-
     MatTabsModule,
     MatDialogModule,
     MyBookmarksRoutingModule,
+    AiRefineResultDialogModule,
   ],
   providers: [DatePipe],
 })

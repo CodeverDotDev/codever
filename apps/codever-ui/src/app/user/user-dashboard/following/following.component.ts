@@ -4,9 +4,10 @@ import { UserDataProfile } from '../../../core/model/user-data-profile';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-following',
-  templateUrl: './following.component.html',
-  styleUrls: ['./following.component.scss'],
+    selector: 'app-following',
+    templateUrl: './following.component.html',
+    styleUrls: ['./following.component.scss'],
+    standalone: false
 })
 export class FollowingComponent implements OnInit {
   @Input()

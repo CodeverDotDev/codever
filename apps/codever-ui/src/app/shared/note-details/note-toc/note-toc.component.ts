@@ -16,9 +16,10 @@ export interface TocHeading {
 }
 
 @Component({
-  selector: 'app-note-toc',
-  templateUrl: './note-toc.component.html',
-  styleUrls: ['./note-toc.component.scss'],
+    selector: 'app-note-toc',
+    templateUrl: './note-toc.component.html',
+    styleUrls: ['./note-toc.component.scss'],
+    standalone: false
 })
 export class NoteTocComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input()

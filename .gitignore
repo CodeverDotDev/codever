@@ -7,3 +7,9 @@ documentation/keycloak-upgrade/*
 /documentation/keycloak-upgrade/
 /apps/codever-ui/cypress/dist/videos/
 /documentation/docker-migration/
+# secrets — never commit (server-side only; see documentation/requirements/migrate-to-docker)
+.env
+apps/codever-api/env.json
+
+# migration docs live in the private codever-migrate-to-docker repo (nested)
+documentation/requirements/migrate-to-docker/

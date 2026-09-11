@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { environment } from '../../../environments/environment';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 import { UserInfoOidc } from '../../core/model/user-info.oidc';
@@ -10,42 +10,54 @@ import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
 import { LocalStorageService } from '../../core/cache/local-storage.service';
+import { FeatureToggleService } from '../../core/feature-toggle.service';
 
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
+  standalone: false,
 })
 export class NavigationComponent implements OnInit {
   isLoggedIn: boolean;
   userInfoOidc$: Observable<UserInfoOidc>;
   environment = environment;
   userData$: Observable<UserData>;
+  aiAssistantEnabled$: Observable<boolean>;
+  mcpServerEnabled$: Observable<boolean>;
 
   constructor(
     private appService: AppService,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private localStorageService: LocalStorageService,
-    private keycloakServiceWrapper: KeycloakServiceWrapper
+    private keycloakServiceWrapper: KeycloakServiceWrapper,
+    private featureToggleService: FeatureToggleService
   ) {}
 
   ngOnInit() {
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userInfoOidc$ = this.userInfoStore.getUserInfoOidc$();
-        this.isLoggedIn = true;
-        this.userData$ = this.userDataStore.getUserData$();
-      } else {
-        this.isLoggedIn = false;
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userInfoOidc$ = this.userInfoStore.getUserInfoOidc$();
+      this.isLoggedIn = true;
+      this.userData$ = this.userDataStore.getUserData$();
+      this.aiAssistantEnabled$ =
+        this.featureToggleService.isAiAssistantEnabled();
+      this.mcpServerEnabled$ = this.featureToggleService.isMcpServerEnabled();
+    } else {
+      this.isLoggedIn = false;
+    }
   }
 
   async doLogout() {
     this.localStorageService.cleanUserRelatedData();
-    await this.keycloakService.logout(environment.APP_HOME_URL);
+    // keycloak-js 24 performs an OIDC-compliant RP-initiated logout: it sends
+    // post_logout_redirect_uri (from `redirectUri`) and id_token_hint automatically,
+    // and clears the local tokens — so no manual logout URL is needed anymore.
+    await this.keycloakService.getKeycloakInstance().logout({
+      redirectUri: environment.APP_HOME_URL,
+    });
   }
 
   login() {

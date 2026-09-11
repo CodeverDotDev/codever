@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Observable } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
@@ -7,9 +7,10 @@ import { UserDataStore } from '../../core/user/userdata.store';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.scss'],
+    selector: 'app-dashboard',
+    templateUrl: './user-dashboard.component.html',
+    styleUrls: ['./user-dashboard.component.scss'],
+    standalone: false
 })
 export class UserDashboardComponent implements OnInit {
   userId: string;
@@ -20,7 +21,7 @@ export class UserDashboardComponent implements OnInit {
   private readonly tabNames = ['bookmarks', 'notes', 'tags', 'searches', 'following', 'followers'];
 
   constructor(
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private route: ActivatedRoute,
@@ -28,15 +29,14 @@ export class UserDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-          this.userId = userInfo.sub;
-          this.userData$ = this.userDataStore.getUserData$();
-          this.initSelectedTab();
-        });
-      }
-    });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
+        this.userId = userInfo.sub;
+        this.userData$ = this.userDataStore.getUserData$();
+        this.initSelectedTab();
+      });
+    }
   }
 
   tabChanged(index: number) {

@@ -77,6 +77,14 @@ docker-compose up
 
 #### Install and run (frontend & backend)
 
+> ⚠️ **One-time setup:** the API requires an `env.json` config file (git-ignored) — create it from
+> the provided example before the first start, otherwise the backend fails with
+> `Cannot find module '../../env.json'`:
+>
+> ```shell
+> cp apps/codever-api/env.json.example apps/codever-api/env.json
+> ```
+
 You want to have the backend API running first with the following commands:
 
 ```shell

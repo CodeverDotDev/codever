@@ -1,0 +1,64 @@
+.assistant-reference-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  background: #fff;
+  min-width: 200px;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  .ref-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .ref-type-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    font-weight: 600;
+
+    &.note {
+      background: #e8f0fe;
+      color: #1a56db;
+    }
+
+    &.bookmark {
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    i {
+      margin-right: 0.25rem;
+    }
+  }
+
+  .ref-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #202124;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .ref-excerpt {
+    font-size: 0.8rem;
+    color: #5f6368;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+

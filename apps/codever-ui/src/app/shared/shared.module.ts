@@ -28,6 +28,7 @@ import { AddTagFilterToSearchDialogComponent } from './search/add-tag-filter-dia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { ImportBookmarksDialogComponent } from './dialog/import-bookmarks-dialog/import-bookmarks-dialog.component';
 import { ExtensionsComponent } from './extensions/extensions.component';
 import { AsyncSearchResultListComponent } from './async-search-result-list/async-search-result-list.component';
@@ -46,6 +47,7 @@ import { HighLightPipe } from '../common/pipes/highlight.pipe';
 import { OpenInNewTabDirective } from './directive/open-in-new-tab.directive';
 import { AddToCollectionDialogComponent } from './add-to-collection-dialog/add-to-collection-dialog.component';
 import { ResourceFilterPipe } from './pipe/resource-filter.pipe';
+import { ResourceTitleFilterPipe } from './pipe/resource-title-filter.pipe';
 
 /**
  * Add a SharedModule to hold the common components, directives, and pipes and share them with the modules that need them.
@@ -66,12 +68,14 @@ import { ResourceFilterPipe } from './pipe/resource-filter.pipe';
     MatFormFieldModule,
     MatChipsModule,
     MatIconModule,
+    MatButtonModule,
     HighLightPipe,
   ],
   declarations: [
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
     ResourceFilterPipe,
+    ResourceTitleFilterPipe,
     SearchFilterPipe,
     AsyncBookmarkListComponent,
     AsyncSearchResultListComponent,

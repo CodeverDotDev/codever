@@ -11,7 +11,7 @@ const gitInfo = gitDescribeSync({
 gitInfo.version = version;
 console.log("__dirname:    ", __dirname);
 
-const file = resolve(__dirname, 'frontend/src', 'environments', 'version.ts');
+const file = resolve(__dirname, 'apps/codever-ui/src', 'environments', 'version.ts');
 writeFileSync(file,
     `// IMPORTANT: THIS FILE IS AUTO GENERATED! DO NOT MANUALLY EDIT OR CHECKIN!
 /* tslint:disable */

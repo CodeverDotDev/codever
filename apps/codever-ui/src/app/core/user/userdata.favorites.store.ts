@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../auth/authentication.service';
 import { UserData } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
@@ -29,21 +29,20 @@ export class UserDataFavoritesStore {
   constructor(
     private userService: UserDataService,
     private userDataStore: UserDataStore,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private userInfoStore: UserInfoStore,
     private notifyStoresService: NotifyStoresService
   ) {
     this.loadedPage = 1;
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      if (isLoggedIn) {
-        this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-          this.userId = userInfo.sub;
-          this.userDataStore.getUserData$().subscribe((userData) => {
-            this.userData = userData;
-          });
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    if (isLoggedIn) {
+      this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
+        this.userId = userInfo.sub;
+        this.userDataStore.getUserData$().subscribe((userData) => {
+          this.userData = userData;
         });
-      }
-    });
+      });
+    }
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.publishedFavoritesAfterDeletion(bookmark);
     });

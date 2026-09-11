@@ -8,9 +8,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 @Component({
-  selector: 'app-social-share-dialog',
-  templateUrl: './social-share-dialog.component.html',
-  providers: [DatePipe],
+    selector: 'app-social-share-dialog',
+    templateUrl: './social-share-dialog.component.html',
+    providers: [DatePipe],
+    standalone: false
 })
 export class SocialShareDialogComponent {
   userIsLoggedIn: boolean;

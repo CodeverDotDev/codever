@@ -123,7 +123,7 @@ let updateCollection = async (userId, collectionId, collectionData) => {
 };
 
 let deleteCollectionById = async (userId, collectionId) => {
-  const collection = await Collection.findOneAndRemove({
+  const collection = await Collection.findOneAndDelete({
     _id: collectionId,
     userId: userId,
   });

@@ -141,7 +141,7 @@ let updateBookmark = async (bookmark) => {
  * DELETE bookmark for by bookmarkId
  */
 let deleteBookmarkById = async (bookmarkId) => {
-  const bookmark = await Bookmark.findOneAndRemove({
+  const bookmark = await Bookmark.findOneAndDelete({
     _id: bookmarkId,
   });
 
@@ -242,7 +242,7 @@ let setProfileImageUrlForUsersWithGravatar = async (keycloakUsers) => {
  * DELETE user by userId
  */
 let deleteUserByUserId = async (userId) => {
-  const user = await User.findOneAndRemove({
+  const user = await User.findOneAndDelete({
     userId: userId,
   });
 

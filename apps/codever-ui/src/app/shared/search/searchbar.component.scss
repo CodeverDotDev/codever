@@ -30,7 +30,22 @@ $background-gray: rgb(240, 242, 245);
 
 .rm-search-trashbin {
   display: none;
-  margin-left: 3em;
+}
+
+.search-history-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+// forced to the right edge of the mat-option (which is position: relative)
+.search-history-delete {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  background-color: inherit;
 }
 
 // inspired from https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
@@ -58,7 +73,6 @@ $background-gray: rgb(240, 242, 245);
 
   .rm-search-trashbin {
     display: inherit;
-    margin-left: 8rem;
     &:hover {
       color: red;
       font-weight: bolder;

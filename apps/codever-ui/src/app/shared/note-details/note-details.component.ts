@@ -15,7 +15,7 @@ import { PersonalNotesService } from '../../core/personal-notes.service';
 import * as screenfull from 'screenfull';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NoteSocialShareDialogComponent } from '../dialog/note-social-share-dialog/note-social-share-dialog.component';
-import { KeycloakService } from 'keycloak-angular';
+import { AuthenticationService } from '../../core/auth/authentication.service';
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
 import { TocHeading } from './note-toc/note-toc.component';
@@ -24,9 +24,10 @@ import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { UserData } from '../../core/model/user-data';
 
 @Component({
-  selector: 'app-note-details',
-  templateUrl: './note-details.component.html',
-  styleUrls: ['./note-details.component.scss'],
+    selector: 'app-note-details',
+    templateUrl: './note-details.component.html',
+    styleUrls: ['./note-details.component.scss'],
+    standalone: false
 })
 export class NoteDetailsComponent implements OnInit, AfterViewInit {
   @Input()
@@ -63,16 +64,16 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private noteShareDialog: MatDialog,
-    private keycloakService: KeycloakService,
+    private keycloakService: AuthenticationService,
     private elementRef: ElementRef,
     private userDataStore: UserDataStore,
     private userDataPinnedStore: UserDataPinnedStore
   ) {}
 
   ngOnInit(): void {
-    this.keycloakService.isLoggedIn().then((isLoggedIn) => {
-      this.userId$ = isLoggedIn ? this.userInfoStore.getUserId$() : of(null);
-      this.userData$ = isLoggedIn ? this.userDataStore.getUserData$() : of(null);
+    const isLoggedIn = this.keycloakService.isLoggedIn();
+    this.userId$ = isLoggedIn ? this.userInfoStore.getUserId$() : of(null);
+    this.userData$ = isLoggedIn ? this.userDataStore.getUserData$() : of(null);
 
       if (!this.inSearchResults && !this.note$) {
         this.noteId = this.route.snapshot.paramMap.get('id');
@@ -106,7 +107,6 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
         // then replace it with the freshly fetched copy.
         this.note$ = stateNote ? note$.pipe(startWith(stateNote)) : note$;
       }
-    });
   }
 
   ngAfterViewInit(): void {

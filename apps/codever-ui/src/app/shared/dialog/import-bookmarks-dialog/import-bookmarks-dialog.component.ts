@@ -7,9 +7,10 @@ import { UserDataStore } from '../../../core/user/userdata.store';
 import { UserData } from '../../../core/model/user-data';
 
 @Component({
-  selector: 'app-delete-bookmark-dialog',
-  templateUrl: './import-bookmarks-dialog.component.html',
-  styleUrls: ['./import-bookmarks-dialog.component.scss'],
+    selector: 'app-delete-bookmark-dialog',
+    templateUrl: './import-bookmarks-dialog.component.html',
+    styleUrls: ['./import-bookmarks-dialog.component.scss'],
+    standalone: false
 })
 export class ImportBookmarksDialogComponent implements OnInit {
   uploadImageLabel = 'Choose bookmarks html file';

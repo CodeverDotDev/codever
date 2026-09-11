@@ -11,6 +11,7 @@ const userRouter = require('./routes/users/user.router');
 const webPageInfoRouter = require('./routes/webpage-info/webpage-info.router');
 const featureToggleRouter = require('./routes/feature-toggle/feature-toggle.router');
 const adminRouter = require('./routes/admin/admin.router');
+const mcpRouter = require('./mcp/mcp.server');
 const publicBookmarksRouter = require('./routes/public/public-bookmarks.router');
 const feedbackRouter = require('./routes/public/feedback/feedback.router');
 const publicNotesRouter = require('./routes/public/public-notes.router');
@@ -49,14 +50,9 @@ const mongoBookmarksCollectionName =
 const mongoHost = process.env.MONGODB_HOST || 'localhost';
 const mongoPort = process.env.MONGODB_PORT || '27017';
 
-const mongooseConnectOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-};
-
 const mongoUrl = `mongodb://${mongoUserName}:${mongoUserPwd}@${mongoHost}:${mongoPort}/${mongoBookmarksCollectionName}`;
-mongoose.connect(mongoUrl, mongooseConnectOptions);
+mongoose.set('strictQuery', true); // Preserve Mongoose 6 behavior: Mongoose 7 defaults strictQuery to false.
+mongoose.connect(mongoUrl);
 
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);
@@ -116,6 +112,13 @@ app.use('/api/personal/users', userRouter);
 app.use('/api/webpage-info', webPageInfoRouter);
 app.use('/api/feature-toggle', featureToggleRouter);
 app.use('/api/admin', adminRouter);
+app.get('/.well-known/oauth-protected-resource', (request, response) => {
+  response.json(mcpRouter.getProtectedResourceMetadata());
+});
+app.get('/.well-known/oauth-protected-resource/api/mcp', (request, response) => {
+  response.json(mcpRouter.getProtectedResourceMetadata());
+});
+app.use('/api/mcp', mcpRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
