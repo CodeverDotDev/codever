@@ -1,5 +1,5 @@
 <div class="input-group search-component">
-  <div class="input-group-prepend">
+  
     <button
       type="button"
       (mouseover)="hover = true"
@@ -19,7 +19,7 @@
       *ngIf="innerWidth > 1400; else toggleButton"
       class="btn btn-outline-secondary dropdown-toggle lighter-gray"
       type="button"
-      data-toggle="dropdown"
+      data-bs-toggle="dropdown"
       aria-haspopup="true"
       aria-expanded="false"
       style="font-size: 15px"
@@ -31,12 +31,12 @@
       <button
         type="button"
         class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-        data-toggle="dropdown"
+        data-bs-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
         data-test="search-selection-dropdown-small"
       >
-        <span class="sr-only">Toggle Dropdown</span>
+        <span class="visually-hidden">Toggle Dropdown</span>
       </button>
     </ng-template>
     <div class="dropdown-menu">
@@ -52,12 +52,12 @@
             searchDomain === 'all-mine';
             else uncheckedMyAllSelection
           "
-          class="search-domain-selection my-bookmarks-selection float-right pl-1 pr-1"
+          class="search-domain-selection my-bookmarks-selection float-end ps-1 pe-1"
         >
           <i class="fas fa-check"></i>
         </span>
         <ng-template #uncheckedMyAllSelection>
-          <span class="my-bookmarks-selection-unchecked float-right">
+          <span class="my-bookmarks-selection-unchecked float-end">
             <i class="fa fa-square fa-lg"></i>
           </span>
         </ng-template>
@@ -75,20 +75,20 @@
             searchDomain === 'all-public';
             else uncheckedPublicSelection
           "
-          class="search-domain-selection float-right pl-1 pr-1"
+          class="search-domain-selection float-end ps-1 pe-1"
         >
           <i class="fas fa-check"></i>
         </span>
         <ng-template #uncheckedPublicSelection>
-          <span class="public-snippets-selection-unchecked float-right">
+          <span class="public-snippets-selection-unchecked float-end">
             <i
-              class="fa fa-square fa-lg ml-1"
+              class="fa fa-square fa-lg ms-1"
             ></i>
           </span>
         </ng-template>
       </a>
     </div>
-  </div>
+  
 
   <input
     #publicSearchBox
@@ -120,7 +120,7 @@
     >
       <div class="search-history-row">
         <div>
-          <i class="fas fa-history mr-2 search-history-clock"></i>
+          <i class="fas fa-history me-2 search-history-clock"></i>
         </div>
         <div style="flex-grow: 1">
           <span class="search-history-text">
@@ -149,7 +149,7 @@
       {{ option }}
     </mat-option>
   </mat-autocomplete>
-  <div class="input-group-append dropdown">
+  
     <button
       *ngIf="publicSearchBox.value"
       class="btn btn-sm btn-outline-secondary"
@@ -162,14 +162,14 @@
     <button
       type="button"
       class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-      data-toggle="dropdown"
+      data-bs-toggle="dropdown"
       aria-haspopup="true"
       aria-expanded="false"
       style="border-radius: 0"
     >
-      <span class="sr-only">Toggle Dropdown</span>
+      <span class="visually-hidden">Toggle Dropdown</span>
     </button>
-    <div class="dropdown-menu dropdown-menu-right">
+    <div class="dropdown-menu dropdown-menu-end">
       <h6 class="dropdown-header">Add to search query</h6>
       <a
         class="dropdown-item"
@@ -188,5 +188,5 @@
     >
       <i class="fas fa-save lighter-gray"></i>
     </button>
-  </div>
+  
 </div>

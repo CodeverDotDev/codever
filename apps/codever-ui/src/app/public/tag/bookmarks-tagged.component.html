@@ -55,7 +55,7 @@
 <div *ngIf="(bookmarksForTag$ | async)?.length - counter > 0">
   <button
     type="button"
-    class="btn btn-primary btn-lg btn-block"
+    class="btn btn-primary btn-lg w-100"
     (click)="showMoreResults()"
     [disabled]="counter >= (bookmarksForTag$ | async)?.length"
     title="Show More"

@@ -17,6 +17,15 @@
 
 .jumbotron {
   padding: 2rem;
+  margin-bottom: 2rem;
+  background-color: #e9ecef;
+  border-radius: 0.3rem;
+}
+
+.jumbotron-fluid {
+  padding-right: 0;
+  padding-left: 0;
+  border-radius: 0;
 }
 
 .card-body {
@@ -44,14 +53,15 @@
 }
 
 
-.navbar-dark .navbar-nav .nav-link {
+.navbar[data-bs-theme='dark'] .navbar-nav .nav-link {
   //color: rgba(255, 255, 255, 0);
   color: #fff !important;
   font-weight: 500;
 }
 
-.navbar-dark .navbar-nav .nav-link:hover,.navbar-dark .navbar-nav .nav-link:focus {
-  color: #ffffffbf !important
+.navbar[data-bs-theme='dark'] .navbar-nav .nav-link:hover,
+.navbar[data-bs-theme='dark'] .navbar-nav .nav-link:focus {
+  color: #ffffffbf !important;
 }
 
 // https://stackoverflow.com/questions/16214326/bootstrap-dropdown-with-hover

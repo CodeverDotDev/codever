@@ -1,14 +1,12 @@
 <div class="p-3">
   <div class="d-flex justify-content-between align-items-center mb-2">
-    <h5 class="mb-0"><i class="fas fa-magic mr-1"></i> Refine with AI ✨</h5>
+    <h5 class="mb-0"><i class="fas fa-magic me-1"></i> Refine with AI ✨</h5>
     <button
       type="button"
-      class="close"
+      class="btn-close"
       aria-label="Close"
       (click)="close()"
-    >
-      <span aria-hidden="true">&times;</span>
-    </button>
+    ></button>
   </div>
   <hr class="mt-1 mb-2" />
 
@@ -19,7 +17,7 @@
     <div><strong>Content:</strong> {{ contentLength }} characters</div>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <label for="customPrompt"><strong>Instructions</strong></label>
     <textarea
       id="customPrompt"
@@ -28,13 +26,13 @@
       rows="8"
       style="font-family: monospace; font-size: 0.85rem;"
     ></textarea>
-    <small class="text-muted">Edit the instructions to customize how the AI refines your note.</small>
+    <small class="text-body-secondary">Edit the instructions to customize how the AI refines your note.</small>
   </div>
 
-  <div class="form-group">
-    <label><strong>Output Format</strong> <span class="badge badge-secondary">read-only</span></label>
-    <pre class="border rounded bg-light p-2 small text-muted mb-0" style="font-family: monospace; font-size: 0.8rem; white-space: pre-wrap;">{{ outputFormatInstructions }}</pre>
-    <small class="text-muted">The AI must follow this format for the result to be processed correctly.</small>
+  <div class="mb-3">
+    <label><strong>Output Format</strong> <span class="badge bg-secondary">read-only</span></label>
+    <pre class="border rounded bg-light p-2 small text-body-secondary mb-0" style="font-family: monospace; font-size: 0.8rem; white-space: pre-wrap;">{{ outputFormatInstructions }}</pre>
+    <small class="text-body-secondary">The AI must follow this format for the result to be processed correctly.</small>
   </div>
 
   <div *ngIf="errorMessage" class="alert alert-warning py-2 mb-2">
@@ -44,7 +42,7 @@
   <div class="d-flex justify-content-end">
     <button
       type="button"
-      class="btn btn-secondary mr-2"
+      class="btn btn-secondary me-2"
       (click)="close()"
       [disabled]="isRefining"
     >
@@ -57,11 +55,11 @@
       [disabled]="isRefining"
     >
       <span *ngIf="isRefining; else refineLabel">
-        <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
         Refining...
       </span>
       <ng-template #refineLabel>
-        <i class="fas fa-magic mr-1"></i> Refine
+        <i class="fas fa-magic me-1"></i> Refine
       </ng-template>
     </button>
   </div>

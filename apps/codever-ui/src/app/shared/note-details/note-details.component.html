@@ -6,7 +6,7 @@
     <div class="header-wrapper">
       <div class="title-and-subtitle">
         <h5 class="card-title">
-          <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
+          <i class="fa fa-sticky-note fa-xs me-2 anthracite-gray"></i>
           <ng-container *ngIf="partOfList; else plainTitle">
             <a *ngIf="(userId$ | async) === note.userId; else publicNoteLink"
                [routerLink]="['/my-notes', note._id, 'details']"
@@ -20,19 +20,19 @@
           </ng-container>
           <ng-template #plainTitle>{{ note.title }}</ng-template>
           <span *ngIf="note.public"
-                class="badge badge-pill ml-2 font-weight-normal"
+                class="badge rounded-pill ms-2 fw-normal"
                 style="background-color:#81c784; color:#1b5e20; font-size:0.7rem; vertical-align:middle;"
                 title="Public note">
-            <i class="fas fa-eye mr-1"></i>Public
+            <i class="fas fa-eye me-1"></i>Public
           </span>
           <span *ngIf="!note.public"
-                class="badge badge-pill ml-2 font-weight-normal"
+                class="badge rounded-pill ms-2 fw-normal"
                 style="background-color:#fff9c4; color:#795548; border:1px solid #f0cc70; font-size:0.7rem; vertical-align:middle;"
                 title="Private note">
-            <i class="fas fa-eye-slash mr-1"></i>Private
+            <i class="fas fa-eye-slash me-1"></i>Private
           </span>
         </h5>
-        <h6 class="card-subtitle mb-2 text-muted url-under-title">
+        <h6 class="card-subtitle mb-2 text-body-secondary url-under-title">
       <span title="last updated">
         <i class="far fa-calendar-alt"></i>  {{ note.updatedAt | date : 'yyyy-MM-dd' }}
       </span>
@@ -52,7 +52,7 @@
               : note.reference
             }}
           </a>
-          <sup class="ml-1"><i class="fas fa-external-link-alt"></i></sup>
+          <sup class="ms-1"><i class="fas fa-external-link-alt"></i></sup>
         </span>
         <ng-template #justText>
           <span>{{ note.reference }}</span>
@@ -86,7 +86,7 @@
           title="Copy markdown content"
           (click)="copyNoteMarkdown(note)"
         >
-          <i class="far fa-copy fa-lg"></i><span *ngIf="markdownCopied" class="ml-1" style="font-size:0.85rem;">Copied</span>
+          <i class="far fa-copy fa-lg"></i><span *ngIf="markdownCopied" class="ms-1" style="font-size:0.85rem;">Copied</span>
         </span>
         <span class="note-action-btn" title="Toggle Fullscreen" (click)="toggleFullScreen(noteEntry)">
           <i *ngIf="!isFullScreen" class="fas fa-expand fa-lg"></i>
@@ -117,11 +117,11 @@
       <div class="tags-group">
         <div class="input-group-sm mb-2 mb-sm-0 star-group">
         </div>
-      <div *ngFor="let tag of note.tags" class="btn-group tag-list mr-2 mt-1">
+      <div *ngFor="let tag of note.tags" class="btn-group tag-list me-2 mt-1">
         <!-- Own note (logged in): search My Notes with just the tag -->
         <a
           *ngIf="observables.userId && observables.userId === note.userId; else publicTagLink"
-          class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
+          class="badge bg-secondary float-start pe-2 fw-bolder"
           [routerLink]="['/search']"
           [queryParams]="{ q: '[' + tag + ']', sd: 'all-mine', type: 'note' }"
           title="Search my notes tagged [{{ tag }}]"
@@ -130,7 +130,7 @@
         <!-- Not logged in OR someone else's note: search Public Notes with just the tag -->
         <ng-template #publicTagLink>
           <a
-            class="badge badge-secondary float-xs-left pr-2 font-weight-bolder"
+            class="badge bg-secondary float-start pe-2 fw-bolder"
             [routerLink]="['/search']"
             [queryParams]="{ q: '[' + tag + ']', sd: 'public-notes' }"
             title="Search public notes tagged [{{ tag }}]"
@@ -138,7 +138,7 @@
           ></a>
         </ng-template>
       </div>
-      <div class="float-right mt-1">
+      <div class="float-end mt-1">
         <button
           *ngIf="observables.userId && note.userId === observables.userId"
           type="button"
@@ -168,7 +168,7 @@
         </button>
         <button
           *ngIf="note.public || (!note.public && note.userId === observables.userId)"
-          class="btn btn-light btn-sm float-right"
+          class="btn btn-light btn-sm float-end"
           title="Share via email or on social media"
           (click)="shareNoteDialog(note, observables.userId)"
         >
@@ -177,7 +177,7 @@
         </button>
         <button
           *ngIf="observables.userId && (note.userId === observables.userId || note.public)"
-          class="btn btn-light btn-sm float-right mr-1"
+          class="btn btn-light btn-sm float-end me-1"
           title="Add to collection"
           (click)="openAddToCollectionDialog(note, observables.userId)"
         >

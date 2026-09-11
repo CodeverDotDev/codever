@@ -8,14 +8,14 @@
       <ng-container
         *ngFor="let mySearch of searches | searchFilter : type : 'my-bookmarks'"
       >
-        <span class="my-saved-search mr-2">
+        <span class="my-saved-search me-2">
           <a
             [routerLink]="['/search']"
             [queryParams]="{ q: mySearch.text, sd: mySearch.searchDomain }"
-            class="badge badge-secondary mb-2"
+            class="badge bg-secondary mb-2"
           >
             <i class="fa fa-xs fa-search"></i> {{ mySearch.text }}
-            <span *ngIf="showCount" class="badge badge-light">{{
+            <span *ngIf="showCount" class="badge bg-light">{{
               mySearch.count
             }}</span>
           </a>
@@ -33,14 +33,14 @@
       <ng-container
         *ngFor="let mySearch of searches | searchFilter : type : 'public-bookmarks'"
       >
-        <span class="my-saved-search mr-2">
+        <span class="my-saved-search me-2">
           <a
             [routerLink]="['/search']"
             [queryParams]="{ q: mySearch.text, sd: 'public-bookmarks' }"
-            class="badge badge-secondary mb-2"
+            class="badge bg-secondary mb-2"
           >
             <i class="fa fa-xs fa-search"></i> {{ mySearch.text }}
-            <span *ngIf="showCount" class="badge badge-light">{{
+            <span *ngIf="showCount" class="badge bg-light">{{
               mySearch.count
             }}</span>
           </a>

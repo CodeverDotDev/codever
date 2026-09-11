@@ -6,7 +6,7 @@
     <div class="header-wrapper">
       <div class="titles">
         <h5 class="card-title">
-          <i class="fa fa-bookmark fa-sm mr-2 anthracite-gray"></i>
+          <i class="fa fa-bookmark fa-sm me-2 anthracite-gray"></i>
           <i
             *ngIf="bookmark.youtubeVideoId"
             class="fab fa-youtube youtube-icon"
@@ -38,7 +38,7 @@
           ><i class="fas fa-external-link-alt"></i
           ></sup>
         </h5>
-        <h6 class="card-subtitle mb-2 text-muted url-under-title">
+        <h6 class="card-subtitle mb-2 text-body-secondary url-under-title">
           <span *ngIf="bookmark.public">
             Posted by
             <a
@@ -133,7 +133,7 @@
     </div>
     <a
       *ngIf="bookmark.sourceCodeURL"
-      class="btn btn-light btn-sm float-xs-left tag-list mr-2"
+      class="btn btn-light btn-sm float-start tag-list me-2"
       href="{{ bookmark.sourceCodeURL }}"
       target="_blank"
       title="Source code URL"
@@ -144,7 +144,7 @@
     </a>
     <button
       *ngIf="bookmark.publishedOn"
-      class="btn btn-light btn-sm float-xs-left tag-list"
+      class="btn btn-light btn-sm float-start tag-list"
       style="cursor: default"
       title="Published on"
       disabled
@@ -170,7 +170,7 @@
               else likeOption
             "
             title="UnLike"
-            class="mr-1"
+            class="me-1"
             (click)="unLikeBookmark(bookmark)"
             style="cursor: pointer"
           >
@@ -178,7 +178,7 @@
           </span>
           <ng-template #likeOption>
             <span
-              class="mr-1"
+              class="me-1"
               title="Like"
               (click)="likeBookmark(bookmark)"
               style="cursor: pointer"
@@ -191,7 +191,7 @@
       </div>
       <div
         *ngFor="let tag of bookmark.tags"
-        class="btn-group tag-list mr-2 mt-1"
+        class="btn-group tag-list me-2 mt-1"
       >
         <a
           *ngIf="
@@ -219,12 +219,12 @@
         <button
           type=" button"
           class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
-          data-toggle="dropdown"
+          data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
           (click)="onDropDownClick(tag)"
         >
-          <span class="sr-only">Toggle Dropdown</span>
+          <span class="visually-hidden">Toggle Dropdown</span>
         </button>
         <div class="dropdown-menu">
           <a
@@ -278,7 +278,7 @@
         </div>
       </div>
 
-      <div class="float-right mt-1">
+      <div class="float-end mt-1">
         <button
           *ngIf="
             bookmark.userId === (userData$ | async)?.userId ||
@@ -322,14 +322,14 @@
           <i class="far fa-clone"></i> Clone
         </button>
         <button
-          class="btn btn-light btn-sm float-right"
+          class="btn btn-light btn-sm float-end"
           title="Share via email or on social media"
           (click)="shareBookmarkDialog(bookmark)"
         >
           <i class="fas fa-share"></i> Share
         </button>
         <button
-          class="btn btn-light btn-sm float-right mr-1"
+          class="btn btn-light btn-sm float-end me-1"
           title="Add to collection"
           (click)="openAddToCollectionDialog(bookmark)"
         >
