@@ -7,6 +7,7 @@
   align-items: center;
   padding-top: 0;
   padding-bottom: 0;
+  margin-left: 0.5rem;
 
   font-size: 25px;
 }
@@ -29,9 +30,12 @@
 }
 
 .logo-image {
-  height: 38px;
+  // keep the original 45px visual size but trim its layout footprint with
+  // symmetric negative margins so the navbar stays slim and the logo stays centered
+  height: 45px;
   width: auto;
-  margin: 0;
+  margin-top: -4px;
+  margin-bottom: -4px;
 }
 
 .large-displays {
