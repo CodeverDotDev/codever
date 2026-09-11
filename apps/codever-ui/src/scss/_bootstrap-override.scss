@@ -64,6 +64,24 @@
   color: #ffffffbf !important;
 }
 
+// Keep dropdowns white as they were before the Bootstrap 5 dark navbar theme.
+// This applies to the search type selector and all navigation dropdown menus.
+.navbar[data-bs-theme='dark'] .dropdown-menu {
+  background-color: #ffffff;
+  color: #212529;
+}
+
+.navbar[data-bs-theme='dark'] .dropdown-menu .dropdown-item,
+.navbar[data-bs-theme='dark'] .dropdown-menu .dropdown-item-text {
+  color: #212529;
+}
+
+.navbar[data-bs-theme='dark'] .dropdown-menu .dropdown-item:hover,
+.navbar[data-bs-theme='dark'] .dropdown-menu .dropdown-item:focus {
+  background-color: #e9ecef;
+  color: #212529;
+}
+
 // https://stackoverflow.com/questions/16214326/bootstrap-dropdown-with-hover
 /*@media (min-width: 768px) {
   .dropdown:hover .dropdown-menu {
