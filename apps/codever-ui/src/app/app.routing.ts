@@ -6,7 +6,7 @@ import { NewEntryComponent } from './new-entry/new-entry.component';
 import { AuthGuard } from './core/auth/auth-guard.service';
 import { SearchRedirectGuard } from './core/search-redirect.guard';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'new-entry',
     canActivate: [AuthGuard],
@@ -18,6 +18,11 @@ const routes: Routes = [
       import('./my-collections/my-collections.module').then(
         (m) => m.MyCollectionsModule
       ),
+  },
+  {
+    path: 'my-bookmarks',
+    redirectTo: '/dashboard?tab=bookmarks',
+    pathMatch: 'full',
   },
   {
     path: 'my-bookmarks',
@@ -48,6 +53,11 @@ const routes: Routes = [
     path: 'public',
     loadChildren: () =>
       import('./public/public.module').then((m) => m.PublicResourcesModule),
+  },
+  {
+    path: 'my-notes',
+    redirectTo: '/dashboard?tab=notes',
+    pathMatch: 'full',
   },
   {
     path: 'my-notes',
