@@ -17,10 +17,10 @@
 
 ## 3. Styles, overrides, and local shims
 
-- [ ] 3.1 Remove the dead `$icon-font-path` assignment from `apps/codever-ui/src/scss/_variables.scss` while keeping `$fa-font-path`; verify the build reports no Sass warning about a missing `bootstrap-sass` path.
-- [ ] 3.2 Add local `.jumbotron` and `.jumbotron-fluid` styles to the override stylesheet; verify the about, terms, privacy, register, version, and howto page headers render with their previous padding, background, and radius.
-- [ ] 3.3 Switch the navbar in `apps/codever-ui/src/app/shared/navigation/navigation.component.html` from `navbar-dark` to `data-bs-theme="dark"` and rewrite the two `.navbar-dark` override selectors to match; verify nav links keep their white-on-dark color, hover color, and weight.
-- [ ] 3.4 Compile the styles before any template work — `npm run build` — so Sass failures are isolated; verify the build succeeds before proceeding to group 4.
+- [x] 3.1 Remove the dead `$icon-font-path` assignment from `apps/codever-ui/src/scss/_variables.scss` while keeping `$fa-font-path`; verify the build reports no Sass warning about a missing `bootstrap-sass` path.
+- [x] 3.2 Add local `.jumbotron` and `.jumbotron-fluid` styles to the override stylesheet; verify the about, terms, privacy, register, version, and howto page headers render with their previous padding, background, and radius.
+- [x] 3.3 Switch the navbar in `apps/codever-ui/src/app/shared/navigation/navigation.component.html` from `navbar-dark` to `data-bs-theme="dark"` and rewrite the two `.navbar-dark` override selectors to match; verify nav links keep their white-on-dark color, hover color, and weight.
+- [x] 3.4 Compile the styles before any template work — `npm run build` — so Sass failures are isolated; verify the build succeeds before proceeding to group 4.
 
 ## 4. Template markup migration
 
@@ -52,8 +52,8 @@
 
 ## 6. Documentation and release
 
-- [ ] 6.1 Update `apps/codever-ui/README.md` and any repo notes describing Bootstrap, jQuery, or the CDN script setup; verify no documentation still describes Bootstrap 4 or the removed CDN tags.
-- [ ] 6.2 Record the selected Bootstrap version and every intentional visual difference, including whether jQuery was removed and whether Bootstrap JavaScript was added to the bundle; verify the record is committed alongside the change.
-- [ ] 6.3 Group the work into focused commits following the Angular Commit Guidelines (dependency/build wiring, markup, documentation) so each phase is separately revertible; verify the history is separable with `git log --oneline`.
-- [ ] 6.4 From a clean checkout, run `npm ci` in `apps/codever-ui` and then the build; verify the app builds from the committed manifests and lockfile alone.
-- [ ] 6.5 Rehearse rollback by reverting the migration commits and reinstalling from the previous lockfile; verify the previous Bootstrap 4 setup is restored, then restore the upgrade.
+- [x] 6.1 Update `apps/codever-ui/README.md` and any repo notes describing Bootstrap, jQuery, or the CDN script setup; verify no documentation still describes Bootstrap 4 or the removed CDN tags.
+- [x] 6.2 Record the selected Bootstrap version and every intentional visual difference, including whether jQuery was removed and whether Bootstrap JavaScript was added to the bundle; verify the record is committed alongside the change.
+- [x] 6.3 Group the work into focused commits following the Angular Commit Guidelines (dependency/build wiring, markup, documentation) so each phase is separately revertible; verify the history is separable with `git log --oneline`.
+- [x] 6.4 From a clean checkout, run `npm ci` in `apps/codever-ui` and then the build; verify the app builds from the committed manifests and lockfile alone.
+- [x] 6.5 Rehearse rollback by reverting the migration commits and reinstalling from the previous lockfile; verify the previous Bootstrap 4 setup is restored, then restore the upgrade.
