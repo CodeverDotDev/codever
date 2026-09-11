@@ -153,7 +153,7 @@ $background-gray: rgb(240, 242, 245);
 }
 
 // the search bar border color to be the same as the bootstrap buttons surrounding it
-input {
+input.form-control {
   border-color: #6c757d;
   background-color: $background-gray;
   color: #212529;
