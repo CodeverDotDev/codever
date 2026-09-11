@@ -3,8 +3,10 @@
 }
 
 .navbar-brand {
-  line-height: 12px;
-  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
 
   font-size: 25px;
 }
@@ -24,12 +26,12 @@
 }
 .logo-text {
   font-size: smaller;
-  margin-bottom: 10px;
 }
 
 .logo-image {
-  margin-top: -10px;
-  margin-bottom: -5px;
+  height: 38px;
+  width: auto;
+  margin: 0;
 }
 
 .large-displays {
