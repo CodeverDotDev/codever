@@ -4,16 +4,16 @@
 
 <div *ngIf="!loading && collection" class="collection-detail">
   <div class="d-flex align-items-center mb-3">
-    <button class="btn btn-light btn-sm mr-2" (click)="goBack()" title="Back to My Collections">
+    <button class="btn btn-light btn-sm me-2" (click)="goBack()" title="Back to My Collections">
       <i class="fas fa-arrow-left"></i>
     </button>
     <h3 class="mb-0">
-      <i class="fas fa-folder mr-2" [style.color]="collection.color || '#6c757d'"></i>
+      <i class="fas fa-folder me-2" [style.color]="collection.color || '#6c757d'"></i>
       {{ collection.name }}
     </h3>
   </div>
 
-  <p *ngIf="collection.description" class="text-muted">
+  <p *ngIf="collection.description" class="text-body-secondary">
     {{ collection.description }}
   </p>
 
@@ -23,7 +23,7 @@
   <div *ngIf="(bookmarks.length + notes.length) > 3" class="filter-wrapper mb-3">
     <input
       type="text"
-      class="form-control form-control-sm pr-4"
+      class="form-control form-control-sm pe-4"
       placeholder="Filter bookmarks and notes by name, title or tag…"
       [(ngModel)]="unifiedFilter"
       (ngModelChange)="applyFilter()"
@@ -42,23 +42,23 @@
   <!-- Bookmarks Section -->
   <div *ngIf="bookmarks.length > 0" class="mb-4">
     <div class="d-flex align-items-center justify-content-between mb-2">
-      <h5 class="mb-0"><i class="fas fa-bookmark mr-1"></i> Bookmarks ({{ filteredBookmarks.length }}/{{ bookmarks.length }})</h5>
+      <h5 class="mb-0"><i class="fas fa-bookmark me-1"></i> Bookmarks ({{ filteredBookmarks.length }}/{{ bookmarks.length }})</h5>
     </div>
     <div *ngFor="let bookmark of filteredBookmarks" class="card mb-2 shadow-sm">
       <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center"
            [ngClass]="{ 'private-bookmark': !bookmark.public }">
         <div>
-          <a [href]="bookmark.location" target="_blank" class="font-weight-bold"
+          <a [href]="bookmark.location" target="_blank" class="fw-bold"
              [innerHTML]="highlightText(bookmark.name, unifiedFilter)">
           </a>
-          <div class="text-muted small" *ngIf="bookmark.description">
+          <div class="text-body-secondary small" *ngIf="bookmark.description">
             {{ bookmark.description.length > 120 ? bookmark.description.substring(0, 120) + '...' : bookmark.description }}
           </div>
-          <span *ngFor="let tag of bookmark.tags" class="badge badge-secondary mr-1"
+          <span *ngFor="let tag of bookmark.tags" class="badge bg-secondary me-1"
                 [innerHTML]="highlightText(tag, unifiedFilter)"></span>
           <a
             [routerLink]="[bookmark.userId === userId ? '/my-bookmarks' : '/bookmarks', bookmark._id, 'details']"
-            class="small ml-1"
+            class="small ms-1"
             title="View bookmark details"
           >
             <i class="fas fa-info-circle"></i> details
@@ -78,18 +78,18 @@
   <!-- Notes Section -->
   <div *ngIf="notes.length > 0" class="mb-4">
     <div class="d-flex align-items-center justify-content-between mb-2">
-      <h5 class="mb-0"><i class="fas fa-sticky-note mr-1"></i> Notes ({{ filteredNotes.length }}/{{ notes.length }})</h5>
+      <h5 class="mb-0"><i class="fas fa-sticky-note me-1"></i> Notes ({{ filteredNotes.length }}/{{ notes.length }})</h5>
     </div>
     <div *ngFor="let note of filteredNotes" class="card mb-2 shadow-sm">
       <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center"
            [ngClass]="note.public ? 'note-public-bg' : 'note-bg'">
         <div>
           <a [routerLink]="[note.userId === userId ? '/my-notes' : '/notes', note._id, 'details']"
-             class="font-weight-bold"
+             class="fw-bold"
              [innerHTML]="highlightText(note.title, unifiedFilter)">
           </a>
           <div>
-            <span *ngFor="let tag of note.tags" class="badge badge-secondary mr-1"
+            <span *ngFor="let tag of note.tags" class="badge bg-secondary me-1"
                   [innerHTML]="highlightText(tag, unifiedFilter)"></span>
           </div>
         </div>

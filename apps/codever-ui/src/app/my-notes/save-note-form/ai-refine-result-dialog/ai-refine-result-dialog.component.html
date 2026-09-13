@@ -1,15 +1,13 @@
 <div class="p-3">
   <div class="d-flex justify-content-between align-items-center mb-2">
-    <h5 class="mb-0"><i class="fas fa-magic mr-1"></i> AI Refine Result</h5>
-    <button type="button" class="close" aria-label="Close" (click)="discard()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <h5 class="mb-0"><i class="fas fa-magic me-1"></i> AI Refine Result</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="discard()"></button>
   </div>
   <hr class="mt-1 mb-3" />
 
   <!-- Page reachability notice for bookmarks -->
   <div *ngIf="data.resourceType === 'bookmark' && data.pageReachable === false" class="alert alert-info py-2 mb-3">
-    <i class="fas fa-info-circle mr-1"></i> The URL was not reachable for scraping. Suggestions are based on your existing fields.
+    <i class="fas fa-info-circle me-1"></i> The URL was not reachable for scraping. Suggestions are based on your existing fields.
   </div>
 
   <!-- Title/Name comparison -->
@@ -29,13 +27,13 @@
     </div>
     <div class="card-body py-2">
       <div class="row">
-        <div class="col-6 border-right">
-          <small class="text-muted text-uppercase">Original</small>
+        <div class="col-6 border-end">
+          <small class="text-body-secondary text-uppercase">Original</small>
           <p class="mb-0">{{ data.originalTitle || '(empty)' }}</p>
         </div>
         <div class="col-6">
-          <small class="text-muted text-uppercase">Refined</small>
-          <p class="mb-0 font-weight-bold">{{ data.refinedTitle || '(unchanged)' }}</p>
+          <small class="text-body-secondary text-uppercase">Refined</small>
+          <p class="mb-0 fw-bold">{{ data.refinedTitle || '(unchanged)' }}</p>
         </div>
       </div>
     </div>
@@ -45,32 +43,32 @@
   <div class="card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center py-2">
       <strong>Tags</strong>
-      <span *ngIf="hasTagsChange" class="badge badge-info">{{ selectedSuggestedTags.length }} new</span>
-      <span *ngIf="!hasTagsChange" class="text-muted small">(no new tags suggested)</span>
+      <span *ngIf="hasTagsChange" class="badge bg-info">{{ selectedSuggestedTags.length }} new</span>
+      <span *ngIf="!hasTagsChange" class="text-body-secondary small">(no new tags suggested)</span>
     </div>
     <div class="card-body py-2">
       <div class="row">
-        <div class="col-6 border-right">
-          <small class="text-muted text-uppercase">Original</small>
+        <div class="col-6 border-end">
+          <small class="text-body-secondary text-uppercase">Original</small>
           <p class="mb-0">{{ originalTagsDisplay }}</p>
         </div>
         <div class="col-6">
-          <small class="text-muted text-uppercase">Suggested (click ✕ to remove)</small>
+          <small class="text-body-secondary text-uppercase">Suggested (click ✕ to remove)</small>
           <p class="mb-0">
             <span
               *ngFor="let tag of selectedSuggestedTags; let i = index"
-              class="badge badge-secondary mr-1 mb-1"
+              class="badge bg-secondary me-1 mb-1"
               style="cursor: default;"
             >
               {{ tag }}
               <span
-                class="ml-1"
+                class="ms-1"
                 style="cursor: pointer; opacity: 0.7;"
                 (click)="removeSuggestedTag(i)"
                 title="Remove this tag"
               >&times;</span>
             </span>
-            <span *ngIf="!selectedSuggestedTags.length" class="text-muted">(none selected)</span>
+            <span *ngIf="!selectedSuggestedTags.length" class="text-body-secondary">(none selected)</span>
           </p>
         </div>
       </div>
@@ -94,12 +92,12 @@
     </div>
     <div class="card-body py-2">
       <div class="row">
-        <div class="col-6 border-right">
-          <small class="text-muted text-uppercase">Original</small>
+        <div class="col-6 border-end">
+          <small class="text-body-secondary text-uppercase">Original</small>
           <div class="markdown-compare border rounded p-2 bg-white" [innerHTML]="originalContentHtml"></div>
         </div>
         <div class="col-6">
-          <small class="text-muted text-uppercase">Refined</small>
+          <small class="text-body-secondary text-uppercase">Refined</small>
           <div class="markdown-compare border rounded p-2 bg-white" [innerHTML]="refinedContentHtml"></div>
         </div>
       </div>
@@ -107,11 +105,11 @@
   </div>
 
   <div class="d-flex justify-content-end">
-    <button type="button" class="btn btn-secondary mr-2" (click)="discard()">
-      <i class="fas fa-times mr-1"></i> Discard All
+    <button type="button" class="btn btn-secondary me-2" (click)="discard()">
+      <i class="fas fa-times me-1"></i> Discard All
     </button>
     <button type="button" class="btn btn-primary" (click)="apply()">
-      <i class="fas fa-check mr-1"></i> Apply Accepted
+      <i class="fas fa-check me-1"></i> Apply Accepted
     </button>
   </div>
 </div>

@@ -3,6 +3,16 @@
   margin-top: 0.3rem;
 }
 
+// Card title links: no underline by default, underline on hover. Rendered
+// links inside the card body (e.g. bookmark description) stay underlined.
+.card-title a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .external-link-hint {
   font-size: 0.6rem;
   margin-left: 0.2rem;

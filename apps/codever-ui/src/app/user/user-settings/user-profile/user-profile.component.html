@@ -14,7 +14,7 @@
     <ng-template #robot>
       <div class="generic-profile-image"><i class="fas fa-robot"></i></div>
     </ng-template>
-    <div class="custom-file">
+    <div>
       <input
         #imageInput
         type="file"
@@ -23,7 +23,7 @@
         id="picture"
         (change)="changeImage(imageInput)"
       />
-      <label class="custom-file-label" style="cursor: pointer" for="picture">{{
+      <label class="form-label" style="cursor: pointer" for="picture">{{
         uploadImageLabel
       }}</label>
     </div>
@@ -50,7 +50,7 @@
   <div class="profile-data">
     <h2>Profile data</h2>
     <form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
+      <div class="mb-3">
         <label for="displayName">Display name*</label>
         <div class="input-group">
           <input
@@ -64,7 +64,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="mb-3">
         <label for="summary" style="width: 100%">
           Summary - <i class="fas fa-user-graduate"></i>
         </label>
@@ -76,7 +76,7 @@
         >
         </textarea>
       </div>
-      <div class="form-group">
+      <div class="mb-3">
         <label for="website-link">Website URL</label>
         <div class="input-group">
           <input
@@ -88,7 +88,7 @@
           />
         </div>
       </div>
-      <div class="form-group">
+      <div class="mb-3">
         <label for="github-link">Github URL</label>
         <div class="input-group">
           <input
@@ -100,7 +100,7 @@
           />
         </div>
       </div>
-      <div class="form-group">
+      <div class="mb-3">
         <label for="twitter-link">Twitter URL</label>
         <div class="input-group">
           <input
@@ -112,7 +112,7 @@
           />
         </div>
       </div>
-      <div class="form-group">
+      <div class="mb-3">
         <label for="linkedin-link">LinkedIn URL</label>
         <div class="input-group">
           <input

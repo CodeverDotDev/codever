@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>
-  <i class="fas fa-layer-group mr-2"></i>Add to Collection
+  <i class="fas fa-layer-group me-2"></i>Add to Collection
 </h2>
 <mat-dialog-content>
   <div *ngIf="loading" class="text-center py-3">
@@ -14,19 +14,19 @@
         class="btn btn-outline-primary btn-sm"
         (click)="showCreateForm = true"
       >
-        <i class="fas fa-plus mr-1"></i> Create new collection
+        <i class="fas fa-plus me-1"></i> Create new collection
       </button>
       <div *ngIf="showCreateForm" class="d-flex">
         <input
           type="text"
-          class="form-control form-control-sm mr-2"
+          class="form-control form-control-sm me-2"
           [(ngModel)]="newCollectionName"
           placeholder="Collection name"
           (keyup.enter)="createNewCollection()"
           autofocus
         />
         <button
-          class="btn btn-primary btn-sm mr-1"
+          class="btn btn-primary btn-sm me-1"
           [disabled]="!newCollectionName.trim()"
           (click)="createNewCollection()"
         >
@@ -65,12 +65,12 @@
           (change)="toggleCollection(collection)"
         />
         <label class="form-check-label" [for]="'col-' + collection._id">
-          <i class="fas fa-folder mr-1" [style.color]="collection.color || '#6c757d'"></i>
+          <i class="fas fa-folder me-1" [style.color]="collection.color || '#6c757d'"></i>
           {{ collection.name }}
-          <small class="text-muted ml-1">({{ collection.items?.length || 0 }})</small>
+          <small class="text-body-secondary ms-1">({{ collection.items?.length || 0 }})</small>
         </label>
       </div>
-      <div *ngIf="filteredCollections.length === 0" class="text-muted small py-2">
+      <div *ngIf="filteredCollections.length === 0" class="text-body-secondary small py-2">
         No collections found.
       </div>
     </div>

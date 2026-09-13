@@ -1,6 +1,6 @@
 <div class="dialog-title">
   <h2 mat-dialog-title [innerHTML]="title"></h2>
-  <div class="form-group has-search">
+  <div class="mb-3 has-search">
     <span class="fas fa-filter form-control-feedback"></span>
     <input
       type="search"
@@ -37,7 +37,7 @@
           <!-- NOTE header -->
           <ng-container *ngIf="isNote(userDataResource); else bookmarkHeader">
             <h5 class="card-title">
-              <i class="fa fa-sticky-note fa-xs mr-2 anthracite-gray"></i>
+              <i class="fa fa-sticky-note fa-xs me-2 anthracite-gray"></i>
               <a
                 [routerLink]="noteDetailsLink(userDataResource)"
                 [mat-dialog-close]="true"
@@ -48,7 +48,7 @@
                 {{ 'see innerhtml' }}
               </a>
             </h5>
-            <h6 class="card-subtitle mb-2 text-muted url-under-title">
+            <h6 class="card-subtitle mb-2 text-body-secondary url-under-title">
               <i class="far fa-calendar-alt"></i>
               {{ userDataResource.updatedAt | date : 'yyyy-MM-dd' }}
             </h6>
@@ -81,7 +81,7 @@
               ></sup>
             </h5>
             <h6
-              class="card-subtitle mb-2 text-muted url-under-title"
+              class="card-subtitle mb-2 text-body-secondary url-under-title"
               [innerHTML]="
                 userDataResource.location | slice : 0 : 120 | highlightHtml : filterText
               "

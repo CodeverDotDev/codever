@@ -15,7 +15,7 @@
         <ng-template #listWatchedTags>
           <div
             *ngFor="let tag of userData.watchedTags.sort()"
-            class="btn-group mr-3 mt-2 tag-list-header"
+            class="btn-group me-3 mt-2 tag-list-header"
           >
             <a
               [routerLink]="['/tagged', tag]"
@@ -27,12 +27,12 @@
             <button
               type=" button"
               class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
               (click)="onDropDownClick(tag)"
             >
-              <span class="sr-only">Toggle Dropdown</span>
+              <span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu">
               <a
@@ -90,7 +90,7 @@
         <ng-template #listIgnoredTags>
           <div
             *ngFor="let tag of userData.ignoredTags.sort()"
-            class="btn-group mr-3 mt-2 tag-list-header"
+            class="btn-group me-3 mt-2 tag-list-header"
           >
             <a
               [routerLink]="['/tagged', tag]"
@@ -102,12 +102,12 @@
             <button
               type=" button"
               class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
               (click)="onDropDownClick(tag)"
             >
-              <span class="sr-only">Toggle Dropdown</span>
+              <span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu">
               <a
@@ -159,7 +159,7 @@
           <hr class="mt-0" />
           <div
             *ngFor="let tag of (usedTags$ | async).public"
-            class="btn-group mr-3 mt-2 tag-list-header"
+            class="btn-group me-3 mt-2 tag-list-header"
           >
             <a
               [routerLink]="['/search']"
@@ -171,17 +171,17 @@
               title="Show my public bookmarks tagged {{ tag.name }}"
             >
               {{ tag.name }}
-              <span class="badge badge-light">{{ tag.count }}</span>
+              <span class="badge bg-light">{{ tag.count }}</span>
             </a>
             <button
               type=" button"
               class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
               (click)="onDropDownClick(tag.name)"
             >
-              <span class="sr-only">Toggle Dropdown</span>
+              <span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu">
               <a
@@ -241,7 +241,7 @@
           <hr class="mt-0" />
           <div
             *ngFor="let tag of (usedTags$ | async).private"
-            class="btn-group mr-3 mt-2 tag-list-header"
+            class="btn-group me-3 mt-2 tag-list-header"
           >
             <a
               [routerLink]="['/search']"
@@ -254,17 +254,17 @@
               title="Show my private bookmarks tagged {{ tag.name }}"
             >
               {{ tag.name }}
-              <span class="badge badge-light">{{ tag.count }}</span>
+              <span class="badge bg-light">{{ tag.count }}</span>
             </a>
             <button
               type=" button"
               class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
               (click)="onDropDownClick(tag.name)"
             >
-              <span class="sr-only">Toggle Dropdown</span>
+              <span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu">
               <a
@@ -322,16 +322,16 @@
   <hr />
 
   <h5 class="text-danger" style="margin-top: 1rem">Danger zone</h5>
-  <div class="border border-danger rounded-lg" style="padding: 1rem">
+  <div class="border border-danger rounded-3" style="padding: 1rem">
     <h6>
       Batch delete <strong>private</strong> bookmarks by <strong>tag</strong>
     </h6>
     <div class="input-group search-component">
-      <div class="input-group-prepend">
+      
         <span class="input-group-text">
           <i class="fa fa-search"></i>
         </span>
-      </div>
+      
       <input
         #tagSearchBox
         type="text"
@@ -347,7 +347,7 @@
           >{{ option.name }}
         </mat-option>
       </mat-autocomplete>
-      <div class="input-group-append">
+      
         <button
           class="btn btn-outline-danger"
           type="button"
@@ -356,7 +356,7 @@
         >
           Delete <strong>ALL private</strong> bookmarks by selected tag
         </button>
-      </div>
+      
     </div>
   </div>
 </div>

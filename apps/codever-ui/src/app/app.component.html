@@ -6,43 +6,43 @@
   Simple side navigation from https://startbootstrap.com/templates/simple-sidebar/
   -->
   <div class="d-flex" id="wrapper">
-    <div class="bg-light border-right" id="sidebar-wrapper">
+    <div class="bg-light border-end" id="sidebar-wrapper">
       <div class="list-group list-group-flush">
         <a
           class="list-group-item list-group-item-action bg-light"
           title="Landing page"
           routerLink="/"
         >
-          <i class="fas fa-home mr-1"></i> Home
+          <i class="fas fa-home me-1"></i> Home
         </a>
         <a *ngIf="!userIsLoggedIn"
           class="list-group-item list-group-item-action bg-light"
           title="Get started, save & search bookmarks"
           [routerLink]="['/howto']"
         >
-          <i class="fas fa-info-circle mr-1"></i> How to
+          <i class="fas fa-info-circle me-1"></i> How to
         </a>
         <a *ngIf="userIsLoggedIn"
           class="list-group-item list-group-item-action bg-light"
           title="Overview of your bookmarks, tags & searches"
           [routerLink]="['/dashboard']"
         >
-          <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
+          <i class="fas fa-tachometer-alt me-1"></i> Dashboard
         </a>
         <a *ngIf="userIsLoggedIn"
           class="list-group-item list-group-item-action bg-light"
           title="Manage your collections of bookmarks and notes"
           [routerLink]="['/my-collections']"
         >
-          <i class="fas fa-layer-group mr-1"></i> My Collections
-          <span class="badge badge-pill badge-success ml-1" style="font-size: 0.65rem; vertical-align: middle;">NEW</span>
+          <i class="fas fa-layer-group me-1"></i> My Collections
+          <span class="badge rounded-pill bg-success ms-1" style="font-size: 0.65rem; vertical-align: middle;">NEW</span>
         </a>
         <a
           class="list-group-item list-group-item-action bg-light"
           title="Latest public notes"
           [routerLink]="['/notes']"
         >
-          <i class="fas fa-sticky-note mr-1"></i> Notes (snippets)
+          <i class="fas fa-sticky-note me-1"></i> Notes (snippets)
         </a>
         <app-quick-access-resources
           [quickAccessResources]="latestPinnedResources$ | async"
@@ -61,18 +61,18 @@
         <div *ngIf="userIsLoggedIn && showWhatsNewNotification" class="alert alert-info header-notification-wrapper shadow-sm">
           <div class="d-flex align-items-start justify-content-between">
             <div>
-              <h5 class="mb-2"><i class="fas fa-gift mr-2"></i>What's New at Codever 🎉</h5>
-              <ul class="mb-2 pl-3" style="list-style-type: none;">
+              <h5 class="mb-2"><i class="fas fa-gift me-2"></i>What's New at Codever 🎉</h5>
+              <ul class="mb-2 ps-3" style="list-style-type: none;">
                 <li class="mb-1">
-                  <i class="fas fa-code mr-1"></i> <strong>Notes with Snippets &amp; Jupyter support</strong> &mdash;
+                  <i class="fas fa-code me-1"></i> <strong>Notes with Snippets &amp; Jupyter support</strong> &mdash;
                   Notes now support code snippets and Jupyter notebooks. All legacy snippets have been seamlessly migrated to notes.
                 </li>
                 <li class="mb-1">
-                  <i class="fas fa-layer-group mr-1"></i> <strong>My Collections</strong> &mdash;
+                  <i class="fas fa-layer-group me-1"></i> <strong>My Collections</strong> &mdash;
                   Group your bookmarks and notes into <a [routerLink]="['/my-collections']">collections</a> to keep everything organized.
                 </li>
                 <li class="mb-1">
-                  <i class="fas fa-search mr-1"></i> <strong>Simplified Search</strong> &mdash;
+                  <i class="fas fa-search me-1"></i> <strong>Simplified Search</strong> &mdash;
                   Faster, cleaner search with easy-to-use filters to find exactly what you need.
                 </li>
               </ul>
@@ -119,7 +119,7 @@
           ></app-extensions>
 
           <button
-            class="ml-2 btn btn-primary btn-sm"
+            class="ms-2 btn btn-primary btn-sm"
             (click)="acknowledgeWelcomeMessage()"
           >
             Got it <i class="fas fa-check-circle"></i>

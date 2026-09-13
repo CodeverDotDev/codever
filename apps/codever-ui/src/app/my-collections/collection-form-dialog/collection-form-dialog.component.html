@@ -2,7 +2,7 @@
   {{ mode === 'create' ? 'New Collection' : 'Edit Collection' }}
 </h2>
 <mat-dialog-content>
-  <div class="form-group">
+  <div class="mb-3">
     <label for="collectionName">Name <span class="text-danger">*</span></label>
     <input
       type="text"
@@ -13,7 +13,7 @@
       autofocus
     />
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <label for="collectionDescription">Description</label>
     <textarea
       id="collectionDescription"
@@ -23,7 +23,7 @@
       rows="2"
     ></textarea>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <label for="collectionColor">Color</label>
     <input
       type="color"
@@ -35,7 +35,7 @@
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button class="btn btn-secondary btn-sm mr-2" (click)="cancel()">Cancel</button>
+  <button class="btn btn-secondary btn-sm me-2" (click)="cancel()">Cancel</button>
   <button
     class="btn btn-primary btn-sm"
     [disabled]="!name.trim()"

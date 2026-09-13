@@ -8,7 +8,7 @@
     novalidate
     (ngSubmit)="saveBookmark(bookmarkForm.value)"
   >
-    <div class="form-group">
+    <div class="mb-3">
       <label for="location" class="space-btw-wrapper"
         ><span>Location*</span>
         <span><i class="fas fa-lg fa-bookmark"></i></span
@@ -23,7 +23,7 @@
           formControlName="location"
           placeholder="Usually an URL"
         />
-        <div class="input-group-append">
+        
           <div class="input-group-text">
             <a
               href="{{ bookmarkForm.get('location').value }}"
@@ -32,7 +32,7 @@
               ><i class="fas fa-external-link-alt"></i
             ></a>
           </div>
-        </div>
+        
       </div>
       <div
         [hidden]="
@@ -57,7 +57,7 @@
     </div>
 
     <!-- AI Refine button -->
-    <div *ngIf="isAiRefineEnabled$ | async" class="form-group">
+    <div *ngIf="isAiRefineEnabled$ | async" class="mb-3">
       <button
         type="button"
         class="btn btn-outline-secondary btn-sm"
@@ -65,17 +65,17 @@
         (click)="refineBookmarkWithAi()"
       >
         <span *ngIf="isRefining; else aiButtonLabel">
-          <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
           Refining...
         </span>
         <ng-template #aiButtonLabel>
-          <i class="fas fa-magic mr-1"></i> Refine with AI ✨
+          <i class="fas fa-magic me-1"></i> Refine with AI ✨
         </ng-template>
       </button>
-      <small class="text-muted ml-2">AI summarizes the page or refines your fields (powered by DeepSeek)</small>
+      <small class="text-body-secondary ms-2">AI summarizes the page or refines your fields (powered by DeepSeek)</small>
     </div>
 
-    <div class="form-group form-group-distanced">
+    <div class="mb-3 form-group-distanced">
       <label for="name">Title*</label>
       <input
         type="text"
@@ -126,7 +126,7 @@
         (<em>spam will not be tolerated</em>)
       </label>
     </div>
-    <div *ngIf="makePublic" class="form-group form-group-distanced">
+    <div *ngIf="makePublic" class="mb-3 form-group-distanced">
       <label for="language">Language*</label>
       <select
         class="form-control form-control-sm"
@@ -188,7 +188,7 @@
       </span>
     </div>
 
-    <div class="form-group form-group-distanced">
+    <div class="mb-3 form-group-distanced">
       <label for="publishedOn">
         <i class="far fa-calendar-alt"></i> Originally published on
       </label>
@@ -200,7 +200,7 @@
         placeholder="Date when page was published yyyy-MM-dd"
       />
     </div>
-    <div class="form-group form-group-distanced">
+    <div class="mb-3 form-group-distanced">
       <label for="sourceCodeURL"
         >Source code URL <i class="fab fa-github"></i
       ></label>
@@ -212,7 +212,7 @@
         placeholder="URL of the post, project on GitHub - e.g. https://github.com/CodeverDotDev/codever"
       />
     </div>
-    <div #descriptionEditor class="form-group markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
+    <div #descriptionEditor class="mb-3 markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
       <label for="description" class="content-label"
         ><span>Description - <i class="fab fa-markdown"></i>
         <a
@@ -262,7 +262,7 @@
       </div>
     </div>
 
-    <div *ngIf="!isUpdate" class="form-group mb-3">
+    <div *ngIf="!isUpdate" class="mb-3">
       <button
         type="button"
         class="btn btn-sm btn-outline-secondary"
@@ -272,7 +272,7 @@
         <i class="fas fa-layer-group"></i> Add to Collection
         <span
           *ngIf="selectedCollectionIds.length > 0"
-          class="badge badge-primary ml-1"
+          class="badge bg-primary ms-1"
           >{{ selectedCollectionIds.length }}</span
         >
       </button>
@@ -293,7 +293,7 @@
           Add to <strong>Read Later <i class="fas fa-clock"></i></strong>
         </label>
       </div>
-      <div class="form-check ml-5">
+      <div class="form-check ms-5">
         <label class="form-check-label">
           <input
             class="form-check-input"
@@ -315,7 +315,7 @@
     </button>
     <button
       type="button"
-      class="btn btn-secondary ml-2"
+      class="btn btn-secondary ms-2"
       (click)="cancelUpdate()"
     >
       Cancel <i class="far fa-times-circle"></i>

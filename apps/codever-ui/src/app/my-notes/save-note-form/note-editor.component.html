@@ -1,7 +1,7 @@
 <div class="navigation-space-buffer rounded shadow-sm"
      [ngClass]="noteForm?.get('public')?.value ? 'note-public-bg' : 'note-bg'">
   <form [formGroup]="noteForm" novalidate (ngSubmit)="saveNote(noteForm.value)">
-    <div class="form-group pb-1">
+    <div class="mb-3 pb-1">
       <label for="title" class="space-btw-wrapper"
         ><span>Title*</span> <span><i class="fa fa-sticky-note fa-lg"></i></span
       ></label>
@@ -69,16 +69,16 @@
         </span>
       </div>
 
-      <div #contentEditor class="form-group markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
+      <div #contentEditor class="mb-3 markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
         <label for="content" class="content-label"
           ><span>Content* - <i class="fab fa-markdown"></i>
           <a
             class="markdown-link"
             href="https://daringfireball.net/projects/markdown/"
             target="_blank"
-            ><span class="ml-1">Markdown is supported</span></a
+            ><span class="ms-1">Markdown is supported</span></a
           >
-          <span class="ml-1 text-muted" style="font-weight: normal"
+          <span class="ms-1 text-body-secondary" style="font-weight: normal"
             >&mdash; including
             <a
               class="markdown-link"
@@ -121,11 +121,11 @@
             </label>
           </div>
           <div *ngIf="isNotebookMode" class="alert alert-info d-flex align-items-center py-2 mb-2">
-            <i class="fas fa-book mr-2"></i>
+            <i class="fas fa-book me-2"></i>
             <span>Notebook loaded: <strong>{{ notebookFileName }}</strong></span>
             <button
               type="button"
-              class="btn btn-sm btn-outline-danger ml-auto"
+              class="btn btn-sm btn-outline-danger ms-auto"
               (click)="removeNotebook()"
               title="Remove notebook and switch back to markdown"
             >
@@ -181,14 +181,14 @@
 
     <!-- Preview and AI Refine buttons -->
     <div
-      class="form-group"
+      class="mb-3"
     >
       <button
         type="button"
-        class="btn btn-outline-secondary btn-sm mr-2"
+        class="btn btn-outline-secondary btn-sm me-2"
         (click)="openPreview()"
       >
-        <i class="fas fa-eye mr-1"></i> Preview
+        <i class="fas fa-eye me-1"></i> Preview
       </button>
       <button
         *ngIf="(isAiNoteRefineEnabled$ | async) && !isNotebookMode"
@@ -198,20 +198,20 @@
         (click)="refineWithAi()"
       >
         <span *ngIf="isRefining; else aiButtonLabel">
-          <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
           Refining...
         </span>
         <ng-template #aiButtonLabel>
-          <i class="fas fa-magic mr-1"></i> Refine with AI ✨
+          <i class="fas fa-magic me-1"></i> Refine with AI ✨
         </ng-template>
       </button>
       <small
         *ngIf="(isAiNoteRefineEnabled$ | async) && !isNotebookMode"
-        class="text-muted ml-2"
+        class="text-body-secondary ms-2"
       >AI refines your content, suggests tags and a better title (powered by DeepSeek)</small>
     </div>
 
-    <div class="form-group pb-2">
+    <div class="mb-3 pb-2">
       <label for="reference">Reference</label>
       <input
         type="url"
@@ -222,7 +222,7 @@
       />
     </div>
 
-    <div *ngIf="!isEditMode" class="form-group mb-3">
+    <div *ngIf="!isEditMode" class="mb-3">
       <button
         type="button"
         class="btn btn-sm btn-outline-secondary"
@@ -232,7 +232,7 @@
         <i class="fas fa-layer-group"></i> Add to Collection
         <span
           *ngIf="selectedCollectionIds.length > 0"
-          class="badge badge-primary ml-1"
+          class="badge bg-primary ms-1"
           >{{ selectedCollectionIds.length }}</span
         >
       </button>
@@ -255,7 +255,7 @@
 
     <button
       type="submit"
-      class="btn btn-primary mr-2"
+      class="btn btn-primary me-2"
       [disabled]="!noteForm.valid"
     >
       <span *ngIf="noteForm.get('public').value; else textBtnPrivateNote"
@@ -278,7 +278,7 @@
     <button
       *ngIf="isEditMode"
       type="button"
-      class="btn btn-danger float-right"
+      class="btn btn-danger float-end"
       title="Delete note"
       (click)="openDeleteDialog(note)"
     >

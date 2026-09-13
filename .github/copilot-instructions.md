@@ -3,7 +3,7 @@
 Codever is a MEAN-stack bookmarks, snippets, and notes manager. Monorepo with two apps:
 
 - `apps/codever-api` — Express.js REST API (Node.js, MongoDB/Mongoose, Keycloak)
-- `apps/codever-ui` — Angular 16 SPA (lazy-loaded modules, Angular Material + Bootstrap 4)
+- `apps/codever-ui` — Angular SPA (lazy-loaded modules, Angular Material + Bootstrap 5)
 
 ## Commands
 

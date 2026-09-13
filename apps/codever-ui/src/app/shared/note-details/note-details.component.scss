@@ -4,6 +4,16 @@
   align-items: flex-start;
 }
 
+// Card title links: no underline by default, underline on hover. Rendered
+// links inside the note body stay underlined.
+.card-title a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .note-details-main {
   flex: 1 1 0;
   min-width: 0; // allow flex child to shrink below content size

@@ -55,7 +55,7 @@
           aria-describedby="basic-addon2"
           value="{{ environment.HOST + '/bookmarks/shared/' + shareableId }}"
         />
-        <div class="input-group-append">
+        
           <button
             class="btn btn-outline-secondary"
             type="button"
@@ -68,10 +68,10 @@
           >
             {{ copyLinkButtonShareableText }}
           </button>
-        </div>
+        
       </div>
       <div *ngIf="!bookmark.public" class="alert alert-warning mt-2">
-        <i class="fas fa-info-circle mr-1"></i> Anyone with the
+        <i class="fas fa-info-circle me-1"></i> Anyone with the
         <b>shareable link</b> can access it
       </div>
     </div>

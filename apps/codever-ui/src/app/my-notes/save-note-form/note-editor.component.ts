@@ -65,7 +65,6 @@ import {
 } from './ai-refine-result-dialog/ai-refine-result-dialog.component';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
 import { FeatureToggleService } from '../../core/feature-toggle.service';
-import * as screenfull from 'screenfull';
 
 @Component({
     selector: 'app-note-editor',
@@ -387,27 +386,64 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     this.deleteDialog.open(NotePreviewDialogComponent, dialogConfig);
   }
 
+  /**
+   * Fullscreen helpers use the native Fullscreen API directly.
+   *
+   * The screenfull library was previously used via `import * as screenfull`, which turns its
+   * getters (`isFullscreen`, `element`) into stale/undefined snapshots at import time and can
+   * make `screenfull.exit()` no-op. That is why clicking the toggle never left fullscreen and
+   * the icon stayed wrong, while the native Escape key still worked. `document.fullscreenElement`
+   * is always live and correct.
+   */
+  private isNativeFullscreenEnabled(): boolean {
+    const doc = document as any;
+    return !!(doc.fullscreenEnabled ?? doc.webkitFullscreenEnabled);
+  }
+
+  private getActiveFullscreenElement(): Element | null {
+    const doc = document as any;
+    return doc.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
+  }
+
+  private requestNativeFullscreen(el: HTMLElement): void {
+    const anyEl = el as any;
+    const request = anyEl.requestFullscreen ?? anyEl.webkitRequestFullscreen;
+    if (request) {
+      Promise.resolve(request.call(el)).catch(() => {});
+    }
+  }
+
+  private exitNativeFullscreen(): void {
+    const doc = document as any;
+    const exit = doc.exitFullscreen ?? doc.webkitExitFullscreen;
+    if (exit) {
+      Promise.resolve(exit.call(document)).catch(() => {});
+    }
+  }
+
   toggleFullScreen(part: HTMLElement): void {
-    if (!screenfull.isEnabled) {
+    if (!this.isNativeFullscreenEnabled()) {
       return;
     }
 
-    if (this.isFullScreen) {
-      screenfull.exit();
-      this.fullscreenEl = null;
+    // If THIS element is already the fullscreen element, exit; otherwise request fullscreen for it.
+    if (this.getActiveFullscreenElement() === part) {
+      this.exitNativeFullscreen();
     } else {
-      screenfull.request(part);
       this.fullscreenEl = part;
+      this.requestNativeFullscreen(part);
     }
   }
 
   @HostListener('document:fullscreenchange')
+  @HostListener('document:webkitfullscreenchange')
   fullscreenChangeHandler(): void {
-    this.isFullScreen =
-      !!document.fullscreenElement &&
-      document.fullscreenElement === this.fullscreenEl;
-    if (!document.fullscreenElement) {
-      this.fullscreenEl = null;
+    if (this.isNativeFullscreenEnabled()) {
+      this.isFullScreen =
+        !!this.getActiveFullscreenElement() && this.getActiveFullscreenElement() === this.fullscreenEl;
+      if (!this.getActiveFullscreenElement()) {
+        this.fullscreenEl = null;
+      }
     }
     this.cd.markForCheck();
   }
