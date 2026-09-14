@@ -6,26 +6,30 @@
     </span>
   </div>
 
-  <a
-    *ngIf="isNote"
-    class="ref-title"
-    [routerLink]="['/my-notes', reference.id, 'details']"
-    [title]="reference.title"
-  >
-    {{ reference.title || '(untitled)' }}
-  </a>
+  @if (isNote) {
+    <a
+      class="ref-title"
+      [routerLink]="['/my-notes', reference.id, 'details']"
+      [title]="reference.title"
+      >
+      {{ reference.title || '(untitled)' }}
+    </a>
+  }
 
-  <a
-    *ngIf="!isNote"
-    class="ref-title"
-    [href]="reference.url"
-    target="_blank"
-    rel="noopener noreferrer"
-    [title]="reference.url"
-  >
-    {{ reference.title || reference.url }}
-  </a>
+  @if (!isNote) {
+    <a
+      class="ref-title"
+      [href]="reference.url"
+      target="_blank"
+      rel="noopener noreferrer"
+      [title]="reference.url"
+      >
+      {{ reference.title || reference.url }}
+    </a>
+  }
 
-  <p class="ref-excerpt" *ngIf="reference.excerpt">{{ reference.excerpt }}</p>
+  @if (reference.excerpt) {
+    <p class="ref-excerpt">{{ reference.excerpt }}</p>
+  }
 </div>
 

@@ -6,8 +6,9 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
+  DOCUMENT
 } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+
 
 export interface TocHeading {
   id: string;

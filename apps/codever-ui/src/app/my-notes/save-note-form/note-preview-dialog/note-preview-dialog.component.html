@@ -10,14 +10,15 @@
   </div>
   <hr class="mt-1 mb-2" />
   <!-- Notebook rendering -->
-  <div *ngIf="isNotebook; else markdownPreview">
-    <app-notebook-renderer [ipynbJson]="notebookJson"></app-notebook-renderer>
-  </div>
-  <!-- Markdown rendering -->
-  <ng-template #markdownPreview>
+  @if (isNotebook) {
+    <div>
+      <app-notebook-renderer [ipynbJson]="notebookJson" />
+    </div>
+  } @else {
     <div
       class="markdown-preview p-3 border rounded bg-light"
       [innerHTML]="renderedContent"
     ></div>
-  </ng-template>
+  }
+  <!-- Markdown rendering -->
 </div>

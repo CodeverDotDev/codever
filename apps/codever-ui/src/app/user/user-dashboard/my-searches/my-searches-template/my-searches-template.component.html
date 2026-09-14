@@ -5,22 +5,22 @@
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
       <hr class="mt-0" />
-      <ng-container
-        *ngFor="let mySearch of searches | searchFilter : type : 'my-bookmarks'"
-      >
+      @for (mySearch of searches | searchFilter : type : 'my-bookmarks'; track mySearch) {
         <span class="my-saved-search me-2">
           <a
             [routerLink]="['/search']"
             [queryParams]="{ q: mySearch.text, sd: mySearch.searchDomain }"
             class="badge bg-secondary mb-2"
-          >
+            >
             <i class="fa fa-xs fa-search"></i> {{ mySearch.text }}
-            <span *ngIf="showCount" class="badge bg-light">{{
-              mySearch.count
-            }}</span>
+            @if (showCount) {
+              <span class="badge bg-light">{{
+                mySearch.count
+              }}</span>
+            }
           </a>
         </span>
-      </ng-container>
+      }
       <div class="clear"></div>
     </ng-template>
   </mat-expansion-panel>
@@ -30,22 +30,22 @@
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
       <hr class="mt-0" />
-      <ng-container
-        *ngFor="let mySearch of searches | searchFilter : type : 'public-bookmarks'"
-      >
+      @for (mySearch of searches | searchFilter : type : 'public-bookmarks'; track mySearch) {
         <span class="my-saved-search me-2">
           <a
             [routerLink]="['/search']"
             [queryParams]="{ q: mySearch.text, sd: 'public-bookmarks' }"
             class="badge bg-secondary mb-2"
-          >
+            >
             <i class="fa fa-xs fa-search"></i> {{ mySearch.text }}
-            <span *ngIf="showCount" class="badge bg-light">{{
-              mySearch.count
-            }}</span>
+            @if (showCount) {
+              <span class="badge bg-light">{{
+                mySearch.count
+              }}</span>
+            }
           </a>
         </span>
-      </ng-container>
+      }
       <div class="clear"></div>
     </ng-template>
   </mat-expansion-panel>

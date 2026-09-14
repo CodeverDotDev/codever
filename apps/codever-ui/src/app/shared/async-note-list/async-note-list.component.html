@@ -1,17 +1,18 @@
-<div *ngIf="notes$ | async as notes" class="mt-2">
-  <div *ngFor="let note of notes">
-    <app-note-details
-      [note$]="of(note)"
-      [queryText]="queryText"
-      [inSearchResults]="true"
-      [partOfList]="true"
-    ></app-note-details>
+@if (notes$ | async; as notes) {
+  <div class="mt-2">
+    @for (note of notes; track note) {
+      <div>
+        <app-note-details [note$]="of(note)"
+          [queryText]="queryText"
+          [inSearchResults]="true"
+          [partOfList]="true"
+         />
+      </div>
+    }
+    <app-page-navigation-bar [showPagination]="showPagination"
+      [results]="notes"
+      [currentPage]="currentPage"
+      [callerPagination]="callerPagination"
+     />
   </div>
-
-  <app-page-navigation-bar
-    [showPagination]="showPagination"
-    [results]="notes"
-    [currentPage]="currentPage"
-    [callerPagination]="callerPagination"
-  ></app-page-navigation-bar>
-</div>
+}

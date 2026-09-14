@@ -4,169 +4,172 @@
 <mat-tab-group
   [selectedIndex]="selectedTabIndex"
   (selectedTabChange)="tabSelectionChanged($event)"
->
+  >
   <mat-tab>
     <ng-template mat-tab-label>
       <span class="app-tab-label"><i class="fa fa-search"></i> Personal</span>
     </ng-template>
     <ng-template matTabContent>
-      <div *ngIf="userIsLoggedIn; else loggedInToSearchBookmarks">
-        <div
-          *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
-          class="alert alert-info no-search-results mt-2"
-          role="alert"
-        >
-          No results found for <strong>{{ this.searchInclude }}</strong> of
-          <em
-            ><code>{{ searchText }}</code></em
-          >
-          in <strong>My Bookmarks and My Notes</strong>.
-          <span *ngIf="searchInclude === 'all'">
-            Try searching for <strong>any</strong> of the terms -
+      @if (userIsLoggedIn) {
+        <div>
+          @if ((searchResults$ | async)?.length === 0 && currentPage === 1) {
+            <div
+              class="alert alert-info no-search-results mt-2"
+              role="alert"
+              >
+              No results found for <strong>{{ this.searchInclude }}</strong> of
+              <em
+                ><code>{{ searchText }}</code></em
+                >
+                in <strong>My Bookmarks and My Notes</strong>.
+                @if (searchInclude === 'all') {
+                  <span>
+                    Try searching for <strong>any</strong> of the terms -
+                    <button
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="tryAllMine('any')"
+                      >
+                      <i class="fa fa-search"></i> Search any
+                    </button>
+                  </span>
+                }
+                <br />
+                <br />
+                {{ searchInOtherCategoriesTip }}
+              </div>
+            }
+            <!-- Type filter toggle -->
+            @if ((searchResults$ | async)?.length) {
+              <div
+                class="type-filter-toggle mt-3 mb-2"
+                >
+                <button
+                  class="btn btn-sm"
+                  [class.btn-primary]="(typeFilter$ | async) === 'all'"
+                  [class.btn-outline-secondary]="(typeFilter$ | async) !== 'all'"
+                  (click)="setTypeFilter('all')"
+                  >
+                  All
+                </button>
+                <button
+                  class="btn btn-sm ms-1"
+                  [class.btn-primary]="(typeFilter$ | async) === 'bookmark'"
+                  [class.btn-outline-secondary]="(typeFilter$ | async) !== 'bookmark'"
+                  (click)="setTypeFilter('bookmark')"
+                  >
+                  <i class="fas fa-bookmark"></i> Bookmarks
+                </button>
+                <button
+                  class="btn btn-sm ms-1"
+                  [class.btn-primary]="(typeFilter$ | async) === 'note'"
+                  [class.btn-outline-secondary]="(typeFilter$ | async) !== 'note'"
+                  (click)="setTypeFilter('note')"
+                  >
+                  <i class="fas fa-sticky-note"></i> Notes
+                </button>
+              </div>
+            }
+            <app-async-search-result-list [callerPagination]="callerPaginationSearchResults"
+              [searchResults$]="filteredSearchResults$"
+              [queryText]="searchText"
+              [userData$]="userData$"
+              [isSearchResultsPage]="true"
+              [showFilterBox]="false"
+               />
+          </div>
+        } @else {
+          <div class="mt-2 alert alert-info">
+            You need to
             <button
-              class="btn btn-outline-primary btn-sm"
-              (click)="tryAllMine('any')"
-            >
-              <i class="fa fa-search"></i> Search any
+              type="button"
+              class="btn btn-primary btn-sm"
+              (click)="keycloakServiceWrapper.login()"
+              >
+              Login / Register
             </button>
-          </span>
-          <br />
-          <br />
-          {{ searchInOtherCategoriesTip }}
-        </div>
+            to search your personal bookmarks and notes.
+          </div>
+        }
+      </ng-template>
+    </mat-tab>
 
-        <!-- Type filter toggle -->
-        <div
-          *ngIf="(searchResults$ | async)?.length"
-          class="type-filter-toggle mt-3 mb-2"
-        >
-          <button
-            class="btn btn-sm"
-            [class.btn-primary]="(typeFilter$ | async) === 'all'"
-            [class.btn-outline-secondary]="(typeFilter$ | async) !== 'all'"
-            (click)="setTypeFilter('all')"
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="app-tab-label"
+          ><i class="fa fa-globe"></i> Public</span
           >
-            All
-          </button>
-          <button
-            class="btn btn-sm ms-1"
-            [class.btn-primary]="(typeFilter$ | async) === 'bookmark'"
-            [class.btn-outline-secondary]="(typeFilter$ | async) !== 'bookmark'"
-            (click)="setTypeFilter('bookmark')"
-          >
-            <i class="fas fa-bookmark"></i> Bookmarks
-          </button>
-          <button
-            class="btn btn-sm ms-1"
-            [class.btn-primary]="(typeFilter$ | async) === 'note'"
-            [class.btn-outline-secondary]="(typeFilter$ | async) !== 'note'"
-            (click)="setTypeFilter('note')"
-          >
-            <i class="fas fa-sticky-note"></i> Notes
-          </button>
-        </div>
+        </ng-template>
+        <ng-template matTabContent>
+          @if ((searchResults$ | async)?.length === 0 && currentPage === 1) {
+            <div
+              class="alert alert-info no-search-results mt-2"
+              role="alert"
+              >
+              No results found for <strong>{{ this.searchInclude }}</strong> of
+              <em
+                ><code>{{ searchText }}</code></em
+                >
+                in <strong>Public Bookmarks and Notes</strong>.
+                @if (searchInclude === 'all') {
+                  <span>
+                    Try a more permissive search (include <strong>any</strong> of the
+                    terms) -
+                    <button
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="tryAllPublic('any')"
+                      >
+                      <i class="fa fa-search"></i> Search any
+                    </button>
+                  </span>
+                }
+                <br />
+                <br />
+                {{ searchInOtherCategoriesTip }}
+              </div>
+            }
 
-        <app-async-search-result-list
-          [callerPagination]="callerPaginationSearchResults"
-          [searchResults$]="filteredSearchResults$"
-          [queryText]="searchText"
-          [userData$]="userData$"
-          [isSearchResultsPage]="true"
-          [showFilterBox]="false"
-        >
-        </app-async-search-result-list>
-      </div>
-    </ng-template>
-  </mat-tab>
+            <!-- Type filter toggle -->
+            @if ((searchResults$ | async)?.length) {
+              <div
+                class="type-filter-toggle mt-3 mb-2"
+                >
+                <button
+                  class="btn btn-sm"
+                  [class.btn-primary]="(typeFilter$ | async) === 'all'"
+                  [class.btn-outline-secondary]="(typeFilter$ | async) !== 'all'"
+                  (click)="setTypeFilter('all')"
+                  >
+                  All
+                </button>
+                <button
+                  class="btn btn-sm ms-1"
+                  [class.btn-primary]="(typeFilter$ | async) === 'bookmark'"
+                  [class.btn-outline-secondary]="(typeFilter$ | async) !== 'bookmark'"
+                  (click)="setTypeFilter('bookmark')"
+                  >
+                  <i class="fas fa-bookmark"></i> Bookmarks
+                </button>
+                <button
+                  class="btn btn-sm ms-1"
+                  [class.btn-primary]="(typeFilter$ | async) === 'note'"
+                  [class.btn-outline-secondary]="(typeFilter$ | async) !== 'note'"
+                  (click)="setTypeFilter('note')"
+                  >
+                  <i class="fas fa-sticky-note"></i> Notes
+                </button>
+              </div>
+            }
 
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"
-        ><i class="fa fa-globe"></i> Public</span
-      >
-    </ng-template>
-    <ng-template matTabContent>
-      <div
-        *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
-        class="alert alert-info no-search-results mt-2"
-        role="alert"
-      >
-        No results found for <strong>{{ this.searchInclude }}</strong> of
-        <em
-          ><code>{{ searchText }}</code></em
-        >
-        in <strong>Public Bookmarks and Notes</strong>.
-        <span *ngIf="searchInclude === 'all'">
-          Try a more permissive search (include <strong>any</strong> of the
-          terms) -
-          <button
-            class="btn btn-outline-primary btn-sm"
-            (click)="tryAllPublic('any')"
-          >
-            <i class="fa fa-search"></i> Search any
-          </button>
-        </span>
-        <br />
-        <br />
-        {{ searchInOtherCategoriesTip }}
-      </div>
+            <app-async-search-result-list [callerPagination]="callerPaginationSearchResults"
+              [searchResults$]="filteredSearchResults$"
+              [queryText]="searchText"
+              [userData$]="userData$"
+              [isSearchResultsPage]="true"
+              [showFilterBox]="false"
+               />
+          </ng-template>
+        </mat-tab>
 
-      <!-- Type filter toggle -->
-      <div
-        *ngIf="(searchResults$ | async)?.length"
-        class="type-filter-toggle mt-3 mb-2"
-      >
-        <button
-          class="btn btn-sm"
-          [class.btn-primary]="(typeFilter$ | async) === 'all'"
-          [class.btn-outline-secondary]="(typeFilter$ | async) !== 'all'"
-          (click)="setTypeFilter('all')"
-        >
-          All
-        </button>
-        <button
-          class="btn btn-sm ms-1"
-          [class.btn-primary]="(typeFilter$ | async) === 'bookmark'"
-          [class.btn-outline-secondary]="(typeFilter$ | async) !== 'bookmark'"
-          (click)="setTypeFilter('bookmark')"
-        >
-          <i class="fas fa-bookmark"></i> Bookmarks
-        </button>
-        <button
-          class="btn btn-sm ms-1"
-          [class.btn-primary]="(typeFilter$ | async) === 'note'"
-          [class.btn-outline-secondary]="(typeFilter$ | async) !== 'note'"
-          (click)="setTypeFilter('note')"
-        >
-          <i class="fas fa-sticky-note"></i> Notes
-        </button>
-      </div>
+      </mat-tab-group>
 
-      <app-async-search-result-list
-        [callerPagination]="callerPaginationSearchResults"
-        [searchResults$]="filteredSearchResults$"
-        [queryText]="searchText"
-        [userData$]="userData$"
-        [isSearchResultsPage]="true"
-        [showFilterBox]="false"
-      >
-      </app-async-search-result-list>
-    </ng-template>
-  </mat-tab>
-
-  <ng-template #loggedInToSearchBookmarks>
-    <div class="mt-2 alert alert-info">
-      You need to
-      <button
-        type="button"
-        class="btn btn-primary btn-sm"
-        (click)="keycloakServiceWrapper.login()"
-      >
-        Login / Register
-      </button>
-      to search your personal bookmarks and notes.
-    </div>
-  </ng-template>
-</mat-tab-group>
-
-<app-find-elsewhere [searchText]="searchText"> </app-find-elsewhere>
+      <app-find-elsewhere [searchText]="searchText" />

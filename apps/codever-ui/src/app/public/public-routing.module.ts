@@ -98,6 +98,11 @@ const publicRoutes: Routes = [
   {
     path: 'snippets',
     redirectTo: '/notes',
+    // `pathMatch: 'full'` is required: these public routes are registered at the
+    // ROOT level (PublicResourcesModule is imported eagerly in AppModule before
+    // AppRoutingModule), so a default prefix match would hijack every
+    // `/snippets/**` URL and shadow the more specific redirects below.
+    pathMatch: 'full',
   },
   {
     path: 'snippets/tagged/:tag',
@@ -116,17 +121,23 @@ const publicRoutes: Routes = [
     redirectTo: '/notes/shared/:shareableId',
   },
   {
-    path: 'notes/shared/:shareableId',
-    redirectTo: '/notes/shared/:shareableId',
-  },
-  {
-    // Redirect old /public/notes/:id URLs to the canonical /notes/:id/details
+    // Redirect old /public/notes/:id URLs to the canonical /notes/:id/details.
+    // `pathMatch: 'full'` is essential: without it the default prefix match also
+    // matches the canonical `/notes/:id/details` URL (whose `notes/:id` prefix
+    // matches this route) and redirects it back to itself, causing an NG04016
+    // infinite redirect. These routes are registered at the root level, before
+    // the lazy `notes` route, so they must not shadow canonical note URLs.
+    // (A separate `notes/shared/:shareableId` redirect was removed for the same
+    // reason — it redirected to itself; the canonical lazy `notes` route already
+    // serves `/notes/shared/:shareableId`.)
     path: 'notes/:id',
     redirectTo: '/notes/:id/details',
+    pathMatch: 'full',
   },
   {
     path: 'snippets/:id',
     redirectTo: '/notes/:id/details',
+    pathMatch: 'full',
   },
   {
     path: 'bookmarks/shared/:shareableId',

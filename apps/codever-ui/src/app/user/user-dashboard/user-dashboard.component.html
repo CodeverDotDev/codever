@@ -6,10 +6,9 @@
       >
     </ng-template>
     <ng-template matTabContent>
-      <app-my-bookmarks
-        [userId]="userId"
+      <app-my-bookmarks [userId]="userId"
         [userData$]="userData$"
-      ></app-my-bookmarks>
+       />
     </ng-template>
   </mat-tab>
   <mat-tab>
@@ -17,7 +16,7 @@
       <span class="app-tab-label"><i class="fas fa-sticky-note"></i> My Notes</span>
     </ng-template>
     <ng-template matTabContent>
-      <app-my-notes [userId]="userId"></app-my-notes>
+      <app-my-notes [userId]="userId" />
     </ng-template>
   </mat-tab>
   <mat-tab>
@@ -25,7 +24,7 @@
       <span class="app-tab-label"><i class="fas fa-tags"></i> My Tags</span>
     </ng-template>
     <ng-template matTabContent>
-      <app-user-tags [userId]="userId" [userData$]="userData$"></app-user-tags>
+      <app-user-tags [userId]="userId" [userData$]="userData$" />
     </ng-template>
   </mat-tab>
   <mat-tab>
@@ -33,7 +32,7 @@
       <span class="app-tab-label"><i class="fa fa-search"></i> Searches</span>
     </ng-template>
     <ng-template matTabContent>
-      <app-saved-searches [userId]="userId"></app-saved-searches>
+      <app-saved-searches [userId]="userId" />
     </ng-template>
   </mat-tab>
   <mat-tab>
@@ -41,7 +40,7 @@
       <span class="app-tab-label"><i class="fa fa-eye"></i> Following</span>
     </ng-template>
     <ng-template matTabContent>
-      <app-following [userId]="userId"></app-following>
+      <app-following [userId]="userId" />
     </ng-template>
   </mat-tab>
   <mat-tab>
@@ -51,7 +50,7 @@
       >
     </ng-template>
     <ng-template matTabContent>
-      <app-followers [userId]="userId"></app-followers>
+      <app-followers [userId]="userId" />
     </ng-template>
   </mat-tab>
 </mat-tab-group>
