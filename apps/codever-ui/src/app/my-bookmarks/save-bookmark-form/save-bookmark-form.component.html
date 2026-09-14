@@ -1,29 +1,28 @@
-<div
-  *ngIf="!isUpdate || (isUpdate && bookmark$ | async)"
-  class="navigation-space-buffer rounded shadow-sm"
-  [ngClass]="makePublic === false ? 'private-bookmark' : 'bg-white'"
->
-  <form
-    [formGroup]="bookmarkForm"
-    novalidate
-    (ngSubmit)="saveBookmark(bookmarkForm.value)"
-  >
-    <div class="mb-3">
-      <label for="location" class="space-btw-wrapper"
-        ><span>Location*</span>
-        <span><i class="fas fa-lg fa-bookmark"></i></span
-      ></label>
-      <div class="input-group">
-        <input
-          type="text"
-          class="form-control"
-          id="location"
-          required
-          name="location"
-          formControlName="location"
-          placeholder="Usually an URL"
-        />
-        
+@if (!isUpdate || (isUpdate && bookmark$ | async)) {
+  <div
+    class="navigation-space-buffer rounded shadow-sm"
+    [ngClass]="makePublic === false ? 'private-bookmark' : 'bg-white'"
+    >
+    <form
+      [formGroup]="bookmarkForm"
+      novalidate
+      (ngSubmit)="saveBookmark(bookmarkForm.value)"
+      >
+      <div class="mb-3">
+        <label for="location" class="space-btw-wrapper"
+          ><span>Location*</span>
+          <span><i class="fas fa-lg fa-bookmark"></i></span
+        ></label>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            id="location"
+            required
+            name="location"
+            formControlName="location"
+            placeholder="Usually an URL"
+            />
           <div class="input-group-text">
             <a
               href="{{ bookmarkForm.get('location').value }}"
@@ -32,82 +31,82 @@
               ><i class="fas fa-external-link-alt"></i
             ></a>
           </div>
-        
-      </div>
-      <div
+        </div>
+        <div
         [hidden]="
           bookmarkForm.get('location').valid ||
           bookmarkForm.get('location').pristine
         "
-        class="alert alert-danger"
-      >
-        Location is required
+          class="alert alert-danger"
+          >
+          Location is required
+        </div>
+        <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
+          You have already bookmarked this URL -
+          <button
+            type="button"
+            class="btn btn-light btn-sm"
+            (click)="editExistingBookmark()"
+            title="Edit bookmark"
+            >
+            <i class="far fa-edit"></i> Edit
+          </button>
+        </div>
       </div>
-      <div [hidden]="!personalBookmarkPresent" class="alert alert-danger">
-        You have already bookmarked this URL -
-        <button
-          type="button"
-          class="btn btn-light btn-sm"
-          (click)="editExistingBookmark()"
-          title="Edit bookmark"
-        >
-          <i class="far fa-edit"></i> Edit
-        </button>
-      </div>
-    </div>
-
-    <!-- AI Refine button -->
-    <div *ngIf="isAiRefineEnabled$ | async" class="mb-3">
-      <button
-        type="button"
-        class="btn btn-outline-secondary btn-sm"
-        [disabled]="isRefining"
-        (click)="refineBookmarkWithAi()"
-      >
-        <span *ngIf="isRefining; else aiButtonLabel">
-          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-          Refining...
-        </span>
-        <ng-template #aiButtonLabel>
-          <i class="fas fa-magic me-1"></i> Refine with AI ✨
-        </ng-template>
-      </button>
-      <small class="text-body-secondary ms-2">AI summarizes the page or refines your fields (powered by DeepSeek)</small>
-    </div>
-
-    <div class="mb-3 form-group-distanced">
-      <label for="name">Title*</label>
-      <input
-        type="text"
-        class="form-control"
-        id="name"
-        required
-        formControlName="name"
-        placeholder="Name of the bookmark to recognize later"
-      />
-      <div
+      <!-- AI Refine button -->
+      @if (isAiRefineEnabled$ | async) {
+        <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            [disabled]="isRefining"
+            (click)="refineBookmarkWithAi()"
+            >
+            @if (isRefining) {
+              <span>
+                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                Refining...
+              </span>
+            } @else {
+              <i class="fas fa-magic me-1"></i> Refine with AI ✨
+            }
+          </button>
+          <small class="text-body-secondary ms-2">AI summarizes the page or refines your fields (powered by DeepSeek)</small>
+        </div>
+      }
+      <div class="mb-3 form-group-distanced">
+        <label for="name">Title*</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          required
+          formControlName="name"
+          placeholder="Name of the bookmark to recognize later"
+          />
+        <div
         [hidden]="
           bookmarkForm.get('name').valid || bookmarkForm.get('name').pristine
         "
-        class="alert alert-danger"
-      >
-        Name is required
+          class="alert alert-danger"
+          >
+          Name is required
+        </div>
       </div>
-    </div>
-    <div
-      *ngIf="!hidePublicCheckbox"
-      class="form-check"
-      style="margin-bottom: 1.5rem; margin-top: 0.8rem"
-    >
-      <label class="form-check-label">
-        <input
-          #publicBookmark
-          [checked]="makePublic"
-          (click)="onClickMakePublic(publicBookmark.checked)"
-          class="form-check-input"
-          type="checkbox"
-          value="true"
-          formControlName="public"
+      @if (!hidePublicCheckbox) {
+        <div
+          class="form-check"
+          style="margin-bottom: 1.5rem; margin-top: 0.8rem"
+          >
+          <label class="form-check-label">
+            <input
+              #publicBookmark
+              [checked]="makePublic"
+              (click)="onClickMakePublic(publicBookmark.checked)"
+              class="form-check-input"
+              type="checkbox"
+              value="true"
+              formControlName="public"
           [attr.disabled]="
             (isUpdate &&
               bookmark.public &&
@@ -116,209 +115,233 @@
               ? ''
               : null
           "
-        />
-        <strong> Make Public </strong> - pls favor
-        <a
-          href="https://github.com/CodeverDotDev/bookmarks/blob/master/tags/public-tags-simple.json"
-          target="_blank"
-          >recommended tags</a
-        >
-        (<em>spam will not be tolerated</em>)
-      </label>
-    </div>
-    <div *ngIf="makePublic" class="mb-3 form-group-distanced">
-      <label for="language">Language*</label>
-      <select
-        class="form-control form-control-sm"
-        id="language"
-        formControlName="language"
-        style="width: 20%"
-      >
-        <option value="en" selected="selected">English</option>
-        <option *ngFor="let lang of languages" value="{{ lang.code }}">
-          {{ lang.name }}
-        </option>
-      </select>
-    </div>
-    <div id="tags" class="form-group-distanced mb-4 border rounded p-2">
-      <mat-form-field class="full-width">
-        <mat-label>Tags*</mat-label>
-        <mat-chip-grid #chipList>
-          <mat-chip-row
-            *ngFor="let tag of tags.controls; let i = index"
-            [removable]="removable"
-            (removed)="removeTagByIndex(i)"
-          >
-            {{ tag.value }}
-            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-          </mat-chip-row>
-          <input
-            placeholder="New tag..."
-            #tagInput
-            [formControl]="tagsControl"
-            [matAutocomplete]="auto"
-            [matChipInputFor]="chipList"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            (matChipInputTokenEnd)="addTag($event)"
-            formArrayName="tags"
-          />
-        </mat-chip-grid>
-        <mat-hint>Enter comma-separated values</mat-hint>
-        <mat-autocomplete
-          #auto="matAutocomplete"
-          (optionActivated)="optionActivated($event)"
-          (optionSelected)="selectedTag($event)"
-        >
-          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-            {{ tag }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <span *ngIf="tags.invalid && (tags.dirty || tags.touched)">
-        <mat-error *ngIf="tags.errors.tagsAreRequired">
-          Tags are <strong>required</strong>
-        </mat-error>
-        <mat-error *ngIf="tags.errors.tooManyTags">
-          You can add <strong>maximum 8 tags</strong>
-        </mat-error>
-        <mat-error *ngIf="tags.errors.blockedTags">
-          The tag <strong>{{ tags.errors.blockedTags.value }}</strong> is
-          blocked. Please use others
-        </mat-error>
-      </span>
-    </div>
-
-    <div class="mb-3 form-group-distanced">
-      <label for="publishedOn">
-        <i class="far fa-calendar-alt"></i> Originally published on
-      </label>
-      <input
-        type="date"
-        class="form-control"
-        id="publishedOn"
-        formControlName="publishedOn"
-        placeholder="Date when page was published yyyy-MM-dd"
-      />
-    </div>
-    <div class="mb-3 form-group-distanced">
-      <label for="sourceCodeURL"
-        >Source code URL <i class="fab fa-github"></i
-      ></label>
-      <input
-        type="url"
-        class="form-control"
-        id="sourceCodeURL"
-        formControlName="sourceCodeURL"
-        placeholder="URL of the post, project on GitHub - e.g. https://github.com/CodeverDotDev/codever"
-      />
-    </div>
-    <div #descriptionEditor class="mb-3 markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
-      <label for="description" class="content-label"
-        ><span>Description - <i class="fab fa-markdown"></i>
-        <a
-          class="markdown-link"
-          href="https://daringfireball.net/projects/markdown/"
-          target="_blank"
-          >Markdown is supported</a
-        ></span>
-        <button
-          type="button"
-          class="fullscreen-toggle-btn"
-          (click)="toggleFullScreen(descriptionEditor)"
-          [title]="isFullScreen ? 'Exit fullscreen' : 'Edit description fullscreen'"
-          [attr.aria-label]="isFullScreen ? 'Exit fullscreen' : 'Edit description fullscreen'"
-        >
-          <i [class.fa-expand]="!isFullScreen" [class.fa-compress]="isFullScreen" class="fas"></i>
-        </button>
-      </label>
-      <textarea
-        class="form-control bookmark-description-textarea"
-        id="description"
-        formControlName="description"
-        placeholder="Writing descriptions with keywords can help find your bookmarks more easily through search. You can give an overview of the bookmark and place keywords in the beginning of the description."
-        style="height: 250px"
-      >
-      </textarea>
-      <div class="description-chars-counter">
-        {{ description.value ? description.value.length : 0 }} / 10000
-      </div>
-      <div class="clear"></div>
-      <div
-        *ngIf="
-          description.invalid && (description.dirty || description.touched)
-        "
-        class="alert alert-danger"
-      >
-        <div *ngIf="description.errors.tooManyLines">
-          Your description has
-          {{ description.errors.tooManyLines.value }} lines. Maximum 300 lines
-          are allowed.
+              />
+            <strong> Make Public </strong> - pls favor
+            <a
+              href="https://github.com/CodeverDotDev/bookmarks/blob/master/tags/public-tags-simple.json"
+              target="_blank"
+              >recommended tags</a
+              >
+              (<em>spam will not be tolerated</em>)
+            </label>
+          </div>
+        }
+        @if (makePublic) {
+          <div class="mb-3 form-group-distanced">
+            <label for="language">Language*</label>
+            <select
+              class="form-control form-control-sm"
+              id="language"
+              formControlName="language"
+              style="width: 20%"
+              >
+              <option value="en" selected="selected">English</option>
+              @for (lang of languages; track lang) {
+                <option value="{{ lang.code }}">
+                  {{ lang.name }}
+                </option>
+              }
+            </select>
+          </div>
+        }
+        <div id="tags" class="form-group-distanced mb-4 border rounded p-2">
+          <mat-form-field class="full-width">
+            <mat-label>Tags*</mat-label>
+            <mat-chip-grid #chipList>
+              @for (tag of tags.controls; track tag; let i = $index) {
+                <mat-chip-row
+                  [removable]="removable"
+                  (removed)="removeTagByIndex(i)"
+                  >
+                  {{ tag.value }}
+                  @if (removable) {
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  }
+                </mat-chip-row>
+              }
+              <input
+                placeholder="New tag..."
+                #tagInput
+                [formControl]="tagsControl"
+                [matAutocomplete]="auto"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="addTag($event)"
+                formArrayName="tags"
+                />
+            </mat-chip-grid>
+            <mat-hint>Enter comma-separated values</mat-hint>
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              (optionActivated)="optionActivated($event)"
+              (optionSelected)="selectedTag($event)"
+              >
+              @for (tag of filteredTags | async; track tag) {
+                <mat-option [value]="tag">
+                  {{ tag }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+          @if (tags.invalid && (tags.dirty || tags.touched)) {
+            <span>
+              @if (tags.errors.tagsAreRequired) {
+                <mat-error>
+                  Tags are <strong>required</strong>
+                </mat-error>
+              }
+              @if (tags.errors.tooManyTags) {
+                <mat-error>
+                  You can add <strong>maximum 8 tags</strong>
+                </mat-error>
+              }
+              @if (tags.errors.blockedTags) {
+                <mat-error>
+                  The tag <strong>{{ tags.errors.blockedTags.value }}</strong> is
+                  blocked. Please use others
+                </mat-error>
+              }
+            </span>
+          }
         </div>
-        <div *ngIf="description.errors.tooManyCharacters">
-          Your description has
-          {{ description.errors.tooManyCharacters.value }} characters. Maximum
-          10000 characters are allowed.
+        <div class="mb-3 form-group-distanced">
+          <label for="publishedOn">
+            <i class="far fa-calendar-alt"></i> Originally published on
+          </label>
+          <input
+            type="date"
+            class="form-control"
+            id="publishedOn"
+            formControlName="publishedOn"
+            placeholder="Date when page was published yyyy-MM-dd"
+            />
         </div>
-      </div>
-    </div>
-
-    <div *ngIf="!isUpdate" class="mb-3">
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        (click)="openAddToCollectionDialog()"
-        title="Add to collection"
-      >
-        <i class="fas fa-layer-group"></i> Add to Collection
-        <span
-          *ngIf="selectedCollectionIds.length > 0"
-          class="badge bg-primary ms-1"
-          >{{ selectedCollectionIds.length }}</span
-        >
-      </button>
-    </div>
-
-    <div
-      *ngIf="!isUpdate"
-      style="margin-bottom: 1.5rem; margin-top: 1rem; display: flex"
-    >
-      <div class="form-check">
-        <label class="form-check-label">
+        <div class="mb-3 form-group-distanced">
+          <label for="sourceCodeURL"
+            >Source code URL <i class="fab fa-github"></i
+          ></label>
           <input
-            class="form-check-input"
-            type="checkbox"
-            value="true"
-            formControlName="readLater"
-          />
-          Add to <strong>Read Later <i class="fas fa-clock"></i></strong>
-        </label>
+            type="url"
+            class="form-control"
+            id="sourceCodeURL"
+            formControlName="sourceCodeURL"
+            placeholder="URL of the post, project on GitHub - e.g. https://github.com/CodeverDotDev/codever"
+            />
+        </div>
+        <div #descriptionEditor class="mb-3 markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
+          <label for="description" class="content-label"
+            ><span>Description - <i class="fab fa-markdown"></i>
+            <a
+              class="markdown-link"
+              href="https://daringfireball.net/projects/markdown/"
+              target="_blank"
+              >Markdown is supported</a
+            ></span>
+            <button
+              type="button"
+              class="fullscreen-toggle-btn"
+              (click)="toggleFullScreen(descriptionEditor)"
+              [title]="isFullScreen ? 'Exit fullscreen' : 'Edit description fullscreen'"
+              [attr.aria-label]="isFullScreen ? 'Exit fullscreen' : 'Edit description fullscreen'"
+              >
+              <i [class.fa-expand]="!isFullScreen" [class.fa-compress]="isFullScreen" class="fas"></i>
+            </button>
+          </label>
+          <textarea
+            class="form-control bookmark-description-textarea"
+            id="description"
+            formControlName="description"
+            placeholder="Writing descriptions with keywords can help find your bookmarks more easily through search. You can give an overview of the bookmark and place keywords in the beginning of the description."
+            style="height: 250px"
+            >
+          </textarea>
+          <div class="description-chars-counter">
+            {{ description.value ? description.value.length : 0 }} / 10000
+          </div>
+          <div class="clear"></div>
+          @if (
+            description.invalid && (description.dirty || description.touched)
+            ) {
+            <div
+              class="alert alert-danger"
+              >
+              @if (description.errors.tooManyLines) {
+                <div>
+                  Your description has
+                  {{ description.errors.tooManyLines.value }} lines. Maximum 300 lines
+                  are allowed.
+                </div>
+              }
+              @if (description.errors.tooManyCharacters) {
+                <div>
+                  Your description has
+                  {{ description.errors.tooManyCharacters.value }} characters. Maximum
+                  10000 characters are allowed.
+                </div>
+              }
+            </div>
+          }
+        </div>
+        @if (!isUpdate) {
+          <div class="mb-3">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary"
+              (click)="openAddToCollectionDialog()"
+              title="Add to collection"
+              >
+              <i class="fas fa-layer-group"></i> Add to Collection
+              @if (selectedCollectionIds.length > 0) {
+                <span
+                  class="badge bg-primary ms-1"
+                  >{{ selectedCollectionIds.length }}</span
+                  >
+                }
+              </button>
+            </div>
+          }
+          @if (!isUpdate) {
+            <div
+              style="margin-bottom: 1.5rem; margin-top: 1rem; display: flex"
+              >
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="true"
+                    formControlName="readLater"
+                    />
+                  Add to <strong>Read Later <i class="fas fa-clock"></i></strong>
+                </label>
+              </div>
+              <div class="form-check ms-5">
+                <label class="form-check-label">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="true"
+                    formControlName="pinned"
+                    />
+                  Add to <strong>Pinned <i class="fas fa-thumbtack"></i></strong>
+                </label>
+              </div>
+            </div>
+          }
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!bookmarkForm.valid || personalBookmarkPresent"
+            >
+            Save bookmark
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary ms-2"
+            (click)="cancelUpdate()"
+            >
+            Cancel <i class="far fa-times-circle"></i>
+          </button>
+        </form>
       </div>
-      <div class="form-check ms-5">
-        <label class="form-check-label">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            value="true"
-            formControlName="pinned"
-          />
-          Add to <strong>Pinned <i class="fas fa-thumbtack"></i></strong>
-        </label>
-      </div>
-    </div>
-
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="!bookmarkForm.valid || personalBookmarkPresent"
-    >
-      Save bookmark
-    </button>
-    <button
-      type="button"
-      class="btn btn-secondary ms-2"
-      (click)="cancelUpdate()"
-    >
-      Cancel <i class="far fa-times-circle"></i>
-    </button>
-  </form>
-</div>
+    }

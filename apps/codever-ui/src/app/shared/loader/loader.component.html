@@ -1,4 +1,5 @@
-<div *ngIf="isLoading | async" class="overlay">
-  <mat-progress-spinner class="spinner" [color]="color" [mode]="mode">
-  </mat-progress-spinner>
-</div>
+@if (isLoading | async) {
+  <div class="overlay">
+    <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" />
+  </div>
+}

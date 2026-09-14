@@ -14,14 +14,16 @@
         ></button>
       </div>
       <div class="modal-body">
-        <p *ngFor="let errorMessage of error?.messages">{{ errorMessage }}</p>
+        @for (errorMessage of error?.messages; track errorMessage) {
+          <p>{{ errorMessage }}</p>
+        }
       </div>
       <div class="modal-footer">
         <button
           type="button"
           class="btn btn-secondary"
           (click)="onErrorHandled()"
-        >
+          >
           Close
         </button>
       </div>

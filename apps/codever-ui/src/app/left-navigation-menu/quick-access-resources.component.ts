@@ -68,9 +68,14 @@ export class QuickAccessResourcesComponent {
 
   navigateToDetails(resource: UserDataResource): void {
     if (this.isNote(resource)) {
+      // Use absolute paths: this component is rendered in the root
+      // app.component, so a relative (`./`) target would be resolved against
+      // whatever route is currently active. On a public note details page that
+      // collides with the `notes/:id` → `/notes/:id/details` redirect and
+      // triggers an NG04016 infinite-redirect loop.
       const link = resource.public
-        ? [`./notes/${resource._id}/details`]
-        : [`./my-notes/${resource._id}/details`];
+        ? [`/notes/${resource._id}/details`]
+        : [`/my-notes/${resource._id}/details`];
       this.router.navigate(link, {
         state: { note: resource },
       });
@@ -81,9 +86,10 @@ export class QuickAccessResourcesComponent {
   }
 
   navigateToBookmarkDetails(bookmark: Bookmark): void {
-    let link = [`./my-bookmarks/${bookmark._id}/details`];
+    // Absolute paths (see navigateToDetails) to avoid route-relative resolution.
+    let link = [`/my-bookmarks/${bookmark._id}/details`];
     if (bookmark.public) {
-      link = [`./bookmarks/${bookmark._id}/details`];
+      link = [`/bookmarks/${bookmark._id}/details`];
     }
     this.router.navigate(link, {
       state: { bookmark: bookmark },

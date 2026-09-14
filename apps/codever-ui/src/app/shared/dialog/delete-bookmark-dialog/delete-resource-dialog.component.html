@@ -8,9 +8,11 @@
     <strong>"{{ resourceName }}"</strong>
   </p>
 
-  <div *ngIf="isPublic" class="alert alert-warning" role="alert">
-    Please take into consideration this {{ type }} is <b>public</b>!
-  </div>
+  @if (isPublic) {
+    <div class="alert alert-warning" role="alert">
+      Please take into consideration this {{ type }} is <b>public</b>!
+    </div>
+  }
 </mat-dialog-content>
 
 <hr />

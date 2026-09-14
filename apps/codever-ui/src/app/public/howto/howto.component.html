@@ -7,7 +7,7 @@
         <h4><i class="fas fa-xs fa-info-circle"></i> Get started</h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <app-howto-get-started></app-howto-get-started>
+        <app-howto-get-started />
       </ng-template>
     </mat-expansion-panel>
     <mat-expansion-panel>
@@ -15,7 +15,7 @@
         <h4><i class="fas fa-xs fa-info-circle"></i> Bookmarks</h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <app-howto-bookmarks></app-howto-bookmarks>
+        <app-howto-bookmarks />
       </ng-template>
     </mat-expansion-panel>
     <mat-expansion-panel>
@@ -23,7 +23,7 @@
         <h4><i class="fas fa-xs fa-info-circle"></i> Notes</h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <app-howto-notes></app-howto-notes>
+        <app-howto-notes />
       </ng-template>
     </mat-expansion-panel>
     <mat-expansion-panel>
@@ -31,7 +31,7 @@
         <h4><i class="fas fa-xs fa-info-circle"></i> Bookmarklets</h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <app-howto-bookmarklets></app-howto-bookmarklets>
+        <app-howto-bookmarklets />
       </ng-template>
     </mat-expansion-panel>
     <mat-expansion-panel>
@@ -39,16 +39,18 @@
         <h4><i class="fas fa-xs fa-info-circle"></i> Hot Keys</h4>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
-        <app-howto-hotkeys></app-howto-hotkeys>
+        <app-howto-hotkeys />
       </ng-template>
     </mat-expansion-panel>
-    <mat-expansion-panel *ngIf="mcpServerEnabled$ | async">
-      <mat-expansion-panel-header>
-        <h4><i class="fas fa-xs fa-info-circle"></i> AI clients (MCP)</h4>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-        <app-howto-mcp></app-howto-mcp>
-      </ng-template>
-    </mat-expansion-panel>
+    @if (mcpServerEnabled$ | async) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <h4><i class="fas fa-xs fa-info-circle"></i> AI clients (MCP)</h4>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <app-howto-mcp />
+        </ng-template>
+      </mat-expansion-panel>
+    }
   </mat-accordion>
 </div>

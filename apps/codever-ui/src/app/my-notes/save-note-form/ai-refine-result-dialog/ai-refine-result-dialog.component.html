@@ -6,9 +6,11 @@
   <hr class="mt-1 mb-3" />
 
   <!-- Page reachability notice for bookmarks -->
-  <div *ngIf="data.resourceType === 'bookmark' && data.pageReachable === false" class="alert alert-info py-2 mb-3">
-    <i class="fas fa-info-circle me-1"></i> The URL was not reachable for scraping. Suggestions are based on your existing fields.
-  </div>
+  @if (data.resourceType === 'bookmark' && data.pageReachable === false) {
+    <div class="alert alert-info py-2 mb-3">
+      <i class="fas fa-info-circle me-1"></i> The URL was not reachable for scraping. Suggestions are based on your existing fields.
+    </div>
+  }
 
   <!-- Title/Name comparison -->
   <div class="card mb-3">
@@ -21,7 +23,7 @@
           [(ngModel)]="acceptTitle"
           id="acceptTitle"
           [disabled]="!hasTitleChange"
-        />
+          />
         <label class="form-check-label small" for="acceptTitle">Accept</label>
       </div>
     </div>
@@ -43,8 +45,12 @@
   <div class="card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center py-2">
       <strong>Tags</strong>
-      <span *ngIf="hasTagsChange" class="badge bg-info">{{ selectedSuggestedTags.length }} new</span>
-      <span *ngIf="!hasTagsChange" class="text-body-secondary small">(no new tags suggested)</span>
+      @if (hasTagsChange) {
+        <span class="badge bg-info">{{ selectedSuggestedTags.length }} new</span>
+      }
+      @if (!hasTagsChange) {
+        <span class="text-body-secondary small">(no new tags suggested)</span>
+      }
     </div>
     <div class="card-body py-2">
       <div class="row">
@@ -55,20 +61,23 @@
         <div class="col-6">
           <small class="text-body-secondary text-uppercase">Suggested (click ✕ to remove)</small>
           <p class="mb-0">
-            <span
-              *ngFor="let tag of selectedSuggestedTags; let i = index"
-              class="badge bg-secondary me-1 mb-1"
-              style="cursor: default;"
-            >
-              {{ tag }}
+            @for (tag of selectedSuggestedTags; track tag; let i = $index) {
               <span
-                class="ms-1"
-                style="cursor: pointer; opacity: 0.7;"
-                (click)="removeSuggestedTag(i)"
-                title="Remove this tag"
-              >&times;</span>
-            </span>
-            <span *ngIf="!selectedSuggestedTags.length" class="text-body-secondary">(none selected)</span>
+                class="badge bg-secondary me-1 mb-1"
+                style="cursor: default;"
+                >
+                {{ tag }}
+                <span
+                  class="ms-1"
+                  style="cursor: pointer; opacity: 0.7;"
+                  (click)="removeSuggestedTag(i)"
+                  title="Remove this tag"
+                >&times;</span>
+              </span>
+            }
+            @if (!selectedSuggestedTags.length) {
+              <span class="text-body-secondary">(none selected)</span>
+            }
           </p>
         </div>
       </div>
@@ -86,7 +95,7 @@
           [(ngModel)]="acceptContent"
           id="acceptContent"
           [disabled]="!hasContentChange"
-        />
+          />
         <label class="form-check-label small" for="acceptContent">Accept</label>
       </div>
     </div>

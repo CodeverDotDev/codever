@@ -13,7 +13,9 @@
   <div class="mb-3 p-2 border rounded bg-light small">
     <div><strong>Title:</strong> {{ data.title || '(empty)' }}</div>
     <div><strong>Tags:</strong> {{ tagSummary }}</div>
-    <div *ngIf="data.reference"><strong>Reference:</strong> {{ data.reference }}</div>
+    @if (data.reference) {
+      <div><strong>Reference:</strong> {{ data.reference }}</div>
+    }
     <div><strong>Content:</strong> {{ contentLength }} characters</div>
   </div>
 
@@ -35,9 +37,11 @@
     <small class="text-body-secondary">The AI must follow this format for the result to be processed correctly.</small>
   </div>
 
-  <div *ngIf="errorMessage" class="alert alert-warning py-2 mb-2">
-    {{ errorMessage }}
-  </div>
+  @if (errorMessage) {
+    <div class="alert alert-warning py-2 mb-2">
+      {{ errorMessage }}
+    </div>
+  }
 
   <div class="d-flex justify-content-end">
     <button
@@ -45,7 +49,7 @@
       class="btn btn-secondary me-2"
       (click)="close()"
       [disabled]="isRefining"
-    >
+      >
       Cancel
     </button>
     <button
@@ -53,14 +57,15 @@
       class="btn btn-primary"
       (click)="refine()"
       [disabled]="isRefining"
-    >
-      <span *ngIf="isRefining; else refineLabel">
-        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-        Refining...
-      </span>
-      <ng-template #refineLabel>
+      >
+      @if (isRefining) {
+        <span>
+          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+          Refining...
+        </span>
+      } @else {
         <i class="fas fa-magic me-1"></i> Refine
-      </ng-template>
+      }
     </button>
   </div>
 </div>

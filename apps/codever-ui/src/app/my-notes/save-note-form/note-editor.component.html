@@ -1,5 +1,5 @@
 <div class="navigation-space-buffer rounded shadow-sm"
-     [ngClass]="noteForm?.get('public')?.value ? 'note-public-bg' : 'note-bg'">
+  [ngClass]="noteForm?.get('public')?.value ? 'note-public-bg' : 'note-bg'">
   <form [formGroup]="noteForm" novalidate (ngSubmit)="saveNote(noteForm.value)">
     <div class="mb-3 pb-1">
       <label for="title" class="space-btw-wrapper"
@@ -12,25 +12,28 @@
         required
         formControlName="title"
         placeholder="Note title to recognize later"
-      />
+        />
       <div
         [hidden]="noteForm.get('title').valid || noteForm.get('title').pristine"
         class="alert alert-danger"
-      >
+        >
         Title is required
       </div>
       <!-- tags -->
       <div id="tags" class="mb-3 border rounded p-2 mt-3">
         <mat-form-field class="full-width">
           <mat-chip-grid #chipList>
-            <mat-chip-row
-              *ngFor="let tag of formArrayTags.controls; let i = index"
-              [removable]="removable"
-              (removed)="removeTagByIndex(i)"
-            >
-              {{ tag.value }}
-              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip-row>
+            @for (tag of formArrayTags.controls; track tag; let i = $index) {
+              <mat-chip-row
+                [removable]="removable"
+                (removed)="removeTagByIndex(i)"
+                >
+                {{ tag.value }}
+                @if (removable) {
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                }
+              </mat-chip-row>
+            }
             <input
               placeholder="&nbsp;&nbsp;Tags*"
               #tagInput
@@ -41,32 +44,39 @@
               [matAutocomplete]="auto"
               (matChipInputTokenEnd)="addTag($event)"
               formArrayName="tags"
-            />
+              />
           </mat-chip-grid>
           <mat-hint>Enter comma-separated values</mat-hint>
           <mat-autocomplete
             #auto="matAutocomplete"
             (optionActivated)="optionActivated($event)"
             (optionSelected)="selectedTag($event)"
-          >
-            <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-              {{ tag }}
-            </mat-option>
+            >
+            @for (tag of filteredTags | async; track tag) {
+              <mat-option [value]="tag">
+                {{ tag }}
+              </mat-option>
+            }
           </mat-autocomplete>
         </mat-form-field>
-        <span
-          *ngIf="
-            formArrayTags.invalid &&
-            (formArrayTags.dirty || formArrayTags.touched)
-          "
-        >
-          <mat-error *ngIf="formArrayTags.errors.tagsAreRequired">
-            Tags are <strong>required</strong>
-          </mat-error>
-          <mat-error *ngIf="formArrayTags.errors.tooManyTags">
-            You can add <strong>maximum 8 tags</strong>
-          </mat-error>
-        </span>
+        @if (
+          formArrayTags.invalid &&
+          (formArrayTags.dirty || formArrayTags.touched)
+          ) {
+          <span
+            >
+            @if (formArrayTags.errors.tagsAreRequired) {
+              <mat-error>
+                Tags are <strong>required</strong>
+              </mat-error>
+            }
+            @if (formArrayTags.errors.tooManyTags) {
+              <mat-error>
+                You can add <strong>maximum 8 tags</strong>
+              </mat-error>
+            }
+          </span>
+        }
       </div>
 
       <div #contentEditor class="mb-3 markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
@@ -77,212 +87,234 @@
             href="https://daringfireball.net/projects/markdown/"
             target="_blank"
             ><span class="ms-1">Markdown is supported</span></a
-          >
-          <span class="ms-1 text-body-secondary" style="font-weight: normal"
-            >&mdash; including
-            <a
-              class="markdown-link"
-              href="https://www.markdownguide.org/extended-syntax/#fenced-code-blocks"
-              target="_blank"
-              >code blocks</a
             >
-            (<code>```</code>) and
-            <a
-              class="markdown-link"
-              href="https://docs.github.com/get-started/writing-on-github/working-with-advanced-formatting/about-task-lists"
-              target="_blank"
-              >checklists</a
-            >
-            (<code>- [ ] todo</code>)</span
-          ></span>
-          <button
-            *ngIf="!isNotebookMode"
-            type="button"
-            class="fullscreen-toggle-btn"
-            (click)="toggleFullScreen(contentEditor)"
-            [title]="isFullScreen ? 'Exit fullscreen' : 'Edit content fullscreen'"
-            [attr.aria-label]="isFullScreen ? 'Exit fullscreen' : 'Edit content fullscreen'"
-          >
-            <i [class.fa-expand]="!isFullScreen" [class.fa-compress]="isFullScreen" class="fas"></i>
-          </button>
-        </label>
+            <span class="ms-1 text-body-secondary" style="font-weight: normal"
+              >&mdash; including
+              <a
+                class="markdown-link"
+                href="https://www.markdownguide.org/extended-syntax/#fenced-code-blocks"
+                target="_blank"
+                >code blocks</a
+                >
+                (<code>```</code>) and
+                <a
+                  class="markdown-link"
+                  href="https://docs.github.com/get-started/writing-on-github/working-with-advanced-formatting/about-task-lists"
+                  target="_blank"
+                  >checklists</a
+                  >
+                  (<code>- [ ] todo</code>)</span
+                ></span>
+                @if (!isNotebookMode) {
+                  <button
+                    type="button"
+                    class="fullscreen-toggle-btn"
+                    (click)="toggleFullScreen(contentEditor)"
+                    [title]="isFullScreen ? 'Exit fullscreen' : 'Edit content fullscreen'"
+                    [attr.aria-label]="isFullScreen ? 'Exit fullscreen' : 'Edit content fullscreen'"
+                    >
+                    <i [class.fa-expand]="!isFullScreen" [class.fa-compress]="isFullScreen" class="fas"></i>
+                  </button>
+                }
+              </label>
 
-        <!-- Notebook upload: file input + indicator when a notebook is loaded -->
-        <div class="mb-2">
-          <div *ngIf="!isNotebookMode">
-            <label class="btn btn-sm btn-outline-secondary">
-              <i class="fas fa-file-upload"></i> Upload Jupyter Notebook (.ipynb)
-              <input
-                type="file"
-                accept=".ipynb"
-                (change)="onNotebookFileSelected($event)"
-                style="display: none"
-              />
-            </label>
+              <!-- Notebook upload: file input + indicator when a notebook is loaded -->
+              <div class="mb-2">
+                @if (!isNotebookMode) {
+                  <div>
+                    <label class="btn btn-sm btn-outline-secondary">
+                      <i class="fas fa-file-upload"></i> Upload Jupyter Notebook (.ipynb)
+                      <input
+                        type="file"
+                        accept=".ipynb"
+                        (change)="onNotebookFileSelected($event)"
+                        style="display: none"
+                        />
+                    </label>
+                  </div>
+                }
+                @if (isNotebookMode) {
+                  <div class="alert alert-info d-flex align-items-center py-2 mb-2">
+                    <i class="fas fa-book me-2"></i>
+                    <span>Notebook loaded: <strong>{{ notebookFileName }}</strong></span>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger ms-auto"
+                      (click)="removeNotebook()"
+                      title="Remove notebook and switch back to markdown"
+                      >
+                      <i class="fas fa-times"></i> Remove
+                    </button>
+                  </div>
+                }
+              </div>
+
+              <!-- Markdown textarea: hidden when a notebook is loaded -->
+              @if (!isNotebookMode) {
+                <textarea
+                  class="form-control note-markdown-textarea"
+                  id="content"
+                  formControlName="content"
+                  placeholder="Note text (searchable)"
+                  style="height: 300px"
+                  >
+                </textarea>
+              }
+              <!-- When notebook is loaded, show the extracted searchable text as readonly preview -->
+              @if (isNotebookMode) {
+                <textarea
+                  class="form-control"
+                  id="content"
+                  formControlName="content"
+                  placeholder="Extracted searchable text from notebook"
+                  style="height: 120px"
+                  readonly
+                  >
+                </textarea>
+              }
+              <div class="description-chars-counter">
+                {{ content.value ? content.value.length : 0 }} / {{maxNumberOfCharacters}}
+              </div>
+              <div class="clear"></div>
+              @if (content.invalid && (content.dirty || content.touched)) {
+                <div
+                  class="alert alert-danger"
+                  >
+                  @if (content.errors.required) {
+                    <div>
+                      Content is required
+                    </div>
+                  }
+                  @if (content.errors.tooManyLines) {
+                    <div>
+                      Your description has {{ content.errors.tooManyLines.value }} lines.
+                      Maximum 300 lines are allowed.
+                    </div>
+                  }
+                  @if (content.errors.tooManyCharacters) {
+                    <div>
+                      Your description has
+                      {{ content.errors.tooManyCharacters.value }} characters. Maximum
+                      30000 characters are allowed.
+                    </div>
+                  }
+                </div>
+              }
+            </div>
           </div>
-          <div *ngIf="isNotebookMode" class="alert alert-info d-flex align-items-center py-2 mb-2">
-            <i class="fas fa-book me-2"></i>
-            <span>Notebook loaded: <strong>{{ notebookFileName }}</strong></span>
+
+          <!-- Preview and AI Refine buttons -->
+          <div
+            class="mb-3"
+            >
             <button
               type="button"
-              class="btn btn-sm btn-outline-danger ms-auto"
-              (click)="removeNotebook()"
-              title="Remove notebook and switch back to markdown"
-            >
-              <i class="fas fa-times"></i> Remove
+              class="btn btn-outline-secondary btn-sm me-2"
+              (click)="openPreview()"
+              >
+              <i class="fas fa-eye me-1"></i> Preview
             </button>
+            @if ((isAiNoteRefineEnabled$ | async) && !isNotebookMode) {
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                [disabled]="isRefining"
+                (click)="refineWithAi()"
+                >
+                @if (isRefining) {
+                  <span>
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Refining...
+                  </span>
+                } @else {
+                  <i class="fas fa-magic me-1"></i> Refine with AI ✨
+                }
+              </button>
+            }
+            @if ((isAiNoteRefineEnabled$ | async) && !isNotebookMode) {
+              <small
+                class="text-body-secondary ms-2"
+              >AI refines your content, suggests tags and a better title (powered by DeepSeek)</small>
+            }
           </div>
-        </div>
 
-        <!-- Markdown textarea: hidden when a notebook is loaded -->
-        <textarea
-          *ngIf="!isNotebookMode"
-          class="form-control note-markdown-textarea"
-          id="content"
-          formControlName="content"
-          placeholder="Note text (searchable)"
-          style="height: 300px"
-        >
-        </textarea>
-        <!-- When notebook is loaded, show the extracted searchable text as readonly preview -->
-        <textarea
-          *ngIf="isNotebookMode"
-          class="form-control"
-          id="content"
-          formControlName="content"
-          placeholder="Extracted searchable text from notebook"
-          style="height: 120px"
-          readonly
-        >
-        </textarea>
-        <div class="description-chars-counter">
-          {{ content.value ? content.value.length : 0 }} / {{maxNumberOfCharacters}}
-        </div>
-        <div class="clear"></div>
-        <div
-          *ngIf="content.invalid && (content.dirty || content.touched)"
-          class="alert alert-danger"
-        >
-          <div *ngIf="content.errors.required">
-            Content is required
+          <div class="mb-3 pb-2">
+            <label for="reference">Reference</label>
+            <input
+              type="url"
+              class="form-control"
+              id="reference"
+              formControlName="reference"
+              placeholder="Optional reference (web url, project, topic etc.)"
+              />
           </div>
-          <div *ngIf="content.errors.tooManyLines">
-            Your description has {{ content.errors.tooManyLines.value }} lines.
-            Maximum 300 lines are allowed.
+
+          @if (!isEditMode) {
+            <div class="mb-3">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                (click)="openAddToCollectionDialog()"
+                title="Add to collection"
+                >
+                <i class="fas fa-layer-group"></i> Add to Collection
+                @if (selectedCollectionIds.length > 0) {
+                  <span
+                    class="badge bg-primary ms-1"
+                    >{{ selectedCollectionIds.length }}</span
+                    >
+                  }
+                </button>
+              </div>
+            }
+
+            <div class="form-check mb-4 mt-1">
+              <label class="form-check-label">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="true"
+                  formControlName="public"
+                  />
+                <strong> Make Public </strong
+                  ><span class="make-public-notes">
+                  - visible and searchable for everyone (<em>spam will not be tolerated</em>)</span
+                  >
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary me-2"
+                [disabled]="!noteForm.valid"
+                >
+                @if (noteForm.get('public').value) {
+                  <span
+                    >Save <strong>public</strong> note <i class="far fa-eye"></i
+                  ></span>
+                } @else {
+                  <span
+                    >Save <strong>private</strong> note <i class="far fa-eye-slash"></i
+                  ></span>
+                }
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                title="Cancel update"
+                (click)="cancelUpdate()"
+                >
+                Cancel <i class="far fa-times-circle"></i>
+              </button>
+              @if (isEditMode) {
+                <button
+                  type="button"
+                  class="btn btn-danger float-end"
+                  title="Delete note"
+                  (click)="openDeleteDialog(note)"
+                  >
+                  Delete <i class="fas fa-trash-alt"></i>
+                </button>
+              }
+            </form>
           </div>
-          <div *ngIf="content.errors.tooManyCharacters">
-            Your description has
-            {{ content.errors.tooManyCharacters.value }} characters. Maximum
-            30000 characters are allowed.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Preview and AI Refine buttons -->
-    <div
-      class="mb-3"
-    >
-      <button
-        type="button"
-        class="btn btn-outline-secondary btn-sm me-2"
-        (click)="openPreview()"
-      >
-        <i class="fas fa-eye me-1"></i> Preview
-      </button>
-      <button
-        *ngIf="(isAiNoteRefineEnabled$ | async) && !isNotebookMode"
-        type="button"
-        class="btn btn-outline-secondary btn-sm"
-        [disabled]="isRefining"
-        (click)="refineWithAi()"
-      >
-        <span *ngIf="isRefining; else aiButtonLabel">
-          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-          Refining...
-        </span>
-        <ng-template #aiButtonLabel>
-          <i class="fas fa-magic me-1"></i> Refine with AI ✨
-        </ng-template>
-      </button>
-      <small
-        *ngIf="(isAiNoteRefineEnabled$ | async) && !isNotebookMode"
-        class="text-body-secondary ms-2"
-      >AI refines your content, suggests tags and a better title (powered by DeepSeek)</small>
-    </div>
-
-    <div class="mb-3 pb-2">
-      <label for="reference">Reference</label>
-      <input
-        type="url"
-        class="form-control"
-        id="reference"
-        formControlName="reference"
-        placeholder="Optional reference (web url, project, topic etc.)"
-      />
-    </div>
-
-    <div *ngIf="!isEditMode" class="mb-3">
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        (click)="openAddToCollectionDialog()"
-        title="Add to collection"
-      >
-        <i class="fas fa-layer-group"></i> Add to Collection
-        <span
-          *ngIf="selectedCollectionIds.length > 0"
-          class="badge bg-primary ms-1"
-          >{{ selectedCollectionIds.length }}</span
-        >
-      </button>
-    </div>
-
-    <div class="form-check mb-4 mt-1">
-      <label class="form-check-label">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          value="true"
-          formControlName="public"
-        />
-        <strong> Make Public </strong
-        ><span class="make-public-notes">
-          - visible and searchable for everyone (<em>spam will not be tolerated</em>)</span
-        >
-      </label>
-    </div>
-
-    <button
-      type="submit"
-      class="btn btn-primary me-2"
-      [disabled]="!noteForm.valid"
-    >
-      <span *ngIf="noteForm.get('public').value; else textBtnPrivateNote"
-        >Save <strong>public</strong> note <i class="far fa-eye"></i
-      ></span>
-      <ng-template #textBtnPrivateNote>
-        <span
-          >Save <strong>private</strong> note <i class="far fa-eye-slash"></i
-        ></span>
-      </ng-template>
-    </button>
-    <button
-      type="button"
-      class="btn btn-secondary"
-      title="Cancel update"
-      (click)="cancelUpdate()"
-    >
-      Cancel <i class="far fa-times-circle"></i>
-    </button>
-    <button
-      *ngIf="isEditMode"
-      type="button"
-      class="btn btn-danger float-end"
-      title="Delete note"
-      (click)="openDeleteDialog(note)"
-    >
-      Delete <i class="fas fa-trash-alt"></i>
-    </button>
-  </form>
-</div>

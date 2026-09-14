@@ -11,7 +11,7 @@
       [disabled]="orderBy === 'LAST_CREATED'"
       (click)="getLastCreatedBookmarks()"
       data-test="bookmarks-sorting-btn-group-btn-latest"
-    >
+      >
       Latest <i class="fas fa-long-arrow-alt-down"></i>
     </button>
     <button
@@ -25,7 +25,7 @@
       [disabled]="orderBy === 'MOST_USED'"
       (click)="getMostUsedBookmarks()"
       data-test="bookmarks-sorting-btn-group-btn-most-visited"
-    >
+      >
       Most Visited <i class="fas fa-long-arrow-alt-down"></i>
     </button>
     <!-- TODO remove when all private modus is implemented -->
@@ -39,7 +39,7 @@
       }"
       [disabled]="orderBy === 'MOST_LIKES'"
       (click)="getMostLikedBookmarks()"
-    >
+      >
       Likes <i class="fas fa-long-arrow-alt-down"></i>
     </button>
   </div>
@@ -49,7 +49,7 @@
       class="btn btn-outline-primary"
       title="Import browser bookmarks"
       (click)="importBookmarks()"
-    >
+      >
       Import <i class="fas fa-file-upload"></i>
     </button>
     <button
@@ -57,31 +57,27 @@
       class="btn btn-outline-primary"
       title="Export my bookmarks"
       (click)="exportMyBookmarks()"
-    >
+      >
       Export <i class="fas fa-file-download"></i>
     </button>
   </div>
 </div>
 
-<app-async-bookmark-list
-  *ngIf="
-    (userBookmarks$ | async) && (userBookmarks$ | async).length > 0;
-    else showBookmarksMessage
-  "
-  [bookmarks$]="userBookmarks$"
-  [userData$]="userData$"
-  [callerPagination]="callerPaginationMyBookmarks"
-  [currentPage]="currentPage"
-  [showPagination]="false"
->
-</app-async-bookmark-list>
-
-<ng-template #showBookmarksMessage>
+@if (
+  (userBookmarks$ | async) && (userBookmarks$ | async).length > 0) {
+  <app-async-bookmark-list [bookmarks$]="userBookmarks$"
+    [userData$]="userData$"
+    [callerPagination]="callerPaginationMyBookmarks"
+    [currentPage]="currentPage"
+    [showPagination]="false"
+     />
+} @else {
   <div class="alert alert-info mt-4">
     👉 &nbsp;See our <strong>bookmarks </strong>
     <a [routerLink]="['/howto/bookmarks']">
       <i class="fas fa-info-circle"></i> HowTo guide</a
-    >
-    to find out how you can easily save your <strong>first bookmark</strong>.
-  </div>
-</ng-template>
+      >
+      to find out how you can easily save your <strong>first bookmark</strong>.
+    </div>
+  }
+

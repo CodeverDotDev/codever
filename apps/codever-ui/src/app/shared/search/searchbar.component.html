@@ -1,22 +1,22 @@
 <div class="input-group search-component">
-  
-    <button
-      type="button"
-      (mouseover)="hover = true"
-      (mouseleave)="hover = false"
+
+  <button
+    type="button"
+    (mouseover)="hover = true"
+    (mouseleave)="hover = false"
       [class.focused]="
         (isFocusOnSearchControl || hover) && publicSearchBox.value
       "
-      (click)="searchBookmarksFromSearchBox(publicSearchBox.value)"
-      [disabled]="!searchBoxText"
-      class="btn btn-outline-secondary lighter-gray"
-      title="Search"
+    (click)="searchBookmarksFromSearchBox(publicSearchBox.value)"
+    [disabled]="!searchBoxText"
+    class="btn btn-outline-secondary lighter-gray"
+    title="Search"
     >
-      <i class="fa fa-search" style="font-size: 1.18rem"></i>
-    </button>
+    <i class="fa fa-search" style="font-size: 1.18rem"></i>
+  </button>
 
+  @if (innerWidth > 1400) {
     <button
-      *ngIf="innerWidth > 1400; else toggleButton"
       class="btn btn-outline-secondary dropdown-toggle lighter-gray"
       type="button"
       data-bs-toggle="dropdown"
@@ -24,71 +24,67 @@
       aria-expanded="false"
       style="font-size: 15px"
       data-test="search-selection-dropdown-large"
-    >
+      >
       {{ searchDomains.get(searchDomain) }}
     </button>
-    <ng-template #toggleButton>
-      <button
-        type="button"
-        class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-        data-bs-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-        data-test="search-selection-dropdown-small"
+  } @else {
+    <button
+      type="button"
+      class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+      data-bs-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+      data-test="search-selection-dropdown-small"
       >
-        <span class="visually-hidden">Toggle Dropdown</span>
-      </button>
-    </ng-template>
-    <div class="dropdown-menu">
-      <a
-        class="dropdown-item"
-        role="button"
-        title="Search in Personal bookmarks & notes"
-        (click)="onSearchDomainChange('all-mine')"
+      <span class="visually-hidden">Toggle Dropdown</span>
+    </button>
+  }
+  <div class="dropdown-menu">
+    <a
+      class="dropdown-item"
+      role="button"
+      title="Search in Personal bookmarks & notes"
+      (click)="onSearchDomainChange('all-mine')"
       >
-        Personal
+      Personal
+      @if (
+        searchDomain === 'all-mine') {
         <span
-          *ngIf="
-            searchDomain === 'all-mine';
-            else uncheckedMyAllSelection
-          "
           class="search-domain-selection my-bookmarks-selection float-end ps-1 pe-1"
-        >
+          >
           <i class="fas fa-check"></i>
         </span>
-        <ng-template #uncheckedMyAllSelection>
-          <span class="my-bookmarks-selection-unchecked float-end">
-            <i class="fa fa-square fa-lg"></i>
-          </span>
-        </ng-template>
-      </a>
-      <div role="separator" class="dropdown-divider"></div>
-      <a
-        class="dropdown-item"
-        role="button"
-        title="Search in public bookmarks &amp; notes"
-        (click)="onSearchDomainChange('all-public')"
+      } @else {
+        <span class="my-bookmarks-selection-unchecked float-end">
+          <i class="fa fa-square fa-lg"></i>
+        </span>
+      }
+    </a>
+    <div role="separator" class="dropdown-divider"></div>
+    <a
+      class="dropdown-item"
+      role="button"
+      title="Search in public bookmarks &amp; notes"
+      (click)="onSearchDomainChange('all-public')"
       >
-        Public
+      Public
+      @if (
+        searchDomain === 'all-public') {
         <span
-          *ngIf="
-            searchDomain === 'all-public';
-            else uncheckedPublicSelection
-          "
           class="search-domain-selection float-end ps-1 pe-1"
-        >
+          >
           <i class="fas fa-check"></i>
         </span>
-        <ng-template #uncheckedPublicSelection>
-          <span class="public-snippets-selection-unchecked float-end">
-            <i
-              class="fa fa-square fa-lg ms-1"
-            ></i>
-          </span>
-        </ng-template>
-      </a>
-    </div>
-  
+      } @else {
+        <span class="public-snippets-selection-unchecked float-end">
+          <i
+            class="fa fa-square fa-lg ms-1"
+          ></i>
+        </span>
+      }
+    </a>
+  </div>
+
 
   <input
     #publicSearchBox
@@ -108,74 +104,76 @@
       autocompleteTrigger.closePanel();
       searchBookmarksFromSearchBox(publicSearchBox.value)
     "
-  />
+    />
   <mat-autocomplete #auto="matAutocomplete"
-                    [class]="searchDomain + '-autocomplete-panel'"
-                    panelClass="search-history-autocomplete-panel"
-                    (optionSelected)="onAutocompleteSelectionChanged($event)">
-    <mat-option
-      *ngFor="let search of filteredSearches | async"
-      [value]="search.text"
-      (mouseenter)="hoveringOverSearchHistory = search.text" (mouseleave)="hoveringOverSearchHistory = null"
-    >
-      <div class="search-history-row">
-        <div>
-          <i class="fas fa-history me-2 search-history-clock"></i>
-        </div>
-        <div style="flex-grow: 1">
-          <span class="search-history-text">
-            {{ search.text }}
-          </span>
-        </div>
-        <div
-          class="search-history-delete"
-          [ngStyle]="{'display': hoveringOverSearchHistory === search.text ? 'block' : 'none'}"
+    [class]="searchDomain + '-autocomplete-panel'"
+    panelClass="search-history-autocomplete-panel"
+    (optionSelected)="onAutocompleteSelectionChanged($event)">
+    @for (search of filteredSearches | async; track search) {
+      <mat-option
+        [value]="search.text"
+        (mouseenter)="hoveringOverSearchHistory = search.text" (mouseleave)="hoveringOverSearchHistory = null"
         >
-          <span
-            class="rm-search-trashbin"
-            (click)="removeSearch(search, $event)"
-            title="Remove query from search history"
-          ><i class="far fa-trash-alt fa-sm"></i
-          > delete </span>
+        <div class="search-history-row">
+          <div>
+            <i class="fas fa-history me-2 search-history-clock"></i>
+          </div>
+          <div style="flex-grow: 1">
+            <span class="search-history-text">
+              {{ search.text }}
+            </span>
+          </div>
+          <div
+            class="search-history-delete"
+            [ngStyle]="{'display': hoveringOverSearchHistory === search.text ? 'block' : 'none'}"
+            >
+            <span
+              class="rm-search-trashbin"
+              (click)="removeSearch(search, $event)"
+              title="Remove query from search history"
+              ><i class="far fa-trash-alt fa-sm"></i
+            > delete </span>
+          </div>
         </div>
-
-      </div>
-
-    </mat-option>
+      </mat-option>
+    }
   </mat-autocomplete>
   <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete"
-  >
-    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-      {{ option }}
-    </mat-option>
+    >
+    @for (option of filteredOptions | async; track option) {
+      <mat-option [value]="option">
+        {{ option }}
+      </mat-option>
+    }
   </mat-autocomplete>
-  
+
+  @if (publicSearchBox.value) {
     <button
-      *ngIf="publicSearchBox.value"
       class="btn btn-sm btn-outline-secondary"
       type="button"
       (click)="clearSearchBoxText()"
       title="Clear"
-    >
+      >
       <i class="fas fa-lg fa-times lighter-gray"></i>
     </button>
-    <button
-      type="button"
-      class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-      data-bs-toggle="dropdown"
-      aria-haspopup="true"
-      aria-expanded="false"
-      style="border-radius: 0"
+  }
+  <button
+    type="button"
+    class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+    data-bs-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded="false"
+    style="border-radius: 0"
     >
-      <span class="visually-hidden">Toggle Dropdown</span>
-    </button>
-    <div class="dropdown-menu dropdown-menu-end">
-      <h6 class="dropdown-header">Add to search query</h6>
-      <a
-        class="dropdown-item"
-        role="button"
-        (click)="addTagFilter()"
-        text="Add tag filter"
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+  <div class="dropdown-menu dropdown-menu-end">
+    <h6 class="dropdown-header">Add to search query</h6>
+    <a
+      class="dropdown-item"
+      role="button"
+      (click)="addTagFilter()"
+      text="Add tag filter"
       ><i class="fas fa-tags"></i> Tag(s)</a
       >
     </div>
@@ -185,8 +183,8 @@
       (click)="onSaveSearchClick()"
       title="{{ userIsLoggedIn ? 'Save search' : 'Login to save search' }}"
       [disabled]="!searchBoxText"
-    >
+      >
       <i class="fas fa-save lighter-gray"></i>
     </button>
-  
-</div>
+
+  </div>
