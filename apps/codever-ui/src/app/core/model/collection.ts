@@ -25,3 +25,26 @@ export interface Collection {
   updatedAt?: Date;
 }
 
+/**
+ * A pinned collection as returned by the pinned-resources endpoint: only the
+ * fields needed to render and route it, without its contents (`items`).
+ */
+export interface PinnedCollection {
+  _id?: string;
+  type: 'collection';
+  name: string;
+  color?: string;
+  userId?: string;
+}
+
+/** Projects a full collection into the light shape used when it is pinned. */
+export function toPinnedCollection(collection: Collection): PinnedCollection {
+  return {
+    _id: collection._id,
+    type: 'collection',
+    name: collection.name,
+    color: collection.color,
+    userId: collection.userId,
+  };
+}
+

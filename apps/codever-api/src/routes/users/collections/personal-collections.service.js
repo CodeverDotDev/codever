@@ -1,6 +1,7 @@
 const Collection = require('../../../model/collection');
 const Bookmark = require('../../../model/bookmark');
 const Note = require('../../../model/note');
+const User = require('../../../model/user');
 const NotFoundError = require('../../../error/not-found.error');
 const ValidationError = require('../../../error/validation.error');
 
@@ -133,6 +134,12 @@ let deleteCollectionById = async (userId, collectionId) => {
       `Collection NOT_FOUND with id: ${collectionId}`
     );
   }
+
+  // Remove the collection from users' pinned entries, in case it was pinned
+  await User.updateMany(
+    {},
+    { $pull: { pinned: { id: collectionId, type: 'collection' } } }
+  );
 };
 
 let addItemToCollection = async (userId, collectionId, resourceId, resourceType) => {

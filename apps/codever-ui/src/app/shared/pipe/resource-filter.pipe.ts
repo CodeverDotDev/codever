@@ -2,6 +2,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { Note } from '../../core/model/note';
+import { PinnedCollection } from '../../core/model/collection';
 import { UserDataResource } from '../../core/model/user-data-resource.type';
 
 @Pipe({ name: 'resourceFilter' })
@@ -45,18 +46,22 @@ export class ResourceFilterPipe implements PipeTransform {
 
   /**
    * Text fields to match against. Bookmarks expose `name`/`location`/
-   * `description`; notes expose `title`/`content`. Tags apply to both.
+   * `description`; notes expose `title`/`content`; pinned collections expose
+   * `name`. Tags apply to bookmarks and notes only.
    */
   private searchableFields(resource: UserDataResource): string[] {
+    const collection = resource as PinnedCollection;
     const bookmark = resource as Bookmark;
     const note = resource as Note;
     return [
+      collection.name,
       bookmark.name,
       bookmark.location,
       bookmark.description,
       note.title,
       note.content,
-      ...(resource.tags || []),
+      ...(bookmark.tags || []),
+      ...(note.tags || []),
     ];
   }
 }

@@ -9,7 +9,7 @@ export interface UserData {
   favorites?: string[]; // ids of bookmarks marked as favorite
   watchedTags?: string[];
   ignoredTags?: string[];
-  pinned?: string[]; // ids of pinned bookmarks
+  pinned?: PinnedEntry[]; // typed pinned entries - see PinnedEntry
   history?: string[]; // ids of last visited bookmarks, order is important
   following?: Following;
   followers?: string[];
@@ -17,6 +17,15 @@ export interface UserData {
   enableLocalStorage?: boolean;
   welcomeAck?: boolean; // acknowledges the welcome dialog
   acknowledgedNotifications?: string[]; // keys of acknowledged notifications
+}
+
+/**
+ * A typed reference to a pinned resource. `type` disambiguates bookmark, note,
+ * and collection ids, which can otherwise not be told apart.
+ */
+export interface PinnedEntry {
+  type: 'bookmark' | 'note' | 'collection';
+  id: string;
 }
 
 export interface Profile {

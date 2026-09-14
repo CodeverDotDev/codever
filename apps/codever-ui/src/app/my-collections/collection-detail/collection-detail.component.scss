@@ -6,6 +6,13 @@
   text-decoration: none;
 }
 
+// Icon signalling that the external bookmark link opens in a new tab.
+// Same sizing as the other `external-link-hint` usages in the app.
+.external-link-hint {
+  font-size: 0.6rem;
+  margin-left: 0.2rem;
+}
+
 .filter-wrapper {
   position: relative;
   width: 400px;

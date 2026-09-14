@@ -366,7 +366,7 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     host.bookmarks$.next([value]);
     render();
     const data = host.userData$.value;
-    data.pinned.push('one');
+    data.pinned.push({ type: 'bookmark', id: 'one' });
     data.readLater.push('one');
     data.likes.push('one');
     value.likeCount = 7;

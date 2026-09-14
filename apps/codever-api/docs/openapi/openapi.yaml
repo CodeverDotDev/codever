@@ -533,10 +533,11 @@ paths:
 
   /personal/users/{userId}/pinned:
     description: |
-      Returns pinned bookmarks by the user
+      Returns the user's pinned resources - bookmarks, notes, and collections mixed in the user's
+      pinned order. Collections are returned without their contents.
       `page` and `limit` query parameters are used for pagination - if missing default values are used.
     get:
-      description: Reads user data
+      description: Reads the user's pinned resources
       operationId: get-user-data-pinned
       tags:
         - user-data
@@ -547,7 +548,36 @@ paths:
       responses:
         200:
           description: OK
-          $ref: '#/components/responses/BookmarkListResponse'
+          $ref: '#/components/responses/PinnedResourcesResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+    patch:
+      description: Replaces the user's pinned entries with the provided typed entries
+      operationId: update-user-data-pinned
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PinnedEntriesInput'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userDataPinnedUpdated:
+                    type: boolean
+        400:
+          $ref: '#/components/responses/ValidationError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -795,6 +825,80 @@ components:
           type: array
           items:
             type: string
+    PinnedEntry:
+      type: object
+      description: A reference to a pinned bookmark, note, or collection
+      required:
+        - type
+        - id
+      properties:
+        type:
+          type: string
+          enum:
+            - bookmark
+            - note
+            - collection
+        id:
+          type: string
+          description: id of the pinned bookmark, note, or collection
+    PinnedEntriesInput:
+      type: object
+      required:
+        - pinned
+      properties:
+        pinned:
+          type: array
+          items:
+            $ref: '#/components/schemas/PinnedEntry'
+    PinnedNote:
+      type: object
+      description: A pinned note
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        contentType:
+          type: string
+          enum:
+            - markdown
+            - notebook
+        tags:
+          type: array
+          items:
+            type: string
+        userId:
+          type: string
+        public:
+          type: boolean
+    PinnedCollection:
+      type: object
+      description: A pinned collection returned without its contents
+      required:
+        - _id
+        - type
+        - name
+      properties:
+        _id:
+          type: string
+        type:
+          type: string
+          enum:
+            - collection
+        name:
+          type: string
+        color:
+          type: string
+        userId:
+          type: string
+    PinnedResource:
+      description: A pinned bookmark, note, or collection, in the user's pinned order
+      oneOf:
+        - $ref: '#/components/schemas/Bookmark'
+        - $ref: '#/components/schemas/PinnedNote'
+        - $ref: '#/components/schemas/PinnedCollection'
     User:
       required:
         - userId
@@ -819,6 +923,10 @@ components:
           type: array
           items:
             type: string
+        pinned:
+          type: array
+          items:
+            $ref: '#/components/schemas/PinnedEntry'
         favorites:
           deprecated: true
           type: array
@@ -1000,6 +1108,14 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Bookmark'
+    PinnedResourcesResponse:
+      description: List of pinned bookmarks, notes, and collections in the user's pinned order
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PinnedResource'
     UserDataResponse:
       description: User data
       content:

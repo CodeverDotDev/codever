@@ -79,6 +79,23 @@
               </small>
             </div>
             <div class="collection-actions">
+              @if (!isPinned(userData$ | async, collection)) {
+                <button
+                  class="btn btn-light btn-sm me-1"
+                  title="Pin collection"
+                  (click)="addToPinned(collection); $event.stopPropagation()"
+                  >
+                  <i class="fas fa-thumbtack"></i>
+                </button>
+              } @else {
+                <button
+                  class="btn btn-light btn-sm me-1"
+                  title="Unpin collection"
+                  (click)="removeFromPinned(collection); $event.stopPropagation()"
+                  >
+                  <i class="fas fa-thumbtack fa-rotate-90 pinned"></i>
+                </button>
+              }
               <button
                 class="btn btn-light btn-sm me-1"
                 title="Edit collection"

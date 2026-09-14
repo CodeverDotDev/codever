@@ -55,32 +55,42 @@
             ></i>
             <a
               class="badge mb-1 ms-2"
-              [class.my-bookmarks-last-search]="!isNote(resource) && resource.public === false"
-              [class.public-bookmarks-last-search]="!isNote(resource) && resource.public === true"
-              [class.my-notes-last-search]="isNote(resource) && resource.public === false"
-              [class.public-notes-last-search]="isNote(resource) && resource.public === true"
+              [class.my-bookmarks-last-search]="isPrivateResource(resource) && !isNote(resource)"
+              [class.public-bookmarks-last-search]="isPublicResource(resource) && !isNote(resource)"
+              [class.my-notes-last-search]="isPrivateResource(resource) && isNote(resource)"
+              [class.public-notes-last-search]="isPublicResource(resource) && isNote(resource)"
+              [class.collection-last-search]="isCollection(resource)"
               (click)="navigateToDetails(resource)"
-              (auxclick)="!isNote(resource) && goToMainLink($event, resource)"
+              (auxclick)="isBookmark(resource) && goToMainLink($event, resource)"
               target="_blank"
               matTooltip="{{ getTooltip(resource) }}"
               [matTooltipPosition]="'right'"
               >
               <i
                 class="fa fa-xs me-1"
-                [ngClass]="isNote(resource) ? 'fa-sticky-note' : 'fa-bookmark'"
+                [ngClass]="isCollection(resource) ? 'fa-folder' : (isNote(resource) ? 'fa-sticky-note' : 'fa-bookmark')"
               ></i>
               <span>{{
                 getLabel(resource).length > 30
                 ? getLabel(resource).substring(0, 30) + '...'
                 : getLabel(resource)
               }}</span>
-              @if (!isNote(resource)) {
+              @if (isBookmark(resource)) {
                 <span
                   class="jump-to-main-link-icon"
                   (click)="goToMainLink($event, resource)"
                   title="Jump to main link"
                   >
                   <i class="fas fa-external-link-alt"></i>
+                </span>
+              }
+              @if (isCollection(resource)) {
+                <span
+                  class="collection-contents-icon"
+                  (click)="openCollectionContents($event, resource)"
+                  title="Show collection contents"
+                  >
+                  <i class="fas fa-folder-open"></i>
                 </span>
               }
             </a>
@@ -100,26 +110,27 @@
           <span class="mt-1 me-2 on-top">
             <a
               class="badge mb-1 ms-2"
-              [class.my-bookmarks-last-search]="!isNote(resource) && resource.public === false"
-              [class.public-bookmarks-last-search]="!isNote(resource) && resource.public === true"
-              [class.my-notes-last-search]="isNote(resource) && resource.public === false"
-              [class.public-notes-last-search]="isNote(resource) && resource.public === true"
+              [class.my-bookmarks-last-search]="isPrivateResource(resource) && !isNote(resource)"
+              [class.public-bookmarks-last-search]="isPublicResource(resource) && !isNote(resource)"
+              [class.my-notes-last-search]="isPrivateResource(resource) && isNote(resource)"
+              [class.public-notes-last-search]="isPublicResource(resource) && isNote(resource)"
+              [class.collection-last-search]="isCollection(resource)"
               (click)="navigateToDetails(resource)"
-              (auxclick)="!isNote(resource) && goToMainLink($event, resource)"
+              (auxclick)="isBookmark(resource) && goToMainLink($event, resource)"
               target="_blank"
               matTooltip="{{ getTooltip(resource) }}"
               [matTooltipPosition]="'right'"
               >
               <i
                 class="fa fa-xs me-1"
-                [ngClass]="isNote(resource) ? 'fa-sticky-note' : 'fa-bookmark'"
+                [ngClass]="isCollection(resource) ? 'fa-folder' : (isNote(resource) ? 'fa-sticky-note' : 'fa-bookmark')"
               ></i>
               <span>{{
                 getLabel(resource).length > 30
                 ? getLabel(resource).substring(0, 30) + '...'
                 : getLabel(resource)
               }}</span>
-              @if (!isNote(resource)) {
+              @if (isBookmark(resource)) {
                 <span
                   class="jump-to-main-link-icon"
                   (click)="goToMainLink($event, resource)"

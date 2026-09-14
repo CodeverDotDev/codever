@@ -1,7 +1,13 @@
 import { BehaviorSubject, Observable, ReplaySubject, of } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-import { Following, Profile, Search, UserData } from '../model/user-data';
+import {
+  Following,
+  PinnedEntry,
+  Profile,
+  Search,
+  UserData,
+} from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
@@ -18,6 +24,16 @@ import { environment } from '../../../environments/environment';
 import { LocalStorageService } from '../cache/local-storage.service';
 import { localStorageKeys } from '../model/localstorage.cache-keys';
 import { take } from 'rxjs/operators';
+
+/** Converts a resolvable pinned resource into its stored typed entry. */
+function toPinnedEntry(resource: UserDataResource): PinnedEntry {
+  return { type: resource.type as PinnedEntry['type'], id: resource._id };
+}
+
+/** Stable identity of a pinned entry, used to reorder/de-duplicate. */
+function pinnedEntryKey(entry: PinnedEntry): string {
+  return `${entry.type}:${entry.id}`;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -160,7 +176,7 @@ export class UserDataStore {
 
     let pinnedList = [];
     if (pinned) {
-      this.userData.pinned.unshift(bookmark._id);
+      this.userData.pinned.unshift({ type: 'bookmark', id: bookmark._id });
       pinnedList = this.userData.pinned;
     }
 
@@ -235,7 +251,7 @@ export class UserDataStore {
   }
 
   addToUserDataPinned$(resource: UserDataResource): Observable<UserData> {
-    this.userData.pinned.unshift(resource._id);
+    this.userData.pinned.unshift(toPinnedEntry(resource));
     const obs: Observable<any> = this.userService.updateUserDataPinned(
       this.userId,
       this.userData.pinned
@@ -274,15 +290,19 @@ export class UserDataStore {
   }
 
   /**
-   * Reorders the pinned bookmarks. The provided ids represent the new order
-   * of the bookmarks shown in the quick-access panel; any remaining pinned
-   * ids (not currently shown) are appended afterwards, preserving them.
+   * Reorders the pinned resources. The provided resources represent the new
+   * order of the entries shown in the quick-access panel; any remaining pinned
+   * entries (not currently shown) are appended afterwards, preserving them.
    */
-  reorderUserDataPinned$(shownPinnedIds: string[]): Observable<UserData> {
-    const remainingIds = this.userData.pinned.filter(
-      (id) => !shownPinnedIds.includes(id)
+  reorderUserDataPinned$(
+    reorderedResources: UserDataResource[]
+  ): Observable<UserData> {
+    const reorderedEntries = reorderedResources.map(toPinnedEntry);
+    const reorderedKeys = reorderedEntries.map(pinnedEntryKey);
+    const remainingEntries = this.userData.pinned.filter(
+      (entry) => !reorderedKeys.includes(pinnedEntryKey(entry))
     );
-    this.userData.pinned = [...shownPinnedIds, ...remainingIds];
+    this.userData.pinned = [...reorderedEntries, ...remainingEntries];
     const obs: Observable<any> = this.userService.updateUserDataPinned(
       this.userId,
       this.userData.pinned
@@ -295,8 +315,9 @@ export class UserDataStore {
   }
 
   removeFromUserDataPinned$(resource: UserDataResource): Observable<UserData> {
+    const removedKey = pinnedEntryKey(toPinnedEntry(resource));
     this.userData.pinned = this.userData.pinned.filter(
-      (x) => x !== resource._id
+      (entry) => pinnedEntryKey(entry) !== removedKey
     );
     const obs: Observable<any> = this.userService.updateUserDataPinned(
       this.userId,
@@ -385,7 +406,7 @@ export class UserDataStore {
       (x) => x !== bookmark._id
     );
     this.userData.pinned = this.userData.pinned.filter(
-      (x) => x !== bookmark._id
+      (entry) => !(entry.type === 'bookmark' && entry.id === bookmark._id)
     );
     this.userData.favorites = this.userData.favorites.filter(
       (x) => x !== bookmark._id

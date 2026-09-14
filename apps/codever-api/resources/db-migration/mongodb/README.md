@@ -10,7 +10,6 @@ schema-less data, rename fields, and (most commonly) create or re-weight the Mon
 - [Running in production (Docker)](#running-in-production-docker)
 - [Verifying the result](#verifying-the-result)
 - [Rolling back](#rolling-back)
-- [Backing up before a production change](#backing-up-before-a-production-change)
 - [Writing new scripts](#writing-new-scripts)
 
 ## Script styles
@@ -62,6 +61,28 @@ Run all commands from the **repository root**. Make sure MongoDB is up:
 docker compose up -d mongo
 ```
 
+### 1. Back up the database
+
+> Take a backup **before** running any migration, even locally. Some migrations
+> rewrite documents (the `pinned` migration does); a backup is the only way
+> back if the result is not what you expected.
+
+```bash
+docker exec codever-mongo \
+  mongodump \
+  --username mongoadmin \
+  --password secret \
+  --authenticationDatabase admin \
+  --db dev-bookmarks \
+  --archive --gzip \
+  > "codever-dev-bookmarks-$(date +%Y%m%d-%H%M%S).archive.gz"
+```
+
+Restore it with `mongorestore --drop --archive=<file> --gzip` (same
+credentials/db) if you need to roll back to the pre-migration state.
+
+### 2. Run the migration
+
 Run a migration by piping it into `mongosh` inside the container. Example with the
 text-index weight migration:
 
@@ -93,7 +114,13 @@ Text index weights updated successfully:
 Run these on the production host from the directory that contains
 `docker-compose.prod.yml` and the server-side `.env`.
 
-### 1. Resolve the production database name
+### 1. Back up the database
+
+> Do this **first**, before changing anything. A backup is the only way back if
+> a migration rewrites documents (the `pinned` migration does); a text-index
+> migration only drops and recreates recognized indexes.
+
+First resolve the production database name:
 
 ```bash
 export MONGODB_DB="$(sed -n 's/^MONGODB_BOOKMARKS_COLLECTION=//p' .env)"
@@ -102,14 +129,27 @@ export MONGODB_DB="$(sed -n 's/^MONGODB_BOOKMARKS_COLLECTION=//p' .env)"
 echo "Using database: $MONGODB_DB"
 ```
 
-### 2. Read the Mongo admin password without printing it
+Then read the Mongo admin password without printing it:
 
 ```bash
 read -rsp 'Mongo admin password: ' MONGO_ADMIN_PASSWORD
 printf '\n'
 ```
 
-### 3. Run the migration
+Then take the backup:
+
+```bash
+docker exec codever-mongo \
+  mongodump \
+  --username mongoadmin \
+  --password "$MONGO_ADMIN_PASSWORD" \
+  --authenticationDatabase admin \
+  --db "$MONGODB_DB" \
+  --archive --gzip \
+  > "codever-${MONGODB_DB}-$(date +%Y%m%d-%H%M%S).archive.gz"
+```
+
+### 2. Run the migration
 
 ```bash
 docker exec -i codever-mongo \
@@ -192,22 +232,6 @@ Production: use the same command with `"$MONGO_ADMIN_PASSWORD"` and `"$MONGODB_D
 The scripts perform a **preflight check** and abort before dropping anything if they find
 an unexpected text index, so a misconfigured database fails safely instead of losing an
 index.
-
-## Backing up before a production change
-
-These migrations drop and recreate only the recognized text indexes and do not modify
-documents, but always take a backup before changing production:
-
-```bash
-docker exec codever-mongo \
-  mongodump \
-  --username mongoadmin \
-  --password "$MONGO_ADMIN_PASSWORD" \
-  --authenticationDatabase admin \
-  --db "$MONGODB_DB" \
-  --archive --gzip \
-  > "codever-${MONGODB_DB}-$(date +%Y%m%d-%H%M%S).archive.gz"
-```
 
 ## Writing new scripts
 

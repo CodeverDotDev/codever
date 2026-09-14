@@ -16,5 +16,8 @@
     "paths": {
       "highlight.js": ["node_modules/highlight.js/types/index.d.ts"]
     }
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true
   }
 }

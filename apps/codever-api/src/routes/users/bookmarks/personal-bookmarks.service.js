@@ -254,7 +254,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
         $pull: {
           readLater: bookmarkId,
           likes: bookmarkId,
-          pinned: bookmarkId,
+          pinned: { id: bookmarkId, type: 'bookmark' },
           history: bookmarkId,
         },
       },

@@ -186,6 +186,13 @@ export class BookmarkListElementComponent
     );
   }
 
+  /** Whether the bookmark is part of the user's typed pinned entries. */
+  isPinned(userData: UserData | null, bookmark: Bookmark): boolean {
+    return (userData?.pinned || []).some(
+      (entry) => entry.type === 'bookmark' && entry.id === bookmark._id
+    );
+  }
+
   addToPinned(bookmark: Bookmark) {
     if (!this.userIsLoggedIn) {
       const dialogConfig = this.loginDialogHelperService.loginDialogConfig(

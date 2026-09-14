@@ -31,6 +31,20 @@ const followingSchema = new Schema({
   tags: [String],
 });
 
+const pinnedEntrySchema = new Schema(
+  {
+    type: {
+      type: String,
+      enum: ['bookmark', 'note', 'collection'],
+      required: true,
+    },
+    id: { type: Schema.Types.ObjectId, required: true },
+  },
+  {
+    _id: false,
+  }
+);
+
 const userSchema = new Schema(
   {
     userId: String, //global userId in the bookmarks context (currently is the Keycloak Id)
@@ -41,7 +55,7 @@ const userSchema = new Schema(
     likes: [String], //ids of bookmarks liked by user
     watchedTags: [String],
     ignoredTags: [String],
-    pinned: [String],
+    pinned: [pinnedEntrySchema],
     favorites: [String],
     history: [String],
     following: followingSchema,

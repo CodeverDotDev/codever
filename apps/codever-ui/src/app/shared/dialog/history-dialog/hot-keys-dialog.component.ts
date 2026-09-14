@@ -9,6 +9,7 @@ import {
 import { Observable, Subscription } from 'rxjs';
 import { UserDataResource } from '../../../core/model/user-data-resource.type';
 import { Bookmark } from '../../../core/model/bookmark';
+import { Note } from '../../../core/model/note';
 import { AddToHistoryService } from '../../../core/user/add-to-history.service';
 import {
   BookmarkShortcutContext,
@@ -96,10 +97,19 @@ export class HotKeysDialogComponent implements OnInit, OnDestroy {
     return resource.type === 'note';
   }
 
+  isCollection(resource: UserDataResource): boolean {
+    return resource.type === 'collection';
+  }
+
   noteDetailsLink(resource: UserDataResource): string {
-    return resource.public
-      ? `/notes/${resource._id}/details`
-      : `/my-notes/${resource._id}/details`;
+    const note = resource as Note;
+    return note.public
+      ? `/notes/${note._id}/details`
+      : `/my-notes/${note._id}/details`;
+  }
+
+  collectionDetailsLink(resource: UserDataResource): string {
+    return `/my-collections/${resource._id}`;
   }
 
   /** Enter in the focused filter opens the only visible bookmark. */
