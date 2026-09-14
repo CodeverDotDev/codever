@@ -13,14 +13,13 @@
 @if (userDataResources$ | async; as userDataResources) {
 <mat-dialog-content class="mt-2 pt-1 pb-1">
   <mat-accordion>
-    <mat-expansion-panel
-      *ngFor="
-        let userDataResource of userDataResources
-          | resourceTitleFilter : filterText as filteredResources;
-        index as i
-      "
-      [expanded]="filteredResources.length === 1"
-    >
+    @for (
+      userDataResource of userDataResources | resourceTitleFilter : filterText;
+      track userDataResource._id;
+      let i = $index;
+      let filteredCount = $count
+    ) {
+    <mat-expansion-panel [expanded]="filteredCount === 1">
       <!--
         `mat-expansion-panel-header` and `ng-template[matExpansionPanelContent]`
         MUST stay direct children of `mat-expansion-panel`: the panel projects
@@ -125,6 +124,7 @@
         <!-- BOOKMARK content -->
       </ng-template>
     </mat-expansion-panel>
+    }
   </mat-accordion>
 </mat-dialog-content>
 }

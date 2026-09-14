@@ -14,15 +14,14 @@
   </div>
   }
   <div class="clear"></div>
-  <div
-    class="mt-3"
-    *ngFor="
-      let bookmark of bookmarks
-        | resourceFilter : filterText as filteredBookmarks
-    "
-  >
+  @for (
+    bookmark of bookmarks | resourceFilter : filterText;
+    track bookmark._id;
+    let filteredCount = $count
+  ) {
+  <div class="mt-3">
     <app-bookmark-list-element
-      [showMoreText]="filteredBookmarks.length === 1 || bookmarks.length === 1"
+      [showMoreText]="filteredCount === 1 || bookmarks.length === 1"
       [bookmark]="bookmark"
       [userData$]="userData$"
       [queryText]="queryText"
@@ -30,6 +29,7 @@
       [isSearchResultsPage]="isSearchResultsPage"
     />
   </div>
+  }
   <app-page-navigation-bar
     [showPagination]="showPagination"
     [results]="bookmarks"

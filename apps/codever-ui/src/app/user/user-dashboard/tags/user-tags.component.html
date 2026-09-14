@@ -39,13 +39,13 @@
                 *ngIf="
                   (verifyForWatchedTag | async) === tag &&
                     userData.watchedTags.includes(tag);
-                  else watchTagOption
+                  else watchTagOptionA
                 "
                 class="dropdown-item"
                 (click)="unwatchTag(tag)"
                 ><i class="fas fa-eye-slash"></i> Unwatch tag
               </a>
-              <ng-template #watchTagOption>
+              <ng-template #watchTagOptionA>
                 <a (click)="watchTag(tag, true)"
                   ><i class="fas fa-eye"></i> Watch tag</a
                 >
@@ -54,13 +54,13 @@
                 *ngIf="
                   (verifyForWatchedTag | async) === tag &&
                     userData.ignoredTags.includes(tag);
-                  else ignoreTagOption
+                  else ignoreTagOptionA
                 "
                 class="dropdown-item"
                 (click)="unignoreTag(tag)"
                 ><i class="fas fa-ban"></i> Unignore tag
               </a>
-              <ng-template #ignoreTagOption>
+              <ng-template #ignoreTagOptionA>
                 <a (click)="ignoreTag(tag, true)" class="dropdown-item"
                   ><i class="fas fa-ban"></i> Ignore tag
                 </a>
@@ -114,13 +114,13 @@
                 *ngIf="
                   (verifyForWatchedTag | async) === tag &&
                     userData.watchedTags.includes(tag);
-                  else watchTagOption
+                  else watchTagOptionB
                 "
                 class="dropdown-item"
                 (click)="unwatchTag(tag)"
                 ><i class="fas fa-eye-slash"></i> Unwatch tag
               </a>
-              <ng-template #watchTagOption>
+              <ng-template #watchTagOptionB>
                 <a (click)="watchTag(tag, true)"
                   ><i class="fas fa-eye"></i> Watch tag</a
                 >
@@ -129,13 +129,13 @@
                 *ngIf="
                   (verifyForWatchedTag | async) === tag &&
                     userData.ignoredTags.includes(tag);
-                  else ignoreTagOption
+                  else ignoreTagOptionB
                 "
                 class="dropdown-item"
                 (click)="unignoreTag(tag)"
                 ><i class="fas fa-ban"></i> Unignore tag
               </a>
-              <ng-template #ignoreTagOption>
+              <ng-template #ignoreTagOptionB>
                 <a (click)="ignoreTag(tag, true)" class="dropdown-item"
                   ><i class="fas fa-ban"></i> Ignore tag
                 </a>
@@ -188,13 +188,13 @@
                 *ngIf="
                   (verifyForWatchedTag | async) === tag.name &&
                     userData.watchedTags.includes(tag.name);
-                  else watchTagOption
+                  else watchTagOptionC
                 "
                 class="dropdown-item"
                 (click)="unwatchTag(tag.name)"
                 ><i class="fas fa-eye-slash"></i> Unwatch tag
               </a>
-              <ng-template #watchTagOption>
+              <ng-template #watchTagOptionC>
                 <a class="dropdown-item" (click)="watchTag(tag.name, true)">
                   <i class="fas fa-eye"></i> Watch tag
                 </a>
@@ -203,13 +203,13 @@
                 *ngIf="
                   (verifyForWatchedTag | async) === tag &&
                     userData.ignoredTags.includes(tag.name);
-                  else ignoreTagOption
+                  else ignoreTagOptionC
                 "
                 class="dropdown-item"
                 (click)="unignoreTag(tag.name)"
                 ><i class="fas fa-ban"></i> Unignore tag
               </a>
-              <ng-template #ignoreTagOption>
+              <ng-template #ignoreTagOptionC>
                 <a (click)="ignoreTag(tag.name, true)" class="dropdown-item"
                   ><i class="fas fa-ban"></i> Ignore tag
                 </a>
@@ -271,13 +271,13 @@
                 *ngIf="
                   (verifyForWatchedTag | async) === tag.name &&
                     userData.watchedTags.includes(tag.name);
-                  else watchTagOption
+                  else watchTagOptionD
                 "
                 class="dropdown-item"
                 (click)="unwatchTag(tag.name)"
                 ><i class="fas fa-eye-slash"></i> Unwatch tag
               </a>
-              <ng-template #watchTagOption>
+              <ng-template #watchTagOptionD>
                 <a (click)="watchTag(tag.name, true)"
                   ><i class="fas fa-eye"></i> Watch tag</a
                 >
@@ -286,13 +286,13 @@
                 *ngIf="
                   (verifyForWatchedTag | async) === tag &&
                     userData.ignoredTags.includes(tag.name);
-                  else ignoreTagOption
+                  else ignoreTagOptionD
                 "
                 class="dropdown-item"
                 (click)="unignoreTag(tag.name)"
                 ><i class="fas fa-ban"></i> Unignore tag
               </a>
-              <ng-template #ignoreTagOption>
+              <ng-template #ignoreTagOptionD>
                 <a (click)="ignoreTag(tag.name, true)" class="dropdown-item"
                   ><i class="fas fa-ban"></i> Ignore tag
                 </a>
