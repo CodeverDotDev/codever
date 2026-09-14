@@ -3,8 +3,8 @@
   "version": "13.0.0",
   "license": "MIT",
   "scripts": {
-    "update-angular": "ng update --force @angular/core@20 @angular/cli@20",
-    "update-angular-material": "ng update @angular/material@20",
+    "update-angular": "ng update --force @angular/core@21 @angular/cli@21",
+    "update-angular-material": "ng update @angular/material@21",
     "update-angular-self-closing-tags": "ng generate @angular/core:self-closing-tag",
     "ng": "ng",
     "prestart": "node ../../git-version.js",
