@@ -8,7 +8,7 @@ describe('FindElsewhereComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FindElsewhereComponent],
+      imports: [FindElsewhereComponent],
     }).compileComponents();
   });
 

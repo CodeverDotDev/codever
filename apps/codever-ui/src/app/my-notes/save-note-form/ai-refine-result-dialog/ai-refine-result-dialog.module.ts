@@ -3,9 +3,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { AiRefineResultDialogComponent } from './ai-refine-result-dialog.component';
 
 @NgModule({
-  declarations: [AiRefineResultDialogComponent],
-  imports: [SharedModule],
+  imports: [SharedModule, AiRefineResultDialogComponent],
   exports: [AiRefineResultDialogComponent],
 })
 export class AiRefineResultDialogModule {}
-

@@ -34,7 +34,14 @@ const userDashboardRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
+  imports: [
+    RouterModule.forChild(userDashboardRoutes),
+    SharedModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    MatExpansionModule,
+    MatDialogModule,
+    CommonModule,
     UserTagsComponent,
     UserDashboardComponent,
     UserBookmarksComponent,
@@ -45,15 +52,6 @@ const userDashboardRoutes: Routes = [
     FollowersComponent,
     MySearchesTemplateComponent,
     MyNotesComponent,
-  ],
-  imports: [
-    RouterModule.forChild(userDashboardRoutes),
-    SharedModule,
-    MatTabsModule,
-    MatAutocompleteModule,
-    MatExpansionModule,
-    MatDialogModule,
-    CommonModule,
   ],
   providers: [AuthGuard, PersonalNotesService, PaginationNotificationService],
   exports: [RouterModule],

@@ -22,7 +22,12 @@ import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-deta
 import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
 
 @NgModule({
-  declarations: [
+  imports: [
+    SharedModule,
+    PublicRoutingModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    MatSelectModule,
     AboutComponent,
     RegisterComponent,
     ExtensionsPageComponent,
@@ -34,13 +39,6 @@ import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmar
     VersionComponent,
     PublicBookmarkDetailsComponent,
     ShareableBookmarkDetailsComponent,
-  ],
-  imports: [
-    SharedModule,
-    PublicRoutingModule,
-    MatTabsModule,
-    MatAutocompleteModule,
-    MatSelectModule,
   ],
   providers: [
     PublicBookmarksService,

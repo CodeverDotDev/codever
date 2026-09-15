@@ -8,7 +8,7 @@ describe('LoginRequiredDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DeleteResourceDialogComponent],
+      imports: [DeleteResourceDialogComponent],
     }).compileComponents();
   }));
 

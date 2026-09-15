@@ -8,7 +8,7 @@ describe('HowtoHotkeysComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HowtoHotkeysComponent],
+      imports: [HowtoHotkeysComponent],
     }).compileComponents();
   }));
 

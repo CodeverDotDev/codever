@@ -3,12 +3,13 @@ import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
+import { SaveBookmarkFormComponent } from '../save-bookmark-form/save-bookmark-form.component';
 
 @Component({
-    selector: 'app-copy-to-mine-bookmark',
-    templateUrl: './copy-to-mine-bookmark.component.html',
-    styleUrls: ['./copy-to-mine-bookmark.component.scss'],
-    standalone: false
+  selector: 'app-copy-to-mine-bookmark',
+  templateUrl: './copy-to-mine-bookmark.component.html',
+  styleUrls: ['./copy-to-mine-bookmark.component.scss'],
+  imports: [SaveBookmarkFormComponent],
 })
 export class CopyToMineBookmarkComponent implements OnInit {
   bookmark$: Observable<Bookmark>;

@@ -18,6 +18,8 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { MarkdownService } from '../../core/markdown/markdown.service';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
@@ -38,14 +40,23 @@ import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserData } from '../../core/model/user-data';
-import { Location } from '@angular/common';
+import { Location, NgClass, AsyncPipe } from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
-import { MatChipInputEvent } from '@angular/material/chips';
+import {
+  MatChipInputEvent,
+  MatChipGrid,
+  MatChipRow,
+  MatChipRemove,
+  MatChipInput,
+} from '@angular/material/chips';
 import {
   MatAutocompleteActivatedEvent,
   MatAutocompleteSelectedEvent,
+  MatAutocompleteTrigger,
+  MatAutocomplete,
+  MatOption,
 } from '@angular/material/autocomplete';
 import { Note } from '../../core/model/note';
 import { PersonalNotesService } from '../../core/personal-notes.service';
@@ -65,12 +76,32 @@ import {
 } from './ai-refine-result-dialog/ai-refine-result-dialog.component';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
 import { FeatureToggleService } from '../../core/feature-toggle.service';
+import { MatFormField, MatHint, MatError } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { CreatePersonalNoteComponent } from '../create-note/create-personal-note.component';
 
 @Component({
-    selector: 'app-note-editor',
-    templateUrl: './note-editor.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'app-note-editor',
+  templateUrl: './note-editor.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatChipGrid,
+    MatChipRow,
+    MatIcon,
+    MatChipRemove,
+    MatChipInput,
+    MatAutocompleteTrigger,
+    MatHint,
+    MatAutocomplete,
+    MatOption,
+    MatError,
+    CreatePersonalNoteComponent,
+    AsyncPipe,
+  ],
 })
 export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   noteForm: UntypedFormGroup;
@@ -216,7 +247,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-    this.isAiNoteRefineEnabled$ = this.featureToggleService.isAiNoteRefineEnabled();
+    this.isAiNoteRefineEnabled$ =
+      this.featureToggleService.isAiNoteRefineEnabled();
 
     if (!this.isEditMode && !this.cloneNote && !this.copyToMine) {
       this.buildForm();
@@ -228,14 +260,19 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       title: [this.title ? this.title : '', Validators.required],
       reference: this.reference,
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
-      content: [this.passedContent, textSizeValidator(this.maxNumberOfCharacters, 30000)],
+      content: [
+        this.passedContent,
+        textSizeValidator(this.maxNumberOfCharacters, 30000),
+      ],
       public: false,
     });
 
     // Pre-populate tags passed from IDE extensions
     if (this.passedTags && this.passedTags.length > 0) {
       const formTags = this.noteForm.get('tags') as UntypedFormArray;
-      this.passedTags.forEach((tag) => formTags.push(this.formBuilder.control(tag)));
+      this.passedTags.forEach((tag) =>
+        formTags.push(this.formBuilder.control(tag))
+      );
       this.tags.markAsDirty();
     }
   }
@@ -250,7 +287,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         content: this.note.content,
         reference: this.note.reference,
         // cloned and copy-to-mine notes are always private
-        public: (this.cloneNote || this.copyToMine) ? false : !!this.note.public,
+        public: this.cloneNote || this.copyToMine ? false : !!this.note.public,
       });
       for (let i = 0; i < this.note.tags.length; i++) {
         const formTags = this.noteForm.get('tags') as UntypedFormArray;
@@ -440,7 +477,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   fullscreenChangeHandler(): void {
     if (this.isNativeFullscreenEnabled()) {
       this.isFullScreen =
-        !!this.getActiveFullscreenElement() && this.getActiveFullscreenElement() === this.fullscreenEl;
+        !!this.getActiveFullscreenElement() &&
+        this.getActiveFullscreenElement() === this.fullscreenEl;
       if (!this.getActiveFullscreenElement()) {
         this.fullscreenEl = null;
       }
@@ -481,28 +519,30 @@ Given a note's title, content, tags, and optional reference URL, you should:
       dialogConfig
     );
 
-    dialogRef.afterClosed().subscribe((result: AiRefineDialogResult | undefined) => {
-      if (!result) {
-        return; // user cancelled
-      }
+    dialogRef
+      .afterClosed()
+      .subscribe((result: AiRefineDialogResult | undefined) => {
+        if (!result) {
+          return; // user cancelled
+        }
 
-      this.isRefining = true;
-      this.cd.markForCheck();
+        this.isRefining = true;
+        this.cd.markForCheck();
 
-      // Open the result comparison dialog
-      this.openRefineResultDialog({
-        resourceType: 'note',
-        originalTitle: this.noteForm.get('title').value || '',
-        originalContent: this.noteForm.get('content').value || '',
-        originalTags: this.noteForm.get('tags').value || [],
-        refinedTitle: result.suggestedTitle,
-        refinedContent: result.refinedContent,
-        suggestedTags: result.suggestedTags,
+        // Open the result comparison dialog
+        this.openRefineResultDialog({
+          resourceType: 'note',
+          originalTitle: this.noteForm.get('title').value || '',
+          originalContent: this.noteForm.get('content').value || '',
+          originalTags: this.noteForm.get('tags').value || [],
+          refinedTitle: result.suggestedTitle,
+          refinedContent: result.refinedContent,
+          suggestedTags: result.suggestedTags,
+        });
+
+        this.isRefining = false;
+        this.cd.markForCheck();
       });
-
-      this.isRefining = false;
-      this.cd.markForCheck();
-    });
   }
 
   /**
@@ -599,7 +639,12 @@ Given a note's title, content, tags, and optional reference URL, you should:
     note.initiator = this.initiator;
 
     // Attach origin metadata when coming from IDE extensions
-    if (this.originLocation || this.originFile || this.originProject || this.originWorkspace) {
+    if (
+      this.originLocation ||
+      this.originFile ||
+      this.originProject ||
+      this.originWorkspace
+    ) {
       note.origin = {
         location: this.originLocation || null,
         file: this.originFile || null,
@@ -822,4 +867,3 @@ Given a note's title, content, tags, and optional reference URL, you should:
       );
   }
 }
-

@@ -15,16 +15,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [
-    HowtoComponent,
-    HowtoGetStartedComponent,
-    HowToBookmarksComponent,
-    HowToBookmarkletComponent,
-    HowToNotesComponent,
-    CodeverBookmarkletComponent,
-    HowtoHotkeysComponent,
-    HowToMcpComponent,
-  ],
   exports: [],
   imports: [
     HowtoRoutingModule,
@@ -33,6 +23,14 @@ import { RouterModule } from '@angular/router';
     MatTabsModule,
     SharedModule,
     RouterModule,
+    HowtoComponent,
+    HowtoGetStartedComponent,
+    HowToBookmarksComponent,
+    HowToBookmarkletComponent,
+    HowToNotesComponent,
+    CodeverBookmarkletComponent,
+    HowtoHotkeysComponent,
+    HowToMcpComponent,
   ],
 })
 export class HowtoModule {}

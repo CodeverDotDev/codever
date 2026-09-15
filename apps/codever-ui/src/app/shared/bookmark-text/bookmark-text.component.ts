@@ -9,11 +9,14 @@ import {
 } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { AddToHistoryService } from '../../core/user/add-to-history.service';
+import { OpenInNewTabDirective } from '../directive/open-in-new-tab.directive';
+import { NgClass } from '@angular/common';
+import { HighLightHtmlPipe } from '../pipe/highlight.no-html-tags.pipe';
 
 @Component({
-    selector: 'app-bookmark-text',
-    templateUrl: './bookmark-text.component.html',
-    standalone: false
+  selector: 'app-bookmark-text',
+  templateUrl: './bookmark-text.component.html',
+  imports: [OpenInNewTabDirective, NgClass, HighLightHtmlPipe],
 })
 export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @Input()

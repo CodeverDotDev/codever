@@ -5,12 +5,14 @@ import { UserInfoStore } from '../core/user/user-info.store';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CollectionFormDialogComponent } from './collection-form-dialog/collection-form-dialog.component';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-my-collections-page',
-    templateUrl: './my-collections-page.component.html',
-    styleUrls: ['./my-collections-page.component.scss'],
-    standalone: false
+  selector: 'app-my-collections-page',
+  templateUrl: './my-collections-page.component.html',
+  styleUrls: ['./my-collections-page.component.scss'],
+  imports: [FormsModule, DatePipe],
 })
 export class MyCollectionsPageComponent implements OnInit {
   collections: Collection[] = [];
@@ -36,7 +38,12 @@ export class MyCollectionsPageComponent implements OnInit {
   loadCollections(): void {
     this.loading = true;
     this.personalCollectionsService
-      .getUserCollections(this.userId, this.filterText || undefined, this.currentPage, 20)
+      .getUserCollections(
+        this.userId,
+        this.filterText || undefined,
+        this.currentPage,
+        20
+      )
       .subscribe((collections) => {
         this.collections = collections;
         this.loading = false;
@@ -115,4 +122,3 @@ export class MyCollectionsPageComponent implements OnInit {
     this.router.navigate(['/my-collections', collection._id]);
   }
 }
-

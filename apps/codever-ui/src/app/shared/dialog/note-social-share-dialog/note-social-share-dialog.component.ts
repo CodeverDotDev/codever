@@ -1,15 +1,27 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Note } from '../../../core/model/note';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
+import { NoteSocialShareDialogContentComponent } from './note-social-share-dialog-content/note-social-share-dialog-content.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-note-social-share-dialog',
-    templateUrl: './note-social-share-dialog.component.html',
-    styleUrls: ['./note-social-share-dialog.component.scss'],
-    standalone: false
+  selector: 'app-note-social-share-dialog',
+  templateUrl: './note-social-share-dialog.component.html',
+  styleUrls: ['./note-social-share-dialog.component.scss'],
+  imports: [
+    MatDialogTitle,
+    NoteSocialShareDialogContentComponent,
+    MatDialogActions,
+    AsyncPipe,
+  ],
 })
 export class NoteSocialShareDialogComponent {
   shareableId$: Observable<any>;
@@ -34,4 +46,3 @@ export class NoteSocialShareDialogComponent {
     this.dialogRef.close('SHARE_CANCELED');
   }
 }
-

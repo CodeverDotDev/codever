@@ -8,7 +8,7 @@ describe('UserPublicProfileComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [UserPublicProfileComponent],
+      imports: [UserPublicProfileComponent],
     }).compileComponents();
   }));
 

@@ -1,9 +1,6 @@
 import { AfterViewChecked, Directive, ElementRef } from '@angular/core';
 
-@Directive({
-    selector: '[appCopyCodeButton]',
-    standalone: false
-})
+@Directive({ selector: '[appCopyCodeButton]' })
 export class CopyCodeButtonDirective implements AfterViewChecked {
   private static stylesInjected = false;
 
@@ -86,4 +83,3 @@ export class CopyCodeButtonDirective implements AfterViewChecked {
     document.head.appendChild(style);
   }
 }
-

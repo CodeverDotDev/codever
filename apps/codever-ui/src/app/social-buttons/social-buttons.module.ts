@@ -3,7 +3,7 @@ import { TweetComponent } from './tweet.component';
 import { FbShareComponent } from './fb-share.component';
 
 @NgModule({
-  declarations: [TweetComponent, FbShareComponent],
+  imports: [TweetComponent, FbShareComponent],
   exports: [TweetComponent, FbShareComponent],
 })
 export class SocialButtonsModule {}

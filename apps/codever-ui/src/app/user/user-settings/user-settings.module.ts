@@ -21,12 +21,6 @@ const userSettingsRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    UserSettingsComponent,
-    UserProfileComponent,
-    UserFeedComponent,
-    UserLocalStorageSetupComponent,
-  ],
   imports: [
     RouterModule.forChild(userSettingsRoutes),
     ReactiveFormsModule,
@@ -34,6 +28,10 @@ const userSettingsRoutes: Routes = [
     CommonModule,
     MatTabsModule,
     MatRadioModule,
+    UserSettingsComponent,
+    UserProfileComponent,
+    UserFeedComponent,
+    UserLocalStorageSetupComponent,
   ],
   providers: [ImageUploadService],
 })

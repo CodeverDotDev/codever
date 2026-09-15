@@ -13,7 +13,11 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import {
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { AuthenticationService } from '../../core/auth/authentication.service';
@@ -30,18 +34,31 @@ import { SearchDomain } from '../../core/model/search-domain.enum';
 import {
   MatAutocompleteSelectedEvent,
   MatAutocompleteTrigger,
+  MatAutocomplete,
+  MatOption,
 } from '@angular/material/autocomplete';
 import { searchDomains } from '../../core/model/search-domains-map';
 import { AddTagFilterToSearchDialogComponent } from './add-tag-filter-dialog/add-tag-filter-to-search-dialog.component';
 import { DialogMeasurementsHelper } from '../../core/helper/dialog-measurements.helper';
 import iziToast, { IziToastSettings } from 'izitoast';
 import { LatestSearchClickNotificationService } from '../../core/latest-search-click.notification.service';
+import { NgStyle, AsyncPipe } from '@angular/common';
+import { AsyncBookmarkListComponent } from '../async-bookmark-list/async-bookmark-list.component';
 
 @Component({
-    selector: 'app-searchbar',
-    templateUrl: './searchbar.component.html',
-    styleUrls: ['./searchbar.component.scss'],
-    standalone: false
+  selector: 'app-searchbar',
+  templateUrl: './searchbar.component.html',
+  styleUrls: ['./searchbar.component.scss'],
+  imports: [
+    FormsModule,
+    MatAutocompleteTrigger,
+    ReactiveFormsModule,
+    MatAutocomplete,
+    MatOption,
+    NgStyle,
+    AsyncBookmarkListComponent,
+    AsyncPipe,
+  ],
 })
 export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()

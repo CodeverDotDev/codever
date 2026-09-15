@@ -1,10 +1,7 @@
 import { Pipe } from '@angular/core';
 import { PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'highlightHtml',
-    standalone: false
-})
+@Pipe({ name: 'highlightHtml' })
 export class HighLightHtmlPipe implements PipeTransform {
   transform(text: string, search): string {
     if (!search || search === undefined) {

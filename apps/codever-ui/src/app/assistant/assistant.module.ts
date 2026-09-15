@@ -16,9 +16,13 @@ const assistantRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AssistantComponent, ReferenceCardComponent],
-  imports: [RouterModule.forChild(assistantRoutes), SharedModule, MatIconModule],
+  imports: [
+    RouterModule.forChild(assistantRoutes),
+    SharedModule,
+    MatIconModule,
+    AssistantComponent,
+    ReferenceCardComponent,
+  ],
   providers: [AssistantService],
 })
 export class AssistantModule {}
-

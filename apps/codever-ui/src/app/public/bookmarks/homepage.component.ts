@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { UserDataResource } from '../../core/model/user-data-resource.type';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PublicBookmarksStore } from './store/public-bookmarks-store.service';
 import { allTags } from '../../core/model/all-tags.const.en';
 import { AuthenticationService } from '../../core/auth/authentication.service';
@@ -21,13 +21,31 @@ import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.
 import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';
 import { FeedStore } from '../../core/user/feed-store.service';
 import { SearchDomain } from '../../core/model/search-domain.enum';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import {
+  MatTabChangeEvent,
+  MatTabGroup,
+  MatTab,
+  MatTabLabel,
+  MatTabContent,
+} from '@angular/material/tabs';
+import { AsyncBookmarkListComponent } from '../../shared/async-bookmark-list/async-bookmark-list.component';
+import { AsyncSearchResultListComponent } from '../../shared/async-search-result-list/async-search-result-list.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-public-bookmarks',
-    templateUrl: './homepage.component.html',
-    styleUrls: ['./homepage.component.scss'],
-    standalone: false
+  selector: 'app-public-bookmarks',
+  templateUrl: './homepage.component.html',
+  styleUrls: ['./homepage.component.scss'],
+  imports: [
+    MatTabGroup,
+    MatTab,
+    MatTabLabel,
+    RouterLink,
+    AsyncBookmarkListComponent,
+    AsyncSearchResultListComponent,
+    MatTabContent,
+    AsyncPipe,
+  ],
 })
 export class HomepageComponent
   extends TagFollowingBaseComponent
@@ -91,7 +109,7 @@ export class HomepageComponent
         this.userData = userData;
         this.setSelectedTabIndexFromQueryParam(tabQueryParam);
         this.setCurrentPageFromQueryParam(page, this.selectedTabIndex);
-          this.loadTabData(this.selectedTabIndex);
+        this.loadTabData(this.selectedTabIndex);
       });
     } else {
       this.setSelectedTabIndexFromQueryParam(tabQueryParam);

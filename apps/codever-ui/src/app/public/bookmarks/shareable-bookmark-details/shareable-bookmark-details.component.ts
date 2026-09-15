@@ -3,12 +3,14 @@ import { Bookmark } from '../../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { PublicBookmarksService } from '../public-bookmarks.service';
+import { BookmarkListElementComponent } from '../../../shared/bookmark-list-element/bookmark-list-element.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-bookmark-details',
-    templateUrl: './shareable-bookmark-details.component.html',
-    styleUrls: ['./shareable-bookmark-details.component.scss'],
-    standalone: false
+  selector: 'app-bookmark-details',
+  templateUrl: './shareable-bookmark-details.component.html',
+  styleUrls: ['./shareable-bookmark-details.component.scss'],
+  imports: [BookmarkListElementComponent, AsyncPipe],
 })
 export class ShareableBookmarkDetailsComponent implements OnInit {
   bookmark$: Observable<Bookmark>;

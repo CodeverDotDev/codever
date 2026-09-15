@@ -3,7 +3,7 @@ import { PrivacyPolicyComponent } from './privacy-policy.component';
 
 describe('About Component', () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({ declarations: [PrivacyPolicyComponent] });
+    TestBed.configureTestingModule({ imports: [PrivacyPolicyComponent] });
   });
 
   it('should ...', () => {

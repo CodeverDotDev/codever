@@ -9,6 +9,9 @@ import { UserInfoStore } from '../core/user/user-info.store';
 import { FeatureToggleService } from '../core/feature-toggle.service';
 import { AssistantService } from './assistant.service';
 import { AssistantResponse, ChatMessage } from './assistant.model';
+import { ReferenceCardComponent } from './reference-card/reference-card.component';
+import { FormsModule } from '@angular/forms';
+import { Markdown2HtmlPipe } from '../shared/pipe/markdown2html.pipe';
 
 /**
  * "Ask Codever" — an in-app chat that answers questions grounded in the
@@ -18,7 +21,7 @@ import { AssistantResponse, ChatMessage } from './assistant.model';
   selector: 'app-assistant',
   templateUrl: './assistant.component.html',
   styleUrls: ['./assistant.component.scss'],
-  standalone: false,
+  imports: [ReferenceCardComponent, FormsModule, Markdown2HtmlPipe],
 })
 export class AssistantComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollContainer') private scrollContainer: ElementRef;
@@ -142,4 +145,3 @@ export class AssistantComponent implements OnInit, AfterViewChecked {
     }
   }
 }
-

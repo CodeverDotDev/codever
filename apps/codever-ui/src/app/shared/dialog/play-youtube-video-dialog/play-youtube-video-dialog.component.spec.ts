@@ -8,7 +8,7 @@ describe('PlayYoutubeVideoDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PlayYoutubeVideoDialogComponent],
+      imports: [PlayYoutubeVideoDialogComponent],
     }).compileComponents();
   }));
 

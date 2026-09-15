@@ -7,14 +7,27 @@ import { AddToHistoryService } from '../core/user/add-to-history.service';
 import {
   CdkDragDrop,
   moveItemInArray,
+  CdkDropList,
+  CdkDrag,
+  CdkDragHandle,
 } from '@angular/cdk/drag-drop';
 import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
+import { FormsModule } from '@angular/forms';
+import { MatTooltip } from '@angular/material/tooltip';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-quick-access-resources',
-    templateUrl: './quick-access-resources.component.html',
-    styleUrls: ['./quick-access-resources.component.scss'],
-    standalone: false
+  selector: 'app-quick-access-resources',
+  templateUrl: './quick-access-resources.component.html',
+  styleUrls: ['./quick-access-resources.component.scss'],
+  imports: [
+    FormsModule,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
+    MatTooltip,
+    NgClass,
+  ],
 })
 export class QuickAccessResourcesComponent {
   @Input()

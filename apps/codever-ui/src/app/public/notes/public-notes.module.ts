@@ -26,9 +26,13 @@ const publicNotesRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [PublicNoteDetailsComponent, ShareableNoteDetailsComponent, PublicNotesComponent],
-  imports: [SharedModule, RouterModule.forChild(publicNotesRoutes)],
+  imports: [
+    SharedModule,
+    RouterModule.forChild(publicNotesRoutes),
+    PublicNoteDetailsComponent,
+    ShareableNoteDetailsComponent,
+    PublicNotesComponent,
+  ],
   providers: [PublicNotesService],
 })
 export class PublicNotesModule {}
-

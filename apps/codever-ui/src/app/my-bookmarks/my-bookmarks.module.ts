@@ -23,17 +23,6 @@ import { AiRefineBookmarkDialogComponent } from './save-bookmark-form/ai-refine-
 import { AiRefineResultDialogModule } from '../my-notes/save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.module';
 
 @NgModule({
-  declarations: [
-    CreatePersonalBookmarkComponent,
-    UpdatePersonalBookmarkComponent,
-    CopyToMineBookmarkComponent,
-    CloneBookmarkComponent,
-    AiRefineBookmarkDialogComponent,
-    MyBookmarksEntryPointComponent,
-    PublicBookmarkPresentDialogComponent,
-    SaveBookmarkFormComponent,
-    BookmarkDetailsComponent,
-  ],
   imports: [
     SharedModule,
     RouterModule,
@@ -47,6 +36,15 @@ import { AiRefineResultDialogModule } from '../my-notes/save-note-form/ai-refine
     MatDialogModule,
     MyBookmarksRoutingModule,
     AiRefineResultDialogModule,
+    CreatePersonalBookmarkComponent,
+    UpdatePersonalBookmarkComponent,
+    CopyToMineBookmarkComponent,
+    CloneBookmarkComponent,
+    AiRefineBookmarkDialogComponent,
+    MyBookmarksEntryPointComponent,
+    PublicBookmarkPresentDialogComponent,
+    SaveBookmarkFormComponent,
+    BookmarkDetailsComponent,
   ],
   providers: [DatePipe],
 })

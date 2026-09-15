@@ -11,12 +11,13 @@ import { Note } from '../../core/model/note';
 import { PaginationAction } from '../../core/model/pagination-action';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-page-navigation-bar',
-    templateUrl: './page-navigation-bar.component.html',
-    styleUrls: ['./page-navigation-bar.component.scss'],
-    standalone: false
+  selector: 'app-page-navigation-bar',
+  templateUrl: './page-navigation-bar.component.html',
+  styleUrls: ['./page-navigation-bar.component.scss'],
+  imports: [NgClass],
 })
 export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   @Input()

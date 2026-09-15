@@ -4,7 +4,7 @@ import { AboutComponent } from './about.component';
 
 describe('About Component', () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({ declarations: [AboutComponent] });
+    TestBed.configureTestingModule({ imports: [AboutComponent] });
   });
 
   it('should ...', () => {

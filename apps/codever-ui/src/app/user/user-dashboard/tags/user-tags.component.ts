@@ -2,12 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UsedTag, UsedTags } from '../../../core/model/used-tag';
 import { UserDataService } from '../../../core/user-data.service';
 import { Observable } from 'rxjs';
-import { UntypedFormControl } from '@angular/forms';
-import { map, startWith } from 'rxjs/operators';
 import {
-  MatDialog,
-  MatDialogConfig,
-} from '@angular/material/dialog';
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { map, startWith } from 'rxjs/operators';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteBookmarksByTagDialogComponent } from './delete-bookmarks-by-tag-dialog/delete-bookmarks-by-tag-dialog.component';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
 import { UserData } from '../../../core/model/user-data';
@@ -16,12 +17,39 @@ import { TagFollowingBaseComponent } from '../../../shared/tag-following-base-co
 import { LocalStorageService } from '../../../core/cache/local-storage.service';
 import { localStorageKeys } from '../../../core/model/localstorage.cache-keys';
 import iziToast, { IziToastSettings } from 'izitoast';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelContent,
+} from '@angular/material/expansion';
+import { RouterLink } from '@angular/router';
+import {
+  MatAutocompleteTrigger,
+  MatAutocomplete,
+  MatOption,
+} from '@angular/material/autocomplete';
 
 @Component({
-    selector: 'app-user-tags',
-    templateUrl: './user-tags.component.html',
-    styleUrls: ['./user-tags.component.scss'],
-    standalone: false
+  selector: 'app-user-tags',
+  templateUrl: './user-tags.component.html',
+  styleUrls: ['./user-tags.component.scss'],
+  imports: [
+    NgIf,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelContent,
+    NgFor,
+    RouterLink,
+    FormsModule,
+    MatAutocompleteTrigger,
+    ReactiveFormsModule,
+    MatAutocomplete,
+    MatOption,
+    AsyncPipe,
+  ],
 })
 export class UserTagsComponent
   extends TagFollowingBaseComponent

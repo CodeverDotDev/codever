@@ -80,79 +80,83 @@ const keycloakUrlCondition =
     bearerPrefix: 'Bearer',
   });
 
-@NgModule({ exports: [MatChipsModule],
-    declarations: [
-        AppComponent,
-        QuickAccessResourcesComponent,
-        PageNotFoundComponent,
-        NoteNotFoundComponent,
-        LoaderComponent,
-        NewEntryComponent,
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        RouterModule,
-        // app modules - notice that MyBookmarksModule is not listed, as it is lazy loaded
-        SharedModule,
-        CoreModule,
-        PublicResourcesModule,
-        SocialButtonsModule,
-        OverlayModule,
-        DragDropModule,
-        // routing module
-        AppRoutingModule,
-        HighlightModule,
-        ServiceWorkerModule.register('/ngsw-worker.js', {
-            enabled: environment.production,
-        }),
-        MatTooltipModule], providers: [
-        provideKeycloak({
-            config: {
-                url: environment.keycloak.url, // .ie: http://localhost:8080/auth/
-                realm: environment.keycloak.realm, // .ie: master
-                clientId: environment.keycloak.clientId, // .ie: account
-            },
-            initOptions: {
-                onLoad: 'check-sso',
-                checkLoginIframe: false,
-                flow: 'standard',
-                silentCheckSsoRedirectUri:
-                    window.location.origin + '/assets/silent-check-sso.html',
-            },
-            providers: [
-                {
-                    provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
-                    useValue: [bearerTokenUrlCondition, keycloakUrlCondition],
-                },
-            ],
-        }),
-        provideAppInitializer(initializeKeycloakEvents),
+@NgModule({
+  exports: [MatChipsModule],
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    // app modules - notice that MyBookmarksModule is not listed, as it is lazy loaded
+    SharedModule,
+    CoreModule,
+    PublicResourcesModule,
+    SocialButtonsModule,
+    OverlayModule,
+    DragDropModule,
+    // routing module
+    AppRoutingModule,
+    HighlightModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', {
+      enabled: environment.production,
+    }),
+    MatTooltipModule,
+    QuickAccessResourcesComponent,
+    PageNotFoundComponent,
+    NoteNotFoundComponent,
+    LoaderComponent,
+    NewEntryComponent,
+  ],
+  providers: [
+    provideKeycloak({
+      config: {
+        url: environment.keycloak.url, // .ie: http://localhost:8080/auth/
+        realm: environment.keycloak.realm, // .ie: master
+        clientId: environment.keycloak.clientId, // .ie: account
+      },
+      initOptions: {
+        onLoad: 'check-sso',
+        checkLoginIframe: false,
+        flow: 'standard',
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/assets/silent-check-sso.html',
+      },
+      providers: [
         {
-            provide: MAT_CHIPS_DEFAULT_OPTIONS,
-            useValue: {
-                separatorKeyCodes: [ENTER, COMMA],
-            },
+          provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+          useValue: [bearerTokenUrlCondition, keycloakUrlCondition],
         },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: LoaderInterceptorService,
-            multi: true,
-        },
-        {
-            provide: HIGHLIGHT_OPTIONS,
-            useValue: {
-                fullLibraryLoader: () => import('highlight.js'),
-            },
-        },
-        {
-            provide: ErrorHandler,
-            useClass: ChunkLoadErrorHandler,
-        },
-        AppService,
-        provideHttpClient(
-            withInterceptorsFromDi(),
-            withInterceptors([includeBearerTokenInterceptor])
-        ),
-    ] })
+      ],
+    }),
+    provideAppInitializer(initializeKeycloakEvents),
+    {
+      provide: MAT_CHIPS_DEFAULT_OPTIONS,
+      useValue: {
+        separatorKeyCodes: [ENTER, COMMA],
+      },
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoaderInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
+        fullLibraryLoader: () => import('highlight.js'),
+      },
+    },
+    {
+      provide: ErrorHandler,
+      useClass: ChunkLoadErrorHandler,
+    },
+    AppService,
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withInterceptors([includeBearerTokenInterceptor])
+    ),
+  ],
+})
 export class AppModule {}

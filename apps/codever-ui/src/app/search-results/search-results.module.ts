@@ -14,12 +14,13 @@ const searchResultsRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [SearchResultsPageComponent, FindElsewhereComponent],
   imports: [
     RouterModule.forChild(searchResultsRoutes),
     CommonModule,
     SharedModule,
     MatTabsModule,
+    SearchResultsPageComponent,
+    FindElsewhereComponent,
   ],
 })
 export class SearchResultsModule {}

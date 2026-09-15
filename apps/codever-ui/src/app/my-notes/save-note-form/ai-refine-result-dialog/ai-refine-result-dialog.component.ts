@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MarkdownService } from '../../../core/markdown/markdown.service';
+import { FormsModule } from '@angular/forms';
 
 export interface AiRefineResultDialogData {
   resourceType: 'note' | 'bookmark';
@@ -21,10 +22,10 @@ export interface AiRefineAcceptedChanges {
 }
 
 @Component({
-    selector: 'app-ai-refine-result-dialog',
-    templateUrl: './ai-refine-result-dialog.component.html',
-    styleUrls: ['./ai-refine-result-dialog.component.scss'],
-    standalone: false
+  selector: 'app-ai-refine-result-dialog',
+  templateUrl: './ai-refine-result-dialog.component.html',
+  styleUrls: ['./ai-refine-result-dialog.component.scss'],
+  imports: [FormsModule],
 })
 export class AiRefineResultDialogComponent implements OnInit {
   acceptTitle = false;

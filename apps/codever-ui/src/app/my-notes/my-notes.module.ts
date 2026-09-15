@@ -55,15 +55,6 @@ const notesRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    CreatePersonalNoteComponent,
-    UpdatePersonalNoteComponent,
-    NoteEditorComponent,
-    NotePreviewDialogComponent,
-    AiRefineDialogComponent,
-    CloneNoteComponent,
-    CopyToMineNoteComponent,
-  ],
   imports: [
     RouterModule.forChild(notesRoutes),
     SharedModule,
@@ -76,6 +67,13 @@ const notesRoutes: Routes = [
     MatTooltipModule,
     HighlightModule,
     AiRefineResultDialogModule,
+    CreatePersonalNoteComponent,
+    UpdatePersonalNoteComponent,
+    NoteEditorComponent,
+    NotePreviewDialogComponent,
+    AiRefineDialogComponent,
+    CloneNoteComponent,
+    CopyToMineNoteComponent,
   ],
   exports: [NoteDetailsComponent],
   providers: [

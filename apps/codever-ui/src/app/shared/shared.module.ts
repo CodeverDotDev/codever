@@ -70,8 +70,6 @@ import { ResourceTitleFilterPipe } from './pipe/resource-title-filter.pipe';
     MatIconModule,
     MatButtonModule,
     HighLightPipe,
-  ],
-  declarations: [
     HighLightHtmlPipe,
     Markdown2HtmlPipe,
     ResourceFilterPipe,

@@ -12,12 +12,23 @@ import { UserData } from '../../core/model/user-data';
 import { MatDialog } from '@angular/material/dialog';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
+import { FormsModule } from '@angular/forms';
+import { BookmarkListElementComponent } from '../bookmark-list-element/bookmark-list-element.component';
+import { PageNavigationBarComponent } from '../page-navigation-bar/page-navigation-bar.component';
+import { AsyncPipe } from '@angular/common';
+import { ResourceFilterPipe } from '../pipe/resource-filter.pipe';
 
 @Component({
-    selector: 'app-async-bookmark-list',
-    templateUrl: './async-bookmark-list.component.html',
-    styleUrls: ['./async-bookmark-list.component.scss'],
-    standalone: false
+  selector: 'app-async-bookmark-list',
+  templateUrl: './async-bookmark-list.component.html',
+  styleUrls: ['./async-bookmark-list.component.scss'],
+  imports: [
+    FormsModule,
+    BookmarkListElementComponent,
+    PageNavigationBarComponent,
+    AsyncPipe,
+    ResourceFilterPipe,
+  ],
 })
 export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
   declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template

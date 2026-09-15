@@ -24,18 +24,15 @@ const collectionsRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    MyCollectionsPageComponent,
-    CollectionDetailComponent,
-    CollectionFormDialogComponent,
-  ],
   imports: [
     CommonModule,
     FormsModule,
     MatDialogModule,
     RouterModule.forChild(collectionsRoutes),
+    MyCollectionsPageComponent,
+    CollectionDetailComponent,
+    CollectionFormDialogComponent,
   ],
   providers: [PersonalCollectionsService],
 })
 export class MyCollectionsModule {}
-

@@ -1,14 +1,21 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { AuthenticationService } from '../../../core/auth/authentication.service';
 import { Router } from '@angular/router';
 import { KeycloakServiceWrapper } from '../../../core/keycloak-service-wrapper.service';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
-    selector: 'app-delete-bookmark-dialog',
-    templateUrl: './login-required-dialog.component.html',
-    styleUrls: ['./login-required-dialog.component.scss'],
-    standalone: false
+  selector: 'app-delete-bookmark-dialog',
+  templateUrl: './login-required-dialog.component.html',
+  styleUrls: ['./login-required-dialog.component.scss'],
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions],
 })
 export class LoginRequiredDialogComponent {
   message: string;
