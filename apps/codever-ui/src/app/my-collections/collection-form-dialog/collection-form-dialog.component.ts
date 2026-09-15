@@ -1,12 +1,26 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { Collection } from '../../core/model/collection';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-collection-form-dialog',
-    templateUrl: './collection-form-dialog.component.html',
-    styleUrls: ['./collection-form-dialog.component.scss'],
-    standalone: false
+  selector: 'app-collection-form-dialog',
+  templateUrl: './collection-form-dialog.component.html',
+  styleUrls: ['./collection-form-dialog.component.scss'],
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    FormsModule,
+    MatDialogActions,
+  ],
 })
 export class CollectionFormDialogComponent implements OnInit {
   name = '';
@@ -44,4 +58,3 @@ export class CollectionFormDialogComponent implements OnInit {
     this.dialogRef.close(null);
   }
 }
-

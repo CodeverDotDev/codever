@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-    selector: 'app-new-entry-redirection',
-    templateUrl: './new-entry.component.html',
-    styleUrls: ['./new-entry.component.scss'],
-    standalone: false
+  selector: 'app-new-entry-redirection',
+  templateUrl: './new-entry.component.html',
+  styleUrls: ['./new-entry.component.scss'],
 })
 export class NewEntryComponent implements OnInit {
   url; // value of "url" query parameter if present

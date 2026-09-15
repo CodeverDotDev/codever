@@ -9,7 +9,7 @@ import {
 import { Note } from '../../core/model/note';
 import { combineLatest, Observable, of } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { shareReplay, startWith, switchMap, take } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -17,16 +17,29 @@ import { NoteSocialShareDialogComponent } from '../dialog/note-social-share-dial
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
-import { TocHeading } from './note-toc/note-toc.component';
+import { TocHeading, NoteTocComponent } from './note-toc/note-toc.component';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { UserData } from '../../core/model/user-data';
+import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
+import { NoteContentComponent } from './note-card-body/note-content.component';
+import { AsyncBookmarkListComponent } from '../async-bookmark-list/async-bookmark-list.component';
+import { HighLightPipe } from '../../common/pipes/highlight.pipe';
 
 @Component({
-    selector: 'app-note-details',
-    templateUrl: './note-details.component.html',
-    styleUrls: ['./note-details.component.scss'],
-    standalone: false
+  selector: 'app-note-details',
+  templateUrl: './note-details.component.html',
+  styleUrls: ['./note-details.component.scss'],
+  imports: [
+    NgClass,
+    RouterLink,
+    NoteContentComponent,
+    NoteTocComponent,
+    AsyncBookmarkListComponent,
+    AsyncPipe,
+    DatePipe,
+    HighLightPipe,
+  ],
 })
 export class NoteDetailsComponent implements OnInit, AfterViewInit {
   @Input()
@@ -74,38 +87,38 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     this.userId$ = isLoggedIn ? this.userInfoStore.getUserId$() : of(null);
     this.userData$ = isLoggedIn ? this.userDataStore.getUserData$() : of(null);
 
-      if (!this.inSearchResults && !this.note$) {
-        this.noteId = this.route.snapshot.paramMap.get('id');
+    if (!this.inSearchResults && !this.note$) {
+      this.noteId = this.route.snapshot.paramMap.get('id');
 
-        // Always fetch the latest version from the API so edits made elsewhere
-        // (e.g. on another device) are reflected. A note passed through router
-        // state (e.g. from the pinned / quick-access panel or search results)
-        // can be stale, so it is only used as an instant placeholder while the
-        // fresh copy loads.
-        const stateNote: Note = window.history.state.note;
+      // Always fetch the latest version from the API so edits made elsewhere
+      // (e.g. on another device) are reflected. A note passed through router
+      // state (e.g. from the pinned / quick-access panel or search results)
+      // can be stale, so it is only used as an instant placeholder while the
+      // fresh copy loads.
+      const stateNote: Note = window.history.state.note;
 
-        let note$ = this.userId$.pipe(
-          switchMap((userId) =>
-            this.personalNotesService.getPersonalNoteById(userId, this.noteId)
-          )
-        );
+      let note$ = this.userId$.pipe(
+        switchMap((userId) =>
+          this.personalNotesService.getPersonalNoteById(userId, this.noteId)
+        )
+      );
 
-        if (isLoggedIn) {
-          note$ = note$.pipe(shareReplay(1));
-          // Visiting a note's details page promotes it to the user's history,
-          // mirroring how visiting a bookmark records it. Wait for the user
-          // data to be loaded first — on a hard refresh the note can arrive
-          // before the user data, and promoting then would read history off an
-          // undefined userData object and throw.
-          combineLatest([note$, this.userData$])
-            .pipe(take(1))
-            .subscribe(([note]) => this.promoteNoteInHistory(note));
-        }
-
-        // Seed with the (possibly stale) router-state note for instant render,
-        // then replace it with the freshly fetched copy.
-        this.note$ = stateNote ? note$.pipe(startWith(stateNote)) : note$;
+      if (isLoggedIn) {
+        note$ = note$.pipe(shareReplay(1));
+        // Visiting a note's details page promotes it to the user's history,
+        // mirroring how visiting a bookmark records it. Wait for the user
+        // data to be loaded first — on a hard refresh the note can arrive
+        // before the user data, and promoting then would read history off an
+        // undefined userData object and throw.
+        combineLatest([note$, this.userData$])
+          .pipe(take(1))
+          .subscribe(([note]) => this.promoteNoteInHistory(note));
       }
+
+      // Seed with the (possibly stale) router-state note for instant render,
+      // then replace it with the freshly fetched copy.
+      this.note$ = stateNote ? note$.pipe(startWith(stateNote)) : note$;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -277,7 +290,8 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   fullscreenChangeHandler(event: Event) {
     if (this.isNativeFullscreenEnabled()) {
       this.isFullScreen =
-        !!this.getActiveFullscreenElement() && this.getActiveFullscreenElement() === this.fullscreenEl;
+        !!this.getActiveFullscreenElement() &&
+        this.getActiveFullscreenElement() === this.fullscreenEl;
       if (!this.getActiveFullscreenElement()) {
         this.fullscreenEl = null;
       }

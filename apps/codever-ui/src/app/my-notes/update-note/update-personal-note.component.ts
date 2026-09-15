@@ -5,11 +5,13 @@ import { PersonalNotesService } from '../../core/personal-notes.service';
 import { Note } from '../../core/model/note';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { NoteEditorComponent } from '../save-note-form/note-editor.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-personal-note-update',
-    templateUrl: './update-personal-note.component.html',
-    standalone: false
+  selector: 'app-personal-note-update',
+  templateUrl: './update-personal-note.component.html',
+  imports: [NoteEditorComponent, AsyncPipe],
 })
 export class UpdatePersonalNoteComponent implements OnInit {
   note$: Observable<Note>;

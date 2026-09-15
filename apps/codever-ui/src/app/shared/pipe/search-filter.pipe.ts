@@ -2,10 +2,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Search } from '../../core/model/user-data';
 
-@Pipe({
-    name: 'searchFilter',
-    standalone: false
-})
+@Pipe({ name: 'searchFilter' })
 export class SearchFilterPipe implements PipeTransform {
   /**
    * Searches in, searches out that are of type 'recent|saved'

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NoteEditorComponent } from '../save-note-form/note-editor.component';
 
 @Component({
-    selector: 'app-personal-note-create',
-    templateUrl: './create-personal-note.component.html',
-    standalone: false
+  selector: 'app-personal-note-create',
+  templateUrl: './create-personal-note.component.html',
+  imports: [NoteEditorComponent],
 })
 export class CreatePersonalNoteComponent implements OnInit {
   initiator: string;
@@ -50,9 +51,7 @@ export class CreatePersonalNoteComponent implements OnInit {
 
     if (code) {
       // Build markdown content: optional comment header + fenced code block
-      const lang = (this.tags && this.tags.length > 0)
-        ? this.tags[0]
-        : '';
+      const lang = this.tags && this.tags.length > 0 ? this.tags[0] : '';
       const parts: string[] = [];
       if (comment && comment.trim()) {
         parts.push(comment.trim());

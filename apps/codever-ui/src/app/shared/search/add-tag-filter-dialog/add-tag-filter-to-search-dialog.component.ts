@@ -6,26 +6,62 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { UntypedFormControl } from '@angular/forms';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogActions,
+} from '@angular/material/dialog';
+import {
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
 import { map, startWith } from 'rxjs/operators';
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent,
+  MatAutocompleteTrigger,
+  MatOption,
 } from '@angular/material/autocomplete';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
+import {
+  MatChipInputEvent,
+  MatChipGrid,
+  MatChipRow,
+  MatChipRemove,
+  MatChipInput,
+} from '@angular/material/chips';
 import { SearchDomain } from '../../../core/model/search-domain.enum';
 import { PublicBookmarksService } from '../../../public/bookmarks/public-bookmarks.service';
 import { UsedTag } from '../../../core/model/used-tag';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-delete-bookmark-dialog',
-    templateUrl: './add-tag-filter-to-search-dialog.component.html',
-    styleUrls: ['./add-tag-filter-to-search-dialog.component.scss'],
-    standalone: false
+  selector: 'app-delete-bookmark-dialog',
+  templateUrl: './add-tag-filter-to-search-dialog.component.html',
+  styleUrls: ['./add-tag-filter-to-search-dialog.component.scss'],
+  imports: [
+    MatDialogTitle,
+    MatFormField,
+    MatLabel,
+    MatChipGrid,
+    MatChipRow,
+    MatIcon,
+    MatChipRemove,
+    FormsModule,
+    MatAutocompleteTrigger,
+    MatChipInput,
+    ReactiveFormsModule,
+    MatAutocomplete,
+    MatOption,
+    MatDialogActions,
+    AsyncPipe,
+  ],
 })
 export class AddTagFilterToSearchDialogComponent implements OnInit {
   userId: string;
@@ -68,7 +104,7 @@ export class AddTagFilterToSearchDialogComponent implements OnInit {
         break;
 
       case SearchDomain.MY_SNIPPETS:
-        // legacy domain — fall through to MY_NOTES
+      // legacy domain — fall through to MY_NOTES
       case SearchDomain.MY_NOTES:
         {
           this.personalNotesService

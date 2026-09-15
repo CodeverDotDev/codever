@@ -1,9 +1,6 @@
 import { AfterViewChecked, Directive, ElementRef } from '@angular/core';
 
-@Directive({
-    selector: '[appFullscreenCodeButton]',
-    standalone: false
-})
+@Directive({ selector: '[appFullscreenCodeButton]' })
 export class FullscreenCodeButtonDirective implements AfterViewChecked {
   private static stylesInjected = false;
 
@@ -19,7 +16,9 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
 
   private getInitialFontSizePercent(): number {
     const attr = this.el.nativeElement.getAttribute('data-content-font-size');
-    const parsed = attr ? parseInt(attr, 10) : FullscreenCodeButtonDirective.ZOOM_DEFAULT;
+    const parsed = attr
+      ? parseInt(attr, 10)
+      : FullscreenCodeButtonDirective.ZOOM_DEFAULT;
     return isNaN(parsed) ? FullscreenCodeButtonDirective.ZOOM_DEFAULT : parsed;
   }
 
@@ -323,4 +322,3 @@ export class FullscreenCodeButtonDirective implements AfterViewChecked {
     document.head.appendChild(style);
   }
 }
-

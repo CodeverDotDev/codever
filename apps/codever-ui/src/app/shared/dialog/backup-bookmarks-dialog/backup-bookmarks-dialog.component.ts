@@ -1,13 +1,18 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-    selector: 'app-delete-bookmark-dialog',
-    templateUrl: './backup-bookmarks-dialog.component.html',
-    styleUrls: ['./backup-bookmarks-dialog.component.scss'],
-    standalone: false
+  selector: 'app-delete-bookmark-dialog',
+  templateUrl: './backup-bookmarks-dialog.component.html',
+  styleUrls: ['./backup-bookmarks-dialog.component.scss'],
+  imports: [MatDialogTitle, MatDialogActions],
 })
 export class BackupBookmarksDialogComponent {
   backupType: string; // 'bookmarks' | 'snippets';

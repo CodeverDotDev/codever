@@ -8,7 +8,7 @@ describe('BookmarkDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [BookmarkDetailsComponent],
+      imports: [BookmarkDetailsComponent],
     }).compileComponents();
   }));
 

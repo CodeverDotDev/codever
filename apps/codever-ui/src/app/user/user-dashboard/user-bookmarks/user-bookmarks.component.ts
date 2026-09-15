@@ -11,12 +11,15 @@ import { UserDataStore } from '../../../core/user/userdata.store';
 import { MyBookmarksStore } from '../../../core/user/my-bookmarks.store';
 import { PaginationNotificationService } from '../../../core/pagination-notification.service';
 import { environment } from '../../../../environments/environment';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { AsyncBookmarkListComponent } from '../../../shared/async-bookmark-list/async-bookmark-list.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'app-my-bookmarks',
-    templateUrl: './user-bookmarks.component.html',
-    styleUrls: ['./user-bookmarks.component.scss'],
-    standalone: false
+  selector: 'app-my-bookmarks',
+  templateUrl: './user-bookmarks.component.html',
+  styleUrls: ['./user-bookmarks.component.scss'],
+  imports: [NgClass, AsyncBookmarkListComponent, RouterLink, AsyncPipe],
 })
 export class UserBookmarksComponent implements OnChanges {
   userBookmarks$: Observable<Bookmark[]>;
@@ -58,12 +61,13 @@ export class UserBookmarksComponent implements OnChanges {
 
   private loadBookmarks(page: number) {
     this.currentPage = page;
-    this.userBookmarks$ = this.personalBookmarksService.getPersonalBookmarkOrderedBy(
-      this.userId,
-      this.orderBy,
-      page,
-      environment.PAGINATION_PAGE_SIZE
-    );
+    this.userBookmarks$ =
+      this.personalBookmarksService.getPersonalBookmarkOrderedBy(
+        this.userId,
+        this.orderBy,
+        page,
+        environment.PAGINATION_PAGE_SIZE
+      );
   }
 
   getLastCreatedBookmarks() {

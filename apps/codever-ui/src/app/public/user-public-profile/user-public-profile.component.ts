@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserPublicService } from './user-public.service';
 import { environment } from '../../../environments/environment';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Bookmark } from '../../core/model/bookmark';
 import { UserData } from '../../core/model/user-data';
 import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
@@ -16,12 +16,14 @@ import { Meta } from '@angular/platform-browser';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';
 import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
+import { AsyncBookmarkListComponent } from '../../shared/async-bookmark-list/async-bookmark-list.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-user-public-profile',
-    templateUrl: './user-public-profile.component.html',
-    styleUrls: ['./user-public-profile.component.scss'],
-    standalone: false
+  selector: 'app-user-public-profile',
+  templateUrl: './user-public-profile.component.html',
+  styleUrls: ['./user-public-profile.component.scss'],
+  imports: [RouterLink, AsyncBookmarkListComponent, AsyncPipe],
 })
 export class UserPublicProfileComponent
   extends TagFollowingBaseComponent

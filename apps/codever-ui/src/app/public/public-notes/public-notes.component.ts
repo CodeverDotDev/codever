@@ -5,11 +5,12 @@ import { PublicNotesService } from '../notes/public-notes.service';
 import { ActivatedRoute } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 import { environment } from '../../../environments/environment';
+import { AsyncNoteListComponent } from '../../shared/async-note-list/async-note-list.component';
 
 @Component({
-    selector: 'app-public-notes',
-    templateUrl: './public-notes.component.html',
-    standalone: false
+  selector: 'app-public-notes',
+  templateUrl: './public-notes.component.html',
+  imports: [AsyncNoteListComponent],
 })
 export class PublicNotesComponent implements OnInit {
   notes$: Observable<Note[]>;
@@ -46,4 +47,3 @@ export class PublicNotesComponent implements OnInit {
     );
   }
 }
-

@@ -1,17 +1,32 @@
 import { Component, Inject } from '@angular/core';
 import { Bookmark } from '../../../core/model/bookmark';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { UserData } from '../../../core/model/user-data';
-import { DatePipe } from '@angular/common';
+import { DatePipe, AsyncPipe } from '@angular/common';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { TweetComponent } from '../../../social-buttons/tweet.component';
 
 @Component({
-    selector: 'app-social-share-dialog',
-    templateUrl: './social-share-dialog.component.html',
-    providers: [DatePipe],
-    standalone: false
+  selector: 'app-social-share-dialog',
+  templateUrl: './social-share-dialog.component.html',
+  providers: [DatePipe],
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    TweetComponent,
+    MatDialogActions,
+    AsyncPipe,
+  ],
 })
 export class SocialShareDialogComponent {
   userIsLoggedIn: boolean;

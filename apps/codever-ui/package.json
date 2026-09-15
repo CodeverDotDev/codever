@@ -5,7 +5,7 @@
   "scripts": {
     "update-angular": "ng update --force @angular/core@21 @angular/cli@21",
     "update-angular-material": "ng update @angular/material@21",
-    "update-angular-self-closing-tags": "ng generate @angular/core:self-closing-tag",
+    "update-angular-standalone": "ng generate @angular/core:standalone",
     "ng": "ng",
     "prestart": "node ../../git-version.js",
     "start": "ng serve",

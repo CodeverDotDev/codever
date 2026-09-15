@@ -14,7 +14,9 @@ renderer.code = function (code: string, language: string) {
   const highlighted = lang
     ? hljs.highlight(code, { language: lang }).value
     : hljs.highlightAuto(code).value;
-  return `<pre><code class="hljs${lang ? ' language-' + lang : ''}">${highlighted}</code></pre>`;
+  return `<pre><code class="hljs${
+    lang ? ' language-' + lang : ''
+  }">${highlighted}</code></pre>`;
 };
 
 // Running count of task-list checkboxes rendered during the current parse.
@@ -87,24 +89,48 @@ marked.setOptions({ renderer });
 // DOMPurify config that allows KaTeX-generated MathML elements
 const KATEX_SANITIZE_CONFIG = {
   ADD_TAGS: [
-    'math', 'semantics', 'annotation', 'mrow', 'mi', 'mo', 'mn',
-    'msup', 'msub', 'mfrac', 'msqrt', 'mroot', 'mover', 'munder',
-    'munderover', 'mtable', 'mtr', 'mtd', 'mtext', 'mspace', 'mpadded',
-    'menclose', 'mglyph', 'mmultiscripts', 'mprescripts', 'none',
+    'math',
+    'semantics',
+    'annotation',
+    'mrow',
+    'mi',
+    'mo',
+    'mn',
+    'msup',
+    'msub',
+    'mfrac',
+    'msqrt',
+    'mroot',
+    'mover',
+    'munder',
+    'munderover',
+    'mtable',
+    'mtr',
+    'mtd',
+    'mtext',
+    'mspace',
+    'mpadded',
+    'menclose',
+    'mglyph',
+    'mmultiscripts',
+    'mprescripts',
+    'none',
     // Keep interactive task-list checkboxes through sanitization
     'input',
   ],
   ADD_ATTR: [
-    'encoding', 'xmlns', 'mathvariant', 'displaystyle', 'scriptlevel',
+    'encoding',
+    'xmlns',
+    'mathvariant',
+    'displaystyle',
+    'scriptlevel',
     // Attributes needed for task-list checkboxes
-    'type', 'checked',
+    'type',
+    'checked',
   ],
 };
 
-@Pipe({
-    name: 'md2html',
-    standalone: false
-})
+@Pipe({ name: 'md2html' })
 export class Markdown2HtmlPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 
@@ -113,7 +139,10 @@ export class Markdown2HtmlPipe implements PipeTransform {
     renderedTaskCount = 0;
     // Pre-process LaTeX math delimiters before markdown parsing
     const withLatex = renderLatex(text);
-    const clean = DOMPurify.sanitize(marked.parse(withLatex), KATEX_SANITIZE_CONFIG);
+    const clean = DOMPurify.sanitize(
+      marked.parse(withLatex),
+      KATEX_SANITIZE_CONFIG
+    );
     // Bypass Angular's built-in sanitizer which strips inline style attributes
     // that KaTeX needs for proper math layout. DOMPurify already handles sanitization.
     return this.sanitizer.bypassSecurityTrustHtml(clean);

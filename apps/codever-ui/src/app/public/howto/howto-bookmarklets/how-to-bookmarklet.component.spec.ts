@@ -5,7 +5,7 @@ import { HowToBookmarkletComponent } from './how-to-bookmarklet.component';
 describe('About Component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HowToBookmarkletComponent],
+      imports: [HowToBookmarkletComponent],
     });
   });
 

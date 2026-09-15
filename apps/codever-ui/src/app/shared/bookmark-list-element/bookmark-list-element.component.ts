@@ -27,7 +27,7 @@ import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookma
 import { AdminService } from '../../core/admin/admin.service';
 import { FeedStore } from '../../core/user/feed-store.service';
 import { MyBookmarksStore } from '../../core/user/my-bookmarks.store';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { LoginDialogHelperService } from '../../core/login-dialog-helper.service';
 import { AddToHistoryService } from '../../core/user/add-to-history.service';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -35,12 +35,23 @@ import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
+import { NgClass, AsyncPipe, SlicePipe, DatePipe } from '@angular/common';
+import { BookmarkTextComponent } from '../bookmark-text/bookmark-text.component';
+import { HighLightPipe } from '../../common/pipes/highlight.pipe';
 
 @Component({
-    selector: 'app-bookmark-list-element',
-    templateUrl: './bookmark-list-element.component.html',
-    styleUrls: ['./bookmark-list-element.component.scss'],
-    standalone: false
+  selector: 'app-bookmark-list-element',
+  templateUrl: './bookmark-list-element.component.html',
+  styleUrls: ['./bookmark-list-element.component.scss'],
+  imports: [
+    NgClass,
+    RouterLink,
+    BookmarkTextComponent,
+    AsyncPipe,
+    SlicePipe,
+    DatePipe,
+    HighLightPipe,
+  ],
 })
 export class BookmarkListElementComponent
   extends TagFollowingBaseComponent

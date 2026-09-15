@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
+import { Location, AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -11,7 +11,13 @@ import { KeycloakServiceWrapper } from '../core/keycloak-service-wrapper.service
 import { UserInfoStore } from '../core/user/user-info.store';
 import { UserDataStore } from '../core/user/userdata.store';
 import { UserData } from '../core/model/user-data';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import {
+  MatTabChangeEvent,
+  MatTabGroup,
+  MatTab,
+  MatTabLabel,
+  MatTabContent,
+} from '@angular/material/tabs';
 
 import { SearchDomain } from '../core/model/search-domain.enum';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,12 +26,22 @@ import { LoginRequiredDialogComponent } from '../shared/dialog/login-required-di
 import { PersonalSearchService } from '../core/personal-search.service';
 import { PublicSearchService } from '../core/public-search.service';
 import { Note } from '../core/model/note';
+import { AsyncSearchResultListComponent } from '../shared/async-search-result-list/async-search-result-list.component';
+import { FindElsewhereComponent } from './find-elsewhere/find-elsewhere.component';
 
 @Component({
-    selector: 'app-search-results',
-    templateUrl: './search-results-page.component.html',
-    styleUrls: ['./search-results-page.component.scss'],
-    standalone: false
+  selector: 'app-search-results',
+  templateUrl: './search-results-page.component.html',
+  styleUrls: ['./search-results-page.component.scss'],
+  imports: [
+    MatTabGroup,
+    MatTab,
+    MatTabLabel,
+    MatTabContent,
+    AsyncSearchResultListComponent,
+    FindElsewhereComponent,
+    AsyncPipe,
+  ],
 })
 export class SearchResultsPageComponent implements OnInit, OnDestroy {
   searchText: string; // holds the value in the search box
@@ -70,8 +86,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.searchText = this.route.snapshot.queryParamMap.get('q');
     this.searchDomain =
-      this.route.snapshot.queryParamMap.get('sd') ||
-      SearchDomain.ALL_PUBLIC;
+      this.route.snapshot.queryParamMap.get('sd') || SearchDomain.ALL_PUBLIC;
     this.searchInclude =
       this.route.snapshot.queryParamMap.get('include') || 'all';
 
@@ -114,7 +129,9 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       this.searchDomain === SearchDomain.PUBLIC_NOTES
     ) {
       const mappedType =
-        this.searchDomain === SearchDomain.PUBLIC_BOOKMARKS ? 'bookmark' : 'note';
+        this.searchDomain === SearchDomain.PUBLIC_BOOKMARKS
+          ? 'bookmark'
+          : 'note';
       if (!typeParam) {
         this.typeFilter$.next(mappedType);
       }
@@ -315,7 +332,8 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
       params.set('type', filter);
     }
     const queryString = params.toString();
-    const path = window.location.pathname + (queryString ? '?' + queryString : '');
+    const path =
+      window.location.pathname + (queryString ? '?' + queryString : '');
     this.location.replaceState(path);
   }
 
@@ -328,8 +346,14 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     }
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
-      case 0: { this.tryAllMine('all'); break; }
-      case 1: { this.tryAllPublic('all'); break; }
+      case 0: {
+        this.tryAllMine('all');
+        break;
+      }
+      case 1: {
+        this.tryAllPublic('all');
+        break;
+      }
     }
   }
 

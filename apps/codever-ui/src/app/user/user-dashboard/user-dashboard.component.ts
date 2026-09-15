@@ -5,12 +5,35 @@ import { Observable } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { ActivatedRoute, Router } from '@angular/router';
+import {
+  MatTabGroup,
+  MatTab,
+  MatTabLabel,
+  MatTabContent,
+} from '@angular/material/tabs';
+import { UserBookmarksComponent } from './user-bookmarks/user-bookmarks.component';
+import { MyNotesComponent } from './my-notes/my-notes.component';
+import { UserTagsComponent } from './tags/user-tags.component';
+import { MySearchesComponent } from './my-searches/my-searches.component';
+import { FollowingComponent } from './following/following.component';
+import { FollowersComponent } from './followers/followers.component';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './user-dashboard.component.html',
-    styleUrls: ['./user-dashboard.component.scss'],
-    standalone: false
+  selector: 'app-dashboard',
+  templateUrl: './user-dashboard.component.html',
+  styleUrls: ['./user-dashboard.component.scss'],
+  imports: [
+    MatTabGroup,
+    MatTab,
+    MatTabLabel,
+    MatTabContent,
+    UserBookmarksComponent,
+    MyNotesComponent,
+    UserTagsComponent,
+    MySearchesComponent,
+    FollowingComponent,
+    FollowersComponent,
+  ],
 })
 export class UserDashboardComponent implements OnInit {
   userId: string;
@@ -18,7 +41,14 @@ export class UserDashboardComponent implements OnInit {
   userData$: Observable<UserData>;
 
   // Maps tab index → query param name
-  private readonly tabNames = ['bookmarks', 'notes', 'tags', 'searches', 'following', 'followers'];
+  private readonly tabNames = [
+    'bookmarks',
+    'notes',
+    'tags',
+    'searches',
+    'following',
+    'followers',
+  ];
 
   constructor(
     private keycloakService: AuthenticationService,

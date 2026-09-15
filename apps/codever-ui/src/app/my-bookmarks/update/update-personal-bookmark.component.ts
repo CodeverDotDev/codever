@@ -5,12 +5,13 @@ import { PersonalBookmarksService } from '../../core/personal-bookmarks.service'
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { SaveBookmarkFormComponent } from '../save-bookmark-form/save-bookmark-form.component';
 
 @Component({
-    selector: 'app-update-bookmark',
-    templateUrl: './update-personal-bookmark.component.html',
-    styleUrls: ['./update-personal-bookmark.component.scss'],
-    standalone: false
+  selector: 'app-update-bookmark',
+  templateUrl: './update-personal-bookmark.component.html',
+  styleUrls: ['./update-personal-bookmark.component.scss'],
+  imports: [SaveBookmarkFormComponent],
 })
 export class UpdatePersonalBookmarkComponent implements OnInit {
   bookmark$: Observable<Bookmark>;

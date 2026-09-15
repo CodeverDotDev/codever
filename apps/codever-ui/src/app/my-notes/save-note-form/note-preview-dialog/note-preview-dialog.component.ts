@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MarkdownService } from '../../../core/markdown/markdown.service';
+import { NotebookRendererComponent } from '../../../shared/notebook-renderer/notebook-renderer.component';
 
 export interface NotePreviewDialogData {
   title: string;
@@ -10,10 +11,10 @@ export interface NotePreviewDialogData {
 }
 
 @Component({
-    selector: 'app-note-preview-dialog',
-    templateUrl: './note-preview-dialog.component.html',
-    styleUrls: ['./note-preview-dialog.component.scss'],
-    standalone: false
+  selector: 'app-note-preview-dialog',
+  templateUrl: './note-preview-dialog.component.html',
+  styleUrls: ['./note-preview-dialog.component.scss'],
+  imports: [NotebookRendererComponent],
 })
 export class NotePreviewDialogComponent implements OnInit {
   dialogTitle: string;
@@ -29,7 +30,8 @@ export class NotePreviewDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.dialogTitle = this.data.title || 'Preview';
-    this.isNotebook = this.data.contentType === 'notebook' && !!this.data.notebookContent;
+    this.isNotebook =
+      this.data.contentType === 'notebook' && !!this.data.notebookContent;
 
     if (this.isNotebook) {
       this.notebookJson = this.data.notebookContent || '';

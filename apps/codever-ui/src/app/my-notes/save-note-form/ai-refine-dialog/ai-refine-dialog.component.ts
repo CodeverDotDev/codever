@@ -1,6 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AiRefineService, AiRefineResult } from '../../../core/ai-refine.service';
+import {
+  AiRefineService,
+  AiRefineResult,
+} from '../../../core/ai-refine.service';
+import { FormsModule } from '@angular/forms';
 
 export interface AiRefineDialogData {
   userId: string;
@@ -19,9 +23,9 @@ export interface AiRefineDialogResult {
 }
 
 @Component({
-    selector: 'app-ai-refine-dialog',
-    templateUrl: './ai-refine-dialog.component.html',
-    standalone: false
+  selector: 'app-ai-refine-dialog',
+  templateUrl: './ai-refine-dialog.component.html',
+  imports: [FormsModule],
 })
 export class AiRefineDialogComponent {
   customPrompt: string;

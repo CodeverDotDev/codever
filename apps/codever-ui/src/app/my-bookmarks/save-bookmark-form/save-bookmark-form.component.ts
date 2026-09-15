@@ -20,6 +20,8 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { MarkdownService } from '../../core/markdown/markdown.service';
 import { AuthenticationService } from '../../core/auth/authentication.service';
@@ -47,15 +49,24 @@ import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserData } from '../../core/model/user-data';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass, AsyncPipe } from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
-import { MatChipInputEvent } from '@angular/material/chips';
+import {
+  MatChipInputEvent,
+  MatChipGrid,
+  MatChipRow,
+  MatChipRemove,
+  MatChipInput,
+} from '@angular/material/chips';
 import { Location } from '@angular/common';
 import {
   MatAutocompleteActivatedEvent,
   MatAutocompleteSelectedEvent,
+  MatAutocompleteTrigger,
+  MatAutocomplete,
+  MatOption,
 } from '@angular/material/autocomplete';
 import iziToast, { IziToastSettings } from 'izitoast';
 import { AddToCollectionDialogComponent } from '../../shared/add-to-collection-dialog/add-to-collection-dialog.component';
@@ -69,12 +80,36 @@ import {
   AiRefineResultDialogComponent,
   AiRefineAcceptedChanges,
 } from '../../my-notes/save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.component';
+import {
+  MatFormField,
+  MatLabel,
+  MatHint,
+  MatError,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-save-bookmark-form',
-    templateUrl: './save-bookmark-form.component.html',
-    styleUrls: ['./save-bookmark-form.component.scss'],
-    standalone: false
+  selector: 'app-save-bookmark-form',
+  templateUrl: './save-bookmark-form.component.html',
+  styleUrls: ['./save-bookmark-form.component.scss'],
+  imports: [
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatChipGrid,
+    MatChipRow,
+    MatIcon,
+    MatChipRemove,
+    MatAutocompleteTrigger,
+    MatChipInput,
+    MatHint,
+    MatAutocomplete,
+    MatOption,
+    MatError,
+    AsyncPipe,
+  ],
 })
 export class SaveBookmarkFormComponent implements OnInit {
   bookmarkForm: UntypedFormGroup;
@@ -706,81 +741,75 @@ Given a bookmark's URL, name, tags, and description:
 
     dialogRef
       .afterClosed()
-      .subscribe(
-        (result: AiRefineBookmarkDialogResult | undefined) => {
-          if (!result) {
-            return;
-          }
-
-          this.isRefining = true;
-
-          const resultDialogConfig = new MatDialogConfig();
-          resultDialogConfig.width = '95vw';
-          resultDialogConfig.maxHeight = '95vh';
-          resultDialogConfig.disableClose = true;
-          resultDialogConfig.data = {
-            resourceType: 'bookmark' as const,
-            originalTitle: this.bookmarkForm.get('name').value || '',
-            originalContent:
-              this.bookmarkForm.get('description').value || '',
-            originalTags: this.bookmarkForm.get('tags').value || [],
-            refinedTitle: result.refinedName,
-            refinedContent: result.refinedDescription,
-            suggestedTags: result.suggestedTags,
-            pageReachable: result.pageReachable,
-          };
-
-          const resultDialogRef = this.publicBookmarkPresentDialog.open(
-            AiRefineResultDialogComponent,
-            resultDialogConfig
-          );
-
-          resultDialogRef
-            .afterClosed()
-            .subscribe((accepted: AiRefineAcceptedChanges | null) => {
-              this.isRefining = false;
-              if (!accepted) {
-                return;
-              }
-
-              if (accepted.content) {
-                this.bookmarkForm
-                  .get('description')
-                  .patchValue(accepted.content, { emitEvent: false });
-                this.bookmarkForm.get('description').markAsDirty();
-              }
-
-              if (
-                accepted.title &&
-                accepted.title !== this.bookmarkForm.get('name').value
-              ) {
-                this.bookmarkForm
-                  .get('name')
-                  .patchValue(accepted.title, { emitEvent: false });
-                this.bookmarkForm.get('name').markAsDirty();
-              }
-
-              if (accepted.tags && accepted.tags.length > 0) {
-                const formTags = this.bookmarkForm.get(
-                  'tags'
-                ) as UntypedFormArray;
-                const existingTags = formTags.value.map((t: string) =>
-                  t.toLowerCase()
-                );
-                accepted.tags.forEach((tag) => {
-                  const normalized = tag.toLowerCase().trim();
-                  if (
-                    !existingTags.includes(normalized) &&
-                    formTags.length < 8
-                  ) {
-                    formTags.push(this.formBuilder.control(normalized));
-                  }
-                });
-                this.bookmarkForm.get('tags').markAsDirty();
-              }
-            });
+      .subscribe((result: AiRefineBookmarkDialogResult | undefined) => {
+        if (!result) {
+          return;
         }
-      );
+
+        this.isRefining = true;
+
+        const resultDialogConfig = new MatDialogConfig();
+        resultDialogConfig.width = '95vw';
+        resultDialogConfig.maxHeight = '95vh';
+        resultDialogConfig.disableClose = true;
+        resultDialogConfig.data = {
+          resourceType: 'bookmark' as const,
+          originalTitle: this.bookmarkForm.get('name').value || '',
+          originalContent: this.bookmarkForm.get('description').value || '',
+          originalTags: this.bookmarkForm.get('tags').value || [],
+          refinedTitle: result.refinedName,
+          refinedContent: result.refinedDescription,
+          suggestedTags: result.suggestedTags,
+          pageReachable: result.pageReachable,
+        };
+
+        const resultDialogRef = this.publicBookmarkPresentDialog.open(
+          AiRefineResultDialogComponent,
+          resultDialogConfig
+        );
+
+        resultDialogRef
+          .afterClosed()
+          .subscribe((accepted: AiRefineAcceptedChanges | null) => {
+            this.isRefining = false;
+            if (!accepted) {
+              return;
+            }
+
+            if (accepted.content) {
+              this.bookmarkForm
+                .get('description')
+                .patchValue(accepted.content, { emitEvent: false });
+              this.bookmarkForm.get('description').markAsDirty();
+            }
+
+            if (
+              accepted.title &&
+              accepted.title !== this.bookmarkForm.get('name').value
+            ) {
+              this.bookmarkForm
+                .get('name')
+                .patchValue(accepted.title, { emitEvent: false });
+              this.bookmarkForm.get('name').markAsDirty();
+            }
+
+            if (accepted.tags && accepted.tags.length > 0) {
+              const formTags = this.bookmarkForm.get(
+                'tags'
+              ) as UntypedFormArray;
+              const existingTags = formTags.value.map((t: string) =>
+                t.toLowerCase()
+              );
+              accepted.tags.forEach((tag) => {
+                const normalized = tag.toLowerCase().trim();
+                if (!existingTags.includes(normalized) && formTags.length < 8) {
+                  formTags.push(this.formBuilder.control(normalized));
+                }
+              });
+              this.bookmarkForm.get('tags').markAsDirty();
+            }
+          });
+      });
   }
 
   get tags() {
@@ -845,7 +874,8 @@ Given a bookmark's URL, name, tags, and description:
   fullscreenChangeHandler(): void {
     if (this.isNativeFullscreenEnabled()) {
       this.isFullScreen =
-        !!this.getActiveFullscreenElement() && this.getActiveFullscreenElement() === this.fullscreenEl;
+        !!this.getActiveFullscreenElement() &&
+        this.getActiveFullscreenElement() === this.fullscreenEl;
       if (!this.getActiveFullscreenElement()) {
         this.fullscreenEl = null;
       }

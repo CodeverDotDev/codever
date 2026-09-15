@@ -11,11 +11,26 @@ import {
 } from '@angular/core';
 import { Note } from '../../../core/model/note';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
+import { MarkedImageWidthDirective } from '../../directive/marked-image-width.directive';
+import { CopyCodeButtonDirective } from '../../directive/copy-code-button.directive';
+import { FullscreenCodeButtonDirective } from '../../directive/fullscreen-code-button.directive';
+import { NgClass } from '@angular/common';
+import { NotebookRendererComponent } from '../../notebook-renderer/notebook-renderer.component';
+import { AsyncBookmarkListComponent } from '../../async-bookmark-list/async-bookmark-list.component';
+import { Markdown2HtmlPipe } from '../../pipe/markdown2html.pipe';
 
 @Component({
-    selector: 'app-note-content',
-    templateUrl: './note-content.component.html',
-    standalone: false
+  selector: 'app-note-content',
+  templateUrl: './note-content.component.html',
+  imports: [
+    MarkedImageWidthDirective,
+    CopyCodeButtonDirective,
+    FullscreenCodeButtonDirective,
+    NgClass,
+    NotebookRendererComponent,
+    AsyncBookmarkListComponent,
+    Markdown2HtmlPipe,
+  ],
 })
 export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   @Input()

@@ -8,7 +8,7 @@ describe('HistoryDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HotKeysDialogComponent],
+      imports: [HotKeysDialogComponent],
     }).compileComponents();
   }));
 

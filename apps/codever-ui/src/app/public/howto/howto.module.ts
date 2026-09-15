@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HowToBookmarkletComponent } from './howto-bookmarklets/how-to-bookmarklet.component';
-import { HowtoRoutingModule } from './howto-routing.module';
 import { HowtoComponent } from './howto.component';
 import { HowtoGetStartedComponent } from './howto-get-started/howto-get-started.component';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -11,11 +10,30 @@ import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.comp
 import { HowToNotesComponent } from './howto-notes/how-to-notes.component';
 import { CodeverBookmarkletComponent } from './howto-bookmarklets/codever-bookmarklet/codever-bookmarklet.component';
 import { HowToMcpComponent } from './howto-mcp/how-to-mcp.component';
-import { SharedModule } from '../../shared/shared.module';
-import { RouterModule } from '@angular/router';
+
+import { RouterModule, Routes } from '@angular/router';
+
+const howToRoutes: Routes = [
+  { path: '', component: HowtoComponent },
+  { path: 'get-started', component: HowtoGetStartedComponent },
+  { path: 'bookmarklets', redirectTo: 'bookmarklet' },
+  { path: 'bookmarklet', component: HowToBookmarkletComponent },
+  { path: 'bookmarks', component: HowToBookmarksComponent },
+  { path: 'notes', component: HowToNotesComponent },
+  { path: 'snippets', redirectTo: 'notes' },
+  { path: 'hotkeys', component: HowtoHotkeysComponent },
+  { path: 'mcp', component: HowToMcpComponent },
+  { path: '**', component: HowtoComponent },
+];
 
 @NgModule({
-  declarations: [
+  exports: [],
+  imports: [
+    RouterModule.forChild(howToRoutes),
+    CommonModule,
+    MatExpansionModule,
+    MatTabsModule,
+    RouterModule,
     HowtoComponent,
     HowtoGetStartedComponent,
     HowToBookmarksComponent,
@@ -24,15 +42,6 @@ import { RouterModule } from '@angular/router';
     CodeverBookmarkletComponent,
     HowtoHotkeysComponent,
     HowToMcpComponent,
-  ],
-  exports: [],
-  imports: [
-    HowtoRoutingModule,
-    CommonModule,
-    MatExpansionModule,
-    MatTabsModule,
-    SharedModule,
-    RouterModule,
   ],
 })
 export class HowtoModule {}

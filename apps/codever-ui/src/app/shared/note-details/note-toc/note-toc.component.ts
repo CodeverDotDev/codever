@@ -6,9 +6,8 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
-  DOCUMENT
 } from '@angular/core';
-
+import { DOCUMENT, NgClass } from '@angular/common';
 
 export interface TocHeading {
   id: string;
@@ -17,10 +16,10 @@ export interface TocHeading {
 }
 
 @Component({
-    selector: 'app-note-toc',
-    templateUrl: './note-toc.component.html',
-    styleUrls: ['./note-toc.component.scss'],
-    standalone: false
+  selector: 'app-note-toc',
+  templateUrl: './note-toc.component.html',
+  styleUrls: ['./note-toc.component.scss'],
+  imports: [NgClass],
 })
 export class NoteTocComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input()
@@ -32,9 +31,7 @@ export class NoteTocComponent implements AfterViewInit, OnChanges, OnDestroy {
   private scrollHandler: (() => void) | null = null;
   private rafId: number | null = null;
 
-  constructor(
-    @Inject(DOCUMENT) private document: Document
-  ) {}
+  constructor(@Inject(DOCUMENT) private document: Document) {}
 
   ngAfterViewInit(): void {
     // Defer setup so headings are in the DOM after Angular renders innerHtml
@@ -60,7 +57,8 @@ export class NoteTocComponent implements AfterViewInit, OnChanges, OnDestroy {
   scrollToHeading(id: string): void {
     const el = this.document.getElementById(id);
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - this.HEADER_OFFSET;
+      const top =
+        el.getBoundingClientRect().top + window.scrollY - this.HEADER_OFFSET;
       window.scrollTo({ top, behavior: 'smooth' });
       // Reflect the click immediately; the scroll listener keeps it in sync after.
       this.activeHeadingId = id;

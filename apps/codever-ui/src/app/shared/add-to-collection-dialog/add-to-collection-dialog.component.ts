@@ -1,7 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { Collection } from '../../core/model/collection';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { FormsModule } from '@angular/forms';
 
 export interface AddToCollectionDialogData {
   resourceId?: string;
@@ -10,10 +18,16 @@ export interface AddToCollectionDialogData {
 }
 
 @Component({
-    selector: 'app-add-to-collection-dialog',
-    templateUrl: './add-to-collection-dialog.component.html',
-    styleUrls: ['./add-to-collection-dialog.component.scss'],
-    standalone: false
+  selector: 'app-add-to-collection-dialog',
+  templateUrl: './add-to-collection-dialog.component.html',
+  styleUrls: ['./add-to-collection-dialog.component.scss'],
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    FormsModule,
+    MatDialogActions,
+  ],
 })
 export class AddToCollectionDialogComponent implements OnInit {
   collections: Collection[] = [];
@@ -66,9 +80,7 @@ export class AddToCollectionDialogComponent implements OnInit {
       return this.collections;
     }
     const lower = this.filterText.toLowerCase();
-    return this.collections.filter((c) =>
-      c.name.toLowerCase().includes(lower)
-    );
+    return this.collections.filter((c) => c.name.toLowerCase().includes(lower));
   }
 
   isSelected(collectionId: string): boolean {
@@ -151,4 +163,3 @@ export class AddToCollectionDialogComponent implements OnInit {
     );
   }
 }
-

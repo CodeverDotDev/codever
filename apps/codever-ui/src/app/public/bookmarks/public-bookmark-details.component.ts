@@ -3,11 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { PublicBookmarksService } from './public-bookmarks.service';
+import { BookmarkListElementComponent } from '../../shared/bookmark-list-element/bookmark-list-element.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-public-bookmark-details',
-    templateUrl: './public-bookmark-details.component.html',
-    standalone: false
+  selector: 'app-public-bookmark-details',
+  templateUrl: './public-bookmark-details.component.html',
+  imports: [BookmarkListElementComponent, AsyncPipe],
 })
 export class PublicBookmarkDetailsComponent implements OnInit {
   showMoreText = false;

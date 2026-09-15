@@ -6,10 +6,7 @@ import {
   Renderer2,
 } from '@angular/core';
 
-@Directive({
-    selector: '[appOpenInNewTab]',
-    standalone: false
-})
+@Directive({ selector: '[appOpenInNewTab]' })
 export class OpenInNewTabDirective implements AfterViewInit {
   constructor(private el: ElementRef, private renderer: Renderer2) {}
 

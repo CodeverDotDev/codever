@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { MyBookmarksRoutingModule } from './my-bookmarks-routing.module';
 import { MyBookmarksEntryPointComponent } from './my-bookmarks-entry-point.component';
-import { SharedModule } from '../shared/shared.module';
-import { RouterModule } from '@angular/router';
+
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../core/auth/auth-guard.service';
 import { UpdatePersonalBookmarkComponent } from './update/update-personal-bookmark.component';
 import { CreatePersonalBookmarkComponent } from './create/create-personal-bookmark.component';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -20,22 +20,24 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CloneBookmarkComponent } from './clone-bookmark/clone-bookmark.component';
 import { AiRefineBookmarkDialogComponent } from './save-bookmark-form/ai-refine-bookmark-dialog/ai-refine-bookmark-dialog.component';
-import { AiRefineResultDialogModule } from '../my-notes/save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.module';
+
+const myBookmarksRoutes: Routes = [
+  {
+    path: '',
+    component: MyBookmarksEntryPointComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'new', component: CreatePersonalBookmarkComponent },
+      { path: ':id/copy-to-mine', component: CopyToMineBookmarkComponent },
+      { path: ':id/clone', component: CloneBookmarkComponent },
+      { path: ':id/details', component: BookmarkDetailsComponent },
+      { path: ':id/edit', component: UpdatePersonalBookmarkComponent },
+    ],
+  },
+];
 
 @NgModule({
-  declarations: [
-    CreatePersonalBookmarkComponent,
-    UpdatePersonalBookmarkComponent,
-    CopyToMineBookmarkComponent,
-    CloneBookmarkComponent,
-    AiRefineBookmarkDialogComponent,
-    MyBookmarksEntryPointComponent,
-    PublicBookmarkPresentDialogComponent,
-    SaveBookmarkFormComponent,
-    BookmarkDetailsComponent,
-  ],
   imports: [
-    SharedModule,
     RouterModule,
     OverlayModule,
     MatChipsModule,
@@ -45,8 +47,16 @@ import { AiRefineResultDialogModule } from '../my-notes/save-note-form/ai-refine
     MatAutocompleteModule,
     MatTabsModule,
     MatDialogModule,
-    MyBookmarksRoutingModule,
-    AiRefineResultDialogModule,
+    RouterModule.forChild(myBookmarksRoutes),
+    CreatePersonalBookmarkComponent,
+    UpdatePersonalBookmarkComponent,
+    CopyToMineBookmarkComponent,
+    CloneBookmarkComponent,
+    AiRefineBookmarkDialogComponent,
+    MyBookmarksEntryPointComponent,
+    PublicBookmarkPresentDialogComponent,
+    SaveBookmarkFormComponent,
+    BookmarkDetailsComponent,
   ],
   providers: [DatePipe],
 })

@@ -11,6 +11,8 @@ import { marked } from 'marked';
 import hljs from 'highlight.js';
 import katex from 'katex';
 import { renderLatex } from '../render-latex.util';
+import { CopyCodeButtonDirective } from '../directive/copy-code-button.directive';
+import { NgClass } from '@angular/common';
 
 /**
  * Renders a Jupyter Notebook (.ipynb) from its raw JSON string.
@@ -25,11 +27,11 @@ import { renderLatex } from '../render-latex.util';
  * Parsed once on change and stored as a list of renderable cells.
  */
 @Component({
-    selector: 'app-notebook-renderer',
-    templateUrl: './notebook-renderer.component.html',
-    styleUrls: ['./notebook-renderer.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+  selector: 'app-notebook-renderer',
+  templateUrl: './notebook-renderer.component.html',
+  styleUrls: ['./notebook-renderer.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  imports: [CopyCodeButtonDirective, NgClass],
 })
 export class NotebookRendererComponent implements OnChanges {
   @Input() ipynbJson: string;

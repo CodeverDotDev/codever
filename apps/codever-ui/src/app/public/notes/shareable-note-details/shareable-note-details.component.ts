@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Note } from '../../../core/model/note';
 import { PublicNotesService } from '../public-notes.service';
+import { NoteDetailsComponent } from '../../../shared/note-details/note-details.component';
 
 @Component({
-    selector: 'app-shareable-note-details',
-    templateUrl: './shareable-note-details.component.html',
-    styleUrls: ['./shareable-note-details.component.scss'],
-    standalone: false
+  selector: 'app-shareable-note-details',
+  templateUrl: './shareable-note-details.component.html',
+  styleUrls: ['./shareable-note-details.component.scss'],
+  imports: [NoteDetailsComponent],
 })
 export class ShareableNoteDetailsComponent implements OnInit {
   note$: Observable<Note>;
@@ -29,4 +30,3 @@ export class ShareableNoteDetailsComponent implements OnInit {
     );
   }
 }
-

@@ -2,18 +2,24 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UserData } from '../../../core/model/user-data';
 import { UserDataStore } from '../../../core/user/userdata.store';
 import { Observable } from 'rxjs';
-import { MatRadioChange } from '@angular/material/radio';
+import {
+  MatRadioChange,
+  MatRadioGroup,
+  MatRadioButton,
+} from '@angular/material/radio';
 import {
   LocalStorageSaveOptions,
   LocalStorageService,
 } from '../../../core/cache/local-storage.service';
 import { localStorageKeys } from '../../../core/model/localstorage.cache-keys';
+import { FormsModule } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-user-local-storage-setup',
-    templateUrl: './user-local-storage-setup.component.html',
-    styleUrls: ['./user-local-storage-setup.component.scss'],
-    standalone: false
+  selector: 'app-user-local-storage-setup',
+  templateUrl: './user-local-storage-setup.component.html',
+  styleUrls: ['./user-local-storage-setup.component.scss'],
+  imports: [MatRadioGroup, FormsModule, MatRadioButton, AsyncPipe],
 })
 export class UserLocalStorageSetupComponent implements OnInit {
   localStorageEnabled = false;

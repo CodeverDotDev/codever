@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Collection } from '../../core/model/collection';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Bookmark } from '../../core/model/bookmark';
 import { Note } from '../../core/model/note';
+import { FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-collection-detail',
-    templateUrl: './collection-detail.component.html',
-    styleUrls: ['./collection-detail.component.scss'],
-    standalone: false
+  selector: 'app-collection-detail',
+  templateUrl: './collection-detail.component.html',
+  styleUrls: ['./collection-detail.component.scss'],
+  imports: [FormsModule, NgClass, RouterLink],
 })
 export class CollectionDetailComponent implements OnInit {
   collection: Collection;

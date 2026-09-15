@@ -7,12 +7,14 @@ import { UserData } from '../../core/model/user-data';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
+import { BookmarkListElementComponent } from '../../shared/bookmark-list-element/bookmark-list-element.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-bookmark-details',
-    templateUrl: './bookmark-details.component.html',
-    styleUrls: ['./bookmark-details.component.scss'],
-    standalone: false
+  selector: 'app-bookmark-details',
+  templateUrl: './bookmark-details.component.html',
+  styleUrls: ['./bookmark-details.component.scss'],
+  imports: [BookmarkListElementComponent, AsyncPipe],
 })
 export class BookmarkDetailsComponent implements OnInit {
   bookmark$: Observable<Bookmark>;
@@ -38,10 +40,11 @@ export class BookmarkDetailsComponent implements OnInit {
       // search results) can be stale, so it is only used as an instant
       // placeholder while the fresh copy loads.
       const bookmarkId = this.route.snapshot.paramMap.get('id');
-      const freshBookmark$ = this.personalBookmarksService.getPersonalBookmarkById(
-        userInfo.sub,
-        bookmarkId
-      );
+      const freshBookmark$ =
+        this.personalBookmarksService.getPersonalBookmarkById(
+          userInfo.sub,
+          bookmarkId
+        );
 
       const stateBookmark: Bookmark = window.history.state.bookmark;
       this.bookmark$ = stateBookmark

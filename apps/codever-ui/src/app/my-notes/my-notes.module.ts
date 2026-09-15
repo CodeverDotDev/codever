@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '../shared/shared.module';
+
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../core/auth/auth-guard.service';
 import {
@@ -19,7 +19,7 @@ import { UpdatePersonalNoteComponent } from './update-note/update-personal-note.
 import { NoteEditorComponent } from './save-note-form/note-editor.component';
 import { NotePreviewDialogComponent } from './save-note-form/note-preview-dialog/note-preview-dialog.component';
 import { AiRefineDialogComponent } from './save-note-form/ai-refine-dialog/ai-refine-dialog.component';
-import { AiRefineResultDialogModule } from './save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.module';
+
 import { NoteDetailsComponent } from '../shared/note-details/note-details.component';
 import { PersonalNotesService } from '../core/personal-notes.service';
 import { CloneNoteComponent } from './clone-note/clone-note.component';
@@ -55,18 +55,8 @@ const notesRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    CreatePersonalNoteComponent,
-    UpdatePersonalNoteComponent,
-    NoteEditorComponent,
-    NotePreviewDialogComponent,
-    AiRefineDialogComponent,
-    CloneNoteComponent,
-    CopyToMineNoteComponent,
-  ],
   imports: [
     RouterModule.forChild(notesRoutes),
-    SharedModule,
     MatTabsModule,
     MatAutocompleteModule,
     MatSelectModule,
@@ -75,7 +65,14 @@ const notesRoutes: Routes = [
     MatDialogModule,
     MatTooltipModule,
     HighlightModule,
-    AiRefineResultDialogModule,
+    CreatePersonalNoteComponent,
+    UpdatePersonalNoteComponent,
+    NoteEditorComponent,
+    NotePreviewDialogComponent,
+    AiRefineDialogComponent,
+    CloneNoteComponent,
+    CopyToMineNoteComponent,
+    NoteDetailsComponent,
   ],
   exports: [NoteDetailsComponent],
   providers: [

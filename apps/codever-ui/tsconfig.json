@@ -12,6 +12,9 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2022",
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "highlight.js": ["node_modules/highlight.js/types/index.d.ts"]
+    }
   }
 }
