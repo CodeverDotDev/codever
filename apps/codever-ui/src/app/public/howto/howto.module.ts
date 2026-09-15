@@ -11,7 +11,7 @@ import { HowToBookmarksComponent } from './howto-bookmarks/how-to-bookmarks.comp
 import { HowToNotesComponent } from './howto-notes/how-to-notes.component';
 import { CodeverBookmarkletComponent } from './howto-bookmarklets/codever-bookmarklet/codever-bookmarklet.component';
 import { HowToMcpComponent } from './howto-mcp/how-to-mcp.component';
-import { SharedModule } from '../../shared/shared.module';
+
 import { RouterModule } from '@angular/router';
 
 @NgModule({
@@ -21,7 +21,6 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     MatExpansionModule,
     MatTabsModule,
-    SharedModule,
     RouterModule,
     HowtoComponent,
     HowtoGetStartedComponent,

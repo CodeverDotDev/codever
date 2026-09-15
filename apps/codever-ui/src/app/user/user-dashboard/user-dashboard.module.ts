@@ -5,7 +5,7 @@ import { UserDashboardComponent } from './user-dashboard.component';
 import { CommonModule } from '@angular/common';
 import { AuthGuard } from '../../core/auth/auth-guard.service';
 import { UserBookmarksComponent } from './user-bookmarks/user-bookmarks.component';
-import { SharedModule } from '../../shared/shared.module';
+
 import { DeleteBookmarksByTagDialogComponent } from './tags/delete-bookmarks-by-tag-dialog/delete-bookmarks-by-tag-dialog.component';
 import { DeleteSavedSearchDialogComponent } from './my-searches/delete-saved-search-dialog/delete-saved-search-dialog.component';
 import { MySearchesComponent } from './my-searches/my-searches.component';
@@ -36,7 +36,6 @@ const userDashboardRoutes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forChild(userDashboardRoutes),
-    SharedModule,
     MatTabsModule,
     MatAutocompleteModule,
     MatExpansionModule,

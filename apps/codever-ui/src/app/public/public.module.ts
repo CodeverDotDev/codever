@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '../shared/shared.module';
+
 import { BookmarksTaggedService } from './tag/bookmarks-tagged.service';
 import { BookmarksTaggedComponent } from './tag/bookmarks-tagged.component';
 import { PublicRoutingModule } from './public-routing.module';
@@ -23,7 +23,6 @@ import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmar
 
 @NgModule({
   imports: [
-    SharedModule,
     PublicRoutingModule,
     MatTabsModule,
     MatAutocompleteModule,

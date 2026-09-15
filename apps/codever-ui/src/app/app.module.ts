@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
-import { SharedModule } from './shared/shared.module';
+
 import { CoreModule } from './core/core.module';
 import { PublicResourcesModule } from './public/public.module';
 import {
@@ -14,9 +14,9 @@ import {
 } from '@angular/common/http';
 import {
   createInterceptorCondition,
-  includeBearerTokenInterceptor,
   INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
   IncludeBearerTokenCondition,
+  includeBearerTokenInterceptor,
   provideKeycloak,
 } from 'keycloak-angular';
 import { initializeKeycloakEvents } from './app-init';
@@ -30,20 +30,15 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { LoaderInterceptorService } from './core/loader/loader-interceptor.service';
 import { LoaderComponent } from './shared/loader/loader.component';
-import { SocialButtonsModule } from './social-buttons/social-buttons.module';
+
 import { AppService } from './app.service';
-import {
-  HIGHLIGHT_OPTIONS,
-  HighlightModule,
-  HighlightOptions,
-} from 'ngx-highlightjs';
-import {
-  MAT_CHIPS_DEFAULT_OPTIONS,
-  MatChipsModule,
-} from '@angular/material/chips';
+import { HIGHLIGHT_OPTIONS, HighlightModule } from 'ngx-highlightjs';
+import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
 import { NoteNotFoundComponent } from './not-found/note-not-found.component';
 import { NewEntryComponent } from './new-entry/new-entry.component';
 import { QuickAccessResourcesComponent } from './left-navigation-menu/quick-access-resources.component';
+import { NavigationComponent } from './shared/navigation/navigation.component';
+import { ExtensionsComponent } from './shared/extensions/extensions.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ChunkLoadErrorHandler } from './core/error/chunk-load-error.handler';
 
@@ -81,7 +76,6 @@ const keycloakUrlCondition =
   });
 
 @NgModule({
-  exports: [MatChipsModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
   imports: [
@@ -89,11 +83,8 @@ const keycloakUrlCondition =
     BrowserAnimationsModule,
     ReactiveFormsModule,
     RouterModule,
-    // app modules - notice that MyBookmarksModule is not listed, as it is lazy loaded
-    SharedModule,
     CoreModule,
     PublicResourcesModule,
-    SocialButtonsModule,
     OverlayModule,
     DragDropModule,
     // routing module
@@ -104,6 +95,8 @@ const keycloakUrlCondition =
     }),
     MatTooltipModule,
     QuickAccessResourcesComponent,
+    NavigationComponent,
+    ExtensionsComponent,
     PageNotFoundComponent,
     NoteNotFoundComponent,
     LoaderComponent,

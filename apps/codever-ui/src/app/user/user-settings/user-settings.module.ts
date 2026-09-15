@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { SharedModule } from '../../shared/shared.module';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserSettingsComponent } from './user-settings.component';
 import { AuthGuard } from '../../core/auth/auth-guard.service';
@@ -24,7 +24,6 @@ const userSettingsRoutes: Routes = [
   imports: [
     RouterModule.forChild(userSettingsRoutes),
     ReactiveFormsModule,
-    SharedModule,
     CommonModule,
     MatTabsModule,
     MatRadioModule,

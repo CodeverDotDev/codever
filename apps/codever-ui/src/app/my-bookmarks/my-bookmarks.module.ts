@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { MyBookmarksRoutingModule } from './my-bookmarks-routing.module';
 import { MyBookmarksEntryPointComponent } from './my-bookmarks-entry-point.component';
-import { SharedModule } from '../shared/shared.module';
+
 import { RouterModule } from '@angular/router';
 import { UpdatePersonalBookmarkComponent } from './update/update-personal-bookmark.component';
 import { CreatePersonalBookmarkComponent } from './create/create-personal-bookmark.component';
@@ -20,11 +20,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CloneBookmarkComponent } from './clone-bookmark/clone-bookmark.component';
 import { AiRefineBookmarkDialogComponent } from './save-bookmark-form/ai-refine-bookmark-dialog/ai-refine-bookmark-dialog.component';
-import { AiRefineResultDialogModule } from '../my-notes/save-note-form/ai-refine-result-dialog/ai-refine-result-dialog.module';
 
 @NgModule({
   imports: [
-    SharedModule,
     RouterModule,
     OverlayModule,
     MatChipsModule,
@@ -35,7 +33,6 @@ import { AiRefineResultDialogModule } from '../my-notes/save-note-form/ai-refine
     MatTabsModule,
     MatDialogModule,
     MyBookmarksRoutingModule,
-    AiRefineResultDialogModule,
     CreatePersonalBookmarkComponent,
     UpdatePersonalBookmarkComponent,
     CopyToMineBookmarkComponent,
