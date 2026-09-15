@@ -78,7 +78,6 @@ import { PersonalCollectionsService } from '../../core/personal-collections.serv
 import { FeatureToggleService } from '../../core/feature-toggle.service';
 import { MatFormField, MatHint, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
-import { CreatePersonalNoteComponent } from '../create-note/create-personal-note.component';
 
 @Component({
   selector: 'app-note-editor',
@@ -99,7 +98,6 @@ import { CreatePersonalNoteComponent } from '../create-note/create-personal-note
     MatAutocomplete,
     MatOption,
     MatError,
-    CreatePersonalNoteComponent,
     AsyncPipe,
   ],
 })

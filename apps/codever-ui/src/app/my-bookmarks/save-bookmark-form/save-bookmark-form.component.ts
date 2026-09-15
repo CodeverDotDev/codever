@@ -87,7 +87,6 @@ import {
   MatError,
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
-import { CreatePersonalBookmarkComponent } from '../create/create-personal-bookmark.component';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -109,7 +108,6 @@ import { CreatePersonalBookmarkComponent } from '../create/create-personal-bookm
     MatAutocomplete,
     MatOption,
     MatError,
-    CreatePersonalBookmarkComponent,
     AsyncPipe,
   ],
 })
