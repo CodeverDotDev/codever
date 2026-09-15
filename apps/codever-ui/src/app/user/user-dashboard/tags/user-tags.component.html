@@ -171,7 +171,7 @@
               title="Show my public bookmarks tagged {{ tag.name }}"
             >
               {{ tag.name }}
-              <span class="badge bg-light">{{ tag.count }}</span>
+              <span class="badge text-bg-light">{{ tag.count }}</span>
             </a>
             <button
               type=" button"
@@ -254,7 +254,7 @@
               title="Show my private bookmarks tagged {{ tag.name }}"
             >
               {{ tag.name }}
-              <span class="badge bg-light">{{ tag.count }}</span>
+              <span class="badge text-bg-light">{{ tag.count }}</span>
             </a>
             <button
               type=" button"
@@ -327,11 +327,11 @@
       Batch delete <strong>private</strong> bookmarks by <strong>tag</strong>
     </h6>
     <div class="input-group search-component">
-      
+
         <span class="input-group-text">
           <i class="fa fa-search"></i>
         </span>
-      
+
       <input
         #tagSearchBox
         type="text"
@@ -347,7 +347,7 @@
           >{{ option.name }}
         </mat-option>
       </mat-autocomplete>
-      
+
         <button
           class="btn btn-outline-danger"
           type="button"
@@ -356,7 +356,7 @@
         >
           Delete <strong>ALL private</strong> bookmarks by selected tag
         </button>
-      
+
     </div>
   </div>
 </div>
