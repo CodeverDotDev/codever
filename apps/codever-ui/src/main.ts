@@ -3,6 +3,7 @@ import {
   provideAppInitializer,
   ErrorHandler,
   importProvidersFrom,
+  provideZoneChangeDetection,
 } from '@angular/core';
 import {
   platformBrowser,
@@ -69,6 +70,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection(),
     importProvidersFrom(
       BrowserModule,
       BrowserAnimationsModule,
