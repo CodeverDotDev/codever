@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/onpush-spec",
+    "types": ["jasmine", "node"]
+  },
+  "include": ["app/shared/onpush-lists.spec.ts", "**/*.d.ts"]
+}

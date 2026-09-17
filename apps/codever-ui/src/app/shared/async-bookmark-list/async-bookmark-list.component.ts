@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Injector,
@@ -22,6 +23,7 @@ import { ResourceFilterPipe } from '../pipe/resource-filter.pipe';
   selector: 'app-async-bookmark-list',
   templateUrl: './async-bookmark-list.component.html',
   styleUrls: ['./async-bookmark-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     BookmarkListElementComponent,

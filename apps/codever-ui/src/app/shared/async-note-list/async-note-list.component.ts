@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Note } from '../../core/model/note';
@@ -10,6 +10,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-async-note-list',
   templateUrl: './async-note-list.component.html',
   styleUrls: ['./async-note-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NoteDetailsComponent, PageNavigationBarComponent, AsyncPipe],
 })
 export class AsyncNoteListComponent {

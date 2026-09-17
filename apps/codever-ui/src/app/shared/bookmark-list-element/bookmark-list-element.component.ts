@@ -1,6 +1,9 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -43,6 +46,7 @@ import { HighLightPipe } from '../../common/pipes/highlight.pipe';
   selector: 'app-bookmark-list-element',
   templateUrl: './bookmark-list-element.component.html',
   styleUrls: ['./bookmark-list-element.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NgClass,
     RouterLink,
@@ -87,6 +91,9 @@ export class BookmarkListElementComponent
   filterText = '';
 
   private navigationSubscription: Subscription;
+  private userInfoSubscription: Subscription;
+  private copyFeedbackTimer: ReturnType<typeof setTimeout>;
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   copyLinkButtonText = '';
 
@@ -142,9 +149,12 @@ export class BookmarkListElementComponent
     const isLoggedIn = this.keycloakService.isLoggedIn();
     if (isLoggedIn) {
       this.userIsLoggedIn = true;
-      this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
-        this.userId = userInfo.sub;
-      });
+      this.userInfoSubscription = this.userInfoStore
+        .getUserInfoOidc$()
+        .subscribe((userInfo) => {
+          this.userId = userInfo.sub;
+          this.changeDetectorRef.markForCheck();
+        });
     }
   }
 
@@ -347,6 +357,8 @@ export class BookmarkListElementComponent
   }
 
   ngOnDestroy(): void {
+    this.userInfoSubscription?.unsubscribe();
+    clearTimeout(this.copyFeedbackTimer);
     if (this.navigationSubscription) {
       this.navigationSubscription.unsubscribe();
     }
@@ -356,7 +368,11 @@ export class BookmarkListElementComponent
     const copied = this.clipboard.copy(location);
     if (copied) {
       this.copyLinkButtonText = ' Copied';
-      setTimeout(() => (this.copyLinkButtonText = ''), 1300);
+      clearTimeout(this.copyFeedbackTimer);
+      this.copyFeedbackTimer = setTimeout(() => {
+        this.copyLinkButtonText = '';
+        this.changeDetectorRef.markForCheck();
+      }, 1300);
     }
   }
 

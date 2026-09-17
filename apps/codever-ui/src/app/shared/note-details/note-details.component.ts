@@ -1,8 +1,10 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
+  inject,
   Input,
   OnInit,
 } from '@angular/core';
@@ -69,6 +71,8 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   contentFontSize = this.ZOOM_DEFAULT;
 
   tocHeadings: TocHeading[] = [];
+
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   constructor(
     private personalNotesService: PersonalNotesService,
@@ -217,7 +221,12 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   copyNoteMarkdown(note: Note) {
     navigator.clipboard.writeText(note.content || '').then(() => {
       this.markdownCopied = true;
-      setTimeout(() => (this.markdownCopied = false), 1300);
+      // Notify the OnPush list ancestor even though this card uses Default.
+      this.changeDetectorRef.markForCheck();
+      setTimeout(() => {
+        this.markdownCopied = false;
+        this.changeDetectorRef.markForCheck();
+      }, 1300);
     });
   }
 
