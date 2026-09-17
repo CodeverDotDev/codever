@@ -4,6 +4,10 @@
   align-items: flex-start;
 }
 
+.tag-list a {
+  text-decoration: none;
+}
+
 // Card title links: no underline by default, underline on hover. Rendered
 // links inside the note body stay underlined.
 .card-title a {
