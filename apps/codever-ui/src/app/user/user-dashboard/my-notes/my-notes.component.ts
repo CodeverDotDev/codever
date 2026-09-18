@@ -6,11 +6,14 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BackupBookmarksDialogComponent } from '../../../shared/dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
 import { PaginationNotificationService } from '../../../core/pagination-notification.service';
 import { environment } from '../../../../environments/environment';
+import { AsyncNoteListComponent } from '../../../shared/async-note-list/async-note-list.component';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-my-notes',
-    templateUrl: './my-notes.component.html',
-    standalone: false
+  selector: 'app-my-notes',
+  templateUrl: './my-notes.component.html',
+  imports: [AsyncNoteListComponent, RouterLink, AsyncPipe],
 })
 export class MyNotesComponent implements OnChanges {
   myNotes$: Observable<Note[]>;

@@ -6,11 +6,12 @@ import { Note } from '../../core/model/note';
 import { PublicNotesService } from './public-notes.service';
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserDataStore } from '../../core/user/userdata.store';
+import { NoteDetailsComponent } from '../../shared/note-details/note-details.component';
 
 @Component({
-    selector: 'app-public-note-details',
-    templateUrl: './public-note-details.component.html',
-    standalone: false
+  selector: 'app-public-note-details',
+  templateUrl: './public-note-details.component.html',
+  imports: [NoteDetailsComponent],
 })
 export class PublicNoteDetailsComponent implements OnInit {
   note$: Observable<Note>;
@@ -52,4 +53,3 @@ export class PublicNoteDetailsComponent implements OnInit {
     }
   }
 }
-

@@ -7,23 +7,20 @@
       [(ngModel)]="filterText"
       class="form-control"
       placeholder="Filter by title"
-      />
+    />
   </div>
 </div>
 @if (userDataResources$ | async; as userDataResources) {
-  <mat-dialog-content
-    class="mt-2 pt-1 pb-1"
-    >
-    <mat-accordion>
-      <mat-expansion-panel
-      *ngFor="
-        let userDataResource of userDataResources
-          | resourceTitleFilter : filterText as filteredResources;
-        index as i
-      "
-        [expanded]="filteredResources.length === 1"
-        >
-        <!--
+<mat-dialog-content class="mt-2 pt-1 pb-1">
+  <mat-accordion>
+    @for (
+      userDataResource of userDataResources | resourceTitleFilter : filterText;
+      track userDataResource._id;
+      let i = $index;
+      let filteredCount = $count
+    ) {
+    <mat-expansion-panel [expanded]="filteredCount === 1">
+      <!--
         `mat-expansion-panel-header` and `ng-template[matExpansionPanelContent]`
         MUST stay direct children of `mat-expansion-panel`: the panel projects
         its header via `ng-content select="mat-expansion-panel-header"`, which
@@ -32,89 +29,102 @@
         renders empty (the bug that hid every entry). The note/bookmark
         distinction is switched INSIDE the header and the lazy content instead.
         -->
-        @if (i < 15) {
-          <mat-expansion-panel-header>
-            <div class="p-3">
-              <!-- NOTE header -->
-              @if (isNote(userDataResource)) {
-                <h5 class="card-title">
-                  <i class="fa fa-sticky-note fa-xs me-2 anthracite-gray"></i>
-                  <a
-                    [routerLink]="noteDetailsLink(userDataResource)"
-                    [mat-dialog-close]="true"
-                [innerHTML]="
-                  userDataResource.title | slice : 0 : 100 | highlightHtml : filterText
-                "
-                    >
-                    {{ 'see innerhtml' }}
-                  </a>
-                </h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary url-under-title">
-                  <i class="far fa-calendar-alt"></i>
-                  {{ userDataResource.updatedAt | date : 'yyyy-MM-dd' }}
-                </h6>
-              } @else {
-                <h5 class="card-title">
-                  <a
-                    href="{{ userDataResource.location }}"
-                [innerHTML]="
-                  userDataResource.name | slice : 0 : 100 | highlightHtml : filterText
-                "
-                    target="_blank"
-                (click)="
-                  addToHistoryService.promoteInHistoryIfLoggedIn(true, userDataResource)
-                "
-                (auxclick)="
-                  addToHistoryService.onMiddleClickInDescription(
-                    true,
-                    $event,
-                    userDataResource
-                  )
-                "
-                    >
-                    {{ 'see innerhtml' }}
-                  </a>
-                  <sup class="external-link-hint"
-                    ><i class="fas fa-external-link-alt"></i
-                  ></sup>
-                </h5>
-                <h6
-                  class="card-subtitle mb-2 text-body-secondary url-under-title"
-              [innerHTML]="
-                userDataResource.location | slice : 0 : 120 | highlightHtml : filterText
-              "
-                  >
-                  {{ 'see innerhtml' }}
-                </h6>
-              }
-              <!-- BOOKMARK header -->
-            </div>
-          </mat-expansion-panel-header>
-        }
-        <ng-template matExpansionPanelContent>
-          <!-- NOTE content -->
+      @if (i < 15) {
+      <mat-expansion-panel-header>
+        <div class="p-3">
+          <!-- NOTE header -->
           @if (isNote(userDataResource)) {
-            <app-note-content [note]="userDataResource"
-              [partOfList]="true"
-             />
+          <h5 class="card-title">
+            <i class="fa fa-sticky-note fa-xs me-2 anthracite-gray"></i>
+            <a
+              [routerLink]="noteDetailsLink(userDataResource)"
+              [mat-dialog-close]="true"
+              [innerHTML]="
+                userDataResource.title
+                  | slice : 0 : 100
+                  | highlightHtml : filterText
+              "
+            >
+              {{ 'see innerhtml' }}
+            </a>
+          </h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary url-under-title">
+            <i class="far fa-calendar-alt"></i>
+            {{ userDataResource.updatedAt | date : 'yyyy-MM-dd' }}
+          </h6>
           } @else {
-            <app-bookmark-text [bookmark]="userDataResource"
-              [showMoreText]="true"
-            (click)="
-              addToHistoryService.onClickInDescription(true, $event, userDataResource)
+          <h5 class="card-title">
+            <a
+              href="{{ userDataResource.location }}"
+              [innerHTML]="
+                userDataResource.name
+                  | slice : 0 : 100
+                  | highlightHtml : filterText
+              "
+              target="_blank"
+              (click)="
+                addToHistoryService.promoteInHistoryIfLoggedIn(
+                  true,
+                  userDataResource
+                )
+              "
+              (auxclick)="
+                addToHistoryService.onMiddleClickInDescription(
+                  true,
+                  $event,
+                  userDataResource
+                )
+              "
+            >
+              {{ 'see innerhtml' }}
+            </a>
+            <sup class="external-link-hint"
+              ><i class="fas fa-external-link-alt"></i
+            ></sup>
+          </h5>
+          <h6
+            class="card-subtitle mb-2 text-body-secondary url-under-title"
+            [innerHTML]="
+              userDataResource.location
+                | slice : 0 : 120
+                | highlightHtml : filterText
             "
-            (auxclick)="
-              addToHistoryService.onMiddleClickInDescription(
-                true,
-                $event,
-                userDataResource
-              )
-            "
-               />
+          >
+            {{ 'see innerhtml' }}
+          </h6>
           }
-          <!-- BOOKMARK content -->
-        </ng-template>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </mat-dialog-content>
+          <!-- BOOKMARK header -->
+        </div>
+      </mat-expansion-panel-header>
+      }
+      <ng-template matExpansionPanelContent>
+        <!-- NOTE content -->
+        @if (isNote(userDataResource)) {
+        <app-note-content [note]="userDataResource" [partOfList]="true" />
+        } @else {
+        <app-bookmark-text
+          [bookmark]="userDataResource"
+          [showMoreText]="true"
+          (click)="
+            addToHistoryService.onClickInDescription(
+              true,
+              $event,
+              userDataResource
+            )
+          "
+          (auxclick)="
+            addToHistoryService.onMiddleClickInDescription(
+              true,
+              $event,
+              userDataResource
+            )
+          "
+        />
+        }
+        <!-- BOOKMARK content -->
+      </ng-template>
+    </mat-expansion-panel>
+    }
+  </mat-accordion>
+</mat-dialog-content>
 }

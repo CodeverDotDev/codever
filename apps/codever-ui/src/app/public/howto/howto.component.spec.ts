@@ -4,7 +4,7 @@ import { HowtoComponent } from './howto.component';
 
 describe('About Component', () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({ declarations: [HowtoComponent] });
+    TestBed.configureTestingModule({ imports: [HowtoComponent] });
   });
 
   it('should ...', () => {

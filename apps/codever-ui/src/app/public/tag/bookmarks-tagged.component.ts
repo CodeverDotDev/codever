@@ -6,21 +6,20 @@ import { Observable } from 'rxjs';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import { UserData } from '../../core/model/user-data';
-import {
-  MatDialog,
-  MatDialogConfig,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LoginRequiredDialogComponent } from '../../shared/dialog/login-required-dialog/login-required-dialog.component';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { environment } from '../../../environments/environment';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { AsyncBookmarkListComponent } from '../../shared/async-bookmark-list/async-bookmark-list.component';
 
 @Component({
-    selector: 'app-tag',
-    templateUrl: './bookmarks-tagged.component.html',
-    styleUrls: ['./bookmarks-tagged.component.css'],
-    standalone: false
+  selector: 'app-tag',
+  templateUrl: './bookmarks-tagged.component.html',
+  styleUrls: ['./bookmarks-tagged.component.css'],
+  imports: [NgClass, AsyncBookmarkListComponent, AsyncPipe],
 })
 export class BookmarksTaggedComponent implements OnInit {
   bookmarksForTag$: Observable<Bookmark[]>;

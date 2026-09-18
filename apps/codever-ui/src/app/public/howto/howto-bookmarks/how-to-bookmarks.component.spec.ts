@@ -4,7 +4,7 @@ import { HowToBookmarksComponent } from './how-to-bookmarks.component';
 
 describe('About Component', () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({ declarations: [HowToBookmarksComponent] });
+    TestBed.configureTestingModule({ imports: [HowToBookmarksComponent] });
   });
 
   it('should ...', () => {

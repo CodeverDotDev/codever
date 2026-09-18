@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AssistantReference } from '../assistant.model';
+import { RouterLink } from '@angular/router';
 
 /**
  * Renders a single assistant reference (bookmark or note) as a compact,
@@ -10,7 +11,7 @@ import { AssistantReference } from '../assistant.model';
   selector: 'app-assistant-reference-card',
   templateUrl: './reference-card.component.html',
   styleUrls: ['./reference-card.component.scss'],
-  standalone: false,
+  imports: [RouterLink],
 })
 export class ReferenceCardComponent {
   @Input() reference: AssistantReference;
@@ -19,4 +20,3 @@ export class ReferenceCardComponent {
     return this.reference?.type === 'note';
   }
 }
-

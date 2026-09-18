@@ -1,11 +1,18 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
-    selector: 'app-delete-saved-search-dialog',
-    templateUrl: './delete-saved-search-dialog.component.html',
-    styleUrls: ['./delete-saved-search-dialog.component.scss'],
-    standalone: false
+  selector: 'app-delete-saved-search-dialog',
+  templateUrl: './delete-saved-search-dialog.component.html',
+  styleUrls: ['./delete-saved-search-dialog.component.scss'],
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions],
 })
 export class DeleteSavedSearchDialogComponent {
   savedSearchText: string;

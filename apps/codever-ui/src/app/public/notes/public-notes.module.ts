@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SharedModule } from '../../shared/shared.module';
+
 import { PublicNoteDetailsComponent } from './public-note-details.component';
 import { ShareableNoteDetailsComponent } from './shareable-note-details/shareable-note-details.component';
 import { PublicNotesService } from './public-notes.service';
@@ -26,9 +26,12 @@ const publicNotesRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [PublicNoteDetailsComponent, ShareableNoteDetailsComponent, PublicNotesComponent],
-  imports: [SharedModule, RouterModule.forChild(publicNotesRoutes)],
+  imports: [
+    RouterModule.forChild(publicNotesRoutes),
+    PublicNoteDetailsComponent,
+    ShareableNoteDetailsComponent,
+    PublicNotesComponent,
+  ],
   providers: [PublicNotesService],
 })
 export class PublicNotesModule {}
-

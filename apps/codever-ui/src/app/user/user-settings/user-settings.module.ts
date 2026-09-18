@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { SharedModule } from '../../shared/shared.module';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserSettingsComponent } from './user-settings.component';
 import { AuthGuard } from '../../core/auth/auth-guard.service';
@@ -21,19 +21,16 @@ const userSettingsRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
+  imports: [
+    RouterModule.forChild(userSettingsRoutes),
+    ReactiveFormsModule,
+    CommonModule,
+    MatTabsModule,
+    MatRadioModule,
     UserSettingsComponent,
     UserProfileComponent,
     UserFeedComponent,
     UserLocalStorageSetupComponent,
-  ],
-  imports: [
-    RouterModule.forChild(userSettingsRoutes),
-    ReactiveFormsModule,
-    SharedModule,
-    CommonModule,
-    MatTabsModule,
-    MatRadioModule,
   ],
   providers: [ImageUploadService],
 })

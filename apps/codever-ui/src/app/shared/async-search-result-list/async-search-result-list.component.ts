@@ -13,12 +13,25 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
 import { Note } from '../../core/model/note';
+import { FormsModule } from '@angular/forms';
+import { BookmarkListElementComponent } from '../bookmark-list-element/bookmark-list-element.component';
+import { NoteDetailsComponent } from '../note-details/note-details.component';
+import { PageNavigationBarComponent } from '../page-navigation-bar/page-navigation-bar.component';
+import { AsyncPipe } from '@angular/common';
+import { ResourceFilterPipe } from '../pipe/resource-filter.pipe';
 
 @Component({
-    selector: 'app-async-search-result-list',
-    templateUrl: './async-search-result-list.component.html',
-    styleUrls: ['./async-search-result-list.component.scss'],
-    standalone: false
+  selector: 'app-async-search-result-list',
+  templateUrl: './async-search-result-list.component.html',
+  styleUrls: ['./async-search-result-list.component.scss'],
+  imports: [
+    FormsModule,
+    BookmarkListElementComponent,
+    NoteDetailsComponent,
+    PageNavigationBarComponent,
+    AsyncPipe,
+    ResourceFilterPipe,
+  ],
 })
 export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
   declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template

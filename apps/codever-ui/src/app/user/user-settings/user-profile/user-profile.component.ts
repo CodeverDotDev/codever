@@ -1,17 +1,24 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { UserData } from '../../../core/model/user-data';
 import { UserDataStore } from '../../../core/user/userdata.store';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserDataService } from '../../../core/user-data.service';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-user-profile',
-    templateUrl: './user-profile.component.html',
-    styleUrls: ['./user-profile.component.scss'],
-    standalone: false
+  selector: 'app-user-profile',
+  templateUrl: './user-profile.component.html',
+  styleUrls: ['./user-profile.component.scss'],
+  imports: [FormsModule, ReactiveFormsModule, AsyncPipe],
 })
 export class UserProfileComponent implements OnInit {
   userProfileForm: UntypedFormGroup;

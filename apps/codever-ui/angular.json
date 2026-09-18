@@ -110,6 +110,19 @@
             "buildTarget": "codever-ui:build"
           }
         },
+        "test-onpush": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "src/tsconfig.onpush-spec.json",
+            "karmaConfig": "karma.onpush.conf.cjs",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "include": ["src/app/shared/onpush-lists.spec.ts"],
+            "watch": false,
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          }
+        },
         "test": {
           "builder": "@angular/build:karma",
           "options": {

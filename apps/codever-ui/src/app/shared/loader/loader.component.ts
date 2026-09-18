@@ -3,12 +3,14 @@ import { Observable, of, Subscription } from 'rxjs';
 import { LoaderService } from '../../core/loader/loader.service';
 import { debounceTime } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-loader',
-    templateUrl: './loader.component.html',
-    styleUrls: ['./loader.component.css'],
-    standalone: false
+  selector: 'app-loader',
+  templateUrl: './loader.component.html',
+  styleUrls: ['./loader.component.css'],
+  imports: [MatProgressSpinner, AsyncPipe],
 })
 export class LoaderComponent implements OnInit, OnDestroy {
   color = 'primary';

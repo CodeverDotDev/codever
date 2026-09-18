@@ -1,8 +1,11 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
+  inject,
   Input,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
 } from '@angular/core';
 import { environment } from '../../../environments/environment';
@@ -11,14 +14,17 @@ import { Note } from '../../core/model/note';
 import { PaginationAction } from '../../core/model/pagination-action';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-page-navigation-bar',
-    templateUrl: './page-navigation-bar.component.html',
-    styleUrls: ['./page-navigation-bar.component.scss'],
-    standalone: false
+  selector: 'app-page-navigation-bar',
+  templateUrl: './page-navigation-bar.component.html',
+  styleUrls: ['./page-navigation-bar.component.scss'],
+  imports: [NgClass],
 })
-export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
+export class PageNavigationBarComponent
+  implements AfterViewInit, OnChanges, OnDestroy
+{
   @Input()
   showPagination: boolean;
 
@@ -32,6 +38,8 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
   results: (Bookmark | Note)[];
 
   showPaginationDelayExpired = false;
+  private visibilityTimer: ReturnType<typeof setTimeout>;
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   environment = environment;
   Arr = Array; // Array type captured in a variable
@@ -74,11 +82,17 @@ export class PageNavigationBarComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     // delay showing pagination buttons with 1 second
-    if (this.currentPage === 1) {
-      setTimeout(() => (this.showPaginationDelayExpired = true), 1000);
-    } else {
-      setTimeout(() => (this.showPaginationDelayExpired = true), 0);
-    }
+    this.visibilityTimer = setTimeout(
+      () => {
+        this.showPaginationDelayExpired = true;
+        this.changeDetectorRef.markForCheck();
+      },
+      this.currentPage === 1 ? 1000 : 0
+    );
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.visibilityTimer);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

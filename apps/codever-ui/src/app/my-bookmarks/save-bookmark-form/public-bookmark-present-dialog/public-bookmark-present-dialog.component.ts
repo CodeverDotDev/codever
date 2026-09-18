@@ -1,13 +1,20 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { Bookmark } from '../../../core/model/bookmark';
 import { Router } from '@angular/router';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
-    selector: 'app-public-bookmark-present-dialog',
-    templateUrl: './public-bookmark-present-dialog.component.html',
-    styleUrls: ['./public-bookmark-present-dialog.component.scss'],
-    standalone: false
+  selector: 'app-public-bookmark-present-dialog',
+  templateUrl: './public-bookmark-present-dialog.component.html',
+  styleUrls: ['./public-bookmark-present-dialog.component.scss'],
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions],
 })
 export class PublicBookmarkPresentDialogComponent {
   bookmark: Bookmark;

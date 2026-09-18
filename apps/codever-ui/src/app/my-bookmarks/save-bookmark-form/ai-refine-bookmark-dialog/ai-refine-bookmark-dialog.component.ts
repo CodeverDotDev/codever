@@ -4,6 +4,7 @@ import {
   AiRefineService,
   AiRefineBookmarkResult,
 } from '../../../core/ai-refine.service';
+import { FormsModule } from '@angular/forms';
 
 export interface AiRefineBookmarkDialogData {
   userId: string;
@@ -23,9 +24,9 @@ export interface AiRefineBookmarkDialogResult {
 }
 
 @Component({
-    selector: 'app-ai-refine-bookmark-dialog',
-    templateUrl: './ai-refine-bookmark-dialog.component.html',
-    standalone: false
+  selector: 'app-ai-refine-bookmark-dialog',
+  templateUrl: './ai-refine-bookmark-dialog.component.html',
+  imports: [FormsModule],
 })
 export class AiRefineBookmarkDialogComponent {
   customPrompt: string;

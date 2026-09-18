@@ -1,10 +1,7 @@
 import { AfterViewChecked, Directive, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-@Directive({
-    selector: '[appMarkedImageWidth]',
-    standalone: false
-})
+@Directive({ selector: '[appMarkedImageWidth]' })
 export class MarkedImageWidthDirective implements AfterViewChecked {
   public images: any[] = [];
 

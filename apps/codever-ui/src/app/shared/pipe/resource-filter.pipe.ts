@@ -4,10 +4,7 @@ import { Bookmark } from '../../core/model/bookmark';
 import { Note } from '../../core/model/note';
 import { UserDataResource } from '../../core/model/user-data-resource.type';
 
-@Pipe({
-    name: 'resourceFilter',
-    standalone: false
-})
+@Pipe({ name: 'resourceFilter' })
 export class ResourceFilterPipe implements PipeTransform {
   /**
    * Filters a list of resources (bookmarks and/or notes), keeping those that

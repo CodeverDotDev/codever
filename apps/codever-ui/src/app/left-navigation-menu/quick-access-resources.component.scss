@@ -3,6 +3,15 @@
   margin-left: 0.25rem;
 }
 
+.quick-access-section-title {
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+}
+
 // START side-navigation
 #wrapper {
   overflow-x: hidden;

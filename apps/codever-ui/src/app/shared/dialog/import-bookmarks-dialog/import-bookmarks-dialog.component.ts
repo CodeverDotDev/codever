@@ -1,16 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import iziToast, { IziToastSettings } from 'izitoast';
 import { UserDataService } from '../../../core/user-data.service';
 import { UserDataStore } from '../../../core/user/userdata.store';
 import { UserData } from '../../../core/model/user-data';
 
 @Component({
-    selector: 'app-delete-bookmark-dialog',
-    templateUrl: './import-bookmarks-dialog.component.html',
-    styleUrls: ['./import-bookmarks-dialog.component.scss'],
-    standalone: false
+  selector: 'app-delete-bookmark-dialog',
+  templateUrl: './import-bookmarks-dialog.component.html',
+  styleUrls: ['./import-bookmarks-dialog.component.scss'],
+  imports: [RouterLink],
 })
 export class ImportBookmarksDialogComponent implements OnInit {
   uploadImageLabel = 'Choose bookmarks html file';

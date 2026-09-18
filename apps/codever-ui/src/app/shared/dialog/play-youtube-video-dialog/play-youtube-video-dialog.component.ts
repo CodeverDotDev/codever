@@ -1,13 +1,19 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Bookmark } from '../../../core/model/bookmark';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
-    selector: 'app-play-youtube-video-dialog',
-    templateUrl: './play-youtube-video-dialog.component.html',
-    styleUrls: ['./play-youtube-video-dialog.component.scss'],
-    standalone: false
+  selector: 'app-play-youtube-video-dialog',
+  templateUrl: './play-youtube-video-dialog.component.html',
+  styleUrls: ['./play-youtube-video-dialog.component.scss'],
+  imports: [CdkScrollable, MatDialogContent, MatDialogActions],
 })
 export class PlayYoutubeVideoDialogComponent {
   bookmark: Bookmark;

@@ -29,6 +29,26 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+### OnPush list regression tests
+
+From `apps/codever-ui`, run `npm run test:onpush`.
+
+This isolated Karma target uses ChromeHeadless and mocked services; no API,
+Keycloak or Docker is needed. Chrome must be installed (set `CHROME_BIN` if it
+is not in the default location). It does not depend on the legacy test target's
+missing `src/test.ts` or `karma.conf.js` files.
+
+`AsyncBookmarkListComponent`, `BookmarkListElementComponent`, and
+`AsyncNoteListComponent` use `OnPush`. Keep `provideZoneChangeDetection()` in
+bootstrap: this is not a zoneless migration. `NoteDetailsComponent` retains
+Default detection; its list ancestor skips the subtree during unrelated checks.
+Pagination and note clipboard callbacks notify their OnPush list ancestors.
+
+Tests use real templates to cover skipped checks, list updates, filtering, user
+state, clipboard feedback, pagination, note checklist rollback, zoom and the
+standalone TOC. They verify skipped work, not a measured percentage speedup.
+Compare representative large lists in Angular DevTools to measure the benefit.
+
 ### Running end-to-end tests
 
 Before running the tests make sure you are serving the app via `ng serve`.

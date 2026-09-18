@@ -12,18 +12,39 @@ import { UserDataStore } from './core/user/userdata.store';
 import { UserData } from './core/model/user-data';
 import { Observable, Subject, interval } from 'rxjs';
 import { UserDataResource } from './core/model/user-data-resource.type';
-import { Router } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterOutlet,
+  RouterLinkActive,
+} from '@angular/router';
 import { environment } from '../environments/environment';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { LoginDialogHelperService } from './core/login-dialog-helper.service';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter, takeUntil } from 'rxjs/operators';
+import { NavigationComponent } from './shared/navigation/navigation.component';
+import { QuickAccessResourcesComponent } from './left-navigation-menu/quick-access-resources.component';
+import { ExtensionsComponent } from './shared/extensions/extensions.component';
+import { LoaderComponent } from './shared/loader/loader.component';
+import { ErrorComponent } from './core/error/error.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  imports: [
+    NavigationComponent,
+    RouterLink,
+    QuickAccessResourcesComponent,
+    ExtensionsComponent,
+    LoaderComponent,
+    RouterOutlet,
+    ErrorComponent,
+    RouterLinkActive,
+    AsyncPipe,
+  ],
 })
 export class AppComponent implements OnInit, OnDestroy {
   url = 'https://www.codever.dev';
@@ -172,8 +193,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.swUpdate.versionUpdates
       .pipe(
         filter(
-          (event): event is VersionReadyEvent =>
-            event.type === 'VERSION_READY'
+          (event): event is VersionReadyEvent => event.type === 'VERSION_READY'
         ),
         takeUntil(this.destroy$)
       )

@@ -50,8 +50,7 @@ import { LatestSearchClickNotificationService } from './latest-search-click.noti
  * See more at - https://angular.io/docs/ts/latest/guide/ngmodule.html#!#core-module
  */
 @NgModule({
-  imports: [CommonModule, RouterModule],
-  declarations: [ErrorComponent],
+  imports: [CommonModule, RouterModule, ErrorComponent],
   exports: [ErrorComponent],
   providers: [
     Logger,

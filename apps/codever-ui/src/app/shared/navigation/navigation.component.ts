@@ -11,12 +11,21 @@ import { UserDataStore } from '../../core/user/userdata.store';
 import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
 import { LocalStorageService } from '../../core/cache/local-storage.service';
 import { FeatureToggleService } from '../../core/feature-toggle.service';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { RouterLinkActive, RouterLink } from '@angular/router';
+import { SearchbarComponent } from '../search/searchbar.component';
 
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
-  standalone: false,
+  imports: [
+    NgClass,
+    RouterLinkActive,
+    RouterLink,
+    SearchbarComponent,
+    AsyncPipe,
+  ],
 })
 export class NavigationComponent implements OnInit {
   isLoggedIn: boolean;

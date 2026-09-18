@@ -1,6 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UntypedFormControl } from '@angular/forms';
+import {
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteSavedSearchDialogComponent } from './delete-saved-search-dialog/delete-saved-search-dialog.component';
@@ -8,12 +12,27 @@ import { Search, UserData } from '../../../core/model/user-data';
 import { UserDataStore } from '../../../core/user/userdata.store';
 import { SearchDomain } from '../../../core/model/search-domain.enum';
 import { searchDomains } from '../../../core/model/search-domains-map';
+import { RouterLink } from '@angular/router';
+import {
+  MatAutocompleteTrigger,
+  MatAutocomplete,
+  MatOption,
+} from '@angular/material/autocomplete';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-saved-searches',
-    templateUrl: './my-searches.component.html',
-    styleUrls: ['./my-searches.component.scss'],
-    standalone: false
+  selector: 'app-saved-searches',
+  templateUrl: './my-searches.component.html',
+  styleUrls: ['./my-searches.component.scss'],
+  imports: [
+    RouterLink,
+    FormsModule,
+    MatAutocompleteTrigger,
+    ReactiveFormsModule,
+    MatAutocomplete,
+    MatOption,
+    AsyncPipe,
+  ],
 })
 export class MySearchesComponent implements OnInit {
   userData$: Observable<UserData>;
@@ -26,7 +45,6 @@ export class MySearchesComponent implements OnInit {
 
   @Input()
   userId: string;
-
 
   buttonEnabled: boolean;
 
@@ -60,7 +78,11 @@ export class MySearchesComponent implements OnInit {
 
   recentSearches(userData: UserData): Search[] {
     return userData.searches
-      .filter((s) => s.searchDomain !== 'my-snippets' && s.searchDomain !== 'public-snippets')
+      .filter(
+        (s) =>
+          s.searchDomain !== 'my-snippets' &&
+          s.searchDomain !== 'public-snippets'
+      )
       .filter((s) => !s.saved);
   }
 
@@ -122,4 +144,3 @@ export class MySearchesComponent implements OnInit {
     this.searchDomain = selectedSearchDomain;
   }
 }
-
