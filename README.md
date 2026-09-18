@@ -25,6 +25,8 @@ your bookmarks and code snippets. The following helpers and extensions will assi
 > The other extensions function more or less after the same principle
 
 
+The [browser extension source](apps/codever-browser-extension) is maintained in this monorepo alongside the Codever web application and API.
+
 ## Public bookmarks
 
 *******************************************************************************************************************************
@@ -38,10 +40,11 @@ These instructions will get you a copy of the project up and running on your loc
 The project is developed with the MEAN stack and [Keycloak](http://www.keycloak.org/) for authentication and authorization:
 ![components-graph](documentation/graphviz/components-graph.png)
 
-The project contains two apps
+The project contains two core apps and the browser extension source:
 
 * [codever-ui](apps/codever-ui) which makes up the User Interface. This uses with Angular and Angular CLI.
 * [codever-api](apps/codever-api) which is the API supporting the UI. It uses ExpressJS with MongoDB and Keycloak. See the [OpenAPI specification](https://www.codever.dev/api/docs)
+* [codever-browser-extension](apps/codever-browser-extension) which contains the source for the Chrome and Firefox extension. It is independently loaded, tested, packaged, and published from this directory.
 
 ### Prerequisites
 
