@@ -8,6 +8,6 @@ When triggering the extension a popup window with a form to input the metadata i
 
 After adding it, you can review the details and close the form window.
 
-The extension is open source and available at https://github.com/CodeverDotDev/codever-browser-extension
+The extension is open source and available at https://github.com/CodeverDotDev/codever/tree/master/apps/codever-browser-extension
 
 How To Guides are available a https://www.codever.dev/howto

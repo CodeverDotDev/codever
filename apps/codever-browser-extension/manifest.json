@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Codever",
-  "version": "4.0.0",
-  "description": "Save bookmarks, snippets or notes to Codever",
+  "version": "4.0.1",
+  "description": "Save web bookmarks, Markdown notes, and code snippets to Codever",
 
   "icons": {
     "16": "icons/icon-blue-16.png",
