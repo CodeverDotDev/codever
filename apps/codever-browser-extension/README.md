@@ -139,7 +139,7 @@ The generated package is placed in `web-ext-artifacts/`.
 The following command creates a package in which `manifest.json` is at the ZIP root, as required by the stores:
 
 ```bash
-VERSION=4.0.2
+VERSION=4.0.1
 mkdir -p web-ext-artifacts
 zip -r "web-ext-artifacts/codever-browser-extension-${VERSION}.zip" . \
   -x 'resources/*' \
