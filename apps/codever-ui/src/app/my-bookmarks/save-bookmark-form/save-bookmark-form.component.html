@@ -192,8 +192,11 @@
               }
               @if (tags.errors.tooManyTags) {
                 <mat-error>
-                  You can add <strong>maximum 8 tags</strong>
+                  You can add <strong>maximum {{ maxTags }} tags</strong>
                 </mat-error>
+              }
+              @if (tags.errors.invalidTags) {
+                <mat-error>Tags must be nonempty text values.</mat-error>
               }
               @if (tags.errors.blockedTags) {
                 <mat-error>

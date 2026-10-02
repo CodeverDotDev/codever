@@ -158,6 +158,41 @@ describe('feature-toggle.service', () => {
     });
   });
 
+  describe('isMcpCreateNotesEnabled', () => {
+    const service = require('./feature-toggle.service');
+
+    beforeEach(() => jest.clearAllMocks());
+
+    test.each([{}, null, { mcpCreateNotes: null },
+      { mcpCreateNotes: { enabledUserIds: 'owner' } },
+      { mcpCreateNotes: { enabledUserIds: [] } },
+      { mcpCreateNotes: { enabledUserIds: ['other'] } },
+    ])('fails closed for absent, malformed, empty or excluded configuration: %j', (config) => {
+      fs.readFileSync.mockReturnValue(JSON.stringify(config));
+      expect(service.isMcpCreateNotesEnabled('owner')).toBe(false);
+      expect(service.getFeatureToggles('owner').mcpCreateNotes).toBe(false);
+    });
+
+    test('reads changes without restart and keeps creation independent of the server toggle', () => {
+      fs.readFileSync.mockReturnValue(JSON.stringify({ mcpCreateNotes: { enabledUserIds: ['owner'] } }));
+      expect(service.isMcpCreateNotesEnabled('owner')).toBe(true);
+      expect(service.getFeatureToggles('owner')).toMatchObject({ mcpServer: false, mcpCreateNotes: true });
+      fs.readFileSync.mockReturnValue('{}');
+      expect(service.isMcpCreateNotesEnabled('owner')).toBe(false);
+    });
+
+    test('fails closed on invalid JSON or an unreadable file', () => {
+      fs.readFileSync.mockReturnValue('{invalid');
+      expect(service.isMcpCreateNotesEnabled('owner')).toBe(false);
+      fs.readFileSync.mockImplementation(() => { throw new Error('unreadable'); });
+      expect(service.isMcpCreateNotesEnabled('owner')).toBe(false);
+    });
+
+    test('committed creation allowlist is empty', () => {
+      expect(require('../../feature-toggles.json').mcpCreateNotes.enabledUserIds).toEqual([]);
+    });
+  });
+
   describe('getFeatureToggles (batch)', () => {
     const featureToggleService = require('./feature-toggle.service');
 
@@ -178,6 +213,7 @@ describe('feature-toggle.service', () => {
         aiNoteRefine: true,
         aiAssistant: true,
         mcpServer: false,
+        mcpCreateNotes: false,
       });
       expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     });
@@ -189,6 +225,7 @@ describe('feature-toggle.service', () => {
         aiNoteRefine: false,
         aiAssistant: false,
         mcpServer: false,
+        mcpCreateNotes: false,
       });
     });
 
@@ -199,6 +236,7 @@ describe('feature-toggle.service', () => {
         aiNoteRefine: false,
         aiAssistant: false,
         mcpServer: false,
+        mcpCreateNotes: false,
       });
     });
   });

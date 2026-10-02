@@ -619,7 +619,7 @@
     "id" : "e7c9a1f2-3b4d-4e5a-9c6b-7d8e9f0a1b2c",
     "clientId" : "codever-mcp",
     "name" : "mcp",
-    "description" : "MCP server client for AI assistants (read-only access to a user's own bookmarks and notes)",
+    "description" : "MCP server client for AI assistants (read access by default; optional note creation with mcp:write and per-user eligibility)",
     "surrogateAuthRequired" : false,
     "enabled" : true,
     "alwaysDisplayInConsole" : false,
@@ -671,7 +671,7 @@
       }
     } ],
     "defaultClientScopes" : [ "web-origins", "role_list", "profile", "roles", "email", "mcp:read" ],
-    "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
+    "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt", "mcp:write" ]
   }, {
     "id" : "36622d57-64c4-463d-be73-ea3a93272dc9",
     "clientId" : "bookmarks-api",
@@ -1418,6 +1418,17 @@
       "include.in.token.scope" : "true",
       "display.on.consent.screen" : "true",
       "consent.screen.text" : "Access your Codever bookmarks and notes through MCP"
+    },
+    "protocolMappers" : [ ]
+  }, {
+    "id" : "c3d4e5f6-a708-49ab-8123-d456e789f013",
+    "name" : "mcp:write",
+    "description" : "Optional creation of Markdown notes through Codever MCP",
+    "protocol" : "openid-connect",
+    "attributes" : {
+      "include.in.token.scope" : "true",
+      "display.on.consent.screen" : "true",
+      "consent.screen.text" : "Create Codever notes through MCP"
     },
     "protocolMappers" : [ ]
   } ],

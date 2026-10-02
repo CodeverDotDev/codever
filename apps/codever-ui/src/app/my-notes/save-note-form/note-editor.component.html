@@ -72,7 +72,15 @@
             }
             @if (formArrayTags.errors.tooManyTags) {
               <mat-error>
-                You can add <strong>maximum 8 tags</strong>
+                You can add <strong>maximum {{ maxTags }} tags</strong>
+              </mat-error>
+            }
+            @if (formArrayTags.errors.invalidTags) {
+              <mat-error>Tags must be nonempty text values.</mat-error>
+            }
+            @if (formArrayTags.errors.blockedTags) {
+              <mat-error>
+                The tag <strong>{{ formArrayTags.errors.blockedTags.value }}</strong> is blocked. Please use others
               </mat-error>
             }
           </span>

@@ -1,7 +1,17 @@
 const ValidationError = require('../../../error/validation.error');
+const { MAX_TAGS, normalizeTags } = require('../../../common/validation/tag-policy');
 
 let validateNoteInput = function (userId, note) {
   let validationErrorMessages = [];
+  let normalizedTags;
+  try {
+    normalizedTags = normalizeTags(note.tags);
+  } catch (error) {
+    if (!(error instanceof ValidationError)) {
+      throw error;
+    }
+    validationErrorMessages.push(...error.validationErrors);
+  }
 
   if (!note.userId) {
     validationErrorMessages.push(NoteValidationErrorMessages.MISSING_USER_ID);
@@ -55,13 +65,14 @@ let validateNoteInput = function (userId, note) {
       validationErrorMessages
     );
   }
+  note.tags = normalizedTags;
 };
 
 const NoteValidationRules = {
   MAX_NUMBER_OF_CHARS_FOR_CONTENT: 30_000,
   // Notebook raw JSON can be up to 5 MB (well within MongoDB's 16 MB BSON limit)
   MAX_NUMBER_OF_CHARS_FOR_NOTEBOOK_CONTENT: 5_000_000,
-  MAX_NUMBER_OF_TAGS: 8,
+  MAX_NUMBER_OF_TAGS: MAX_TAGS,
 };
 
 const NoteValidationErrorMessages = {

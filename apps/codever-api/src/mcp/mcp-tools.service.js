@@ -2,15 +2,17 @@ const personalBookmarksSearchService = require('../common/searching/bookmarks-se
 const notesSearchService = require('../routes/users/notes/notes-search.service');
 const personalBookmarksService = require('../routes/users/bookmarks/personal-bookmarks.service');
 const personalNotesService = require('../routes/users/notes/personal-notes.service');
+const common = require('../common/config');
+const mcpAuth = require('./mcp.auth');
+const { normalizeTags } = require('../common/validation/tag-policy');
+const { createNoteSchema, McpNoteCreationError, noteUrlBuilder } = require('./mcp-note-creation');
 
 /**
- * Read-only tool layer backing the Codever MCP server.
+ * User-scoped tool layer backing the Codever MCP server.
  *
  * Every function is scoped to a single authenticated `userId` (derived from
- * the token, never from tool arguments) and only ever READS data — there are
- * deliberately no create/update/delete operations here so that the MCP surface
- * cannot mutate a user's bookmarks or notes (see documentation/mcp/mcp-auth.md,
- * "Layer 1 — Read-only by construction").
+ * the token, never from tool arguments). Reads remain available independently
+ * of opt-in creation, which rechecks both scopes and both per-user toggles.
  */
 
 const DEFAULT_LIMIT = 20;
@@ -186,6 +188,7 @@ async function getEntry(userId, args = {}) {
     return {
       ...normalizeNote(plain),
       content: plain.content,
+      ...optionalNoteMetadata(plain),
     };
   }
 
@@ -226,7 +229,55 @@ async function listTags(userId, args = {}) {
     .sort((a, b) => b.count - a.count);
 }
 
+function optionalNoteMetadata(note) {
+  const metadata = {};
+  if (note.reference !== undefined) metadata.reference = note.reference;
+  if (note.origin) {
+    const origin = {};
+    for (const key of ['location', 'file', 'project', 'workspace']) {
+      if (note.origin[key] !== undefined) origin[key] = note.origin[key];
+    }
+    if (Object.keys(origin).length) metadata.origin = origin;
+  }
+  return metadata;
+}
+
+async function createNote(userId, args, scopes = []) {
+  if (!mcpAuth.canCreateNotes(userId, scopes)) {
+    throw new McpNoteCreationError('Note creation requires mcpServer and mcpCreateNotes access and both mcp:read and mcp:write scopes. No note was saved.');
+  }
+  const input = createNoteSchema.parse(args);
+  const config = common.config();
+  const buildUrl = noteUrlBuilder(config.mcp && config.mcp.frontendBaseUrl);
+  // A fresh allowlisted object prevents mass assignment; never modify args.
+  const payload = {
+    title: input.title,
+    content: input.content,
+    tags: normalizeTags(input.tags),
+    public: input.public === true,
+    type: 'note',
+    contentType: 'markdown',
+    userId,
+    ...optionalNoteMetadata(input),
+  };
+  const saved = await personalNotesService.createNote(userId, payload);
+  const id = idToString(saved._id);
+  return {
+    id,
+    type: 'note',
+    title: saved.title,
+    tags: saved.tags,
+    contentType: saved.contentType,
+    public: !!saved.public,
+    createdAt: saved.createdAt,
+    updatedAt: saved.updatedAt,
+    ...optionalNoteMetadata(saved),
+    url: buildUrl(id),
+  };
+}
+
 module.exports = {
+  createNote,
   searchEntries,
   getEntry,
   listTags,

@@ -12,6 +12,8 @@
 #   ./dev-only/mcp-token.sh                 # uses defaults (mock/mock, local KC)
 #   MCP_USER=ama MCP_PASS=ama ./dev-only/mcp-token.sh
 #   ./dev-only/mcp-token.sh --export        # print `export MCP_TOKEN=...` line
+#   ./dev-only/mcp-token.sh --write         # explicitly request mcp:write
+#   ./dev-only/mcp-token.sh --write --export # options work in either order
 #
 # Env overrides:
 #   KC_BASE_URL   default http://localhost:8480/auth
@@ -21,6 +23,21 @@
 #   MCP_PASS      default mock
 #
 set -euo pipefail
+
+EXPORT_TOKEN=false
+WRITE_ACCESS=false
+SCOPES='openid offline_access'
+for option in "$@"; do
+  case "$option" in
+    --export) EXPORT_TOKEN=true ;;
+    --write) WRITE_ACCESS=true ;;
+    --help|-h) echo 'Usage: mcp-token.sh [--write] [--export] (local development only)'; exit 0 ;;
+    *) echo "error: unknown option: $option" >&2; exit 2 ;;
+  esac
+done
+if [ "$WRITE_ACCESS" = true ]; then
+  SCOPES="$SCOPES mcp:write"
+fi
 
 KC_BASE_URL="${KC_BASE_URL:-http://localhost:8480/auth}"
 KC_REALM="${KC_REALM:-bookmarks}"
@@ -49,7 +66,7 @@ RESPONSE="$(curl -s \
   -d "username=${MCP_USER}" \
   -d "password=${MCP_PASS}" \
   -d 'grant_type=password' \
-  -d 'scope=openid offline_access' \
+  -d "scope=${SCOPES}" \
   "${TOKEN_ENDPOINT}" || true)"
 
 if [ -z "${RESPONSE}" ]; then
@@ -83,7 +100,7 @@ else
   SUB="$(echo "$DECODED" | sed -n 's/.*"sub":"\([^"]*\)".*/\1/p')"
 fi
 
-if [ "${1:-}" = "--export" ]; then
+if [ "$EXPORT_TOKEN" = true ]; then
   echo "export MCP_TOKEN=${ACCESS_TOKEN}"
   exit 0
 fi
@@ -93,6 +110,10 @@ echo "Keycloak sub : ${SUB}"
 echo "----------------------------------------------------------------------"
 echo "Enable MCP for this user by adding the sub to:"
 echo "  apps/codever-api/feature-toggles.json  ->  mcpServer.enabledUserIds"
+if [ "$WRITE_ACCESS" = true ]; then
+  echo "For note creation, also add the sub to mcpCreateNotes.enabledUserIds locally."
+  echo "The optional mcp:write scope must be configured; verify the issued scope and audience."
+fi
 echo
 echo "Access token (paste into the VS Code MCP token prompt):"
 echo

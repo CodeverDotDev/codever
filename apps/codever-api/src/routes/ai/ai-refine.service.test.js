@@ -32,6 +32,26 @@ describe('ai-refine.service', () => {
     delete process.env.DEEPSEEK_API_KEY;
   });
 
+  describe.each([undefined, 'Improve clarity only.'])('tag guidance with customPrompt=%s', (customPrompt) => {
+    test.each([9, 10, 13])('preserves %i tags without imposing the recommendation', async (count) => {
+      const tags = Array.from({ length: count }, (_, i) => `tag-${i}`);
+      request.post().send.mockResolvedValue({
+        statusCode: 200,
+        body: { choices: [{ message: { content: JSON.stringify({ suggestedTags: tags }) } }] },
+      });
+      const result = await aiRefineService.refineNoteContent('owner', {
+        ...validPayload, tags, customPrompt,
+      });
+      const { messages } = request.post().send.mock.calls[0][0];
+      expect(messages[0].content).toContain('at most 8');
+      expect(messages[0].content).toContain('hard ceiling is 13');
+      expect(messages[0].content).toContain('Do not remove existing tags');
+      if (customPrompt) expect(messages[0].content).toContain(customPrompt);
+      expect(messages[1].content).toContain(tags.join(', '));
+      expect(result.suggestedTags).toEqual(tags);
+    });
+  });
+
   test('throws when DEEPSEEK_API_KEY is not configured', async () => {
     delete process.env.DEEPSEEK_API_KEY;
 

@@ -13,6 +13,9 @@
       "a7908cb5-3b37-4cc1-a751-42f674d870e1"
     ]
   },
+  "mcpCreateNotes": {
+    "enabledUserIds": []
+  },
   "mcpServer": {
     "enabledUserIds": [
       "03e59ab3-4001-4d8f-a88b-a1542aa70483",

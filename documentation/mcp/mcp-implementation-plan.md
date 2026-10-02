@@ -10,7 +10,13 @@ This plan delivers, in feature-toggled increments:
    Settings for power users — each independently feature-toggled, exactly like the
    existing `aiNoteRefine` feature. (No two-card chooser dialog — see Phase 3.)
 
-> Companion doc: `documentation/mcp/mcp-auth.md` (auth & read-only security model).
+> Companion doc: `documentation/mcp/mcp-auth.md` (auth, opt-in creation and local runbook).
+>
+> October 2026 extension: `create_note` adds Markdown creation behind both per-user
+> toggles and optional `mcp:write` plus `mcp:read`. The original read-only phases
+> below describe the initial delivery, not a guarantee that no write path exists.
+> Unit/transport tests cover creation; live Keycloak/Mongo and host/browser smoke
+> verification must be recorded before any production enablement.
 
 ---
 
@@ -19,7 +25,8 @@ This plan delivers, in feature-toggled increments:
 - **Reuse existing patterns.** Router → Service (no controller), Keycloak
   `keycloak.protect()`, `feature-toggles.json` + `feature-toggle.service.js`,
   `MatDialog` on the frontend, `superagent` DeepSeek calls like `ai-refine.service.js`.
-- **Read-only by construction.** The MCP server exposes only read tools.
+- **Read-only by default.** Creation requires explicit scopes and independent eligibility;
+  update/delete and bookmark creation are not exposed.
 - **Everything behind a toggle**, per-user, matching `aiNoteRefine`.
 
 ---
@@ -35,7 +42,8 @@ Extend the existing mechanism rather than inventing a new one.
 {
   "aiNoteRefine": { "enabledUserIds": ["..."] },
   "aiAssistant":  { "enabledUserIds": [] },
-  "mcpServer":    { "enabledUserIds": [] }
+  "mcpServer":    { "enabledUserIds": [] },
+  "mcpCreateNotes": { "enabledUserIds": [] }
 }
 ```
 
@@ -43,14 +51,14 @@ Extend the existing mechanism rather than inventing a new one.
 ```js
 // isFeatureEnabled(featureName, userId) reads feature-toggles.json
 // getFeatureToggles(userId) reads the file ONCE and returns all toggles:
-//   { aiNoteRefine, aiAssistant, mcpServer }
+//   { aiNoteRefine, aiAssistant, mcpServer, mcpCreateNotes }
 // keep isAiNoteRefineEnabled(userId) etc. as thin wrappers for backward-compat
 ```
 
 `apps/codever-api/src/routes/feature-toggle/feature-toggle.router.js` — a single
 batch endpoint (the frontend is the only consumer, so no per-feature routes):
 ```
-GET /api/feature-toggle   -> { aiNoteRefine, aiAssistant, mcpServer }
+GET /api/feature-toggle   -> { aiNoteRefine, aiAssistant, mcpServer, mcpCreateNotes }
 ```
 Server-side toggle checks (MCP token endpoint, assistant route) use the service
 helpers directly (`isMcpServerEnabled` / `isAiAssistantEnabled`), not HTTP.
@@ -81,7 +89,9 @@ mcp/
 ```
 - Uses `@modelcontextprotocol/sdk` (v1.30) + `zod`.
 - Tools call existing search/personal services (never Mongoose models), scoped to the
-  authenticated `userId`. No create/update/delete tools exist (read-only by construction).
+  authenticated `userId`. The initial three tools remain read-only; the separately
+  authorized `create_note` now reuses `personalNotesService.createNote`. There are
+  still no MCP update/delete tools.
 - Mounted in `app.js` at `POST /api/mcp`, Keycloak-protected, gated per-user by the
   `mcpServer` feature toggle.
 - Tested: `mcp-tools.service.test.js` (13) + `mcp.server.test.js` (4, end-to-end via

@@ -2,7 +2,19 @@ jest.mock('./mcp-tools.service', () => ({
   searchEntries: jest.fn(),
   getEntry: jest.fn(),
   listTags: jest.fn(),
+  createNote: jest.fn(),
 }));
+
+jest.mock('../common/feature-toggle.service', () => ({
+  isMcpServerEnabled: jest.fn(() => true),
+  isMcpCreateNotesEnabled: jest.fn(() => false),
+}));
+jest.mock('../common/config', () => ({
+  config: () => JSON.parse(require('fs').readFileSync(require('path').resolve(__dirname, '../../env.json.example'), 'utf8')).test,
+}));
+const toggles = require('../common/feature-toggle.service');
+const ValidationError = require('../error/validation.error');
+const { TOO_MANY_TAGS } = require('../common/validation/tag-policy');
 
 // Avoid requiring keycloak/env config when we only test the MCP server object.
 const mcpTools = require('./mcp-tools.service');
@@ -167,6 +179,7 @@ describe('mcp.server OAuth metadata & challenge', () => {
     expect(metadata.resource).toMatch(/\/api\/mcp$/);
     expect(metadata.authorization_servers[0]).toMatch(/\/realms\/bookmarks$/);
     expect(metadata.scopes_supported).toContain('mcp:read');
+    expect(metadata.scopes_supported).toContain('mcp:write');
     expect(metadata.bearer_methods_supported).toContain('header');
   });
 
@@ -189,6 +202,100 @@ describe('mcp.server OAuth metadata & challenge', () => {
     expect(response.headers['www-authenticate']).toContain(
       'error="invalid_token"'
     );
+  });
+});
+
+describe('mcp.server opt-in creation', () => {
+  const scopes = ['mcp:read', 'mcp:write'];
+  let client;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    toggles.isMcpServerEnabled.mockReturnValue(true);
+    toggles.isMcpCreateNotesEnabled.mockReturnValue(true);
+    mcpTools.createNote.mockResolvedValue({ id: 'n1', url: 'http://localhost:4200/my-notes/n1/details' });
+  });
+  afterEach(async () => { if (client) await client.close(); client = undefined; });
+
+  test.each([
+    [true, true, ['mcp:read']],
+    [true, false, scopes],
+    [false, true, scopes],
+    [true, true, ['mcp:write']],
+  ])('denies creation with server=%s creation=%s scopes=%j', async (server, creation, grantedScopes) => {
+    toggles.isMcpServerEnabled.mockReturnValue(server);
+    toggles.isMcpCreateNotesEnabled.mockReturnValue(creation);
+    client = await connectClient(buildMcpServer(USER_ID, grantedScopes));
+    expect((await client.listTools()).tools.map((t) => t.name).sort()).toEqual(['get_entry', 'list_tags', 'search_entries']);
+    const result = await client.callTool({ name: 'create_note', arguments: { title: 'T', content: 'C' } });
+    expect(result.isError).toBe(true);
+    expect(mcpTools.createNote).not.toHaveBeenCalled();
+  });
+
+  test('exposes strict non-idempotent creation guidance only to an enabled writer', async () => {
+    client = await connectClient(buildMcpServer(USER_ID, scopes));
+    const { tools } = await client.listTools();
+    expect(tools).toHaveLength(4);
+    const tool = tools.find((t) => t.name === 'create_note');
+    expect(tool.inputSchema.additionalProperties).toBe(false);
+    expect(tool.annotations).toMatchObject({ readOnlyHint: false, destructiveHint: false, idempotentHint: false });
+    for (const text of ['preview', 'full draft content', 'tags', 'visibility', 'reference', 'origin',
+      'confirmation', 'revisions', 'at most 8', 'ceiling is 13', 'returned authenticated note link',
+      'not server-enforced', 'do not retry blindly']) {
+      expect(tool.description).toContain(text);
+    }
+    const args = { title: 'Title', content: '```js\nconst x = 1;\n```' };
+    const result = await client.callTool({ name: 'create_note', arguments: args });
+    expect(result.isError).not.toBe(true);
+    expect(mcpTools.createNote).toHaveBeenCalledWith(USER_ID, args, scopes);
+    expect(JSON.parse(result.content[0].text).url).toContain('/my-notes/n1/details');
+  });
+
+  test('cached tool execution rechecks creation toggle while reads continue', async () => {
+    client = await connectClient(buildMcpServer(USER_ID, scopes));
+    expect((await client.listTools()).tools).toHaveLength(4);
+    toggles.isMcpCreateNotesEnabled.mockReturnValue(false);
+    const result = await client.callTool({ name: 'create_note', arguments: { title: 'T', content: 'C' } });
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain('no longer enabled');
+    expect(mcpTools.createNote).not.toHaveBeenCalled();
+    mcpTools.listTags.mockResolvedValue([]);
+    expect((await client.callTool({ name: 'list_tags', arguments: {} })).isError).not.toBe(true);
+  });
+
+  test.each([
+    {}, { title: '', content: 'C' }, { title: ' ', content: 'C' }, { title: 1, content: 'C' },
+    { title: 'T', content: ' ' }, { title: 'T', content: 1 }, { title: 'T', content: 'x'.repeat(30001) },
+    ...['userId', '_id', 'id', 'shareableId', 'initiator', 'createdAt', 'updatedAt', 'type',
+      'contentType', 'notebookContent', 'collection', 'collectionIds', 'confirmed'].map((field) => ({ title: 'T', content: 'C', [field]: 'forbidden' })),
+    { title: 'T', content: 'C', tags: 'tag' }, { title: 'T', content: 'C', tags: [' '] },
+    { title: 'T', content: 'C', tags: [1] }, { title: 'T', content: 'C', public: 'true' },
+    { title: 'T', content: 'C', origin: { userId: 'other' } },
+    { title: 'T', content: 'C', origin: { file: 42 } },
+  ])('rejects malformed or unsupported input %# before the service', async (args) => {
+    client = await connectClient(buildMcpServer(USER_ID, scopes));
+    const result = await client.callTool({ name: 'create_note', arguments: args });
+    expect(result.isError).toBe(true);
+    expect(mcpTools.createNote).not.toHaveBeenCalled();
+  });
+
+  test('accepts exactly 30000 characters and explicit metadata/public visibility', async () => {
+    client = await connectClient(buildMcpServer(USER_ID, scopes));
+    const args = { title: 'T', content: 'x'.repeat(30000), public: true, tags: ['js'],
+      reference: 'https://example.com', origin: { project: 'P', file: 'a.js' } };
+    expect((await client.callTool({ name: 'create_note', arguments: args })).isError).not.toBe(true);
+    expect(mcpTools.createNote).toHaveBeenCalledWith(USER_ID, args, scopes);
+  });
+
+  test.each([
+    [new ValidationError('Invalid', [TOO_MANY_TAGS]), 'max 13'],
+    [new Error('database password secret stack trace'), 'Do not retry blindly'],
+  ])('sanitizes failure without success links', async (error, expected) => {
+    mcpTools.createNote.mockRejectedValue(error);
+    client = await connectClient(buildMcpServer(USER_ID, scopes));
+    const result = await client.callTool({ name: 'create_note', arguments: { title: 'T', content: 'C' } });
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain(expected);
+    expect(result.content[0].text).not.toMatch(/secret|stack trace|\/my-notes\//);
   });
 });
 

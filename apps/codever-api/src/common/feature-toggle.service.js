@@ -35,7 +35,7 @@ const isFeatureEnabled = function (featureName, userId) {
  * The set of feature toggles exposed to clients. Keeping this explicit
  * gives the API a stable contract regardless of what's in the JSON file.
  */
-const FEATURE_NAMES = ['aiNoteRefine', 'aiAssistant', 'mcpServer'];
+const FEATURE_NAMES = ['aiNoteRefine', 'aiAssistant', 'mcpServer', 'mcpCreateNotes'];
 
 /**
  * Read feature-toggles.json once and return the enabled state of every
@@ -43,7 +43,7 @@ const FEATURE_NAMES = ['aiNoteRefine', 'aiAssistant', 'mcpServer'];
  * helpers when a client needs several toggles (one file read, one call).
  *
  * @param {string} userId - The Keycloak user ID to check
- * @returns {{ aiNoteRefine: boolean, aiAssistant: boolean, mcpServer: boolean }}
+ * @returns {{ aiNoteRefine: boolean, aiAssistant: boolean, mcpServer: boolean, mcpCreateNotes: boolean }}
  */
 const getFeatureToggles = function (userId) {
   const features = FEATURE_NAMES.reduce((acc, name) => {
@@ -102,10 +102,15 @@ const isMcpServerEnabled = function (userId) {
   return isFeatureEnabled('mcpServer', userId);
 };
 
+const isMcpCreateNotesEnabled = function (userId) {
+  return isFeatureEnabled('mcpCreateNotes', userId);
+};
+
 module.exports = {
   isFeatureEnabled,
   getFeatureToggles,
   isAiNoteRefineEnabled,
   isAiAssistantEnabled,
   isMcpServerEnabled,
+  isMcpCreateNotesEnabled,
 };

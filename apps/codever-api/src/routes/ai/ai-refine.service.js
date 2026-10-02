@@ -1,5 +1,6 @@
 const request = require('superagent');
 const HttpStatus = require('http-status-codes/index');
+const { AI_TAG_GUIDANCE } = require('../../common/validation/tag-policy');
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 const DEEPSEEK_MODEL = 'deepseek-chat'; // DeepSeek V4 Flash (fast/standard model)
@@ -29,7 +30,7 @@ const refineNoteContent = async function (userId, noteData) {
   const DEFAULT_INSTRUCTIONS = `You are a helpful assistant that refines markdown notes.
 Given a note's title, content, tags, and optional reference URL, you should:
 1. Polish the content for grammar, clarity, and structure while preserving the original meaning and markdown formatting.
-2. Suggest relevant tags (lowercase, hyphenated for multi-word, max 8 tags).
+2. ${AI_TAG_GUIDANCE}
 3. Suggest a better title if the current one could be improved.`;
 
   const OUTPUT_FORMAT_INSTRUCTIONS = `
@@ -39,7 +40,9 @@ Return ONLY a valid JSON object (no markdown fences, no extra text) with exactly
 - "suggestedTags": an array of suggested tag strings
 - "suggestedTitle": the improved title (or the original if it's already good)`;
 
-  const instructions = noteData.customPrompt || DEFAULT_INSTRUCTIONS;
+  const instructions = noteData.customPrompt
+    ? `${noteData.customPrompt}\n\n${AI_TAG_GUIDANCE}`
+    : DEFAULT_INSTRUCTIONS;
   const systemPrompt = instructions + OUTPUT_FORMAT_INSTRUCTIONS;
 
   const currentTags = (noteData.tags || []).join(', ');

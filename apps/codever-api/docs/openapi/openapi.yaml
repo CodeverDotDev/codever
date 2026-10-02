@@ -1,10 +1,22 @@
 openapi: 3.0.3
 info:
   title: Codever API
-  description: API supporting the [www.codever.land](https://www.codever.dev)
+  description: |
+    API supporting [Codever](https://www.codever.dev).
+
+    Note and bookmark create/update requests allow at most 13 normalized unique tags.
+    Supplied tags must be an array of nonempty strings; tags are trimmed, lowercased,
+    and deduplicated in first-seen order before counting and persistence. Fourteen
+    unique tags or malformed values return HTTP 400 ValidationError, without saving
+    a partial selection. Bookmark minimum-tag and blocked-tag rules remain in force;
+    note API tags remain optional. AI guidance strongly recommends at most 8 relevant
+    tags where possible, not a separate validation limit. The tag policy is independent
+    of MCP creation enablement. Legacy entries with more than 13 tags remain readable
+    unchanged but must be corrected before an update can be saved; no migration or
+    silent truncation is performed.
   contact:
     name: Adrian Matei
-    url: https://github.com/adrianmatei-me
+    url: https://github.com/adirochs
     email: ama@codepedia.org
   license:
     name: License MIT
@@ -702,6 +714,13 @@ components:
           type: string
         tags:
           type: array
+          description: |
+            Writes require at least one tag and at most 13 unique tags after trimming,
+            lowercasing and deduplication in first-seen order. Empty/non-string values
+            and tags starting with "awesome" are rejected. AI recommends at most 8
+            relevant tags where possible. No raw maxItems/uniqueItems constraint is
+            applied because duplicate inputs are accepted and legacy reads are unchanged.
+          x-max-normalized-items: 13
           items:
             type: string
         description:

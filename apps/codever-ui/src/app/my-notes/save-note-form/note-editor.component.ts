@@ -26,6 +26,12 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { languages } from '../../shared/constants/language-options';
 import { tagsValidator } from '../../shared/directive/tags-validation.directive';
+import {
+  AI_TAG_GUIDANCE,
+  MAX_TAGS,
+  mergeFormTags,
+  normalizeTags,
+} from '../../shared/tags/tag-policy';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { Logger } from '../../core/logger.service';
@@ -102,6 +108,7 @@ import { MatIcon } from '@angular/material/icon';
   ],
 })
 export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
+  readonly maxTags = MAX_TAGS;
   noteForm: UntypedFormGroup;
   userId = null;
   private userData: UserData;
@@ -267,11 +274,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     // Pre-populate tags passed from IDE extensions
     if (this.passedTags && this.passedTags.length > 0) {
-      const formTags = this.noteForm.get('tags') as UntypedFormArray;
-      this.passedTags.forEach((tag) =>
-        formTags.push(this.formBuilder.control(tag))
-      );
-      this.tags.markAsDirty();
+      mergeFormTags(this.tags, this.passedTags);
     }
   }
 
@@ -287,10 +290,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         // cloned and copy-to-mine notes are always private
         public: this.cloneNote || this.copyToMine ? false : !!this.note.public,
       });
-      for (let i = 0; i < this.note.tags.length; i++) {
-        const formTags = this.noteForm.get('tags') as UntypedFormArray;
-        formTags.push(this.formBuilder.control(this.note.tags[i]));
-      }
+      mergeFormTags(this.tags, this.note.tags);
 
       // Restore notebook mode if editing/cloning a notebook note
       if (this.note.contentType === 'notebook' && this.note.notebookContent) {
@@ -315,8 +315,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     // Add our tag (avoid double adding in angular material 9 see - https://stackoverflow.com/questions/52608700/angular-material-mat-chips-autocomplete-bug-matchipinputtokenend-executed-befo)
     if ((value || '').trim() && !this.autocompleteTagsOptionActivated) {
-      const tags = this.noteForm.get('tags') as UntypedFormArray;
-      tags.push(this.formBuilder.control(value.trim().toLowerCase()));
+      mergeFormTags(this.tags, [value]);
     }
 
     // Reset the input value
@@ -335,8 +334,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   selectedTag(event: MatAutocompleteSelectedEvent): void {
-    const tags = this.noteForm.get('tags') as UntypedFormArray;
-    tags.push(this.formBuilder.control(event.option.viewValue));
+    mergeFormTags(this.tags, [event.option.viewValue]);
     this.tagInput.nativeElement.value = '';
     this.tagsControl.setValue(null);
     this.autocompleteTagsOptionActivated = false;
@@ -366,6 +364,12 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       contentControl.markAsDirty();
       return;
     }
+
+    if (this.noteForm.invalid) {
+      this.noteForm.markAllAsTouched();
+      return;
+    }
+    note.tags = normalizeTags(this.tags.getRawValue());
 
     // Attach notebook fields before saving
     if (this.isNotebookMode) {
@@ -496,7 +500,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     const DEFAULT_INSTRUCTIONS = `You are a helpful assistant that refines markdown notes.
 Given a note's title, content, tags, and optional reference URL, you should:
 1. Polish the content for grammar, clarity, and structure while preserving the original meaning and markdown formatting.
-2. Suggest relevant tags (lowercase, hyphenated for multi-word, max 8 tags).
+2. ${AI_TAG_GUIDANCE}
 3. Suggest a better title if the current one could be improved.`;
 
     const dialogConfig = new MatDialogConfig();
@@ -593,17 +597,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
         }
 
         if (accepted.tags && accepted.tags.length > 0) {
-          const formTags = this.noteForm.get('tags') as UntypedFormArray;
-          const existingTags = formTags.value.map((t: string) =>
-            t.toLowerCase()
-          );
-          accepted.tags.forEach((tag) => {
-            const normalized = tag.toLowerCase().trim();
-            if (!existingTags.includes(normalized) && formTags.length < 8) {
-              formTags.push(this.formBuilder.control(normalized));
-            }
-          });
-          this.tags.markAsDirty();
+          mergeFormTags(this.tags, accepted.tags);
         }
 
         this.cd.markForCheck();

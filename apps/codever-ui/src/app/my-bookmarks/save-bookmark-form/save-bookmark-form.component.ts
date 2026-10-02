@@ -30,6 +30,12 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { languages } from '../../shared/constants/language-options';
 import { tagsValidator } from '../../shared/directive/tags-validation.directive';
+import {
+  AI_TAG_GUIDANCE,
+  MAX_TAGS,
+  mergeFormTags,
+  normalizeTags,
+} from '../../shared/tags/tag-policy';
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
 import { HttpResponse } from '@angular/common/http';
@@ -112,6 +118,7 @@ import { MatIcon } from '@angular/material/icon';
   ],
 })
 export class SaveBookmarkFormComponent implements OnInit {
+  readonly maxTags = MAX_TAGS;
   bookmarkForm: UntypedFormGroup;
   userId = null;
   private userData: UserData;
@@ -249,10 +256,7 @@ export class SaveBookmarkFormComponent implements OnInit {
           .patchValue(
             this.datePipe.transform(bookmark.publishedOn, 'yyyy-MM-dd')
           ); // issue setting date otherwise on date field
-        for (let i = 0; i < this.bookmark.tags.length; i++) {
-          const formTags = this.bookmarkForm.get('tags') as UntypedFormArray;
-          formTags.push(this.formBuilder.control(this.bookmark.tags[i]));
-        }
+        mergeFormTags(this.tags, this.bookmark.tags);
 
         this.tagsControl.setValue(null);
         this.tags.markAsDirty();
@@ -383,10 +387,7 @@ export class SaveBookmarkFormComponent implements OnInit {
         .patchValue(webpageData.metaDescription, { emitEvent: false });
     }
     if (webpageData.tags) {
-      for (let i = 0; i < webpageData.tags.length; i++) {
-        const formTags = this.bookmarkForm.get('tags') as UntypedFormArray;
-        formTags.push(this.formBuilder.control(webpageData.tags[i]));
-      }
+      mergeFormTags(this.tags, webpageData.tags);
 
       this.tagsControl.setValue(null);
       this.tags.markAsDirty();
@@ -437,8 +438,7 @@ export class SaveBookmarkFormComponent implements OnInit {
 
     // Add our tag (avoid double adding in angular material 9 see - https://stackoverflow.com/questions/52608700/angular-material-mat-chips-autocomplete-bug-matchipinputtokenend-executed-befo)
     if ((value || '').trim() && !this.autocompleteTagsOptionActivated) {
-      const tags = this.bookmarkForm.get('tags') as UntypedFormArray;
-      tags.push(this.formBuilder.control(value.trim().toLowerCase()));
+      mergeFormTags(this.tags, [value]);
     }
 
     // Reset the input value
@@ -457,8 +457,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   selectedTag(event: MatAutocompleteSelectedEvent): void {
-    const tags = this.bookmarkForm.get('tags') as UntypedFormArray;
-    tags.push(this.formBuilder.control(event.option.viewValue));
+    mergeFormTags(this.tags, [event.option.viewValue]);
     this.tagInput.nativeElement.value = '';
     this.tagsControl.setValue(null);
     this.autocompleteTagsOptionActivated = false;
@@ -480,6 +479,11 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   saveBookmark(bookmark: Bookmark) {
+    if (this.bookmarkForm.invalid) {
+      this.bookmarkForm.markAllAsTouched();
+      return;
+    }
+    bookmark.tags = normalizeTags(this.tags.getRawValue());
     if (this.isUpdate) {
       this.updateBookmark(bookmark);
     } else if (this.copyToMine || this.cloneBookmark) {
@@ -718,7 +722,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     const DEFAULT_INSTRUCTIONS = `You are a helpful assistant that refines bookmark metadata.
 Given a bookmark's URL, name, tags, and description:
 1. If the URL page content is provided, create a concise summary as the description.
-2. Suggest relevant tags (lowercase, hyphenated for multi-word, max 8 tags).
+2. ${AI_TAG_GUIDANCE}
 3. Suggest a better bookmark name if the current one could be improved.`;
 
     const dialogConfig = new MatDialogConfig();
@@ -794,19 +798,7 @@ Given a bookmark's URL, name, tags, and description:
             }
 
             if (accepted.tags && accepted.tags.length > 0) {
-              const formTags = this.bookmarkForm.get(
-                'tags'
-              ) as UntypedFormArray;
-              const existingTags = formTags.value.map((t: string) =>
-                t.toLowerCase()
-              );
-              accepted.tags.forEach((tag) => {
-                const normalized = tag.toLowerCase().trim();
-                if (!existingTags.includes(normalized) && formTags.length < 8) {
-                  formTags.push(this.formBuilder.control(normalized));
-                }
-              });
-              this.bookmarkForm.get('tags').markAsDirty();
+              mergeFormTags(this.tags, accepted.tags);
             }
           });
       });

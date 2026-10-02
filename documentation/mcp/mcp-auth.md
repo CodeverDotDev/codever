@@ -1,10 +1,11 @@
-# Codever MCP Server — Authentication & Read-Only Security Model
+# Codever MCP Server — Authentication & Opt-In Note Creation
 
 This document captures how AI clients (Claude Desktop, Cursor, VS Code, ChatGPT
 desktop, etc.) authenticate against the **Codever MCP server**. Production uses
 OAuth 2.1 with PKCE; the dev-only access-token helper is retained for local
-testing. The MCP server is read-only, so an agent cannot create/update/delete a
-user's bookmarks, notes, or snippets.
+testing. Connections are read-only by default. Markdown note creation requires
+both `mcpServer` and `mcpCreateNotes` per-user toggles plus `mcp:read` and optional
+`mcp:write` scopes. There are no MCP update/delete or bookmark-creation tools.
 
 > Status: implementation and deployment reference for the MCP integration. Use
 > for the MCP presentation and production setup.
@@ -31,30 +32,33 @@ credentials in Codever.
 
 ---
 
-## 2. Read-only security model (three layers)
+## 2. Authorization model (three layers)
 
 A bearer token does **not** grant unlimited power — it grants exactly what the
 **resource servers that accept it** are willing to do. "Do whatever you want" is
 only true if you hand out a full-power token (like the one the Angular app uses)
 that write endpoints accept. So: **never reuse the frontend token — mint a
-dedicated, minimal one**, and enforce read-only across three independent layers.
+dedicated, minimal one**, and enforce authorization across three independent layers.
 
-### Layer 1 — Read-only by construction (primary guarantee)
+### Layer 1 — Narrow tools and independent per-user gates
 
-The MCP server exposes **only read tools**:
+Read-only connections expose exactly three tools:
 
 - `search_entries`
 - `get_entry`
 - `list_tags`
 
-There is **no** create/update/delete tool in the code. This is the guarantee
-that matters most because it does not depend on trusting the model or the token:
+`create_note` is a fourth tool only for users enabled in both allowlists with
+both scopes. The committed `mcpCreateNotes.enabledUserIds` is empty. Missing or
+malformed configuration denies creation. Eligibility is rechecked at execution,
+so removing the user blocks subsequent saves with the same token or cached tool
+list. This does not cancel a save already admitted. Reads continue when only
+creation is disabled; disabling `mcpServer` denies the entire endpoint.
 
-- If the LLM misbehaves, or
-- a malicious note contains prompt-injection ("delete all my bookmarks"),
-
-…there is **no code path** from the MCP surface to a write. You cannot misuse a
-capability that isn't wired up.
+Creation accepts only title, Markdown content (up to 30,000 characters), optional
+tags, reference, origin (`location`, `file`, `project`, `workspace`) and boolean
+`public`. Ownership comes from the token. It defaults to private, rejects
+internal/notebook/collection fields, and treats metadata as data, not fetch instructions.
 
 ### Layer 2 — Scope the token so it cannot reach write endpoints
 
@@ -70,15 +74,17 @@ be a `bookmarks-api`-audience token.
    so the write API **rejects** any token whose audience isn't `bookmarks-api`.
 
 Result: even if the connection token leaks, it is **not accepted by the write
-API** — it only opens the MCP server, which only has read tools. Two locks,
-different keys.
+API** — it only opens the scoped MCP surface. Even an MCP write token must not
+include the ordinary `bookmarks-api` audience.
 
-### Layer 3 — Per-tool scope check (defense-in-depth / future-proofing)
+### Layer 3 — Explicit scopes at discovery and execution
 
-Inside the MCP server, require the `mcp:read` scope before any tool runs. This is
-belt-and-suspenders today (all tools are read), but future-proofs the design: if
-a write tool is ever added, it would demand a separate `mcp:write` scope that the
-settings-generated token simply does not carry.
+The endpoint requires `mcp:read`; creation also requires `mcp:write`. Resource
+metadata advertises both but grants neither. Missing/invalid/wrong-audience
+tokens receive HTTP 401 with an OAuth challenge. Missing read scope or disabled
+whole-server access receives HTTP 403. Creation-only denial is an MCP error and
+does not disable reads. Creation handler failures return `isError: true` without
+stack traces or success links.
 
 ---
 
@@ -90,9 +96,10 @@ Create a new client in the `bookmarks` realm:
 |---|---|
 | Client ID | `codever-mcp` |
 | Client type | Public (PKCE) for OAuth flow |
-| Standard flow | Enabled (for Option B OAuth 2.1) |
+| Standard flow | Enabled (for Option A OAuth 2.1) |
 | Redirect URIs | Loopback URIs used by desktop MCP hosts, e.g. `http://localhost:*/callback` |
-| Client scope | `mcp:read` (add as an **optional** or **default** scope) |
+| Default client scope | `mcp:read` |
+| Optional client scope | `mcp:write` (never default) |
 | Audience mapper | Add audience `codever-mcp` to issued tokens |
 
 Define a realm/client scope **`mcp:read`** and map it into the token so the MCP
@@ -108,7 +115,7 @@ so `bookmarks-api` only accepts tokens minted for it.
 
 ### Local development (docker-compose)
 
-The `codever-mcp` client and `mcp:read` client scope are committed to the
+The `codever-mcp` client, default `mcp:read` and optional `mcp:write` scopes are committed to the
 imported realm file
 `docker-compose-setup/keycloak-export-import/bookmarks-realm.json` (public client,
 PKCE `S256`, loopback redirect URIs, and an audience mapper adding `codever-mcp`).
@@ -123,10 +130,12 @@ Applying it:
 
 - **Fresh setup:** `docker-compose up` with `--import-realm` imports the client
   automatically.
-- **Already-imported realm:** Keycloak skips import when the realm exists. Either
-  recreate it (`docker-compose down -v` to wipe the postgres volume, then
-  `docker-compose up`), or add the client once in the admin console
-  (http://localhost:8480/auth, `admin/Pa55w0rd`) to match the JSON.
+- **Already-imported realm:** Keycloak skips import when the realm exists. Apply
+  a non-destructive update in the local Admin Console or Admin API: create
+  `mcp:write` with Include in token scope enabled and no audience mapper; assign
+  it only to `codever-mcp` as **Optional**. Do not make it a realm/client default,
+  recreate the realm, or delete database volumes. Preserve existing users and
+  the MCP-only audience mapper. Changing this JSON does not update a running realm.
 
 Fetch a read-only offline token for local testing (direct access grant):
 
@@ -146,9 +155,10 @@ Or use the helper script, which prints your Keycloak `sub` (to add to
 
 ```bash
 cd apps/codever-api
-npm run mcp:token                 # defaults to the mock/mock dev user
-# MCP_USER=ama MCP_PASS=ama npm run mcp:token
-# eval "$(./dev-only/mcp-token.sh --export)"   # sets $MCP_TOKEN in your shell
+npm run dev:mcp:token                      # default read-only request
+npm run dev:mcp:token -- --write           # explicit optional write request
+# eval "$(bash dev-only/mcp-token.sh --export)"
+# eval "$(bash dev-only/mcp-token.sh --write --export)"  # either option order
 ```
 
 Then call the MCP endpoint (JSON-RPC over Streamable HTTP):
@@ -204,11 +214,9 @@ https://vscode.dev/redirect
 https://insiders.vscode.dev/redirect
 ```
 
-> **Re-import required.** Keycloak skips import when the realm already exists, so
-> after changing the client either recreate the realm
-> (`docker-compose down -v && docker-compose up`) or add the redirect URIs
-> manually in the admin console (http://localhost:8480/auth → `bookmarks` realm →
-> Clients → `codever-mcp` → Valid redirect URIs).
+> **Explicit update required.** For an existing realm, add the redirect URIs
+> non-destructively in the local Admin Console (http://localhost:8480/auth →
+> `bookmarks` → Clients → `codever-mcp` → Valid redirect URIs). Do not wipe volumes.
 
 In production, prefer pre-registering `codever-mcp` (predictable and safer than
 opening anonymous DCR) and enter it the same way, or enable tightly restricted
@@ -248,6 +256,7 @@ the following in the production `bookmarks` realm before enabling MCP for users:
      },
      "mcp": {
        "publicBaseUrl": "https://www.codever.dev",
+       "frontendBaseUrl": "https://www.codever.dev",
        "keycloak": { "resource": "codever-mcp" }
      }
    }
@@ -315,7 +324,7 @@ helper and a client/header configuration only while testing OAuth discovery.
 Codever deliberately uses a **pre-registered public client (`codever-mcp`)**
 rather than anonymous Dynamic Client Registration (DCR). The audience mapper
 (`aud: codever-mcp`) and the `mcp:read` default scope are attached **to that
-client**, which is what guarantees the read-only model. A DCR-registered client
+client**, which provides the isolated resource grant. A DCR-registered client
 would get neither, so its tokens would be rejected with `insufficient_scope`.
 
 Consequences per client:
@@ -330,7 +339,7 @@ The Copilot CLI failure is a **CLI-side gap** (no static-client-ID support for
 OAuth-protected HTTP MCP servers), not a Codever misconfiguration. We do **not**
 open anonymous DCR to work around it, because that would require moving the
 audience/scope mappers onto a shared scope and loosening the *Trusted Hosts*
-client-registration policy — weakening the read-only guarantees. Use VS Code or
+client-registration policy — weakening audience/scope isolation. Use VS Code or
 Cursor with the manual client ID `codever-mcp` until the CLI supports specifying
 a pre-registered OAuth client.
 
@@ -345,18 +354,75 @@ a pre-registered OAuth client.
 - The user can revoke the OAuth client session through Keycloak/account security.
 - The token is **per-user**: the `sub` claim drives the same per-user filtering
   the personal routes already use, so it can only ever see *that user's* data,
-  read-only.
+  with writes limited to authorized creation for that same user.
 
 ---
 
-## 7. Summary
+## 7. Preview guidance and retry risk
 
-Read-only is guaranteed by **architecture, not trust**:
+Before calling `create_note`, the agent should show the title, **full** Markdown
+draft/code, tags, visibility, reference and supplied project context; obtain
+confirmation; incorporate revisions; then save and present the returned link.
+Do not invent or upload unsolicited local metadata. Strongly prefer at most
+**eight** relevant tags where possible; **thirteen normalized unique tags** is the
+hard ceiling. Existing nine-to-thirteen-tag notes remain valid. Tags are trimmed,
+lowercased and deduplicated, never silently truncated.
 
-1. **No write tools** in the MCP server (capability does not exist).
-2. **Audience/scope isolation** so the token can't hit the write API even if leaked.
-3. **Per-tool scope checks** for future-proofing.
+Preview rendering and confirmation depend on the agent/client, **not a server
+approval workflow**. An authorized direct call succeeds without a draft or
+confirmation token. Prompt injection can still cause an authorized write; use
+host approvals and minimal grants. Creation is **non-idempotent**: a lost response
+may hide a successful save. Do not retry blindly; search/read to check first.
 
-Combined, "the chat can't unexpectedly mishandle other bookmarks/notes" holds
-even against a rogue model or prompt injection.
+Results contain saved metadata and an authenticated `/my-notes/<id>/details`
+URL, not the full content or a public sharing token. `mcp.frontendBaseUrl` must
+be an absolute HTTP(S) frontend base without credentials, query or fragment.
+It is validated before saving and is independent of `mcp.publicBaseUrl` (API).
+Already-open browser tabs follow normal refresh/cache behavior; no cross-client
+cache invalidation is provided. Origin is available through authorized `get_entry`.
+
+## 8. Local-first verification runbook
+
+1. Start the repository's Docker Compose identity/database services locally.
+   On a fresh realm only, enable its documented import command for first startup;
+   for an existing realm apply the non-destructive optional-scope update above.
+2. Create ignored `apps/codever-api/env.json` from `env.json.example` if missing,
+   keeping local identity/database settings. Set `mcp.frontendBaseUrl` to
+   `http://localhost:4200` and `mcp.publicBaseUrl` to `http://localhost:3000`.
+   Run `npm run backend` and `npm run frontend` at the repository root (or `npm start`).
+3. Add only the local test user's token `sub` to the local `mcpServer` and
+   `mcpCreateNotes` allowlists. Never commit local creation enablement or copy it
+   into production; the tracked creation allowlist must remain empty.
+4. Use the helper without `--write` and inspect the decoded token claims locally
+   without recording tokens: require `mcp:read`, no `mcp:write`, and MCP-only
+   audience (no `bookmarks-api`). Verify three tools and a denied direct creation.
+5. Use `--write` (optionally `--export`). Verify both scopes and unchanged audience.
+   With both toggles enabled there should be four tools. Enablement alone does
+   not grant scopes, and requesting scopes does not enable toggles.
+6. For a supported OAuth host (VS Code/Cursor), connect to
+   `http://localhost:3000/api/mcp` with registered client ID `codever-mcp`. First
+   verify a read-only session. To opt in, explicitly request `mcp:write` using the
+   host's scope/authorization controls and reauthorize. Check actual token claims
+   and tool discovery; host versions differ and advertised scopes are not proof
+   of an explicit grant. If the host cannot request selected optional scopes,
+   use the helper for local testing rather than promoting write to a default.
+   Existing sessions are not automatically write-enabled by this deployment.
+7. Preview a private Markdown note with snippets, tags and explicit project context
+   in chat; confirm; create; read it back; follow the returned port-4200 link while
+   signed in. Refresh the ordinary UI list. Confirm no public sharing token,
+   notebook or collection was created. Verify thirteen tags succeed and fourteen
+   fail without persistence; ordinary REST/UI editing uses the same independent policy.
+8. Remove the test user from `mcpCreateNotes` while retaining `mcpServer`. With the
+   **same write token**, subsequent creation must fail and reads must still work.
+   Saved notes and thirteen-tag editing remain available. This is creation-only
+   rollback; no restart or token expiry is required. Restore the empty allowlist.
+
+Run focused unit tests with `npx jest --runInBand --testPathPattern='(mcp.*|feature-toggle.service).test.js'`
+from `apps/codever-api`, then the targeted authenticated integration suites.
+Stubbed helper/config tests do not prove live Keycloak token claims or OAuth-host
+behavior. Record those smoke results separately; unavailable checks are not passes.
+
+Production rollout is a **separate explicit deployment action after local verification**:
+configure optional `mcp:write`, frontend base, selected user eligibility and explicit
+host reauthorization. Never enable Direct Access Grants for production testing.
 
