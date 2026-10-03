@@ -98,6 +98,11 @@ describe('validateBookmarkInput', () => {
           'mongodb',
           'mysql',
           'typescript',
+          'node',
+          'testing',
+          'api',
+          'web',
+          'docker',
         ],
       },
       [BookmarkValidationErrorMessages.TOO_MANY_TAGS],
@@ -121,3 +126,28 @@ describe('validateBookmarkInput', () => {
     }
   });
 });
+
+describe.each(['personal', 'admin'])('%s bookmark tag policy', (boundary) => {
+  const validate = (bookmark) => boundary === 'personal'
+    ? bookmarkInputValidator.validateBookmarkInput('owner', bookmark)
+    : bookmarkInputValidator.validateBookmarkInputForAdmin(bookmark);
+  const validBookmark = (tags) => ({
+    userId: 'owner', name: 'Bookmark', location: 'https://example.com', tags,
+  });
+
+  test('accepts thirteen normalized tags after deduplication', () => {
+    const tags = Array.from({ length: 13 }, (_, i) => `tag-${i}`);
+    const bookmark = validBookmark([...tags, ' TAG-0 ']);
+    validate(bookmark);
+    expect(bookmark.tags).toEqual(tags);
+    expect(BookmarkValidationRules.MAX_NUMBER_OF_TAGS).toBe(13);
+  });
+
+  test.each([
+    Array.from({ length: 14 }, (_, i) => `tag-${i}`),
+    [], undefined, null, 'tag', [''], ['valid', 1], [' Awesome-list '],
+  ].map((tags) => [tags]))('rejects invalid tags: %j', (tags) => {
+    expect(() => validate(validBookmark(tags))).toThrow(ValidationError);
+  });
+});
+

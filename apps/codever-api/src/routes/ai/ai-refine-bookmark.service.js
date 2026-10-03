@@ -1,6 +1,7 @@
 const request = require('superagent');
 const cheerio = require('cheerio');
 const HttpStatus = require('http-status-codes/index');
+const { AI_TAG_GUIDANCE } = require('../../common/validation/tag-policy');
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 const DEEPSEEK_MODEL = 'deepseek-chat'; // DeepSeek V4 Flash
@@ -70,7 +71,7 @@ const refineBookmark = async function (userId, bookmarkData) {
 
 Return ONLY a valid JSON object (no markdown fences, no extra text) with exactly these keys:
 - "refinedName": the improved bookmark name/title
-- "suggestedTags": an array of suggested tag strings (lowercase, hyphenated, max 8)
+- "suggestedTags": an array of suggested tag strings (lowercase, hyphenated)
 - "refinedDescription": a polished markdown description summarizing the content`;
 
   if (pageReachable && pageContent) {
@@ -78,11 +79,12 @@ Return ONLY a valid JSON object (no markdown fences, no extra text) with exactly
     const DEFAULT_SUMMARY_INSTRUCTIONS = `You are a helpful assistant that analyzes web page content and creates bookmark metadata.
 Given the scraped content of a web page, you should:
 1. Create a concise, descriptive bookmark name based on the page title and content.
-2. Suggest relevant tags (lowercase, hyphenated for multi-word, max 8 tags) that categorize the page's topic.
+2. ${AI_TAG_GUIDANCE}
 3. Write a helpful markdown description (2-4 sentences) summarizing what the page is about.`;
 
-    const instructions =
-      bookmarkData.customPrompt || DEFAULT_SUMMARY_INSTRUCTIONS;
+    const instructions = bookmarkData.customPrompt
+      ? `${bookmarkData.customPrompt}\n\n${AI_TAG_GUIDANCE}`
+      : DEFAULT_SUMMARY_INSTRUCTIONS;
     systemPrompt = instructions + OUTPUT_FORMAT;
 
     const currentTags = (bookmarkData.tags || []).join(', ');
@@ -99,11 +101,12 @@ ${pageContent.bodyText}`;
     const DEFAULT_REFINE_INSTRUCTIONS = `You are a helpful assistant that refines bookmark metadata.
 The URL could not be reached for scraping, so please refine the existing fields:
 1. Polish the bookmark name for clarity and correctness.
-2. Suggest relevant tags (lowercase, hyphenated for multi-word, max 8 tags).
+2. ${AI_TAG_GUIDANCE}
 3. Polish the description for grammar, clarity, and structure while preserving the original meaning and markdown formatting.`;
 
-    const instructions =
-      bookmarkData.customPrompt || DEFAULT_REFINE_INSTRUCTIONS;
+    const instructions = bookmarkData.customPrompt
+      ? `${bookmarkData.customPrompt}\n\n${AI_TAG_GUIDANCE}`
+      : DEFAULT_REFINE_INSTRUCTIONS;
     systemPrompt = instructions + OUTPUT_FORMAT;
 
     const currentTags = (bookmarkData.tags || []).join(', ');

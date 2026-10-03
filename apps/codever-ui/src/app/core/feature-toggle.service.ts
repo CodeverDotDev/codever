@@ -8,6 +8,7 @@ export interface FeatureToggles {
   aiNoteRefine: boolean;
   aiAssistant: boolean;
   mcpServer: boolean;
+  mcpCreateNotes: boolean;
 }
 
 @Injectable()
@@ -52,5 +53,10 @@ export class FeatureToggleService {
   /** Check if the MCP server feature is enabled for the current user. */
   isMcpServerEnabled(): Observable<boolean> {
     return this.getFeatureToggles().pipe(map((toggles) => toggles.mcpServer));
+  }
+
+  /** Eligibility only; the MCP server also requires an opt-in write scope. */
+  isMcpCreateNotesEnabled(): Observable<boolean> {
+    return this.getFeatureToggles().pipe(map((toggles) => !!toggles.mcpCreateNotes));
   }
 }

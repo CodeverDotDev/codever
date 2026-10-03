@@ -1,4 +1,5 @@
 import { Directive } from '@angular/core';
+import { MAX_TAGS, normalizeTags } from '../tags/tag-policy';
 import {
   AbstractControl,
   UntypedFormArray,
@@ -9,11 +10,18 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 
-/** At least one tag is required with a maximum of 8 */
+/** At least one tag is required, with a maximum of thirteen unique tags. */
 export const tagsValidator: ValidatorFn = (
   control: UntypedFormArray
 ): ValidationErrors | null => {
-  const maxNumberOfTags = 8;
+  const values = control.getRawValue();
+  if (
+    !Array.isArray(values) ||
+    values.some((tag) => typeof tag !== 'string' || !tag.trim())
+  ) {
+    return { invalidTags: true };
+  }
+  const normalized = normalizeTags(values);
   const validationResponse: ValidationErrors = {};
   let invalid = false;
   if (control.length === 0) {
@@ -21,16 +29,15 @@ export const tagsValidator: ValidatorFn = (
     invalid = true;
   }
 
-  if (control.length > maxNumberOfTags) {
+  if (normalized.length > MAX_TAGS) {
     validationResponse['tooManyTags'] = true;
     invalid = true;
   }
 
-  const values: string[] = control.getRawValue();
   let blockedTags = '';
-  for (let i = 0; i < values.length; i++) {
-    if (values[i].startsWith('awesome')) {
-      blockedTags = blockedTags.concat(' ' + values[i]);
+  for (let i = 0; i < normalized.length; i++) {
+    if (normalized[i].startsWith('awesome')) {
+      blockedTags = blockedTags.concat(' ' + normalized[i]);
       invalid = true;
       break;
     }

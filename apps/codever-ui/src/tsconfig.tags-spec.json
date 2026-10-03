@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.onpush-spec.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/tags-spec"
+  },
+  "include": ["app/shared/tags/*.spec.ts", "**/*.d.ts"]
+}

@@ -1,6 +1,7 @@
 const showdown = require('showdown');
 const Bookmark = require('../../model/bookmark');
 const bookmarkRequestMapper = require('./bookmark-request.mapper');
+const ValidationError = require('../../error/validation.error');
 
 jest.mock('showdown', () => {
   const makeHtml = jest.fn(() => '<p>This is a test bookmark</p>');
@@ -142,3 +143,23 @@ describe('toBookmark', () => {
     );
   });
 });
+
+describe('raw bookmark tag input', () => {
+  const request = (tags) => ({
+    params: { userId: 'owner' },
+    body: { name: 'Bookmark', location: 'https://example.com', description: '', tags },
+  });
+
+  test.each([['valid', 1], [''], 'tag', null].map((tags) => [tags]))(
+    'rejects malformed tags before casting: %j', (tags) => {
+      expect(() => bookmarkRequestMapper.toBookmark(request(tags))).toThrow(ValidationError);
+    }
+  );
+
+  test('maps thirteen normalized tags without silently dropping any', () => {
+    const tags = Array.from({ length: 13 }, (_, i) => `tag-${i}`);
+    const result = bookmarkRequestMapper.toBookmark(request([...tags, ' TAG-0 ']));
+    expect(Array.from(result.tags)).toEqual(tags);
+  });
+});
+

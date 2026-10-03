@@ -1,6 +1,7 @@
 const ValidationError = require('../../error/validation.error');
 const PublicBookmarkExistentError = require('../../error/public-bookmark-existent.error');
 const Bookmark = require('../../model/bookmark');
+const { MAX_TAGS, normalizeTags } = require('./tag-policy');
 
 let validateBookmarkInput = function (userId, bookmark) {
   let validationErrorMessages = validateInputExceptUserId(bookmark);
@@ -21,6 +22,15 @@ let validateBookmarkInput = function (userId, bookmark) {
 
 function validateInputExceptUserId(bookmark) {
   let validationErrorMessages = [];
+  let normalizedTags = [];
+  try {
+    normalizedTags = normalizeTags(bookmark.tags);
+  } catch (error) {
+    if (!(error instanceof ValidationError)) {
+      throw error;
+    }
+    validationErrorMessages.push(...error.validationErrors);
+  }
 
   if (!bookmark.userId) {
     validationErrorMessages.push(
@@ -36,17 +46,13 @@ function validateInputExceptUserId(bookmark) {
       BookmarkValidationErrorMessages.MISSING_LOCATION
     );
   }
-  if (!bookmark.tags || bookmark.tags.length === 0) {
+  if (normalizedTags.length === 0) {
     validationErrorMessages.push(BookmarkValidationErrorMessages.MISSING_TAGS);
-  } else if (
-    bookmark.tags.length > BookmarkValidationRules.MAX_NUMBER_OF_TAGS
-  ) {
-    validationErrorMessages.push(BookmarkValidationErrorMessages.TOO_MANY_TAGS);
   }
 
   let blockedTags = '';
-  for (let i = 0; i < bookmark.tags?.length; i++) {
-    const tag = bookmark.tags[i];
+  for (let i = 0; i < normalizedTags.length; i++) {
+    const tag = normalizedTags[i];
     if (tag.startsWith('awesome')) {
       blockedTags = blockedTags.concat(' ' + tag);
     }
@@ -78,6 +84,9 @@ function validateInputExceptUserId(bookmark) {
     }
   }
 
+  if (validationErrorMessages.length === 0) {
+    bookmark.tags = normalizedTags;
+  }
   return validationErrorMessages;
 }
 
@@ -132,7 +141,7 @@ let verifyPublicBookmarkExistenceOnUpdate = async function (bookmark, userId) {
 const BookmarkValidationRules = {
   MAX_NUMBER_OF_CHARS_FOR_DESCRIPTION: 10000,
   MAX_NUMBER_OF_LINES_FOR_DESCRIPTION: 500,
-  MAX_NUMBER_OF_TAGS: 8,
+  MAX_NUMBER_OF_TAGS: MAX_TAGS,
 };
 
 const BookmarkValidationErrorMessages = {

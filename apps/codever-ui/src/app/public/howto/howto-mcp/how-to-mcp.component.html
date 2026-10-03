@@ -23,8 +23,7 @@
   <!-- What you get -->
   <h3><i class="fas fa-toolbox"></i> What your AI client can do</h3>
   <p>
-    The Codever MCP server is <strong>read-only by design</strong>. It exposes
-    exactly three tools:
+    Connections are <strong>read-only by default</strong>, with three tools:
   </p>
   <ul>
     <li>
@@ -42,10 +41,41 @@
   </ul>
   <div class="alert alert-success">
     <i class="fas fa-shield-alt me-1"></i>
-    <strong>Read-only by architecture.</strong> There are no create, update or
-    delete tools, and the MCP connection uses a separate, scoped credential — a
-    connected client can never modify your data.
+    <strong>Separate, scoped access.</strong> Reads require the per-user
+    <code>mcpServer</code> toggle and <code>mcp:read</code> scope. A fourth tool,
+    <code>create_note</code>, is available only with the additional
+    <code>mcpCreateNotes</code> toggle and optional <code>mcp:write</code> scope.
+    Creation is disabled by default. There are no update, delete, or bookmark-creation tools.
   </div>
+
+  <h4>Optional Markdown note creation</h4>
+  <p>
+    If creation is enabled for your account, explicitly request
+    <code>mcp:write</code> using your client's OAuth scope controls and reauthorize.
+    Existing read-only sessions are not automatically upgraded. Host support varies;
+    refresh the tool list and verify the granted scopes rather than assuming that
+    advertised scopes were granted. Never substitute a normal Codever frontend token.
+  </p>
+  <p>
+    Ask the agent to preview the title, full Markdown draft and code, tags, visibility,
+    reference, and supplied project/workspace/file/location context. Confirm or revise
+    the preview before saving, then follow the returned authenticated note link.
+    Notes default to private; public visibility must be explicit. No notebook,
+    collection or public sharing link is created. Do not include unsolicited local context.
+    Prefer at most <strong>eight relevant tags</strong>; the hard ceiling is
+    <strong>thirteen normalized unique tags</strong>, without automatic truncation.
+  </p>
+  <div class="alert alert-warning">
+    Preview and confirmation are agent/client guidance, <strong>not server-enforced approval</strong>.
+    An authorized direct call can save without a confirmation token. Creation is
+    non-idempotent: do not retry blindly after a timeout; search/read to check whether
+    the note was saved first. Disabling only creation blocks subsequent saves while reads remain available.
+  </div>
+  <p>
+    Administrators must configure <code>mcp.frontendBaseUrl</code> separately from
+    the API origin (locally, UI port 4200 and MCP port 3000). Invalid link configuration
+    blocks creation before saving. Already-open lists may need their normal refresh.
+  </p>
 
   <hr />
 

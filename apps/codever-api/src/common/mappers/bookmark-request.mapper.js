@@ -3,9 +3,11 @@ const showdown = require('showdown'),
   converter = new showdown.Converter();
 
 const Bookmark = require('../../model/bookmark');
+const { normalizeTags } = require('../validation/tag-policy');
 
 module.exports = {
   toBookmark: function (req) {
+    const tags = normalizeTags(req.body.tags);
     const descriptionHtml = req.body.descriptionHtml
       ? req.body.descriptionHtml
       : converter.makeHtml(req.body.description);
@@ -13,6 +15,7 @@ module.exports = {
     const stackoverflowQuestionId = req.body.stackoverflowQuestionId;
     req.body = {
       ...req.body,
+      tags,
       userId: req.body.userId || req.params.userId,
       youtubeVideoId: youtubeVideoId ? youtubeVideoId : null,
       likeCount: req.body.likeCount || 0,

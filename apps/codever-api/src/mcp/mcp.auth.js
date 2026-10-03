@@ -11,6 +11,7 @@ const FeatureToggleService = require('../common/feature-toggle.service');
  */
 
 const MCP_READ_SCOPE = 'mcp:read';
+const MCP_WRITE_SCOPE = 'mcp:write';
 
 function getTokenContent(request) {
   return (
@@ -37,8 +38,8 @@ function getUserId(request) {
  */
 function getScopes(request) {
   const content = getTokenContent(request);
-  const scope = content && content.scope ? content.scope : '';
-  return scope.split(' ').filter(Boolean);
+  const scope = content && typeof content.scope === 'string' ? content.scope : '';
+  return scope.split(/\s+/).filter(Boolean);
 }
 
 /**
@@ -49,10 +50,20 @@ function isMcpEnabledForUser(userId) {
   return !!userId && FeatureToggleService.isMcpServerEnabled(userId);
 }
 
+// Read toggles on every invocation, including execution after discovery.
+function canCreateNotes(userId, scopes = []) {
+  return Array.isArray(scopes) &&
+    scopes.includes(MCP_READ_SCOPE) && scopes.includes(MCP_WRITE_SCOPE) &&
+    isMcpEnabledForUser(userId) &&
+    FeatureToggleService.isMcpCreateNotesEnabled(userId);
+}
+
 module.exports = {
   MCP_READ_SCOPE,
+  MCP_WRITE_SCOPE,
   getUserId,
   getScopes,
   isMcpEnabledForUser,
+  canCreateNotes,
 };
 
