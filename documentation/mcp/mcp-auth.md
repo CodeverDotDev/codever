@@ -1,11 +1,12 @@
-# Codever MCP Server — Authentication & Opt-In Note Creation
+# Codever MCP Server — Authentication & Opt-In Note Creation and Updates
 
 This document captures how AI clients (Claude Desktop, Cursor, VS Code, ChatGPT
 desktop, etc.) authenticate against the **Codever MCP server**. Production uses
 OAuth 2.1 with PKCE; the dev-only access-token helper is retained for local
 testing. Connections are read-only by default. Markdown note creation requires
 both `mcpServer` and `mcpCreateNotes` per-user toggles plus `mcp:read` and optional
-`mcp:write` scopes. There are no MCP update/delete or bookmark-creation tools.
+`mcp:write` scopes. Note updates use the same write authorization; bookmark and
+delete tools remain unavailable.
 
 > Status: implementation and deployment reference for the MCP integration. Use
 > for the MCP presentation and production setup.
@@ -48,8 +49,8 @@ Read-only connections expose exactly three tools:
 - `get_entry`
 - `list_tags`
 
-`create_note` is a fourth tool only for users enabled in both allowlists with
-both scopes. The committed `mcpCreateNotes.enabledUserIds` is empty. Missing or
+`create_note` and `update_note` are fourth and fifth tools only for users enabled
+in both allowlists with both scopes. The committed `mcpCreateNotes.enabledUserIds` is empty. Missing or
 malformed configuration denies creation. Eligibility is rechecked at execution,
 so removing the user blocks subsequent saves with the same token or cached tool
 list. This does not cancel a save already admitted. Reads continue when only
@@ -59,6 +60,15 @@ Creation accepts only title, Markdown content (up to 30,000 characters), optiona
 tags, reference, origin (`location`, `file`, `project`, `workspace`) and boolean
 `public`. Ownership comes from the token. It defaults to private, rejects
 internal/notebook/collection fields, and treats metadata as data, not fetch instructions.
+
+`update_note` requires an existing note `id` and at least one of `title`,
+`content`, `tags`, `reference` or `public`. It is a partial, idempotent update:
+omitted fields remain unchanged, and the note must belong to the authenticated
+user. Supplying `tags` replaces the complete tag list, so first read the note's
+current tags and include every tag that should remain. Tags are normalized and
+limited to thirteen unique values; note content remains limited to 30,000
+characters. Successful updates return compact metadata and an authenticated note
+link, not the full content.
 
 ### Layer 2 — Scope the token so it cannot reach write endpoints
 
@@ -412,9 +422,12 @@ cache invalidation is provided. Origin is available through authorized `get_entr
    signed in. Refresh the ordinary UI list. Confirm no public sharing token,
    notebook or collection was created. Verify thirteen tags succeed and fourteen
    fail without persistence; ordinary REST/UI editing uses the same independent policy.
-8. Remove the test user from `mcpCreateNotes` while retaining `mcpServer`. With the
+8. For an existing note, use `get_entry` to capture its current tags before calling
+   `update_note`; verify a single-field update, a multi-field update, complete tag
+   replacement, and rejection of fourteen tags without persistence.
+9. Remove the test user from `mcpCreateNotes` while retaining `mcpServer`. With the
    **same write token**, subsequent creation must fail and reads must still work.
-   Saved notes and thirteen-tag editing remain available. This is creation-only
+   Saved notes and thirteen-tag updating remain available. This is creation/update-only
    rollback; no restart or token expiry is required. Restore the empty allowlist.
 
 Run focused unit tests with `npx jest --runInBand --testPathPattern='(mcp.*|feature-toggle.service).test.js'`

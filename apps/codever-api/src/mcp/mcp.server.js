@@ -13,7 +13,13 @@ const config = common.config();
 
 const mcpTools = require('./mcp-tools.service');
 const mcpAuth = require('./mcp.auth');
-const { createNoteSchema, McpNoteCreationError, creationErrorMessage } = require('./mcp-note-creation');
+const {
+  createNoteSchema,
+  updateNoteSchema,
+  McpNoteCreationError,
+  creationErrorMessage,
+  updateErrorMessage,
+} = require('./mcp-note-creation');
 const { AI_TAG_GUIDANCE } = require('../common/validation/tag-policy');
 
 const router = express.Router();
@@ -192,7 +198,7 @@ function buildMcpServer(userId, scopes = []) {
           'Preview rendering and confirmation depend on the agent/client and are not server-enforced; ' +
           'no draft or confirmation token is required. This write is non-idempotent: do not retry blindly ' +
           'after an uncertain result; first use search_entries/get_entry to check for an existing save. ' +
-          'Notebook creation, collections, updates and deletes are unsupported.',
+           'Notebook creation, collections and deletes are unsupported; use update_note for existing Markdown notes.',
         inputSchema: createNoteSchema,
         annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
       },
@@ -204,6 +210,30 @@ function buildMcpServer(userId, scopes = []) {
           return asToolResult(await mcpTools.createNote(userId, args, grantedScopes));
         } catch (error) {
           return { isError: true, content: [{ type: 'text', text: creationErrorMessage(error) }] };
+        }
+      }
+    );
+
+    server.registerTool(
+      'update_note',
+      {
+        title: 'Update a Codever Markdown note',
+        description:
+          'Update one or more fields of the authenticated user\'s Markdown note. ' +
+          'Only supplied fields change; omitted fields remain untouched. When changing tags, ' +
+          'send the complete desired list based on the note\'s current tags because supplied tags ' +
+          'replace the entire list. Updates are idempotent and safe to retry. Notebook notes and deletes are unsupported.',
+        inputSchema: updateNoteSchema,
+        annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      },
+      async (args) => {
+        try {
+          if (!mcpAuth.canCreateNotes(userId, grantedScopes)) {
+            throw new McpNoteCreationError('Note updates are no longer enabled for this connection. No note was changed.');
+          }
+          return asToolResult(await mcpTools.updateNote(userId, args, grantedScopes));
+        } catch (error) {
+          return { isError: true, content: [{ type: 'text', text: updateErrorMessage(error) }] };
         }
       }
     );

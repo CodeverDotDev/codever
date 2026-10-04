@@ -3,6 +3,7 @@ jest.mock('./mcp-tools.service', () => ({
   getEntry: jest.fn(),
   listTags: jest.fn(),
   createNote: jest.fn(),
+  updateNote: jest.fn(),
 }));
 
 jest.mock('../common/feature-toggle.service', () => ({
@@ -234,7 +235,7 @@ describe('mcp.server opt-in creation', () => {
   test('exposes strict non-idempotent creation guidance only to an enabled writer', async () => {
     client = await connectClient(buildMcpServer(USER_ID, scopes));
     const { tools } = await client.listTools();
-    expect(tools).toHaveLength(4);
+    expect(tools).toHaveLength(5);
     const tool = tools.find((t) => t.name === 'create_note');
     expect(tool.inputSchema.additionalProperties).toBe(false);
     expect(tool.annotations).toMatchObject({ readOnlyHint: false, destructiveHint: false, idempotentHint: false });
@@ -252,7 +253,7 @@ describe('mcp.server opt-in creation', () => {
 
   test('cached tool execution rechecks creation toggle while reads continue', async () => {
     client = await connectClient(buildMcpServer(USER_ID, scopes));
-    expect((await client.listTools()).tools).toHaveLength(4);
+    expect((await client.listTools()).tools).toHaveLength(5);
     toggles.isMcpCreateNotesEnabled.mockReturnValue(false);
     const result = await client.callTool({ name: 'create_note', arguments: { title: 'T', content: 'C' } });
     expect(result.isError).toBe(true);
@@ -296,6 +297,30 @@ describe('mcp.server opt-in creation', () => {
     expect(result.isError).toBe(true);
     expect(result.content[0].text).toContain(expected);
     expect(result.content[0].text).not.toMatch(/secret|stack trace|\/my-notes\//);
+  });
+
+  test('exposes an idempotent strict update tool and forwards valid patches', async () => {
+    mcpTools.updateNote.mockResolvedValue({ id: 'n1', type: 'note', title: 'Updated' });
+    client = await connectClient(buildMcpServer(USER_ID, scopes));
+    const { tools } = await client.listTools();
+    const tool = tools.find((candidate) => candidate.name === 'update_note');
+    expect(tool).toBeDefined();
+    expect(tool.inputSchema.additionalProperties).toBe(false);
+    expect(tool.inputSchema.required).toEqual(['id']);
+    expect(tool.annotations).toMatchObject({ readOnlyHint: false, idempotentHint: true });
+    expect(tool.description).toContain('replace the entire list');
+
+    const args = { id: 'n1', title: 'Updated' };
+    const result = await client.callTool({ name: 'update_note', arguments: args });
+    expect(result.isError).not.toBe(true);
+    expect(mcpTools.updateNote).toHaveBeenCalledWith(USER_ID, args, scopes);
+  });
+
+  test('rejects malformed update input before the service', async () => {
+    client = await connectClient(buildMcpServer(USER_ID, scopes));
+    const result = await client.callTool({ name: 'update_note', arguments: { id: 'n1' } });
+    expect(result.isError).toBe(true);
+    expect(mcpTools.updateNote).not.toHaveBeenCalled();
   });
 });
 

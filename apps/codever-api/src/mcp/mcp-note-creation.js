@@ -20,6 +20,20 @@ const createNoteSchema = z.object({
   public: z.boolean().optional(),
 }).strict();
 
+const updateNoteSchema = z.object({
+  id: nonblank,
+  title: nonblank.optional(),
+  content: z.string().max(NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_CONTENT)
+    .refine((value) => value.trim().length > 0, 'Must not be blank').optional(),
+  // Count after normalization, not here: duplicates consume no extra slots.
+  tags: z.array(nonblank).optional(),
+  reference: z.string().optional(),
+  public: z.boolean().optional(),
+}).strict().refine(
+  (value) => ['title', 'content', 'tags', 'reference', 'public'].some((field) => value[field] !== undefined),
+  'At least one editable field is required'
+);
+
 class McpNoteCreationError extends Error {}
 
 const safeValidationMessages = new Set([
@@ -38,6 +52,18 @@ function creationErrorMessage(error) {
   return 'Could not create the note. Do not retry blindly: use search_entries/get_entry to check whether it was saved before trying again.';
 }
 
+function updateErrorMessage(error) {
+  if (error instanceof McpNoteCreationError) return error.message;
+  if (error instanceof ValidationError) {
+    const details = (error.validationErrors || []).filter((text) => safeValidationMessages.has(text));
+    return ['The note update is not valid.', ...details].join(' ');
+  }
+  if (error instanceof z.ZodError) {
+    return 'Invalid update_note input. Use a nonblank id and at least one of title, content (1–30000 characters), tags, reference or public; text must not be blank.';
+  }
+  return 'Could not update the note. Check that the note exists and belongs to the authenticated user, then retry.';
+}
+
 /** Validate before persistence; never derive a link from request headers. */
 function noteUrlBuilder(frontendBaseUrl) {
   try {
@@ -51,4 +77,11 @@ function noteUrlBuilder(frontendBaseUrl) {
   }
 }
 
-module.exports = { createNoteSchema, McpNoteCreationError, creationErrorMessage, noteUrlBuilder };
+module.exports = {
+  createNoteSchema,
+  updateNoteSchema,
+  McpNoteCreationError,
+  creationErrorMessage,
+  updateErrorMessage,
+  noteUrlBuilder,
+};
