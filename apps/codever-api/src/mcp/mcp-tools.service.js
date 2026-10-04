@@ -5,7 +5,12 @@ const personalNotesService = require('../routes/users/notes/personal-notes.servi
 const common = require('../common/config');
 const mcpAuth = require('./mcp.auth');
 const { normalizeTags } = require('../common/validation/tag-policy');
-const { createNoteSchema, McpNoteCreationError, noteUrlBuilder } = require('./mcp-note-creation');
+const {
+  createNoteSchema,
+  updateNoteSchema,
+  McpNoteCreationError,
+  noteUrlBuilder,
+} = require('./mcp-note-creation');
 
 /**
  * User-scoped tool layer backing the Codever MCP server.
@@ -276,8 +281,33 @@ async function createNote(userId, args, scopes = []) {
   };
 }
 
+async function updateNote(userId, args, scopes = []) {
+  if (!mcpAuth.canCreateNotes(userId, scopes)) {
+    throw new McpNoteCreationError('Note updates requires mcpServer and mcpCreateNotes access and both mcp:read and mcp:write scopes. No note was changed.');
+  }
+  const input = updateNoteSchema.parse(args);
+  const config = common.config();
+  const buildUrl = noteUrlBuilder(config.mcp && config.mcp.frontendBaseUrl);
+  const { id, ...patch } = input;
+  const updated = await personalNotesService.updateNotePartially(userId, id, patch);
+  const plain = updated.toObject ? updated.toObject() : updated;
+  return {
+    id: idToString(plain._id),
+    type: 'note',
+    title: plain.title,
+    tags: plain.tags || [],
+    contentType: plain.contentType,
+    public: !!plain.public,
+    createdAt: plain.createdAt,
+    updatedAt: plain.updatedAt,
+    ...optionalNoteMetadata(plain),
+    url: buildUrl(idToString(plain._id)),
+  };
+}
+
 module.exports = {
   createNote,
+  updateNote,
   searchEntries,
   getEntry,
   listTags,

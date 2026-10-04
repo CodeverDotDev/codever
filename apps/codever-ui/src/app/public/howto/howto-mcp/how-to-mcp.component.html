@@ -43,9 +43,9 @@
     <i class="fas fa-shield-alt me-1"></i>
     <strong>Separate, scoped access.</strong> Reads require the per-user
     <code>mcpServer</code> toggle and <code>mcp:read</code> scope. A fourth tool,
-    <code>create_note</code>, is available only with the additional
+    <code>create_note</code> and <code>update_note</code> tools are available only with the additional
     <code>mcpCreateNotes</code> toggle and optional <code>mcp:write</code> scope.
-    Creation is disabled by default. There are no update, delete, or bookmark-creation tools.
+    Creation and updates are disabled by default. There are no delete or bookmark-creation tools.
   </div>
 
   <h4>Optional Markdown note creation</h4>
@@ -56,6 +56,20 @@
     refresh the tool list and verify the granted scopes rather than assuming that
     advertised scopes were granted. Never substitute a normal Codever frontend token.
   </p>
+  <h4>Updating existing Markdown notes</h4>
+  <p>
+    Use <code>update_note</code> with the note <code>id</code> and only the fields
+    you want to change: <code>title</code>, <code>content</code>,
+    <code>tags</code>, <code>reference</code> or <code>public</code>. Updates are
+    partial and idempotent, so omitted fields stay unchanged and a retry is safe.
+    The note must belong to the authenticated user.
+  </p>
+  <div class="alert alert-warning">
+    <i class="fas fa-exclamation-triangle me-1"></i>
+    <strong>Tags replace the complete list.</strong> Before changing tags, read
+    the note and base the new list on its current tags. Tags are normalized and
+    limited to <strong>thirteen unique values</strong>; they are not merged automatically.
+  </div>
   <p>
     Ask the agent to preview the title, full Markdown draft and code, tags, visibility,
     reference, and supplied project/workspace/file/location context. Confirm or revise

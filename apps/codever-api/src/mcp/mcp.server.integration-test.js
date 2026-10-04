@@ -8,8 +8,6 @@ const path = require('path');
 const common = require('../common/config');
 const config = common.config();
 
-const { TOO_MANY_TAGS } = require('../common/validation/tag-policy');
-
 const MCP_URL = '/api/mcp';
 const MOCK_USER = 'a7908cb5-3b37-4cc1-a751-42f674d870e1';
 const togglesPath = path.resolve(__dirname, '../../feature-toggles.json');
@@ -165,7 +163,7 @@ describe('MCP server — authenticated note creation (integration)', () => {
   it('exposes create_note to a write-enabled token and creates a Markdown note', async () => {
     const listResponse = await postJsonRpc(writeToken, { jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} });
     expect(listResponse.status).toBe(200);
-    expect(toolNames(listResponse.body).sort()).toEqual(['create_note', 'get_entry', 'list_tags', 'search_entries']);
+    expect(toolNames(listResponse.body).sort()).toEqual(['create_note', 'get_entry', 'list_tags', 'search_entries', 'update_note']);
 
     const createResponse = await postJsonRpc(writeToken, {
       jsonrpc: '2.0',
@@ -223,6 +221,7 @@ describe('MCP server — authenticated note creation (integration)', () => {
   it('does not register create_note for a read-only token and denies a direct call', async () => {
     const listResponse = await postJsonRpc(readToken, { jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} });
     expect(toolNames(listResponse.body)).not.toContain('create_note');
+    expect(toolNames(listResponse.body)).not.toContain('update_note');
 
     const callResponse = await postJsonRpc(readToken, {
       jsonrpc: '2.0',
@@ -235,6 +234,71 @@ describe('MCP server — authenticated note creation (integration)', () => {
     const failed = callResponse.body.error !== undefined ||
       (callResponse.body.result && callResponse.body.result.isError === true);
     expect(failed).toBe(true);
+  });
+
+  it('partially updates a note, replaces tags, and rejects missing or over-limit updates', async () => {
+    const createResponse = await postJsonRpc(writeToken, {
+      jsonrpc: '2.0', id: 1, method: 'tools/call',
+      params: { name: 'create_note', arguments: { title: 'Update target', content: 'Original', tags: ['keep', 'remove'] } },
+    });
+    const created = JSON.parse(callResultText(createResponse.body));
+    createdNoteIds.push(created.id);
+
+    const singleField = await postJsonRpc(writeToken, {
+      jsonrpc: '2.0', id: 2, method: 'tools/call',
+      params: { name: 'update_note', arguments: { id: created.id, title: 'Updated title' } },
+    });
+    expect(singleField.body.result.isError).not.toBe(true);
+    expect(JSON.parse(callResultText(singleField.body))).toMatchObject({ id: created.id, title: 'Updated title', tags: ['keep', 'remove'] });
+
+    const multipleFields = await postJsonRpc(writeToken, {
+      jsonrpc: '2.0', id: 3, method: 'tools/call',
+      params: { name: 'update_note', arguments: { id: created.id, content: 'Updated content', tags: [' Keep ', 'new'] } },
+    });
+    expect(multipleFields.body.result.isError).not.toBe(true);
+    expect(JSON.parse(callResultText(multipleFields.body))).toMatchObject({ contentType: 'markdown', tags: ['keep', 'new'] });
+
+    const fourteen = Array.from({ length: 14 }, (_, i) => `update-${i}`);
+    const tooMany = await postJsonRpc(writeToken, {
+      jsonrpc: '2.0', id: 4, method: 'tools/call',
+      params: { name: 'update_note', arguments: { id: created.id, tags: fourteen } },
+    });
+    expect(tooMany.body.result.isError).toBe(true);
+    expect(callResultText(tooMany.body)).toContain('max 13');
+
+    for (const id of ['507f1f77bcf86cd799439011', '507f1f77bcf86cd799439012']) {
+      const missing = await postJsonRpc(writeToken, {
+        jsonrpc: '2.0', id: 5, method: 'tools/call',
+        params: { name: 'update_note', arguments: { id, title: 'Should not save' } },
+      });
+      expect(missing.body.result.isError).toBe(true);
+      expect(callResultText(missing.body)).toContain('exists and belongs');
+    }
+  });
+
+  it('returns not-found for a note owned by another user and leaves it unchanged', async () => {
+    const Note = require('../model/note');
+    const foreignNote = await Note.create({
+      userId: '07f9ed01-a7d5-4788-9f26-f2b3e5875630',
+      type: 'note',
+      contentType: 'markdown',
+      title: 'Foreign note',
+      content: 'Do not touch',
+      tags: ['foreign'],
+    });
+
+    const updateResponse = await postJsonRpc(writeToken, {
+      jsonrpc: '2.0', id: 1, method: 'tools/call',
+      params: { name: 'update_note', arguments: { id: String(foreignNote._id), title: 'Should not save' } },
+    });
+    expect(updateResponse.body.result.isError).toBe(true);
+    expect(callResultText(updateResponse.body)).toContain('exists and belongs');
+
+    const stored = await Note.findById(foreignNote._id).lean();
+    expect(stored.title).toBe('Foreign note');
+    expect(stored.content).toBe('Do not touch');
+
+    await Note.deleteOne({ _id: foreignNote._id });
   });
 
   it('accepts thirteen tags and rejects fourteen tags via create_note', async () => {
@@ -267,6 +331,7 @@ describe('MCP server — authenticated note creation (integration)', () => {
     }, async () => {
       const listResponse = await postJsonRpc(writeToken, { jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} });
       expect(toolNames(listResponse.body)).not.toContain('create_note');
+      expect(toolNames(listResponse.body)).not.toContain('update_note');
 
       const createResponse = await postJsonRpc(writeToken, {
         jsonrpc: '2.0',
@@ -277,6 +342,13 @@ describe('MCP server — authenticated note creation (integration)', () => {
       const failed = createResponse.body.error !== undefined ||
         (createResponse.body.result && createResponse.body.result.isError === true);
       expect(failed).toBe(true);
+
+      const updateResponse = await postJsonRpc(writeToken, {
+        jsonrpc: '2.0', id: 4, method: 'tools/call',
+        params: { name: 'update_note', arguments: { id: '507f1f77bcf86cd799439011', title: 'T' } },
+      });
+      expect(updateResponse.body.error !== undefined ||
+        (updateResponse.body.result && updateResponse.body.result.isError === true)).toBe(true);
 
       const readResponse = await postJsonRpc(writeToken, {
         jsonrpc: '2.0',

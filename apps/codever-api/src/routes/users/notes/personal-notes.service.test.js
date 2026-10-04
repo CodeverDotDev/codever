@@ -78,3 +78,34 @@ test('reading an existing over-limit note neither normalizes nor rewrites it', a
   expect(Note.findOneAndUpdate).not.toHaveBeenCalled();
   expect(save).not.toHaveBeenCalled();
 });
+
+describe('partial note updates', () => {
+  test('applies only supplied fields and normalizes a complete replacement tag list', async () => {
+    const result = await service.updateNotePartially(USER_ID, NOTE_ID, {
+      title: 'Updated', tags: [' One ', 'two', 'ONE'],
+    });
+
+    expect(Note.findOneAndUpdate).toHaveBeenCalledWith(
+      { _id: NOTE_ID, userId: USER_ID },
+      { title: 'Updated', tags: ['one', 'two'] },
+      { new: true }
+    );
+    expect(result).toMatchObject({ title: 'Updated', tags: ['one', 'two'] });
+  });
+
+  test.each([undefined, null])('returns not-found for %s without writing', async (found) => {
+    Note.findOneAndUpdate.mockResolvedValue(found);
+    await expect(service.updateNotePartially(USER_ID, NOTE_ID, { title: 'Updated' }))
+      .rejects.toBeInstanceOf(require('../../../error/not-found.error'));
+    expect(Note.findOneAndUpdate).toHaveBeenCalledWith(
+      { _id: NOTE_ID, userId: USER_ID }, { title: 'Updated' }, { new: true }
+    );
+  });
+
+  test('normalizes tags before attempting the write and rejects fourteen tags', async () => {
+    await expect(service.updateNotePartially(USER_ID, NOTE_ID, { tags: tags(14) }))
+      .rejects.toBeInstanceOf(ValidationError);
+    expect(Note.findOneAndUpdate).not.toHaveBeenCalled();
+  });
+});
+

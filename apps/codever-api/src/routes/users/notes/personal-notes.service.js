@@ -4,6 +4,7 @@ const User = require('../../../model/user');
 const NotFoundError = require('../../../error/not-found.error');
 
 const NoteInputValidator = require('./note-input.validator');
+const { normalizeTags } = require('../../../common/validation/tag-policy');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -79,6 +80,33 @@ let updateNote = async (userId, noteId, noteData) => {
   } else {
     return updatedNote;
   }
+};
+
+/**
+ * PATCH note for an MCP caller. Only fields explicitly supplied in the patch
+ * are written, and the query keeps the update scoped to the owning user.
+ */
+let updateNotePartially = async (userId, noteId, patch) => {
+  const update = {};
+  for (const field of ['title', 'content', 'reference', 'public']) {
+    if (Object.prototype.hasOwnProperty.call(patch, field)) {
+      update[field] = patch[field];
+    }
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, 'tags')) {
+    update.tags = normalizeTags(patch.tags);
+  }
+
+  const updatedNote = await Note.findOneAndUpdate(
+    { _id: noteId, userId: userId },
+    update,
+    { new: true }
+  );
+
+  if (!updatedNote) {
+    throw new NotFoundError(`Note NOT_FOUND the userId: ${userId} AND id: ${noteId}`);
+  }
+  return updatedNote;
 };
 
 /*
@@ -190,6 +218,7 @@ module.exports = {
   getLatestNotes: getLatestNotes,
   getAllMyNotes: getAllMyNotes,
   updateNote: updateNote,
+  updateNotePartially: updateNotePartially,
   deleteNoteById: deleteNoteById,
   getOrCreateShareableId: getOrCreateShareableId,
 };

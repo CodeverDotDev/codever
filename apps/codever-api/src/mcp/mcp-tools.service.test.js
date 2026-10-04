@@ -10,6 +10,7 @@ jest.mock('../routes/users/bookmarks/personal-bookmarks.service', () => ({
 }));
 jest.mock('../routes/users/notes/personal-notes.service', () => ({
   createNote: jest.fn(),
+  updateNotePartially: jest.fn(),
   getNoteById: jest.fn(),
   getUserNoteTags: jest.fn(),
 }));
@@ -342,6 +343,55 @@ describe('mcp-tools.service', () => {
 
       expect(personalNotesService.getUserNoteTags).not.toHaveBeenCalled();
       expect(tags).toEqual([{ name: 'devops', count: 3 }]);
+    });
+  });
+
+  describe('updateNote', () => {
+    const scopes = ['mcp:read', 'mcp:write'];
+    const updated = {
+      _id: 'n1', title: 'Updated', content: 'content', tags: ['one', 'two'],
+      contentType: 'markdown', public: true,
+      createdAt: new Date('2026-10-02T00:00:00Z'), updatedAt: new Date('2026-10-03T00:00:00Z'),
+      reference: 'https://example.com', shareableId: 'secret', userId: USER_ID,
+    };
+
+    beforeEach(() => {
+      toggles.isMcpServerEnabled.mockReturnValue(true);
+      toggles.isMcpCreateNotesEnabled.mockReturnValue(true);
+      common.config.mockReturnValue({ mcp: { frontendBaseUrl: 'http://localhost:4200' } });
+      personalNotesService.updateNotePartially.mockResolvedValue(updated);
+    });
+
+    test('updates through the write gate and returns compact retry-safe metadata', async () => {
+      const result = await mcpTools.updateNote(USER_ID, {
+        id: 'n1', title: 'Updated', tags: [' One ', 'two', 'ONE'], public: true,
+      }, scopes);
+
+      expect(personalNotesService.updateNotePartially).toHaveBeenCalledWith(USER_ID, 'n1', {
+        title: 'Updated', tags: [' One ', 'two', 'ONE'], public: true,
+      });
+      expect(result).toEqual({
+        id: 'n1', type: 'note', title: 'Updated', tags: ['one', 'two'], contentType: 'markdown',
+        public: true, createdAt: updated.createdAt, updatedAt: updated.updatedAt,
+        reference: updated.reference, url: 'http://localhost:4200/my-notes/n1/details',
+      });
+      expect(result).not.toHaveProperty('content');
+      expect(result).not.toHaveProperty('userId');
+      expect(result).not.toHaveProperty('shareableId');
+    });
+
+    test.each([[false, true, scopes], [true, false, scopes], [true, true, ['mcp:read']]])(
+      'denies updates when server=%s creation=%s scopes=%j', async (server, creation, grantedScopes) => {
+        toggles.isMcpServerEnabled.mockReturnValue(server);
+        toggles.isMcpCreateNotesEnabled.mockReturnValue(creation);
+        await expect(mcpTools.updateNote(USER_ID, { id: 'n1', title: 'Nope' }, grantedScopes)).rejects.toThrow('requires');
+        expect(personalNotesService.updateNotePartially).not.toHaveBeenCalled();
+      }
+    );
+
+    test('propagates not-found without exposing note data', async () => {
+      personalNotesService.updateNotePartially.mockRejectedValue(new NotFoundError('not found'));
+      await expect(mcpTools.updateNote(USER_ID, { id: 'missing', title: 'Nope' }, scopes)).rejects.toBeInstanceOf(NotFoundError);
     });
   });
 });
