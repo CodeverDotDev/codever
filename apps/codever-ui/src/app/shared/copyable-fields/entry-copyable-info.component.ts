@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
 import { CopyableField } from '../../core/model/copyable-field';
 import { Note } from '../../core/model/note';
 
@@ -7,10 +7,12 @@ import { Note } from '../../core/model/note';
   templateUrl: './entry-copyable-info.component.html',
   styleUrls: ['./entry-copyable-info.component.scss'],
 })
-export class EntryCopyableInfoComponent {
+export class EntryCopyableInfoComponent implements OnDestroy {
   @Input() fields: CopyableField[] = [];
   @Input() origin?: Note['origin'];
+  copiedField: CopyableField | null = null;
   feedback = '';
+  private copyTimeout?: ReturnType<typeof setTimeout>;
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -28,10 +30,22 @@ export class EntryCopyableInfoComponent {
   async copy(field: CopyableField): Promise<void> {
     try {
       await navigator.clipboard.writeText(field.value);
-      this.feedback = `${field.label} copied.`;
+      this.feedback = '';
+      this.copiedField = field;
+      clearTimeout(this.copyTimeout);
+      this.copyTimeout = setTimeout(() => {
+        this.copiedField = null;
+        this.cd.markForCheck();
+      }, 2000);
     } catch {
+      clearTimeout(this.copyTimeout);
+      this.copiedField = null;
       this.feedback = 'Copy failed. Select the value and copy it manually.';
     }
     this.cd.markForCheck();
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.copyTimeout);
   }
 }
