@@ -12,11 +12,12 @@ import { AddToHistoryService } from '../../core/user/add-to-history.service';
 import { OpenInNewTabDirective } from '../directive/open-in-new-tab.directive';
 import { NgClass } from '@angular/common';
 import { HighLightHtmlPipe } from '../pipe/highlight.no-html-tags.pipe';
+import { EntryCopyableInfoComponent } from '../copyable-fields/entry-copyable-info.component';
 
 @Component({
   selector: 'app-bookmark-text',
   templateUrl: './bookmark-text.component.html',
-  imports: [OpenInNewTabDirective, NgClass, HighLightHtmlPipe],
+  imports: [OpenInNewTabDirective, NgClass, HighLightHtmlPipe, EntryCopyableInfoComponent],
 })
 export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @Input()

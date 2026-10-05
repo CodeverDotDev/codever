@@ -39,10 +39,14 @@ import { AddToHistoryService } from '../core/user/add-to-history.service';
 import { DeleteNotificationService } from '../core/notifications/delete-notification.service';
 import { PaginationNotificationService } from '../core/pagination-notification.service';
 import { environment } from '../../environments/environment';
+import { AsyncSearchResultListComponent } from './async-search-result-list/async-search-result-list.component';
+import { NoteContentComponent } from './note-details/note-card-body/note-content.component';
+import { BookmarkTextComponent } from './bookmark-text/bookmark-text.component';
 
 function bookmark(id: string, name = id): Bookmark {
   return {
     _id: id,
+    type: 'bookmark',
     name,
     location: 'https://example.com',
     userId: 'owner',
@@ -55,6 +59,7 @@ function bookmark(id: string, name = id): Bookmark {
 function note(id: string, title = id): Note {
   return {
     _id: id,
+    type: 'note',
     title,
     userId: 'owner',
     public: false,
@@ -69,6 +74,7 @@ function note(id: string, title = id): Note {
     AsyncBookmarkListComponent,
     AsyncNoteListComponent,
     NoteDetailsComponent,
+    AsyncSearchResultListComponent,
   ],
   template: `
     <button class="unrelated" (click)="counter = counter + 1">
@@ -88,6 +94,12 @@ function note(id: string, title = id): Note {
     />
     @if (showDetail) {
     <app-note-details [note$]="detail$" />
+    } @if (showMixed) {
+    <app-async-search-result-list
+      [searchResults$]="mixed$"
+      [userData$]="userData$"
+      [showPagination]="false"
+    />
     }
   `,
 })
@@ -106,6 +118,8 @@ class ListHostComponent {
   } as UserData);
   showDetail = false;
   detail$ = of(note('detail'));
+  showMixed = false;
+  mixed$ = new BehaviorSubject<(Bookmark | Note)[]>([]);
 }
 
 describe('OnPush lists (real templates beneath a parent view)', () => {
@@ -210,6 +224,106 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     fixture.detectChanges();
     expect(cards()[1].textContent).toContain('Updated two');
     expect(readName).not.toHaveBeenCalled();
+  }));
+
+  it('expands sole entries, preserves user collapse and resets multi-entry defaults', fakeAsync(() => {
+    spyOnProperty(HTMLElement.prototype, 'offsetHeight', 'get').and.returnValue(
+      500
+    );
+    const first = note('one');
+    first.copyableFields = [{ label: 'Command', value: 'npm test' }];
+    first.origin = { file: '/private/Example.ts', project: 'project' };
+    const firstBookmark = bookmark('one');
+    firstBookmark.copyableFields = [{ label: 'Command', value: 'npm test' }];
+    host.notes$.next([first]);
+    host.bookmarks$.next([firstBookmark]);
+    render();
+    const content = fixture.debugElement.query(
+      By.directive(NoteContentComponent)
+    ).componentInstance;
+    const bookmarkContent = fixture.debugElement.query(
+      By.directive(BookmarkTextComponent)
+    ).componentInstance;
+    expect(content.showMoreText).toBeTrue();
+    expect(bookmarkContent.showMoreText).toBeTrue();
+    expect(fixture.nativeElement.textContent).toContain('Copyable fields');
+    expect(fixture.nativeElement.textContent).toContain('Example.ts');
+    expect(fixture.nativeElement.textContent).not.toContain('/private/');
+    click('app-note-content [aria-label="Show less"]');
+    click('app-bookmark-text [aria-label="Show less"]');
+    click('.unrelated');
+    expect(content.showMoreText).toBeFalse();
+    expect(bookmarkContent.showMoreText).toBeFalse();
+    host.notes$.next([first, note('two')]);
+    host.bookmarks$.next([firstBookmark, bookmark('two')]);
+    render();
+    for (const item of fixture.debugElement.queryAll(
+      By.directive(NoteContentComponent)
+    )) {
+      expect(item.componentInstance.showMoreText).toBeFalse();
+    }
+    host.notes$.next([first]);
+    host.bookmarks$.next([firstBookmark]);
+    render();
+    expect(
+      fixture.debugElement.query(By.directive(NoteContentComponent))
+        .componentInstance.showMoreText
+    ).toBeTrue();
+    expect(
+      fixture.debugElement.query(By.directive(BookmarkTextComponent))
+        .componentInstance.showMoreText
+    ).toBeTrue();
+  }));
+
+  it('expands only a sole visible result in mixed/filtered lists', fakeAsync(() => {
+    host.showMixed = true;
+    const value = bookmark('bookmark', 'Unique bookmark');
+    value.copyableFields = [{ label: 'Command', value: 'npm test' }];
+    host.mixed$.next([value, note('note', 'Unique note')]);
+    render();
+    const mixed = fixture.debugElement.query(
+      By.directive(AsyncSearchResultListComponent)
+    );
+    expect(
+      mixed.query(By.directive(NoteContentComponent)).componentInstance
+        .showMoreText
+    ).toBeFalse();
+    expect(
+      mixed.query(By.directive(BookmarkTextComponent)).componentInstance
+        .showMoreText
+    ).toBeFalse();
+    const input = mixed.nativeElement.querySelector(
+      'input[type="search"]'
+    ) as HTMLInputElement;
+    input.value = 'Unique note';
+    input.dispatchEvent(new Event('input'));
+    render();
+    expect(
+      mixed.query(By.directive(NoteContentComponent)).componentInstance
+        .showMoreText
+    ).toBeTrue();
+    input.value = 'Unique bookmark';
+    input.dispatchEvent(new Event('input'));
+    render();
+    expect(
+      mixed.query(By.directive(BookmarkTextComponent)).componentInstance
+        .showMoreText
+    ).toBeTrue();
+  }));
+
+  it('keeps detail content expanded regardless of preview height', fakeAsync(() => {
+    host.showDetail = true;
+    render();
+    const content = fixture.debugElement.query(
+      By.directive(NoteContentComponent)
+    );
+    content.componentInstance.viewHeight = 500;
+    fixture.detectChanges();
+    expect(content.componentInstance.partOfList).toBeFalse();
+    expect(content.nativeElement.querySelector('.less_text_note')).toBeNull();
+    expect(
+      content.nativeElement.querySelector('.toggle-show-more-button')
+    ).toBeNull();
   }));
 
   it('renders additions, deletions and replacement list streams', fakeAsync(() => {

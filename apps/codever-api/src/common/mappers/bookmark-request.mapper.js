@@ -4,6 +4,7 @@ const showdown = require('showdown'),
 
 const Bookmark = require('../../model/bookmark');
 const { normalizeTags } = require('../validation/tag-policy');
+const { normalizeCopyableFields } = require('../validation/copyable-fields');
 
 module.exports = {
   toBookmark: function (req) {
@@ -16,6 +17,7 @@ module.exports = {
     req.body = {
       ...req.body,
       tags,
+      copyableFields: normalizeCopyableFields(req.body.copyableFields),
       userId: req.body.userId || req.params.userId,
       youtubeVideoId: youtubeVideoId ? youtubeVideoId : null,
       likeCount: req.body.likeCount || 0,

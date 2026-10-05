@@ -1,3 +1,5 @@
+import { CopyableField } from './copyable-field';
+
 export interface Note {
   _id?: string;
   shareableId?: string;
@@ -13,6 +15,7 @@ export interface Note {
     workspace?: string;
   };
   content: string;
+  copyableFields?: CopyableField[];
   // 'markdown' (default) or 'notebook' — determines how content is rendered
   contentType?: 'markdown' | 'notebook';
   // Raw .ipynb JSON for notebook notes; content holds extracted searchable text

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Bookmark } from './model/bookmark';
 
-import { shareReplay } from 'rxjs/operators';
+import { shareReplay, tap } from 'rxjs/operators';
 
 import { Observable } from 'rxjs';
 
@@ -123,7 +123,12 @@ export class PersonalBookmarksService {
         JSON.stringify(bookmark),
         { headers: this.headers }
       )
-      .pipe(shareReplay(1));
+      .pipe(
+        tap(() =>
+          this.httpClientLocalStorageService.invalidateEntryCaches('bookmark')
+        ),
+        shareReplay(1)
+      );
   }
 
   deleteBookmark(bookmark: Bookmark): Observable<any> {
@@ -145,7 +150,12 @@ export class PersonalBookmarksService {
           observe: 'response',
         }
       )
-      .pipe(shareReplay(1));
+      .pipe(
+        tap(() =>
+          this.httpClientLocalStorageService.invalidateEntryCaches('bookmark')
+        ),
+        shareReplay(1)
+      );
   }
 
   createOrGetShareableId(userId: string, bookmarkId: string): Observable<any> {

@@ -1,7 +1,9 @@
 const ValidationError = require('../../../error/validation.error');
 const { MAX_TAGS, normalizeTags } = require('../../../common/validation/tag-policy');
+const { normalizeCopyableFields } = require('../../../common/validation/copyable-fields');
 
 let validateNoteInput = function (userId, note) {
+  note.copyableFields = normalizeCopyableFields(note.copyableFields);
   let validationErrorMessages = [];
   let normalizedTags;
   try {

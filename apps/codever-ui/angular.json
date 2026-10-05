@@ -123,12 +123,27 @@
             "scripts": []
           }
         },
+        "test-copyable": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "src/tsconfig.copyable-spec.json",
+            "karmaConfig": "karma.onpush.conf.cjs",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "include": ["src/app/shared/copyable-fields/*.spec.ts", "src/app/shared/onpush-lists.spec.ts"],
+            "watch": false,
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          }
+        },
         "test": {
           "builder": "@angular/build:karma",
           "options": {
             "main": "src/test.ts",
             "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [

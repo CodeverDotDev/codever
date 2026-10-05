@@ -46,7 +46,7 @@ import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserData } from '../../core/model/user-data';
-import { Location, NgClass, AsyncPipe } from '@angular/common';
+import { Location, NgClass, AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
@@ -84,12 +84,16 @@ import { PersonalCollectionsService } from '../../core/personal-collections.serv
 import { FeatureToggleService } from '../../core/feature-toggle.service';
 import { MatFormField, MatHint, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { CopyableFieldsEditorComponent } from '../../shared/copyable-fields/copyable-fields-editor.component';
+import { copyableFieldsForm, copyableFieldsValue } from '../../shared/copyable-fields/copyable-fields.form';
 
 @Component({
   selector: 'app-note-editor',
   templateUrl: './note-editor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CopyableFieldsEditorComponent,
+    NgTemplateOutlet,
     NgClass,
     FormsModule,
     ReactiveFormsModule,
@@ -270,6 +274,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         textSizeValidator(this.maxNumberOfCharacters, 30000),
       ],
       public: false,
+      copyableFields: copyableFieldsForm(),
     });
 
     // Pre-populate tags passed from IDE extensions
@@ -291,6 +296,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         public: this.cloneNote || this.copyToMine ? false : !!this.note.public,
       });
       mergeFormTags(this.tags, this.note.tags);
+      this.noteForm.setControl('copyableFields', copyableFieldsForm(this.note.copyableFields));
 
       // Restore notebook mode if editing/cloning a notebook note
       if (this.note.contentType === 'notebook' && this.note.notebookContent) {
@@ -370,6 +376,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
     note.tags = normalizeTags(this.tags.getRawValue());
+    note.copyableFields = copyableFieldsValue(this.copyableFields);
+    if (this.note?.origin) note.origin = { ...this.note.origin };
 
     // Attach notebook fields before saving
     if (this.isNotebookMode) {
@@ -706,6 +714,10 @@ Given a note's title, content, tags, and optional reference URL, you should:
 
   get tags() {
     return <UntypedFormArray>this.noteForm.get('tags');
+  }
+
+  get copyableFields(): ReturnType<typeof copyableFieldsForm> {
+    return this.noteForm.get('copyableFields') as ReturnType<typeof copyableFieldsForm>;
   }
 
   get content() {
