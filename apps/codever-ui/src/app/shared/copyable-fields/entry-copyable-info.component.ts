@@ -4,32 +4,8 @@ import { Note } from '../../core/model/note';
 
 @Component({
   selector: 'app-entry-copyable-info',
-  template: `
-    @for (section of sections; track section.title) {
-      @if (section.fields.length) {
-        <section class="my-3">
-          <h3 class="fs-6">{{ section.title }}</h3>
-          <dl class="mb-0">
-            @for (field of section.fields; track $index) {
-              <div class="copyable-row">
-                <dt>{{ field.label }}</dt>
-                <dd class="mb-0"><code>{{ field.value }}</code></dd>
-                <button type="button" class="btn btn-sm btn-outline-secondary"
-                  [attr.aria-label]="'Copy ' + field.label" (click)="copy(field)">Copy</button>
-              </div>
-            }
-          </dl>
-        </section>
-      }
-    }
-    <span role="status" aria-live="polite">{{ feedback }}</span>
-  `,
-  styles: [`
-    .copyable-row { display: grid; grid-template-columns: minmax(5rem, 1fr) minmax(0, 3fr) auto;
-      align-items: start; gap: .5rem; margin-bottom: .5rem; }
-    dt, dd { overflow-wrap: anywhere; }
-    code { white-space: pre-wrap; user-select: text; }
-  `],
+  templateUrl: './entry-copyable-info.component.html',
+  styleUrls: ['./entry-copyable-info.component.scss'],
 })
 export class EntryCopyableInfoComponent {
   @Input() fields: CopyableField[] = [];

@@ -1,0 +1,48 @@
+.copyable-fields-section {
+  border: 1px solid var(--bs-border-color);
+  border-radius: .375rem;
+  padding: .5rem;
+}
+
+.copyable-fields-section h3 {
+  margin: -.9rem 0 .5rem;
+  padding: 0 .25rem;
+  width: fit-content;
+  background: var(--bs-body-bg);
+}
+
+.copyable-row {
+  display: grid;
+  grid-template-columns: minmax(5rem, 1fr) minmax(0, 3fr);
+  align-items: start;
+  gap: .5rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.copyable-row:last-child {
+  border-bottom: 0;
+}
+
+.copyable-value {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: .375rem;
+  max-width: 100%;
+}
+
+dt,
+dd {
+  overflow-wrap: anywhere;
+}
+
+code {
+  white-space: pre-wrap;
+  user-select: text;
+}
+
+.copy-button {
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
