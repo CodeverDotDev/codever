@@ -246,7 +246,7 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     ).componentInstance;
     expect(content.showMoreText).toBeTrue();
     expect(bookmarkContent.showMoreText).toBeTrue();
-    expect(fixture.nativeElement.textContent).toContain('Copyable fields');
+    expect(fixture.nativeElement.textContent).toContain('Additional fields (copyable)');
     expect(fixture.nativeElement.textContent).toContain('Example.ts');
     expect(fixture.nativeElement.textContent).not.toContain('/private/');
     click('app-note-content [aria-label="Show less"]');

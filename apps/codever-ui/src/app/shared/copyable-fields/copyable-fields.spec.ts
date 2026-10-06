@@ -116,6 +116,26 @@ describe('Copyable fields editor', () => {
     fixture.destroy();
   });
 
+  it('starts collapsed without fields and expands from the accessible toggle', () => {
+    const fixture = TestBed.createComponent(CopyableFieldsEditorComponent);
+    fixture.componentRef.setInput('fields', copyableFieldsForm());
+    fixture.detectChanges();
+    const toggle = fixture.nativeElement.querySelector(
+      '.copyable-fields-toggle'
+    ) as HTMLButtonElement;
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(fixture.nativeElement.textContent).not.toContain(
+      'Add optional label/value pairs'
+    );
+    toggle.click();
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(fixture.nativeElement.textContent).toContain(
+      'Add optional label/value pairs'
+    );
+    fixture.destroy();
+  });
+
   it('rejects pasted line breaks in the single-row value editor', () => {
     const fixture = TestBed.createComponent(CopyableFieldsEditorComponent);
     const fields = copyableFieldsForm([pair]);
@@ -266,7 +286,7 @@ describe('Entry copyable display', () => {
     expect(sections.length).toBe(2);
     expect(sections[0].textContent).toContain('Source context');
     expect(sections[0].textContent).toContain('Example.ts');
-    expect(sections[1].textContent).toContain('Copyable fields');
+    expect(sections[1].textContent).toContain('Additional fields (copyable)');
     expect(fixture.nativeElement.textContent).not.toContain('private');
     expect(fixture.nativeElement.textContent).not.toContain('Secret workspace');
     expect(fixture.nativeElement.querySelector('script')).toBeNull();
@@ -287,7 +307,8 @@ describe('Entry copyable display', () => {
     );
     await display.copy(pair);
     expect(write).toHaveBeenCalledWith('npm test');
-    expect(display.feedback).toBe('Command copied.');
+    expect(display.copiedField).toBe(pair);
+    expect(display.feedback).toBe('');
     write.and.returnValue(Promise.reject(new Error('Denied')));
     await display.copy(pair);
     expect(display.feedback).toContain('Select the value');

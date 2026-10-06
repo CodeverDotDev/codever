@@ -23,7 +23,7 @@ export class EntryCopyableInfoComponent implements OnDestroy {
     if (this.origin?.project) source.push({ label: 'Project', value: this.origin.project });
     return [
       { title: 'Source context', fields: source },
-      { title: 'Copyable fields', fields: this.fields || [] },
+      { title: 'Additional fields (copyable)', fields: this.fields || [] },
     ];
   }
 

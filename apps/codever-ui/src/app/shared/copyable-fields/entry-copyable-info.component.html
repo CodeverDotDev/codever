@@ -1,6 +1,6 @@
 @for (section of sections; track section.title) {
   @if (section.fields.length) {
-    <section class="my-3" [class.copyable-fields-section]="section.title === 'Copyable fields'">
+    <section class="my-3" [class.copyable-fields-section]="section.title === 'Additional fields (copyable)'">
       <h3 class="fs-6">{{ section.title }}</h3>
       <dl class="mb-0">
         @for (field of section.fields; track $index) {
