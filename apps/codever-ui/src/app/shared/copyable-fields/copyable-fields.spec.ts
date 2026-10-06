@@ -126,8 +126,10 @@ describe('Copyable fields editor', () => {
       '.copyable-fields-toggle'
     ) as HTMLButtonElement;
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
-    const info = fixture.debugElement.query(By.css('.fa-info-circle'));
-    expect(info.injector.get(MatTooltip).message).toBe(
+    const tooltipTarget = fixture.debugElement.query(
+      By.css('.copyable-fields-toggle')
+    );
+    expect(tooltipTarget.injector.get(MatTooltip).message).toBe(
       'Add optional label/value pairs for information you want to copy quickly.'
     );
     expect(fixture.nativeElement.textContent).not.toContain(

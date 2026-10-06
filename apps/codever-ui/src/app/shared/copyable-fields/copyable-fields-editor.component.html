@@ -1,10 +1,10 @@
 <fieldset class="border rounded p-2 mb-3">
   <legend class="fs-6 mb-0">
     <button type="button" class="copyable-fields-toggle" (click)="toggle()"
-      [attr.aria-expanded]="isExpanded" aria-controls="copyable-fields-editor-content">
+      [attr.aria-expanded]="isExpanded" aria-controls="copyable-fields-editor-content"
+      [matTooltip]="description" matTooltipPosition="above">
       <span>Additional fields (copyable)</span>
-      <i class="fas fa-info-circle" [matTooltip]="description" matTooltipPosition="above"
-        aria-hidden="true"></i>
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
       <i class="fas" [class.fa-chevron-down]="!isExpanded" [class.fa-chevron-up]="isExpanded"
         aria-hidden="true"></i>
     </button>
