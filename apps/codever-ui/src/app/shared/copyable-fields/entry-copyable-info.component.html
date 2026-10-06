@@ -1,7 +1,7 @@
 @for (section of sections; track section.title) {
   @if (section.fields.length) {
-    <section class="my-3 copyable-fields-section">
-      <h3 class="fs-6">{{ section.title }}</h3>
+    <fieldset class="my-3 copyable-fields-section">
+      <legend class="fs-6">{{ section.title }}</legend>
       <dl class="mb-0">
         @for (field of section.fields; track $index) {
           <div class="copyable-row">
@@ -22,7 +22,7 @@
           </div>
         }
       </dl>
-    </section>
+    </fieldset>
   }
 }
 <span role="status" aria-live="polite">{{ feedback }}</span>

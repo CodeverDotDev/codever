@@ -271,7 +271,7 @@ describe('Entry copyable display', () => {
   it('omits empty sections and displays source separately without paths or workspace', () => {
     const fixture = TestBed.createComponent(EntryCopyableInfoComponent);
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelectorAll('section').length).toBe(0);
+    expect(fixture.nativeElement.querySelectorAll('fieldset').length).toBe(0);
     fixture.componentRef.setInput('origin', {
       file: 'C:\\private\\Example.ts',
       project: 'Project',
@@ -282,7 +282,7 @@ describe('Entry copyable display', () => {
       { label: 'Command', value: '<script>text</script>' },
     ]);
     fixture.detectChanges();
-    const sections = fixture.nativeElement.querySelectorAll('section');
+    const sections = fixture.nativeElement.querySelectorAll('fieldset');
     expect(sections.length).toBe(2);
     expect(sections[0].textContent).toContain('Source context');
     expect(sections[0].textContent).toContain('Example.ts');
