@@ -1,0 +1,20 @@
+textarea {
+  resize: none;
+  white-space: pre;
+}
+
+.copyable-fields-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border: 0;
+  padding: 0 .25rem;
+  background: var(--bs-body-bg);
+  color: inherit;
+  font: inherit;
+}
+
+.copyable-fields-toggle .fa-info-circle {
+  font-size: .85em;
+}
+
