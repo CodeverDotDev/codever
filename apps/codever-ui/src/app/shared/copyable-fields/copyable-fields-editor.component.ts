@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import {
   copyableFieldGroup, copyableFieldsForm, MAX_COPYABLE_FIELDS,
   MAX_LABEL_LENGTH, MAX_VALUE_LENGTH,
@@ -24,13 +24,27 @@ import {
           <p class="text-body-secondary">{{ description }}</p>
           @for (row of fields.controls; track row; let i = $index) {
             <div [formGroup]="row" class="row g-2 mb-2">
-              <label class="col-sm-3">Label
+              <label class="col-sm-3">Label <span aria-hidden="true">*</span>
                 <textarea rows="1" wrap="off" class="form-control" formControlName="label"
-                  required [attr.aria-invalid]="row.controls.label.invalid" aria-label="Field label"></textarea>
+                  required [attr.aria-invalid]="row.controls.label.invalid && row.controls.label.touched"
+                  [attr.aria-describedby]="row.controls.label.touched ? 'field-label-error-' + i : null"
+                  aria-label="Field label"></textarea>
+                @if (row.controls.label.invalid && row.controls.label.touched) {
+                  <small class="text-danger" [id]="'field-label-error-' + i" role="alert">
+                    {{ fieldError(row.controls.label, 'Label', labelLimit) }}
+                  </small>
+                }
               </label>
-              <label class="col-sm-6">Value
+              <label class="col-sm-6">Value <span aria-hidden="true">*</span>
                 <textarea rows="1" wrap="off" class="form-control" formControlName="value"
-                  required [attr.aria-invalid]="row.controls.value.invalid" aria-label="Field value"></textarea>
+                  required [attr.aria-invalid]="row.controls.value.invalid && row.controls.value.touched"
+                  [attr.aria-describedby]="row.controls.value.touched ? 'field-value-error-' + i : null"
+                  aria-label="Field value"></textarea>
+                @if (row.controls.value.invalid && row.controls.value.touched) {
+                  <small class="text-danger" [id]="'field-value-error-' + i" role="alert">
+                    {{ fieldError(row.controls.value, 'Value', valueLimit) }}
+                  </small>
+                }
               </label>
               <div class="col-sm-3 d-flex align-items-end gap-1">
                 <button type="button" class="btn btn-sm btn-outline-secondary" (click)="move(i, -1)"
@@ -40,10 +54,6 @@ import {
                 <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(i)"
                   [attr.aria-label]="'Remove field ' + (i + 1)">Remove</button>
               </div>
-              @if (row.invalid && (row.dirty || row.touched)) {
-                <p class="text-danger mb-0" role="alert">Both fields require nonempty single-line text.
-                  Maximum {{ labelLimit }} characters for the label and {{ valueLimit }} for the value.</p>
-              }
             </div>
           }
           <button type="button" class="btn btn-sm btn-outline-secondary" (click)="add()"
@@ -77,6 +87,14 @@ export class CopyableFieldsEditorComponent implements OnChanges {
 
   toggle(): void {
     this.isExpanded = !this.isExpanded;
+  }
+
+  fieldError(control: AbstractControl, fieldName: string, limit: number): string {
+    const value = control.value as string;
+    if (!value?.trim()) return `${fieldName} is required.`;
+    if (/[\r\n\u2028\u2029]/.test(value)) return `${fieldName} must use a single line.`;
+    if (value.trim().length > limit) return `${fieldName} must be at most ${limit} characters.`;
+    return `${fieldName} is invalid.`;
   }
 
   add(): void {

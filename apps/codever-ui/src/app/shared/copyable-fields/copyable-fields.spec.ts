@@ -149,6 +149,26 @@ describe('Copyable fields editor', () => {
     expect(fields.invalid).toBeTrue();
     fixture.destroy();
   });
+
+  it('shows only the blurred field validation message', () => {
+    const fixture = TestBed.createComponent(CopyableFieldsEditorComponent);
+    const fields = copyableFieldsForm([{ label: '', value: '' }]);
+    fixture.componentRef.setInput('fields', fields);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelectorAll('[role="alert"]').length).toBe(0);
+    const label = fixture.nativeElement.querySelector(
+      '[aria-label="Field label"]'
+    ) as HTMLTextAreaElement;
+    label.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    const alerts = Array.from(
+      fixture.nativeElement.querySelectorAll('[role="alert"]')
+    ).map((alert: Element) => alert.textContent.trim());
+    expect(alerts).toEqual(['Label is required.']);
+    fixture.destroy();
+  });
 });
 
 describe('Editor save and copy state', () => {
