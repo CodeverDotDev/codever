@@ -3,17 +3,17 @@
     <fieldset class="my-3 copyable-fields-section">
       <legend class="fs-6">{{ section.title }}</legend>
       <dl class="mb-0">
-        @for (field of section.fields; track $index) {
+        @for (field of section.fields; track $index; let i = $index) {
           <div class="copyable-row">
             <dt>{{ field.label }}</dt>
             <dd class="mb-0">
               <span class="copyable-value"><code>{{ field.value }}</code>
                 <button type="button" class="btn btn-sm btn-outline-secondary copy-button"
-                  [attr.aria-label]="copiedField === field ? field.label + ' copied' : 'Copy ' + field.label"
-                  [title]="copiedField === field ? field.label + ' copied' : 'Copy ' + field.label"
-                  (click)="copy(field)">
+                  [attr.aria-label]="isCopied(section.title + ':' + i) ? field.label + ' copied' : 'Copy ' + field.label"
+                  [title]="isCopied(section.title + ':' + i) ? field.label + ' copied' : 'Copy ' + field.label"
+                  (click)="copy(field, section.title + ':' + i)">
                   <i class="far fa-copy" aria-hidden="true"></i>
-                  @if (copiedField === field) {
+                  @if (isCopied(section.title + ':' + i)) {
                     <span class="ms-1 copy-status">Copied</span>
                   }
                 </button>
