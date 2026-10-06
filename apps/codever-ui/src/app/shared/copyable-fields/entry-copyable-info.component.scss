@@ -31,6 +31,15 @@
   max-width: 100%;
 }
 
+.copyable-link {
+  overflow-wrap: anywhere;
+}
+
+.external-link-hint {
+  font-size: .6rem;
+  margin-left: .2rem;
+}
+
 dt,
 dd {
   overflow-wrap: anywhere;

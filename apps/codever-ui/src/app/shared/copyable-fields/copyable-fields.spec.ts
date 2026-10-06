@@ -334,6 +334,32 @@ describe('Entry copyable display', () => {
     expect(display.feedback).toContain('Select the value');
     expect(cd.markForCheck).toHaveBeenCalled();
   });
+
+  it('renders HTTP(S) values as new-tab links and keeps copy controls', () => {
+    const fixture = TestBed.createComponent(EntryCopyableInfoComponent);
+    fixture.componentRef.setInput('fields', [
+      pair,
+      { label: 'Documentation', value: 'https://example.com/docs' },
+      { label: 'Not a URL', value: 'example.com/docs' },
+    ]);
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector(
+      '.copyable-link'
+    ) as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe('https://example.com/docs');
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+    expect(link.querySelector('.fa-external-link-alt')).not.toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('.copy-button').length).toBe(
+      3
+    );
+    expect(fixture.nativeElement.textContent).toContain('example.com/docs');
+    expect(
+      fixture.nativeElement.querySelectorAll('.copyable-link').length
+    ).toBe(1);
+    fixture.destroy();
+  });
 });
 
 describe('Copyable-field save cache behavior', () => {
