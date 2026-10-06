@@ -130,10 +130,10 @@ db.bookmarks.createIndex(
   },
   {
     weights: {
-      name: 13,
+      name: 21,
       location: 8,
       description: 5,
-      tags: 10,
+      tags: 8,
       sourceCodeURL: 3,
       "copyableFields.label": 1,
       "copyableFields.value": 1
@@ -191,10 +191,10 @@ db.notes.createIndex(
     },
     {
       weights: {
-        title: 13,
+        title: 21,
         reference: 3,
         content: 5,
-        tags: 10,
+        tags: 8,
         "copyableFields.label": 1,
         "copyableFields.value": 1
       },

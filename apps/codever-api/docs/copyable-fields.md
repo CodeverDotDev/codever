@@ -18,15 +18,15 @@ The first release changes only web UI and personal REST persistence. IntelliJ, V
 
 ## Search indexes
 
-Copyable labels and values are included in the existing MongoDB text indexes with weight `1`. Existing primary-field weights remain unchanged, while tags are reduced from `21` to `10`:
+Copyable labels and values are included in the existing MongoDB text indexes with weight `1`. Bookmark names and note titles use weight `21`, while tags use weight `8`:
 
-- Bookmarks: `name: 13`, `location: 8`, `description: 5`, `tags: 10`, `sourceCodeURL: 3`.
-- Notes: `title: 13`, `reference: 3`, `content: 5`, `tags: 10`.
+- Bookmarks: `name: 21`, `location: 8`, `description: 5`, `tags: 8`, `sourceCodeURL: 3`.
+- Notes: `title: 21`, `reference: 3`, `content: 5`, `tags: 8`.
 
-The index migration is `resources/db-migration/mongodb/1791158400000_copyable-fields-text-indexes.js`. Run it with `mongosh` against the intended database. To roll back to the previous weights and remove copyable-field index paths, set `COPYABLE_FIELDS_ROLLBACK=true` before loading the script, for example:
+For existing databases, run `resources/db-migration/mongodb/1791158400001_adjust-bookmark-note-text-index-weights.js` with `mongosh` against the intended database. Fresh databases receive these weights from `docker-compose-setup/init-mongo.js`. The original copyable-fields migration remains available for environments that have not run it yet. To restore the previous copyable-fields weights, set `TEXT_INDEX_WEIGHTS_ROLLBACK=true` when loading the follow-up migration.
 
 ```bash
-mongosh "$MONGODB_URI" --eval "COPYABLE_FIELDS_ROLLBACK=true" resources/db-migration/mongodb/1791158400000_copyable-fields-text-indexes.js
+mongosh "$MONGODB_URI" --eval "TEXT_INDEX_WEIGHTS_ROLLBACK=true" resources/db-migration/mongodb/1791158400001_adjust-bookmark-note-text-index-weights.js
 ```
 
 The script preserves the recognized historical bookmark index name, aborts before changing anything when an unexpected text index is present, and leaves unrelated indexes untouched. MongoDB may aggregate multiple matching tag terms, so these weights do not guarantee that a multi-term title match outranks a result matching the same terms across multiple tags.

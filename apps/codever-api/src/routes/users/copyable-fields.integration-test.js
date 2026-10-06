@@ -27,6 +27,7 @@ const ValidationError = require('../../error/validation.error');
 const UserIdError = require('./userid-validation.error');
 const NotFoundError = require('../../error/not-found.error');
 const { migrateCopyableFields } = require('../../../resources/db-migration/mongodb/1791158400000_copyable-fields-text-indexes');
+const { adjustBookmarkNoteTextIndexWeights } = require('../../../resources/db-migration/mongodb/1791158400001_adjust-bookmark-note-text-index-weights');
 
 const app = express();
 app.use(express.json());
@@ -52,6 +53,7 @@ beforeAll(async () => {
   });
   await Promise.all([Bookmark.createCollection(), Note.createCollection()]);
   await migrateCopyableFields(mongoose.connection.db);
+  await adjustBookmarkNoteTextIndexWeights(mongoose.connection.db);
 }, 20000);
 beforeEach(async () => { await Promise.all([Bookmark.deleteMany({}), Note.deleteMany({})]); });
 afterAll(async () => {
@@ -144,8 +146,8 @@ describe.each([
     expect(publicSearch.status).toBe(200);
     expect(publicSearch.body.some(doc => doc._id === String(docs[3]._id))).toBe(true);
     const index = (await Model.collection.indexes()).find(item => item.name === indexName);
-    expect(index.weights.tags).toBe(10);
-    expect(index.weights[titleKey]).toBe(13);
+    expect(index.weights.tags).toBe(8);
+    expect(index.weights[titleKey]).toBe(21);
     expect(index.weights['copyableFields.label']).toBe(1);
     expect(index.weights['copyableFields.value']).toBe(1);
   });
@@ -159,8 +161,8 @@ describe.each([
       expect.arrayContaining([String(title._id), String(tagged._id)])
     );
     const index = (await Model.collection.indexes()).find(item => item.name === indexName);
-    expect(index.weights[titleKey]).toBe(13);
-    expect(index.weights.tags).toBe(10);
+    expect(index.weights[titleKey]).toBe(21);
+    expect(index.weights.tags).toBe(8);
   });
 });
 
@@ -177,6 +179,7 @@ test('migration, rollback, re-run, alternate index name, and initializer parity'
   await Bookmark.collection.createIndex({ name: 'text' }, { name: 'bookmarks_full_text_search' });
   await migrateCopyableFields(db);
   await migrateCopyableFields(db);
+  await adjustBookmarkNoteTextIndexWeights(db);
   const bookmarkIndexes = await Bookmark.collection.indexes();
   expect(bookmarkIndexes.some(index => index.name === 'keep_me')).toBe(true);
   expect(bookmarkIndexes.find(index => index.weights).name).toBe('bookmarks_full_text_search');
@@ -192,5 +195,4 @@ test('migration, rollback, re-run, alternate index name, and initializer parity'
     expect(index.default_language).toBe('none');
   }
 }, 20000);
-
 
