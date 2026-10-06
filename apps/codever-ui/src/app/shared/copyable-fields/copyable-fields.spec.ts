@@ -4,6 +4,7 @@ import {
   SimpleChange,
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { UntypedFormBuilder } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
 import {
@@ -26,6 +27,7 @@ import { LocalStorageService } from '../../core/cache/local-storage.service';
 import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
+import { MatTooltip } from '@angular/material/tooltip';
 
 const pair = { label: 'Command', value: 'npm test' };
 
@@ -124,6 +126,10 @@ describe('Copyable fields editor', () => {
       '.copyable-fields-toggle'
     ) as HTMLButtonElement;
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    const info = fixture.debugElement.query(By.css('.fa-info-circle'));
+    expect(info.injector.get(MatTooltip).message).toBe(
+      'Add optional label/value pairs for information you want to copy quickly.'
+    );
     expect(fixture.nativeElement.textContent).not.toContain(
       'Add optional label/value pairs'
     );
