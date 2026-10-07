@@ -2,6 +2,16 @@
 // Run against the intended database with mongosh (see docs/copyable-fields.md).
 // Set TEXT_INDEX_WEIGHTS_ROLLBACK = true before loading to restore the previous
 // copyable-fields weights (name/title 13 and tags 10).
+function getCollection(database, collectionName) {
+  if (typeof database.collection === 'function') {
+    return database.collection(collectionName);
+  }
+  if (typeof database.getCollection === 'function') {
+    return database.getCollection(collectionName);
+  }
+  throw new TypeError('Unsupported MongoDB database object');
+}
+
 async function adjustBookmarkNoteTextIndexWeights(database, rollback = false) {
   const definitions = [
     {
@@ -70,7 +80,7 @@ async function adjustBookmarkNoteTextIndexWeights(database, rollback = false) {
   // Preflight both collections before dropping anything. Never silently replace
   // an unexpected text index with unknown settings.
   for (const definition of definitions) {
-    const indexes = await database.collection(definition.collection).indexes();
+    const indexes = await getCollection(database, definition.collection).indexes();
     const unexpected = indexes.find(
       (index) => index.weights && !definition.acceptedNames.includes(index.name)
     );
@@ -84,7 +94,7 @@ async function adjustBookmarkNoteTextIndexWeights(database, rollback = false) {
   }
 
   for (const definition of definitions) {
-    const collection = database.collection(definition.collection);
+    const collection = getCollection(database, definition.collection);
     const indexes = await collection.indexes();
     if (indexes.some((index) => index.name === definition.name)) {
       await collection.dropIndex(definition.name);
