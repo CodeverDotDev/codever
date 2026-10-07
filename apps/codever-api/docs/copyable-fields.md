@@ -23,7 +23,9 @@ Copyable labels and values are included in the existing MongoDB text indexes wit
 - Bookmarks: `name: 21`, `location: 8`, `description: 5`, `tags: 8`, `sourceCodeURL: 3`.
 - Notes: `title: 21`, `reference: 3`, `content: 5`, `tags: 8`.
 
-For existing databases, run `resources/db-migration/mongodb/1791158400001_adjust-bookmark-note-text-index-weights.js` with `mongosh` against the intended database. Fresh databases receive these weights from `docker-compose-setup/init-mongo.js`. The original copyable-fields migration remains available for environments that have not run it yet. To restore the previous copyable-fields weights, set `TEXT_INDEX_WEIGHTS_ROLLBACK=true` when loading the follow-up migration.
+For existing databases, run `resources/db-migration/mongodb/1791158400001_adjust-bookmark-note-text-index-weights.js` with `mongosh` against the intended database. This migration is self-contained: it recreates the full text index with the copyable fields already included and applies the final weights in one step, so it supersedes `1791158400000_copyable-fields-text-indexes.js`. You do **not** need to run the earlier copyable-fields migration first — running `1791158400001` alone is sufficient for production. Fresh databases receive these weights from `docker-compose-setup/init-mongo.js`. To restore the previous copyable-fields weights, set `TEXT_INDEX_WEIGHTS_ROLLBACK=true` when loading the follow-up migration.
+
+See [`resources/db-migration/mongodb/README.md`](../resources/db-migration/mongodb/README.md) for step-by-step instructions on running these scripts locally and in production (with verification and rollback examples).
 
 ```bash
 mongosh "$MONGODB_URI" --eval "TEXT_INDEX_WEIGHTS_ROLLBACK=true" resources/db-migration/mongodb/1791158400001_adjust-bookmark-note-text-index-weights.js

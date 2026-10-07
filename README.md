@@ -155,6 +155,15 @@ npm run integration-tests
 
 A report will be generated.
 
+## Database migrations
+
+One-off MongoDB migration scripts (including the full-text search index definitions and
+their search weights) live in
+[`apps/codever-api/resources/db-migration/mongodb`](apps/codever-api/resources/db-migration/mongodb/README.md).
+See that [README](apps/codever-api/resources/db-migration/mongodb/README.md) for how to run
+the scripts both **locally** and in **production**, with examples for applying, verifying,
+and rolling back changes.
+
 ## Debugging
 
 ### UI (Frontend)
