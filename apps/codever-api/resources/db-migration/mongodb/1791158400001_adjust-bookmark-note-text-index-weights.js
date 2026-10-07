@@ -12,6 +12,16 @@ function getCollection(database, collectionName) {
   throw new TypeError('Unsupported MongoDB database object');
 }
 
+async function listIndexes(collection) {
+  if (typeof collection.indexes === 'function') {
+    return collection.indexes();
+  }
+  if (typeof collection.getIndexes === 'function') {
+    return collection.getIndexes();
+  }
+  throw new TypeError('Unsupported MongoDB collection object');
+}
+
 async function adjustBookmarkNoteTextIndexWeights(database, rollback = false) {
   const definitions = [
     {
@@ -80,7 +90,9 @@ async function adjustBookmarkNoteTextIndexWeights(database, rollback = false) {
   // Preflight both collections before dropping anything. Never silently replace
   // an unexpected text index with unknown settings.
   for (const definition of definitions) {
-    const indexes = await getCollection(database, definition.collection).indexes();
+    const indexes = await listIndexes(
+      getCollection(database, definition.collection)
+    );
     const unexpected = indexes.find(
       (index) => index.weights && !definition.acceptedNames.includes(index.name)
     );
@@ -95,7 +107,7 @@ async function adjustBookmarkNoteTextIndexWeights(database, rollback = false) {
 
   for (const definition of definitions) {
     const collection = getCollection(database, definition.collection);
-    const indexes = await collection.indexes();
+    const indexes = await listIndexes(collection);
     if (indexes.some((index) => index.name === definition.name)) {
       await collection.dropIndex(definition.name);
     }
