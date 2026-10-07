@@ -118,17 +118,41 @@ async function adjustBookmarkNoteTextIndexWeights(database, rollback = false) {
       language_override: 'none',
     });
   }
+
+  // Read the weights back so callers can confirm the applied configuration.
+  const applied = [];
+  for (const definition of definitions) {
+    const collection = getCollection(database, definition.collection);
+    const indexes = await listIndexes(collection);
+    const current = indexes.find((index) => index.name === definition.name);
+    applied.push({
+      collection: definition.collection,
+      name: definition.name,
+      weights: current ? current.weights : null,
+    });
+  }
+  return applied;
 }
 
 if (typeof module !== 'undefined') {
   module.exports = { adjustBookmarkNoteTextIndexWeights };
 }
 if (typeof db !== 'undefined') {
-  adjustBookmarkNoteTextIndexWeights(
-    db,
+  const rollback =
     typeof TEXT_INDEX_WEIGHTS_ROLLBACK !== 'undefined' &&
-      TEXT_INDEX_WEIGHTS_ROLLBACK
-  );
+    TEXT_INDEX_WEIGHTS_ROLLBACK;
+  adjustBookmarkNoteTextIndexWeights(db, rollback)
+    .then((applied) => {
+      print(
+        `Text index weights ${rollback ? 'rolled back' : 'updated'} successfully:`
+      );
+      printjson(applied);
+    })
+    .catch((error) => {
+      print('Text index weight migration FAILED:');
+      print(error.message);
+      throw error;
+    });
 }
 
 
