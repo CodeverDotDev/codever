@@ -5,19 +5,19 @@
     @if (source === 'last_visited') {
       <a
         class="ms-2 bg-light quick-access-section-title"
-        title="Ctrl+h for quick access"
+        title="Ctrl/Cmd+Shift+h for quick access"
         (click)="addNewSectionTitleEvent(source)"
         >
-        <i class="fas fa-history me-1"></i> History (<b>Ctrl</b>+<b>h</b>)
+        <i class="fas fa-history me-1"></i> History (<b>Ctrl/Cmd</b>+<b>Shift</b>+<b>h</b>)
       </a>
     }
     @if (source === 'pinned') {
       <a
         class="ms-2 bg-light quick-access-section-title"
-        title="Ctrl+p for quick access"
+        title="Ctrl/Cmd+Shift+p for quick access"
         (click)="addNewSectionTitleEvent(source)"
         >
-        <i class="fas fa-thumbtack me-1"></i> Pinned (<b>Ctrl</b>+<b>p</b>)
+        <i class="fas fa-thumbtack me-1"></i> Pinned (<b>Ctrl/Cmd</b>+<b>Shift</b>+<b>p</b>)
       </a>
     }
     @if (source === 'pinned' && quickAccessResources.length > 5) {
