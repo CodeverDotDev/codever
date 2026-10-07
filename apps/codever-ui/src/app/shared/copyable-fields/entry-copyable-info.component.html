@@ -1,0 +1,46 @@
+@for (section of sections; track section.title) {
+  @if (section.fields.length) {
+    <fieldset class="my-3 copyable-fields-section">
+      <legend class="fs-6">{{ section.title }}</legend>
+      <dl class="mb-0">
+        @for (field of section.fields; track $index; let i = $index) {
+          <div class="copyable-row">
+            <dt>{{ field.label }}</dt>
+            <dd class="mb-0">
+              <span class="copyable-value">
+                @if (isHttpUrl(field.value)) {
+                  <a
+                    class="copyable-link"
+                    [href]="field.value"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    [attr.aria-label]="'Open ' + field.label + ' in a new tab'"
+                    title="Open link in a new tab"
+                  >
+                    <code>{{ field.value }}</code>
+                    <sup class="external-link-hint" aria-hidden="true">
+                      <i class="fas fa-external-link-alt"></i>
+                    </sup>
+                  </a>
+                } @else {
+                  <code>{{ field.value }}</code>
+                }
+                <button type="button" class="btn btn-sm btn-outline-secondary copy-button"
+                  [attr.aria-label]="isCopied(section.title + ':' + i) ? field.label + ' copied' : 'Copy ' + field.label"
+                  [title]="isCopied(section.title + ':' + i) ? field.label + ' copied' : 'Copy ' + field.label"
+                  (click)="copy(field, section.title + ':' + i)">
+                  <i class="far fa-copy" aria-hidden="true"></i>
+                  @if (isCopied(section.title + ':' + i)) {
+                    <span class="ms-1 copy-status">Copied</span>
+                  }
+                </button>
+              </span>
+            </dd>
+          </div>
+        }
+      </dl>
+    </fieldset>
+  }
+}
+<span role="status" aria-live="polite">{{ feedback }}</span>
+

@@ -20,6 +20,7 @@
         Title is required
       </div>
       <!-- tags -->
+      <ng-template #tagsEditor>
       <div id="tags" class="mb-3 border rounded p-2 mt-3">
         <mat-form-field class="full-width">
           <mat-chip-grid #chipList>
@@ -86,6 +87,7 @@
           </span>
         }
       </div>
+      </ng-template>
 
       <div #contentEditor class="mb-3 markdown-editor-fullscreen" [class.is-fullscreen-editor]="isFullScreen">
         <label for="content" class="content-label"
@@ -210,6 +212,9 @@
               }
             </div>
           </div>
+
+          <app-copyable-fields-editor [fields]="copyableFields" />
+          <ng-container [ngTemplateOutlet]="tagsEditor" />
 
           <!-- Preview and AI Refine buttons -->
           <div

@@ -23,6 +23,20 @@ export class HttpClientLocalStorageService {
     return this.httpCall(Verbs.GET, options);
   }
 
+  invalidateEntryCaches(type: 'note' | 'bookmark'): void {
+    // Entry details and search results use fresh HTTP requests, not localStorage.
+    // History contains both resource types; tags are cached independently.
+    this.localStorageService.cleanCachedKeys([
+      localStorageKeys.userHistoryBookmarks,
+      ...(type === 'note'
+        ? [localStorageKeys.personalTagsNotes]
+        : [
+            localStorageKeys.personalTagsBookmarks,
+            localStorageKeys.mostUsedPublicTagsBookmarks,
+          ]),
+    ]);
+  }
+
   delete<T>(options: HttpOptions): Observable<T> {
     return this.httpCall(Verbs.DELETE, options);
   }

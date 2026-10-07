@@ -18,6 +18,7 @@ import { NgClass } from '@angular/common';
 import { NotebookRendererComponent } from '../../notebook-renderer/notebook-renderer.component';
 import { AsyncBookmarkListComponent } from '../../async-bookmark-list/async-bookmark-list.component';
 import { Markdown2HtmlPipe } from '../../pipe/markdown2html.pipe';
+import { EntryCopyableInfoComponent } from '../../copyable-fields/entry-copyable-info.component';
 
 @Component({
   selector: 'app-note-content',
@@ -30,6 +31,7 @@ import { Markdown2HtmlPipe } from '../../pipe/markdown2html.pipe';
     NotebookRendererComponent,
     AsyncBookmarkListComponent,
     Markdown2HtmlPipe,
+    EntryCopyableInfoComponent,
   ],
 })
 export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
@@ -61,6 +63,8 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   }
 
   show = false; // add one more property
+
+  @Input()
   public showMoreText = false;
 
   @ViewChild('noteContentDiv', { static: false }) elementView: ElementRef;
@@ -188,7 +192,6 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
 
   ngAfterViewInit(): void {
     this.viewHeight = this.elementView.nativeElement.offsetHeight;
-    console.log('viewHeight: ' + this.viewHeight);
   }
 
   readonly maxNoteHeightInList = 200;

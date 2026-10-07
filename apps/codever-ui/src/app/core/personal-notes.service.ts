@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { shareReplay } from 'rxjs/operators';
+import { shareReplay, tap } from 'rxjs/operators';
 
 import { Observable } from 'rxjs';
 
@@ -58,7 +58,12 @@ export class PersonalNotesService {
         JSON.stringify(note),
         { headers: this.headers }
       )
-      .pipe(shareReplay(1));
+      .pipe(
+        tap(() =>
+          this.httpClientLocalStorageService.invalidateEntryCaches('note')
+        ),
+        shareReplay(1)
+      );
   }
 
   createNote(userId: string, note: Note): Observable<any> {
@@ -71,7 +76,12 @@ export class PersonalNotesService {
           observe: 'response',
         }
       )
-      .pipe(shareReplay(1));
+      .pipe(
+        tap(() =>
+          this.httpClientLocalStorageService.invalidateEntryCaches('note')
+        ),
+        shareReplay(1)
+      );
   }
 
   deleteNoteById(userId: string, noteId: string): Observable<any> {
@@ -107,7 +117,9 @@ export class PersonalNotesService {
       .set('page', page.toString())
       .set('limit', limit.toString());
     return this.httpClient
-      .get<Note[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes`, { params })
+      .get<Note[]>(`${this.personalNotesApiBaseUrl}/${userId}/notes`, {
+        params,
+      })
       .pipe(shareReplay(1));
   }
 

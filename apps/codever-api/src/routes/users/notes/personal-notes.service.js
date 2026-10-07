@@ -69,7 +69,7 @@ let updateNote = async (userId, noteId, noteData) => {
       userId: userId,
     },
     noteData,
-    { new: true }
+    { new: true, runValidators: true }
   );
 
   const noteNotFound = !updatedNote;

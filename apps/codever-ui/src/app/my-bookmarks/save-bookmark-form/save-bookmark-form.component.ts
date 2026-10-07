@@ -55,7 +55,7 @@ import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserData } from '../../core/model/user-data';
-import { DatePipe, NgClass, AsyncPipe } from '@angular/common';
+import { DatePipe, NgClass, AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
@@ -93,12 +93,16 @@ import {
   MatError,
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { CopyableFieldsEditorComponent } from '../../shared/copyable-fields/copyable-fields-editor.component';
+import { copyableFieldsForm, copyableFieldsValue } from '../../shared/copyable-fields/copyable-fields.form';
 
 @Component({
   selector: 'app-save-bookmark-form',
   templateUrl: './save-bookmark-form.component.html',
   styleUrls: ['./save-bookmark-form.component.scss'],
   imports: [
+    CopyableFieldsEditorComponent,
+    NgTemplateOutlet,
     NgClass,
     FormsModule,
     ReactiveFormsModule,
@@ -236,7 +240,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     this.buildForm();
     if (this.isUpdate || this.copyToMine || this.cloneBookmark) {
       this.bookmark$.subscribe((bookmark) => {
-        this.bookmark = bookmark;
+        this.bookmark = { ...bookmark };
         this.makePublic = this.bookmark.public;
         if (this.copyToMine) {
           this.makePublic = false;
@@ -257,6 +261,7 @@ export class SaveBookmarkFormComponent implements OnInit {
             this.datePipe.transform(bookmark.publishedOn, 'yyyy-MM-dd')
           ); // issue setting date otherwise on date field
         mergeFormTags(this.tags, this.bookmark.tags);
+        this.bookmarkForm.setControl('copyableFields', copyableFieldsForm(bookmark.copyableFields));
 
         this.tagsControl.setValue(null);
         this.tags.markAsDirty();
@@ -281,6 +286,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       language: null,
       youtubeVideoId: null,
       stackoverflowQuestionId: null,
+      copyableFields: copyableFieldsForm(),
     });
 
     if (this.url) {
@@ -478,12 +484,17 @@ export class SaveBookmarkFormComponent implements OnInit {
     );
   }
 
+  get copyableFields(): ReturnType<typeof copyableFieldsForm> {
+    return this.bookmarkForm.get('copyableFields') as ReturnType<typeof copyableFieldsForm>;
+  }
+
   saveBookmark(bookmark: Bookmark) {
     if (this.bookmarkForm.invalid) {
       this.bookmarkForm.markAllAsTouched();
       return;
     }
     bookmark.tags = normalizeTags(this.tags.getRawValue());
+    bookmark.copyableFields = copyableFieldsValue(this.copyableFields);
     if (this.isUpdate) {
       this.updateBookmark(bookmark);
     } else if (this.copyToMine || this.cloneBookmark) {
@@ -595,6 +606,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       publishedOn: bookmark.publishedOn,
       sourceCodeURL: bookmark.sourceCodeURL,
       description: bookmark.description,
+      copyableFields: bookmark.copyableFields,
       descriptionHtml: this.markdownService.toHtml(bookmark.description),
       userId: this.userId,
       userDisplayName: this.userData.profile.displayName,

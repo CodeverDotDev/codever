@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const copyableFields = require('./copyable-field.schema');
 
 const noteSchema = new Schema(
   {
@@ -12,6 +13,7 @@ const noteSchema = new Schema(
     // Raw .ipynb JSON stored here for notebook notes; not included in the text search index
     notebookContent: { type: String, select: true },
     reference: String,
+    copyableFields,
     initiator: {type:String, select: false},
     origin: {
       location:  String, // URL (web) or file path (IDE extension)

@@ -52,6 +52,8 @@ docker-compose up    # MongoDB + Keycloak (default dev user: mock/mock)
 
 ## Conventions
 
+- Angular components should keep templates and styles in colocated external `.html` and `.scss` files,
+using `templateUrl` and `styleUrls`; reserve inline markup/styles for genuinely small exceptions.
 - Commits: Angular Commit Guidelines (`feat`, `fix`, `chore`, `refactor`, `docs`, `perf`, …)
 - Test files: `*.test.js` (unit) and `*.integration-test.js` (integration)
 - Config: `apps/codever-api/env.json` keyed by `NODE_ENV` (not committed)

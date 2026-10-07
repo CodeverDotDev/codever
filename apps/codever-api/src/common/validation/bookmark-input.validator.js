@@ -2,6 +2,7 @@ const ValidationError = require('../../error/validation.error');
 const PublicBookmarkExistentError = require('../../error/public-bookmark-existent.error');
 const Bookmark = require('../../model/bookmark');
 const { MAX_TAGS, normalizeTags } = require('./tag-policy');
+const { normalizeCopyableFields } = require('./copyable-fields');
 
 let validateBookmarkInput = function (userId, bookmark) {
   let validationErrorMessages = validateInputExceptUserId(bookmark);
@@ -21,6 +22,7 @@ let validateBookmarkInput = function (userId, bookmark) {
 };
 
 function validateInputExceptUserId(bookmark) {
+  bookmark.copyableFields = normalizeCopyableFields(bookmark.copyableFields);
   let validationErrorMessages = [];
   let normalizedTags = [];
   try {

@@ -100,7 +100,7 @@
       <ng-template matExpansionPanelContent>
         <!-- NOTE content -->
         @if (isNote(userDataResource)) {
-        <app-note-content [note]="userDataResource" [partOfList]="true" />
+        <app-note-content [note]="userDataResource" [partOfList]="true" [showMoreText]="filteredCount === 1" />
         } @else {
         <app-bookmark-text
           [bookmark]="userDataResource"

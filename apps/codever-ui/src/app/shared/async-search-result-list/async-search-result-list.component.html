@@ -15,12 +15,13 @@
       </div>
     }
     <div class="clear"></div>
-    @for (searchResult of searchResults | resourceFilter : filterText; track searchResult) {
+    @for (searchResult of searchResults | resourceFilter : filterText; track searchResult; let filteredCount = $count) {
       <div
         class="mt-3"
         >
         @if (isBookmark(searchResult)) {
           <app-bookmark-list-element [bookmark]="searchResult"
+            [showMoreText]="filteredCount === 1"
             [userData$]="userData$"
             [queryText]="queryText"
             [filterText]="filterText"
@@ -29,6 +30,7 @@
         }
         @if (isNote(searchResult)) {
           <app-note-details [note$]="of(searchResult)"
+            [showMoreText]="filteredCount === 1"
             [queryText]="queryText"
             [inSearchResults]="true"
             [partOfList]="true"

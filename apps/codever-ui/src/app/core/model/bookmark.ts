@@ -1,3 +1,5 @@
+import { CopyableField } from './copyable-field';
+
 export interface Bookmark {
   _id?: string;
   shareableId?: string;
@@ -8,6 +10,7 @@ export interface Bookmark {
   initiator?: string;
   description?: string;
   descriptionHtml?: string;
+  copyableFields?: CopyableField[];
   tagsLine?: string;
   publishedOn?: Date;
   sourceCodeURL?: string;

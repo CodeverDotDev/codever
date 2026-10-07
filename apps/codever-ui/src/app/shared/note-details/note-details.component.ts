@@ -56,6 +56,9 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   @Input()
   partOfList = false;
 
+  @Input()
+  showMoreText = false;
+
   userId$: Observable<string> = of(null);
   userData$: Observable<UserData>;
   noteId: string;

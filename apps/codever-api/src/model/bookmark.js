@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const copyableFields = require('./copyable-field.schema');
 
 const bookmarkSchema = new Schema(
   {
@@ -9,6 +10,7 @@ const bookmarkSchema = new Schema(
     location: { type: String, required: true },
     description: String,
     descriptionHtml: String,
+    copyableFields,
     tags: [String],
     initiator: {type:String, select: false},
     publishedOn: Date,

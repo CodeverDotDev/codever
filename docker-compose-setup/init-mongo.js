@@ -125,14 +125,18 @@ db.bookmarks.createIndex(
     description: "text",
     tags: "text",
     sourceCodeURL: "text",
+    "copyableFields.label": "text",
+    "copyableFields.value": "text",
   },
   {
     weights: {
-      name: 13,
+      name: 21,
       location: 8,
       description: 5,
-      tags: 21,
-      sourceCodeURL: 3
+      tags: 8,
+      sourceCodeURL: 3,
+      "copyableFields.label": 1,
+      "copyableFields.value": 1
     },
     name: "full_text_search",
     default_language: "none",
@@ -181,14 +185,18 @@ db.notes.createIndex(
       title: "text",
       reference: "text",
       content: "text",
-      tags: "text"
+      tags: "text",
+      "copyableFields.label": "text",
+      "copyableFields.value": "text"
     },
     {
       weights: {
-        title: 13,
+        title: 21,
         reference: 3,
         content: 5,
-        tags: 21
+        tags: 8,
+        "copyableFields.label": 1,
+        "copyableFields.value": 1
       },
       name: "notes_full_text_search",
       default_language: "none",

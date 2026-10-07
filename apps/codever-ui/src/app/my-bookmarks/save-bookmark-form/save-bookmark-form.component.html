@@ -144,6 +144,7 @@
             </select>
           </div>
         }
+        <ng-template #tagsEditor>
         <div id="tags" class="form-group-distanced mb-4 border rounded p-2">
           <mat-form-field class="full-width">
             <mat-label>Tags*</mat-label>
@@ -207,6 +208,7 @@
             </span>
           }
         </div>
+        </ng-template>
         <div class="mb-3 form-group-distanced">
           <label for="publishedOn">
             <i class="far fa-calendar-alt"></i> Originally published on
@@ -285,6 +287,8 @@
             </div>
           }
         </div>
+        <app-copyable-fields-editor [fields]="copyableFields" />
+        <ng-container [ngTemplateOutlet]="tagsEditor" />
         @if (!isUpdate) {
           <div class="mb-3">
             <button
