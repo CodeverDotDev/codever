@@ -342,8 +342,11 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  @HostListener('window:keydown.control.p', ['$event'])
+  @HostListener('window:keydown.control.shift.p', ['$event'])
+  @HostListener('window:keydown.meta.shift.p', ['$event'])
   showPinned(event: KeyboardEvent) {
+    event.preventDefault();
+
     if (!this.userIsLoggedIn) {
       const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
         'You need to be logged in to see the Pinned Bookmarks popup'
@@ -351,7 +354,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      event.preventDefault();
       this.launchPinnedDialog();
     }
   }
@@ -398,8 +400,11 @@ export class AppComponent implements OnInit, OnDestroy {
     return relativeHeight + 'px';
   }
 
-  @HostListener('window:keydown.control.h', ['$event'])
+  @HostListener('window:keydown.control.shift.h', ['$event'])
+  @HostListener('window:keydown.meta.shift.h', ['$event'])
   showHistory(event: KeyboardEvent) {
+    event.preventDefault();
+
     if (!this.userIsLoggedIn) {
       const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
         'You need to be logged in to see the History Bookmarks popup'
@@ -407,7 +412,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      event.preventDefault();
       this.launchHistoryDialog();
     }
   }
