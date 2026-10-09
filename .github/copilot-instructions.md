@@ -1,9 +1,12 @@
 # Codever – Copilot Instructions
 
-Codever is a MEAN-stack bookmarks, snippets, and notes manager. Monorepo with two apps:
+Codever is a MEAN-stack bookmarks, snippets, and notes manager. Monorepo with
+two apps:
 
-- `apps/codever-api` — Express.js REST API (Node.js, MongoDB/Mongoose, Keycloak)
-- `apps/codever-ui` — Angular SPA (lazy-loaded modules, Angular Material + Bootstrap 5)
+- `apps/codever-api` — Express.js REST API (Node.js, MongoDB/Mongoose,
+  Keycloak)
+- `apps/codever-ui` — Angular SPA (lazy-loaded modules, Angular Material +
+  Bootstrap 5)
 
 ## Commands
 
@@ -41,19 +44,26 @@ docker-compose up    # MongoDB + Keycloak (default dev user: mock/mock)
 **API** follows Router → Service → Mongoose Model (no controller layer).
 - Public routes: `/api/public/{bookmarks,snippets,notes,users}`
 - Personal routes: `/api/personal/users/:userId/{bookmarks,snippets,notes}`
-- Every personal route calls `keycloak.protect()` then `UserIdValidator.validateUserId(request)`
+- Every personal route calls `keycloak.protect()` then
+  `UserIdValidator.validateUserId(request)`
 
-**Three core resource types** share a `type` field (`'bookmark'`/`'snippet'`/`'note'`) and `public: Boolean`:
+**Three core resource types** share a `type` field
+(`'bookmark'`/`'snippet'`/`'note'`) and `public: Boolean`:
 - Bookmark: `name`, `location` (URL), `description`, `tags[]`
 - Snippet: `title`, `codeSnippets[]` (`code`, `language`, `comment`), `tags[]`
 - Note: `title`, `content`, `contentType` (`'markdown'`|`'notebook'`), `tags[]`
 
-**Frontend**: feature modules lazy-loaded via `loadChildren` in `app.routing.ts`; services live in `core/`; shared components in `shared/`.
+**Frontend**: feature modules lazy-loaded via `loadChildren` in
+`app.routing.ts`; services live in `core/`; shared components in `shared/`.
 
 ## Conventions
 
-- Angular components should keep templates and styles in colocated external `.html` and `.scss` files,
-using `templateUrl` and `styleUrls`; reserve inline markup/styles for genuinely small exceptions.
-- Commits: Angular Commit Guidelines (`feat`, `fix`, `chore`, `refactor`, `docs`, `perf`, …)
+- Markdown files generated or modified by the assistant must keep each line at
+  80 characters or fewer, except for unavoidable URLs, tables, and code fences.
+- Angular components should keep templates and styles in colocated external
+  `.html` and `.scss` files, using `templateUrl` and `styleUrls`; reserve
+  inline markup/styles for genuinely small exceptions.
+- Commits: Angular Commit Guidelines (`feat`, `fix`, `chore`, `refactor`,
+  `docs`, `perf`, …)
 - Test files: `*.test.js` (unit) and `*.integration-test.js` (integration)
 - Config: `apps/codever-api/env.json` keyed by `NODE_ENV` (not committed)

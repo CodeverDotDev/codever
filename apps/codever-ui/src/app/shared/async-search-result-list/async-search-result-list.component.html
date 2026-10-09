@@ -8,10 +8,16 @@
         <input
           type="search"
           [(ngModel)]="filterText"
+          (keydown.enter)="onFilterEnter()"
           class="form-control"
           placeholder="Filter..."
           data-test="search-results-input-filter"
           />
+        @if (hasSingleFilteredBookmark) {
+          <small class="text-body-secondary d-block filter-shortcut-hint">
+            <kbd>Enter</kbd> opens the only matching bookmark
+          </small>
+        }
       </div>
     }
     <div class="clear"></div>
@@ -37,6 +43,12 @@
            />
         }
       </div>
+    }
+    @if (isSearchResultsPage && hasSingleFilteredBookmark) {
+      <small class="text-body-secondary d-block mb-2 mt-2 text-center">
+        Press <kbd>k</kbd> <kbd>k</kbd> to open this bookmark's main link in a
+        new tab
+      </small>
     }
     <app-page-navigation-bar [showPagination]="showPagination"
       [results]="searchResults"

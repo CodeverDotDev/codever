@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/main-link-shortcut-spec",
+    "types": ["jasmine", "node"]
+  },
+  "include": [
+    "app/core/shortcut/main-link-shortcut.service.spec.ts",
+    "app/core/shortcut/main-link-shortcut.filters.spec.ts",
+    "**/*.d.ts"
+  ]
+}
+

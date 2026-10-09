@@ -12,6 +12,7 @@ import {
   CdkDragHandle,
 } from '@angular/cdk/drag-drop';
 import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
+import { MainLinkShortcutService } from '../core/shortcut/main-link-shortcut.service';
 import { FormsModule } from '@angular/forms';
 import { MatTooltip } from '@angular/material/tooltip';
 import { NgClass } from '@angular/common';
@@ -44,7 +45,8 @@ export class QuickAccessResourcesComponent {
   constructor(
     protected router: Router,
     private addToHistoryService: AddToHistoryService,
-    private userDataPinnedStore: UserDataPinnedStore
+    private userDataPinnedStore: UserDataPinnedStore,
+    private mainLinkShortcutService: MainLinkShortcutService
   ) {}
 
   /** True when the pinned entry is a note rather than a bookmark. */
@@ -68,6 +70,18 @@ export class QuickAccessResourcesComponent {
     return this.quickAccessResources.filter((resource) =>
       this.getLabel(resource).toLocaleLowerCase().includes(filterText)
     );
+  }
+
+  /**
+   * True when the focused filter narrows the pinned list down to exactly one
+   * bookmark, i.e. when pressing Enter would actually open something.
+   */
+  get hasSingleFilteredBookmark(): boolean {
+    if (!this.pinnedFilterText.trim()) {
+      return false;
+    }
+    const filtered = this.filteredPinnedResources;
+    return filtered.length === 1 && filtered[0].type === 'bookmark';
   }
 
   /** Tooltip: note title or bookmark "name - location". */
@@ -115,6 +129,20 @@ export class QuickAccessResourcesComponent {
     const bookmark = resource as Bookmark;
     this.addToHistoryService.promoteInHistoryIfLoggedIn(true, bookmark);
     window.open(bookmark.location, '_blank');
+  }
+
+  /**
+   * Enter in the focused Pinned filter opens the only visible bookmark's main
+   * link in a new tab. Does nothing for zero/multiple results or a single note.
+   */
+  onFilterEnter(): void {
+    const filtered = this.filteredPinnedResources;
+    if (filtered.length === 1 && filtered[0].type === 'bookmark') {
+      this.mainLinkShortcutService.openBookmarkInNewTab(
+        filtered[0] as Bookmark,
+        true
+      );
+    }
   }
 
   addNewSectionTitleEvent(value: string) {

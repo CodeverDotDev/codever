@@ -55,6 +55,16 @@ export class MyCollectionsPageComponent implements OnInit {
     this.loadCollections();
   }
 
+  /**
+   * Enter in the focused filter opens the only visible collection in the
+   * current tab via the existing navigation. No-op for zero or many results.
+   */
+  onFilterEnter(): void {
+    if (this.collections.length === 1) {
+      this.openCollection(this.collections[0]);
+    }
+  }
+
   openCreateDialog(): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '400px';

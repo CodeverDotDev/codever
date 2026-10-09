@@ -30,6 +30,7 @@
           placeholder="Filter bookmarks and notes by name, title or tag…"
           [(ngModel)]="unifiedFilter"
           (ngModelChange)="applyFilter()"
+          (keydown.enter)="onFilterEnter()"
           />
         @if (unifiedFilter) {
           <button
@@ -40,6 +41,11 @@
             >
             <i class="fas fa-times"></i>
           </button>
+        }
+        @if (filteredBookmarks.length === 1 && filteredNotes.length === 0) {
+          <small class="text-body-secondary d-block mt-1">
+            Press <kbd>Enter</kbd> to open the only matching bookmark
+          </small>
         }
       </div>
     }

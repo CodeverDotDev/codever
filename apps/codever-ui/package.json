@@ -15,6 +15,7 @@
     "build:aot": "ng build --configuration production --aot",
     "test": "ng test",
     "test:onpush": "ng run codever-ui:test-onpush",
+    "test:main-link-shortcut": "ng run codever-ui:test-main-link-shortcut",
     "lint": "ng lint",
     "cy:run": "cypress run --config-file cypress/cypress.config.ts",
     "cy:open": "cypress open --config-file cypress/cypress.config.ts"
