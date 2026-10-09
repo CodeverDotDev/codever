@@ -191,7 +191,7 @@ usersRouter.get(
   }
 );
 
-/* GET list of user's pinned bookmarks */
+/* GET list of user's pinned resources */
 usersRouter.get(
   '/:userId/pinned',
   keycloak.protect(),
@@ -391,9 +391,9 @@ usersRouter.patch(
   keycloak.protect(),
   async (request, response) => {
     userIdTokenValidator.validateUserId(request);
-    const pinnedBookmarkIds = request.body.pinnedBookmarkIds;
+    const pinned = request.body.pinned;
     await UserDataService.updateUserDataPinned(
-      pinnedBookmarkIds,
+      pinned,
       request.params.userId
     );
     return response.status(HttpStatus.OK).send({ userDataPinnedUpdated: true });

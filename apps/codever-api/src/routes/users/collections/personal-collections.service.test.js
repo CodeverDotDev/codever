@@ -2,12 +2,14 @@ const PersonalCollectionsService = require('./personal-collections.service');
 const Collection = require('../../../model/collection');
 const Bookmark = require('../../../model/bookmark');
 const Note = require('../../../model/note');
+const User = require('../../../model/user');
 const NotFoundError = require('../../../error/not-found.error');
 const ValidationError = require('../../../error/validation.error');
 
 jest.mock('../../../model/collection');
 jest.mock('../../../model/bookmark');
 jest.mock('../../../model/note');
+jest.mock('../../../model/user');
 
 describe('PersonalCollectionsService', () => {
   const userId = 'test-user-id';
@@ -215,6 +217,20 @@ describe('PersonalCollectionsService', () => {
       await expect(
         PersonalCollectionsService.deleteCollectionById(userId, 'col-1')
       ).resolves.toBeUndefined();
+    });
+
+    it('should pull the collection from users pinned entries', async () => {
+      Collection.findOneAndDelete = jest
+        .fn()
+        .mockResolvedValue({ _id: 'col-1' });
+      User.updateMany = jest.fn().mockResolvedValue({ modifiedCount: 1 });
+
+      await PersonalCollectionsService.deleteCollectionById(userId, 'col-1');
+
+      expect(User.updateMany).toHaveBeenCalledWith(
+        {},
+        { $pull: { pinned: { id: 'col-1', type: 'collection' } } }
+      );
     });
   });
 

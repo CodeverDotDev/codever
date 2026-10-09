@@ -17,23 +17,23 @@ throwing `ValidationError` (400) otherwise. Verify with a unit test asserting th
 
 ## 3. Backend routes and OpenAPI
 
-- [ ] 3.1 Update `GET /:userId/pinned` and `PATCH /:userId/pinned` in `apps/codever-api/src/routes/users/user.router.js`
+- [x] 3.1 Update `GET /:userId/pinned` and `PATCH /:userId/pinned` in `apps/codever-api/src/routes/users/user.router.js`
 to read/accept typed entries (replacing `pinnedBookmarkIds`). Verify with an integration test (`*.integration-test.js`) that PATCH stores typed entries and GET returns mixed resources.
-- [ ] 3.2 Update `apps/codever-api/docs/openapi/openapi.yaml` for the pinned endpoints' new request/response shape.
+- [x] 3.2 Update `apps/codever-api/docs/openapi/openapi.yaml` for the pinned endpoints' new request/response shape.
 Verify by running the OpenAPI validation/lint command if present, or by visual review of the YAML.
 
 ## 4. Delete-path cleanup
 
-- [ ] 4.1 Update bookmark deletion in `apps/codever-api/src/routes/users/bookmarks/personal-bookmarks.service.js` to `$pull` typed entries (`{ id: bookmarkId, type: 'bookmark' }`).
+- [x] 4.1 Update bookmark deletion in `apps/codever-api/src/routes/users/bookmarks/personal-bookmarks.service.js` to `$pull` typed entries (`{ id: bookmarkId, type: 'bookmark' }`).
 Verify with the existing bookmark deletion unit/integration test.
-- [ ] 4.2 Update note deletion in `apps/codever-api/src/routes/users/notes/personal-notes.service.js`
+- [x] 4.2 Update note deletion in `apps/codever-api/src/routes/users/notes/personal-notes.service.js`
 to `$pull` typed entries (`{ id: noteId, type: 'note' }`). Verify with the existing note deletion unit/integration test.
-- [ ] 4.3 Update collection deletion in `apps/codever-api/src/routes/users/collections/personal-collections.service.js`
+- [x] 4.3 Update collection deletion in `apps/codever-api/src/routes/users/collections/personal-collections.service.js`
 to `$pull` the collection from users' pinned entries (`{ id: collectionId, type: 'collection' }`). Verify with a new unit test.
 
 ## 5. Data migration
 
-- [ ] 5.1 Add a timestamped script `apps/codever-api/resources/db-migration/mongodb/<ts>_migrate-pinned-to-typed-entries.js`
+- [x] 5.1 Add a timestamped script `apps/codever-api/resources/db-migration/mongodb/<ts>_migrate-pinned-to-typed-entries.js`
 that classifies each bare pinned id as bookmark or note (dropping orphans) and writes typed entries.
 Batch classification with bulk `$in` queries across all users (build an `id → type` map, then rewrite each user), not per-user lookups. Verify by running it against a local seeded DB and confirming pinned lists render afterward.
 

@@ -132,7 +132,7 @@ let deleteNoteById = async (userId, noteId) => {
     {},
     {
       $pull: {
-        pinned: noteId,
+        pinned: { id: noteId, type: 'note' },
         history: noteId,
       },
     }
