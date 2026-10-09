@@ -1,7 +1,8 @@
 ## Purpose
 
-Lets users pin collections and reach them from the quick-access pinned list and the Ctrl+P popup,
-mixed in with pinned bookmarks and notes, and browse a pinned collection's contents in a filterable dialog.
+Lets users pin collections and reach them from the quick-access pinned list and
+the Ctrl+Shift+P popup, mixed in with pinned bookmarks and notes, and browse a
+pinned collection's contents in a filterable dialog.
 
 ## ADDED Requirements
 
@@ -39,9 +40,10 @@ preserving the user's pinned order.
 - **WHEN** an authenticated user has pinned bookmarks, notes, and collections
 - **THEN** the quick-access pinned list SHALL display all of them in one list in the user's pinned order
 
-#### Scenario: Ctrl+P popup shows a mixed pinned list
+#### Scenario: Ctrl+Shift+P popup shows a mixed pinned list
 
-- **WHEN** an authenticated user opens the Ctrl+P quick-access popup and has pinned bookmarks, notes, and collections
+- **WHEN** an authenticated user opens the Ctrl+Shift+P quick-access popup and
+  has pinned bookmarks, notes, and collections
 - **THEN** the popup SHALL display all of them in one list in the user's pinned order
 
 ### Requirement: Navigate to a pinned collection
@@ -50,7 +52,8 @@ The system SHALL navigate to the collection detail page when the user activates 
 
 #### Scenario: Open pinned collection from quick access
 
-- **WHEN** an authenticated user clicks a pinned collection in the quick-access list or the Ctrl+P popup
+- **WHEN** an authenticated user clicks a pinned collection in the quick-access
+  list or the Ctrl+Shift+P popup
 - **THEN** the SPA SHALL navigate to that collection's detail page at `/my-collections/:id`
 
 ### Requirement: Browse a pinned collection's contents in a dialog
