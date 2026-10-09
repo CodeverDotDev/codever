@@ -113,7 +113,22 @@ let trimMaxAllowedStoreLength = function (storeItems, limit) {
   return storeItems;
 };
 
+const PINNED_ENTRY_TYPES = ['bookmark', 'note', 'collection'];
+
+function validatePinnedEntries(pinned) {
+  const hasInvalidEntry = (pinned || []).some(
+    (entry) => !entry || !PINNED_ENTRY_TYPES.includes(entry.type)
+  );
+
+  if (hasInvalidEntry) {
+    throw new ValidationError('Pinned entries are not valid', [
+      'Each pinned entry must have a type of bookmark, note, or collection',
+    ]);
+  }
+}
+
 let updateUserDataPinned = async function (pinned, userId) {
+  validatePinnedEntries(pinned);
   pinned = trimMaxAllowedStoreLength(
     pinned,
     constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE
@@ -150,6 +165,7 @@ let updateUserDataHistoryReadLaterPinned = async function (input, userId) {
   }
 
   if (Array.isArray(pinned) && pinned.length) {
+    validatePinnedEntries(pinned);
     pinned = trimMaxAllowedStoreLength(
       pinned,
       constants.MAX_NUMBER_STORED_BOOKMARKS_FOR_PERSONAL_STORE

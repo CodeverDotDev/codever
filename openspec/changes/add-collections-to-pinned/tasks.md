@@ -10,9 +10,9 @@ Verify with `npx jest --testPathPattern="user"` (or nearest user model test) and
 to resolve each typed entry by `type` (Bookmark, Note, Collection), keep the user's pinned order,
 and return collections as light objects (`_id`, `type`, `name`, `color`, `userId`).
 Verify with a new unit test `user-data.service.test.js` covering mixed entries and ordering.
-- [ ] 2.2 Update `updateUserDataPinned` and `updateUserDataHistoryReadLaterPinned` to accept and store typed entries,
+- [x] 2.2 Update `updateUserDataPinned` and `updateUserDataHistoryReadLaterPinned` to accept and store typed entries,
 keeping `trimMaxAllowedStoreLength` behavior. Verify with unit tests for trimming and storing typed entries.
-- [ ] 2.3 Add validation that each pinned entry's `type` is one of `bookmark`, `note`, `collection`,
+- [x] 2.3 Add validation that each pinned entry's `type` is one of `bookmark`, `note`, `collection`,
 throwing `ValidationError` (400) otherwise. Verify with a unit test asserting the error class.
 
 ## 3. Backend routes and OpenAPI
