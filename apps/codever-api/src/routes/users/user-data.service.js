@@ -3,6 +3,7 @@ const constants = require('../../common/constants');
 const User = require('../../model/user');
 const Bookmark = require('../../model/bookmark');
 const Note = require('../../model/note');
+const Collection = require('../../model/collection');
 
 const ValidationError = require('../../error/validation.error');
 const NotFoundError = require('../../error/not-found.error');
@@ -355,27 +356,47 @@ let getPinnedResources = async function (userId, page, limit) {
   if (!userData) {
     throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
   } else {
-    const pinnedRangeIds = userData.pinned.slice(
+    const pinnedRangeEntries = userData.pinned.slice(
       (page - 1) * limit,
       (page - 1) * limit + limit
     );
-    // Pinned entries can be either bookmarks or notes; look both collections up
-    const [bookmarks, notes] = await Promise.all([
-      Bookmark.find({ _id: { $in: pinnedRangeIds } }),
-      Note.find({ _id: { $in: pinnedRangeIds } }),
+
+    const idsOfType = (type) =>
+      pinnedRangeEntries
+        .filter((entry) => entry.type === type)
+        .map((entry) => entry.id);
+
+    // Pinned entries are typed; resolve each type against its own collection.
+    const [bookmarks, notes, collections] = await Promise.all([
+      Bookmark.find({ _id: { $in: idsOfType('bookmark') } }),
+      Note.find({ _id: { $in: idsOfType('note') } }),
+      Collection.find({ _id: { $in: idsOfType('collection') } }),
     ]);
-    const pinnedResources = [...bookmarks, ...notes];
-    //we need to order the resources to correspond the one in the userData.pinned array
-    const orderedResourcesAsInPinned = pinnedResources.sort(function (a, b) {
-      return (
-        pinnedRangeIds.indexOf(a._id.toString()) -
-        pinnedRangeIds.indexOf(b._id.toString())
-      );
+
+    // Index resolved resources by `type:id` so the user's pinned order can be
+    // replayed and entries whose resource was deleted are dropped.
+    const resourcesByKey = new Map();
+    bookmarks.forEach((bookmark) => {
+      resourcesByKey.set(`bookmark:${bookmark._id.toString()}`, bookmark);
+    });
+    notes.forEach((note) => {
+      resourcesByKey.set(`note:${note._id.toString()}`, note);
+    });
+    collections.forEach((collection) => {
+      // Pinned resources feed the sidebar and popup, which only need the
+      // collection's name/id, so return a light object without its items.
+      resourcesByKey.set(`collection:${collection._id.toString()}`, {
+        _id: collection._id,
+        type: 'collection',
+        name: collection.name,
+        color: collection.color,
+        userId: collection.userId,
+      });
     });
 
-    return orderedResourcesAsInPinned.filter(
-      (resource) => resource !== undefined
-    );
+    return pinnedRangeEntries
+      .map((entry) => resourcesByKey.get(`${entry.type}:${entry.id}`))
+      .filter((resource) => resource !== undefined);
   }
 };
 

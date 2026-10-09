@@ -1,12 +1,12 @@
 ## 1. Backend data model
 
-- [ ] 1.1 Add a `PinnedEntry` subdocument schema (`type` enum `bookmark|note|collection`, `id` ObjectId)
+- [x] 1.1 Add a `PinnedEntry` subdocument schema (`type` enum `bookmark|note|collection`, `id` ObjectId)
 and change `User.pinned` to `[PinnedEntry]` in `apps/codever-api/src/model/user.js`.
 Verify with `npx jest --testPathPattern="user"` (or nearest user model test) and by confirming existing integration tests referencing `pinned: []` still pass with an empty array.
 
 ## 2. Backend pinned service
 
-- [ ] 2.1 Update `getPinnedResources` in `apps/codever-api/src/routes/users/user-data.service.js`
+- [x] 2.1 Update `getPinnedResources` in `apps/codever-api/src/routes/users/user-data.service.js`
 to resolve each typed entry by `type` (Bookmark, Note, Collection), keep the user's pinned order,
 and return collections as light objects (`_id`, `type`, `name`, `color`, `userId`).
 Verify with a new unit test `user-data.service.test.js` covering mixed entries and ordering.
