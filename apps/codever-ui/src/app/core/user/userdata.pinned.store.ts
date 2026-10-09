@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { AuthenticationService } from '../auth/authentication.service';
 import { UserDataService } from '../user-data.service';
 import { Bookmark } from '../model/bookmark';
+import { Collection, toPinnedCollection } from '../model/collection';
 import { UserDataResource } from '../model/user-data-resource.type';
 import { NotifyStoresService } from './notify-stores.service';
 import { UserDataStore } from './userdata.store';
@@ -78,6 +79,30 @@ export class UserDataPinnedStore {
     this.userDataStore.removeFromUserDataPinned$(resource).subscribe(() => {
       this.publishedPinnedAfterDeletion(resource);
     });
+  }
+
+  /** Pins a collection, projecting it into the light pinned shape. */
+  addCollectionToPinned(collection: Collection) {
+    const pinnedCollection = toPinnedCollection(collection);
+    this.userDataStore
+      .addToUserDataPinned$(pinnedCollection)
+      .subscribe(() => {
+        if (this.pinnedBookmarksHaveBeenLoaded) {
+          const pinnedResources: UserDataResource[] = this._pinned.getValue();
+          pinnedResources.unshift(pinnedCollection);
+          this._pinned.next(pinnedResources);
+        }
+      });
+  }
+
+  /** Unpins a collection. */
+  removeCollectionFromPinned(collection: Collection) {
+    const pinnedCollection = toPinnedCollection(collection);
+    this.userDataStore
+      .removeFromUserDataPinned$(pinnedCollection)
+      .subscribe(() => {
+        this.publishedPinnedAfterDeletion(pinnedCollection);
+      });
   }
 
   private publishedPinnedAfterDeletion(resource: UserDataResource) {

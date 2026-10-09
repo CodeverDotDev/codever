@@ -37,3 +37,14 @@ export interface PinnedCollection {
   userId?: string;
 }
 
+/** Projects a full collection into the light shape used when it is pinned. */
+export function toPinnedCollection(collection: Collection): PinnedCollection {
+  return {
+    _id: collection._id,
+    type: 'collection',
+    name: collection.name,
+    color: collection.color,
+    userId: collection.userId,
+  };
+}
+

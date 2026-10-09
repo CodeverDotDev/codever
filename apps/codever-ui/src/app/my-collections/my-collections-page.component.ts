@@ -7,6 +7,10 @@ import { CollectionFormDialogComponent } from './collection-form-dialog/collecti
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { Observable } from 'rxjs';
+import { UserData } from '../core/model/user-data';
+import { UserDataStore } from '../core/user/userdata.store';
+import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
 
 @Component({
   selector: 'app-my-collections-page',
@@ -20,13 +24,18 @@ export class MyCollectionsPageComponent implements OnInit {
   filterText = '';
   currentPage = 1;
   loading = false;
+  userData$: Observable<UserData>;
 
   constructor(
     private personalCollectionsService: PersonalCollectionsService,
     private userInfoStore: UserInfoStore,
     private dialog: MatDialog,
-    private router: Router
-  ) {}
+    private router: Router,
+    private userDataStore: UserDataStore,
+    private userDataPinnedStore: UserDataPinnedStore
+  ) {
+    this.userData$ = this.userDataStore.getUserData$();
+  }
 
   ngOnInit(): void {
     this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
@@ -126,6 +135,21 @@ export class MyCollectionsPageComponent implements OnInit {
           );
         });
     }
+  }
+
+  /** True when the collection is part of the user's typed pinned entries. */
+  isPinned(userData: UserData | null, collection: Collection): boolean {
+    return (userData?.pinned || []).some(
+      (entry) => entry.type === 'collection' && entry.id === collection._id
+    );
+  }
+
+  addToPinned(collection: Collection): void {
+    this.userDataPinnedStore.addCollectionToPinned(collection);
+  }
+
+  removeFromPinned(collection: Collection): void {
+    this.userDataPinnedStore.removeCollectionFromPinned(collection);
   }
 
   openCollection(collection: Collection): void {

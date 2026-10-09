@@ -130,7 +130,9 @@ describe('MyCollectionsPageComponent Enter handler', () => {
       {} as never,
       {} as never,
       {} as never,
-      router as never
+      router as never,
+      { getUserData$: () => undefined } as never,
+      {} as never
     );
   });
   it('opens the only visible collection in the current tab', () => {
@@ -163,7 +165,9 @@ describe('CollectionDetailComponent Enter handler', () => {
       {} as never,
       {} as never,
       {} as never,
-      shortcut
+      shortcut,
+      { getUserData$: () => undefined } as never,
+      {} as never
     );
   });
   it('opens the only visible bookmark when no notes are visible', () => {

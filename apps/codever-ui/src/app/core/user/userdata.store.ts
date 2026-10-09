@@ -1,7 +1,13 @@
 import { BehaviorSubject, Observable, ReplaySubject, of } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-import { Following, PinnedEntry, Profile, Search, UserData } from '../model/user-data';
+import {
+  Following,
+  PinnedEntry,
+  Profile,
+  Search,
+  UserData,
+} from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
