@@ -5,9 +5,15 @@
     <input
       type="search"
       [(ngModel)]="filterText"
+      (keydown.enter)="onFilterEnter()"
       class="form-control"
       placeholder="Filter by title"
     />
+    @if (hasSingleVisibleBookmark) {
+      <small class="text-body-secondary filter-shortcut-hint">
+        Press <kbd>Enter</kbd> to open the only matching bookmark
+      </small>
+    }
   </div>
 </div>
 @if (userDataResources$ | async; as userDataResources) {

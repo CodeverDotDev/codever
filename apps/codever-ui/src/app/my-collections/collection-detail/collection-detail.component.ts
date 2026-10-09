@@ -5,6 +5,7 @@ import { PersonalCollectionsService } from '../../core/personal-collections.serv
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Bookmark } from '../../core/model/bookmark';
 import { Note } from '../../core/model/note';
+import { MainLinkShortcutService } from '../../core/shortcut/main-link-shortcut.service';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 
@@ -28,7 +29,8 @@ export class CollectionDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private personalCollectionsService: PersonalCollectionsService,
-    private userInfoStore: UserInfoStore
+    private userInfoStore: UserInfoStore,
+    private mainLinkShortcutService: MainLinkShortcutService
   ) {}
 
   ngOnInit(): void {
@@ -77,6 +79,22 @@ export class CollectionDetailComponent implements OnInit {
         (n) =>
           n.title?.toLowerCase().includes(q) ||
           n.tags?.some((t) => t.toLowerCase().includes(q))
+      );
+    }
+  }
+
+  /**
+   * Enter in the focused filter opens the only visible bookmark's main link in
+   * a new tab. No-op unless exactly one bookmark and no notes are visible.
+   */
+  onFilterEnter(): void {
+    if (
+      this.filteredBookmarks.length === 1 &&
+      this.filteredNotes.length === 0
+    ) {
+      this.mainLinkShortcutService.openBookmarkInNewTab(
+        this.filteredBookmarks[0],
+        true
       );
     }
   }

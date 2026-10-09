@@ -149,6 +149,22 @@
             "scripts": []
           }
         },
+        "test-main-link-shortcut": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "src/tsconfig.main-link-shortcut-spec.json",
+            "karmaConfig": "karma.onpush.conf.cjs",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "include": [
+              "src/app/core/shortcut/main-link-shortcut.service.spec.ts",
+              "src/app/core/shortcut/main-link-shortcut.filters.spec.ts"
+            ],
+            "watch": false,
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          }
+        },
         "test": {
           "builder": "@angular/build:karma",
           "options": {

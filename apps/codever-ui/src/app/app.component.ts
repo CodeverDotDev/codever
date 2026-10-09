@@ -21,6 +21,7 @@ import {
 import { environment } from '../environments/environment';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { LoginDialogHelperService } from './core/login-dialog-helper.service';
+import { MainLinkShortcutService } from './core/shortcut/main-link-shortcut.service';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter, takeUntil } from 'rxjs/operators';
 import { NavigationComponent } from './shared/navigation/navigation.component';
@@ -91,7 +92,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private loginDialogHelperService: LoginDialogHelperService,
     protected router: Router,
     private readonly scrollStrategyOptions: ScrollStrategyOptions,
-    private readonly swUpdate: SwUpdate
+    private readonly swUpdate: SwUpdate,
+    private readonly mainLinkShortcutService: MainLinkShortcutService
   ) {
     this.innerWidth = 100;
   }
@@ -340,6 +342,17 @@ export class AppComponent implements OnInit, OnDestroy {
       iziToast.hide({ transitionOut: 'fadeOut' }, this.updateToast);
       this.updateToast = null;
     }
+  }
+
+  /**
+   * Global `k+k` sequence handling for opening the only visible bookmark's main
+   * link. Delegated to the shortcut service, which ignores editable targets and
+   * modifier combinations so it never interferes with typing or other
+   * shortcuts (including the Ctrl/Cmd+Shift+P/H listeners below).
+   */
+  @HostListener('window:keydown', ['$event'])
+  onGlobalKeydown(event: KeyboardEvent) {
+    this.mainLinkShortcutService.handleKeydown(event);
   }
 
   @HostListener('window:keydown.control.shift.p', ['$event'])

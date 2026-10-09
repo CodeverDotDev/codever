@@ -3,9 +3,11 @@ import {
   EventEmitter,
   Injector,
   Input,
+  OnDestroy,
+  OnInit,
   Output,
 } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
 import { UserData } from '../../core/model/user-data';
@@ -13,6 +15,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
 import { Note } from '../../core/model/note';
+import { AuthenticationService } from '../../core/auth/authentication.service';
+import {
+  BookmarkShortcutContext,
+  MAIN_LINK_SHORTCUT_PRIORITY,
+  MainLinkShortcutService,
+} from '../../core/shortcut/main-link-shortcut.service';
 import { FormsModule } from '@angular/forms';
 import { BookmarkListElementComponent } from '../bookmark-list-element/bookmark-list-element.component';
 import { NoteDetailsComponent } from '../note-details/note-details.component';
@@ -33,7 +41,10 @@ import { ResourceFilterPipe } from '../pipe/resource-filter.pipe';
     ResourceFilterPipe,
   ],
 })
-export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
+export class AsyncSearchResultListComponent
+  extends TagFollowingBaseComponent
+  implements OnInit, OnDestroy
+{
   declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
   @Input()
@@ -66,6 +77,20 @@ export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
   showFilterBox = true;
   filterText = '';
 
+  private readonly authenticationService: AuthenticationService;
+  private readonly mainLinkShortcutService: MainLinkShortcutService;
+  private readonly resourceFilter = new ResourceFilterPipe();
+
+  /** Snapshot of the current results, used to resolve shortcuts. */
+  private searchResultsSnapshot: (Bookmark | Note)[] = [];
+  private searchResultsSubscription: Subscription;
+
+  private readonly shortcutContext: BookmarkShortcutContext = {
+    priority: MAIN_LINK_SHORTCUT_PRIORITY.SEARCH,
+    getSingleVisibleBookmark: () => this.singleVisibleBookmark(),
+    isUserLoggedIn: () => this.authenticationService.isLoggedIn(),
+  };
+
   constructor(
     private injector: Injector,
     public userDataWatchedTagsStore: UserDataWatchedTagsStore,
@@ -73,6 +98,24 @@ export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
   ) {
     super(loginDialog, userDataWatchedTagsStore);
     this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
+    this.authenticationService = this.injector.get(AuthenticationService);
+    this.mainLinkShortcutService = this.injector.get(MainLinkShortcutService);
+  }
+
+  ngOnInit(): void {
+    this.searchResultsSubscription = this.searchResults$?.subscribe(
+      (results) => (this.searchResultsSnapshot = results || [])
+    );
+    // Only the dedicated search results page participates in the global k+k
+    // sequence; other reuses (e.g. the home tabs) still support Enter.
+    if (this.isSearchResultsPage) {
+      this.mainLinkShortcutService.register(this.shortcutContext);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.searchResultsSubscription?.unsubscribe();
+    this.mainLinkShortcutService.unregister(this.shortcutContext);
   }
 
   isBookmark(searchResult: Bookmark | Note) {
@@ -85,5 +128,33 @@ export class AsyncSearchResultListComponent extends TagFollowingBaseComponent {
 
   of(searchResult: Bookmark | Note) {
     return of(searchResult);
+  }
+
+  /** Enter in the focused filter opens the only visible bookmark's main link. */
+  onFilterEnter(): void {
+    const bookmark = this.singleVisibleBookmark();
+    if (bookmark) {
+      this.mainLinkShortcutService.openBookmarkInNewTab(
+        bookmark,
+        this.authenticationService.isLoggedIn()
+      );
+    }
+  }
+
+  /** The single visible bookmark after filtering, or null when ambiguous. */
+  private singleVisibleBookmark(): Bookmark | null {
+    const filtered = this.resourceFilter.transform(
+      this.searchResultsSnapshot,
+      this.filterText
+    );
+    if (filtered.length === 1 && filtered[0].type === 'bookmark') {
+      return filtered[0] as Bookmark;
+    }
+    return null;
+  }
+
+  /** True when the current filter narrows the results to exactly one bookmark. */
+  get hasSingleFilteredBookmark(): boolean {
+    return this.singleVisibleBookmark() !== null;
   }
 }

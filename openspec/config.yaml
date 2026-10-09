@@ -48,21 +48,29 @@ rules:
     - Name the affected app(s) explicitly (codever-api, codever-ui, or both).
     - State whether the change touches public or personal (authenticated) routes.
     - Include an Impact section covering APIs, Mongoose models, and dependencies.
+    - Keep Markdown lines at 80 characters or fewer, except unavoidable URLs,
+      tables, and code fences.
   specs:
     - Describe observable behavior only; keep Angular/Express/Mongoose
       implementation details out of requirements.
     - For API behavior, specify inputs, outputs, and the error class / HTTP
       status for failure cases.
+    - Keep Markdown lines at 80 characters or fewer, except unavoidable URLs,
+      tables, and code fences.
   design:
     - Follow the Router -> Service -> Model layering for API designs; do not
       introduce a controller layer.
     - Note any auth impact (keycloak.protect, UserIdValidator) and localStorage
       cache implications for UI GET calls.
+    - Keep Markdown lines at 80 characters or fewer, except unavoidable URLs,
+      tables, and code fences.
   tasks:
     - Each task states how it is verified (unit test, integration test, lint,
       build, or observable behavior).
     - Prefer the project's existing test conventions
       (*.test.js / *.integration-test.js for the API; Karma/Jasmine for the UI).
+    - Keep Markdown lines at 80 characters or fewer, except unavoidable URLs,
+      tables, and code fences.
 
 # Per-operation guidance (advisory; separate from artifact rules above).
 operations:

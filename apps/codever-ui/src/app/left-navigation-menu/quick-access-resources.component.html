@@ -28,6 +28,7 @@
         <input
           type="search"
           [(ngModel)]="pinnedFilterText"
+          (keydown.enter)="onFilterEnter()"
           class="form-control"
           placeholder="Filter by title"
           aria-label="Filter pinned entries by title"
@@ -86,6 +87,11 @@
           </span>
         }
       </div>
+      @if (hasSingleFilteredBookmark) {
+        <small class="text-body-secondary d-block ms-2 mt-1">
+          <kbd>Enter</kbd> opens the only matching bookmark
+        </small>
+      }
     } @else {
       @for (resource of quickAccessResources; track resource; let i = $index) {
         <ng-container
