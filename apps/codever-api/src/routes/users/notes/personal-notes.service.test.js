@@ -1,5 +1,6 @@
 jest.mock('../../../model/note', () => {
   const Note = jest.fn();
+  Note.find = jest.fn();
   Note.findOne = jest.fn();
   Note.findOneAndUpdate = jest.fn();
   return Note;
@@ -106,6 +107,75 @@ describe('partial note updates', () => {
     await expect(service.updateNotePartially(USER_ID, NOTE_ID, { tags: tags(14) }))
       .rejects.toBeInstanceOf(ValidationError);
     expect(Note.findOneAndUpdate).not.toHaveBeenCalled();
+  });
+});
+
+describe('personal notes export', () => {
+  const notebookNote = () => ({
+    _id: 'notebook-note',
+    userId: USER_ID,
+    title: 'Analysis',
+    content: 'text extracted from cells',
+    contentType: 'notebook',
+    notebookContent: '{"cells":[]}',
+  });
+  const markdownNote = () => ({
+    _id: 'markdown-note',
+    userId: USER_ID,
+    title: 'Plain note',
+    content: 'markdown body',
+    contentType: 'markdown',
+    tags: ['one'],
+  });
+
+  /** Emulates a MongoDB exclusion projection over the fixture notes. */
+  const omitFields = (notes, projection = {}) => {
+    const excluded = Object.entries(projection)
+      .filter(([, include]) => include === 0)
+      .map(([field]) => field);
+    return notes.map((note) =>
+      Object.fromEntries(
+        Object.entries(note).filter(([field]) => !excluded.includes(field))
+      )
+    );
+  };
+
+  const mockExport = (notes) => {
+    const sort = jest.fn();
+    Note.find.mockImplementation((filter, projection) => ({
+      sort: (spec) => {
+        sort(spec);
+        return Promise.resolve(omitFields(notes, projection));
+      },
+    }));
+    return sort;
+  };
+
+  test('exports every note without the raw notebook JSON', async () => {
+    const sort = mockExport([notebookNote(), markdownNote()]);
+
+    const result = await service.getAllMyNotes(USER_ID);
+
+    expect(Note.find).toHaveBeenCalledWith(
+      { userId: USER_ID },
+      { notebookContent: 0 }
+    );
+    expect(sort).toHaveBeenCalledWith({ createdAt: -1 });
+    expect(result).toHaveLength(2);
+    expect(result[0]).not.toHaveProperty('notebookContent');
+    expect(result[0]).toMatchObject({
+      contentType: 'notebook',
+      content: 'text extracted from cells',
+      title: 'Analysis',
+    });
+  });
+
+  test('leaves markdown notes untouched', async () => {
+    mockExport([markdownNote()]);
+
+    const [note] = await service.getAllMyNotes(USER_ID);
+
+    expect(note).toEqual(markdownNote());
   });
 });
 

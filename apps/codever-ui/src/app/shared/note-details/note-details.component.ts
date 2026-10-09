@@ -233,6 +233,44 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Saves the note's original .ipynb file.
+   *
+   * `notebookContent` stores the uploaded notebook JSON verbatim, so writing it
+   * back out as a blob round-trips the exact file the user stored. The template
+   * only offers the action when that source is present, and never in list or
+   * summary renders.
+   */
+  downloadNotebook(note: Note): void {
+    if (!note?.notebookContent) {
+      return;
+    }
+
+    const blob = new Blob([note.notebookContent], {
+      type: 'application/x-ipynb+json',
+    });
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = blobUrl;
+    link.download = this.notebookFilename(note);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    // Revoke on the next tick so the download has started in every browser.
+    setTimeout(() => window.URL.revokeObjectURL(blobUrl));
+  }
+
+  /** `<note title>.ipynb`, stripped of characters that are unsafe in filenames. */
+  private notebookFilename(note: Note): string {
+    const safeTitle = (note.title || '')
+      .replace(/[\\/:*?"<>|]+/g, '-')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    return `${safeTitle || 'notebook'}.ipynb`;
+  }
+
   addToPinned(note: Note) {
     this.userDataPinnedStore.addToPinned(note);
   }

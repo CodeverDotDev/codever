@@ -98,6 +98,15 @@
                 }
               </span>
             }
+            @if (note.contentType === 'notebook' && note.notebookContent && !partOfList) {
+              <span
+                class="note-action-btn"
+                title="Download original notebook (.ipynb)"
+                (click)="downloadNotebook(note)"
+                >
+                <i class="fas fa-file-download fa-lg"></i>
+              </span>
+            }
             <span class="note-action-btn" title="Toggle Fullscreen" (click)="toggleFullScreen(noteEntry)">
               @if (!isFullScreen) {
                 <i class="fas fa-expand fa-lg"></i>

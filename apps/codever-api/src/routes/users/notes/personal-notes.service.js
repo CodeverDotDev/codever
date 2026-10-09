@@ -49,9 +49,14 @@ let getLatestNotes = async (userId, page, limit) => {
   return notes;
 };
 
-/* GET last created snippets of the user */
+/* GET last created notes of the user.
+   The raw notebook JSON is deliberately left out of the export: one notebook
+   can reach several megabytes, and contentType plus the extracted content
+   already keep a notebook note identifiable and searchable in the export. */
 let getAllMyNotes = async (userId) => {
-  const notes = await Note.find({ userId: userId }).sort({ createdAt: -1 });
+  const notes = await Note.find({ userId: userId }, { notebookContent: 0 }).sort(
+    { createdAt: -1 }
+  );
 
   return notes;
 };

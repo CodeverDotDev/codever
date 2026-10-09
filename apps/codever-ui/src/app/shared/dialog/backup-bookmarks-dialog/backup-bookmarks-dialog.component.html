@@ -1,5 +1,13 @@
 <h2 mat-dialog-title>Download personal {{ backupType }}</h2>
 
+@if (backupType === 'notes') {
+  <p class="small text-body-secondary mb-0 notebook-export-notice">
+    Jupyter notebook notes are included without their raw
+    <code>.ipynb</code> content. Download an individual notebook from its
+    details page to get the original file.
+  </p>
+}
+
 <hr />
 
 <mat-dialog-actions class="app-dialog-actions">

@@ -1,3 +1,11 @@
 .app-dialog-actions {
   margin-bottom: 0.1rem;
 }
+
+/**
+ * Aligns the notebook notice text with the Material dialog title, which pads
+ * itself by 24px horizontally (`.mat-mdc-dialog-title`).
+ */
+.notebook-export-notice {
+  padding: 0 24px;
+}
