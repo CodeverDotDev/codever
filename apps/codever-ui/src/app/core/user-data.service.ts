@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { UserData } from './model/user-data';
+import { PinnedEntry } from './model/user-data';
 import { Bookmark } from './model/bookmark';
 import { UserDataResource } from './model/user-data-resource.type';
 import { shareReplay } from 'rxjs/operators';
@@ -66,11 +67,14 @@ export class UserDataService {
       .pipe(shareReplay(1));
   }
 
-  updateUserDataPinned(userId: string, pinned: string[]): Observable<UserData> {
+  updateUserDataPinned(
+    userId: string,
+    pinned: PinnedEntry[]
+  ): Observable<UserData> {
     return this.httpClient
       .patch(
         `${this.usersApiBaseUrl}/${userId}/pinned`,
-        { pinnedBookmarkIds: pinned },
+        { pinned: pinned },
         { headers: this.headers }
       )
       .pipe(shareReplay(1));
@@ -119,7 +123,7 @@ export class UserDataService {
     userId: string,
     history: string[],
     readLater: string[],
-    pinned: string[]
+    pinned: PinnedEntry[]
   ): Observable<UserData> {
     const request = {
       history: history,

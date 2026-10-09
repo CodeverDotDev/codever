@@ -39,11 +39,17 @@ Batch classification with bulk `$in` queries across all users (build an `id → 
 
 ## 6. Frontend models and services
 
-- [ ] 6.1 Add a `PinnedEntry` interface and change `UserData.pinned` to `PinnedEntry[]` in `apps/codever-ui/src/app/core/model/user-data.ts`.
+- [x] 6.1 Add a `PinnedEntry` interface and change `UserData.pinned` to `PinnedEntry[]` in `apps/codever-ui/src/app/core/model/user-data.ts`.
 Verify with `npm run build` from `apps/codever-ui` (type check).
-- [ ] 6.2 Extend `UserDataResource` to `Bookmark | Note | Collection` in `apps/codever-ui/src/app/core/model/user-data-resource.type.ts`.
-Verify with `npm run build`.
-- [ ] 6.3 Update `updateUserDataPinned` in `apps/codever-ui/src/app/core/user-data.service.ts` to send typed entries.
+- [x] 6.2 Extend `UserDataResource` to `Bookmark | Note | PinnedCollection` (add a light `PinnedCollection`
+type in `apps/codever-ui/src/app/core/model/collection.ts`) in `apps/codever-ui/src/app/core/model/user-data-resource.type.ts`,
+and make the shared filter pipes collection-aware (`apps/codever-ui/src/app/shared/pipe/resource-filter.pipe.ts`,
+`apps/codever-ui/src/app/shared/pipe/resource-title-filter.pipe.ts`). Verify with `npm run build`.
+
+> Scope note: the original task said `Collection`; a light `PinnedCollection` (`type: 'collection'`, no
+> `items`) is used instead so the union is discriminable on `type`, and the two filter pipes needed
+> collection-aware handling as a direct consequence of adding collections to `UserDataResource`.
+- [x] 6.3 Update `updateUserDataPinned` in `apps/codever-ui/src/app/core/user-data.service.ts` to send typed entries.
 Verify with `npm run build`.
 
 ## 7. Frontend stores
