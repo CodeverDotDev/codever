@@ -87,7 +87,7 @@
           </div>
           <div style="display: flex">
             @if (
-              !(userData$ | async)?.pinned?.includes(bookmark._id)) {
+              !isPinned(userData$ | async, bookmark)) {
               <span
                 class="clock-wrapper"
                 title="Pin bookmark"

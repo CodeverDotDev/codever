@@ -54,11 +54,19 @@ Verify with `npm run build`.
 
 ## 7. Frontend stores
 
-- [ ] 7.1 Update `UserDataStore` pinned mutations (`addToUserDataPinned$`, `removeFromUserDataPinned$`, `reorderUserDataPinned$`, `removeFromStoresAtDeletion`)
+- [x] 7.1 Update `UserDataStore` pinned mutations (`addToUserDataPinned$`, `removeFromUserDataPinned$`, `reorderUserDataPinned$`, `removeFromStoresAtDeletion`)
 in `apps/codever-ui/src/app/core/user/userdata.store.ts` to operate on typed entries. Verify with existing Jasmine specs for the store,
 updated to typed entries.
-- [ ] 7.2 Update `UserDataPinnedStore` in `apps/codever-ui/src/app/core/user/userdata.pinned.store.ts` to pass typed entries
+
+> Verified with `npm run test:onpush` (pinned spec passes; only a pre-existing, unrelated collapse
+> failure remains, confirmed at commit `f396982e`). `reorderUserDataPinned$` now takes
+> `UserDataResource[]` instead of id strings.
+- [x] 7.2 Update `UserDataPinnedStore` in `apps/codever-ui/src/app/core/user/userdata.pinned.store.ts` to pass typed entries
 and expose collection entries in the resolved list. Verify with `npm test` from `apps/codever-ui`.
+
+> `reorderPinnedBookmarks` now passes `UserDataResource[]` to the store (typed entries derive there);
+> collection entries already flow through `_pinned` from the typed GET response. Note: the default
+> `npm test` is broken repo-wide; the targeted `test:onpush` target was used instead.
 
 ## 8. Sidebar quick access
 
@@ -88,8 +96,12 @@ and confirming it appears and navigates.
 toggling typed pinned entries. Verify by pinning/unpinning a collection from the list and confirming the sidebar updates.
 - [ ] 11.2 Add pin/unpin actions to the collection detail header in `apps/codever-ui/src/app/my-collections/collection-detail/collection-detail.component.{ts,html}`.
 Verify by pinning/unpinning from the detail page and confirming the sidebar updates.
-- [ ] 11.3 Update the two `.pinned?.includes(...)` membership checks in `bookmark-list-element.component.html`
+- [x] 11.3 Update the two `.pinned?.includes(...)` membership checks in `bookmark-list-element.component.html`
 and `note-details.component.html` to match typed entries. Verify with `npm run build` and by confirming the pin/unpin icon still toggles correctly on bookmarks and notes.
+
+> Pulled forward into section 7 (agreed) because the `test:onpush` pinned spec depends on it.
+> Replaced both checks with typed-entry `isPinned(userData, resource)` helpers; the pinned spec now
+> passes. (`npm run build` becomes green once 8.1/10.1 land.)
 
 ## 12. End-to-end verification
 

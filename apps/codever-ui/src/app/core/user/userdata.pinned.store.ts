@@ -58,8 +58,9 @@ export class UserDataPinnedStore {
    */
   reorderPinnedBookmarks(reorderedResources: UserDataResource[]) {
     this._pinned.next(reorderedResources);
-    const reorderedIds = reorderedResources.map((resource) => resource._id);
-    this.userDataStore.reorderUserDataPinned$(reorderedIds).subscribe();
+    this.userDataStore
+      .reorderUserDataPinned$(reorderedResources)
+      .subscribe();
   }
 
   addToPinned(resource: UserDataResource) {

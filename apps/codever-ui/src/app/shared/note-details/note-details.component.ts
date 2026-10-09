@@ -271,6 +271,13 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     return `${safeTitle || 'notebook'}.ipynb`;
   }
 
+  /** Whether the note is part of the user's typed pinned entries. */
+  isPinned(userData: UserData | null, note: Note): boolean {
+    return (userData?.pinned || []).some(
+      (entry) => entry.type === 'note' && entry.id === note._id
+    );
+  }
+
   addToPinned(note: Note) {
     this.userDataPinnedStore.addToPinned(note);
   }
