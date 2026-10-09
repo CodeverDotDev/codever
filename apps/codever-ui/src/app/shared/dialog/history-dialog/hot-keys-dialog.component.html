@@ -58,6 +58,24 @@
             <i class="far fa-calendar-alt"></i>
             {{ userDataResource.updatedAt | date : 'yyyy-MM-dd' }}
           </h6>
+          } @else if (isCollection(userDataResource)) {
+          <h5 class="card-title">
+            <i class="fa fa-folder fa-xs me-2 anthracite-gray"></i>
+            <a
+              [routerLink]="collectionDetailsLink(userDataResource)"
+              [mat-dialog-close]="true"
+              [innerHTML]="
+                userDataResource.name
+                  | slice : 0 : 100
+                  | highlightHtml : filterText
+              "
+            >
+              {{ 'see innerhtml' }}
+            </a>
+          </h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary url-under-title">
+            Collection
+          </h6>
           } @else {
           <h5 class="card-title">
             <a
@@ -104,8 +122,13 @@
       </mat-expansion-panel-header>
       }
       <ng-template matExpansionPanelContent>
+        <!-- COLLECTION content -->
+        @if (isCollection(userDataResource)) {
+        <div class="text-body-secondary ps-3 pb-2">
+          Collection - open it to see its bookmarks and notes.
+        </div>
         <!-- NOTE content -->
-        @if (isNote(userDataResource)) {
+        } @else if (isNote(userDataResource)) {
         <app-note-content [note]="userDataResource" [partOfList]="true" [showMoreText]="filteredCount === 1" />
         } @else {
         <app-bookmark-text

@@ -1,0 +1,27 @@
+.dialog-title {
+  padding: 1rem 1rem 0;
+}
+
+.has-search {
+  position: relative;
+
+  .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    text-align: center;
+    pointer-events: none;
+    color: #adb5bd;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+  }
+
+  .form-control {
+    padding-left: 2.375rem;
+  }
+}
+
+mat-dialog-content {
+  min-width: 20rem;
+}

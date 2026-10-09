@@ -1,0 +1,67 @@
+<div class="dialog-title">
+  <h2 mat-dialog-title>
+    <i class="fas fa-folder-open me-2"></i>{{ collectionName }}
+  </h2>
+  <div class="mb-3 has-search">
+    <span class="fas fa-filter form-control-feedback"></span>
+    <input
+      type="search"
+      [(ngModel)]="filterText"
+      (ngModelChange)="applyFilter()"
+      class="form-control"
+      placeholder="Filter by name, title or tag"
+      aria-label="Filter collection contents"
+    />
+  </div>
+</div>
+
+<mat-dialog-content class="mt-2 pt-1 pb-1">
+  @if (loading) {
+    <div class="text-body-secondary">Loading…</div>
+  } @else if (!hasAnyMatch) {
+    <div class="text-body-secondary">
+      No bookmarks or notes match this filter.
+    </div>
+  } @else {
+    @if (filteredBookmarks.length > 0) {
+      <h5 class="mb-2">
+        <i class="fas fa-bookmark me-1"></i> Bookmarks ({{
+          filteredBookmarks.length
+        }})
+      </h5>
+      <ul class="list-unstyled mb-4">
+        @for (bookmark of filteredBookmarks; track bookmark) {
+          <li class="mb-1">
+            <a
+              [href]="bookmark.location"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ bookmark.name }}
+            </a>
+          </li>
+        }
+      </ul>
+    }
+    @if (filteredNotes.length > 0) {
+      <h5 class="mb-2">
+        <i class="fas fa-sticky-note me-1"></i> Notes ({{ filteredNotes.length }})
+      </h5>
+      <ul class="list-unstyled mb-0">
+        @for (note of filteredNotes; track note) {
+          <li class="mb-1">{{ note.title }}</li>
+        }
+      </ul>
+    }
+  }
+</mat-dialog-content>
+
+<div class="d-flex justify-content-end p-2">
+  <button
+    type="button"
+    class="btn btn-sm btn-outline-secondary"
+    [mat-dialog-close]="true"
+  >
+    Close
+  </button>
+</div>

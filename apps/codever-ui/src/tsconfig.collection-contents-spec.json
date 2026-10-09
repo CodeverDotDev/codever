@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/collection-contents-spec",
+    "types": ["jasmine", "node"]
+  },
+  "include": [
+    "app/shared/dialog/collection-contents-dialog/*.spec.ts",
+    "**/*.d.ts"
+  ]
+}

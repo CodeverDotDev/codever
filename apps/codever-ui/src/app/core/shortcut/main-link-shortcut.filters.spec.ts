@@ -56,7 +56,9 @@ describe('QuickAccessResourcesComponent Enter handler', () => {
       {} as never,
       {} as never,
       {} as never,
-      shortcut
+      shortcut,
+      { getUserId$: () => ({ subscribe: () => undefined }) } as never,
+      {} as never
     );
   });
   const setResources = (resources: UserDataResource[], filter = '') => {

@@ -3,6 +3,17 @@
   margin-left: 0.25rem;
 }
 
+// Icon on a pinned collection entry that opens its contents dialog.
+.collection-contents-icon {
+  font-size: 0.7rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+
+  &:hover {
+    color: #0d47a1;
+  }
+}
+
 .quick-access-section-title {
   text-decoration: none;
 
@@ -103,6 +114,13 @@
   @extend .last-search-border;
   background: #c8e6c9;
   color: #1b5e20;
+}
+
+// Pinned collection entry (folder) in the quick-access list.
+.collection-last-search {
+  @extend .last-search-border;
+  background: #e3f2fd;
+  color: #0d47a1;
 }
 
 // Quick-access entries are links styled as badges. Bootstrap 5 underlines

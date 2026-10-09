@@ -70,25 +70,47 @@ and expose collection entries in the resolved list. Verify with `npm test` from 
 
 ## 8. Sidebar quick access
 
-- [ ] 8.1 Add `isCollection()` and collection navigation in `apps/codever-ui/src/app/left-navigation-menu/quick-access-resources.component.ts`,
+- [x] 8.1 Add `isCollection()` and collection navigation in `apps/codever-ui/src/app/left-navigation-menu/quick-access-resources.component.ts`,
 rendering a folder badge and navigating to `/my-collections/:id` on click. Verify by manual observation: a pinned collection appears in the sidebar and clicking navigates to its detail page.
-- [ ] 8.2 Add the dialog icon per collection entry in `quick-access-resources.component.html` that opens the collection contents dialog,
+
+> Added `isCollection`/`isBookmark`/`isPublicResource`/`isPrivateResource` helpers, collection label/tooltip,
+> and the `/my-collections/:id` navigation. Browser/manual check deferred to 12.3.
+- [x] 8.2 Add the dialog icon per collection entry in `quick-access-resources.component.html` that opens the collection contents dialog,
 stopping event propagation so it doesn't navigate. Verify by manual observation: clicking the icon opens the dialog, not the page.
-- [ ] 8.3 Update `quick-access-resources.component.scss` for the folder badge and dialog icon styling. Verify by visual check.
+
+> Added a folder-open icon calling `openCollectionContents($event, resource)`, which stops propagation
+> and opens the dialog. Browser/manual check deferred to 12.3.
+- [x] 8.3 Update `quick-access-resources.component.scss` for the folder badge and dialog icon styling. Verify by visual check.
+
+> Added `.collection-last-search` badge and `.collection-contents-icon` styles. Visual check deferred to 12.3.
 
 ## 9. Collection contents dialog
 
-- [ ] 9.1 Create `apps/codever-ui/src/app/shared/dialog/collection-contents-dialog/collection-contents-dialog.component.{ts,html,scss}`
+- [x] 9.1 Create `apps/codever-ui/src/app/shared/dialog/collection-contents-dialog/collection-contents-dialog.component.{ts,html,scss}`
 that loads the collection via `PersonalCollectionsService.getCollectionById`, shows bookmarks and notes, and filters by name/title/tag.
 Verify with a Jasmine spec for the filter logic and by opening it manually.
-- [ ] 9.2 Register the dialog component in `apps/codever-ui/src/app/shared/shared.module.ts` (and any declarations/entry components if required).
+
+> Pulled forward into section 8 (hard prerequisite for 8.2). Filter logic extracted to
+> `collection-contents.filter.ts`; Jasmine spec added and run via a new `test:collection-contents`
+> karma target (4/4 pass). Manual dialog check deferred to 12.3.
+- [x] 9.2 Register the dialog component in `apps/codever-ui/src/app/shared/shared.module.ts` (and any declarations/entry components if required).
 Verify with `ng lint` and `npm run build`.
+
+> Obsolete: the app has no `shared.module.ts` - all components are standalone, so `MatDialog.open()`
+> needs no module registration. `npm run build` type-checks the new dialog; `ng lint` has no target
+> in this repo (see repo notes).
 
 ## 10. Ctrl+P popup
 
-- [ ] 10.1 Render collection entries in `apps/codever-ui/src/app/shared/dialog/history-dialog/hot-keys-dialog.component.{ts,html}`
+- [x] 10.1 Render collection entries in `apps/codever-ui/src/app/shared/dialog/history-dialog/hot-keys-dialog.component.{ts,html}`
 as links to `/my-collections/:id` within the same filtered list. Verify by opening Ctrl+P with a pinned collection present
 and confirming it appears and navigates.
+
+> Added `isCollection()` + `collectionDetailsLink()` and a collection header/content branch (folder icon,
+> routerLink to `/my-collections/:id`, `mat-dialog-close`). The popup shortcut is Ctrl/Cmd+Shift+P (not Ctrl+P).
+> `main-link-shortcut.filters.spec.ts` updated for the new sidebar constructor deps. Manual check deferred to 12.3.
+> `npm run build` is now GREEN; `test:main-link-shortcut` 29/29, `test-shortcuts` 8/8, `test:collection-contents` 4/4,
+> `test:onpush` 15/16 (1 pre-existing failure).
 
 ## 11. Pin/unpin entry points
 

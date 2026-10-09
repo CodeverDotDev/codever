@@ -165,6 +165,21 @@
             "scripts": []
           }
         },
+        "test-collection-contents": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "src/tsconfig.collection-contents-spec.json",
+            "karmaConfig": "karma.onpush.conf.cjs",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "include": [
+              "src/app/shared/dialog/collection-contents-dialog/*.spec.ts"
+            ],
+            "watch": false,
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          }
+        },
         "test": {
           "builder": "@angular/build:karma",
           "options": {
