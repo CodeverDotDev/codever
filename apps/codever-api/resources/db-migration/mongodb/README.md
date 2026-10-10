@@ -61,6 +61,28 @@ Run all commands from the **repository root**. Make sure MongoDB is up:
 docker compose up -d mongo
 ```
 
+### 1. Back up the database
+
+> Take a backup **before** running any migration, even locally. Some migrations
+> rewrite documents (the `pinned` migration does); a backup is the only way
+> back if the result is not what you expected.
+
+```bash
+docker exec codever-mongo \
+  mongodump \
+  --username mongoadmin \
+  --password secret \
+  --authenticationDatabase admin \
+  --db dev-bookmarks \
+  --archive --gzip \
+  > "codever-dev-bookmarks-$(date +%Y%m%d-%H%M%S).archive.gz"
+```
+
+Restore it with `mongorestore --drop --archive=<file> --gzip` (same
+credentials/db) if you need to roll back to the pre-migration state.
+
+### 2. Run the migration
+
 Run a migration by piping it into `mongosh` inside the container. Example with the
 text-index weight migration:
 
@@ -94,8 +116,8 @@ Run these on the production host from the directory that contains
 
 ### 1. Back up the database
 
-> Do this **first**, before changing anything. A backup is the only way back if a
-> migration rewrites documents (the `pinned` migration does); a text-index
+> Do this **first**, before changing anything. A backup is the only way back if
+> a migration rewrites documents (the `pinned` migration does); a text-index
 > migration only drops and recreates recognized indexes.
 
 First resolve the production database name:
