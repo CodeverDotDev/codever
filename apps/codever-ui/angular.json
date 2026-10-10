@@ -180,6 +180,19 @@
             "scripts": []
           }
         },
+        "test-my-collections": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "src/tsconfig.my-collections-spec.json",
+            "karmaConfig": "karma.onpush.conf.cjs",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "include": ["src/app/my-collections/**/*.spec.ts"],
+            "watch": false,
+            "assets": [],
+            "styles": [],
+            "scripts": []
+          }
+        },
         "test": {
           "builder": "@angular/build:karma",
           "options": {
