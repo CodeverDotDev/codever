@@ -4,6 +4,10 @@
 // and `notes` collections; ids that match neither (already-deleted resources) are
 // dropped.
 //
+// NOTE: legacy `pinned` ids were persisted as strings (the old schema was `[String]`),
+// while bookmark/note `_id`s are ObjectIds, so the script casts 24-hex strings to
+// ObjectId for the lookup and for the stored typed entries.
+//
 // Run against the intended database with mongosh, e.g.:
 //   docker exec -i codever-mongo \
 //     mongosh --quiet --username mongoadmin --password secret \
@@ -27,6 +31,39 @@ function isTypedEntry(entry) {
   return entry !== null && typeof entry === 'object' && entry.type && entry.id;
 }
 
+/**
+ * Resolve the ObjectId constructor in both runtimes: the `mongosh` shell exposes
+ * it as a global, while the Node.js driver exposes it via `require('mongodb')`
+ * (used by the offline verification harness).
+ */
+function resolveObjectId() {
+  if (typeof ObjectId !== 'undefined' && ObjectId) {
+    return ObjectId;
+  }
+  try {
+    return require('mongodb').ObjectId;
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * Legacy `pinned` ids were persisted as strings (the old schema was `[String]`),
+ * but bookmark/note `_id`s are ObjectIds. Cast 24-hex strings so lookups and the
+ * stored typed entries use ObjectIds; leave anything else untouched.
+ */
+function toObjectIdIfPossible(value) {
+  const ObjectIdCtor = resolveObjectId();
+  if (
+    ObjectIdCtor &&
+    typeof value === 'string' &&
+    /^[0-9a-fA-F]{24}$/.test(value)
+  ) {
+    return new ObjectIdCtor(value);
+  }
+  return value;
+}
+
 async function migratePinnedToTypedEntries(database, rollback = false) {
   const users = getCollection(database, 'users');
   const usersWithPinned = await users
@@ -37,7 +74,7 @@ async function migratePinnedToTypedEntries(database, rollback = false) {
     let flattenedUsers = 0;
     for (const user of usersWithPinned) {
       const flattened = (user.pinned || []).map((entry) =>
-        isTypedEntry(entry) ? entry.id : entry
+        isTypedEntry(entry) ? String(entry.id) : entry
       );
       await users.updateOne({ _id: user._id }, { $set: { pinned: flattened } });
       flattenedUsers++;
@@ -60,12 +97,23 @@ async function migratePinnedToTypedEntries(database, rollback = false) {
     return { usersProcessed: 0, entriesClassified: 0, entriesDropped: 0 };
   }
 
+  const queryIds = [];
+  for (const bareId of bareIds) {
+    queryIds.push(bareId);
+    const objectId = toObjectIdIfPossible(bareId);
+    // Compare by identity: a hex string casts to a distinct ObjectId instance,
+    // while an already-ObjectId value (or a non-hex string) is returned as-is.
+    if (objectId !== bareId) {
+      queryIds.push(objectId);
+    }
+  }
+
   const [bookmarks, notes] = await Promise.all([
     getCollection(database, 'bookmarks')
-      .find({ _id: { $in: bareIds } }, { projection: { _id: 1 } })
+      .find({ _id: { $in: queryIds } }, { projection: { _id: 1 } })
       .toArray(),
     getCollection(database, 'notes')
-      .find({ _id: { $in: bareIds } }, { projection: { _id: 1 } })
+      .find({ _id: { $in: queryIds } }, { projection: { _id: 1 } })
       .toArray(),
   ]);
 
@@ -79,7 +127,7 @@ async function migratePinnedToTypedEntries(database, rollback = false) {
   }
 
   let entriesClassified = 0;
-  let entriesDropped = 0;
+  const droppedIds = [];
 
   for (const user of usersWithPinned) {
     const typedEntries = [];
@@ -90,10 +138,11 @@ async function migratePinnedToTypedEntries(database, rollback = false) {
       }
       const type = idToType.get(String(entry));
       if (type) {
-        typedEntries.push({ type, id: entry });
+        // Store the id as an ObjectId to match the typed-entry schema.
+        typedEntries.push({ type, id: toObjectIdIfPossible(entry) });
         entriesClassified++;
       } else {
-        entriesDropped++;
+        droppedIds.push(String(entry));
       }
     }
     await users.updateOne({ _id: user._id }, { $set: { pinned: typedEntries } });
@@ -102,7 +151,8 @@ async function migratePinnedToTypedEntries(database, rollback = false) {
   return {
     usersProcessed: usersWithPinned.length,
     entriesClassified,
-    entriesDropped,
+    entriesDropped: droppedIds.length,
+    droppedIds,
   };
 }
 
@@ -116,7 +166,7 @@ if (typeof db !== 'undefined') {
   migratePinnedToTypedEntries(db, rollback)
     .then((result) => {
       print('migrate-pinned-to-typed-entries completed successfully');
-      printjson(result); // { usersProcessed, entriesClassified, entriesDropped }
+      printjson(result); // { usersProcessed, entriesClassified, entriesDropped, droppedIds }
     })
     .catch((error) => {
       print('migrate-pinned-to-typed-entries FAILED');

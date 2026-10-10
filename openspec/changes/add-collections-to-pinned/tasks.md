@@ -35,6 +35,12 @@ to `$pull` the collection from users' pinned entries (`{ id: collectionId, type:
 
 - [x] 5.1 Add a timestamped script `apps/codever-api/resources/db-migration/mongodb/<ts>_migrate-pinned-to-typed-entries.js`
 that classifies each bare pinned id as bookmark or note (dropping orphans) and writes typed entries.
+> Later fix (post-incident): legacy `pinned` ids are **strings** (old schema was `[String]`) while
+> bookmark/note `_id`s are ObjectIds, so the lookup must cast 24-hex strings to ObjectId (and store
+> ObjectIds). Now driver-agnostic (`mongosh` global or `require('mongodb')`), reports `droppedIds`,
+> and prints a success/FAILED line. Regression-verified with legacy string ids (classify + orphan drop
+> + idempotent). NOTE: an earlier buggy run against local `dev-bookmarks` dropped the (unbacked-up)
+> pinned lists, so they must be re-pinned; no backup or browser cache existed to restore them.
 Batch classification with bulk `$in` queries across all users (build an `id → type` map, then rewrite each user), not per-user lookups. Verify by running it against a local seeded DB and confirming pinned lists render afterward.
 
 ## 6. Frontend models and services
