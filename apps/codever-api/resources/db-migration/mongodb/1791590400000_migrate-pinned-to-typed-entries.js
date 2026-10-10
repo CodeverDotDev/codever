@@ -110,9 +110,17 @@ if (typeof module !== 'undefined') {
   module.exports = { migratePinnedToTypedEntries };
 }
 if (typeof db !== 'undefined') {
-  migratePinnedToTypedEntries(
-    db,
+  const rollback =
     typeof PINNED_TYPED_ENTRIES_ROLLBACK !== 'undefined' &&
-      PINNED_TYPED_ENTRIES_ROLLBACK
-  );
+    PINNED_TYPED_ENTRIES_ROLLBACK;
+  migratePinnedToTypedEntries(db, rollback)
+    .then((result) => {
+      print('migrate-pinned-to-typed-entries completed successfully');
+      printjson(result); // { usersProcessed, entriesClassified, entriesDropped }
+    })
+    .catch((error) => {
+      print('migrate-pinned-to-typed-entries FAILED');
+      printjson(error);
+      throw error;
+    });
 }
