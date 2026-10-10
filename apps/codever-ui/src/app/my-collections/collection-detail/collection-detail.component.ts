@@ -7,7 +7,7 @@ import { Bookmark } from '../../core/model/bookmark';
 import { Note } from '../../core/model/note';
 import { MainLinkShortcutService } from '../../core/shortcut/main-link-shortcut.service';
 import { FormsModule } from '@angular/forms';
-import { NgClass } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Observable } from 'rxjs';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
@@ -17,7 +17,7 @@ import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
   selector: 'app-collection-detail',
   templateUrl: './collection-detail.component.html',
   styleUrls: ['./collection-detail.component.scss'],
-  imports: [FormsModule, NgClass, RouterLink],
+  imports: [FormsModule, NgClass, RouterLink, AsyncPipe],
 })
 export class CollectionDetailComponent implements OnInit {
   collection: Collection;

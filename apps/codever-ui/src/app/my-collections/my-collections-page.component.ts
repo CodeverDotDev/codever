@@ -6,7 +6,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CollectionFormDialogComponent } from './collection-form-dialog/collection-form-dialog.component';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
@@ -16,7 +16,7 @@ import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
   selector: 'app-my-collections-page',
   templateUrl: './my-collections-page.component.html',
   styleUrls: ['./my-collections-page.component.scss'],
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, AsyncPipe],
 })
 export class MyCollectionsPageComponent implements OnInit {
   collections: Collection[] = [];
