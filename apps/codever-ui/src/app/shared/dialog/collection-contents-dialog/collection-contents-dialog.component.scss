@@ -4,6 +4,10 @@
 
 .has-search {
   position: relative;
+  // Override the global `.has-search { width: 30% }` (styles.scss), which is
+  // meant for the inline filter boxes, so the dialog filter is full width.
+  width: 100%;
+  margin-right: 0;
 
   .form-control-feedback {
     position: absolute;
@@ -17,11 +21,34 @@
     line-height: 2.375rem;
   }
 
+  // The filter spans the full dialog width so it stays usable on small screens.
   .form-control {
+    width: 100%;
     padding-left: 2.375rem;
   }
 }
 
 mat-dialog-content {
-  min-width: 20rem;
+  width: 100%;
+}
+
+// Tighter gutters on narrow screens so the filter keeps as much width as possible.
+@media (max-width: 480px) {
+  .dialog-title {
+    padding: 0.75rem 0.75rem 0;
+  }
+}
+
+// "(i) details" link next to a bookmark entry.
+.details-link {
+  margin-left: 0.35rem;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+// Icon signalling that an external bookmark link opens in a new tab.
+// Same sizing as the other `external-link-hint` usages in the app.
+.external-link-hint {
+  font-size: 0.6rem;
+  margin-left: 0.2rem;
 }

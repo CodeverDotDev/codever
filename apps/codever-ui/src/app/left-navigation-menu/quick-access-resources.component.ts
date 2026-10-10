@@ -188,7 +188,8 @@ export class QuickAccessResourcesComponent {
     event.stopPropagation();
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
-    dialogConfig.width = '640px';
+    dialogConfig.width = '800px';
+    dialogConfig.maxWidth = '92vw';
     dialogConfig.maxHeight = '80vh';
     dialogConfig.data = {
       userId: this.userId,

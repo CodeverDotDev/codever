@@ -6,6 +6,7 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Bookmark } from '../../../core/model/bookmark';
 import { Note } from '../../../core/model/note';
 import { PersonalCollectionsService } from '../../../core/personal-collections.service';
@@ -26,7 +27,13 @@ export interface CollectionContentsDialogData {
   selector: 'app-collection-contents-dialog',
   templateUrl: './collection-contents-dialog.component.html',
   styleUrls: ['./collection-contents-dialog.component.scss'],
-  imports: [MatDialogTitle, MatDialogContent, MatDialogClose, FormsModule],
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogClose,
+    FormsModule,
+    RouterLink,
+  ],
 })
 export class CollectionContentsDialogComponent implements OnInit {
   collectionName: string;
@@ -77,5 +84,18 @@ export class CollectionContentsDialogComponent implements OnInit {
 
   get hasAnyMatch(): boolean {
     return this.filteredBookmarks.length > 0 || this.filteredNotes.length > 0;
+  }
+
+  /** Details route for a bookmark, matching the collection page's entry. */
+  bookmarkDetailsLink(bookmark: Bookmark): (string | undefined)[] {
+    const base =
+      bookmark.userId === this.userId ? '/my-bookmarks' : '/bookmarks';
+    return [base, bookmark._id, 'details'];
+  }
+
+  /** Details route for a note, matching the collection page's entry. */
+  noteDetailsLink(note: Note): (string | undefined)[] {
+    const base = note.userId === this.userId ? '/my-notes' : '/notes';
+    return [base, note._id, 'details'];
   }
 }

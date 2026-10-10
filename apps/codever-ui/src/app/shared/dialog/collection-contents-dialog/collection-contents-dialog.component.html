@@ -38,6 +38,17 @@
               rel="noopener noreferrer"
             >
               {{ bookmark.name }}
+              <sup class="external-link-hint" aria-hidden="true">
+                <i class="fas fa-external-link-alt"></i>
+              </sup>
+            </a>
+            <a
+              class="details-link"
+              [routerLink]="bookmarkDetailsLink(bookmark)"
+              [mat-dialog-close]="true"
+              title="View bookmark details"
+            >
+              <i class="fas fa-info-circle"></i> details
             </a>
           </li>
         }
@@ -49,7 +60,15 @@
       </h5>
       <ul class="list-unstyled mb-0">
         @for (note of filteredNotes; track note) {
-          <li class="mb-1">{{ note.title }}</li>
+          <li class="mb-1">
+            <a
+              [routerLink]="noteDetailsLink(note)"
+              [mat-dialog-close]="true"
+              title="View note details"
+            >
+              {{ note.title }}
+            </a>
+          </li>
         }
       </ul>
     }
