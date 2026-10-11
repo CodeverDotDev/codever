@@ -11,5 +11,8 @@ documentation/keycloak-upgrade/*
 .env
 apps/codever-api/env.json
 
+# local database backups (mongodump archives hold private user data)
+/backups/
+
 # migration docs live in the private codever-migrate-to-docker repo (nested)
 documentation/requirements/migrate-to-docker/

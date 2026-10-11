@@ -6,6 +6,7 @@ schema-less data, rename fields, and (most commonly) create or re-weight the Mon
 
 - [Script styles](#script-styles)
 - [Prerequisites](#prerequisites)
+- [Where backups live](#where-backups-live)
 - [Running locally (Docker)](#running-locally-docker)
 - [Running in production (Docker)](#running-in-production-docker)
 - [Verifying the result](#verifying-the-result)
@@ -53,6 +54,40 @@ database. The connection values differ by environment:
 > The application itself connects as the less-privileged `bookmarks` user
 > (see `src/app.js`), but index changes are run as the root `mongoadmin` user.
 
+## Where backups live
+
+Every backup command in this document writes the archive to a `backups/mongodb/`
+folder, locally and in production:
+
+| Environment | Folder | Why there |
+|---|---|---|
+| **Local** | `backups/mongodb/` at the repository root | `mongodump` is run from the repository root, so the path stays short; the folder is git-ignored and never committed |
+| **Production** | `/data/codever/backups/mongodb/` on the host | Sits beside the other `/data/codever/*` host mounts (`docker-compose.prod.yml`); the deploy checkout stays clean |
+
+```text
+codever/                         # repository root (local)
+├── apps/
+├── backups/                     # git-ignored
+│   └── mongodb/
+│       └── codever-dev-bookmarks-20261011-083000.archive.gz
+├── docker-compose.yml
+└── package.json
+
+/data/codever/                   # production host
+├── mongodb/                     # Mongo data dir (bind mount)
+└── backups/
+    └── mongodb/
+        └── codever-dev-bookmarks-20261011-083000.archive.gz
+```
+
+The archive name already ends with a timestamp
+(`codever-<db>-YYYYMMDD-HHMMSS.archive.gz`), so repeated runs never overwrite
+an earlier backup.
+
+> **A backup on the same disk is not a real backup.** Copy the archive off the
+> host (or into object storage) before running a destructive migration, and
+> prune old archives once the migration has been verified.
+
 ## Running locally (Docker)
 
 Run all commands from the **repository root**. Make sure MongoDB is up:
@@ -68,6 +103,8 @@ docker compose up -d mongo
 > back if the result is not what you expected.
 
 ```bash
+mkdir -p backups/mongodb
+
 docker exec codever-mongo \
   mongodump \
   --username mongoadmin \
@@ -75,11 +112,28 @@ docker exec codever-mongo \
   --authenticationDatabase admin \
   --db dev-bookmarks \
   --archive --gzip \
-  > "codever-dev-bookmarks-$(date +%Y%m%d-%H%M%S).archive.gz"
+  > "backups/mongodb/codever-dev-bookmarks-$(date +%Y%m%d-%H%M%S).archive.gz"
 ```
 
 Restore it with `mongorestore --drop --archive=<file> --gzip` (same
-credentials/db) if you need to roll back to the pre-migration state.
+credentials/db) if you need to roll back to the pre-migration state, for
+example:
+
+```bash
+docker exec -i codever-mongo \
+  mongorestore \
+  --username mongoadmin \
+  --password secret \
+  --authenticationDatabase admin \
+  --db dev-bookmarks \
+  --drop --gzip \
+  --archive \
+  < backups/mongodb/codever-dev-bookmarks-20261011-083000.archive.gz
+```
+
+The archive is piped in over stdin, exactly like the migration scripts. The
+container only mounts the Mongo data directory, so it cannot read a host path
+such as `backups/mongodb/...` directly.
 
 ### 2. Run the migration
 
@@ -136,9 +190,12 @@ read -rsp 'Mongo admin password: ' MONGO_ADMIN_PASSWORD
 printf '\n'
 ```
 
-Then take the backup:
+Then take the backup (into `/data/codever/backups/mongodb/`, outside the deploy
+checkout — see [Where backups live](#where-backups-live)):
 
 ```bash
+mkdir -p /data/codever/backups/mongodb
+
 docker exec codever-mongo \
   mongodump \
   --username mongoadmin \
@@ -146,7 +203,7 @@ docker exec codever-mongo \
   --authenticationDatabase admin \
   --db "$MONGODB_DB" \
   --archive --gzip \
-  > "codever-${MONGODB_DB}-$(date +%Y%m%d-%H%M%S).archive.gz"
+  > "/data/codever/backups/mongodb/codever-${MONGODB_DB}-$(date +%Y%m%d-%H%M%S).archive.gz"
 ```
 
 ### 2. Run the migration
