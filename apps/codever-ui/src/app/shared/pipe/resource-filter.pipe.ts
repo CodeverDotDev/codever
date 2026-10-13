@@ -11,10 +11,10 @@ export class ResourceFilterPipe implements PipeTransform {
    * Filters a list of resources (bookmarks and/or notes), keeping those that
    * contain every term in the filter text.
    */
-  transform(
-    resources: UserDataResource[],
+  transform<T extends UserDataResource>(
+    resources: T[],
     filterText: string
-  ): UserDataResource[] {
+  ): T[] {
     if (!resources) {
       return [];
     }

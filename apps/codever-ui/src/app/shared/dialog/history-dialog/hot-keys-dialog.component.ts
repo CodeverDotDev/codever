@@ -10,6 +10,7 @@ import { Observable, Subscription } from 'rxjs';
 import { UserDataResource } from '../../../core/model/user-data-resource.type';
 import { Bookmark } from '../../../core/model/bookmark';
 import { Note } from '../../../core/model/note';
+import { PinnedCollection } from '../../../core/model/collection';
 import { AddToHistoryService } from '../../../core/user/add-to-history.service';
 import {
   BookmarkShortcutContext,
@@ -93,11 +94,11 @@ export class HotKeysDialogComponent implements OnInit, OnDestroy {
     this.mainLinkShortcutService.unregister(this.shortcutContext);
   }
 
-  isNote(resource: UserDataResource): boolean {
+  isNote(resource: UserDataResource): resource is Note {
     return resource.type === 'note';
   }
 
-  isCollection(resource: UserDataResource): boolean {
+  isCollection(resource: UserDataResource): resource is PinnedCollection {
     return resource.type === 'collection';
   }
 

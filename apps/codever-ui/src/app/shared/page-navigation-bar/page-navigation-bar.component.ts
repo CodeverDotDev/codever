@@ -9,8 +9,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Bookmark } from '../../core/model/bookmark';
-import { Note } from '../../core/model/note';
+import { UserDataResource } from '../../core/model/user-data-resource.type';
 import { PaginationAction } from '../../core/model/pagination-action';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
@@ -35,7 +34,7 @@ export class PageNavigationBarComponent
   callerPagination: string;
 
   @Input()
-  results: (Bookmark | Note)[];
+  results: UserDataResource[];
 
   showPaginationDelayExpired = false;
   private visibilityTimer: ReturnType<typeof setTimeout>;

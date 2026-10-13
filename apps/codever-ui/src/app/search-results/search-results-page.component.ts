@@ -54,10 +54,10 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
   userIsLoggedIn = false;
 
   searchResults$: Observable<(Bookmark | Note)[]>;
-  private userData$: Observable<UserData>;
+  protected userData$: Observable<UserData>;
 
   selectedTabIndex = 1; // default search in public
-  private searchInclude: string;
+  protected searchInclude: string;
 
   typeFilter$ = new BehaviorSubject<'all' | 'bookmark' | 'note'>('all');
   filteredSearchResults$: Observable<(Bookmark | Note)[]>;
@@ -73,7 +73,7 @@ export class SearchResultsPageComponent implements OnInit, OnDestroy {
     private personalSearchService: PersonalSearchService,
     private publicSearchService: PublicSearchService,
     private keycloakService: AuthenticationService,
-    private keycloakServiceWrapper: KeycloakServiceWrapper,
+    protected keycloakServiceWrapper: KeycloakServiceWrapper,
     private userInfoStore: UserInfoStore,
     private userDataStore: UserDataStore,
     private searchNotificationService: SearchNotificationService,

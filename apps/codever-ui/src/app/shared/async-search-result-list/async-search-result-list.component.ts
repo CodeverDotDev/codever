@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../tag-following-base-component/tag-following-base.component';
 import { Note } from '../../core/model/note';
+import { UserDataResource } from '../../core/model/user-data-resource.type';
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import {
   BookmarkShortcutContext,
@@ -48,7 +49,7 @@ export class AsyncSearchResultListComponent
   declare verifyForWatchedTag: Observable<string>; // used to avoid looking in watchedTags for other tags in the html template
 
   @Input()
-  searchResults$: Observable<(Bookmark | Note)[]>;
+  searchResults$: Observable<UserDataResource[]>;
 
   @Input()
   queryText: string; // used for highlighting search terms in the bookmarks list
@@ -82,7 +83,7 @@ export class AsyncSearchResultListComponent
   private readonly resourceFilter = new ResourceFilterPipe();
 
   /** Snapshot of the current results, used to resolve shortcuts. */
-  private searchResultsSnapshot: (Bookmark | Note)[] = [];
+  private searchResultsSnapshot: UserDataResource[] = [];
   private searchResultsSubscription: Subscription;
 
   private readonly shortcutContext: BookmarkShortcutContext = {
@@ -118,15 +119,15 @@ export class AsyncSearchResultListComponent
     this.mainLinkShortcutService.unregister(this.shortcutContext);
   }
 
-  isBookmark(searchResult: Bookmark | Note) {
+  isBookmark(searchResult: UserDataResource): searchResult is Bookmark {
     return searchResult.type === 'bookmark';
   }
 
-  isNote(searchResult: Bookmark | Note) {
+  isNote(searchResult: UserDataResource): searchResult is Note {
     return searchResult.type === 'note';
   }
 
-  of(searchResult: Bookmark | Note) {
+  of<T>(searchResult: T): Observable<T> {
     return of(searchResult);
   }
 

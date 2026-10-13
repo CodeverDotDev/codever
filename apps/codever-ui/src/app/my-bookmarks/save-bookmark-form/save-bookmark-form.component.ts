@@ -190,7 +190,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   constructor(
     private publicBookmarkPresentDialog: MatDialog,
     private formBuilder: UntypedFormBuilder,
-    private keycloakService: AuthenticationService,
+    protected keycloakService: AuthenticationService,
     private publicBookmarksService: PublicBookmarksService,
     private userDataService: UserDataService,
     private markdownService: MarkdownService,

@@ -25,7 +25,7 @@ export class UserProfileComponent implements OnInit {
 
   profileImageChangedStatus = 'init';
   uploadImageLabel = 'Choose file (max size 1MB)';
-  private imageFileIsTooBig = false;
+  protected imageFileIsTooBig = false;
   selectedFileSrc: string;
 
   formSetup = false;

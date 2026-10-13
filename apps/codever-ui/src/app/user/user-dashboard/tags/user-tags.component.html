@@ -201,7 +201,7 @@
               </ng-template>
               <a
                 *ngIf="
-                  (verifyForWatchedTag | async) === tag &&
+                  (verifyForWatchedTag | async) === tag.name &&
                     userData.ignoredTags.includes(tag.name);
                   else ignoreTagOptionC
                 "
@@ -284,7 +284,7 @@
               </ng-template>
               <a
                 *ngIf="
-                  (verifyForWatchedTag | async) === tag &&
+                  (verifyForWatchedTag | async) === tag.name &&
                     userData.ignoredTags.includes(tag.name);
                   else ignoreTagOptionD
                 "

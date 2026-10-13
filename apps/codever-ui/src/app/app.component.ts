@@ -357,7 +357,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @HostListener('window:keydown.control.shift.p', ['$event'])
   @HostListener('window:keydown.meta.shift.p', ['$event'])
-  showPinned(event: KeyboardEvent) {
+  showPinned(event: Event) {
     event.preventDefault();
 
     if (!this.userIsLoggedIn) {
@@ -415,7 +415,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @HostListener('window:keydown.control.shift.h', ['$event'])
   @HostListener('window:keydown.meta.shift.h', ['$event'])
-  showHistory(event: KeyboardEvent) {
+  showHistory(event: Event) {
     event.preventDefault();
 
     if (!this.userIsLoggedIn) {

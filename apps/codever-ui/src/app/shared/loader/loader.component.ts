@@ -3,7 +3,10 @@ import { Observable, of, Subscription } from 'rxjs';
 import { LoaderService } from '../../core/loader/loader.service';
 import { debounceTime } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import {
+  MatProgressSpinner,
+  type ProgressSpinnerMode,
+} from '@angular/material/progress-spinner';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -14,7 +17,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class LoaderComponent implements OnInit, OnDestroy {
   color = 'primary';
-  mode = 'indeterminate';
+  mode: ProgressSpinnerMode = 'indeterminate';
   isLoading: Observable<boolean>;
 
   private subscription: Subscription;

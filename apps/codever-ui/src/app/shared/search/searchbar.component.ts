@@ -351,7 +351,7 @@ export class SearchbarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('window:keydown.control.k', ['$event'])
   @HostListener('window:keydown.meta.k', ['$event'])
-  focusOnSearchBoxHotKey(event: KeyboardEvent) {
+  focusOnSearchBoxHotKey(event: Event) {
     event.preventDefault();
     this.searchBoxField.nativeElement.focus();
     this.searchBoxField.nativeElement.select();
