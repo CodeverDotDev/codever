@@ -153,9 +153,10 @@ Verify by observing green outputs.
 > files reports 0 new errors (remaining errors/warnings are pre-existing in unrelated code);
 > `test:onpush` 16 (1 pre-existing FAILED), `test:main-link-shortcut` 29/29, `test-shortcuts` 8/8,
 > `test:collection-contents` 4/4.
-- [ ] 12.3 Manually verify the full flow locally: pin a collection, see it in the sidebar and Ctrl+P popup mixed with bookmarks/notes,
+- [x] 12.3 Manually verify the full flow locally: pin a collection, see it in the sidebar and Ctrl+P popup mixed with bookmarks/notes,
 navigate to it, open the contents dialog, filter it, and unpin it. Verify by reproducing each scenario from the spec.
 
-> BLOCKED for automation: the running dev UI's elements never satisfy Playwright's actionability stability
-> check (likely a continuous animation/HMR), so the scripted browser flow cannot complete. Needs a manual pass;
-> the popup shortcut is Ctrl/Cmd+Shift+P (not Ctrl+P).
+> Verified manually by the author (2026-10-13): the full flow was reproduced, including
+> the mixed pinned list in the Ctrl/Cmd+Shift+P popup. The scripted equivalent stays
+> blocked: the running dev UI's elements never satisfy Playwright's actionability
+> stability check (likely a continuous animation/HMR).
