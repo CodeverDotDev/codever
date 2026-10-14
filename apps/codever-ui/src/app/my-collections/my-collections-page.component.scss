@@ -20,9 +20,15 @@
 }
 
 .filter-wrapper {
-  position: relative;
   width: 400px;
   max-width: 100%;
+}
+
+// `.filter-clear-btn` is absolutely positioned at `top: 50%`, so it must anchor
+// to a box that wraps ONLY the input. With the Enter hint inside the same box
+// the wrapper grows taller and the button's centre slips below the input.
+.filter-input-wrapper {
+  position: relative;
 }
 
 .filter-clear-btn {

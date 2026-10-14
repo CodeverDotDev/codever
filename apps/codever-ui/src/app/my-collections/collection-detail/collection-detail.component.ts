@@ -5,7 +5,13 @@ import { PersonalCollectionsService } from '../../core/personal-collections.serv
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { Bookmark } from '../../core/model/bookmark';
 import { Note } from '../../core/model/note';
+import { UserDataResource } from '../../core/model/user-data-resource.type';
 import { MainLinkShortcutService } from '../../core/shortcut/main-link-shortcut.service';
+import {
+  ActivatableType,
+  activationHintLabel,
+  singleVisibleResource,
+} from '../../core/shortcut/resource-activation.util';
 import { FormsModule } from '@angular/forms';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -29,6 +35,9 @@ export class CollectionDetailComponent implements OnInit {
   unifiedFilter = '';
   loading = true;
   userData$: Observable<UserData>;
+
+  /** Resource types the focused collection filter can activate with Enter. */
+  readonly activatableTypes: ActivatableType[] = ['bookmark', 'note'];
 
   constructor(
     private route: ActivatedRoute,
@@ -93,19 +102,36 @@ export class CollectionDetailComponent implements OnInit {
   }
 
   /**
-   * Enter in the focused filter opens the only visible bookmark's main link in
-   * a new tab. No-op unless exactly one bookmark and no notes are visible.
+   * Enter in the focused filter activates the only visible result: a bookmark's
+   * main link in a new tab, or a note's details page in the current tab. Both
+   * lists are summed, so one bookmark plus one note is ambiguous and does
+   * nothing.
    */
   onFilterEnter(): void {
-    if (
-      this.filteredBookmarks.length === 1 &&
-      this.filteredNotes.length === 0
-    ) {
-      this.mainLinkShortcutService.openBookmarkInNewTab(
-        this.filteredBookmarks[0],
-        true
+    const resource = this.singleActivatableResource;
+    if (resource) {
+      this.mainLinkShortcutService.activateResource(
+        resource,
+        true,
+        this.activatableTypes
       );
     }
+  }
+
+  /** Hint label for the focused filter, or null when Enter would do nothing. */
+  get filterActivationHint(): ActivatableType | null {
+    return activationHintLabel(this.singleActivatableResource);
+  }
+
+  /**
+   * The single activatable result across both filtered lists, or null when zero
+   * or several entries remain.
+   */
+  private get singleActivatableResource(): UserDataResource | null {
+    return singleVisibleResource(
+      [...this.filteredBookmarks, ...this.filteredNotes],
+      this.activatableTypes
+    );
   }
 
   removeItem(resourceId: string): void {

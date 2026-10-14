@@ -17,6 +17,11 @@ import {
   MAIN_LINK_SHORTCUT_PRIORITY,
   MainLinkShortcutService,
 } from '../../../core/shortcut/main-link-shortcut.service';
+import {
+  ActivatableType,
+  activationHintLabel,
+  singleVisibleResource,
+} from '../../../core/shortcut/resource-activation.util';
 import { FormsModule } from '@angular/forms';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import {
@@ -60,6 +65,13 @@ export class HotKeysDialogComponent implements OnInit, OnDestroy {
   userDataResources$: Observable<UserDataResource[]>;
   title: string;
   filterText: '';
+
+  /** Resource types the focused dialog filter can activate with Enter. */
+  readonly activatableTypes: ActivatableType[] = [
+    'bookmark',
+    'note',
+    'collection',
+  ];
 
   /** Snapshot of the dialog's resources, kept for shortcut resolution. */
   private resources: UserDataResource[] = [];
@@ -113,28 +125,49 @@ export class HotKeysDialogComponent implements OnInit, OnDestroy {
     return `/my-collections/${resource._id}`;
   }
 
-  /** Enter in the focused filter opens the only visible bookmark. */
+  /**
+   * Enter in the focused filter activates the only visible result: a bookmark's
+   * main link in a new tab, or a note's or collection's details page in the
+   * current tab. In-app navigation closes the dialog, matching the existing
+   * note and collection links in this dialog.
+   */
   onFilterEnter(): void {
-    const bookmark = this.singleVisibleBookmark();
-    if (bookmark) {
-      this.mainLinkShortcutService.openBookmarkInNewTab(bookmark, true);
+    const resource = this.singleActivatableResource;
+    if (!resource) {
+      return;
+    }
+    const outcome = this.mainLinkShortcutService.activateResource(
+      resource,
+      true,
+      this.activatableTypes
+    );
+    if (outcome === 'navigated') {
+      this.dialogRef.close();
     }
   }
 
-  /** True when the current filter narrows the list to exactly one bookmark. */
-  get hasSingleVisibleBookmark(): boolean {
-    return this.singleVisibleBookmark() !== null;
+  /** Hint label for the focused filter, or null when Enter would do nothing. */
+  get filterActivationHint(): ActivatableType | null {
+    return activationHintLabel(this.singleActivatableResource);
+  }
+
+  /** The single activatable resource after filtering, or null. */
+  private get singleActivatableResource(): UserDataResource | null {
+    return singleVisibleResource(
+      this.filteredResources(),
+      this.activatableTypes
+    );
   }
 
   /** The single visible bookmark after filtering, or null when ambiguous. */
   private singleVisibleBookmark(): Bookmark | null {
-    const filtered = this.titleFilter.transform(
-      this.resources,
-      this.filterText
-    );
-    if (filtered.length === 1 && filtered[0].type === 'bookmark') {
-      return filtered[0] as Bookmark;
-    }
-    return null;
+    return singleVisibleResource(this.filteredResources(), [
+      'bookmark',
+    ]) as Bookmark | null;
+  }
+
+  /** The dialog's resources after the title filter. */
+  private filteredResources(): UserDataResource[] {
+    return this.titleFilter.transform(this.resources, this.filterText);
   }
 }

@@ -8,10 +8,17 @@
       type="search"
       [(ngModel)]="filterText"
       (ngModelChange)="applyFilter()"
+      (keydown.enter)="onFilterEnter()"
       class="form-control"
       placeholder="Filter by name, title or tag"
       aria-label="Filter collection contents"
     />
+    @if (filterActivationHint) {
+      <small class="text-body-secondary filter-shortcut-hint">
+        Press <kbd>Enter</kbd> to open the only matching
+        {{ filterActivationHint }}
+      </small>
+    }
   </div>
 </div>
 

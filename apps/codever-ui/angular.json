@@ -157,7 +157,8 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "include": [
               "src/app/core/shortcut/main-link-shortcut.service.spec.ts",
-              "src/app/core/shortcut/main-link-shortcut.filters.spec.ts"
+              "src/app/core/shortcut/main-link-shortcut.filters.spec.ts",
+              "src/app/core/shortcut/resource-activation.util.spec.ts"
             ],
             "watch": false,
             "assets": [],

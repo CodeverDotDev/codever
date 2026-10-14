@@ -2,19 +2,22 @@ import { Bookmark } from '../model/bookmark';
 import { Note } from '../model/note';
 import { UserDataResource } from '../model/user-data-resource.type';
 import { MainLinkShortcutService } from './main-link-shortcut.service';
+import { ActivatableType } from './resource-activation.util';
 import { QuickAccessResourcesComponent } from '../../left-navigation-menu/quick-access-resources.component';
 import { HotKeysDialogComponent } from '../../shared/dialog/history-dialog/hot-keys-dialog.component';
 import { MyCollectionsPageComponent } from '../../my-collections/my-collections-page.component';
 import { CollectionDetailComponent } from '../../my-collections/collection-detail/collection-detail.component';
-import { Collection } from '../model/collection';
+import { Collection, PinnedCollection } from '../model/collection';
 import { AsyncSearchResultListComponent } from '../../shared/async-search-result-list/async-search-result-list.component';
 import { AuthenticationService } from '../auth/authentication.service';
 import { ActivatedRoute } from '@angular/router';
 /**
- * Focused tests for the per-filter `Enter` handlers that open the only visible
- * bookmark (or, for My Collections, navigate to the only visible collection).
- * Each component is constructed directly with mocks so no template or DI setup
- * is required - the handlers under test are pure logic over local state.
+ * Focused tests for the per-filter `Enter` handlers. Every surface now resolves
+ * its single visible result and delegates to
+ * `MainLinkShortcutService.activateResource`, so these tests assert the
+ * delegation (which resource, whether the user is logged in, and which types
+ * the surface declares) rather than the per-type routing, which is covered by
+ * `main-link-shortcut.service.spec.ts`.
  */
 const bookmark = (id: string, name = `Bookmark ${id}`): Bookmark =>
   ({
@@ -31,21 +34,32 @@ const note = (id: string, title = `Note ${id}`): Note =>
     type: 'note',
     tags: [],
   } as Note);
+const collection = (id: string, displayName = `Collection ${id}`): Collection =>
+  ({ _id: id, name: displayName } as Collection);
+const pinnedCollection = (
+  id: string,
+  displayName = `Collection ${id}`
+): PinnedCollection =>
+  ({ _id: id, name: displayName, type: 'collection' } as PinnedCollection);
+const ALL_TYPES: ActivatableType[] = ['bookmark', 'note', 'collection'];
 function shortcutSpy(): jasmine.SpyObj<MainLinkShortcutService> {
   return jasmine.createSpyObj<MainLinkShortcutService>(
     'MainLinkShortcutService',
-    ['openBookmarkInNewTab', 'register', 'unregister']
+    ['openBookmarkInNewTab', 'activateResource', 'register', 'unregister']
   );
 }
-/** Assert the shortcut opened exactly the expected bookmark, logged in. */
-function expectOpenedBookmark(
+/** Assert the shortcut was asked to activate exactly the expected resource. */
+function expectActivated(
   shortcut: jasmine.SpyObj<MainLinkShortcutService>,
-  id: string
+  id: string,
+  userIsLoggedIn: boolean,
+  types: ActivatableType[]
 ): void {
-  expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(1);
-  const args = shortcut.openBookmarkInNewTab.calls.mostRecent().args;
-  expect((args[0] as Bookmark)._id).toBe(id);
-  expect(args[1]).toBeTrue();
+  expect(shortcut.activateResource.calls.count()).toBe(1);
+  const args = shortcut.activateResource.calls.mostRecent().args;
+  expect((args[0] as UserDataResource)._id).toBe(id);
+  expect(args[1]).toBe(userIsLoggedIn);
+  expect(args[2]).toEqual(types);
 }
 describe('QuickAccessResourcesComponent Enter handler', () => {
   let component: QuickAccessResourcesComponent;
@@ -65,94 +79,136 @@ describe('QuickAccessResourcesComponent Enter handler', () => {
     component.quickAccessResources = resources;
     component.pinnedFilterText = filter;
   };
-  it('opens the only visible bookmark', () => {
+  it('activates the only visible bookmark', () => {
     setResources([bookmark('a'), bookmark('b')], 'Bookmark a');
     component.onFilterEnter();
-    expectOpenedBookmark(shortcut, 'a');
+    expectActivated(shortcut, 'a', true, ALL_TYPES);
   });
-  it('does nothing when multiple bookmarks are visible', () => {
-    setResources([bookmark('a'), bookmark('b')], '');
-    component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
-  });
-  it('does nothing when no bookmark matches', () => {
-    setResources([bookmark('a')], 'zzz');
-    component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
-  });
-  it('does nothing when the only match is a note', () => {
+  it('activates the only visible note', () => {
     setResources([note('n'), bookmark('a')], 'Note n');
     component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
+    expectActivated(shortcut, 'n', true, ALL_TYPES);
+  });
+  it('activates the only visible collection', () => {
+    setResources([pinnedCollection('c'), bookmark('a')], 'Collection c');
+    component.onFilterEnter();
+    expectActivated(shortcut, 'c', true, ALL_TYPES);
+  });
+  it('does nothing when multiple entries are visible', () => {
+    setResources([bookmark('a'), bookmark('b')], '');
+    component.onFilterEnter();
+    expect(shortcut.activateResource.calls.count()).toBe(0);
+  });
+  it('does nothing when nothing matches the filter', () => {
+    setResources([bookmark('a')], 'zzz');
+    component.onFilterEnter();
+    expect(shortcut.activateResource.calls.count()).toBe(0);
+  });
+  it('reports the hint per type and nothing when ambiguous', () => {
+    setResources([bookmark('a')], '');
+    expect(component.filterActivationHint).toBe('bookmark');
+    setResources([note('n')], '');
+    expect(component.filterActivationHint).toBe('note');
+    setResources([pinnedCollection('c')], '');
+    expect(component.filterActivationHint).toBe('collection');
+    setResources([bookmark('a'), note('n')], '');
+    expect(component.filterActivationHint).toBeNull();
   });
 });
 describe('HotKeysDialogComponent Enter handler', () => {
   let component: HotKeysDialogComponent;
   let shortcut: jasmine.SpyObj<MainLinkShortcutService>;
+  let dialogRef: jasmine.SpyObj<{ close: () => void }>;
   beforeEach(() => {
     shortcut = shortcutSpy();
-    component = new HotKeysDialogComponent({} as never, {} as never, shortcut, {
-      resources$: { subscribe: () => ({ unsubscribe: () => undefined }) },
-      title: 'Pinned',
-    } as never);
+    dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    component = new HotKeysDialogComponent(
+      dialogRef as never,
+      {} as never,
+      shortcut,
+      {
+        resources$: { subscribe: () => ({ unsubscribe: () => undefined }) },
+        title: 'Pinned',
+      } as never
+    );
   });
   const setResources = (resources: UserDataResource[], filter = '') => {
     (component as unknown as { resources: UserDataResource[] }).resources =
       resources;
     component.filterText = filter as '';
   };
-  it('opens the only visible bookmark (always logged in)', () => {
+  it('activates the only visible bookmark (always logged in)', () => {
     setResources([bookmark('a'), note('n')], 'Bookmark a');
     component.onFilterEnter();
-    expectOpenedBookmark(shortcut, 'a');
+    expectActivated(shortcut, 'a', true, ALL_TYPES);
   });
-  it('does nothing when the only visible resource is a note', () => {
+  it('activates the only visible note and closes the dialog', () => {
+    shortcut.activateResource.and.returnValue('navigated');
     setResources([note('n'), bookmark('a')], 'Note n');
     component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
+    expectActivated(shortcut, 'n', true, ALL_TYPES);
+    expect(dialogRef.close.calls.count()).toBe(1);
+  });
+  it('activates the only visible collection and closes the dialog', () => {
+    shortcut.activateResource.and.returnValue('navigated');
+    setResources([pinnedCollection('c'), bookmark('a')], 'Collection c');
+    component.onFilterEnter();
+    expectActivated(shortcut, 'c', true, ALL_TYPES);
+    expect(dialogRef.close.calls.count()).toBe(1);
+  });
+  it('keeps the dialog open when a bookmark opens in a new tab', () => {
+    shortcut.activateResource.and.returnValue('new-tab');
+    setResources([bookmark('a'), note('n')], 'Bookmark a');
+    component.onFilterEnter();
+    expect(dialogRef.close.calls.count()).toBe(0);
   });
   it('does nothing for zero or multiple results', () => {
     setResources([bookmark('a'), bookmark('b')], '');
     component.onFilterEnter();
     setResources([bookmark('a')], 'zzz');
     component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
+    expect(shortcut.activateResource.calls.count()).toBe(0);
+  });
+  it('names the target type in the hint', () => {
+    setResources([note('n')], '');
+    expect(component.filterActivationHint).toBe('note');
+    setResources([bookmark('a'), bookmark('b')], '');
+    expect(component.filterActivationHint).toBeNull();
   });
 });
 describe('MyCollectionsPageComponent Enter handler', () => {
   let component: MyCollectionsPageComponent;
-  let router: jasmine.SpyObj<{ navigate: (c: unknown[]) => void }>;
-  const collection = (id: string): Collection =>
-    ({ _id: id, name: `Collection ${id}` } as Collection);
+  let shortcut: jasmine.SpyObj<MainLinkShortcutService>;
   beforeEach(() => {
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    shortcut = shortcutSpy();
     component = new MyCollectionsPageComponent(
       {} as never,
       {} as never,
       {} as never,
-      router as never,
+      {} as never,
       { getUserData$: () => undefined } as never,
-      {} as never
+      {} as never,
+      shortcut
     );
   });
-  it('opens the only visible collection in the current tab', () => {
+  it('activates the only visible collection', () => {
     component.collections = [collection('x')];
     component.onFilterEnter();
-    expect(router.navigate.calls.count()).toBe(1);
-    expect(router.navigate.calls.mostRecent().args[0]).toEqual([
-      '/my-collections',
-      'x',
-    ]);
+    expectActivated(shortcut, 'x', false, ['collection']);
+    const activated = shortcut.activateResource.calls.mostRecent()
+      .args[0] as PinnedCollection;
+    expect(activated.name).toBe('Collection x');
+    expect(activated.type).toBe('collection');
   });
   it('does nothing for zero collections', () => {
     component.collections = [];
     component.onFilterEnter();
-    expect(router.navigate.calls.count()).toBe(0);
+    expect(shortcut.activateResource.calls.count()).toBe(0);
   });
   it('does nothing for multiple collections', () => {
     component.collections = [collection('x'), collection('y')];
     component.onFilterEnter();
-    expect(router.navigate.calls.count()).toBe(0);
+    expect(shortcut.activateResource.calls.count()).toBe(0);
   });
 });
 describe('CollectionDetailComponent Enter handler', () => {
@@ -170,17 +226,23 @@ describe('CollectionDetailComponent Enter handler', () => {
       {} as never
     );
   });
-  it('opens the only visible bookmark when no notes are visible', () => {
+  it('activates the only visible bookmark when no notes are visible', () => {
     component.filteredBookmarks = [bookmark('a')];
     component.filteredNotes = [];
     component.onFilterEnter();
-    expectOpenedBookmark(shortcut, 'a');
+    expectActivated(shortcut, 'a', true, ['bookmark', 'note']);
   });
-  it('does nothing when a note is also visible', () => {
+  it('activates the only visible note', () => {
+    component.filteredBookmarks = [];
+    component.filteredNotes = [note('n')];
+    component.onFilterEnter();
+    expectActivated(shortcut, 'n', true, ['bookmark', 'note']);
+  });
+  it('does nothing when a bookmark and a note are both visible', () => {
     component.filteredBookmarks = [bookmark('a')];
     component.filteredNotes = [note('n')];
     component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
+    expect(shortcut.activateResource.calls.count()).toBe(0);
   });
   it('does nothing for zero or multiple bookmarks', () => {
     component.filteredBookmarks = [];
@@ -188,7 +250,7 @@ describe('CollectionDetailComponent Enter handler', () => {
     component.onFilterEnter();
     component.filteredBookmarks = [bookmark('a'), bookmark('b')];
     component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
+    expect(shortcut.activateResource.calls.count()).toBe(0);
   });
 });
 describe('AsyncSearchResultListComponent Enter handler', () => {
@@ -222,21 +284,27 @@ describe('AsyncSearchResultListComponent Enter handler', () => {
     ).searchResultsSnapshot = results;
     component.filterText = filter;
   };
-  it('opens the only visible bookmark', () => {
+  it('activates the only visible bookmark (bookmark is the only declared type)', () => {
     setResults([bookmark('a'), note('n')], 'Bookmark a');
     component.onFilterEnter();
-    expectOpenedBookmark(shortcut, 'a');
+    expectActivated(shortcut, 'a', true, ['bookmark']);
   });
-  it('does nothing when the only match is a note', () => {
+  it('does nothing when the only match is a note, so the search page stays', () => {
     setResults([bookmark('a'), note('n')], 'Note n');
     component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
+    expect(shortcut.activateResource.calls.count()).toBe(0);
   });
   it('does nothing for zero or multiple results', () => {
     setResults([bookmark('a'), bookmark('b')], '');
     component.onFilterEnter();
     setResults([bookmark('a')], 'zzz');
     component.onFilterEnter();
-    expect(shortcut.openBookmarkInNewTab.calls.count()).toBe(0);
+    expect(shortcut.activateResource.calls.count()).toBe(0);
+  });
+  it('only hints for a bookmark and stays silent for a lone note', () => {
+    setResults([bookmark('a')], '');
+    expect(component.filterActivationHint).toBe('bookmark');
+    setResults([note('n')], '');
+    expect(component.filterActivationHint).toBeNull();
   });
 });

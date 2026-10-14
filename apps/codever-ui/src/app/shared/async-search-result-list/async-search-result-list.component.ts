@@ -22,6 +22,11 @@ import {
   MAIN_LINK_SHORTCUT_PRIORITY,
   MainLinkShortcutService,
 } from '../../core/shortcut/main-link-shortcut.service';
+import {
+  ActivatableType,
+  activationHintLabel,
+  singleVisibleResource,
+} from '../../core/shortcut/resource-activation.util';
 import { FormsModule } from '@angular/forms';
 import { BookmarkListElementComponent } from '../bookmark-list-element/bookmark-list-element.component';
 import { NoteDetailsComponent } from '../note-details/note-details.component';
@@ -78,6 +83,13 @@ export class AsyncSearchResultListComponent
   showFilterBox = true;
   filterText = '';
 
+  /**
+   * Search results activate bookmarks only. A matching note already renders its
+   * content inline and auto-expands when it is the sole result, so navigating
+   * away would leave a page that is already showing it.
+   */
+  readonly activatableTypes: ActivatableType[] = ['bookmark'];
+
   private readonly authenticationService: AuthenticationService;
   private readonly mainLinkShortcutService: MainLinkShortcutService;
   private readonly resourceFilter = new ResourceFilterPipe();
@@ -131,31 +143,34 @@ export class AsyncSearchResultListComponent
     return of(searchResult);
   }
 
-  /** Enter in the focused filter opens the only visible bookmark's main link. */
+  /**
+   * Enter in the focused filter activates the only visible bookmark. Notes are
+   * deliberately not activated here (see {@link activatableTypes}).
+   */
   onFilterEnter(): void {
     const bookmark = this.singleVisibleBookmark();
     if (bookmark) {
-      this.mainLinkShortcutService.openBookmarkInNewTab(
+      this.mainLinkShortcutService.activateResource(
         bookmark,
-        this.authenticationService.isLoggedIn()
+        this.authenticationService.isLoggedIn(),
+        this.activatableTypes
       );
     }
   }
 
   /** The single visible bookmark after filtering, or null when ambiguous. */
   private singleVisibleBookmark(): Bookmark | null {
-    const filtered = this.resourceFilter.transform(
-      this.searchResultsSnapshot,
-      this.filterText
-    );
-    if (filtered.length === 1 && filtered[0].type === 'bookmark') {
-      return filtered[0] as Bookmark;
-    }
-    return null;
+    return singleVisibleResource(
+      this.resourceFilter.transform(
+        this.searchResultsSnapshot,
+        this.filterText
+      ),
+      this.activatableTypes
+    ) as Bookmark | null;
   }
 
-  /** True when the current filter narrows the results to exactly one bookmark. */
-  get hasSingleFilteredBookmark(): boolean {
-    return this.singleVisibleBookmark() !== null;
+  /** Hint label for the focused filter, or null when Enter would do nothing. */
+  get filterActivationHint(): ActivatableType | null {
+    return activationHintLabel(this.singleVisibleBookmark());
   }
 }

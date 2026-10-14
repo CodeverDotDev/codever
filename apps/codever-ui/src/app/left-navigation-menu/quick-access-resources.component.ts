@@ -14,6 +14,11 @@ import {
 } from '@angular/cdk/drag-drop';
 import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
 import { MainLinkShortcutService } from '../core/shortcut/main-link-shortcut.service';
+import {
+  ActivatableType,
+  activationHintLabel,
+  singleVisibleResource,
+} from '../core/shortcut/resource-activation.util';
 import { FormsModule } from '@angular/forms';
 import { MatTooltip } from '@angular/material/tooltip';
 import { NgClass } from '@angular/common';
@@ -42,6 +47,13 @@ export class QuickAccessResourcesComponent {
   source: string;
 
   pinnedFilterText = '';
+
+  /** Resource types the focused Pinned filter can activate with Enter. */
+  readonly activatableTypes: ActivatableType[] = [
+    'bookmark',
+    'note',
+    'collection',
+  ];
 
   userId: string;
 
@@ -114,15 +126,22 @@ export class QuickAccessResourcesComponent {
   }
 
   /**
-   * True when the focused filter narrows the pinned list down to exactly one
-   * bookmark, i.e. when pressing Enter would actually open something.
+   * The single activatable entry in the filtered pinned list, or null when the
+   * filter leaves zero, several, or a non-activatable result.
    */
-  get hasSingleFilteredBookmark(): boolean {
-    if (!this.pinnedFilterText.trim()) {
-      return false;
-    }
-    const filtered = this.filteredPinnedResources;
-    return filtered.length === 1 && filtered[0].type === 'bookmark';
+  get singleFilteredResource(): UserDataResource | null {
+    return singleVisibleResource(
+      this.filteredPinnedResources,
+      this.activatableTypes
+    );
+  }
+
+  /**
+   * Hint label for the focused filter ("bookmark", "note", or "collection"),
+   * or null when pressing Enter would not activate anything.
+   */
+  get filterActivationHint(): ActivatableType | null {
+    return activationHintLabel(this.singleFilteredResource);
   }
 
   /** Tooltip: collection name, note title, or bookmark "name - location". */
@@ -203,15 +222,17 @@ export class QuickAccessResourcesComponent {
   }
 
   /**
-   * Enter in the focused Pinned filter opens the only visible bookmark's main
-   * link in a new tab. Does nothing for zero/multiple results or a single note.
+   * Enter in the focused Pinned filter activates the only visible result: a
+   * bookmark's main link in a new tab, or a note's or collection's details page
+   * in the current tab. Does nothing for zero or multiple results.
    */
   onFilterEnter(): void {
-    const filtered = this.filteredPinnedResources;
-    if (filtered.length === 1 && filtered[0].type === 'bookmark') {
-      this.mainLinkShortcutService.openBookmarkInNewTab(
-        filtered[0] as Bookmark,
-        true
+    const resource = this.singleFilteredResource;
+    if (resource) {
+      this.mainLinkShortcutService.activateResource(
+        resource,
+        true,
+        this.activatableTypes
       );
     }
   }

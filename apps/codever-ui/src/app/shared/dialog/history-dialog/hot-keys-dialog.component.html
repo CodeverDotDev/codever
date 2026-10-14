@@ -9,9 +9,10 @@
       class="form-control"
       placeholder="Filter by title"
     />
-    @if (hasSingleVisibleBookmark) {
+    @if (filterActivationHint) {
       <small class="text-body-secondary filter-shortcut-hint">
-        Press <kbd>Enter</kbd> to open the only matching bookmark
+        Press <kbd>Enter</kbd> to open the only matching
+        {{ filterActivationHint }}
       </small>
     }
   </div>

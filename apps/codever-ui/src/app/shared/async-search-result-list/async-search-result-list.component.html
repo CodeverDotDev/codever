@@ -13,9 +13,9 @@
           placeholder="Filter..."
           data-test="search-results-input-filter"
           />
-        @if (hasSingleFilteredBookmark) {
+        @if (filterActivationHint) {
           <small class="text-body-secondary d-block filter-shortcut-hint">
-            <kbd>Enter</kbd> opens the only matching bookmark
+            <kbd>Enter</kbd> opens the only matching {{ filterActivationHint }}
           </small>
         }
       </div>
@@ -44,7 +44,7 @@
         }
       </div>
     }
-    @if (isSearchResultsPage && hasSingleFilteredBookmark) {
+    @if (isSearchResultsPage && filterActivationHint) {
       <small class="text-body-secondary d-block mb-2 mt-2 text-center">
         Press <kbd>k</kbd> <kbd>k</kbd> to open this bookmark's main link in a
         new tab

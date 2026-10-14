@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Collection } from '../core/model/collection';
+import { Collection, toPinnedCollection } from '../core/model/collection';
 import { PersonalCollectionsService } from '../core/personal-collections.service';
 import { UserInfoStore } from '../core/user/user-info.store';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -11,6 +11,8 @@ import { Observable } from 'rxjs';
 import { UserData } from '../core/model/user-data';
 import { UserDataStore } from '../core/user/userdata.store';
 import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
+import { MainLinkShortcutService } from '../core/shortcut/main-link-shortcut.service';
+import { ActivatableType } from '../core/shortcut/resource-activation.util';
 
 @Component({
   selector: 'app-my-collections-page',
@@ -26,13 +28,17 @@ export class MyCollectionsPageComponent implements OnInit {
   loading = false;
   userData$: Observable<UserData>;
 
+  /** My Collections lists collections only, so `Enter` activates that type. */
+  readonly activatableTypes: ActivatableType[] = ['collection'];
+
   constructor(
     private personalCollectionsService: PersonalCollectionsService,
     private userInfoStore: UserInfoStore,
     private dialog: MatDialog,
     private router: Router,
     private userDataStore: UserDataStore,
-    private userDataPinnedStore: UserDataPinnedStore
+    private userDataPinnedStore: UserDataPinnedStore,
+    private mainLinkShortcutService: MainLinkShortcutService
   ) {
     this.userData$ = this.userDataStore.getUserData$();
   }
@@ -66,11 +72,15 @@ export class MyCollectionsPageComponent implements OnInit {
 
   /**
    * Enter in the focused filter opens the only visible collection in the
-   * current tab via the existing navigation. No-op for zero or many results.
+   * current tab through the shared activation path. No-op for zero or many.
    */
   onFilterEnter(): void {
     if (this.collections.length === 1) {
-      this.openCollection(this.collections[0]);
+      this.mainLinkShortcutService.activateResource(
+        toPinnedCollection(this.collections[0]),
+        false,
+        this.activatableTypes
+      );
     }
   }
 

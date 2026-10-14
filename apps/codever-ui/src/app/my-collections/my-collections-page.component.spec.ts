@@ -8,6 +8,7 @@ import { PersonalCollectionsService } from '../core/personal-collections.service
 import { UserInfoStore } from '../core/user/user-info.store';
 import { UserDataStore } from '../core/user/userdata.store';
 import { UserDataPinnedStore } from '../core/user/userdata.pinned.store';
+import { MainLinkShortcutService } from '../core/shortcut/main-link-shortcut.service';
 
 /**
  * Template smoke tests: rendering the component must not throw. This catches
@@ -54,6 +55,15 @@ describe('MyCollectionsPageComponent (template smoke)', () => {
           useValue: {
             addCollectionToPinned: () => undefined,
             removeCollectionFromPinned: () => undefined,
+          },
+        },
+        {
+          provide: MainLinkShortcutService,
+          useValue: {
+            activateResource: () => null,
+            openBookmarkInNewTab: () => undefined,
+            register: () => undefined,
+            unregister: () => undefined,
           },
         },
       ],

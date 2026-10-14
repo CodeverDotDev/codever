@@ -41,27 +41,30 @@
     <!-- Unified filter for both bookmarks and notes -->
     @if ((bookmarks.length + notes.length) > 3) {
       <div class="filter-wrapper mb-3">
-        <input
-          type="text"
-          class="form-control form-control-sm pe-4"
-          placeholder="Filter bookmarks and notes by name, title or tag…"
-          [(ngModel)]="unifiedFilter"
-          (ngModelChange)="applyFilter()"
-          (keydown.enter)="onFilterEnter()"
-          />
-        @if (unifiedFilter) {
-          <button
-            type="button"
-            class="btn btn-sm filter-clear-btn"
-            title="Clear filter"
-            (click)="unifiedFilter = ''; applyFilter()"
-            >
-            <i class="fas fa-times"></i>
-          </button>
-        }
-        @if (filteredBookmarks.length === 1 && filteredNotes.length === 0) {
+        <div class="filter-input-wrapper">
+          <input
+            type="text"
+            class="form-control form-control-sm pe-4"
+            placeholder="Filter bookmarks and notes by name, title or tag…"
+            [(ngModel)]="unifiedFilter"
+            (ngModelChange)="applyFilter()"
+            (keydown.enter)="onFilterEnter()"
+            />
+          @if (unifiedFilter) {
+            <button
+              type="button"
+              class="btn btn-sm filter-clear-btn"
+              title="Clear filter"
+              (click)="unifiedFilter = ''; applyFilter()"
+              >
+              <i class="fas fa-times"></i>
+            </button>
+          }
+        </div>
+        @if (filterActivationHint) {
           <small class="text-body-secondary d-block mt-1">
-            Press <kbd>Enter</kbd> to open the only matching bookmark
+            Press <kbd>Enter</kbd> to open the only matching
+            {{ filterActivationHint }}
           </small>
         }
       </div>

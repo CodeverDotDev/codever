@@ -7,24 +7,26 @@
   </div>
 
   <div class="filter-wrapper mb-3">
-    <input
-      type="text"
-      class="form-control form-control-sm pe-4"
-      placeholder="Filter collections by name..."
-      [(ngModel)]="filterText"
-      (ngModelChange)="onFilterChange()"
-      (keydown.enter)="onFilterEnter()"
-      />
-    @if (filterText) {
-      <button
-        type="button"
-        class="btn btn-sm filter-clear-btn"
-        title="Clear filter"
-        (click)="filterText = ''; onFilterChange()"
-        >
-        <i class="fas fa-times"></i>
-      </button>
-    }
+    <div class="filter-input-wrapper">
+      <input
+        type="text"
+        class="form-control form-control-sm pe-4"
+        placeholder="Filter collections by name..."
+        [(ngModel)]="filterText"
+        (ngModelChange)="onFilterChange()"
+        (keydown.enter)="onFilterEnter()"
+        />
+      @if (filterText) {
+        <button
+          type="button"
+          class="btn btn-sm filter-clear-btn"
+          title="Clear filter"
+          (click)="filterText = ''; onFilterChange()"
+          >
+          <i class="fas fa-times"></i>
+        </button>
+      }
+    </div>
     @if (collections.length === 1) {
       <small class="text-body-secondary d-block mt-1">
         Press <kbd>Enter</kbd> to open the only matching collection

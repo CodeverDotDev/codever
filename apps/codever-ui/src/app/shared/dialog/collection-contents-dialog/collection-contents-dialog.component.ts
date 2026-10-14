@@ -3,13 +3,21 @@ import {
   MAT_DIALOG_DATA,
   MatDialogClose,
   MatDialogContent,
+  MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Bookmark } from '../../../core/model/bookmark';
 import { Note } from '../../../core/model/note';
+import { UserDataResource } from '../../../core/model/user-data-resource.type';
 import { PersonalCollectionsService } from '../../../core/personal-collections.service';
+import { MainLinkShortcutService } from '../../../core/shortcut/main-link-shortcut.service';
+import {
+  ActivatableType,
+  activationHintLabel,
+  singleVisibleResource,
+} from '../../../core/shortcut/resource-activation.util';
 import { filterCollectionContents } from './collection-contents.filter';
 
 export interface CollectionContentsDialogData {
@@ -44,12 +52,17 @@ export class CollectionContentsDialogComponent implements OnInit {
   filteredBookmarks: Bookmark[] = [];
   filteredNotes: Note[] = [];
 
+  /** Resource types the focused dialog filter can activate with Enter. */
+  readonly activatableTypes: ActivatableType[] = ['bookmark', 'note'];
+
   private readonly userId: string;
   private readonly collectionId: string;
 
   constructor(
     private personalCollectionsService: PersonalCollectionsService,
-    @Inject(MAT_DIALOG_DATA) data: CollectionContentsDialogData
+    @Inject(MAT_DIALOG_DATA) data: CollectionContentsDialogData,
+    private dialogRef: MatDialogRef<CollectionContentsDialogComponent>,
+    private mainLinkShortcutService: MainLinkShortcutService
   ) {
     this.userId = data.userId;
     this.collectionId = data.collectionId;
@@ -84,6 +97,43 @@ export class CollectionContentsDialogComponent implements OnInit {
 
   get hasAnyMatch(): boolean {
     return this.filteredBookmarks.length > 0 || this.filteredNotes.length > 0;
+  }
+
+  /**
+   * Enter in the focused filter activates the only visible result: a bookmark's
+   * main link in a new tab, or a note's details page in the current tab. Both
+   * lists are summed, so one bookmark plus one note is ambiguous and does
+   * nothing. In-app navigation closes the dialog, matching the existing links.
+   */
+  onFilterEnter(): void {
+    const resource = this.singleActivatableResource;
+    if (!resource) {
+      return;
+    }
+    const outcome = this.mainLinkShortcutService.activateResource(
+      resource,
+      true,
+      this.activatableTypes
+    );
+    if (outcome === 'navigated') {
+      this.dialogRef.close();
+    }
+  }
+
+  /** Hint label for the focused filter, or null when Enter would do nothing. */
+  get filterActivationHint(): ActivatableType | null {
+    return activationHintLabel(this.singleActivatableResource);
+  }
+
+  /**
+   * The single activatable result across both filtered lists, or null when zero
+   * or several entries remain.
+   */
+  private get singleActivatableResource(): UserDataResource | null {
+    return singleVisibleResource(
+      [...this.filteredBookmarks, ...this.filteredNotes],
+      this.activatableTypes
+    );
   }
 
   /** Details route for a bookmark, matching the collection page's entry. */

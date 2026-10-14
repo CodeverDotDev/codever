@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { Bookmark } from '../model/bookmark';
+import { Note } from '../model/note';
+import { PinnedCollection } from '../model/collection';
 import { AddToHistoryService } from '../user/add-to-history.service';
 import {
   BookmarkShortcutContext,
@@ -10,6 +13,7 @@ import {
 describe('MainLinkShortcutService', () => {
   let service: MainLinkShortcutService;
   let addToHistory: jasmine.SpyObj<AddToHistoryService>;
+  let router: jasmine.SpyObj<Pick<Router, 'navigate'>>;
 
   const bookmark = (id: string): Bookmark =>
     ({
@@ -55,11 +59,13 @@ describe('MainLinkShortcutService', () => {
       'AddToHistoryService',
       ['promoteInHistoryIfLoggedIn']
     );
+    router = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       providers: [
         MainLinkShortcutService,
         { provide: AddToHistoryService, useValue: addToHistory },
+        { provide: Router, useValue: router },
       ],
     });
 
@@ -248,5 +254,113 @@ describe('MainLinkShortcutService', () => {
       addToHistory.promoteInHistoryIfLoggedIn.calls.mostRecent().args;
     expect(promoteArgs[0]).toBeFalse();
     expect((promoteArgs[1] as Bookmark)._id).toBe('z');
+  });
+
+  describe('activateResource', () => {
+    const note = (id: string, isPublic = false): Note =>
+      ({
+        _id: id,
+        title: `Note ${id}`,
+        type: 'note',
+        content: '',
+        color: '',
+        tags: [],
+        public: isPublic,
+      } as Note);
+
+    const collection = (id: string): PinnedCollection =>
+      ({ _id: id, name: `Collection ${id}`, type: 'collection' } as never);
+
+    const ALL = ['bookmark', 'note', 'collection'] as const;
+
+    it('opens an activatable bookmark in a new tab and does not navigate', () => {
+      const open = spyOn(window, 'open');
+
+      const outcome = service.activateResource(bookmark('b'), true, ALL);
+
+      expect(outcome).toBe('new-tab');
+      expect(open.calls.mostRecent().args).toEqual([
+        'https://example.com/b',
+        '_blank',
+      ]);
+      expect(router.navigate).not.toHaveBeenCalled();
+    });
+
+    it('navigates to the personal note route with the note as router state', () => {
+      const aNote = note('n');
+
+      const outcome = service.activateResource(aNote, true, ALL);
+
+      expect(outcome).toBe('navigated');
+      expect(router.navigate.calls.mostRecent().args).toEqual([
+        ['/my-notes', 'n', 'details'],
+        { state: { note: aNote } },
+      ]);
+    });
+
+    it('navigates to the public note route for a public note', () => {
+      service.activateResource(note('n', true), true, ALL);
+
+      expect(router.navigate.calls.mostRecent().args[0]).toEqual([
+        '/notes',
+        'n',
+        'details',
+      ]);
+    });
+
+    it('navigates to the collection details route', () => {
+      const outcome = service.activateResource(collection('c'), true, ALL);
+
+      expect(outcome).toBe('navigated');
+      expect(router.navigate.calls.mostRecent().args[0]).toEqual([
+        '/my-collections',
+        'c',
+      ]);
+    });
+
+    it('does nothing for a type the caller does not activate', () => {
+      const open = spyOn(window, 'open');
+
+      expect(
+        service.activateResource(note('n'), true, ['bookmark'])
+      ).toBeNull();
+      expect(
+        service.activateResource(collection('c'), true, ['bookmark'])
+      ).toBeNull();
+
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(open).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the resource has no target id', () => {
+      expect(service.activateResource(note(''), true, ALL)).toBeNull();
+      expect(
+        service.activateResource(
+          { name: 'No id', type: 'collection' } as PinnedCollection,
+          true,
+          ALL
+        )
+      ).toBeNull();
+      expect(router.navigate).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the bookmark has no location', () => {
+      const open = spyOn(window, 'open');
+
+      expect(
+        service.activateResource(
+          { _id: 'b', name: 'No location', type: 'bookmark' } as Bookmark,
+          true,
+          ALL
+        )
+      ).toBeNull();
+      expect(open).not.toHaveBeenCalled();
+    });
+
+    it('does nothing for a missing resource', () => {
+      expect(service.activateResource(null, true, ALL)).toBeNull();
+      expect(service.activateResource(undefined, true, ALL)).toBeNull();
+      expect(router.navigate).not.toHaveBeenCalled();
+    });
   });
 });

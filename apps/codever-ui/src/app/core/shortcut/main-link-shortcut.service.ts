@@ -1,6 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Bookmark } from '../model/bookmark';
+import { Note } from '../model/note';
+import { PinnedCollection } from '../model/collection';
+import { UserDataResource } from '../model/user-data-resource.type';
 import { AddToHistoryService } from '../user/add-to-history.service';
+import {
+  ActivatableType,
+  ResourceActivation,
+  collectionDetailsRoute,
+  noteDetailsRoute,
+} from './resource-activation.util';
 
 /**
  * Priorities for `k+k` context providers. Only the highest-priority registered
@@ -48,7 +58,10 @@ export class MainLinkShortcutService {
   private contexts: BookmarkShortcutContext[] = [];
   private lastKPressTime = 0;
 
-  constructor(private addToHistoryService: AddToHistoryService) {}
+  constructor(
+    private addToHistoryService: AddToHistoryService,
+    private router: Router
+  ) {}
 
   register(context: BookmarkShortcutContext): void {
     this.contexts.push(context);
@@ -153,6 +166,57 @@ export class MainLinkShortcutService {
       bookmark
     );
     window.open(bookmark.location, '_blank');
+  }
+
+  /**
+   * Activate one visible resource of a supported type: open a bookmark's main
+   * link in a new tab, or navigate to a note's or collection's details page in
+   * the current tab. Shared by the per-filter `Enter` handlers so the
+   * type -> target mapping lives in one place.
+   *
+   * Returns null when nothing was activated, either because the caller does not
+   * activate this type or because the resource has no target.
+   */
+  activateResource(
+    resource: UserDataResource | null | undefined,
+    userIsLoggedIn: boolean,
+    activatableTypes: readonly ActivatableType[]
+  ): ResourceActivation | null {
+    if (
+      !resource ||
+      !activatableTypes.includes(resource.type as ActivatableType)
+    ) {
+      return null;
+    }
+
+    if (resource.type === 'bookmark') {
+      const bookmark = resource as Bookmark;
+      if (!bookmark.location) {
+        return null;
+      }
+      this.openBookmarkInNewTab(bookmark, userIsLoggedIn);
+      return 'new-tab';
+    }
+
+    if (resource.type === 'note') {
+      const note = resource as Note;
+      if (!note._id) {
+        return null;
+      }
+      this.router.navigate(noteDetailsRoute(note), { state: { note } });
+      return 'navigated';
+    }
+
+    if (resource.type === 'collection') {
+      const collection = resource as PinnedCollection;
+      if (!collection._id) {
+        return null;
+      }
+      this.router.navigate(collectionDetailsRoute(collection));
+      return 'navigated';
+    }
+
+    return null;
   }
 
   private resetSequence(): void {

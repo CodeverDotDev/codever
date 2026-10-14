@@ -97,9 +97,9 @@
           </span>
         }
       </div>
-      @if (hasSingleFilteredBookmark) {
+      @if (filterActivationHint) {
         <small class="text-body-secondary d-block ms-2 mt-1">
-          <kbd>Enter</kbd> opens the only matching bookmark
+          <kbd>Enter</kbd> opens the only matching {{ filterActivationHint }}
         </small>
       }
     } @else {
