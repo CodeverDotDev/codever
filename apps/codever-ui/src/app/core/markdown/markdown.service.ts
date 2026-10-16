@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 
 import DOMPurify from 'dompurify';
 
-import { marked } from 'marked';
-import { renderLatex } from '../../shared/render-latex.util';
+import { renderMarkdownWithLatex } from '../../shared/render-latex.util';
 
 // DOMPurify config that allows KaTeX-generated MathML elements
 const KATEX_SANITIZE_CONFIG = {
@@ -27,7 +26,6 @@ export class MarkdownService {
   // converter object is not typescript
 
   toHtml(text: string) {
-    const withLatex = renderLatex(text);
-    return DOMPurify.sanitize(marked.parse(withLatex), KATEX_SANITIZE_CONFIG);
+    return DOMPurify.sanitize(renderMarkdownWithLatex(text), KATEX_SANITIZE_CONFIG);
   }
 }

@@ -7,10 +7,9 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import DOMPurify from 'dompurify';
-import { marked } from 'marked';
 import hljs from 'highlight.js';
 import katex from 'katex';
-import { renderLatex } from '../render-latex.util';
+import { renderMarkdownWithLatex } from '../render-latex.util';
 import { CopyCodeButtonDirective } from '../directive/copy-code-button.directive';
 import { NgClass } from '@angular/common';
 
@@ -86,14 +85,11 @@ export class NotebookRendererComponent implements OnChanges {
     const source = this.joinSource(cell.source);
 
     if (cell.cell_type === 'markdown') {
-      // Pre-process LaTeX math ($...$, $$...$$, \(...\), \[...\]) before
-      // passing through marked, so that _ and other TeX chars aren't mangled.
-      const withLatex = renderLatex(source);
       return {
         type: 'markdown',
         executionCount: null,
         sourceHtml: this.trustHtml(
-          this.sanitizeWithKatex(marked.parse(withLatex))
+          this.sanitizeWithKatex(renderMarkdownWithLatex(source))
         ),
         outputs: [],
       };

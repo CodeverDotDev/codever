@@ -1,4 +1,75 @@
-import { renderLatex } from './render-latex.util';
+import katex from 'katex';
+import { renderLatex, renderMarkdownWithLatex } from './render-latex.util';
+
+describe('renderMarkdownWithLatex', () => {
+  const derivative = String.raw`\frac{\partial L}{\partial b_i^l}
+=
+\frac{\partial L}{\partial z_i^l}
+\cdot 1
+=
+\delta_i^l`;
+
+  for (const [open, close] of [['\\[', '\\]'], ['$$', '$$']]) {
+    it(`should preserve multiline math HTML with ${open} delimiters`, () => {
+      const result = renderMarkdownWithLatex(
+        `${open}\n${derivative}\n${close}`
+      );
+      const expected = katex.renderToString(derivative, {
+        displayMode: true,
+        throwOnError: true,
+      });
+
+      expect(result).toContain(expected);
+      expect(result).not.toContain('<h1');
+      expect(result).not.toContain('<em>');
+    });
+  }
+
+  it('should preserve math in headings, emphasis, and list items', () => {
+    const math = String.raw`a_i^l = \phi_l(z_i^l)`;
+    const expected = katex.renderToString(math);
+    const result = renderMarkdownWithLatex(
+      `## Activation \\(${math}\\)\n\n**\\(${math}\\)**\n\n- \\(${math}\\)`
+    );
+    const container = document.createElement('div');
+    container.innerHTML = result;
+
+    expect(container.querySelector('h2 .katex')).not.toBeNull();
+    expect(container.querySelector('strong .katex')).not.toBeNull();
+    expect(container.querySelector('li .katex')).not.toBeNull();
+    expect(result.split(expected).length - 1).toBe(3);
+  });
+
+  it('should leave Markdown-like math text intact', () => {
+    const math = String.raw`\text{a * b * c and $x^2$}`;
+    expect(renderMarkdownWithLatex(`\\(${math}\\)`)).toContain(
+      katex.renderToString(math)
+    );
+  });
+
+  it('should preserve code, currency, and ordinary Markdown', () => {
+    const result = renderMarkdownWithLatex(
+      '# Title\n\n**Bold** costs $5 or $40.\n\n' +
+      '`\\(x^2\\)`\n\n```tex\n\\[x^2\\]\n```\n\n\\(y^2\\)'
+    );
+
+    expect(result).toContain('<h1');
+    expect(result).toContain('<strong>Bold</strong>');
+    expect(result).toContain('costs $5 or $40.');
+    expect(result).toContain('<code>\\(x^2\\)</code>');
+    expect(result).toContain('\\[x^2\\]');
+    expect((result.match(/class="katex"/g) || []).length).toBe(1);
+  });
+
+  it('should not replace user text that resembles a math placeholder', () => {
+    const result = renderMarkdownWithLatex(
+      'CODEVERMATH0END CODEVERMATHX0END \\(x^2\\)'
+    );
+
+    expect(result).toContain('CODEVERMATH0END CODEVERMATHX0END');
+    expect(result).toContain(katex.renderToString('x^2'));
+  });
+});
 
 describe('renderLatex', () => {
   // ---------------------------------------------------------------------------
@@ -207,4 +278,3 @@ describe('renderLatex', () => {
     expect(result).toBe(input);
   });
 });
-

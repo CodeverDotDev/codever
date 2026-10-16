@@ -4,7 +4,7 @@ import DOMPurify from 'dompurify';
 
 import { marked } from 'marked';
 import hljs from 'highlight.js';
-import { renderLatex } from '../render-latex.util';
+import { renderMarkdownWithLatex } from '../render-latex.util';
 
 // Custom renderer to apply highlight.js syntax highlighting to fenced code blocks
 // and add the 'hljs' CSS class so the github-dark theme (included in angular.json) is applied
@@ -137,10 +137,8 @@ export class Markdown2HtmlPipe implements PipeTransform {
   transform(text: string): SafeHtml {
     // Reset the per-note task counter so reset-button indices start at 0.
     renderedTaskCount = 0;
-    // Pre-process LaTeX math delimiters before markdown parsing
-    const withLatex = renderLatex(text);
     const clean = DOMPurify.sanitize(
-      marked.parse(withLatex),
+      renderMarkdownWithLatex(text),
       KATEX_SANITIZE_CONFIG
     );
     // Bypass Angular's built-in sanitizer which strips inline style attributes

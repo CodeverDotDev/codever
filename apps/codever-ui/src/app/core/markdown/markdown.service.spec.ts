@@ -18,6 +18,25 @@ describe('Markdown transformer service', () => {
     );
   });
 
+  it('should preserve multiline equations through Markdown and sanitization', () => {
+    const math = String.raw`\delta^{m+1}
+=
+\frac{\partial L}{\partial z^{m+1}}
+=
+\frac{\partial L}{\partial a^{m+1}}
+\odot
+\phi'_{m+1}(z^{m+1})`;
+    const container = document.createElement('div');
+    container.innerHTML = markdownService.toHtml(`\\[\n${math}\n\\]`);
+
+    expect(container.querySelectorAll('.katex').length).toBe(1);
+    expect(container.querySelector('annotation')?.textContent).toBe(math);
+    expect(container.querySelector('.katex-html')).not.toBeNull();
+    expect(container.querySelector('h1')).toBeNull();
+    expect(container.querySelector('.katex-error')).toBeNull();
+    expect(container.textContent).not.toContain('CODEVERMATH');
+  });
+
   it('should generate hyperlinks', () => {
     expect(
       markdownService.toHtml('[Codingpedia](http://www.codingpedia.org)')

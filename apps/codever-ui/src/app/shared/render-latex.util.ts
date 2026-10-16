@@ -1,8 +1,32 @@
 import katex from 'katex';
+import { marked } from 'marked';
+
+/**
+ * Keep generated math HTML (including its multiline TeX annotation) opaque to
+ * Markdown, then restore it before the caller sanitizes the complete HTML.
+ */
+export function renderMarkdownWithLatex(text: string): string {
+  let prefix = 'CODEVERMATH';
+  while (text?.includes(prefix)) {
+    prefix += 'X';
+  }
+
+  const expressions: string[] = [];
+  const protectedMarkdown = replaceLatex(text, (latex, displayMode) => {
+    const index = expressions.push(renderKatex(latex, displayMode)) - 1;
+    return `${prefix}${index}END`;
+  });
+  const html = marked.parse(protectedMarkdown);
+  return html.replace(
+    new RegExp(`${prefix}(\\d+)END`, 'g'),
+    (_match, index) => expressions[Number(index)]
+  );
+}
 
 /**
  * Pre-processes a Markdown/text string and replaces LaTeX math delimiters
- * with KaTeX-rendered HTML **before** the string is passed to `marked`.
+ * with KaTeX-rendered HTML. For Markdown, use renderMarkdownWithLatex instead
+ * so Markdown syntax inside math cannot corrupt the generated HTML.
  *
  * Supports:
  *  - Display math:  $$...$$ and \[...\]
@@ -12,6 +36,13 @@ import katex from 'katex';
  * so that dollar signs inside code are not treated as math delimiters.
  */
 export function renderLatex(text: string): string {
+  return replaceLatex(text, renderKatex);
+}
+
+function replaceLatex(
+  text: string,
+  renderMath: (latex: string, displayMode: boolean) => string
+): string {
   if (!text) {
     return text;
   }
@@ -32,17 +63,17 @@ export function renderLatex(text: string): string {
 
     // Display math: $$...$$  (must come before inline $ to avoid conflicts)
     segment = segment.replace(/\$\$([\s\S]+?)\$\$/g, (_match, math) => {
-      return renderKatex(math.trim(), true);
+      return renderMath(math.trim(), true);
     });
 
     // Display math: \[...\]
     segment = segment.replace(/\\\[([\s\S]+?)\\\]/g, (_match, math) => {
-      return renderKatex(math.trim(), true);
+      return renderMath(math.trim(), true);
     });
 
     // Inline math: \(...\)
     segment = segment.replace(/\\\(([\s\S]+?)\\\)/g, (_match, math) => {
-      return renderKatex(math.trim(), false);
+      return renderMath(math.trim(), false);
     });
 
     // Inline math: $...$
@@ -58,7 +89,7 @@ export function renderLatex(text: string): string {
     segment = segment.replace(
       /(?<![\\$])\$(?!\$)(\S(?:[^$\\\n]|\\.)*?\S|\S)\$(?!\d)/g,
       (match, math) => {
-        return hasTexSignal(math) ? renderKatex(math.trim(), false) : match;
+        return hasTexSignal(math) ? renderMath(math.trim(), false) : match;
       }
     );
 
@@ -104,4 +135,3 @@ function renderKatex(latex: string, displayMode: boolean): string {
     return `<code class="katex-error" title="KaTeX parse error">${escaped}</code>`;
   }
 }
-
