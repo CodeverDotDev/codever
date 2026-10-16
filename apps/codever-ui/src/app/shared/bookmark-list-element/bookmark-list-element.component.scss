@@ -44,3 +44,15 @@
 .copy-btn-text {
   font-size: 0.8rem;
 }
+
+.favorite-star-toggle {
+  border: 0;
+  background: transparent;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.favorite-star-toggle.favorite-star-active {
+  color: #f0ad00;
+}

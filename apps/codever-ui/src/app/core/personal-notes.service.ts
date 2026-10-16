@@ -112,7 +112,7 @@ export class PersonalNotesService {
       .pipe(shareReplay(1));
   }
 
-  getLatestNotes(userId: string, page: number = 1, limit: number = 10) {
+  getLatestNotes(userId: string, page = 1, limit = 10) {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());

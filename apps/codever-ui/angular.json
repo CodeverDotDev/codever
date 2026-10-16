@@ -197,12 +197,15 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
+            "karmaConfig": "./karma.onpush.conf.cjs",
             "polyfills": [
-              "src/polyfills.ts"
+              "zone.js",
+              "zone.js/testing"
             ],
             "tsConfig": "src/tsconfig.spec.json",
+            "include": [
+              "src/**/*.spec.ts"
+            ],
             "scripts": [],
             "styles": [
               "src/styles.scss"

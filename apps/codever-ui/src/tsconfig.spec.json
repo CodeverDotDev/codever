@@ -5,8 +5,5 @@
     "baseUrl": "tsconfig.spec",
     "types": ["jasmine", "node"]
   },
-  "files": ["test.ts",
-    "polyfills.ts"
-  ],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

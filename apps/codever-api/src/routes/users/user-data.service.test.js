@@ -100,6 +100,137 @@ describe('UserDataService.getPinnedResources', () => {
   });
 });
 
+describe('UserDataService.createUserData', () => {
+  const userId = 'test-user-id';
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    User.mockReset();
+  });
+
+  it('preserves bookmark favorites and stores note favorites', async () => {
+    const savedUserData = { userId };
+    const save = jest.fn().mockResolvedValue(savedUserData);
+    User.mockImplementation(() => ({ save }));
+    const userData = {
+      userId,
+      favorites: ['bookmark-1'],
+      favoriteNotes: ['note-1'],
+      searches: [],
+    };
+
+    const result = await UserDataService.createUserData(userData, userId);
+
+    expect(User).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId,
+        favorites: ['bookmark-1'],
+        favoriteNotes: ['note-1'],
+      })
+    );
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(result).toBe(savedUserData);
+  });
+});
+
+describe('UserDataService.updateUserFavorite', () => {
+  const userId = 'test-user-id';
+
+  beforeEach(() => {
+    User.findOneAndUpdate = jest.fn();
+  });
+
+  afterEach(() => jest.restoreAllMocks());
+
+  it('adds an accessible note to the note favorites list', async () => {
+    Note.findById = jest.fn().mockResolvedValue({
+      _id: '65a000000000000000000001',
+      public: true,
+      userId: 'other-user',
+    });
+    User.findOneAndUpdate = jest.fn().mockResolvedValue({});
+
+    const result = await UserDataService.updateUserFavorite(userId, {
+      resourceType: 'note',
+      resourceId: '65a000000000000000000001',
+      favorite: true,
+    });
+
+    expect(User.findOneAndUpdate).toHaveBeenCalledWith(
+      { userId },
+      { $addToSet: { favoriteNotes: '65a000000000000000000001' } },
+      { new: true }
+    );
+    expect(result).toEqual({
+      resourceType: 'note',
+      resourceId: '65a000000000000000000001',
+      favorite: true,
+    });
+  });
+
+  it('removes an owned bookmark from bookmark favorites', async () => {
+    Bookmark.findById = jest.fn().mockResolvedValue({
+      _id: '65a000000000000000000002',
+      public: false,
+      userId,
+    });
+    User.findOneAndUpdate = jest.fn().mockResolvedValue({});
+
+    await UserDataService.updateUserFavorite(userId, {
+      resourceType: 'bookmark',
+      resourceId: '65a000000000000000000002',
+      favorite: false,
+    });
+
+    expect(User.findOneAndUpdate).toHaveBeenCalledWith(
+      { userId },
+      { $pull: { favorites: '65a000000000000000000002' } },
+      { new: true }
+    );
+  });
+
+  it('rejects malformed favorite mutations', async () => {
+    await expect(
+      UserDataService.updateUserFavorite(userId, {
+        resourceType: 'collection',
+        resourceId: 'not-an-object-id',
+        favorite: 'yes',
+      })
+    ).rejects.toThrow(ValidationError);
+    expect(User.findOneAndUpdate).not.toHaveBeenCalled();
+  });
+
+  it("hides another user's private resource", async () => {
+    Note.findById = jest.fn().mockResolvedValue({
+      _id: '65a000000000000000000003',
+      public: false,
+      userId: 'other-user',
+    });
+
+    await expect(
+      UserDataService.updateUserFavorite(userId, {
+        resourceType: 'note',
+        resourceId: '65a000000000000000000003',
+        favorite: true,
+      })
+    ).rejects.toThrow(NotFoundError);
+    expect(User.findOneAndUpdate).not.toHaveBeenCalled();
+  });
+
+  it('returns NotFoundError when the resource does not exist', async () => {
+    Bookmark.findById = jest.fn().mockResolvedValue(null);
+
+    await expect(
+      UserDataService.updateUserFavorite(userId, {
+        resourceType: 'bookmark',
+        resourceId: '65a000000000000000000004',
+        favorite: true,
+      })
+    ).rejects.toThrow(NotFoundError);
+    expect(User.findOneAndUpdate).not.toHaveBeenCalled();
+  });
+});
+
 describe('UserDataService.updateUserDataPinned', () => {
   const userId = 'test-user-id';
 

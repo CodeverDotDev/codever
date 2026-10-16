@@ -7,6 +7,7 @@ export interface UserData {
   readLater?: string[]; // ids of bookmarks to read later
   likes?: string[]; // ids of bookmarks the user liked
   favorites?: string[]; // ids of bookmarks marked as favorite
+  favoriteNotes?: string[]; // ids of notes marked as favorite
   watchedTags?: string[];
   ignoredTags?: string[];
   pinned?: PinnedEntry[]; // typed pinned entries - see PinnedEntry
@@ -17,6 +18,14 @@ export interface UserData {
   enableLocalStorage?: boolean;
   welcomeAck?: boolean; // acknowledges the welcome dialog
   acknowledgedNotifications?: string[]; // keys of acknowledged notifications
+}
+
+export type FavoriteResourceType = 'bookmark' | 'note';
+
+export interface UserFavoriteMutation {
+  resourceType: FavoriteResourceType;
+  resourceId: string;
+  favorite: boolean;
 }
 
 /**

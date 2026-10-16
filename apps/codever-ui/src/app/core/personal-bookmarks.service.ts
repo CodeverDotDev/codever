@@ -100,10 +100,10 @@ export class PersonalBookmarksService {
   getPersonalBookmarkOrderedBy(
     userId: string,
     orderBy: string,
-    page: number = 1,
-    limit: number = 10
+    page = 1,
+    limit = 10
   ): Observable<Bookmark[]> {
-    let params = new HttpParams()
+    const params = new HttpParams()
       .append('orderBy', orderBy)
       .append('page', page.toString())
       .append('limit', limit.toString());

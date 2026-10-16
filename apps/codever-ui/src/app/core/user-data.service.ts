@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { UserData } from './model/user-data';
+import { UserData, UserFavoriteMutation } from './model/user-data';
 import { PinnedEntry } from './model/user-data';
 import { Bookmark } from './model/bookmark';
 import { UserDataResource } from './model/user-data-resource.type';
@@ -75,6 +75,19 @@ export class UserDataService {
       .patch(
         `${this.usersApiBaseUrl}/${userId}/pinned`,
         { pinned: pinned },
+        { headers: this.headers }
+      )
+      .pipe(shareReplay(1));
+  }
+
+  updateUserFavorite(
+    userId: string,
+    mutation: UserFavoriteMutation
+  ): Observable<UserFavoriteMutation> {
+    return this.httpClient
+      .patch<UserFavoriteMutation>(
+        `${this.usersApiBaseUrl}/${userId}/favorites`,
+        mutation,
         { headers: this.headers }
       )
       .pipe(shareReplay(1));

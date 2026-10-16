@@ -847,7 +847,7 @@ Given a bookmark's URL, name, tags, and description:
     const anyEl = el as any;
     const request = anyEl.requestFullscreen ?? anyEl.webkitRequestFullscreen;
     if (request) {
-      Promise.resolve(request.call(el)).catch(() => {});
+      Promise.resolve(request.call(el)).catch(() => undefined);
     }
   }
 
@@ -855,7 +855,7 @@ Given a bookmark's URL, name, tags, and description:
     const doc = document as any;
     const exit = doc.exitFullscreen ?? doc.webkitExitFullscreen;
     if (exit) {
-      Promise.resolve(exit.call(document)).catch(() => {});
+      Promise.resolve(exit.call(document)).catch(() => undefined);
     }
   }
 

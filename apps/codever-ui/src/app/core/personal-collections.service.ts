@@ -20,8 +20,8 @@ export class PersonalCollectionsService {
   getUserCollections(
     userId: string,
     searchText?: string,
-    page: number = 1,
-    limit: number = 20
+    page = 1,
+    limit = 20
   ): Observable<Collection[]> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -119,4 +119,3 @@ export class PersonalCollectionsService {
       .pipe(shareReplay(1));
   }
 }
-

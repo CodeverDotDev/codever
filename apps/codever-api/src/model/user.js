@@ -57,6 +57,7 @@ const userSchema = new Schema(
     ignoredTags: [String],
     pinned: [pinnedEntrySchema],
     favorites: [String],
+    favoriteNotes: { type: [String], default: [] },
     history: [String],
     following: followingSchema,
     followers: { type: [String], select: false },

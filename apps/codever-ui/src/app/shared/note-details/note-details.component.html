@@ -68,6 +68,21 @@
               </h6>
             </div>
             <div class="cursor-pointer d-flex align-items-center" style="gap: 0.5rem;">
+              @if (note.public || (userId$ | async) === note.userId) {
+                <button
+                  type="button"
+                  class="note-action-btn favorite-star-toggle"
+                  [class.favorite-star-active]="isFavorite(userData$ | async, note)"
+                  [attr.aria-pressed]="isFavorite(userData$ | async, note)"
+                  [title]="isFavorite(userData$ | async, note) ? 'Remove favorite' : 'Add to favorites'"
+                  [attr.aria-label]="isFavorite(userData$ | async, note) ? 'Remove note from favorites' : 'Add note to favorites'"
+                  (click)="toggleFavorite(note)"
+                >
+                  <i
+                    [ngClass]="isFavorite(userData$ | async, note) ? 'fas fa-star' : 'far fa-star'"
+                  ></i>
+                </button>
+              }
               @if ((userId$ | async) === note.userId) {
                 @if (!isPinned(userData$ | async, note)) {
                   <span

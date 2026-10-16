@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog.component';
 
@@ -6,7 +6,7 @@ describe('PlayYoutubeVideoDialogComponent', () => {
   let component: PlayYoutubeVideoDialogComponent;
   let fixture: ComponentFixture<PlayYoutubeVideoDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [PlayYoutubeVideoDialogComponent],
     }).compileComponents();

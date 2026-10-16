@@ -5,6 +5,9 @@ const ValidationError = require('../../error/validation.error');
 const crypto = require('crypto');
 
 const BookmarkInputValidator = require('../../common/validation/bookmark-input.validator');
+const {
+  removeBookmarkFavoriteReferences,
+} = require('../../common/user-favorite-cleanup.service');
 
 /* GET all bookmarks */
 let getBookmarksWithFilter = async (isPublic, location, userId) => {
@@ -148,6 +151,7 @@ let deleteBookmarkById = async (bookmarkId) => {
   if (!bookmark) {
     throw new NotFoundError(`Bookmark NOT_FOUND with id: ${bookmarkId}`);
   } else {
+    await removeBookmarkFavoriteReferences([bookmark._id]);
     return true;
   }
 };
@@ -156,8 +160,12 @@ let deleteBookmarkById = async (bookmarkId) => {
  * DELETE bookmarks with location
  */
 let deleteBookmarksByLocation = async (location) => {
+  const bookmarks = await Bookmark.find({ location: location }).select('_id');
   await Bookmark.deleteMany({ location: location });
 
+  await removeBookmarkFavoriteReferences(
+    bookmarks.map((bookmark) => bookmark._id)
+  );
   return true;
 };
 
@@ -165,7 +173,12 @@ let deleteBookmarksByLocation = async (location) => {
  * Delete bookmarks of a user, identified by userId
  */
 let deleteBookmarksByUserId = async (userId) => {
+  const bookmarks = await Bookmark.find({ userId: userId }).select('_id');
   await Bookmark.deleteMany({ userId: userId });
+
+  await removeBookmarkFavoriteReferences(
+    bookmarks.map((bookmark) => bookmark._id)
+  );
   return true;
 };
 

@@ -87,6 +87,24 @@
           </div>
           <div style="display: flex">
             @if (
+              bookmark.public ||
+              (userData$ | async)?.userId === bookmark.userId
+              ) {
+              <button
+                type="button"
+                class="favorite-star-toggle"
+                [class.favorite-star-active]="isFavorite(userData$ | async, bookmark)"
+                [attr.aria-pressed]="isFavorite(userData$ | async, bookmark)"
+                [title]="isFavorite(userData$ | async, bookmark) ? 'Remove favorite' : 'Add to favorites'"
+                [attr.aria-label]="isFavorite(userData$ | async, bookmark) ? 'Remove bookmark from favorites' : 'Add bookmark to favorites'"
+                (click)="toggleFavorite(bookmark)"
+              >
+                <i
+                  [ngClass]="isFavorite(userData$ | async, bookmark) ? 'fas fa-star' : 'far fa-star'"
+                ></i>
+              </button>
+            }
+            @if (
               !isPinned(userData$ | async, bookmark)) {
               <span
                 class="clock-wrapper"

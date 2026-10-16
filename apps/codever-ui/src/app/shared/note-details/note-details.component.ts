@@ -23,6 +23,7 @@ import { TocHeading, NoteTocComponent } from './note-toc/note-toc.component';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { UserData } from '../../core/model/user-data';
+import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
 import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
 import { NoteContentComponent } from './note-card-body/note-content.component';
 import { AsyncBookmarkListComponent } from '../async-bookmark-list/async-bookmark-list.component';
@@ -86,7 +87,8 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     private keycloakService: AuthenticationService,
     private elementRef: ElementRef,
     private userDataStore: UserDataStore,
-    private userDataPinnedStore: UserDataPinnedStore
+    private userDataPinnedStore: UserDataPinnedStore,
+    private deleteNotificationService: DeleteNotificationService
   ) {}
 
   ngOnInit(): void {
@@ -286,6 +288,30 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     this.userDataPinnedStore.removeFromPinned(note);
   }
 
+  isFavorite(userData: UserData | null, note: Note): boolean {
+    return (userData?.favoriteNotes || []).includes(note._id);
+  }
+
+  toggleFavorite(note: Note): void {
+    if (!this.keycloakService.isLoggedIn()) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to favorite notes',
+      };
+      this.noteShareDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      return;
+    }
+
+    this.userDataStore.toggleFavorite$('note', note._id).subscribe({
+      error: () =>
+        this.deleteNotificationService.showErrorNotification(
+          'Note favorite could not be updated'
+        ),
+    });
+  }
+
   /** Record the visited note in the user's history (logged-in users only). */
   private promoteNoteInHistory(note: Note): void {
     if (note) {
@@ -317,7 +343,7 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     const anyEl = el as any;
     const request = anyEl.requestFullscreen ?? anyEl.webkitRequestFullscreen;
     if (request) {
-      Promise.resolve(request.call(el)).catch(() => {});
+      Promise.resolve(request.call(el)).catch(() => undefined);
     }
   }
 
@@ -325,7 +351,7 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     const doc = document as any;
     const exit = doc.exitFullscreen ?? doc.webkitExitFullscreen;
     if (exit) {
-      Promise.resolve(exit.call(document)).catch(() => {});
+      Promise.resolve(exit.call(document)).catch(() => undefined);
     }
   }
 

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HowtoHotkeysComponent } from './howto-hotkeys.component';
 
@@ -6,7 +6,7 @@ describe('HowtoHotkeysComponent', () => {
   let component: HowtoHotkeysComponent;
   let fixture: ComponentFixture<HowtoHotkeysComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HowtoHotkeysComponent],
     }).compileComponents();

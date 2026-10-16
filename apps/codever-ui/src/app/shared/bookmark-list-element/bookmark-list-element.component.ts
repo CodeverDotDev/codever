@@ -238,6 +238,27 @@ export class BookmarkListElementComponent
     this.userDataStore.unLikeBookmark(bookmark);
   }
 
+  isFavorite(userData: UserData | null, bookmark: Bookmark): boolean {
+    return (userData?.favorites || []).includes(bookmark._id);
+  }
+
+  toggleFavorite(bookmark: Bookmark): void {
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = this.loginDialogHelperService.loginDialogConfig(
+        'You need to be logged in to favorite bookmarks'
+      );
+      this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      return;
+    }
+
+    this.userDataStore.toggleFavorite$('bookmark', bookmark._id).subscribe({
+      error: () =>
+        this.deleteNotificationService.showErrorNotification(
+          'Bookmark favorite could not be updated'
+        ),
+    });
+  }
+
   openDeleteDialog(bookmark: Bookmark) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;

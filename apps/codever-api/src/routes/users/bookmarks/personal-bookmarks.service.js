@@ -4,6 +4,9 @@ const User = require('../../../model/user');
 const NotFoundError = require('../../../error/not-found.error');
 
 const BookmarkInputValidator = require('../../../common/validation/bookmark-input.validator');
+const {
+  removeBookmarkFavoriteReferences,
+} = require('../../../common/user-favorite-cleanup.service');
 const { v4: uuidv4 } = require('uuid');
 const { Types } = require('mongoose');
 
@@ -248,6 +251,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
   if (response.deletedCount !== 1) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId);
   } else {
+    await removeBookmarkFavoriteReferences([bookmarkId]);
     await User.updateMany(
       {},
       {
@@ -280,6 +284,7 @@ let deleteBookmarkByLocation = async (userId, location) => {
     );
   }
 
+  await removeBookmarkFavoriteReferences([bookmark._id]);
   return true;
 };
 
@@ -303,6 +308,7 @@ let deletePrivateBookmarksByTag = async (userId, tag) => {
     tags: tag,
   });
 
+  await removeBookmarkFavoriteReferences(bookmarksToBeDeleteIds);
   await User.updateOne(
     { userId: userId },
     {

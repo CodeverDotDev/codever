@@ -50,6 +50,16 @@
   }
 }
 
+.favorite-star-toggle {
+  border: 0;
+  background: transparent;
+  color: #6c757d;
+}
+
+.favorite-star-toggle.favorite-star-active {
+  color: #f0ad00;
+}
+
 .zoom-bar {
   display: flex;
   justify-content: center;

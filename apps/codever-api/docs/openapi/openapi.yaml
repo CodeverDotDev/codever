@@ -605,6 +605,42 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         403:
           $ref: '#/components/responses/ForbiddenError'
+    patch:
+      description: Adds or removes a private favorite for an accessible resource
+      operationId: update-user-favorite
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteMutationInput'
+      responses:
+        200:
+          description: Updated favorite state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoriteMutationResponse'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        503:
+          description: Database service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicErrorModel'
 
   /personal/users/{userId}/feed:
     description: |
@@ -850,6 +886,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PinnedEntry'
+    FavoriteMutationInput:
+      type: object
+      required:
+        - resourceType
+        - resourceId
+        - favorite
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - bookmark
+            - note
+        resourceId:
+          type: string
+          description: MongoDB ID of the bookmark or note
+        favorite:
+          type: boolean
+          description: Whether the resource should be favorited
+    FavoriteMutationResponse:
+      type: object
+      required:
+        - resourceType
+        - resourceId
+        - favorite
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - bookmark
+            - note
+        resourceId:
+          type: string
+        favorite:
+          type: boolean
     PinnedNote:
       type: object
       description: A pinned note
@@ -928,7 +998,10 @@ components:
           items:
             $ref: '#/components/schemas/PinnedEntry'
         favorites:
-          deprecated: true
+          type: array
+          items:
+            type: string
+        favoriteNotes:
           type: array
           items:
             type: string

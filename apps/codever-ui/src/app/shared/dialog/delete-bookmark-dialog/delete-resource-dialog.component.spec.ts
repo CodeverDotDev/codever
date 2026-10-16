@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeleteResourceDialogComponent } from './delete-resource-dialog.component';
 
@@ -6,7 +6,7 @@ describe('LoginRequiredDialogComponent', () => {
   let component: DeleteResourceDialogComponent;
   let fixture: ComponentFixture<DeleteResourceDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [DeleteResourceDialogComponent],
     }).compileComponents();

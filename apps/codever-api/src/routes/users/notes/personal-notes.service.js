@@ -4,6 +4,9 @@ const User = require('../../../model/user');
 const NotFoundError = require('../../../error/not-found.error');
 
 const NoteInputValidator = require('./note-input.validator');
+const {
+  removeNoteFavoriteReferences,
+} = require('../../../common/user-favorite-cleanup.service');
 const { normalizeTags } = require('../../../common/validation/tag-policy');
 const { v4: uuidv4 } = require('uuid');
 
@@ -127,6 +130,7 @@ let deleteNoteById = async (userId, noteId) => {
     throw new NotFoundError('Note NOT_FOUND with id: ' + noteId);
   }
 
+  await removeNoteFavoriteReferences([note._id]);
   // Remove the note from users' pinned and history lists, in case it was there
   await User.updateMany(
     {},

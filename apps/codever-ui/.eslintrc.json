@@ -16,11 +16,11 @@
     "sourceType": "module"
   },
   "plugins": [
-    "@typescript-eslint",
-    "prettier"
+    "@typescript-eslint"
   ],
   "rules": {
     "no-useless-escape": "off",
-    "no-async-promise-executor": "off"
+    "no-async-promise-executor": "off",
+    "prettier/prettier": "off"
   }
 }

@@ -41,6 +41,7 @@ describe('ResourceFilter Pipe', () => {
 
   const initTestBookmarks = function () {
     const bookmarkExample: Bookmark = {
+      type: 'bookmark',
       name: 'Cleaner code in NodeJs with async-await - Mongoose calls example – CodepediaOrg',
       location:
         'https://www.codepedia.org/ama/cleaner-code-in-nodejs-with-async-await-mongoose-calls-example',
@@ -60,6 +61,7 @@ describe('ResourceFilter Pipe', () => {
     };
     bookmarks.push(bookmarkExample);
     const bookmarkExampleTwo: Bookmark = {
+      type: 'bookmark',
       name: 'Complete example of a CRUD API with Express GraphQL',
       location:
         'https://www.codepedia.org/ama/complete-example-crud-api-express-graphql',

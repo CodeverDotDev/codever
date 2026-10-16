@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HotKeysDialogComponent } from './hot-keys-dialog.component';
 
@@ -6,7 +6,7 @@ describe('HistoryDialogComponent', () => {
   let component: HotKeysDialogComponent;
   let fixture: ComponentFixture<HotKeysDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HotKeysDialogComponent],
     }).compileComponents();

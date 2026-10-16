@@ -18,7 +18,7 @@
     "test:main-link-shortcut": "ng run codever-ui:test-main-link-shortcut",
     "test:collection-contents": "ng run codever-ui:test-collection-contents",
     "test:my-collections": "ng run codever-ui:test-my-collections",
-    "lint": "ng lint",
+    "lint": "eslint src/app --ext .ts",
     "cy:run": "cypress run --config-file cypress/cypress.config.ts",
     "cy:open": "cypress open --config-file cypress/cypress.config.ts"
   },

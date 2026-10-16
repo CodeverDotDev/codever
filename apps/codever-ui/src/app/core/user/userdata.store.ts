@@ -1,12 +1,20 @@
-import { BehaviorSubject, Observable, ReplaySubject, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  ReplaySubject,
+  of,
+  throwError,
+} from 'rxjs';
 
 import { Injectable } from '@angular/core';
 import {
+  FavoriteResourceType,
   Following,
   PinnedEntry,
   Profile,
   Search,
   UserData,
+  UserFavoriteMutation,
 } from '../model/user-data';
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -23,7 +31,7 @@ import { PersonalBookmarksService } from '../personal-bookmarks.service';
 import { environment } from '../../../environments/environment';
 import { LocalStorageService } from '../cache/local-storage.service';
 import { localStorageKeys } from '../model/localstorage.cache-keys';
-import { take } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 
 /** Converts a resolvable pinned resource into its stored typed entry. */
 function toPinnedEntry(resource: UserDataResource): PinnedEntry {
@@ -124,6 +132,7 @@ export class UserDataStore {
       ignoredTags: [],
       pinned: [],
       favorites: [],
+      favoriteNotes: [],
       history: [],
       followers: [],
       following: following,
@@ -158,6 +167,48 @@ export class UserDataStore {
     });
 
     return obs;
+  }
+
+  toggleFavorite$(
+    resourceType: FavoriteResourceType,
+    resourceId: string
+  ): Observable<UserFavoriteMutation> {
+    if (!this.userId || !this.userData) {
+      return throwError(
+        () => new Error('User data must be loaded before changing favorites')
+      );
+    }
+
+    const favoriteIds =
+      resourceType === 'bookmark'
+        ? this.userData.favorites || []
+        : this.userData.favoriteNotes || [];
+    const mutation: UserFavoriteMutation = {
+      resourceType,
+      resourceId,
+      favorite: !favoriteIds.includes(resourceId),
+    };
+
+    return this.userService.updateUserFavorite(this.userId, mutation).pipe(
+      tap((result) => {
+        const currentIds =
+          result.resourceType === 'bookmark'
+            ? this.userData.favorites || []
+            : this.userData.favoriteNotes || [];
+        const updatedIds = result.favorite
+          ? currentIds.includes(result.resourceId)
+            ? currentIds
+            : [...currentIds, result.resourceId]
+          : currentIds.filter((id) => id !== result.resourceId);
+
+        if (result.resourceType === 'bookmark') {
+          this.userData.favorites = updatedIds;
+        } else {
+          this.userData.favoriteNotes = updatedIds;
+        }
+        this._userData.next(this.userData);
+      })
+    );
   }
 
   updateHistoryReadLaterAndPinned$(

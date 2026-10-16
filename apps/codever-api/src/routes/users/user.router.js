@@ -232,6 +232,21 @@ usersRouter.get(
   }
 );
 
+/* PATCH a user's private favorite state for an accessible bookmark or note */
+usersRouter.patch(
+  '/:userId/favorites',
+  keycloak.protect(),
+  async (request, response) => {
+    userIdTokenValidator.validateUserId(request);
+    const favoriteState = await UserDataService.updateUserFavorite(
+      request.params.userId,
+      request.body
+    );
+
+    return response.status(HttpStatus.OK).send(favoriteState);
+  }
+);
+
 /* GET list of user's last visited bookmarks */
 usersRouter.get(
   '/:userId/history',

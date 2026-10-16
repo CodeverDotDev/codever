@@ -1,6 +1,10 @@
 const app = require('../../app');
 const request = require('supertest');
 const HttpStatus = require('http-status-codes/index');
+const mongoose = require('mongoose');
+const Bookmark = require('../../model/bookmark');
+const Note = require('../../model/note');
+const User = require('../../model/user');
 
 const { toInclude } = require('jest-extended');
 const {
@@ -134,6 +138,211 @@ describe('User Data tests', () => {
     expect(response.body.userId).toEqual(testUserId);
     expect(response.body.searches).toHaveLength(1);
     expect(response.body.searches[0].text).toEqual(searchTextExample);
+  });
+
+  it('should mutate favorites only for accessible resources', async function () {
+    const bookmarkId = new mongoose.Types.ObjectId();
+    const publicNoteId = new mongoose.Types.ObjectId();
+    const privateNoteId = new mongoose.Types.ObjectId();
+    const missingResourceId = new mongoose.Types.ObjectId();
+
+    try {
+      await Bookmark.create({
+        _id: bookmarkId,
+        name: 'Favorite test bookmark',
+        location: 'https://example.com/favorite-test',
+        userId: testUserId,
+        public: false,
+      });
+      await Note.create({
+        _id: publicNoteId,
+        title: 'Favorite test public note',
+        userId: 'another-user',
+        public: true,
+      });
+      await Note.create({
+        _id: privateNoteId,
+        title: 'Favorite test private note',
+        userId: 'another-user',
+        public: false,
+      });
+
+      const addedBookmark = await request(app)
+        .patch(`${baseApiUrlUnderTest}/${testUserId}/favorites`)
+        .set('Authorization', bearerToken)
+        .send({
+          resourceType: 'bookmark',
+          resourceId: bookmarkId.toString(),
+          favorite: true,
+        });
+
+      expect(addedBookmark.statusCode).toEqual(HttpStatus.OK);
+      expect(addedBookmark.body).toEqual({
+        resourceType: 'bookmark',
+        resourceId: bookmarkId.toString(),
+        favorite: true,
+      });
+
+      const addedNote = await request(app)
+        .patch(`${baseApiUrlUnderTest}/${testUserId}/favorites`)
+        .set('Authorization', bearerToken)
+        .send({
+          resourceType: 'note',
+          resourceId: publicNoteId.toString(),
+          favorite: true,
+        });
+
+      expect(addedNote.statusCode).toEqual(HttpStatus.OK);
+      expect(addedNote.body.favorite).toBe(true);
+
+      const removedNote = await request(app)
+        .patch(`${baseApiUrlUnderTest}/${testUserId}/favorites`)
+        .set('Authorization', bearerToken)
+        .send({
+          resourceType: 'note',
+          resourceId: publicNoteId.toString(),
+          favorite: false,
+        });
+
+      expect(removedNote.statusCode).toEqual(HttpStatus.OK);
+      expect(removedNote.body.favorite).toBe(false);
+
+      const malformed = await request(app)
+        .patch(`${baseApiUrlUnderTest}/${testUserId}/favorites`)
+        .set('Authorization', bearerToken)
+        .send({
+          resourceType: 'note',
+          resourceId: 'not-an-object-id',
+          favorite: true,
+        });
+      expect(malformed.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+
+      const inaccessible = await request(app)
+        .patch(`${baseApiUrlUnderTest}/${testUserId}/favorites`)
+        .set('Authorization', bearerToken)
+        .send({
+          resourceType: 'note',
+          resourceId: privateNoteId.toString(),
+          favorite: true,
+        });
+      expect(inaccessible.statusCode).toEqual(HttpStatus.NOT_FOUND);
+
+      const missing = await request(app)
+        .patch(`${baseApiUrlUnderTest}/${testUserId}/favorites`)
+        .set('Authorization', bearerToken)
+        .send({
+          resourceType: 'note',
+          resourceId: missingResourceId.toString(),
+          favorite: true,
+        });
+      expect(missing.statusCode).toEqual(HttpStatus.NOT_FOUND);
+
+      const mismatchedUser = await request(app)
+        .patch(`${baseApiUrlUnderTest}/another-user/favorites`)
+        .set('Authorization', bearerToken)
+        .send({
+          resourceType: 'note',
+          resourceId: publicNoteId.toString(),
+          favorite: true,
+        });
+      expect(mismatchedUser.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    } finally {
+      await Bookmark.deleteOne({ _id: bookmarkId });
+      await Note.deleteMany({ _id: { $in: [publicNoteId, privateNoteId] } });
+      await User.updateOne(
+        { userId: testUserId },
+        {
+          $pull: {
+            favorites: bookmarkId.toString(),
+            favoriteNotes: { $in: [publicNoteId.toString(), privateNoteId.toString()] },
+          },
+        }
+      );
+    }
+  });
+
+  it('cleans deleted bookmarks and notes from every user favorite list', async function () {
+    const singleBookmarkId = new mongoose.Types.ObjectId();
+    const bulkBookmarkIds = [
+      new mongoose.Types.ObjectId(),
+      new mongoose.Types.ObjectId(),
+    ];
+    const noteId = new mongoose.Types.ObjectId();
+    const unrelatedBookmarkId = 'unrelated-bookmark-id';
+    const unrelatedNoteId = 'unrelated-note-id';
+    const cleanupUserIds = [
+      `favorite-cleanup-${new mongoose.Types.ObjectId()}`,
+      `favorite-cleanup-${new mongoose.Types.ObjectId()}`,
+    ];
+    const bulkTag = `favorite-cleanup-${new mongoose.Types.ObjectId()}`;
+
+    try {
+      await Bookmark.create([
+        {
+          _id: singleBookmarkId,
+          name: 'Favorite cleanup single bookmark',
+          location: `https://example.com/${singleBookmarkId}`,
+          userId: testUserId,
+          public: false,
+        },
+        ...bulkBookmarkIds.map((_id) => ({
+          _id,
+          name: 'Favorite cleanup bulk bookmark',
+          location: `https://example.com/${_id}`,
+          userId: testUserId,
+          public: false,
+          tags: [bulkTag],
+        })),
+      ]);
+      await Note.create({
+        _id: noteId,
+        title: 'Favorite cleanup note',
+        userId: testUserId,
+        public: false,
+      });
+      await User.create(
+        cleanupUserIds.map((userId) => ({
+          userId,
+          favorites: [
+            singleBookmarkId.toString(),
+            ...bulkBookmarkIds.map((_id) => _id.toString()),
+            unrelatedBookmarkId,
+          ],
+          favoriteNotes: [noteId.toString(), unrelatedNoteId],
+        }))
+      );
+
+      const singleDeletion = await request(app)
+        .delete(
+          `${baseApiUrlUnderTest}/${testUserId}/bookmarks/${singleBookmarkId}`
+        )
+        .set('Authorization', bearerToken);
+      expect(singleDeletion.statusCode).toEqual(HttpStatus.NO_CONTENT);
+
+      const bulkDeletion = await request(app)
+        .delete(`${baseApiUrlUnderTest}/${testUserId}/bookmarks`)
+        .query({ tag: bulkTag, type: 'private' })
+        .set('Authorization', bearerToken);
+      expect(bulkDeletion.statusCode).toEqual(HttpStatus.OK);
+      expect(bulkDeletion.body.deletedCount).toBe(bulkBookmarkIds.length);
+
+      const noteDeletion = await request(app)
+        .delete(`${baseApiUrlUnderTest}/${testUserId}/notes/${noteId}`)
+        .set('Authorization', bearerToken);
+      expect(noteDeletion.statusCode).toEqual(HttpStatus.NO_CONTENT);
+
+      for (const userId of cleanupUserIds) {
+        const userData = await User.findOne({ userId });
+        expect(userData.favorites).toEqual([unrelatedBookmarkId]);
+        expect(userData.favoriteNotes).toEqual([unrelatedNoteId]);
+      }
+    } finally {
+      await Bookmark.deleteMany({
+        _id: { $in: [singleBookmarkId, ...bulkBookmarkIds] },
+      });
+      await Note.deleteOne({ _id: noteId });
+      await User.deleteMany({ userId: { $in: cleanupUserIds } });
+    }
   });
 
   it('should successfully UPDATE example user new starred bookmark', async function () {

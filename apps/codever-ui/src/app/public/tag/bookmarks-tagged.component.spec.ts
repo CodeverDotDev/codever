@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BookmarksTaggedComponent } from './bookmarks-tagged.component';
 
@@ -6,7 +6,7 @@ xdescribe('TagComponent', () => {
   let component: BookmarksTaggedComponent;
   let fixture: ComponentFixture<BookmarksTaggedComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [BookmarksTaggedComponent],
     }).compileComponents();

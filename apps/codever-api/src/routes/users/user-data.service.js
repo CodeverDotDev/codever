@@ -1,4 +1,5 @@
 const constants = require('../../common/constants');
+const { Types } = require('mongoose');
 
 const User = require('../../model/user');
 const Bookmark = require('../../model/bookmark');
@@ -23,6 +24,7 @@ let createUserData = async function (userData, userId) {
     ignoredTags: userData.ignoredTags,
     pinned: userData.pinned,
     favorites: userData.favorites,
+    favoriteNotes: userData.favoriteNotes,
     history: userData.history,
   });
 
@@ -43,6 +45,50 @@ let updateUserData = async function (userData, userId) {
   );
 
   return updatedUserData;
+};
+
+let updateUserFavorite = async function (userId, favoriteMutation) {
+  const { resourceType, resourceId, favorite } = favoriteMutation || {};
+  const isValidResourceType =
+    resourceType === 'bookmark' || resourceType === 'note';
+  const isValidResourceId =
+    typeof resourceId === 'string' && Types.ObjectId.isValid(resourceId);
+  const isValidFavorite = typeof favorite === 'boolean';
+
+  if (!isValidResourceType || !isValidResourceId || !isValidFavorite) {
+    throw new ValidationError('Invalid favorite mutation', [
+      'resourceType must be bookmark or note',
+      'resourceId must be a valid resource ID',
+      'favorite must be a boolean',
+    ]);
+  }
+
+  const Resource = resourceType === 'bookmark' ? Bookmark : Note;
+  const resource = await Resource.findById(resourceId);
+  if (!resource || (!resource.public && resource.userId !== userId)) {
+    throw new NotFoundError('Resource NOT_FOUND');
+  }
+
+  const favoriteField =
+    resourceType === 'bookmark' ? 'favorites' : 'favoriteNotes';
+  const update = favorite
+    ? { $addToSet: { [favoriteField]: resourceId } }
+    : { $pull: { [favoriteField]: resourceId } };
+  const updatedUserData = await User.findOneAndUpdate(
+    { userId },
+    update,
+    { new: true }
+  );
+
+  if (!updatedUserData) {
+    throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
+  }
+
+  return {
+    resourceType,
+    resourceId: resource._id.toString(),
+    favorite,
+  };
 };
 
 let updateUserDataHistory = async function (history, userId) {
@@ -741,6 +787,7 @@ let getFeedBookmarks = async function (userId, page, limit) {
 
 module.exports = {
   updateUserData: updateUserData,
+  updateUserFavorite: updateUserFavorite,
   updateUserDataHistory: updateUserDataHistory,
   updateUserDataPinned: updateUserDataPinned,
   updateUserDataReadLater: updateUserDataReadLater,

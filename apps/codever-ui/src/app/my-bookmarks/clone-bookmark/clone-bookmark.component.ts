@@ -12,8 +12,6 @@ import { SaveBookmarkFormComponent } from '../save-bookmark-form/save-bookmark-f
 export class CloneBookmarkComponent implements OnInit {
   bookmark$: Observable<Bookmark>;
 
-  constructor() {}
-
   ngOnInit(): void {
     this.bookmark$ = of(window.history.state.bookmark);
   }
