@@ -3,7 +3,7 @@
 - [x] 1.1 Add note favorite IDs to the User model and user-data creation flow;
   verify existing bookmark favorites are preserved and profiles without the new
   field load successfully.
-- [ ] 1.2 Add the authenticated personal favorite mutation route with input,
+- [x] 1.2 Add the authenticated personal favorite mutation route with input,
   ownership, and visibility validation; verify success, invalid-input, missing
   resource, private-resource, and user-ID mismatch tests.
 - [x] 1.3 Document the personal favorite mutation contract in OpenAPI; verify
@@ -14,7 +14,7 @@
 - [x] 2.1 Remove favorite references from all user profiles on personal,
   administrative, and bulk bookmark deletion and on note deletion; verify each
   deletion service invokes cleanup for every deleted resource ID.
-- [ ] 2.2 Add API tests for single and bulk deletion cleanup; verify favorites
+- [x] 2.2 Add API tests for single and bulk deletion cleanup; verify favorites
   are removed from multiple users while unrelated favorite IDs remain intact.
 
 ## 3. UI favorite controls
@@ -32,7 +32,7 @@
 
 - [x] 4.1 Verify bookmark and note searches retain existing ordering when
   results include favorites, and favorite state appears on cards and details.
-- [ ] 4.2 Run targeted API unit/integration tests and UI component tests; verify
+- [x] 4.2 Run targeted API unit/integration tests and UI component tests; verify
   authorization, favorite toggles, and deletion cleanup pass.
-- [ ] 4.3 Run the UI lint/build checks and API lint/tests; verify no template,
+- [x] 4.3 Run the UI lint/build checks and API lint/tests; verify no template,
   type, or API contract errors are introduced.

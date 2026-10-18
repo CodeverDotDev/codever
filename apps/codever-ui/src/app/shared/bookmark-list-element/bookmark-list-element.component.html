@@ -85,14 +85,14 @@
               </span>
             </h6>
           </div>
-          <div style="display: flex">
+          <div class="d-flex align-items-center">
             @if (
               bookmark.public ||
               (userData$ | async)?.userId === bookmark.userId
               ) {
               <button
                 type="button"
-                class="favorite-star-toggle"
+                class="favorite-star-toggle clock-wrapper"
                 [class.favorite-star-active]="isFavorite(userData$ | async, bookmark)"
                 [attr.aria-pressed]="isFavorite(userData$ | async, bookmark)"
                 [title]="isFavorite(userData$ | async, bookmark) ? 'Remove favorite' : 'Add to favorites'"

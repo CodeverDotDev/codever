@@ -380,6 +380,10 @@ label {
   justify-content: space-between;
 
   .clock-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
     font-size: 1.4rem;
     margin-left: 1rem;
     cursor: pointer;

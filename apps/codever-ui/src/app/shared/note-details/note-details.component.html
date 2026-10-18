@@ -79,7 +79,7 @@
                   (click)="toggleFavorite(note)"
                 >
                   <i
-                    [ngClass]="isFavorite(userData$ | async, note) ? 'fas fa-star' : 'far fa-star'"
+                    [ngClass]="isFavorite(userData$ | async, note) ? 'fas fa-star fa-lg' : 'far fa-star fa-lg'"
                   ></i>
                 </button>
               }
