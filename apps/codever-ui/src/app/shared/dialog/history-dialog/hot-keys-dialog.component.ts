@@ -1,4 +1,10 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -41,6 +47,7 @@ import { ResourceTitleFilterPipe } from '../../pipe/resource-title-filter.pipe';
   selector: 'app-hotkeys-dialog',
   templateUrl: './hot-keys-dialog.component.html',
   styleUrls: ['./hot-keys-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     FormsModule,

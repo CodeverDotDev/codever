@@ -9,6 +9,13 @@
     "app/core/shortcut/main-link-shortcut.filters.spec.ts",
     "app/core/shortcut/resource-activation.util.spec.ts",
     "**/*.d.ts"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
 }
-

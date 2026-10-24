@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { AssistantReference } from '../assistant.model';
 import { RouterLink } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-assistant-reference-card',
   templateUrl: './reference-card.component.html',
   styleUrls: ['./reference-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink],
 })
 export class ReferenceCardComponent {

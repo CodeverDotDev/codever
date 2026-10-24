@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Collection, toPinnedCollection } from '../core/model/collection';
 import { PersonalCollectionsService } from '../core/personal-collections.service';
 import { UserInfoStore } from '../core/user/user-info.store';
@@ -18,6 +18,7 @@ import { ActivatableType } from '../core/shortcut/resource-activation.util';
   selector: 'app-my-collections-page',
   templateUrl: './my-collections-page.component.html',
   styleUrls: ['./my-collections-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, DatePipe, AsyncPipe],
 })
 export class MyCollectionsPageComponent implements OnInit {

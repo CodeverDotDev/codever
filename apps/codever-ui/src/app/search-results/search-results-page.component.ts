@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Location, AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -33,6 +38,7 @@ import { FindElsewhereComponent } from './find-elsewhere/find-elsewhere.componen
   selector: 'app-search-results',
   templateUrl: './search-results-page.component.html',
   styleUrls: ['./search-results-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatTabGroup,
     MatTab,

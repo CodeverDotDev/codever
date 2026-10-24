@@ -1,4 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -21,6 +26,7 @@ export interface AddToCollectionDialogData {
   selector: 'app-add-to-collection-dialog',
   templateUrl: './add-to-collection-dialog.component.html',
   styleUrls: ['./add-to-collection-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     CdkScrollable,

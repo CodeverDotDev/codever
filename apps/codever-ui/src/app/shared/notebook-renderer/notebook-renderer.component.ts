@@ -4,6 +4,7 @@ import {
   OnChanges,
   SimpleChanges,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import DOMPurify from 'dompurify';
@@ -30,6 +31,7 @@ import { NgClass } from '@angular/common';
   templateUrl: './notebook-renderer.component.html',
   styleUrls: ['./notebook-renderer.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CopyCodeButtonDirective, NgClass],
 })
 export class NotebookRendererComponent implements OnChanges {

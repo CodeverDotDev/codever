@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import {
   UntypedFormControl,
@@ -24,6 +29,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-saved-searches',
   templateUrl: './my-searches.component.html',
   styleUrls: ['./my-searches.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     RouterLink,
     FormsModule,

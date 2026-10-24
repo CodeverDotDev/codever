@@ -1,4 +1,9 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../../../core/model/bookmark';
 import { UserData } from '../../../core/model/user-data';
@@ -19,6 +24,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-my-bookmarks',
   templateUrl: './user-bookmarks.component.html',
   styleUrls: ['./user-bookmarks.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, AsyncBookmarkListComponent, RouterLink, AsyncPipe],
 })
 export class UserBookmarksComponent implements OnChanges {

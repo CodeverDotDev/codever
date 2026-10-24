@@ -4,5 +4,13 @@
     "outDir": "../out-tsc/shortcuts-spec",
     "types": ["jasmine", "node"]
   },
-  "include": ["app/app.component.shortcuts.spec.ts", "**/*.d.ts"]
+  "include": ["app/app.component.shortcuts.spec.ts", "**/*.d.ts"],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
 }

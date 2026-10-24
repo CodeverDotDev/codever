@@ -7,6 +7,7 @@ import {
   inject,
   Input,
   OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Note } from '../../core/model/note';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -33,6 +34,7 @@ import { HighLightPipe } from '../../common/pipes/highlight.pipe';
   selector: 'app-note-details',
   templateUrl: './note-details.component.html',
   styleUrls: ['./note-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     NgClass,
     RouterLink,

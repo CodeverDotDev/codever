@@ -1,4 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import iziToast, { IziToastSettings } from 'izitoast';
@@ -10,6 +15,7 @@ import { UserData } from '../../../core/model/user-data';
   selector: 'app-delete-bookmark-dialog',
   templateUrl: './import-bookmarks-dialog.component.html',
   styleUrls: ['./import-bookmarks-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink],
 })
 export class ImportBookmarksDialogComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -16,6 +16,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-note-social-share-dialog',
   templateUrl: './note-social-share-dialog.component.html',
   styleUrls: ['./note-social-share-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     NoteSocialShareDialogContentComponent,

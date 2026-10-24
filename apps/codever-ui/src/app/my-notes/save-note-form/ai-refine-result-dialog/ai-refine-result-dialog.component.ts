@@ -1,4 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MarkdownService } from '../../../core/markdown/markdown.service';
 import { FormsModule } from '@angular/forms';
@@ -25,6 +30,7 @@ export interface AiRefineAcceptedChanges {
   selector: 'app-ai-refine-result-dialog',
   templateUrl: './ai-refine-result-dialog.component.html',
   styleUrls: ['./ai-refine-result-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule],
 })
 export class AiRefineResultDialogComponent implements OnInit {

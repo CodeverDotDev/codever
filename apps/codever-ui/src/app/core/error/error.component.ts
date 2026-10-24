@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Error } from './error.model';
 import { ErrorService } from './error.service';
@@ -19,6 +19,7 @@ import { NgStyle } from '@angular/common';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgStyle],
 })
 export class ErrorComponent implements OnInit {

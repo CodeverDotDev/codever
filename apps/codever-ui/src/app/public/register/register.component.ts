@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import { KeycloakLoginOptions } from 'keycloak-js';
@@ -8,6 +8,7 @@ import { ExtensionsComponent } from '../../shared/extensions/extensions.componen
   selector: 'app-about',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ExtensionsComponent],
 })
 export class RegisterComponent {

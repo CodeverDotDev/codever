@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Bookmark } from '../core/model/bookmark';
 import { Note } from '../core/model/note';
 import { UserDataResource } from '../core/model/user-data-resource.type';
@@ -30,6 +36,7 @@ import { CollectionContentsDialogComponent } from '../shared/dialog/collection-c
   selector: 'app-quick-access-resources',
   templateUrl: './quick-access-resources.component.html',
   styleUrls: ['./quick-access-resources.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     CdkDropList,

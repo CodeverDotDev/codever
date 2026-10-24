@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -12,6 +12,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   selector: 'app-delete-bookmark-dialog',
   templateUrl: './backup-bookmarks-dialog.component.html',
   styleUrls: ['./backup-bookmarks-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatDialogTitle, MatDialogActions],
 })
 export class BackupBookmarksDialogComponent {

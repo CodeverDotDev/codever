@@ -8,6 +8,7 @@ import {
   HostListener,
   Input,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Note } from '../../../core/model/note';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
@@ -23,6 +24,7 @@ import { EntryCopyableInfoComponent } from '../../copyable-fields/entry-copyable
 @Component({
   selector: 'app-note-content',
   templateUrl: './note-content.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MarkedImageWidthDirective,
     CopyCodeButtonDirective,

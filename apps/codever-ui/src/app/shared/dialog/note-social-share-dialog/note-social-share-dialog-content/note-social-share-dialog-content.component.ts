@@ -1,4 +1,9 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Note } from '../../../../core/model/note';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkScrollable } from '@angular/cdk/scrolling';
@@ -8,6 +13,7 @@ import { TweetComponent } from '../../../../social-buttons/tweet.component';
 @Component({
   selector: 'app-note-social-share-dialog-content',
   templateUrl: './note-social-share-dialog-content.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CdkScrollable, MatDialogContent, TweetComponent],
 })
 export class NoteSocialShareDialogContentComponent implements OnChanges {

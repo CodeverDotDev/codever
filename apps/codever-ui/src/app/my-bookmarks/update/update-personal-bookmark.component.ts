@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
@@ -11,6 +11,7 @@ import { SaveBookmarkFormComponent } from '../save-bookmark-form/save-bookmark-f
   selector: 'app-update-bookmark',
   templateUrl: './update-personal-bookmark.component.html',
   styleUrls: ['./update-personal-bookmark.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SaveBookmarkFormComponent],
 })
 export class UpdatePersonalBookmarkComponent implements OnInit {

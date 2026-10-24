@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -15,6 +15,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
   selector: 'app-delete-bookmark-dialog',
   templateUrl: './login-required-dialog.component.html',
   styleUrls: ['./login-required-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions],
 })
 export class LoginRequiredDialogComponent {

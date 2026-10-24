@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import {
   MatTabGroup,
@@ -13,6 +13,7 @@ import { CodeverBookmarkletComponent } from '../howto-bookmarklets/codever-bookm
   selector: 'app-howto-notes',
   templateUrl: './how-to-notes.component.html',
   styleUrls: ['./how-to-notes.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatTabGroup,
     MatTab,

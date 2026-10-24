@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { NoteDetailsComponent } from '../../../shared/note-details/note-details.
   selector: 'app-shareable-note-details',
   templateUrl: './shareable-note-details.component.html',
   styleUrls: ['./shareable-note-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NoteDetailsComponent],
 })
 export class ShareableNoteDetailsComponent implements OnInit {

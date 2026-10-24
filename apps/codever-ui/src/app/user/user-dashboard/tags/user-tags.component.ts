@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { UsedTag, UsedTags } from '../../../core/model/used-tag';
 import { UserDataService } from '../../../core/user-data.service';
 import { Observable } from 'rxjs';
@@ -35,6 +40,7 @@ import {
   selector: 'app-user-tags',
   templateUrl: './user-tags.component.html',
   styleUrls: ['./user-tags.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     NgIf,
     MatAccordion,

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -12,6 +12,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
   selector: 'app-delete-bookmarks-by-tag-dialog',
   templateUrl: './delete-bookmarks-by-tag-dialog.component.html',
   styleUrls: ['./delete-bookmarks-by-tag-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions],
 })
 export class DeleteBookmarksByTagDialogComponent {

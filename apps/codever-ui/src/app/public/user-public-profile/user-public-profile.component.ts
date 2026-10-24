@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserPublicService } from './user-public.service';
 import { environment } from '../../../environments/environment';
@@ -23,6 +23,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-user-public-profile',
   templateUrl: './user-public-profile.component.html',
   styleUrls: ['./user-public-profile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, AsyncBookmarkListComponent, AsyncPipe],
 })
 export class UserPublicProfileComponent

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { shareReplay, switchMap, take } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { NoteDetailsComponent } from '../../shared/note-details/note-details.com
 @Component({
   selector: 'app-public-note-details',
   templateUrl: './public-note-details.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NoteDetailsComponent],
 })
 export class PublicNoteDetailsComponent implements OnInit {

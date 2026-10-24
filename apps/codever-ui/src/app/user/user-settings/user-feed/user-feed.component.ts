@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { UserData } from '../../../core/model/user-data';
 import { UserDataStore } from '../../../core/user/userdata.store';
 import { Observable } from 'rxjs';
@@ -15,6 +20,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-user-feed-setup',
   templateUrl: './user-feed.component.html',
   styleUrls: ['./user-feed.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatRadioGroup, FormsModule, MatRadioButton, RouterLink, AsyncPipe],
 })
 export class UserFeedComponent implements OnInit {

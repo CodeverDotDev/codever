@@ -6,6 +6,7 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { DOCUMENT, NgClass } from '@angular/common';
 
@@ -19,6 +20,7 @@ export interface TocHeading {
   selector: 'app-note-toc',
   templateUrl: './note-toc.component.html',
   styleUrls: ['./note-toc.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass],
 })
 export class NoteTocComponent implements AfterViewInit, OnChanges, OnDestroy {

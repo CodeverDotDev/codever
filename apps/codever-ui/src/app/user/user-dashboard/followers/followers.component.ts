@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserDataProfile } from '../../../core/model/user-data-profile';
 import { UserDataService } from '../../../core/user-data.service';
@@ -9,6 +14,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-followers',
   templateUrl: './followers.component.html',
   styleUrls: ['./followers.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, AsyncPipe],
 })
 export class FollowersComponent implements OnInit {

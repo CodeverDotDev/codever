@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -20,6 +25,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-bookmark-details',
   templateUrl: './bookmark-details.component.html',
   styleUrls: ['./bookmark-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [BookmarkListElementComponent, AsyncPipe],
 })
 export class BookmarkDetailsComponent implements OnInit, OnDestroy {

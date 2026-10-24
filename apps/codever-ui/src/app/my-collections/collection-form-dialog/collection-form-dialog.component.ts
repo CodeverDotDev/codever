@@ -1,4 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -14,6 +19,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-collection-form-dialog',
   templateUrl: './collection-form-dialog.component.html',
   styleUrls: ['./collection-form-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     CdkScrollable,

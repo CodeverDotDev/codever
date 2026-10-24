@@ -1,4 +1,9 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { Note } from '../../../core/model/note';
 import { PersonalNotesService } from '../../../core/personal-notes.service';
@@ -13,6 +18,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
   selector: 'app-my-notes',
   templateUrl: './my-notes.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncNoteListComponent, RouterLink, AsyncPipe],
 })
 export class MyNotesComponent implements OnChanges {

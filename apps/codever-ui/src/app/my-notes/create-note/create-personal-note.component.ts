@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NoteEditorComponent } from '../save-note-form/note-editor.component';
 
 @Component({
   selector: 'app-personal-note-create',
   templateUrl: './create-personal-note.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NoteEditorComponent],
 })
 export class CreatePersonalNoteComponent implements OnInit {

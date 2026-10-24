@@ -1,4 +1,9 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 /**
  * https://developers.facebook.com/docs/plugins/share-button/
@@ -6,6 +11,7 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'fb-share',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <div
     class="fb-share-button"
     [attr.data-href]="url"

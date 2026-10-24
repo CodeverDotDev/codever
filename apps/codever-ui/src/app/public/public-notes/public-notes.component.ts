@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Note } from '../../core/model/note';
 import { PublicNotesService } from '../notes/public-notes.service';
@@ -10,6 +10,7 @@ import { AsyncNoteListComponent } from '../../shared/async-note-list/async-note-
 @Component({
   selector: 'app-public-notes',
   templateUrl: './public-notes.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [AsyncNoteListComponent],
 })
 export class PublicNotesComponent implements OnInit {

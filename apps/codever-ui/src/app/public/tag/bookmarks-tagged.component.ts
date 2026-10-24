@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BookmarksTaggedService } from './bookmarks-tagged.service';
 import { ActivatedRoute } from '@angular/router';
 import { Bookmark } from '../../core/model/bookmark';
@@ -19,6 +19,7 @@ import { AsyncBookmarkListComponent } from '../../shared/async-bookmark-list/asy
   selector: 'app-tag',
   templateUrl: './bookmarks-tagged.component.html',
   styleUrls: ['./bookmarks-tagged.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass, AsyncBookmarkListComponent, AsyncPipe],
 })
 export class BookmarksTaggedComponent implements OnInit {

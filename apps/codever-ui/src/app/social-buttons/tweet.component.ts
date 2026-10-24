@@ -1,7 +1,14 @@
-import { Component, ElementRef, AfterViewInit, Input } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  AfterViewInit,
+  Input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'tweet',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<a
     class="twitter-share-button"
     href="https://twitter.com/intent/tweet"

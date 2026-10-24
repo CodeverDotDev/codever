@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -13,6 +13,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
   selector: 'app-play-youtube-video-dialog',
   templateUrl: './play-youtube-video-dialog.component.html',
   styleUrls: ['./play-youtube-video-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CdkScrollable, MatDialogContent, MatDialogActions],
 })
 export class PlayYoutubeVideoDialogComponent {

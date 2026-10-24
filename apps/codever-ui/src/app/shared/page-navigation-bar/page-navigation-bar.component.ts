@@ -7,6 +7,7 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { UserDataResource } from '../../core/model/user-data-resource.type';
@@ -19,6 +20,7 @@ import { NgClass } from '@angular/common';
   selector: 'app-page-navigation-bar',
   templateUrl: './page-navigation-bar.component.html',
   styleUrls: ['./page-navigation-bar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgClass],
 })
 export class PageNavigationBarComponent

@@ -12,6 +12,7 @@ import {
   OnInit,
   Output,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   UntypedFormControl,
@@ -49,6 +50,7 @@ import { AsyncBookmarkListComponent } from '../async-bookmark-list/async-bookmar
   selector: 'app-searchbar',
   templateUrl: './searchbar.component.html',
   styleUrls: ['./searchbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     MatAutocompleteTrigger,

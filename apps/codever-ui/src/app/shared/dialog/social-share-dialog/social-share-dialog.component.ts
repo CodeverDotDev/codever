@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Bookmark } from '../../../core/model/bookmark';
 import {
   MAT_DIALOG_DATA,
@@ -19,6 +19,7 @@ import { TweetComponent } from '../../../social-buttons/tweet.component';
   selector: 'app-social-share-dialog',
   templateUrl: './social-share-dialog.component.html',
   providers: [DatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     CdkScrollable,

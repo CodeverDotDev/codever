@@ -27,6 +27,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
   withInterceptors,
+  withXhr,
 } from '@angular/common/http';
 import { LoaderInterceptorService } from './app/core/loader/loader-interceptor.service';
 import { HIGHLIGHT_OPTIONS, HighlightModule } from 'ngx-highlightjs';
@@ -132,6 +133,7 @@ bootstrapApplication(AppComponent, {
     },
     AppService,
     provideHttpClient(
+      withXhr(),
       withInterceptorsFromDi(),
       withInterceptors([includeBearerTokenInterceptor])
     ),

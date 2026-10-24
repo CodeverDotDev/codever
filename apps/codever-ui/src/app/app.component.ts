@@ -1,4 +1,10 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { UserDataHistoryStore } from './core/user/userdata.history.store';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -35,6 +41,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     NavigationComponent,
     RouterLink,

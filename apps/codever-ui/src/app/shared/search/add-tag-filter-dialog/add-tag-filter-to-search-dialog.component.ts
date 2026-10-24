@@ -4,6 +4,7 @@ import {
   Inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
@@ -45,6 +46,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-delete-bookmark-dialog',
   templateUrl: './add-tag-filter-to-search-dialog.component.html',
   styleUrls: ['./add-tag-filter-to-search-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     MatFormField,

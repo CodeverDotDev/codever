@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatTabGroup, MatTab, MatTabLabel } from '@angular/material/tabs';
 
@@ -6,6 +6,7 @@ import { MatTabGroup, MatTab, MatTabLabel } from '@angular/material/tabs';
   selector: 'app-howto-mcp',
   templateUrl: './how-to-mcp.component.html',
   styleUrls: ['./how-to-mcp.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, MatTabGroup, MatTab, MatTabLabel],
 })
 export class HowToMcpComponent {

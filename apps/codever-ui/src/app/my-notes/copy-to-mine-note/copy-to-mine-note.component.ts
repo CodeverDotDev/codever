@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Note } from '../../core/model/note';
 import { PublicNotesService } from '../../public/notes/public-notes.service';
@@ -7,6 +7,7 @@ import { NoteEditorComponent } from '../save-note-form/note-editor.component';
 @Component({
   selector: 'app-copy-to-mine-note',
   templateUrl: './copy-to-mine-note.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NoteEditorComponent],
 })
 export class CopyToMineNoteComponent implements OnInit {

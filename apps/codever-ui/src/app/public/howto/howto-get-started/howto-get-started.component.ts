@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { KeycloakServiceWrapper } from '../../../core/keycloak-service-wrapper.service';
 import { RouterLink } from '@angular/router';
@@ -8,6 +8,7 @@ import { ExtensionsComponent } from '../../../shared/extensions/extensions.compo
   selector: 'app-howto-get-started',
   templateUrl: './howto-get-started.component.html',
   styleUrls: ['./howto-get-started.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, ExtensionsComponent],
 })
 export class HowtoGetStartedComponent {

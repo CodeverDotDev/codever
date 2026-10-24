@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -14,6 +14,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
   selector: 'app-public-bookmark-present-dialog',
   templateUrl: './public-bookmark-present-dialog.component.html',
   styleUrls: ['./public-bookmark-present-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions],
 })
 export class PublicBookmarkPresentDialogComponent {

@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
@@ -38,6 +39,7 @@ import { ResourceFilterPipe } from '../pipe/resource-filter.pipe';
   selector: 'app-async-search-result-list',
   templateUrl: './async-search-result-list.component.html',
   styleUrls: ['./async-search-result-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     BookmarkListElementComponent,

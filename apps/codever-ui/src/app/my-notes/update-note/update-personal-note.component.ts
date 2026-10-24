@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { PersonalNotesService } from '../../core/personal-notes.service';
@@ -11,6 +11,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
   selector: 'app-personal-note-update',
   templateUrl: './update-personal-note.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NoteEditorComponent, AsyncPipe],
 })
 export class UpdatePersonalNoteComponent implements OnInit {

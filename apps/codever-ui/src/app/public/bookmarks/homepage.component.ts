@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { UserDataResource } from '../../core/model/user-data-resource.type';
@@ -36,6 +42,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-public-bookmarks',
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatTabGroup,
     MatTab,

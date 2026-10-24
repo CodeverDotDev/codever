@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Bookmark } from '../../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -10,6 +10,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-bookmark-details',
   templateUrl: './shareable-bookmark-details.component.html',
   styleUrls: ['./shareable-bookmark-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [BookmarkListElementComponent, AsyncPipe],
 })
 export class ShareableBookmarkDetailsComponent implements OnInit {

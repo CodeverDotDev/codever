@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { FeatureToggleService } from '../../core/feature-toggle.service';
@@ -20,6 +20,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-howto',
   templateUrl: './howto.component.html',
   styleUrls: ['./howto.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatAccordion,
     MatExpansionPanel,

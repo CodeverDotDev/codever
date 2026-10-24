@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { Observable, of } from 'rxjs';
 import { SaveBookmarkFormComponent } from '../save-bookmark-form/save-bookmark-form.component';
@@ -7,6 +7,7 @@ import { SaveBookmarkFormComponent } from '../save-bookmark-form/save-bookmark-f
   selector: 'app-clone-bookmark',
   templateUrl: './clone-bookmark.component.html',
   styleUrls: ['./clone-bookmark.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [SaveBookmarkFormComponent],
 })
 export class CloneBookmarkComponent implements OnInit {

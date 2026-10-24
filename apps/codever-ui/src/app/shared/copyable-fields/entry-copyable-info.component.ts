@@ -1,10 +1,17 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CopyableField } from '../../core/model/copyable-field';
 import { Note } from '../../core/model/note';
 
 @Component({
   selector: 'app-entry-copyable-info',
   templateUrl: './entry-copyable-info.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./entry-copyable-info.component.scss'],
 })
 export class EntryCopyableInfoComponent implements OnDestroy {

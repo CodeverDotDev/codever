@@ -6,6 +6,7 @@ import {
   ElementRef,
   Input,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { AddToHistoryService } from '../../core/user/add-to-history.service';
@@ -17,7 +18,13 @@ import { EntryCopyableInfoComponent } from '../copyable-fields/entry-copyable-in
 @Component({
   selector: 'app-bookmark-text',
   templateUrl: './bookmark-text.component.html',
-  imports: [OpenInNewTabDirective, NgClass, HighLightHtmlPipe, EntryCopyableInfoComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    OpenInNewTabDirective,
+    NgClass,
+    HighLightHtmlPipe,
+    EntryCopyableInfoComponent,
+  ],
 })
 export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @Input()

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Search } from '../../../../core/model/user-data';
 import {
   MatAccordion,
@@ -13,6 +13,7 @@ import { SearchFilterPipe } from '../../../../shared/pipe/search-filter.pipe';
   selector: 'app-my-searches-template',
   templateUrl: './my-searches-template.component.html',
   styleUrls: ['./my-searches-template.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatAccordion,
     MatExpansionPanel,

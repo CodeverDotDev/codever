@@ -6,7 +6,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { UntypedFormBuilder } from '@angular/forms';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -164,7 +164,9 @@ describe('Copyable fields editor', () => {
     fixture.componentRef.setInput('fields', fields);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelectorAll('[role="alert"]').length).toBe(0);
+    expect(
+      fixture.nativeElement.querySelectorAll('[role="alert"]').length
+    ).toBe(0);
     const label = fixture.nativeElement.querySelector(
       '[aria-label="Field label"]'
     ) as HTMLTextAreaElement;
@@ -376,7 +378,7 @@ describe('Copyable-field save cache behavior', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         HttpClientLocalStorageService,
         LocalStorageService,
@@ -442,4 +444,3 @@ describe('Copyable-field save cache behavior', () => {
     }
   }
 });
-

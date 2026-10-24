@@ -1,4 +1,8 @@
-import { Component, provideZoneChangeDetection } from '@angular/core';
+import {
+  Component,
+  provideZoneChangeDetection,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   ComponentFixture,
   fakeAsync,
@@ -76,6 +80,7 @@ function note(id: string, title = id): Note {
     NoteDetailsComponent,
     AsyncSearchResultListComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <button class="unrelated" (click)="counter = counter + 1">
       {{ counter }}
@@ -246,7 +251,9 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     ).componentInstance;
     expect(content.showMoreText).toBeTrue();
     expect(bookmarkContent.showMoreText).toBeTrue();
-    expect(fixture.nativeElement.textContent).toContain('Additional fields (copyable)');
+    expect(fixture.nativeElement.textContent).toContain(
+      'Additional fields (copyable)'
+    );
     expect(fixture.nativeElement.textContent).toContain('Example.ts');
     expect(fixture.nativeElement.textContent).not.toContain('/private/');
     click('app-note-content [aria-label="Show less"]');

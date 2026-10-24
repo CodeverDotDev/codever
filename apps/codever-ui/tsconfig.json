@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "strict": false,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -14,7 +14,7 @@
     "target": "es2022",
     "typeRoots": ["node_modules/@types"],
     "paths": {
-      "highlight.js": ["node_modules/highlight.js/types/index.d.ts"]
+      "highlight.js": ["./node_modules/highlight.js/types/index.d.ts"]
     }
   },
   "angularCompilerOptions": {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import { environment } from '../../../environments/environment';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
@@ -19,6 +19,7 @@ import { SearchbarComponent } from '../search/searchbar.component';
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     NgClass,
     RouterLinkActive,

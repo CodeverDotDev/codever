@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Collection } from '../../core/model/collection';
 import { PersonalCollectionsService } from '../../core/personal-collections.service';
@@ -23,6 +23,7 @@ import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
   selector: 'app-collection-detail',
   templateUrl: './collection-detail.component.html',
   styleUrls: ['./collection-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, NgClass, RouterLink, AsyncPipe],
 })
 export class CollectionDetailComponent implements OnInit {

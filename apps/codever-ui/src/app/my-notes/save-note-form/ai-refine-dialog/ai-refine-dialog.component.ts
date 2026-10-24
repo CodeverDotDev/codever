@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
   AiRefineService,
@@ -25,6 +25,7 @@ export interface AiRefineDialogResult {
 @Component({
   selector: 'app-ai-refine-dialog',
   templateUrl: './ai-refine-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule],
 })
 export class AiRefineDialogComponent {

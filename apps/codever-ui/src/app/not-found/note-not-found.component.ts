@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   template:
     '  <div id="about-content" class="jumbotron"><h5>Note with the id "{{noteId}}" was not found - the submitter might have deleted it</h5> </div>',
 })

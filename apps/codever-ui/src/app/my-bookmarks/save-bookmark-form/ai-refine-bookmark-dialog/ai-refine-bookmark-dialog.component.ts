@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
   AiRefineService,
@@ -26,6 +26,7 @@ export interface AiRefineBookmarkDialogResult {
 @Component({
   selector: 'app-ai-refine-bookmark-dialog',
   templateUrl: './ai-refine-bookmark-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule],
 })
 export class AiRefineBookmarkDialogComponent {

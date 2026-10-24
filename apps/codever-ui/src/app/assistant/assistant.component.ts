@@ -4,6 +4,7 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { UserInfoStore } from '../core/user/user-info.store';
 import { FeatureToggleService } from '../core/feature-toggle.service';
@@ -21,6 +22,7 @@ import { Markdown2HtmlPipe } from '../shared/pipe/markdown2html.pipe';
   selector: 'app-assistant',
   templateUrl: './assistant.component.html',
   styleUrls: ['./assistant.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReferenceCardComponent, FormsModule, Markdown2HtmlPipe],
 })
 export class AssistantComponent implements OnInit, AfterViewChecked {

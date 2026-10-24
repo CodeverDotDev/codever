@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { LoaderService } from '../../core/loader/loader.service';
 import { debounceTime } from 'rxjs/operators';
@@ -13,6 +18,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-loader',
   templateUrl: './loader.component.html',
   styleUrls: ['./loader.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatProgressSpinner, AsyncPipe],
 })
 export class LoaderComponent implements OnInit, OnDestroy {

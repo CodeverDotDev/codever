@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { ExtensionsComponent } from '../../shared/extensions/extensions.component';
@@ -7,6 +7,7 @@ import { ExtensionsComponent } from '../../shared/extensions/extensions.componen
   selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ExtensionsComponent, RouterLink],
 })
 export class AboutComponent {

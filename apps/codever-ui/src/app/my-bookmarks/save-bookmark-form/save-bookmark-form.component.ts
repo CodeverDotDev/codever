@@ -12,6 +12,7 @@ import {
   Input,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import {
@@ -55,7 +56,12 @@ import { WebpageInfoService } from '../../core/webpage-info/webpage-info.service
 import { UserDataHistoryStore } from '../../core/user/userdata.history.store';
 import { UserDataReadLaterStore } from '../../core/user/userdata.readlater.store';
 import { UserData } from '../../core/model/user-data';
-import { DatePipe, NgClass, AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import {
+  DatePipe,
+  NgClass,
+  AsyncPipe,
+  NgTemplateOutlet,
+} from '@angular/common';
 import { textSizeValidator } from '../../core/validators/text-size.validator';
 import { StackoverflowHelper } from '../../core/helper/stackoverflow.helper';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
@@ -94,12 +100,16 @@ import {
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { CopyableFieldsEditorComponent } from '../../shared/copyable-fields/copyable-fields-editor.component';
-import { copyableFieldsForm, copyableFieldsValue } from '../../shared/copyable-fields/copyable-fields.form';
+import {
+  copyableFieldsForm,
+  copyableFieldsValue,
+} from '../../shared/copyable-fields/copyable-fields.form';
 
 @Component({
   selector: 'app-save-bookmark-form',
   templateUrl: './save-bookmark-form.component.html',
   styleUrls: ['./save-bookmark-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CopyableFieldsEditorComponent,
     NgTemplateOutlet,
@@ -261,7 +271,10 @@ export class SaveBookmarkFormComponent implements OnInit {
             this.datePipe.transform(bookmark.publishedOn, 'yyyy-MM-dd')
           ); // issue setting date otherwise on date field
         mergeFormTags(this.tags, this.bookmark.tags);
-        this.bookmarkForm.setControl('copyableFields', copyableFieldsForm(bookmark.copyableFields));
+        this.bookmarkForm.setControl(
+          'copyableFields',
+          copyableFieldsForm(bookmark.copyableFields)
+        );
 
         this.tagsControl.setValue(null);
         this.tags.markAsDirty();
@@ -485,7 +498,9 @@ export class SaveBookmarkFormComponent implements OnInit {
   }
 
   get copyableFields(): ReturnType<typeof copyableFieldsForm> {
-    return this.bookmarkForm.get('copyableFields') as ReturnType<typeof copyableFieldsForm>;
+    return this.bookmarkForm.get('copyableFields') as ReturnType<
+      typeof copyableFieldsForm
+    >;
   }
 
   saveBookmark(bookmark: Bookmark) {

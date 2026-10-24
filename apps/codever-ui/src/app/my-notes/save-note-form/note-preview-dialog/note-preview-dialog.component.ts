@@ -1,4 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MarkdownService } from '../../../core/markdown/markdown.service';
 import { NotebookRendererComponent } from '../../../shared/notebook-renderer/notebook-renderer.component';
@@ -14,6 +19,7 @@ export interface NotePreviewDialogData {
   selector: 'app-note-preview-dialog',
   templateUrl: './note-preview-dialog.component.html',
   styleUrls: ['./note-preview-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NotebookRendererComponent],
 })
 export class NotePreviewDialogComponent implements OnInit {

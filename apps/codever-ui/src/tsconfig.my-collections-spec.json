@@ -4,5 +4,13 @@
     "outDir": "../out-tsc/my-collections-spec",
     "types": ["jasmine", "node"]
   },
-  "include": ["app/my-collections/**/*.spec.ts", "**/*.d.ts"]
+  "include": ["app/my-collections/**/*.spec.ts", "**/*.d.ts"],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
 }

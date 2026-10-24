@@ -1,4 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogClose,
@@ -35,6 +40,7 @@ export interface CollectionContentsDialogData {
   selector: 'app-collection-contents-dialog',
   templateUrl: './collection-contents-dialog.component.html',
   styleUrls: ['./collection-contents-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     MatDialogContent,
