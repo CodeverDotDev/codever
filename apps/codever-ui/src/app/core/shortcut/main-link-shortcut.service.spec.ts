@@ -9,11 +9,22 @@ import {
   MAIN_LINK_SHORTCUT_PRIORITY,
   MainLinkShortcutService,
 } from './main-link-shortcut.service';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mocked,
+} from 'vitest';
 
 describe('MainLinkShortcutService', () => {
   let service: MainLinkShortcutService;
-  let addToHistory: jasmine.SpyObj<AddToHistoryService>;
-  let router: jasmine.SpyObj<Pick<Router, 'navigate'>>;
+  let addToHistory: Mocked<
+    Pick<AddToHistoryService, 'promoteInHistoryIfLoggedIn'>
+  >;
+  let router: Mocked<Pick<Router, 'navigate'>>;
 
   const bookmark = (id: string): Bookmark =>
     ({
@@ -50,16 +61,15 @@ describe('MainLinkShortcutService', () => {
   };
 
   beforeEach(() => {
-    jasmine.clock().install();
+    vi.useFakeTimers();
     // Control Date.now() too: the service measures the gap between the two `k`
-    // presses with Date.now(), which clock().tick() only advances once the date
+    // presses with Date.now(), which timer advancement only moves once the date
     // is mocked.
-    jasmine.clock().mockDate(new Date(2020, 0, 1, 0, 0, 0));
-    addToHistory = jasmine.createSpyObj<AddToHistoryService>(
-      'AddToHistoryService',
-      ['promoteInHistoryIfLoggedIn']
-    );
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    vi.setSystemTime(new Date(2020, 0, 1, 0, 0, 0));
+    addToHistory = {
+      promoteInHistoryIfLoggedIn: vi.fn(),
+    };
+    router = { navigate: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
@@ -73,126 +83,127 @@ describe('MainLinkShortcutService', () => {
   });
 
   afterEach(() => {
-    jasmine.clock().uninstall();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it('opens the single visible bookmark when k is pressed twice in time', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
     service.register(
       context(MAIN_LINK_SHORTCUT_PRIORITY.DETAILS, bookmark('a'), true)
     );
 
-    expect(service.handleKeydown(keydown({ key: 'k' }))).toBeFalse();
-    jasmine.clock().tick(200);
+    expect(service.handleKeydown(keydown({ key: 'k' }))).toBe(false);
+    vi.advanceTimersByTime(200);
     const second = keydown({ key: 'k' });
-    expect(service.handleKeydown(second)).toBeTrue();
+    expect(service.handleKeydown(second)).toBe(true);
 
-    expect(open.calls.count()).toBe(1);
-    expect(open.calls.mostRecent().args).toEqual([
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(open.mock.calls[0]).toEqual([
       'https://example.com/a',
       '_blank',
     ]);
-    expect(addToHistory.promoteInHistoryIfLoggedIn.calls.count()).toBe(1);
+    expect(addToHistory.promoteInHistoryIfLoggedIn).toHaveBeenCalledTimes(1);
     const promoteArgs =
-      addToHistory.promoteInHistoryIfLoggedIn.calls.mostRecent().args;
-    expect(promoteArgs[0]).toBeTrue();
+      addToHistory.promoteInHistoryIfLoggedIn.mock.calls[0];
+    expect(promoteArgs[0]).toBe(true);
     expect((promoteArgs[1] as Bookmark)._id).toBe('a');
-    expect(second.defaultPrevented).toBeTrue();
+    expect(second.defaultPrevented).toBe(true);
   });
 
   it('does not open when the second k is late (past the timeout)', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
     service.register(
       context(MAIN_LINK_SHORTCUT_PRIORITY.DETAILS, bookmark('a'))
     );
 
     service.handleKeydown(keydown({ key: 'k' }));
-    jasmine.clock().tick(MainLinkShortcutService.SEQUENCE_TIMEOUT_MS + 1);
-    expect(service.handleKeydown(keydown({ key: 'k' }))).toBeFalse();
+    vi.advanceTimersByTime(MainLinkShortcutService.SEQUENCE_TIMEOUT_MS + 1);
+    expect(service.handleKeydown(keydown({ key: 'k' }))).toBe(false);
 
     expect(open).not.toHaveBeenCalled();
   });
 
   it('ignores auto-repeat keydown events', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
     service.register(
       context(MAIN_LINK_SHORTCUT_PRIORITY.DETAILS, bookmark('a'))
     );
 
     service.handleKeydown(keydown({ key: 'k' }));
-    jasmine.clock().tick(50);
+    vi.advanceTimersByTime(50);
     expect(
       service.handleKeydown(keydown({ key: 'k', repeat: true }))
-    ).toBeFalse();
+    ).toBe(false);
 
     expect(open).not.toHaveBeenCalled();
   });
 
   it('resets the sequence when a non-k key interrupts it', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
     service.register(
       context(MAIN_LINK_SHORTCUT_PRIORITY.DETAILS, bookmark('a'))
     );
 
     service.handleKeydown(keydown({ key: 'k' }));
-    jasmine.clock().tick(50);
+    vi.advanceTimersByTime(50);
     service.handleKeydown(keydown({ key: 'x' }));
-    jasmine.clock().tick(50);
+    vi.advanceTimersByTime(50);
     // This is now only the first k of a fresh sequence.
-    expect(service.handleKeydown(keydown({ key: 'k' }))).toBeFalse();
+    expect(service.handleKeydown(keydown({ key: 'k' }))).toBe(false);
 
     expect(open).not.toHaveBeenCalled();
   });
 
   it('does not fire while an editable control has focus', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
     service.register(
       context(MAIN_LINK_SHORTCUT_PRIORITY.DETAILS, bookmark('a'))
     );
     const input = document.createElement('input');
 
     service.handleKeydown(keydown({ key: 'k', target: input }));
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     expect(
       service.handleKeydown(keydown({ key: 'k', target: input }))
-    ).toBeFalse();
+    ).toBe(false);
 
     expect(open).not.toHaveBeenCalled();
   });
 
   it('ignores k when a control/meta/alt modifier is held', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
     service.register(
       context(MAIN_LINK_SHORTCUT_PRIORITY.DETAILS, bookmark('a'))
     );
 
     service.handleKeydown(keydown({ key: 'k', ctrlKey: true }));
-    jasmine.clock().tick(100);
+    vi.advanceTimersByTime(100);
     expect(
       service.handleKeydown(keydown({ key: 'k', ctrlKey: true }))
-    ).toBeFalse();
+    ).toBe(false);
 
     expect(open).not.toHaveBeenCalled();
   });
 
   it('does nothing when no context is registered', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
 
     service.handleKeydown(keydown({ key: 'k' }));
-    jasmine.clock().tick(100);
-    expect(service.handleKeydown(keydown({ key: 'k' }))).toBeFalse();
+    vi.advanceTimersByTime(100);
+    expect(service.handleKeydown(keydown({ key: 'k' }))).toBe(false);
 
     expect(open).not.toHaveBeenCalled();
   });
 
   it('does nothing when the active context has no single bookmark (zero/multiple/note)', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
     // null models zero, multiple, or note-only - the provider returns null.
     service.register(context(MAIN_LINK_SHORTCUT_PRIORITY.SEARCH, null));
 
     service.handleKeydown(keydown({ key: 'k' }));
-    jasmine.clock().tick(100);
-    expect(service.handleKeydown(keydown({ key: 'k' }))).toBeFalse();
+    vi.advanceTimersByTime(100);
+    expect(service.handleKeydown(keydown({ key: 'k' }))).toBe(false);
 
     expect(open).not.toHaveBeenCalled();
   });
@@ -228,31 +239,31 @@ describe('MainLinkShortcutService', () => {
   });
 
   it('opens a new tab and promotes history once via openBookmarkInNewTab', () => {
-    const open = spyOn(window, 'open');
+    const open = vi.spyOn(window, 'open');
 
     service.openBookmarkInNewTab(bookmark('z'), true);
 
-    expect(open.calls.count()).toBe(1);
-    expect(open.calls.mostRecent().args).toEqual([
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(open.mock.calls[0]).toEqual([
       'https://example.com/z',
       '_blank',
     ]);
-    expect(addToHistory.promoteInHistoryIfLoggedIn.calls.count()).toBe(1);
+    expect(addToHistory.promoteInHistoryIfLoggedIn).toHaveBeenCalledTimes(1);
     const promoteArgs =
-      addToHistory.promoteInHistoryIfLoggedIn.calls.mostRecent().args;
-    expect(promoteArgs[0]).toBeTrue();
+      addToHistory.promoteInHistoryIfLoggedIn.mock.calls[0];
+    expect(promoteArgs[0]).toBe(true);
     expect((promoteArgs[1] as Bookmark)._id).toBe('z');
   });
 
   it('does not promote history when the user is not logged in', () => {
-    spyOn(window, 'open');
+    vi.spyOn(window, 'open');
 
     service.openBookmarkInNewTab(bookmark('z'), false);
 
-    expect(addToHistory.promoteInHistoryIfLoggedIn.calls.count()).toBe(1);
+    expect(addToHistory.promoteInHistoryIfLoggedIn).toHaveBeenCalledTimes(1);
     const promoteArgs =
-      addToHistory.promoteInHistoryIfLoggedIn.calls.mostRecent().args;
-    expect(promoteArgs[0]).toBeFalse();
+      addToHistory.promoteInHistoryIfLoggedIn.mock.calls[0];
+    expect(promoteArgs[0]).toBe(false);
     expect((promoteArgs[1] as Bookmark)._id).toBe('z');
   });
 
@@ -274,12 +285,12 @@ describe('MainLinkShortcutService', () => {
     const ALL = ['bookmark', 'note', 'collection'] as const;
 
     it('opens an activatable bookmark in a new tab and does not navigate', () => {
-      const open = spyOn(window, 'open');
+      const open = vi.spyOn(window, 'open');
 
       const outcome = service.activateResource(bookmark('b'), true, ALL);
 
       expect(outcome).toBe('new-tab');
-      expect(open.calls.mostRecent().args).toEqual([
+      expect(open.mock.calls[0]).toEqual([
         'https://example.com/b',
         '_blank',
       ]);
@@ -292,7 +303,7 @@ describe('MainLinkShortcutService', () => {
       const outcome = service.activateResource(aNote, true, ALL);
 
       expect(outcome).toBe('navigated');
-      expect(router.navigate.calls.mostRecent().args).toEqual([
+      expect(router.navigate.mock.calls[0]).toEqual([
         ['/my-notes', 'n', 'details'],
         { state: { note: aNote } },
       ]);
@@ -301,7 +312,7 @@ describe('MainLinkShortcutService', () => {
     it('navigates to the public note route for a public note', () => {
       service.activateResource(note('n', true), true, ALL);
 
-      expect(router.navigate.calls.mostRecent().args[0]).toEqual([
+      expect(router.navigate.mock.calls[0][0]).toEqual([
         '/notes',
         'n',
         'details',
@@ -312,14 +323,14 @@ describe('MainLinkShortcutService', () => {
       const outcome = service.activateResource(collection('c'), true, ALL);
 
       expect(outcome).toBe('navigated');
-      expect(router.navigate.calls.mostRecent().args[0]).toEqual([
+      expect(router.navigate.mock.calls[0][0]).toEqual([
         '/my-collections',
         'c',
       ]);
     });
 
     it('does nothing for a type the caller does not activate', () => {
-      const open = spyOn(window, 'open');
+      const open = vi.spyOn(window, 'open');
 
       expect(
         service.activateResource(note('n'), true, ['bookmark'])
@@ -345,7 +356,7 @@ describe('MainLinkShortcutService', () => {
     });
 
     it('does nothing when the bookmark has no location', () => {
-      const open = spyOn(window, 'open');
+      const open = vi.spyOn(window, 'open');
 
       expect(
         service.activateResource(

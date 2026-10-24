@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/onpush-spec",
-    "types": ["jasmine", "node"]
+    "typeRoots": ["../node_modules/@types", "../node_modules"],
+    "types": ["node", "vitest/globals"]
   },
   "include": ["app/shared/onpush-lists.spec.ts", "**/*.d.ts"],
   "angularCompilerOptions": {

@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed, inject } from '@angular/core/testing';
 
 import { LoaderService } from './loader.service';

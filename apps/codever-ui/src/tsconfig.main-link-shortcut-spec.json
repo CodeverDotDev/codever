@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/main-link-shortcut-spec",
-    "types": ["jasmine", "node"]
+    "typeRoots": ["../node_modules/@types", "../node_modules"],
+    "types": ["node", "vitest/globals"]
   },
   "include": [
     "app/core/shortcut/main-link-shortcut.service.spec.ts",

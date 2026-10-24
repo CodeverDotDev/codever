@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { MarkdownService } from './markdown.service';
 
 describe('Markdown transformer service', () => {
@@ -13,8 +14,7 @@ describe('Markdown transformer service', () => {
 
   it('should generate paragraph wrapping text', () => {
     expect(markdownService.toHtml('codingpedia')).toContain(
-      '<p>codingpedia</p>',
-      'paragraph wrapping'
+      '<p>codingpedia</p>'
     );
   });
 
@@ -41,16 +41,14 @@ describe('Markdown transformer service', () => {
     expect(
       markdownService.toHtml('[Codingpedia](http://www.codingpedia.org)')
     ).toContain(
-      '<p><a href="http://www.codingpedia.org">Codingpedia</a></p>',
-      'Hyperlink generation'
+      '<p><a href="http://www.codingpedia.org">Codingpedia</a></p>'
     );
     expect(
       markdownService.toHtml(
         '[Codingpedia](http://www.codingpedia.org "Sharing coding knowledge")'
       )
     ).toContain(
-      '<p><a href="http://www.codingpedia.org" title="Sharing coding knowledge">Codingpedia</a></p>',
-      'hyperlink generation with title'
+      '<p><a href="http://www.codingpedia.org" title="Sharing coding knowledge">Codingpedia</a></p>'
     );
   });
 });

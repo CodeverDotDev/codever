@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HowtoHotkeysComponent } from './howto-hotkeys.component';

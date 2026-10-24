@@ -27,16 +27,14 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ### Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test` to execute the unit tests with Angular's Vitest builder in jsdom.
 
 ### OnPush list regression tests
 
 From `apps/codever-ui`, run `npm run test:onpush`.
 
-This isolated Karma target uses ChromeHeadless and mocked services; no API,
-Keycloak or Docker is needed. Chrome must be installed (set `CHROME_BIN` if it
-is not in the default location). It does not depend on the legacy test target's
-missing `src/test.ts` or `karma.conf.js` files.
+This isolated Vitest target uses jsdom and mocked services; no browser, API,
+Keycloak or Docker is needed.
 
 `AsyncBookmarkListComponent`, `BookmarkListElementComponent`, and
 `AsyncNoteListComponent` use `OnPush`. Keep `provideZoneChangeDetection()` in

@@ -46,6 +46,7 @@ import { environment } from '../../environments/environment';
 import { AsyncSearchResultListComponent } from './async-search-result-list/async-search-result-list.component';
 import { NoteContentComponent } from './note-details/note-card-body/note-content.component';
 import { BookmarkTextComponent } from './bookmark-text/bookmark-text.component';
+import { expect, vi } from 'vitest';
 
 function bookmark(id: string, name = id): Bookmark {
   return {
@@ -131,12 +132,12 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
   let fixture: ComponentFixture<ListHostComponent>;
   let host: ListHostComponent;
   let userInfo$: Subject<{ sub: string }>;
-  let copy: jasmine.Spy;
+  let copy: ReturnType<typeof vi.fn>;
   let noteUpdate$: Subject<Note>;
 
   beforeEach(async () => {
     userInfo$ = new Subject();
-    copy = jasmine.createSpy('copy').and.returnValue(true);
+    copy = vi.fn().mockReturnValue(true);
     noteUpdate$ = new Subject();
     await TestBed.configureTestingModule({
       imports: [ListHostComponent],
@@ -168,6 +169,10 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
           provide: PersonalNotesService,
           useValue: { updateNote: () => noteUpdate$ },
         },
+        {
+          provide: AddToHistoryService,
+          useValue: { onClickInDescription: vi.fn() },
+        },
         ...[
           UserDataHistoryStore,
           UserDataPinnedStore,
@@ -179,7 +184,6 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
           FeedStore,
           MyBookmarksStore,
           LoginDialogHelperService,
-          AddToHistoryService,
           DeleteNotificationService,
           PaginationNotificationService,
         ].map((provide) => ({ provide, useValue: {} })),
@@ -209,18 +213,18 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     const element = fixture.nativeElement.querySelector(
       selector
     ) as HTMLElement;
-    expect(element).withContext(selector).not.toBeNull();
+    expect(element, selector).not.toBeNull();
     element.click();
     fixture.detectChanges();
   }
 
   it('skips unchanged cards on unrelated parent checks and updates replacement inputs', fakeAsync(() => {
     const first = bookmark('one');
-    const readName = jasmine.createSpy('readName').and.returnValue('one');
+    const readName = vi.fn().mockReturnValue('one');
     Object.defineProperty(first, 'name', { get: readName });
     host.bookmarks$.next([first, bookmark('two')]);
     render();
-    readName.calls.reset();
+    readName.mockClear();
     click('.unrelated');
     fixture.detectChanges();
     expect(readName).not.toHaveBeenCalled();
@@ -232,7 +236,7 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
   }));
 
   it('expands sole entries, preserves user collapse and resets multi-entry defaults', fakeAsync(() => {
-    spyOnProperty(HTMLElement.prototype, 'offsetHeight', 'get').and.returnValue(
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(
       500
     );
     const first = note('one');
@@ -249,8 +253,8 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     const bookmarkContent = fixture.debugElement.query(
       By.directive(BookmarkTextComponent)
     ).componentInstance;
-    expect(content.showMoreText).toBeTrue();
-    expect(bookmarkContent.showMoreText).toBeTrue();
+    expect(content.showMoreText).toBe(true);
+    expect(bookmarkContent.showMoreText).toBe(true);
     expect(fixture.nativeElement.textContent).toContain(
       'Additional fields (copyable)'
     );
@@ -259,15 +263,15 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     click('app-note-content [aria-label="Show less"]');
     click('app-bookmark-text [aria-label="Show less"]');
     click('.unrelated');
-    expect(content.showMoreText).toBeFalse();
-    expect(bookmarkContent.showMoreText).toBeFalse();
+    expect(content.showMoreText).toBe(false);
+    expect(bookmarkContent.showMoreText).toBe(false);
     host.notes$.next([first, note('two')]);
     host.bookmarks$.next([firstBookmark, bookmark('two')]);
     render();
     for (const item of fixture.debugElement.queryAll(
       By.directive(NoteContentComponent)
     )) {
-      expect(item.componentInstance.showMoreText).toBeFalse();
+      expect(item.componentInstance.showMoreText).toBe(false);
     }
     host.notes$.next([first]);
     host.bookmarks$.next([firstBookmark]);
@@ -275,11 +279,11 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     expect(
       fixture.debugElement.query(By.directive(NoteContentComponent))
         .componentInstance.showMoreText
-    ).toBeTrue();
+    ).toBe(true);
     expect(
       fixture.debugElement.query(By.directive(BookmarkTextComponent))
         .componentInstance.showMoreText
-    ).toBeTrue();
+    ).toBe(true);
   }));
 
   it('expands only a sole visible result in mixed/filtered lists', fakeAsync(() => {
@@ -294,11 +298,11 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     expect(
       mixed.query(By.directive(NoteContentComponent)).componentInstance
         .showMoreText
-    ).toBeFalse();
+    )    .toBe(false);
     expect(
       mixed.query(By.directive(BookmarkTextComponent)).componentInstance
         .showMoreText
-    ).toBeFalse();
+    )    .toBe(false);
     const input = mixed.nativeElement.querySelector(
       'input[type="search"]'
     ) as HTMLInputElement;
@@ -308,14 +312,14 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     expect(
       mixed.query(By.directive(NoteContentComponent)).componentInstance
         .showMoreText
-    ).toBeTrue();
+    )    .toBe(true);
     input.value = 'Unique bookmark';
     input.dispatchEvent(new Event('input'));
     render();
     expect(
       mixed.query(By.directive(BookmarkTextComponent)).componentInstance
         .showMoreText
-    ).toBeTrue();
+    )    .toBe(true);
   }));
 
   it('keeps detail content expanded regardless of preview height', fakeAsync(() => {
@@ -326,7 +330,7 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     );
     content.componentInstance.viewHeight = 500;
     fixture.detectChanges();
-    expect(content.componentInstance.partOfList).toBeFalse();
+    expect(content.componentInstance.partOfList).toBe(false);
     expect(content.nativeElement.querySelector('.less_text_note')).toBeNull();
     expect(
       content.nativeElement.querySelector('.toggle-show-more-button')
@@ -411,7 +415,7 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
       cards()[0].querySelector('[title="Search my bookmarks tagged angular"]')
     ).not.toBeNull();
     fixture.destroy();
-    expect(userInfo$.observed).toBeFalse();
+    expect(userInfo$.observed).toBe(false);
   }));
 
   it('clears copied feedback and restarts its timer on repeated copies', fakeAsync(() => {
@@ -432,10 +436,10 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
   it('does not show feedback when copying fails and cancels timers on destruction', fakeAsync(() => {
     host.bookmarks$.next([bookmark('one')]);
     render();
-    copy.and.returnValue(false);
+    copy.mockReturnValue(false);
     click('[title="Copy link to clipboard"]');
     expect(cards()[0].textContent).not.toContain('Copied');
-    copy.and.returnValue(true);
+    copy.mockReturnValue(true);
     click('[title="Copy link to clipboard"]');
     const card = fixture.debugElement.query(
       By.directive(BookmarkListElementComponent)
@@ -455,10 +459,10 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     const pagination = fixture.debugElement.query(
       By.directive(PageNavigationBarComponent)
     ).componentInstance;
-    expect(pagination.showPaginationDelayExpired).toBeFalse();
+    expect(pagination.showPaginationDelayExpired).toBe(false);
     tick(1000);
     fixture.detectChanges();
-    expect(pagination.showPaginationDelayExpired).toBeTrue();
+    expect(pagination.showPaginationDelayExpired).toBe(true);
     expect(
       fixture.nativeElement
         .querySelector('app-page-navigation-bar')
@@ -468,17 +472,15 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
 
   it('skips the note subtree on unrelated checks and renders list emissions', fakeAsync(() => {
     const value = note('one');
-    const readTitle = jasmine
-      .createSpy('readTitle')
-      .and.returnValue('First note');
+    const readTitle = vi.fn().mockReturnValue('First note');
     Object.defineProperty(value, 'title', { get: readTitle });
     host.notes$.next([value]);
     render();
-    readTitle.calls.reset();
+    readTitle.mockClear();
     click('.unrelated');
     fixture.detectChanges();
     expect(readTitle).not.toHaveBeenCalled();
-    readTitle.and.returnValue('Changed title');
+    readTitle.mockReturnValue('Changed title');
     host.notes$.next([value]);
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Changed title');
@@ -492,7 +494,10 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
   }));
 
   it('renders note clipboard promise and timer updates and zoom events', fakeAsync(() => {
-    spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.resolve());
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+    });
     host.notes$.next([note('one')]);
     render();
     click('[title="Copy markdown content"]');
@@ -520,25 +525,25 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     expect(value.content).toBe('- [ ] Task');
     expect(
       fixture.nativeElement.querySelector('input.note-task-checkbox').checked
-    ).toBeFalse();
+    ).toBe(false);
   }));
 
   it('preserves delayed headings and scroll-spy changes on the Default note details page', fakeAsync(() => {
     host.showDetail = true;
     fixture.detectChanges();
     const headings = fixture.nativeElement.querySelectorAll('h1');
-    spyOn(headings[0], 'getBoundingClientRect').and.returnValue({
+    vi.spyOn(headings[0], 'getBoundingClientRect').mockReturnValue({
       top: 0,
     } as DOMRect);
-    const secondPosition = spyOn(
+    const secondPosition = vi.spyOn(
       headings[1],
       'getBoundingClientRect'
-    ).and.returnValue({ top: 200 } as DOMRect);
-    spyOnProperty(
+    ).mockReturnValue({ top: 200 } as DOMRect);
+    vi.spyOn(
       document.documentElement,
       'scrollHeight',
       'get'
-    ).and.returnValue(10000);
+    ).mockReturnValue(10000);
     render();
     // Creating the TOC after the headings render may schedule one more setup.
     tick(100);
@@ -551,7 +556,7 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     expect(
       tocDebug.nativeElement.querySelector('.toc-active').textContent
     ).toContain('First');
-    secondPosition.and.returnValue({ top: 0 } as DOMRect);
+    secondPosition.mockReturnValue({ top: 0 } as DOMRect);
     window.dispatchEvent(new Event('scroll'));
     tick(20);
     fixture.detectChanges();

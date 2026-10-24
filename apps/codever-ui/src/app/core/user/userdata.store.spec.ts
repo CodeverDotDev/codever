@@ -7,17 +7,20 @@ import { UserDataService } from '../user-data.service';
 import { NotifyStoresService } from './notify-stores.service';
 import { UserDataHistoryStore } from './userdata.history.store';
 import { UserDataStore } from './userdata.store';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 describe('UserDataStore favorites', () => {
   let store: UserDataStore;
-  let userService: jasmine.SpyObj<UserDataService>;
+  let userService: Mocked<
+    Pick<UserDataService, 'getUserData' | 'updateUserFavorite'>
+  >;
   let userData: UserData;
 
   beforeEach(() => {
-    userService = jasmine.createSpyObj<UserDataService>('UserDataService', [
-      'getUserData',
-      'updateUserFavorite',
-    ]);
+    userService = {
+      getUserData: vi.fn<UserDataService['getUserData']>(),
+      updateUserFavorite: vi.fn<UserDataService['updateUserFavorite']>(),
+    };
     userData = {
       userId: 'owner',
       searches: [],
@@ -25,7 +28,7 @@ describe('UserDataStore favorites', () => {
       favoriteNotes: ['note-existing'],
       likes: ['bookmark-liked'],
     };
-    userService.getUserData.and.returnValue(of(userData));
+    userService.getUserData.mockReturnValue(of(userData));
 
     TestBed.configureTestingModule({
       providers: [
@@ -43,7 +46,7 @@ describe('UserDataStore favorites', () => {
 
   it('updates bookmark favorites only after a successful response', () => {
     const response = new Subject<UserFavoriteMutation>();
-    userService.updateUserFavorite.and.returnValue(response.asObservable());
+    userService.updateUserFavorite.mockReturnValue(response.asObservable());
 
     store.toggleFavorite$('bookmark', 'bookmark-new').subscribe();
 
@@ -68,7 +71,7 @@ describe('UserDataStore favorites', () => {
 
   it('removes a note favorite without changing bookmark favorites', () => {
     const response = new Subject<UserFavoriteMutation>();
-    userService.updateUserFavorite.and.returnValue(response.asObservable());
+    userService.updateUserFavorite.mockReturnValue(response.asObservable());
 
     store.toggleFavorite$('note', 'note-existing').subscribe();
     response.next({

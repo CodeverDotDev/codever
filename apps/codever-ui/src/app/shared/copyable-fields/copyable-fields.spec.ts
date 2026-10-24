@@ -28,6 +28,14 @@ import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { MatTooltip } from '@angular/material/tooltip';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 const pair = { label: 'Command', value: 'npm test' };
 
@@ -40,12 +48,12 @@ describe('Copyable fields editor', () => {
   );
 
   it('accepts omission, exact limits, duplicate labels and trims only outer whitespace', () => {
-    expect(copyableFieldsForm().valid).toBeTrue();
+    expect(copyableFieldsForm().valid).toBe(true);
     const fields = copyableFieldsForm([
       { label: ' Command ', value: ' npm  test ' },
       pair,
     ]);
-    expect(fields.valid).toBeTrue();
+    expect(fields.valid).toBe(true);
     expect(copyableFieldsValue(fields)).toEqual([
       { label: 'Command', value: 'npm  test' },
       pair,
@@ -57,7 +65,7 @@ describe('Copyable fields editor', () => {
           value: 'v'.repeat(1000),
         }))
       ).valid
-    ).toBeTrue();
+    ).toBe(true);
   });
 
   it('rejects blank, multiline and over-limit fields without truncation', () => {
@@ -70,16 +78,15 @@ describe('Copyable fields editor', () => {
       'a\u2029b',
       'v'.repeat(1001),
     ]) {
-      expect(copyableFieldsForm([{ label: 'Label', value }]).invalid)
-        .withContext(value)
-        .toBeTrue();
+      expect(copyableFieldsForm([{ label: 'Label', value }]).invalid, value)
+        .toBe(true);
     }
     for (const label of ['', ' ', 'l'.repeat(101), 'a\nb']) {
       expect(
         copyableFieldsForm([{ label, value: 'Value' }]).invalid
-      ).toBeTrue();
+      ).toBe(true);
     }
-    expect(copyableFieldsForm(Array(11).fill(pair)).invalid).toBeTrue();
+    expect(copyableFieldsForm(Array(11).fill(pair)).invalid).toBe(true);
   });
 
   it('adds, reorders, removes and limits rows in the actual editor', () => {
@@ -101,7 +108,7 @@ describe('Copyable fields editor', () => {
     fixture.componentInstance.add();
     fields.markAllAsTouched();
     fixture.detectChanges();
-    expect(fields.invalid).toBeTrue();
+    expect(fields.invalid).toBe(true);
     expect(
       fixture.nativeElement.querySelector('[role="alert"]')
     ).not.toBeNull();
@@ -114,7 +121,7 @@ describe('Copyable fields editor', () => {
     expect(
       buttons.find((button) => button.textContent.trim() === 'Add field')
         .disabled
-    ).toBeTrue();
+    ).toBe(true);
     fixture.destroy();
   });
 
@@ -154,7 +161,7 @@ describe('Copyable fields editor', () => {
     ) as HTMLTextAreaElement;
     input.value = 'first\nsecond';
     input.dispatchEvent(new Event('input'));
-    expect(fields.invalid).toBeTrue();
+    expect(fields.invalid).toBe(true);
     fixture.destroy();
   });
 
@@ -211,9 +218,11 @@ describe('Editor save and copy state', () => {
       content: 'content',
       tags: ['test'],
     } as Note);
-    const update = spyOn(editor, 'updateNote');
+    const update = vi
+      .spyOn(editor, 'updateNote')
+      .mockImplementation(() => undefined);
     editor.saveNote(editor.noteForm.value);
-    expect(update.calls.mostRecent().args[0].copyableFields).toEqual([]);
+    expect(update.mock.lastCall?.[0].copyableFields).toEqual([]);
   });
 
   it('copies fields independently and retains source metadata on note clone/save', () => {
@@ -226,12 +235,14 @@ describe('Editor save and copy state', () => {
       public: true,
     } as Note;
     const editor = noteEditor(original, true);
-    const clone = spyOn(editor, 'cloneNoteFunction');
+    const clone = vi
+      .spyOn(editor, 'cloneNoteFunction')
+      .mockImplementation(() => undefined);
     editor.copyableFields.at(0).controls.value.setValue(' changed ');
     editor.saveNote(editor.noteForm.value);
-    const submitted = clone.calls.mostRecent().args[0] as Note;
+    const submitted = clone.mock.lastCall?.[0] as Note;
     expect(submitted.copyableFields[0].value).toBe('changed');
-    expect(submitted.public).toBeFalse();
+    expect(submitted.public).toBe(false);
     expect(submitted.origin).toEqual(original.origin);
     expect(submitted.origin).not.toBe(original.origin);
     expect(original.copyableFields[0].value).toBe('npm test');
@@ -243,10 +254,12 @@ describe('Editor save and copy state', () => {
       'copyableFields',
       copyableFieldsForm([{ label: 'Label', value: '' }])
     );
-    const create = spyOn(editor, 'createNote');
+    const create = vi
+      .spyOn(editor, 'createNote')
+      .mockImplementation(() => undefined);
     editor.saveNote(editor.noteForm.value);
     expect(create).not.toHaveBeenCalled();
-    expect(editor.copyableFields.touched).toBeTrue();
+    expect(editor.copyableFields.touched).toBe(true);
   });
 
   it('includes fields in new bookmark payloads and validates copied bookmarks', () => {
@@ -257,10 +270,10 @@ describe('Editor save and copy state', () => {
       userData: { profile: { displayName: 'Owner' } },
       markdownService: { toHtml: () => '<p>content</p>' },
       personalBookmarksService: {
-        createBookmark: jasmine.createSpy('create').and.returnValue(of()),
+        createBookmark: vi.fn().mockReturnValue(of()),
       },
     });
-    spyOn(editor, 'onChanges');
+    vi.spyOn(editor, 'onChanges').mockImplementation(() => undefined);
     editor.buildForm();
     editor.bookmarkForm.patchValue({
       name: 'Name',
@@ -274,18 +287,20 @@ describe('Editor save and copy state', () => {
     );
     editor.saveBookmark(editor.bookmarkForm.value);
     expect(
-      editor.personalBookmarksService.createBookmark.calls.mostRecent().args[1]
+      editor.personalBookmarksService.createBookmark.mock.lastCall?.[1]
         .copyableFields
     ).toEqual([{ label: 'Label', value: 'value' }]);
     editor.copyToMine = true;
-    const copy = spyOn(editor, 'copyBookmarkToMine');
+    const copy = vi
+      .spyOn(editor, 'copyBookmarkToMine')
+      .mockImplementation(() => undefined);
     editor.copyableFields.at(0).controls.value.setValue('');
     editor.saveBookmark(editor.bookmarkForm.value);
     expect(copy).not.toHaveBeenCalled();
     editor.copyableFields.at(0).controls.value.setValue('changed');
     editor.saveBookmark(editor.bookmarkForm.value);
     expect(
-      (copy.calls.mostRecent().args[0] as Bookmark).copyableFields[0].value
+      (copy.mock.lastCall?.[0] as Bookmark).copyableFields[0].value
     ).toBe('changed');
   });
 });
@@ -329,17 +344,19 @@ describe('Entry copyable display', () => {
 
   it('copies only values and gives feedback on success and denied permission', async () => {
     const cd = {
-      markForCheck: jasmine.createSpy(),
+      markForCheck: vi.fn(),
     } as unknown as ChangeDetectorRef;
     const display = new EntryCopyableInfoComponent(cd);
-    const write = spyOn(navigator.clipboard, 'writeText').and.returnValue(
-      Promise.resolve()
-    );
+    const write = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: write },
+    });
     await display.copy(pair);
     expect(write).toHaveBeenCalledWith('npm test');
     expect(display.copiedField).toBe(pair);
     expect(display.feedback).toBe('');
-    write.and.returnValue(Promise.reject(new Error('Denied')));
+    write.mockRejectedValue(new Error('Denied'));
     await display.copy(pair);
     expect(display.feedback).toContain('Select the value');
     expect(cd.markForCheck).toHaveBeenCalled();
@@ -421,7 +438,7 @@ describe('Copyable-field save cache behavior', () => {
         );
         expect(JSON.parse(failed.request.body).copyableFields).toEqual([pair]);
         failed.flush({}, { status: 400, statusText: 'Bad Request' });
-        expect(storage.load(localStorageKeys.userHistoryBookmarks)).toBeTrue();
+        expect(storage.load(localStorageKeys.userHistoryBookmarks)).toBe(true);
         send().subscribe();
         http
           .expectOne(
@@ -436,10 +453,10 @@ describe('Copyable-field save cache behavior', () => {
               : localStorageKeys.personalTagsBookmarks
           )
         ).toBeNull();
-        expect(storage.load(localStorageKeys.userInfoOidc)).toBeTrue();
+        expect(storage.load(localStorageKeys.userInfoOidc)).toBe(true);
         expect(
           storage.load(localStorageKeys.userLocalStorageConsent)
-        ).toBeTrue();
+        ).toBe(true);
       });
     }
   }

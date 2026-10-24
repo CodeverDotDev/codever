@@ -29,7 +29,7 @@ npx jest --config jest.config.integration.js --testPathPattern="…"  # single i
 ### Frontend (`apps/codever-ui`)
 ```bash
 ng lint
-ng test              # Karma/Jasmine
+ng test              # Angular Vitest builder
 npm run cy:run       # Cypress E2E headless — requires Docker
 ```
 

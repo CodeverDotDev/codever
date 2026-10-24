@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { Bookmark } from '../../../core/model/bookmark';
 import { Note } from '../../../core/model/note';
 import { filterCollectionContents } from './collection-contents.filter';

@@ -11,30 +11,27 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { NoteDetailsComponent } from './note-details.component';
+import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 describe('NoteDetailsComponent favorites', () => {
-  let authService: jasmine.SpyObj<AuthenticationService>;
-  let dialog: { open: jasmine.Spy };
-  let userDataStore: jasmine.SpyObj<UserDataStore>;
+  let authService: Mocked<Pick<AuthenticationService, 'isLoggedIn'>>;
+  let dialog: { open: ReturnType<typeof vi.fn> };
+  let userDataStore: Mocked<Pick<UserDataStore, 'toggleFavorite$'>>;
   let note: Note;
   let userData: UserData;
 
   beforeEach(() => {
-    authService = jasmine.createSpyObj<AuthenticationService>(
-      'AuthenticationService',
-      ['isLoggedIn']
-    );
-    authService.isLoggedIn.and.returnValue(true);
-    dialog = {
-      open: jasmine
-        .createSpy('open')
-        .and.returnValue({ afterClosed: () => of(null) }),
+    authService = {
+      isLoggedIn: vi.fn<AuthenticationService['isLoggedIn']>(),
     };
-    userDataStore = jasmine.createSpyObj<UserDataStore>(
-      'UserDataStore',
-      ['toggleFavorite$']
-    );
-    userDataStore.toggleFavorite$.and.returnValue(
+    authService.isLoggedIn.mockReturnValue(true);
+    dialog = {
+      open: vi.fn().mockReturnValue({ afterClosed: () => of(null) }),
+    };
+    userDataStore = {
+      toggleFavorite$: vi.fn<UserDataStore['toggleFavorite$']>(),
+    };
+    userDataStore.toggleFavorite$.mockReturnValue(
       of({
         resourceType: 'note',
         resourceId: 'note-1',
@@ -102,7 +99,7 @@ describe('NoteDetailsComponent favorites', () => {
   });
 
   it('prompts guests to log in without sending a mutation', () => {
-    authService.isLoggedIn.and.returnValue(false);
+    authService.isLoggedIn.mockReturnValue(false);
     const fixture = TestBed.createComponent(NoteDetailsComponent);
 
     fixture.componentInstance.toggleFavorite(note);

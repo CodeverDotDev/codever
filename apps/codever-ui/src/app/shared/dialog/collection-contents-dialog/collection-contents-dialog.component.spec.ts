@@ -5,6 +5,14 @@ import {
   CollectionContentsDialogComponent,
   CollectionContentsDialogData,
 } from './collection-contents-dialog.component';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+type ShortcutMock = MainLinkShortcutService & {
+  activateResource: ReturnType<typeof vi.fn>;
+  openBookmarkInNewTab: ReturnType<typeof vi.fn>;
+  register: ReturnType<typeof vi.fn>;
+  unregister: ReturnType<typeof vi.fn>;
+};
 
 /**
  * Focused tests for the collection contents dialog's `Enter` handler. Like the
@@ -13,8 +21,8 @@ import {
  */
 describe('CollectionContentsDialogComponent Enter handler', () => {
   let component: CollectionContentsDialogComponent;
-  let shortcut: jasmine.SpyObj<MainLinkShortcutService>;
-  let dialogRef: jasmine.SpyObj<{ close: () => void }>;
+  let shortcut: ShortcutMock;
+  let dialogRef: { close: ReturnType<typeof vi.fn> };
 
   const bookmark = (id: string): Bookmark =>
     ({
@@ -34,11 +42,18 @@ describe('CollectionContentsDialogComponent Enter handler', () => {
   };
 
   beforeEach(() => {
-    shortcut = jasmine.createSpyObj<MainLinkShortcutService>(
-      'MainLinkShortcutService',
-      ['activateResource', 'openBookmarkInNewTab', 'register', 'unregister']
+    shortcut = Object.assign(
+      new MainLinkShortcutService({} as never, {} as never),
+      {
+        activateResource:
+          vi.fn<MainLinkShortcutService['activateResource']>(),
+        openBookmarkInNewTab:
+          vi.fn<MainLinkShortcutService['openBookmarkInNewTab']>(),
+        register: vi.fn<MainLinkShortcutService['register']>(),
+        unregister: vi.fn<MainLinkShortcutService['unregister']>(),
+      }
     );
-    dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    dialogRef = { close: vi.fn() };
     component = new CollectionContentsDialogComponent(
       {} as never,
       data,
@@ -57,23 +72,23 @@ describe('CollectionContentsDialogComponent Enter handler', () => {
 
     component.onFilterEnter();
 
-    expect(shortcut.activateResource.calls.count()).toBe(1);
-    const args = shortcut.activateResource.calls.mostRecent().args;
+    expect(shortcut.activateResource).toHaveBeenCalledTimes(1);
+    const args = shortcut.activateResource.mock.lastCall!;
     expect((args[0] as Bookmark)._id).toBe('b');
-    expect(args[1]).toBeTrue();
+    expect(args[1]).toBe(true);
     expect(args[2]).toEqual(['bookmark', 'note']);
-    expect(dialogRef.close.calls.count()).toBe(0);
+    expect(dialogRef.close).toHaveBeenCalledTimes(0);
   });
 
   it('activates the only visible note and closes the dialog', () => {
-    shortcut.activateResource.and.returnValue('navigated');
+    shortcut.activateResource.mockReturnValue('navigated');
     setVisible([], [note('n')]);
 
     component.onFilterEnter();
 
-    const args = shortcut.activateResource.calls.mostRecent().args;
+    const args = shortcut.activateResource.mock.lastCall!;
     expect((args[0] as Note)._id).toBe('n');
-    expect(dialogRef.close.calls.count()).toBe(1);
+    expect(dialogRef.close).toHaveBeenCalledTimes(1);
   });
 
   it('does nothing when a bookmark and a note are both visible', () => {
@@ -81,7 +96,7 @@ describe('CollectionContentsDialogComponent Enter handler', () => {
 
     component.onFilterEnter();
 
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).toHaveBeenCalledTimes(0);
   });
 
   it('does nothing when nothing is visible', () => {
@@ -89,7 +104,7 @@ describe('CollectionContentsDialogComponent Enter handler', () => {
 
     component.onFilterEnter();
 
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).toHaveBeenCalledTimes(0);
   });
 
   it('does nothing for multiple visible bookmarks', () => {
@@ -97,7 +112,7 @@ describe('CollectionContentsDialogComponent Enter handler', () => {
 
     component.onFilterEnter();
 
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).toHaveBeenCalledTimes(0);
   });
 
   it('names the target type in the hint and stays silent when ambiguous', () => {

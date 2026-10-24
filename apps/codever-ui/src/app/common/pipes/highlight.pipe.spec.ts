@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { HighLightPipe } from './highlight.pipe';
 
 describe('HighlightHtml Pipe', () => {
@@ -13,8 +14,7 @@ describe('HighlightHtml Pipe', () => {
 
   it('should add highlight span normal text search ', () => {
     expect(highLightPipe.transform('codingpedia is great', 'codingpedia')).toBe(
-      '<span class="highlight">codingpedia</span> is great',
-      'simple text highlight'
+      '<span class="highlight">codingpedia</span> is great'
     );
     // expect(highLightPipe.transform('codingpedia', 'codingpedia')).toContain('<span class="highlight">codingpedia</span>', 'highlight not finished tag');
     // expect(highlightHtmlPipe.transform('codingpedia is great', '[codingpe')).toContain('<span class="highlight">codingpe</span>dia is great', 'highlight not finished tag');
@@ -24,14 +24,12 @@ describe('HighlightHtml Pipe', () => {
     expect(
       highLightPipe.transform('codingpedia is great', '[codingpe')
     ).toContain(
-      '<span class="highlight">codingpe</span>dia is great',
-      'highlight when not finished tag'
+      '<span class="highlight">codingpe</span>dia is great'
     );
     expect(
       highLightPipe.transform('codingpedia is great', '[codingpedia]')
     ).toContain(
-      '<span class="highlight">codingpedia</span> is great',
-      'highlight when tag completed'
+      '<span class="highlight">codingpedia</span> is great'
     );
     expect(
       highLightPipe.transform(
@@ -39,8 +37,7 @@ describe('HighlightHtml Pipe', () => {
         'angular [codingpedia]'
       )
     ).toContain(
-      '<span class="highlight">codingpedia</span> is a great place to find <span class="highlight">angular</span> resources',
-      'highlight when tag plus search text'
+      '<span class="highlight">codingpedia</span> is a great place to find <span class="highlight">angular</span> resources'
     );
   });
 });

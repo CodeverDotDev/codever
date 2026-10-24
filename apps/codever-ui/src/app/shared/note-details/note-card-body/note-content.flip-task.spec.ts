@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { flipTaskMarker, resetTaskMarkers } from './note-content.component';
 
 
@@ -143,4 +144,3 @@ describe('resetTaskMarkers', () => {
     ).toBeUndefined();
   });
 });
-

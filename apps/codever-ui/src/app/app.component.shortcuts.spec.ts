@@ -12,6 +12,15 @@ import { UserDataStore } from './core/user/userdata.store';
 import { UserDataHistoryStore } from './core/user/userdata.history.store';
 import { UserDataPinnedStore } from './core/user/userdata.pinned.store';
 import { LoginDialogHelperService } from './core/login-dialog-helper.service';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type MockInstance,
+} from 'vitest';
 
 /**
  * Focused coverage for the Pinned and History quick-access keyboard shortcuts.
@@ -25,9 +34,9 @@ import { LoginDialogHelperService } from './core/login-dialog-helper.service';
 describe('AppComponent quick-access shortcuts', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
-  let launchPinned: jasmine.Spy;
-  let launchHistory: jasmine.Spy;
-  let loginDialogOpen: jasmine.Spy;
+  let launchPinned: MockInstance;
+  let launchHistory: MockInstance;
+  let loginDialogOpen: MockInstance;
 
   const pressKey = (init: KeyboardEventInit): KeyboardEvent => {
     const event = new KeyboardEvent('keydown', {
@@ -39,14 +48,15 @@ describe('AppComponent quick-access shortcuts', () => {
   };
 
   beforeEach(() => {
-    // `ngOnInit` reads `#favicon` in non-production builds; Karma's page has none.
+    // `ngOnInit` reads `#favicon` in non-production builds; jsdom starts
+    // without it.
     if (!document.querySelector('#favicon')) {
       const link = document.createElement('link');
       link.id = 'favicon';
       document.head.appendChild(link);
     }
 
-    loginDialogOpen = jasmine.createSpy('matDialogOpen');
+    loginDialogOpen = vi.fn();
 
     TestBed.configureTestingModule({
       imports: [AppComponent],
@@ -96,8 +106,16 @@ describe('AppComponent quick-access shortcuts', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    launchPinned = spyOn(component as any, 'launchPinnedDialog');
-    launchHistory = spyOn(component as any, 'launchHistoryDialog');
+    launchPinned = vi
+      .spyOn(component as any, 'launchPinnedDialog')
+      .mockImplementation(() => undefined);
+    launchHistory = vi
+      .spyOn(component as any, 'launchHistoryDialog')
+      .mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('opens the Pinned dialog on Ctrl+Shift+P', () => {
@@ -107,7 +125,7 @@ describe('AppComponent quick-access shortcuts', () => {
 
     expect(launchPinned).toHaveBeenCalledTimes(1);
     expect(launchHistory).not.toHaveBeenCalled();
-    expect(event.defaultPrevented).toBeTrue();
+    expect(event.defaultPrevented).toBe(true);
   });
 
   it('opens the Pinned dialog on Cmd+Shift+P', () => {
@@ -116,7 +134,7 @@ describe('AppComponent quick-access shortcuts', () => {
     const event = pressKey({ key: 'P', metaKey: true, shiftKey: true });
 
     expect(launchPinned).toHaveBeenCalledTimes(1);
-    expect(event.defaultPrevented).toBeTrue();
+    expect(event.defaultPrevented).toBe(true);
   });
 
   it('opens the History dialog on Ctrl+Shift+H', () => {
@@ -126,7 +144,7 @@ describe('AppComponent quick-access shortcuts', () => {
 
     expect(launchHistory).toHaveBeenCalledTimes(1);
     expect(launchPinned).not.toHaveBeenCalled();
-    expect(event.defaultPrevented).toBeTrue();
+    expect(event.defaultPrevented).toBe(true);
   });
 
   it('opens the History dialog on Cmd+Shift+H', () => {
@@ -135,7 +153,7 @@ describe('AppComponent quick-access shortcuts', () => {
     const event = pressKey({ key: 'H', metaKey: true, shiftKey: true });
 
     expect(launchHistory).toHaveBeenCalledTimes(1);
-    expect(event.defaultPrevented).toBeTrue();
+    expect(event.defaultPrevented).toBe(true);
   });
 
   it('prompts for login and suppresses the browser action on Ctrl+Shift+P when signed out', () => {
@@ -145,7 +163,7 @@ describe('AppComponent quick-access shortcuts', () => {
 
     expect(launchPinned).not.toHaveBeenCalled();
     expect(loginDialogOpen).toHaveBeenCalledTimes(1);
-    expect(event.defaultPrevented).toBeTrue();
+    expect(event.defaultPrevented).toBe(true);
   });
 
   it('prompts for login and suppresses the browser action on Ctrl+Shift+H when signed out', () => {
@@ -155,7 +173,7 @@ describe('AppComponent quick-access shortcuts', () => {
 
     expect(launchHistory).not.toHaveBeenCalled();
     expect(loginDialogOpen).toHaveBeenCalledTimes(1);
-    expect(event.defaultPrevented).toBeTrue();
+    expect(event.defaultPrevented).toBe(true);
   });
 
   it('ignores the old Ctrl+P / Ctrl+H combinations and leaves the browser default alone', () => {
@@ -167,8 +185,8 @@ describe('AppComponent quick-access shortcuts', () => {
     expect(launchPinned).not.toHaveBeenCalled();
     expect(launchHistory).not.toHaveBeenCalled();
     expect(loginDialogOpen).not.toHaveBeenCalled();
-    expect(printEvent.defaultPrevented).toBeFalse();
-    expect(historyEvent.defaultPrevented).toBeFalse();
+    expect(printEvent.defaultPrevented).toBe(false);
+    expect(historyEvent.defaultPrevented).toBe(false);
   });
 
   it('ignores Cmd+P / Cmd+H (the macOS browser defaults)', () => {
@@ -179,7 +197,7 @@ describe('AppComponent quick-access shortcuts', () => {
 
     expect(launchPinned).not.toHaveBeenCalled();
     expect(launchHistory).not.toHaveBeenCalled();
-    expect(printEvent.defaultPrevented).toBeFalse();
-    expect(historyEvent.defaultPrevented).toBeFalse();
+    expect(printEvent.defaultPrevented).toBe(false);
+    expect(historyEvent.defaultPrevented).toBe(false);
   });
 });

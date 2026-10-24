@@ -24,35 +24,38 @@ import { LoginDialogHelperService } from '../../core/login-dialog-helper.service
 import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookmarks-store.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { BookmarkListElementComponent } from './bookmark-list-element.component';
+import { describe, expect, it, vi, type Mocked } from 'vitest';
 
 describe('BookmarkListElementComponent', () => {
   let fixture: ComponentFixture<BookmarkListElementComponent>;
-  let authService: jasmine.SpyObj<AuthenticationService>;
-  let dialog: { open: jasmine.Spy };
-  let userDataStore: jasmine.SpyObj<UserDataStore>;
+  let authService: Mocked<
+    Pick<AuthenticationService, 'isLoggedIn' | 'isUserInRole'>
+  >;
+  let dialog: { open: ReturnType<typeof vi.fn> };
+  let userDataStore: Mocked<Pick<UserDataStore, 'toggleFavorite$'>>;
   let bookmark: Bookmark;
   let userData: UserData;
 
   beforeEach(waitForAsync(() => {
-    authService = jasmine.createSpyObj<AuthenticationService>(
-      'AuthenticationService',
-      ['isLoggedIn', 'isUserInRole']
-    );
-    authService.isLoggedIn.and.returnValue(true);
-    authService.isUserInRole.and.returnValue(false);
-    dialog = {
-      open: jasmine
-        .createSpy('open')
-        .and.returnValue({ afterClosed: () => of(null) }),
+    authService = {
+      isLoggedIn: vi.fn<AuthenticationService['isLoggedIn']>(),
+      isUserInRole: vi.fn<AuthenticationService['isUserInRole']>(),
     };
-    userDataStore = jasmine.createSpyObj<UserDataStore>('UserDataStore', [
-      'toggleFavorite$',
-    ]);
-    userDataStore.toggleFavorite$.and.returnValue(of({
-      resourceType: 'bookmark',
-      resourceId: 'bookmark-1',
-      favorite: true,
-    }));
+    authService.isLoggedIn.mockReturnValue(true);
+    authService.isUserInRole.mockReturnValue(false);
+    dialog = {
+      open: vi.fn().mockReturnValue({ afterClosed: () => of(null) }),
+    };
+    userDataStore = {
+      toggleFavorite$: vi.fn<UserDataStore['toggleFavorite$']>(),
+    };
+    userDataStore.toggleFavorite$.mockReturnValue(
+      of({
+        resourceType: 'bookmark',
+        resourceId: 'bookmark-1',
+        favorite: true,
+      })
+    );
 
     TestBed.configureTestingModule({
       imports: [BookmarkListElementComponent],
@@ -141,7 +144,7 @@ describe('BookmarkListElementComponent', () => {
   });
 
   it('prompts guests to log in without sending a mutation', () => {
-    authService.isLoggedIn.and.returnValue(false);
+    authService.isLoggedIn.mockReturnValue(false);
     fixture.destroy();
     fixture = TestBed.createComponent(BookmarkListElementComponent);
     fixture.componentRef.setInput('bookmark', bookmark);

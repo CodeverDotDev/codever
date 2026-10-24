@@ -76,6 +76,15 @@
                 }
               ]
             },
+            "test": {
+              "polyfills": [
+                "core-js/es6/reflect",
+                "core-js/es7/reflect",
+                "zone.js",
+                "zone.js/testing",
+                "zone.js/plugins/vitest-patch"
+              ]
+            },
             "prod-local-testing": {
               "fileReplacements": [
                 {
@@ -111,110 +120,81 @@
           }
         },
         "test-onpush": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
+            "buildTarget": "codever-ui:build:test",
+            "runner": "vitest",
             "tsConfig": "src/tsconfig.onpush-spec.json",
-            "karmaConfig": "karma.onpush.conf.cjs",
-            "polyfills": ["zone.js", "zone.js/testing"],
             "include": ["src/app/shared/onpush-lists.spec.ts"],
-            "watch": false,
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "watch": false
           }
         },
         "test-copyable": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
+            "buildTarget": "codever-ui:build:test",
+            "runner": "vitest",
             "tsConfig": "src/tsconfig.copyable-spec.json",
-            "karmaConfig": "karma.onpush.conf.cjs",
-            "polyfills": ["zone.js", "zone.js/testing"],
-            "include": ["src/app/shared/copyable-fields/*.spec.ts", "src/app/shared/onpush-lists.spec.ts"],
-            "watch": false,
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "include": [
+              "src/app/shared/copyable-fields/*.spec.ts",
+              "src/app/shared/onpush-lists.spec.ts"
+            ],
+            "watch": false
           }
         },
         "test-shortcuts": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
+            "buildTarget": "codever-ui:build:test",
+            "runner": "vitest",
             "tsConfig": "src/tsconfig.shortcuts-spec.json",
-            "karmaConfig": "karma.onpush.conf.cjs",
-            "polyfills": ["zone.js", "zone.js/testing"],
             "include": ["src/app/app.component.shortcuts.spec.ts"],
-            "watch": false,
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "watch": false
           }
         },
         "test-main-link-shortcut": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
+            "buildTarget": "codever-ui:build:test",
+            "runner": "vitest",
             "tsConfig": "src/tsconfig.main-link-shortcut-spec.json",
-            "karmaConfig": "karma.onpush.conf.cjs",
-            "polyfills": ["zone.js", "zone.js/testing"],
             "include": [
               "src/app/core/shortcut/main-link-shortcut.service.spec.ts",
               "src/app/core/shortcut/main-link-shortcut.filters.spec.ts",
               "src/app/core/shortcut/resource-activation.util.spec.ts"
             ],
-            "watch": false,
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "watch": false
           }
         },
         "test-collection-contents": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
+            "buildTarget": "codever-ui:build:test",
+            "runner": "vitest",
             "tsConfig": "src/tsconfig.collection-contents-spec.json",
-            "karmaConfig": "karma.onpush.conf.cjs",
-            "polyfills": ["zone.js", "zone.js/testing"],
             "include": [
               "src/app/shared/dialog/collection-contents-dialog/*.spec.ts"
             ],
-            "watch": false,
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "watch": false
           }
         },
         "test-my-collections": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
+            "buildTarget": "codever-ui:build:test",
+            "runner": "vitest",
             "tsConfig": "src/tsconfig.my-collections-spec.json",
-            "karmaConfig": "karma.onpush.conf.cjs",
-            "polyfills": ["zone.js", "zone.js/testing"],
             "include": ["src/app/my-collections/**/*.spec.ts"],
-            "watch": false,
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "watch": false
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "karmaConfig": "./karma.onpush.conf.cjs",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "buildTarget": "codever-ui:build:test",
+            "runner": "vitest",
             "tsConfig": "src/tsconfig.spec.json",
-            "include": [
-              "src/**/*.spec.ts"
-            ],
-            "scripts": [],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "assets": [
-              "src/assets",
-              "src/favicon.ico",
-              "src/manifest.json"
-            ]
+            "include": ["src/**/*.spec.ts"]
           }
         }
       }

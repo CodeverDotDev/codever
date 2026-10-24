@@ -1,8 +1,9 @@
+import { describe, expect, it } from 'vitest';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BookmarksTaggedComponent } from './bookmarks-tagged.component';
 
-xdescribe('TagComponent', () => {
+describe.skip('TagComponent', () => {
   let component: BookmarksTaggedComponent;
   let fixture: ComponentFixture<BookmarksTaggedComponent>;
 

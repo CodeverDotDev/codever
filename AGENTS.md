@@ -17,7 +17,10 @@
 - On the first Compose startup only, enable the Keycloak migration/import command in `docker-compose.yml`; comment it back out on later startups. Local Keycloak is at `http://localhost:8480/auth` (`mock/mock`, admin `admin/Pa55w0rd`).
 - Run both apps with `npm start`, or separately with `npm run frontend` and `npm run backend`. UI is at `http://localhost:4200`; API is at `http://localhost:3000/api`.
 - Backend commands from `apps/codever-api`: `npm test` (Jest unit tests), `npm run test:integration` (requires Docker/Keycloak/Mongo), and `npm run debug` (nodemon with `--inspect`). Test files use `*.test.js` and `*.integration-test.js`.
-- Frontend commands from `apps/codever-ui`: `npm test` (Karma/Jasmine), `npm run lint`, `npm run build` / `npm run build:aot`, and `npm run cy:run` or `npm run cy:open` (Cypress; serve the UI and start infrastructure first).
+- Frontend commands from `apps/codever-ui`: `npm test` (Angular Vitest
+  builder), `npm run lint`, `npm run build` / `npm run build:aot`, and
+  `npm run cy:run` or `npm run cy:open` (Cypress; serve the UI and start
+  infrastructure first).
 - For a backend port conflict, find the process using port 3000 and terminate it before rerunning `npm run debug`. Attach an IDE Node debugger to nodemon’s inspect process.
 
 ## Code and integration rules

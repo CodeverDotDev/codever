@@ -68,7 +68,7 @@ rules:
     - Each task states how it is verified (unit test, integration test, lint,
       build, or observable behavior).
     - Prefer the project's existing test conventions
-      (*.test.js / *.integration-test.js for the API; Karma/Jasmine for the UI).
+      (*.test.js / *.integration-test.js for the API; Vitest for the UI).
     - Keep Markdown lines at 80 characters or fewer, except unavoidable URLs,
       tables, and code fences.
 

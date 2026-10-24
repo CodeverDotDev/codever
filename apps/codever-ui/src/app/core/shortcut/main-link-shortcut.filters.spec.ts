@@ -11,6 +11,8 @@ import { Collection, PinnedCollection } from '../model/collection';
 import { AsyncSearchResultListComponent } from '../../shared/async-search-result-list/async-search-result-list.component';
 import { AuthenticationService } from '../auth/authentication.service';
 import { ActivatedRoute } from '@angular/router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 /**
  * Focused tests for the per-filter `Enter` handlers. Every surface now resolves
  * its single visible result and delegates to
@@ -42,28 +44,33 @@ const pinnedCollection = (
 ): PinnedCollection =>
   ({ _id: id, name: displayName, type: 'collection' } as PinnedCollection);
 const ALL_TYPES: ActivatableType[] = ['bookmark', 'note', 'collection'];
-function shortcutSpy(): jasmine.SpyObj<MainLinkShortcutService> {
-  return jasmine.createSpyObj<MainLinkShortcutService>(
-    'MainLinkShortcutService',
-    ['openBookmarkInNewTab', 'activateResource', 'register', 'unregister']
-  );
+function shortcutSpy() {
+  const service = new MainLinkShortcutService({} as never, {} as never);
+  return Object.assign(service, {
+    openBookmarkInNewTab: vi.spyOn(service, 'openBookmarkInNewTab'),
+    activateResource: vi
+      .spyOn(service, 'activateResource')
+      .mockImplementation(() => null),
+    register: vi.spyOn(service, 'register'),
+    unregister: vi.spyOn(service, 'unregister'),
+  });
 }
 /** Assert the shortcut was asked to activate exactly the expected resource. */
 function expectActivated(
-  shortcut: jasmine.SpyObj<MainLinkShortcutService>,
+  shortcut: ReturnType<typeof shortcutSpy>,
   id: string,
   userIsLoggedIn: boolean,
   types: ActivatableType[]
 ): void {
-  expect(shortcut.activateResource.calls.count()).toBe(1);
-  const args = shortcut.activateResource.calls.mostRecent().args;
+  expect(shortcut.activateResource).toHaveBeenCalledTimes(1);
+  const args = shortcut.activateResource.mock.calls[0];
   expect((args[0] as UserDataResource)._id).toBe(id);
   expect(args[1]).toBe(userIsLoggedIn);
   expect(args[2]).toEqual(types);
 }
 describe('QuickAccessResourcesComponent Enter handler', () => {
   let component: QuickAccessResourcesComponent;
-  let shortcut: jasmine.SpyObj<MainLinkShortcutService>;
+  let shortcut: ReturnType<typeof shortcutSpy>;
   beforeEach(() => {
     shortcut = shortcutSpy();
     component = new QuickAccessResourcesComponent(
@@ -97,12 +104,12 @@ describe('QuickAccessResourcesComponent Enter handler', () => {
   it('does nothing when multiple entries are visible', () => {
     setResources([bookmark('a'), bookmark('b')], '');
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
   it('does nothing when nothing matches the filter', () => {
     setResources([bookmark('a')], 'zzz');
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
   it('reports the hint per type and nothing when ambiguous', () => {
     setResources([bookmark('a')], '');
@@ -117,11 +124,11 @@ describe('QuickAccessResourcesComponent Enter handler', () => {
 });
 describe('HotKeysDialogComponent Enter handler', () => {
   let component: HotKeysDialogComponent;
-  let shortcut: jasmine.SpyObj<MainLinkShortcutService>;
-  let dialogRef: jasmine.SpyObj<{ close: () => void }>;
+  let shortcut: ReturnType<typeof shortcutSpy>;
+  let dialogRef: { close: ReturnType<typeof vi.fn> };
   beforeEach(() => {
     shortcut = shortcutSpy();
-    dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    dialogRef = { close: vi.fn() };
     component = new HotKeysDialogComponent(
       dialogRef as never,
       {} as never,
@@ -143,31 +150,31 @@ describe('HotKeysDialogComponent Enter handler', () => {
     expectActivated(shortcut, 'a', true, ALL_TYPES);
   });
   it('activates the only visible note and closes the dialog', () => {
-    shortcut.activateResource.and.returnValue('navigated');
+    shortcut.activateResource.mockReturnValue('navigated');
     setResources([note('n'), bookmark('a')], 'Note n');
     component.onFilterEnter();
     expectActivated(shortcut, 'n', true, ALL_TYPES);
-    expect(dialogRef.close.calls.count()).toBe(1);
+    expect(dialogRef.close).toHaveBeenCalledTimes(1);
   });
   it('activates the only visible collection and closes the dialog', () => {
-    shortcut.activateResource.and.returnValue('navigated');
+    shortcut.activateResource.mockReturnValue('navigated');
     setResources([pinnedCollection('c'), bookmark('a')], 'Collection c');
     component.onFilterEnter();
     expectActivated(shortcut, 'c', true, ALL_TYPES);
-    expect(dialogRef.close.calls.count()).toBe(1);
+    expect(dialogRef.close).toHaveBeenCalledTimes(1);
   });
   it('keeps the dialog open when a bookmark opens in a new tab', () => {
-    shortcut.activateResource.and.returnValue('new-tab');
+    shortcut.activateResource.mockReturnValue('new-tab');
     setResources([bookmark('a'), note('n')], 'Bookmark a');
     component.onFilterEnter();
-    expect(dialogRef.close.calls.count()).toBe(0);
+    expect(dialogRef.close).not.toHaveBeenCalled();
   });
   it('does nothing for zero or multiple results', () => {
     setResources([bookmark('a'), bookmark('b')], '');
     component.onFilterEnter();
     setResources([bookmark('a')], 'zzz');
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
   it('names the target type in the hint', () => {
     setResources([note('n')], '');
@@ -178,7 +185,7 @@ describe('HotKeysDialogComponent Enter handler', () => {
 });
 describe('MyCollectionsPageComponent Enter handler', () => {
   let component: MyCollectionsPageComponent;
-  let shortcut: jasmine.SpyObj<MainLinkShortcutService>;
+  let shortcut: ReturnType<typeof shortcutSpy>;
   beforeEach(() => {
     shortcut = shortcutSpy();
     component = new MyCollectionsPageComponent(
@@ -195,25 +202,28 @@ describe('MyCollectionsPageComponent Enter handler', () => {
     component.collections = [collection('x')];
     component.onFilterEnter();
     expectActivated(shortcut, 'x', false, ['collection']);
-    const activated = shortcut.activateResource.calls.mostRecent()
-      .args[0] as PinnedCollection;
+    const activated = shortcut.activateResource.mock.calls[0][0] as
+      | PinnedCollection
+      | null
+      | undefined;
+    expect(activated).toBeDefined();
     expect(activated.name).toBe('Collection x');
     expect(activated.type).toBe('collection');
   });
   it('does nothing for zero collections', () => {
     component.collections = [];
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
   it('does nothing for multiple collections', () => {
     component.collections = [collection('x'), collection('y')];
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
 });
 describe('CollectionDetailComponent Enter handler', () => {
   let component: CollectionDetailComponent;
-  let shortcut: jasmine.SpyObj<MainLinkShortcutService>;
+  let shortcut: ReturnType<typeof shortcutSpy>;
   beforeEach(() => {
     shortcut = shortcutSpy();
     component = new CollectionDetailComponent(
@@ -242,7 +252,7 @@ describe('CollectionDetailComponent Enter handler', () => {
     component.filteredBookmarks = [bookmark('a')];
     component.filteredNotes = [note('n')];
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
   it('does nothing for zero or multiple bookmarks', () => {
     component.filteredBookmarks = [];
@@ -250,20 +260,17 @@ describe('CollectionDetailComponent Enter handler', () => {
     component.onFilterEnter();
     component.filteredBookmarks = [bookmark('a'), bookmark('b')];
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
 });
 describe('AsyncSearchResultListComponent Enter handler', () => {
   let component: AsyncSearchResultListComponent;
-  let shortcut: jasmine.SpyObj<MainLinkShortcutService>;
-  let auth: jasmine.SpyObj<AuthenticationService>;
+  let shortcut: ReturnType<typeof shortcutSpy>;
+  let auth: { isLoggedIn: ReturnType<typeof vi.fn> };
   beforeEach(() => {
     shortcut = shortcutSpy();
-    auth = jasmine.createSpyObj<AuthenticationService>(
-      'AuthenticationService',
-      ['isLoggedIn']
-    );
-    auth.isLoggedIn.and.returnValue(true);
+    auth = { isLoggedIn: vi.fn<AuthenticationService['isLoggedIn']>() };
+    auth.isLoggedIn.mockReturnValue(true);
     const injector = {
       get: (token: unknown) => {
         if (token === AuthenticationService) return auth;
@@ -292,14 +299,14 @@ describe('AsyncSearchResultListComponent Enter handler', () => {
   it('does nothing when the only match is a note, so the search page stays', () => {
     setResults([bookmark('a'), note('n')], 'Note n');
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
   it('does nothing for zero or multiple results', () => {
     setResults([bookmark('a'), bookmark('b')], '');
     component.onFilterEnter();
     setResults([bookmark('a')], 'zzz');
     component.onFilterEnter();
-    expect(shortcut.activateResource.calls.count()).toBe(0);
+    expect(shortcut.activateResource).not.toHaveBeenCalled();
   });
   it('only hints for a bookmark and stays silent for a lone note', () => {
     setResults([bookmark('a')], '');

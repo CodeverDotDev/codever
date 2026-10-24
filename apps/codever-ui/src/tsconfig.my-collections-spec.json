@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/my-collections-spec",
-    "types": ["jasmine", "node"]
+    "typeRoots": ["../node_modules/@types", "../node_modules"],
+    "types": ["node", "vitest/globals"]
   },
   "include": ["app/my-collections/**/*.spec.ts", "**/*.d.ts"],
   "angularCompilerOptions": {

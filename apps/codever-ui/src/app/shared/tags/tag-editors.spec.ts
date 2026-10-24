@@ -34,6 +34,7 @@ import { DeleteNotificationService } from '../../core/notifications/delete-notif
 import { FeatureToggleService } from '../../core/feature-toggle.service';
 import { tagsValidator } from '../directive/tags-validation.directive';
 import { MAX_TAGS, RECOMMENDED_AI_TAGS } from './tag-policy';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const tags = (count: number) => Array.from({ length: count }, (_, i) => `tag-${i}`);
 
@@ -64,19 +65,26 @@ for (const kind of ['note', 'bookmark'] as const) {
   describe(`${kind} tag editing (real template)`, () => {
     let fixture: ComponentFixture<NoteEditorComponent | SaveBookmarkFormComponent>;
     let editor: NoteEditorComponent | SaveBookmarkFormComponent;
-    let open: jasmine.Spy;
+    let open: ReturnType<typeof vi.fn>;
     let accepted$: Subject<unknown>;
-    let create: jasmine.Spy;
-    let update: jasmine.Spy;
+    let create: ReturnType<typeof vi.fn>;
+    let update: ReturnType<typeof vi.fn>;
 
     beforeEach(async () => {
       accepted$ = new Subject();
-      open = jasmine.createSpy('open').and.returnValues(
-        { afterClosed: () => of({ suggestedTags: [], refinedContent: 'Refined', refinedDescription: 'Refined' }) },
-        { afterClosed: () => accepted$ }
-      );
-      create = jasmine.createSpy('create').and.returnValue(EMPTY);
-      update = jasmine.createSpy('update').and.returnValue(EMPTY);
+      open = vi
+        .fn()
+        .mockReturnValueOnce({
+          afterClosed: () =>
+            of({
+              suggestedTags: [],
+              refinedContent: 'Refined',
+              refinedDescription: 'Refined',
+            }),
+        })
+        .mockReturnValueOnce({ afterClosed: () => accepted$ });
+      create = vi.fn().mockReturnValue(EMPTY);
+      update = vi.fn().mockReturnValue(EMPTY);
       await TestBed.configureTestingModule({
         imports: [NoteEditorComponent, SaveBookmarkFormComponent],
         providers: [
@@ -142,17 +150,17 @@ for (const kind of ['note', 'bookmark'] as const) {
       tags(13).forEach(add);
       add(' TAG-0 ');
       expect(editor.tags.value).toEqual(tags(13));
-      expect(saveDisabled()).toBeFalse();
+      expect(saveDisabled()).toBe(false);
       submit();
       expect(create).toHaveBeenCalledTimes(1);
-      expect(create.calls.mostRecent().args[1].tags).toEqual(tags(13));
+      expect(create.mock.lastCall?.[1].tags).toEqual(tags(13));
     });
 
     it('shows fourteen tags and blocks both submit and direct update until explicit removal', () => {
       tags(14).forEach(add);
       expect(fixture.nativeElement.querySelectorAll('mat-chip-row').length).toBe(14);
       expect(fixture.nativeElement.textContent).toContain('maximum 13 tags');
-      expect(saveDisabled()).toBeTrue();
+      expect(saveDisabled()).toBe(true);
       submit();
       if (editor instanceof NoteEditorComponent) {
         editor.isEditMode = true;
@@ -168,7 +176,7 @@ for (const kind of ['note', 'bookmark'] as const) {
       fixture.debugElement.queryAll(By.css('mat-chip-row'))[13].triggerEventHandler('removed', {});
       render();
       expect(editor.tags.value).toEqual(tags(13));
-      expect(saveDisabled()).toBeFalse();
+      expect(saveDisabled()).toBe(false);
       expect(fixture.nativeElement.textContent).not.toContain('maximum 13 tags');
     });
 
@@ -178,14 +186,14 @@ for (const kind of ['note', 'bookmark'] as const) {
       add(' Awesome-list ');
       expect(fixture.nativeElement.textContent).toContain('awesome-list');
       expect(fixture.nativeElement.textContent).toContain('is blocked');
-      expect(saveDisabled()).toBeTrue();
+      expect(saveDisabled()).toBe(true);
     });
 
     it('accepts eight plus three tags without truncation or duplicate suggestions', () => {
       tags(8).forEach(add);
       refine([' TAG-0 ', 'new-a', 'new-b', 'new-c', ' NEW-A ']);
       expect(editor.tags.value).toEqual([...tags(8), 'new-a', 'new-b', 'new-c']);
-      expect(saveDisabled()).toBeFalse();
+      expect(saveDisabled()).toBe(false);
     });
 
     it('leaves twelve plus two accepted tags visible and prevents saving', () => {
@@ -194,7 +202,7 @@ for (const kind of ['note', 'bookmark'] as const) {
       expect(editor.tags.value).toEqual([...tags(12), 'new-a', 'new-b']);
       expect(fixture.nativeElement.querySelectorAll('mat-chip-row').length).toBe(14);
       expect(fixture.nativeElement.textContent).toContain('maximum 13 tags');
-      expect(saveDisabled()).toBeTrue();
+      expect(saveDisabled()).toBe(true);
       submit();
       expect(create).not.toHaveBeenCalled();
     });
@@ -204,8 +212,8 @@ for (const kind of ['note', 'bookmark'] as const) {
         tags(count).forEach(add);
         refine([]);
         expect(editor.tags.value).toEqual(tags(count));
-        expect(saveDisabled()).toBeFalse();
-        const prompt = open.calls.first().args[1].data.defaultPrompt;
+        expect(saveDisabled()).toBe(false);
+        const prompt = open.mock.calls[0][1].data.defaultPrompt;
         expect(prompt).toContain('at most 8');
         expect(prompt).toContain('hard ceiling is 13');
         expect(prompt).toContain('Do not remove existing tags');
@@ -213,5 +221,4 @@ for (const kind of ['note', 'bookmark'] as const) {
     }
   });
 }
-
 

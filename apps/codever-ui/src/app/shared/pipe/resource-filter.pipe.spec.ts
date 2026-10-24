@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ResourceFilterPipe } from './resource-filter.pipe';
 import { Bookmark } from '../../core/model/bookmark';
 

@@ -8,6 +8,7 @@ import {
   noteDetailsRoute,
   singleVisibleResource,
 } from './resource-activation.util';
+import { describe, expect, it } from 'vitest';
 
 describe('resource-activation util', () => {
   const bookmark = (id: string): Bookmark =>
