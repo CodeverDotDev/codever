@@ -1,5 +1,6 @@
 const Bookmark = require('../../model/bookmark');
 const NotFoundError = require('../../error/not-found.error');
+const ShareLinkService = require('../users/share-link.service');
 
 let getPublicBookmarkByLocation = async (location) => {
   const bookmark = await Bookmark.findOne({
@@ -63,20 +64,8 @@ let getBookmarkById = async function (bookmarkId) {
   return bookmark;
 };
 
-/* GET bookmark of user by shareableId */
-let getBookmarkBySharableId = async (shareableId) => {
-  const bookmark = await Bookmark.findOne({
-    shareableId: shareableId,
-  }).select('+shareableId');
-
-  if (!bookmark) {
-    throw new NotFoundError(
-      `Bookmark NOT_FOUND for shareableId: ${shareableId}`
-    );
-  } else {
-    return bookmark;
-  }
-};
+const getSharedBookmarkByToken = (token) =>
+  ShareLinkService.resolveSharedResource('bookmark', token);
 
 let getMostUsedPublicTags = async function (limit) {
   const aggregatedTags = await Bookmark.aggregate([
@@ -126,6 +115,6 @@ module.exports = {
   getLatestPublicBookmarks: getLatestPublicBookmarks,
   getBookmarksForTag: getBookmarksForTag,
   getBookmarkById: getBookmarkById,
-  getBookmarkBySharableId: getBookmarkBySharableId,
+  getSharedBookmarkByToken: getSharedBookmarkByToken,
   getMostUsedPublicTags: getMostUsedPublicTags,
 };

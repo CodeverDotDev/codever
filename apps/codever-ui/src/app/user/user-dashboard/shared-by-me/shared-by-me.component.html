@@ -1,0 +1,106 @@
+<section class="mt-3" aria-labelledby="shared-by-me-title">
+  <h2 id="shared-by-me-title" class="h5">Shared by me</h2>
+  <p class="text-muted">
+    Links allow anyone who has them to read and copy current resource content.
+    Revoking a link stops future access but cannot recall copies already made.
+  </p>
+
+  @if (loading) {
+    <p role="status">Loading shared resources…</p>
+  }
+  @if (error) {
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="loadPage(page)"
+    >
+      Retry
+    </button>
+  } @else if (!loading && items.length === 0) {
+    <div class="alert alert-info">You do not have any active share links.</div>
+  }
+
+  @if (actionError) {
+    <div class="alert alert-danger" role="alert">{{ actionError }}</div>
+    <button
+      type="button"
+      class="btn btn-outline-secondary mb-3"
+      (click)="loadPage(page)"
+    >
+      Refresh list
+    </button>
+  }
+
+  @if (items.length > 0) {
+    <div class="list-group">
+      @for (item of items; track item.shareLinkId) {
+        <article class="list-group-item">
+          <div class="d-flex flex-wrap justify-content-between gap-2">
+            <div>
+              <h3 class="h6 mb-1">{{ item.title }}</h3>
+              <div class="small text-muted">
+                {{ item.resourceType === 'bookmark' ? 'Bookmark' : 'Note' }}
+                · Shared {{ item.createdAt | date : 'yyyy-MM-dd' }}
+                @if (item.public) {
+                  <span class="badge text-bg-success ms-1">Public</span>
+                }
+              </div>
+              @if (item.public) {
+                <div class="small text-muted">
+                  Revoking this link does not make the resource private.
+                </div>
+              }
+            </div>
+            <div class="d-flex flex-wrap gap-2 align-items-start">
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                [disabled]="pendingShareLinkId !== null"
+                (click)="copyLink(item)"
+              >
+                {{ copiedShareLinkId === item.shareLinkId ? 'Copied' : 'Copy link' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                (click)="openResource(item)"
+              >
+                Open resource
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm"
+                [disabled]="pendingShareLinkId !== null"
+                (click)="stopSharing(item)"
+              >
+                Stop sharing
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+    @if (total > limit) {
+      <nav class="d-flex justify-content-between mt-3" aria-label="Shared resource pages">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [disabled]="page <= 1 || loading"
+          (click)="loadPage(page - 1)"
+        >
+          Previous
+        </button>
+        <span class="align-self-center">Page {{ page }} of {{ Math.ceil(total / limit) }}</span>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          [disabled]="page >= Math.ceil(total / limit) || loading"
+          (click)="loadPage(page + 1)"
+        >
+          Next
+        </button>
+      </nav>
+    }
+  }
+</section>

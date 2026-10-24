@@ -2,12 +2,20 @@ jest.mock('../../../model/note', () => {
   const Note = jest.fn();
   Note.find = jest.fn();
   Note.findOne = jest.fn();
+  Note.findOneAndDelete = jest.fn();
   Note.findOneAndUpdate = jest.fn();
   return Note;
 });
-jest.mock('../../../model/user', () => ({}));
+jest.mock('../../../model/user', () => ({ updateMany: jest.fn() }));
+jest.mock('../../../common/user-favorite-cleanup.service', () => ({
+  removeNoteFavoriteReferences: jest.fn(),
+}));
+jest.mock('../share-link.service', () => ({
+  revokeResourceLinks: jest.fn(),
+}));
 
 const Note = require('../../../model/note');
+const ShareLinkService = require('../share-link.service');
 const ValidationError = require('../../../error/validation.error');
 const service = require('./personal-notes.service');
 
@@ -45,7 +53,7 @@ describe.each(['create', 'update'])('personal note %s tag policy', (operation) =
       expect(Note.findOneAndUpdate).toHaveBeenCalledWith(
         { _id: NOTE_ID, userId: USER_ID },
         expect.objectContaining({ tags: tags(13) }),
-        { new: true }
+        { new: true, runValidators: true }
       );
     }
   });
@@ -67,8 +75,20 @@ describe.each(['create', 'update'])('personal note %s tag policy', (operation) =
     const result = await write(validNote({
       contentType: 'notebook', notebookContent: '{"cells":[]}', tags: [' Python '],
     }));
-    expect(result).toMatchObject({ contentType: 'notebook', notebookContent: '{"cells":[]}', tags: ['python'] });
+    expect(result).toMatchObject({ contentType: 'notebook', notebookContent: '{"cells":[]}', tags: ['python']     });
   });
+
+  test.each(['shareableId', 'shareLinkId', 'shareToken', 'token'])(
+    'rejects caller-supplied %s for note writes',
+    async (field) => {
+      const data = validNote({ [field]: 'caller-controlled' });
+
+      await expect(write(data)).rejects.toBeInstanceOf(ValidationError);
+      expect(Note).not.toHaveBeenCalled();
+      expect(save).not.toHaveBeenCalled();
+      expect(Note.findOneAndUpdate).not.toHaveBeenCalled();
+    }
+  );
 });
 
 test('reading an existing over-limit note neither normalizes nor rewrites it', async () => {
@@ -108,6 +128,31 @@ describe('partial note updates', () => {
       .rejects.toBeInstanceOf(ValidationError);
     expect(Note.findOneAndUpdate).not.toHaveBeenCalled();
   });
+
+  test.each(['shareableId', 'shareLinkId', 'shareToken', 'token'])(
+    'rejects caller-supplied %s',
+    async (field) => {
+      await expect(
+        service.updateNotePartially(USER_ID, NOTE_ID, {
+          title: 'Updated',
+          [field]: 'caller-controlled',
+        })
+      ).rejects.toBeInstanceOf(ValidationError);
+      expect(Note.findOneAndUpdate).not.toHaveBeenCalled();
+    }
+  );
+});
+
+test('revokes the link when deleting a note', async () => {
+  Note.findOneAndDelete.mockResolvedValue({ _id: NOTE_ID });
+
+  await service.deleteNoteById(USER_ID, NOTE_ID);
+
+  expect(ShareLinkService.revokeResourceLinks).toHaveBeenCalledWith(
+    USER_ID,
+    'note',
+    [NOTE_ID]
+  );
 });
 
 describe('personal notes export', () => {
@@ -178,4 +223,3 @@ describe('personal notes export', () => {
     expect(note).toEqual(markdownNote());
   });
 });
-

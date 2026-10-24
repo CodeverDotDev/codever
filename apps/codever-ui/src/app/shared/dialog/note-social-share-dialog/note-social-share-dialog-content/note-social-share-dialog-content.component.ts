@@ -18,7 +18,7 @@ import { TweetComponent } from '../../../../social-buttons/tweet.component';
 })
 export class NoteSocialShareDialogContentComponent implements OnChanges {
   @Input()
-  shareableUrl: string;
+  shareableUrl: string | null;
 
   @Input()
   note: Note;

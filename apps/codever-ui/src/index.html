@@ -2,6 +2,23 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <!--
+      Shared URLs contain bearer tokens. Prevent browsers from sending those
+      tokens to external sites through the Referer header before Angular loads.
+    -->
+    <script>
+      if (
+        /^\/(?:public\/)?(?:bookmarks|notes|snippets)\/shared\/[^/]+(?:\/|$)/.test(
+          window.location.pathname
+        )
+      ) {
+        const referrerPolicy = document.createElement('meta');
+        referrerPolicy.id = 'shared-resource-referrer-policy';
+        referrerPolicy.name = 'referrer';
+        referrerPolicy.content = 'no-referrer';
+        document.head.appendChild(referrerPolicy);
+      }
+    </script>
     <title>Codever</title>
     <link
       id="favicon"

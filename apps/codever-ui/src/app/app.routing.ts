@@ -5,6 +5,7 @@ import { NoteNotFoundComponent } from './not-found/note-not-found.component';
 import { NewEntryComponent } from './new-entry/new-entry.component';
 import { AuthGuard } from './core/auth/auth-guard.service';
 import { SearchRedirectGuard } from './core/search-redirect.guard';
+import { PublicBookmarksService } from './public/bookmarks/public-bookmarks.service';
 
 export const routes: Routes = [
   {
@@ -53,6 +54,14 @@ export const routes: Routes = [
     path: 'public',
     loadChildren: () =>
       import('./public/public.module').then((m) => m.PublicResourcesModule),
+  },
+  {
+    path: 'bookmarks/shared/:token',
+    loadComponent: () =>
+      import(
+        './public/bookmarks/shareable-bookmark-details/shareable-bookmark-details.component'
+      ).then((m) => m.ShareableBookmarkDetailsComponent),
+    providers: [PublicBookmarksService],
   },
   {
     path: 'my-notes',

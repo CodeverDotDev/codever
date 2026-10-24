@@ -1,6 +1,7 @@
 const Note = require('../../model/note');
 const NotFoundError = require('../../error/not-found.error');
 const searchUtils = require('../../common/searching/utils/search.utils');
+const ShareLinkService = require('../users/share-link.service');
 
 let searchPublicNotes = async function (query, page, limit, searchInclude) {
   const [searchTerms, searchTags] = searchUtils.parseQueryString(query);
@@ -60,22 +61,12 @@ let getNoteById = async function (noteId) {
   return note;
 };
 
-/* GET note by shareableId */
-let getNoteByShareableId = async (shareableId) => {
-  const note = await Note.findOne({
-    shareableId: shareableId,
-  }).select('+shareableId');
-
-  if (!note) {
-    throw new NotFoundError(`Note NOT_FOUND for shareableId: ${shareableId}`);
-  }
-
-  return note;
-};
+const getSharedNoteByToken = (token) =>
+  ShareLinkService.resolveSharedResource('note', token);
 
 module.exports = {
   searchPublicNotes: searchPublicNotes,
   getLatestPublicNotes: getLatestPublicNotes,
   getNoteById: getNoteById,
-  getNoteByShareableId: getNoteByShareableId,
+  getSharedNoteByToken: getSharedNoteByToken,
 };

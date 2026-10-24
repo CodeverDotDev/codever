@@ -5,9 +5,13 @@ const showdown = require('showdown'),
 const Bookmark = require('../../model/bookmark');
 const { normalizeTags } = require('../validation/tag-policy');
 const { normalizeCopyableFields } = require('../validation/copyable-fields');
+const {
+  validateNoShareLinkFields,
+} = require('../validation/share-link-input.validator');
 
 module.exports = {
   toBookmark: function (req) {
+    validateNoShareLinkFields(req.body);
     const tags = normalizeTags(req.body.tags);
     const descriptionHtml = req.body.descriptionHtml
       ? req.body.descriptionHtml

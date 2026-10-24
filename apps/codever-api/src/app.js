@@ -20,11 +20,13 @@ const publicUsersRouter = require('./routes/public/public-users.router');
 const { MongoError } = require('mongodb');
 const ValidationError = require('./error/validation.error');
 const NotFoundError = require('./error/not-found.error');
+const ShareLinkConflictError = require('./error/share-link-conflict.error');
 const PublicBookmarkExistingError = require('./error/public-bookmark-existent.error');
 const UseridValidationError = require('./routes/users/userid-validation.error');
 
 const fs = require('fs-extra');
 const rfs = require('rotating-file-stream/index');
+const redactShareCredentials = require('./common/share-credential-redactor');
 
 const HttpStatus = require('http-status-codes/index');
 
@@ -33,6 +35,13 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./docs/openapi/openapi.yaml');
 
 const app = express();
+
+logger.token('safe-url', (request) =>
+  redactShareCredentials(request.originalUrl)
+);
+logger.token('safe-referrer', (request) =>
+  redactShareCredentials(request.headers.referer || '-')
+);
 
 // Sets "Strict-Transport-Security: max-age=5184000; includeSubDomains".
 const sixtyDaysInSeconds = 5184000;
@@ -66,8 +75,12 @@ let setUpLogging = function () {
     interval: '1d', // rotate daily
     path: logDirectory,
   });
-  app.use(logger('combined', { stream: accessLogStream })); // logs in file in Apache style format
-  app.use(logger('dev')); // logs at the console in 'dev' format
+  const accessLogFormat =
+    ':remote-addr - :remote-user [:date[clf]] ":method :safe-url HTTP/:http-version" :status :res[content-length] ":safe-referrer" ":user-agent"';
+  app.use(logger(accessLogFormat, { stream: accessLogStream }));
+  app.use(
+    logger(':method :safe-url :status :response-time ms - :res[content-length]')
+  );
 };
 
 setUpLogging();
@@ -145,6 +158,16 @@ app.use(function handlePublicBookmarkExistingError(error, req, res, next) {
       httpStatus: HttpStatus.CONFLICT,
       message: error.message,
       stack: app.get('env') === 'development' ? error.stack : {},
+    });
+  }
+  next(error);
+});
+
+app.use(function handleShareLinkConflictError(error, req, res, next) {
+  if (error instanceof ShareLinkConflictError) {
+    return res.status(HttpStatus.CONFLICT).json({
+      httpStatus: HttpStatus.CONFLICT,
+      message: error.message,
     });
   }
   next(error);

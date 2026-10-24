@@ -17,6 +17,7 @@ import { UserTagsComponent } from './tags/user-tags.component';
 import { MySearchesComponent } from './my-searches/my-searches.component';
 import { FollowingComponent } from './following/following.component';
 import { FollowersComponent } from './followers/followers.component';
+import { SharedByMeComponent } from './shared-by-me/shared-by-me.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,6 +35,7 @@ import { FollowersComponent } from './followers/followers.component';
     MySearchesComponent,
     FollowingComponent,
     FollowersComponent,
+    SharedByMeComponent,
   ],
 })
 export class UserDashboardComponent implements OnInit {
@@ -49,6 +51,7 @@ export class UserDashboardComponent implements OnInit {
     'searches',
     'following',
     'followers',
+    'shared',
   ];
 
   constructor(
@@ -86,7 +89,7 @@ export class UserDashboardComponent implements OnInit {
 
   private initSelectedTab() {
     const tabQueryParam = this.route.snapshot.queryParamMap.get('tab');
-    // Tab order: 0=Bookmarks, 1=Notes, 2=Tags, 3=Searches, 4=Following, 5=Followers
+    // Tab order follows tabNames; existing indexes remain unchanged.
     switch (tabQueryParam) {
       case 'bookmarks':
         this.selectedTabIndex = 0;
@@ -106,6 +109,9 @@ export class UserDashboardComponent implements OnInit {
         break;
       case 'followers':
         this.selectedTabIndex = 5;
+        break;
+      case 'shared':
+        this.selectedTabIndex = 6;
         break;
       default:
         this.selectedTabIndex = 0;

@@ -1,8 +1,65 @@
 @if (bookmark$ | async; as bookmark) {
-  <div>
-    <app-bookmark-list-element [bookmark]="bookmark"
-      [isDetailsPage]="true"
-      [showMoreText]="true"
-       />
+  <article class="card shadow-sm">
+    <div class="card-body">
+      <h1 class="h4 card-title">
+        <i class="fa fa-bookmark fa-sm me-2"></i>
+        {{ bookmark.name }}
+      </h1>
+      <p class="text-muted">
+        <a [href]="bookmark.location" target="_blank">
+          {{ bookmark.location }}
+        </a>
+        @if (bookmark.updatedAt) {
+          <span class="ms-2">
+            Updated {{ bookmark.updatedAt | date : 'yyyy-MM-dd' }}
+          </span>
+        }
+      </p>
+      <app-bookmark-text
+        [bookmark]="bookmark"
+        [showMoreText]="true"
+        [userIsLoggedIn]="false"
+      />
+      @if (bookmark.sourceCodeURL) {
+        <p class="mt-3">
+          <a
+            class="btn btn-light btn-sm"
+            [href]="bookmark.sourceCodeURL"
+            target="_blank"
+          >
+            <i class="fab fa-github"></i> Source code
+          </a>
+        </p>
+      }
+      @if (bookmark.tags?.length) {
+        <div class="mt-3">
+          @for (tag of bookmark.tags; track tag) {
+            <span class="badge bg-secondary me-2">{{ tag }}</span>
+          }
+        </div>
+      }
+      @if (bookmark.youtubeVideoId) {
+        <p class="mt-3">
+          <a
+            class="btn btn-light btn-sm"
+            [href]="'https://www.youtube.com/watch?v=' + bookmark.youtubeVideoId"
+            target="_blank"
+          >
+            <i class="fab fa-youtube"></i> Open video
+          </a>
+        </p>
+      }
+    </div>
+  </article>
+} @else if (loadState === 'unavailable') {
+  <p class="alert alert-warning" role="status">This link is unavailable.</p>
+} @else if (loadState === 'error') {
+  <div class="alert alert-danger" role="alert">
+    <p>The shared bookmark could not be loaded.</p>
+    <button class="btn btn-outline-danger btn-sm" type="button" (click)="retry()">
+      Retry
+    </button>
   </div>
+} @else if (loadState === 'loading') {
+  <p role="status">Loading shared bookmark…</p>
 }

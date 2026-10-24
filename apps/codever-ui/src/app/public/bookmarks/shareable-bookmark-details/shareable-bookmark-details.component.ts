@@ -1,21 +1,24 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Bookmark } from '../../../core/model/bookmark';
+import { SharedBookmark } from '../../../core/model/share-link';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { EMPTY, Observable, Subject, combineLatest } from 'rxjs';
+import { catchError, startWith, switchMap, tap } from 'rxjs/operators';
 import { PublicBookmarksService } from '../public-bookmarks.service';
-import { BookmarkListElementComponent } from '../../../shared/bookmark-list-element/bookmark-list-element.component';
-import { AsyncPipe } from '@angular/common';
+import { BookmarkTextComponent } from '../../../shared/bookmark-text/bookmark-text.component';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-bookmark-details',
   templateUrl: './shareable-bookmark-details.component.html',
   styleUrls: ['./shareable-bookmark-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [BookmarkListElementComponent, AsyncPipe],
+  imports: [BookmarkTextComponent, AsyncPipe, DatePipe],
 })
 export class ShareableBookmarkDetailsComponent implements OnInit {
-  bookmark$: Observable<Bookmark>;
-  popup: string;
+  bookmark$: Observable<SharedBookmark>;
+  loadState: 'loading' | 'loaded' | 'unavailable' | 'error' = 'loading';
+  private readonly retry$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -23,8 +26,34 @@ export class ShareableBookmarkDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const shareableId = this.route.snapshot.paramMap.get('shareableId');
-    this.bookmark$ =
-      this.publicBookmarksService.getSharedBookmarkBySharableId(shareableId);
+    this.bookmark$ = combineLatest([
+      this.route.paramMap,
+      this.retry$.pipe(startWith(undefined)),
+    ]).pipe(
+      switchMap(([params]) => {
+        const token = params.get('token');
+        this.loadState = 'loading';
+        if (!token) {
+          this.loadState = 'unavailable';
+          return EMPTY;
+        }
+        return this.publicBookmarksService
+          .getSharedBookmarkByToken(token)
+          .pipe(
+            tap(() => (this.loadState = 'loaded')),
+            catchError((error: unknown) => {
+              this.loadState =
+                error instanceof HttpErrorResponse && error.status === 404
+                  ? 'unavailable'
+                  : 'error';
+              return EMPTY;
+            })
+          );
+      })
+    );
+  }
+
+  retry(): void {
+    this.retry$.next();
   }
 }

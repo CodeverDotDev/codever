@@ -19,6 +19,7 @@ import { UserData } from './core/model/user-data';
 import { Observable, Subject, interval } from 'rxjs';
 import { UserDataResource } from './core/model/user-data-resource.type';
 import {
+  NavigationStart,
   Router,
   RouterLink,
   RouterOutlet,
@@ -36,6 +37,7 @@ import { ExtensionsComponent } from './shared/extensions/extensions.component';
 import { LoaderComponent } from './shared/loader/loader.component';
 import { ErrorComponent } from './core/error/error.component';
 import { AsyncPipe } from '@angular/common';
+import { updateSharedReferrerPolicy } from './core/privacy/shared-referrer-policy';
 
 @Component({
   selector: 'app-root',
@@ -105,6 +107,15 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly mainLinkShortcutService: MainLinkShortcutService
   ) {
     this.innerWidth = 100;
+    updateSharedReferrerPolicy(window.location.pathname, document);
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationStart => event instanceof NavigationStart),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((event) =>
+        updateSharedReferrerPolicy(event.url, document)
+      );
   }
 
   ngOnInit(): void {

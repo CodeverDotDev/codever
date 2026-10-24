@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Stop sharing</h2>
+
+<hr />
+
+<mat-dialog-content>
+  @if (resourceTitle) {
+    <p>
+      <strong>"{{ resourceTitle }}"</strong>
+    </p>
+  }
+  <p>
+    Anyone using this link will lose future access. Previously copied content cannot be recalled.
+  </p>
+  <p class="mb-0">
+    Are you sure you want to stop sharing?
+  </p>
+</mat-dialog-content>
+
+<hr />
+
+<mat-dialog-actions class="app-dialog-actions">
+  <button
+    type="button"
+    class="btn btn-danger btn-sm me-2"
+    (click)="confirm()"
+  >
+    Stop sharing
+  </button>
+  <button type="button" class="btn btn-secondary btn-sm" (click)="close()">
+    Cancel
+  </button>
+</mat-dialog-actions>

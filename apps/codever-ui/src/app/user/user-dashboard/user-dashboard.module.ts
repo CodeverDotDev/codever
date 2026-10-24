@@ -17,8 +17,11 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MySearchesTemplateComponent } from './my-searches/my-searches-template/my-searches-template.component';
 import { MyNotesComponent } from './my-notes/my-notes.component';
+import { SharedByMeComponent } from './shared-by-me/shared-by-me.component';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
+
+import { StopSharingDialogComponent } from '../../shared/dialog/stop-sharing-dialog/stop-sharing-dialog.component';
 
 const userDashboardRoutes: Routes = [
   {
@@ -46,11 +49,13 @@ const userDashboardRoutes: Routes = [
     UserBookmarksComponent,
     DeleteBookmarksByTagDialogComponent,
     DeleteSavedSearchDialogComponent,
+    StopSharingDialogComponent,
     MySearchesComponent,
     FollowingComponent,
     FollowersComponent,
     MySearchesTemplateComponent,
     MyNotesComponent,
+    SharedByMeComponent,
   ],
   providers: [AuthGuard, PersonalNotesService, PaginationNotificationService],
   exports: [RouterModule],

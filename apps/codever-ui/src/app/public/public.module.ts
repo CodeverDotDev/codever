@@ -52,8 +52,8 @@ const publicRoutes: Routes = [
     redirectTo: '/search?q=%5B:tag%5D&sd=public-notes',
   },
   {
-    path: 'snippets/shared/:shareableId',
-    redirectTo: '/notes/shared/:shareableId',
+    path: 'snippets/shared/:token',
+    redirectTo: '/notes/shared/:token',
   },
   {
     path: 'notes/:id',
@@ -66,7 +66,7 @@ const publicRoutes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'bookmarks/shared/:shareableId',
+    path: 'bookmarks/shared/:token',
     component: ShareableBookmarkDetailsComponent,
   },
   {

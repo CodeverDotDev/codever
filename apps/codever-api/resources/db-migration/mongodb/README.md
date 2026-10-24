@@ -297,4 +297,5 @@ index.
   runs under both the Node.js driver and `mongosh`.
 - Reuse the `getCollection()` / `listIndexes()` helpers from the copyable-fields scripts
   for cross-environment compatibility.
+- Make index-only migrations idempotent with `createIndex()` and explicit names.
 - Always preflight for unexpected indexes before dropping, and support a rollback flag.

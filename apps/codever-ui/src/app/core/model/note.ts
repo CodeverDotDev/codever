@@ -2,7 +2,6 @@ import { CopyableField } from './copyable-field';
 
 export interface Note {
   _id?: string;
-  shareableId?: string;
   type: string; // should always be 'note'
   userId?: string;
   title: string;
@@ -20,7 +19,7 @@ export interface Note {
   contentType?: 'markdown' | 'notebook';
   // Raw .ipynb JSON for notebook notes; content holds extracted searchable text
   notebookContent?: string;
-  color: string;
+  color?: string;
   tags: string[];
   public?: boolean;
   createdAt?: Date;

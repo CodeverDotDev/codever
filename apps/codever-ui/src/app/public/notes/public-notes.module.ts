@@ -13,9 +13,9 @@ const publicNotesRoutes: Routes = [
     component: PublicNotesComponent,
     pathMatch: 'full',
   },
-  // shareable (via shareableId) must come before :id to avoid "shared" being matched as an id
+  // Must come before :id to avoid "shared" being matched as an id.
   {
-    path: 'shared/:shareableId',
+    path: 'shared/:token',
     component: ShareableNoteDetailsComponent,
   },
   // canonical public URL: /notes/:id/details

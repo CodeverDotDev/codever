@@ -6,6 +6,10 @@ const crypto = require('crypto');
 
 const BookmarkInputValidator = require('../../common/validation/bookmark-input.validator');
 const {
+  validateNoShareLinkFields,
+} = require('../../common/validation/share-link-input.validator');
+const ShareLinkService = require('../users/share-link.service');
+const {
   removeBookmarkFavoriteReferences,
 } = require('../../common/user-favorite-cleanup.service');
 
@@ -100,6 +104,7 @@ let getBookmarkById = async (bookmarkId) => {
  * create bookmark
  */
 let createBookmark = async (bookmark) => {
+  validateNoShareLinkFields(bookmark);
   BookmarkInputValidator.validateBookmarkInputForAdmin(bookmark);
 
   await BookmarkInputValidator.verifyPublicBookmarkExistenceOnCreation(
@@ -116,6 +121,7 @@ let createBookmark = async (bookmark) => {
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 let updateBookmark = async (bookmark) => {
+  validateNoShareLinkFields(bookmark);
   BookmarkInputValidator.validateBookmarkInputForAdmin(bookmark);
   await BookmarkInputValidator.verifyPublicBookmarkExistenceOnUpdate(
     bookmark,
@@ -151,6 +157,9 @@ let deleteBookmarkById = async (bookmarkId) => {
   if (!bookmark) {
     throw new NotFoundError(`Bookmark NOT_FOUND with id: ${bookmarkId}`);
   } else {
+    await ShareLinkService.revokeDeletedResourceLinks('bookmark', [
+      bookmark._id,
+    ]);
     await removeBookmarkFavoriteReferences([bookmark._id]);
     return true;
   }
@@ -163,6 +172,10 @@ let deleteBookmarksByLocation = async (location) => {
   const bookmarks = await Bookmark.find({ location: location }).select('_id');
   await Bookmark.deleteMany({ location: location });
 
+  await ShareLinkService.revokeDeletedResourceLinks(
+    'bookmark',
+    bookmarks.map((bookmark) => bookmark._id)
+  );
   await removeBookmarkFavoriteReferences(
     bookmarks.map((bookmark) => bookmark._id)
   );
@@ -176,6 +189,10 @@ let deleteBookmarksByUserId = async (userId) => {
   const bookmarks = await Bookmark.find({ userId: userId }).select('_id');
   await Bookmark.deleteMany({ userId: userId });
 
+  await ShareLinkService.revokeDeletedResourceLinks(
+    'bookmark',
+    bookmarks.map((bookmark) => bookmark._id)
+  );
   await removeBookmarkFavoriteReferences(
     bookmarks.map((bookmark) => bookmark._id)
   );

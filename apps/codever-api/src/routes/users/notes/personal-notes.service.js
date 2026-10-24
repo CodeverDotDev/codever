@@ -8,14 +8,17 @@ const {
   removeNoteFavoriteReferences,
 } = require('../../../common/user-favorite-cleanup.service');
 const { normalizeTags } = require('../../../common/validation/tag-policy');
-const { v4: uuidv4 } = require('uuid');
+const {
+  validateNoShareLinkFields,
+} = require('../../../common/validation/share-link-input.validator');
+const ShareLinkService = require('../share-link.service');
 
 /**
  * CREATE note for user
  */
 let createNote = async function (userId, noteData) {
+  validateNoShareLinkFields(noteData);
   NoteInputValidator.validateNoteInput(userId, noteData);
-  noteData.shareableId = undefined;
 
   // Remove the _id field to ensure Mongoose generates a new _id (might happen when cloning)
   delete noteData._id;
@@ -69,6 +72,7 @@ let getAllMyNotes = async (userId) => {
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 let updateNote = async (userId, noteId, noteData) => {
+  validateNoShareLinkFields(noteData);
   NoteInputValidator.validateNoteInput(userId, noteData);
 
   const updatedNote = await Note.findOneAndUpdate(
@@ -95,6 +99,7 @@ let updateNote = async (userId, noteId, noteData) => {
  * are written, and the query keeps the update scoped to the owning user.
  */
 let updateNotePartially = async (userId, noteId, patch) => {
+  validateNoShareLinkFields(patch);
   const update = {};
   for (const field of ['title', 'content', 'reference', 'public']) {
     if (Object.prototype.hasOwnProperty.call(patch, field)) {
@@ -130,6 +135,7 @@ let deleteNoteById = async (userId, noteId) => {
     throw new NotFoundError('Note NOT_FOUND with id: ' + noteId);
   }
 
+  await ShareLinkService.revokeResourceLinks(userId, 'note', [note._id]);
   await removeNoteFavoriteReferences([note._id]);
   // Remove the note from users' pinned and history lists, in case it was there
   await User.updateMany(
@@ -190,35 +196,6 @@ let getUserNoteTags = async (userId) => {
   return userTags;
 };
 
-let getOrCreateShareableId = async (userId, noteId) => {
-  const note = await Note.findOne({
-    _id: noteId,
-    userId: userId,
-  }).select('+shareableId');
-
-  if (note) {
-    if (note.shareableId) {
-      return note.shareableId;
-    }
-
-    const uuid = uuidv4();
-    const updatedNote = await Note.findOneAndUpdate(
-      {
-        _id: noteId,
-        userId: userId,
-      },
-      {
-        $set: { shareableId: uuid },
-      },
-      { new: true }
-    ).select('+shareableId');
-
-    return updatedNote.shareableId;
-  }
-
-  throw new NotFoundError(`Note NOT_FOUND the userId: ${userId} AND id: ${noteId}`);
-};
-
 module.exports = {
   createNote: createNote,
   getSuggestedNoteTags: getSuggestedNoteTags,
@@ -229,5 +206,4 @@ module.exports = {
   updateNote: updateNote,
   updateNotePartially: updateNotePartially,
   deleteNoteById: deleteNoteById,
-  getOrCreateShareableId: getOrCreateShareableId,
 };

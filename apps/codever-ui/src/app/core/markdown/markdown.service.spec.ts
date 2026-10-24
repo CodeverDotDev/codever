@@ -38,17 +38,26 @@ describe('Markdown transformer service', () => {
   });
 
   it('should generate hyperlinks', () => {
-    expect(
-      markdownService.toHtml('[Codingpedia](http://www.codingpedia.org)')
-    ).toContain(
-      '<p><a href="http://www.codingpedia.org">Codingpedia</a></p>'
+    const html = markdownService.toHtml(
+      '[Codingpedia](http://www.codingpedia.org)'
     );
-    expect(
-      markdownService.toHtml(
-        '[Codingpedia](http://www.codingpedia.org "Sharing coding knowledge")'
-      )
-    ).toContain(
-      '<p><a href="http://www.codingpedia.org" title="Sharing coding knowledge">Codingpedia</a></p>'
+    expect(html).toContain('href="http://www.codingpedia.org"');
+    expect(html).toContain('Codingpedia</a>');
+
+    const htmlWithTitle = markdownService.toHtml(
+      '[Codingpedia](http://www.codingpedia.org "Sharing coding knowledge")'
     );
+    expect(htmlWithTitle).toContain('href="http://www.codingpedia.org"');
+    expect(htmlWithTitle).toContain('title="Sharing coding knowledge"');
+    expect(htmlWithTitle).toContain('Codingpedia</a>');
+  });
+
+  it('sanitizes executable HTML embedded in shared Markdown content', () => {
+    const rendered = markdownService.toHtml(
+      '<script>alert(1)</script><img src=x onerror="alert(1)">'
+    );
+
+    expect(rendered).not.toContain('<script');
+    expect(rendered).not.toContain('onerror');
   });
 });

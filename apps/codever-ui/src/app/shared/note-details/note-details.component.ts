@@ -10,6 +10,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { Note } from '../../core/model/note';
+import { SharedNote } from '../../core/model/share-link';
 import { combineLatest, Observable, of } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -30,6 +31,10 @@ import { NoteContentComponent } from './note-card-body/note-content.component';
 import { AsyncBookmarkListComponent } from '../async-bookmark-list/async-bookmark-list.component';
 import { HighLightPipe } from '../../common/pipes/highlight.pipe';
 
+type NoteDetailsResource =
+  | Note
+  | (SharedNote & { userId?: never; public?: never });
+
 @Component({
   selector: 'app-note-details',
   templateUrl: './note-details.component.html',
@@ -48,7 +53,7 @@ import { HighLightPipe } from '../../common/pipes/highlight.pipe';
 })
 export class NoteDetailsComponent implements OnInit, AfterViewInit {
   @Input()
-  note$: Observable<Note>;
+  note$: Observable<NoteDetailsResource>;
 
   @Input()
   queryText: string;
@@ -61,6 +66,9 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
 
   @Input()
   showMoreText = false;
+
+  @Input()
+  isSharedView = false;
 
   userId$: Observable<string> = of(null);
   userData$: Observable<UserData>;
@@ -94,7 +102,8 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    const isLoggedIn = this.keycloakService.isLoggedIn();
+    const isLoggedIn =
+      !this.isSharedView && this.keycloakService.isLoggedIn();
     this.userId$ = isLoggedIn ? this.userInfoStore.getUserId$() : of(null);
     this.userData$ = isLoggedIn ? this.userDataStore.getUserData$() : of(null);
 

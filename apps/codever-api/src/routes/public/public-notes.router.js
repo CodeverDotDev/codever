@@ -2,18 +2,28 @@ const express = require('express');
 const router = express.Router();
 
 const PublicNotesService = require('./public-notes.service');
+const SharedResourceMapper = require('./shared-resource.mapper');
+const {
+  noReferrer,
+  noStore,
+} = require('../../common/share-response-headers.middleware');
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
 
 /**
- * Get note by shareableId
+ * Get note by active share link token
  */
-router.get('/shared/:shareableId', async (request, response) => {
-  const sharedNote = await PublicNotesService.getNoteByShareableId(
-    request.params.shareableId
-  );
+router.get(
+  '/shared/:token',
+  noStore,
+  noReferrer,
+  async (request, response) => {
+    const sharedNote = await PublicNotesService.getSharedNoteByToken(
+      request.params.token
+    );
 
-  return response.json(sharedNote);
-});
+    return response.json(SharedResourceMapper.mapSharedNote(sharedNote));
+  }
+);
 
 /**
  * Search public notes with query text
@@ -57,4 +67,3 @@ router.get('/:id', async (request, response) => {
 });
 
 module.exports = router;
-

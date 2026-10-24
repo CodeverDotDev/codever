@@ -25,54 +25,88 @@
           <i class="far fa-envelope"></i> Email
         </a>
       </div>
-      <div class="col">
-        <tweet [url]="bookmark.location"
-          [text]="tweetText"
-          [hashTags]="tagsStr"
-          (click)="onShareButtonClick()"
-           />
-      </div>
+      @if (bookmark.public) {
+        <div class="col">
+          <tweet [url]="bookmark.location"
+            [text]="tweetText"
+            [hashTags]="tagsStr"
+            (click)="onShareButtonClick()"
+             />
+        </div>
+      }
     </div>
     <div class="clear"></div>
 
-    <hr />
-
-    @if (
-      userOwnsBookmark &&
-      userIsLoggedIn &&
-      (shareableId$ | async)?.shareableId; as shareableId
-      ) {
-      <div
-        >
-        <h5>Codever shareable link</h5>
-        <div class="input-group mb-3 mt-3">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Generate Codever sharable Url"
-            aria-describedby="basic-addon2"
-            value="{{ environment.HOST + '/bookmarks/shared/' + shareableId }}"
-            />
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            (click)="
-              copyToClipboard(
-                environment.HOST + '/bookmarks/shared/' + shareableId,
-                'shareableLinkButton'
-              )
-            "
-            >
-            {{ copyLinkButtonShareableText }}
-          </button>
-        </div>
+    @if (canManageSharing && (!bookmark.public || shareStatus === 'active')) {
+      <hr />
+      <section aria-label="Revocable sharing link">
         @if (!bookmark.public) {
-          <div class="alert alert-warning mt-2">
-            <i class="fas fa-info-circle me-1"></i> Anyone with the
-            <b>shareable link</b> can access it
+          <h5>Revocable Codever link</h5>
+          <p class="text-muted">
+            Anyone with this link can read and copy the bookmark's current
+            content. Stopping sharing blocks future access, but cannot recall
+            content already copied.
+          </p>
+        }
+        @if (shareStatus === 'loading') {
+          <p role="status">Loading sharing status…</p>
+        }
+        @if (shareStatus === 'inactive' && !bookmark.public) {
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            [disabled]="sharingActionInProgress"
+            (click)="createShareLink()"
+          >
+            Create link
+          </button>
+        }
+        @if (shareStatus === 'active' && shareUrl) {
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              aria-label="Revocable share link"
+              [value]="shareUrl"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              [disabled]="sharingActionInProgress"
+              (click)="copyShareLink()"
+            >
+              {{ copyLinkButtonShareableText }}
+            </button>
+            <button
+              class="btn btn-outline-danger"
+              type="button"
+              [disabled]="sharingActionInProgress"
+              (click)="stopSharing()"
+            >
+              Stop sharing
+            </button>
           </div>
         }
-      </div>
+        @if (shareStatus === 'error') {
+          <div class="alert alert-danger" role="alert">{{ shareError }}</div>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="loadShareStatus()"
+          >
+            Retry
+          </button>
+        } @else if (shareError) {
+          <div class="alert alert-danger" role="alert">{{ shareError }}</div>
+        }
+        @if (bookmark.public && shareStatus === 'active') {
+          <div class="alert alert-info mt-2">
+            Stopping this revocable link does not make the ordinary public
+            bookmark private.
+          </div>
+        }
+      </section>
     }
   </div>
 </mat-dialog-content>

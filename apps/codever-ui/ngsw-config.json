@@ -19,13 +19,27 @@
   ],
   "dataGroups": [
     {
-      "name": "api-performance",
-      "urls": ["/api"],
+      "name": "api-performance-v2",
+      "urls": [
+        "/api/public/users*",
+        "/api/public/users/**",
+        "/api/public/search-results*",
+        "/api/public/search-results/**",
+        "/api/public/feedback*",
+        "/api/public/feedback/**",
+        "/api/webpage-info*",
+        "/api/webpage-info/**",
+        "/api/version*",
+        "/api/version/**",
+        "/api/feature-toggle*",
+        "/api/feature-toggle/**"
+      ],
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
         "maxAge": "3d"
-      }
+      },
+      "version": 2
     }
   ]
 }

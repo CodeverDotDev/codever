@@ -1,2 +1,13 @@
-<app-note-details [note$]="note$" />
-
+<app-note-details [note$]="note$" [isSharedView]="true" />
+@if (loadState === 'unavailable') {
+  <p class="alert alert-warning" role="status">This link is unavailable.</p>
+} @else if (loadState === 'error') {
+  <div class="alert alert-danger" role="alert">
+    <p>The shared note could not be loaded.</p>
+    <button class="btn btn-outline-danger btn-sm" type="button" (click)="retry()">
+      Retry
+    </button>
+  </div>
+} @else if (loadState === 'loading') {
+  <p role="status">Loading shared note…</p>
+}

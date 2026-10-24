@@ -1,20 +1,113 @@
 @if (note.public) {
   <h2 mat-dialog-title>Share <b>public</b> note</h2>
-  <app-note-social-share-dialog-content [note]="note"
-    [shareableUrl]="environment.HOST + '/notes/' + note._id"
-     />
+  <app-note-social-share-dialog-content
+    [note]="note"
+    [shareableUrl]="ordinaryPublicUrl"
+  />
+  @if (userOwnsNote && shareStatus === 'active' && shareUrl) {
+    <mat-dialog-content class="social-share-dialog-content pt-0">
+      <hr />
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          aria-label="Revocable share link"
+          [value]="shareUrl"
+          readonly
+        />
+        <button
+          class="btn btn-outline-secondary"
+          type="button"
+          [disabled]="sharingActionInProgress"
+          (click)="copyShareLink()"
+        >
+          {{ copyButtonText }}
+        </button>
+        <button
+          class="btn btn-outline-danger"
+          type="button"
+          [disabled]="sharingActionInProgress"
+          (click)="stopSharing()"
+        >
+          Stop sharing
+        </button>
+      </div>
+      <div class="alert alert-info mt-2">
+        Stopping this revocable link does not make the ordinary public note
+        private.
+      </div>
+    </mat-dialog-content>
+  }
 } @else {
   <h2 mat-dialog-title>
     <i class="fas fa-eye-slash"></i> Share <b>private</b> note
   </h2>
-  @if ((shareableId$ | async)?.shareableId; as shareableId) {
-    <app-note-social-share-dialog-content [note]="note"
-      [shareableUrl]="environment.HOST + '/notes/shared/' + shareableId"
-       />
+  @if (userOwnsNote) {
+    <mat-dialog-content class="social-share-dialog-content">
+      <section aria-label="Revocable sharing link">
+        <h5>Revocable Codever link</h5>
+        <p class="text-muted">
+          Anyone with this link can read and copy the note's current content,
+          including copyable fields and notebook source. Stopping sharing blocks
+          future access, but cannot recall content already copied.
+        </p>
+        @if (shareStatus === 'loading') {
+          <p role="status">Loading sharing status…</p>
+        }
+        @if (shareStatus === 'inactive') {
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            [disabled]="sharingActionInProgress"
+            (click)="createShareLink()"
+          >
+            Create link
+          </button>
+        }
+        @if (shareStatus === 'active' && shareUrl) {
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              aria-label="Revocable share link"
+              [value]="shareUrl"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              [disabled]="sharingActionInProgress"
+              (click)="copyShareLink()"
+            >
+              {{ copyButtonText }}
+            </button>
+            <button
+              class="btn btn-outline-danger"
+              type="button"
+              [disabled]="sharingActionInProgress"
+              (click)="stopSharing()"
+            >
+              Stop sharing
+            </button>
+          </div>
+        }
+        @if (shareStatus === 'error') {
+          <div class="alert alert-danger" role="alert">{{ shareError }}</div>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="loadShareStatus()"
+          >
+            Retry
+          </button>
+        } @else if (shareError) {
+          <div class="alert alert-danger" role="alert">{{ shareError }}</div>
+        }
+      </section>
+    </mat-dialog-content>
   }
 }
 
 <mat-dialog-actions class="app-dialog-actions" align="end">
   <button type="button" class="btn btn-primary" (click)="close()">Close</button>
 </mat-dialog-actions>
-

@@ -10,6 +10,7 @@ import { UsedTag } from '../../core/model/used-tag';
 import { HttpClientLocalStorageService } from '../../core/cache/http-client-local-storage.service';
 
 import { localStorageKeys } from '../../core/model/localstorage.cache-keys';
+import { SharedBookmark } from '../../core/model/share-link';
 
 @Injectable()
 export class PublicBookmarksService {
@@ -70,9 +71,9 @@ export class PublicBookmarksService {
     );
   }
 
-  getSharedBookmarkBySharableId(shareableId: string): Observable<Bookmark> {
-    return this.httpClient.get<Bookmark>(
-      `${this.publicBookmarksApiBaseUrl}/shared/${shareableId}`
+  getSharedBookmarkByToken(token: string): Observable<SharedBookmark> {
+    return this.httpClient.get<SharedBookmark>(
+      `${this.publicBookmarksApiBaseUrl}/shared/${token}`
     );
   }
 

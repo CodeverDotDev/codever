@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, shareReplay } from 'rxjs/operators';
 import { Note } from '../../core/model/note';
 import { Router } from '@angular/router';
+import { SharedNote } from '../../core/model/share-link';
 
 @Injectable()
 export class PublicNotesService {
@@ -51,10 +52,9 @@ export class PublicNotesService {
       );
   }
 
-  getSharedNoteBySharableId(shareableId: string): Observable<Note> {
-    return this.httpClient.get<Note>(
-      `${this.publicNotesApiBaseUrl}/shared/${shareableId}`
+  getSharedNoteByToken(token: string): Observable<SharedNote> {
+    return this.httpClient.get<SharedNote>(
+      `${this.publicNotesApiBaseUrl}/shared/${token}`
     );
   }
 }
-

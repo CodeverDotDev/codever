@@ -158,14 +158,6 @@ export class PersonalBookmarksService {
       );
   }
 
-  createOrGetShareableId(userId: string, bookmarkId: string): Observable<any> {
-    return this.httpClient
-      .get<string>(
-        `${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks/shareable/${bookmarkId}`
-      )
-      .pipe(shareReplay(1));
-  }
-
   increaseOwnerVisitCount(bookmark: Bookmark) {
     return this.httpClient
       .post(

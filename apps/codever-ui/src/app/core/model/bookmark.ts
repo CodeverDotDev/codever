@@ -2,7 +2,6 @@ import { CopyableField } from './copyable-field';
 
 export interface Bookmark {
   _id?: string;
-  shareableId?: string;
   name: string;
   location: string;
   type: string; // should always be 'bookmark'
@@ -15,7 +14,7 @@ export interface Bookmark {
   publishedOn?: Date;
   sourceCodeURL?: string;
   userId?: string;
-  userDisplayName: string;
+  userDisplayName?: string;
   public?: boolean;
   language?: string;
   createdAt?: Date;

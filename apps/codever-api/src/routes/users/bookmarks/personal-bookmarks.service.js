@@ -7,15 +7,18 @@ const BookmarkInputValidator = require('../../../common/validation/bookmark-inpu
 const {
   removeBookmarkFavoriteReferences,
 } = require('../../../common/user-favorite-cleanup.service');
-const { v4: uuidv4 } = require('uuid');
 const { Types } = require('mongoose');
+const {
+  validateNoShareLinkFields,
+} = require('../../../common/validation/share-link-input.validator');
+const ShareLinkService = require('../share-link.service');
 
 /**
  * CREATE bookmark for user
  */
 let createBookmark = async function (userId, bookmark) {
+  validateNoShareLinkFields(bookmark);
   BookmarkInputValidator.validateBookmarkInput(userId, bookmark);
-  bookmark.shareableId = undefined;
   // Remove the _id field to ensure Mongoose generates a new _id (might happen when cloning)
   bookmark._id = new Types.ObjectId();
 
@@ -167,6 +170,7 @@ let getMostUsedBookmarks = async (userId, page, limit) => {
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
  */
 let updateBookmark = async (userId, bookmarkId, bookmark) => {
+  validateNoShareLinkFields(bookmark);
   BookmarkInputValidator.validateBookmarkInput(userId, bookmark);
 
   await BookmarkInputValidator.verifyPublicBookmarkExistenceOnUpdate(
@@ -208,37 +212,6 @@ let increaseOwnerVisitCount = async (userId, bookmarkId) => {
   );
 };
 
-let getOrCreateShareableId = async (userId, bookmarkId) => {
-  const bookmark = await Bookmark.findOne({
-    _id: bookmarkId,
-    userId: userId,
-  }).select('+shareableId');
-
-  if (bookmark) {
-    if (bookmark.shareableId) {
-      return bookmark.shareableId;
-    } else {
-      const uuid = uuidv4();
-      const updatedBookmark = await Bookmark.findOneAndUpdate(
-        {
-          _id: bookmarkId,
-          userId: userId,
-        },
-        {
-          $set: { shareableId: uuid },
-        },
-        { new: true }
-      ).select('+shareableId');
-
-      return updatedBookmark.shareableId;
-    }
-  } else {
-    throw new NotFoundError(
-      `Bookmark NOT_FOUND the userId: ${userId} AND id: ${bookmarkId}`
-    );
-  }
-};
-
 /*
  * DELETE bookmark for user
  */
@@ -251,6 +224,9 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
   if (response.deletedCount !== 1) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId);
   } else {
+    await ShareLinkService.revokeResourceLinks(userId, 'bookmark', [
+      bookmarkId,
+    ]);
     await removeBookmarkFavoriteReferences([bookmarkId]);
     await User.updateMany(
       {},
@@ -284,6 +260,9 @@ let deleteBookmarkByLocation = async (userId, location) => {
     );
   }
 
+  await ShareLinkService.revokeResourceLinks(userId, 'bookmark', [
+    bookmark._id,
+  ]);
   await removeBookmarkFavoriteReferences([bookmark._id]);
   return true;
 };
@@ -308,6 +287,11 @@ let deletePrivateBookmarksByTag = async (userId, tag) => {
     tags: tag,
   });
 
+  await ShareLinkService.revokeResourceLinks(
+    userId,
+    'bookmark',
+    bookmarksToBeDeleted.map((bookmark) => bookmark._id)
+  );
   await removeBookmarkFavoriteReferences(bookmarksToBeDeleteIds);
   await User.updateOne(
     { userId: userId },
@@ -352,5 +336,4 @@ module.exports = {
   deletePrivateBookmarksByTag: deletePrivateBookmarksByTag,
   getUserTagsAggregated: getUserTagsAggregated,
   updateDisplayNameInBookmarks: updateDisplayNameInBookmarks,
-  getOrCreateSharableId: getOrCreateShareableId,
 };

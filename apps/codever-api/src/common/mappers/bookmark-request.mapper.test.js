@@ -150,6 +150,25 @@ describe('raw bookmark tag input', () => {
     body: { name: 'Bookmark', location: 'https://example.com', description: '', tags },
   });
 
+  test.each(['shareableId', 'shareLinkId', 'shareToken', 'token'])(
+    'rejects caller-supplied %s in the bookmark request mapper',
+    (field) => {
+      const request = {
+        params: { userId: 'owner' },
+        body: {
+          name: 'Bookmark',
+          location: 'https://example.com',
+          description: '',
+          [field]: 'caller-controlled',
+        },
+      };
+
+      expect(() => bookmarkRequestMapper.toBookmark(request)).toThrow(
+        ValidationError
+      );
+    }
+  );
+
   test.each([['valid', 1], [''], 'tag', null].map((tags) => [tags]))(
     'rejects malformed tags before casting: %j', (tags) => {
       expect(() => bookmarkRequestMapper.toBookmark(request(tags))).toThrow(ValidationError);
@@ -162,4 +181,3 @@ describe('raw bookmark tag input', () => {
     expect(Array.from(result.tags)).toEqual(tags);
   });
 });
-

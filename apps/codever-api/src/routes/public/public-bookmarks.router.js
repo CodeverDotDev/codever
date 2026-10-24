@@ -4,6 +4,11 @@ const router = express.Router();
 const NodeCache = require('../../cache-middleware');
 const bookmarksSearchService = require('../../common/searching/bookmarks-search.service');
 const PublicBookmarksService = require('./public-bookmarks.service');
+const SharedResourceMapper = require('./shared-resource.mapper');
+const {
+  noReferrer,
+  noStore,
+} = require('../../common/share-response-headers.middleware');
 
 const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
 
@@ -46,16 +51,23 @@ router.get('/', async (request, response, next) => {
 });
 
 /**
- * Get Bookmark by shareableId
+ * Get bookmark by active share link token
  */
-router.get('/shared/:shareableId', async (request, response) => {
-  const shareableId = request.params.shareableId;
-  const sharedBookmark = await PublicBookmarksService.getBookmarkBySharableId(
-    shareableId
-  );
+router.get(
+  '/shared/:token',
+  noStore,
+  noReferrer,
+  async (request, response) => {
+    const sharedBookmark =
+      await PublicBookmarksService.getSharedBookmarkByToken(
+        request.params.token
+      );
 
-  return response.json(sharedBookmark);
-});
+    return response.json(
+      SharedResourceMapper.mapSharedBookmark(sharedBookmark)
+    );
+  }
+);
 
 /**
  * When no filter send latest public bookmarks

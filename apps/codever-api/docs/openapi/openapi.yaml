@@ -42,6 +42,8 @@ tags:
     description: Operations performed on user data
   - name: helper
     description: Helper endpoints/operations
+  - name: resource-sharing
+    description: Owner-managed, revocable bookmark and note links
 
 
 paths:
@@ -90,6 +92,60 @@ paths:
         200:
           description: OK
           $ref: '#/components/responses/BookmarkListResponse'
+
+  /public/bookmarks/shared/{token}:
+    get:
+      summary: Read a bookmark through an active share link
+      tags:
+        - resource-sharing
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/shareTokenPathParam'
+      responses:
+        200:
+          description: Current bookmark content allowed for shared viewing
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store
+            Referrer-Policy:
+              schema:
+                type: string
+                example: no-referrer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharedBookmark'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
+  /public/notes/shared/{token}:
+    get:
+      summary: Read a note through an active share link
+      tags:
+        - resource-sharing
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/shareTokenPathParam'
+      responses:
+        200:
+          description: Current note content allowed for shared viewing
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store
+            Referrer-Policy:
+              schema:
+                type: string
+                example: no-referrer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharedNote'
+        404:
+          $ref: '#/components/responses/NotFoundError'
 
   /public/users/{userId}/profile:
     get:
@@ -145,6 +201,111 @@ paths:
                 $ref: '#/components/schemas/WebpageInfo'
         403:
           $ref: '#/components/responses/ForbiddenError'
+
+  /personal/users/{userId}/share-links:
+    get:
+      summary: List the owner's active bookmark and note links
+      tags:
+        - resource-sharing
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+        - $ref: '#/components/parameters/pageQueryParam'
+        - $ref: '#/components/parameters/limitQueryParam'
+      responses:
+        200:
+          description: Active links without bearer-token credentials
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareLinkList'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /personal/users/{userId}/share-links/{resourceType}/{resourceId}:
+    parameters:
+      - $ref: '#/components/parameters/userIdPathParam'
+      - $ref: '#/components/parameters/shareResourceTypePathParam'
+      - $ref: '#/components/parameters/shareResourceIdPathParam'
+    get:
+      summary: Read the current sharing status for a bookmark or note
+      tags:
+        - resource-sharing
+      responses:
+        200:
+          description: Inactive status or the current active credential
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareLinkStatus'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+    post:
+      summary: Explicitly create or reuse the current active share link
+      description: |
+        The request body must be empty. The token is a plaintext bearer
+        credential and is returned only from this owner-scoped operation.
+      tags:
+        - resource-sharing
+      responses:
+        200:
+          description: Reused active link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActiveShareLink'
+        201:
+          description: Newly created link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActiveShareLink'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
+  /personal/users/{userId}/share-links/{shareLinkId}:
+    parameters:
+      - $ref: '#/components/parameters/userIdPathParam'
+      - name: shareLinkId
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Revoke one owned link generation
+      tags:
+        - resource-sharing
+      responses:
+        204:
+          description: Link revoked or already inactive
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
 
   /personal/users/{userId}/bookmarks:
     get:
@@ -761,6 +922,158 @@ paths:
 
 components:
   schemas:
+    ActiveShareLink:
+      type: object
+      required:
+        - active
+        - shareLinkId
+        - resourceType
+        - resourceId
+        - createdAt
+        - token
+      properties:
+        active:
+          type: boolean
+          enum: [true]
+        shareLinkId:
+          type: string
+        resourceType:
+          type: string
+          enum: [bookmark, note]
+        resourceId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        token:
+          type: string
+          format: byte
+          description: Plaintext bearer credential; treat as a secret.
+    ShareLinkStatus:
+      oneOf:
+        - type: object
+          required: [active]
+          properties:
+            active:
+              type: boolean
+              enum: [false]
+        - $ref: '#/components/schemas/ActiveShareLink'
+    ShareLinkList:
+      type: object
+      required: [items, page, limit, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShareLinkListItem'
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+    ShareLinkListItem:
+      type: object
+      required:
+        - shareLinkId
+        - resourceType
+        - resourceId
+        - title
+        - public
+        - createdAt
+      properties:
+        shareLinkId:
+          type: string
+        resourceType:
+          type: string
+          enum: [bookmark, note]
+        resourceId:
+          type: string
+        title:
+          type: string
+        public:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    SharedBookmark:
+      type: object
+      description: Current bookmark content without owner or grant metadata.
+      properties:
+        _id:
+          type: string
+        type:
+          type: string
+          enum: [bookmark]
+        name:
+          type: string
+        location:
+          type: string
+        description:
+          type: string
+        descriptionHtml:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        copyableFields:
+          type: array
+          items:
+            type: object
+        publishedOn:
+          type: string
+          format: date
+        sourceCodeURL:
+          type: string
+        language:
+          type: string
+        youtubeVideoId:
+          type: string
+        stackoverflowQuestionId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    SharedNote:
+      type: object
+      description: Current note content; notebook source is included only
+        for notebook notes.
+      properties:
+        _id:
+          type: string
+        type:
+          type: string
+          enum: [note]
+        title:
+          type: string
+        content:
+          type: string
+        contentType:
+          type: string
+          enum: [markdown, notebook]
+        reference:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        copyableFields:
+          type: array
+          items:
+            type: object
+        notebookContent:
+          type: string
+          description: Included only for notebook notes.
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     Bookmark:
       required:
         - language
@@ -1094,6 +1407,27 @@ components:
         gitSha1:
           type: string
   parameters:
+    shareTokenPathParam:
+      name: token
+      in: path
+      required: true
+      description: 43-character URL-safe bearer credential.
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9_-]{43}$'
+    shareResourceTypePathParam:
+      name: resourceType
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [bookmark, note]
+    shareResourceIdPathParam:
+      name: resourceId
+      in: path
+      required: true
+      schema:
+        type: string
     userIdPathParam:
       name: userId
       in: path

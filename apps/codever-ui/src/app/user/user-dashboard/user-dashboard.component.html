@@ -53,4 +53,12 @@
       <app-followers [userId]="userId" />
     </ng-template>
   </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fas fa-share-alt"></i> Shared by me</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <app-shared-by-me [userId]="userId" />
+    </ng-template>
+  </mat-tab>
 </mat-tab-group>

@@ -4,6 +4,7 @@ const usersRouter = express.Router();
 const personalBookmarksRouter = require('./bookmarks/personal-bookmarks.router');
 const personalNotesRouter = require('./notes/personal-notes.router');
 const personalCollectionsRouter = require('./collections/personal-collections.router');
+const shareLinksRouter = require('./share-links.router');
 
 const Keycloak = require('keycloak-connect');
 
@@ -73,6 +74,7 @@ const uploadBookmarks = multer({
 usersRouter.use('/:userId/bookmarks', personalBookmarksRouter);
 usersRouter.use('/:userId/notes', personalNotesRouter);
 usersRouter.use('/:userId/collections', personalCollectionsRouter);
+usersRouter.use('/:userId/share-links', shareLinksRouter);
 
 usersRouter.get('/:userId', keycloak.protect(), async (request, response) => {
   userIdTokenValidator.validateUserId(request);
