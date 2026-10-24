@@ -16,12 +16,8 @@ import { localStorageKeys } from '../model/localstorage.cache-keys';
   providedIn: 'root',
 })
 export class UserDataHistoryStore {
-  private _history: BehaviorSubject<UserDataResource[]> = new BehaviorSubject(
-    null
-  );
-  private historyHasBeenLoaded = false;
-
-  loadedPage: number;
+  // Keep quick-access history separate from home-page pages and page sizes.
+  private readonly historyPages = new Map<string, HistoryPage>();
 
   constructor(
     private userService: UserDataService,
@@ -29,27 +25,33 @@ export class UserDataHistoryStore {
     private notifyStoresService: NotifyStoresService,
     private localStorageService: LocalStorageService
   ) {
-    this.loadedPage = 1;
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.deleteFromHistoryStore(bookmark);
     });
   }
 
-  getHistory$(userId: string, page: number): Observable<UserDataResource[]> {
-    if (this.loadedPage !== page || !this.historyHasBeenLoaded) {
-      if (!this.historyHasBeenLoaded) {
-        this.historyHasBeenLoaded = true;
-      }
+  getHistory$(
+    userId: string,
+    page: number,
+    limit: number = environment.PAGINATION_PAGE_SIZE
+  ): Observable<UserDataResource[]> {
+    const cacheKey = `${userId}:${page}:${limit}`;
+    let historyPage = this.historyPages.get(cacheKey);
+    if (!historyPage) {
+      historyPage = { page, limit, resources$: new BehaviorSubject(null) };
+      this.historyPages.set(cacheKey, historyPage);
+    }
+
+    if (!historyPage.loaded) {
       this.userService
-        .getHistory$(userId, page, environment.PAGINATION_PAGE_SIZE)
+        .getHistory$(userId, page, limit)
         .subscribe((data) => {
-          this.historyHasBeenLoaded = true;
-          this.loadedPage = page;
-          this._history.next(data);
+          historyPage.loaded = true;
+          historyPage.resources$.next(data);
         });
     }
 
-    return this._history.asObservable();
+    return historyPage.resources$.asObservable();
   }
 
   getAllHistory$(userId: string): Observable<UserDataResource[]> {
@@ -63,15 +65,7 @@ export class UserDataHistoryStore {
   }
 
   public updateHistoryStore(resource: UserDataResource) {
-    if (this.historyHasBeenLoaded) {
-      let lastVisitedResources: UserDataResource[] = this._history.getValue();
-      lastVisitedResources = lastVisitedResources.filter(
-        (item) => item._id !== resource._id
-      );
-      lastVisitedResources.unshift(resource);
-
-      this._history.next(lastVisitedResources);
-    }
+    this.publishHistoryAtTop(resource);
     this.updateEntryLocalStorage(resource);
   }
 
@@ -93,18 +87,32 @@ export class UserDataHistoryStore {
   }
 
   public deleteFromHistoryStore(resource: UserDataResource) {
-    if (this.historyHasBeenLoaded) {
-      const lastVisitedResources: UserDataResource[] = this._history.getValue();
-      const indexHistory = lastVisitedResources.findIndex(
-        (lastVisitedResource) => resource._id === lastVisitedResource._id
-      );
-      if (indexHistory !== -1) {
-        lastVisitedResources.splice(indexHistory, 1);
-        this._history.next(lastVisitedResources);
+    this.historyPages.forEach((historyPage) => {
+      if (historyPage.loaded) {
+        const resources = historyPage.resources$.getValue() || [];
+        const filtered = resources.filter((item) => item._id !== resource._id);
+        if (filtered.length !== resources.length) {
+          historyPage.resources$.next(filtered);
+        }
       }
-    }
+    });
 
     this.deleteEntryFromLocalStorage(resource);
+  }
+
+  private publishHistoryAtTop(resource: UserDataResource) {
+    // History updates affect page 1 only; preserve each view's requested size.
+    this.historyPages.forEach((historyPage) => {
+      if (historyPage.loaded && historyPage.page === 1) {
+        const resources = historyPage.resources$.getValue() || [];
+        const withoutResource = resources.filter(
+          (item) => item._id !== resource._id
+        );
+        historyPage.resources$.next(
+          [resource, ...withoutResource].slice(0, historyPage.limit)
+        );
+      }
+    });
   }
 
   private deleteEntryFromLocalStorage(resource: UserDataResource) {
@@ -126,4 +134,11 @@ export class UserDataHistoryStore {
       }
     }
   }
+}
+
+interface HistoryPage {
+  page: number;
+  limit: number;
+  resources$: BehaviorSubject<UserDataResource[]>;
+  loaded?: boolean;
 }

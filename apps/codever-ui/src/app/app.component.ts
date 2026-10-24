@@ -68,7 +68,9 @@ export class AppComponent implements OnInit, OnDestroy {
   latestVisitedResources$: Observable<UserDataResource[]>;
   latestPinnedResources$: Observable<UserDataResource[]>;
 
-  private readonly pinnedQuickAccessLimit = 15;
+  // Quick access has its own sizes; home-page pagination uses the default.
+  private readonly historyQuickAccessLimit = 10;
+  private readonly pinnedQuickAccessLimit = 20;
 
   favIcon: HTMLLinkElement = document.querySelector('#favicon');
   readonly environment = environment;
@@ -129,7 +131,8 @@ export class AppComponent implements OnInit, OnDestroy {
           );
           this.latestVisitedResources$ = this.userDataHistoryStore.getHistory$(
             this.userId,
-            1
+            1,
+            this.historyQuickAccessLimit
           );
           this.latestPinnedResources$ =
             this.userDataPinnedStore.getPinnedResources$(
@@ -389,7 +392,11 @@ export class AppComponent implements OnInit, OnDestroy {
     dialogConfig.data = {
       resources$:
         this.latestPinnedResources$ ||
-        this.userDataPinnedStore.getPinnedResources$(this.userId, 1),
+        this.userDataPinnedStore.getPinnedResources$(
+          this.userId,
+          1,
+          this.pinnedQuickAccessLimit
+        ),
       title: '<i class="fas fa-thumbtack"></i> Pinned',
     };
 
@@ -447,7 +454,11 @@ export class AppComponent implements OnInit, OnDestroy {
     dialogConfig.data = {
       resources$:
         this.latestVisitedResources$ ||
-        this.userDataHistoryStore.getHistory$(this.userId, 1),
+        this.userDataHistoryStore.getHistory$(
+          this.userId,
+          1,
+          this.historyQuickAccessLimit
+        ),
       title: '<i class="fas fa-history"></i> History',
     };
 
