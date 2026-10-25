@@ -3,7 +3,7 @@ describe('Resource sharing management (Shared by me)', () => {
     cy.kcLogin('mock', 'mock');
   });
 
-  it('displays active shared links in Shared by me dashboard tab', () => {
+  it('displays active shared links on the Shared by me page', () => {
     cy.intercept('GET', '/api/personal/users/*/share-links?page=1&limit=55', {
       statusCode: 200,
       body: {
@@ -31,7 +31,7 @@ describe('Resource sharing management (Shared by me)', () => {
       },
     }).as('getSharedLinks');
 
-    cy.visit('/dashboard?tab=shared');
+    cy.visit('/dashboard/shared');
     cy.wait('@getSharedLinks');
 
     cy.contains('h2', 'Shared by me').should('be.visible');
@@ -64,7 +64,7 @@ describe('Resource sharing management (Shared by me)', () => {
       statusCode: 204,
     }).as('deleteShareLink');
 
-    cy.visit('/dashboard?tab=shared');
+    cy.visit('/dashboard/shared');
     cy.wait('@getSharedLinks');
 
     // Mock the refresh after delete

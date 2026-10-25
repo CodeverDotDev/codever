@@ -1,64 +1,108 @@
-<mat-tab-group [selectedIndex]="selectedTabIndex" (selectedIndexChange)="tabChanged($event)">
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"
-        ><i class="fas fa-bookmark"></i> My bookmarks</span
-      >
-    </ng-template>
-    <ng-template matTabContent>
-      <app-my-bookmarks [userId]="userId"
-        [userData$]="userData$"
-       />
-    </ng-template>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fas fa-sticky-note"></i> My Notes</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <app-my-notes [userId]="userId" />
-    </ng-template>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fas fa-tags"></i> My Tags</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <app-user-tags [userId]="userId" [userData$]="userData$" />
-    </ng-template>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-search"></i> Searches</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <app-saved-searches [userId]="userId" />
-    </ng-template>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fa fa-eye"></i> Following</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <app-following [userId]="userId" />
-    </ng-template>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"
-        ><i class="fas fa-user-friends"></i> Followers</span
-      >
-    </ng-template>
-    <ng-template matTabContent>
-      <app-followers [userId]="userId" />
-    </ng-template>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class="app-tab-label"><i class="fas fa-share-alt"></i> Shared by me</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <app-shared-by-me [userId]="userId" />
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+<main class="container mt-3" aria-labelledby="dashboard-title">
+  <h1 id="dashboard-title">My dashboard</h1>
+  <p class="text-muted">
+    Choose a section to manage your content, searches, and connections.
+  </p>
+
+  <div class="row row-cols-1 row-cols-lg-3 g-3">
+    <div class="col">
+      <section class="card h-100" aria-labelledby="dashboard-content-title">
+        <div class="card-body">
+          <h2 id="dashboard-content-title" class="h4">Your content</h2>
+          <div class="list-group list-group-flush">
+            <a
+              class="dashboard-section-link list-group-item list-group-item-action"
+              routerLink="/dashboard/bookmarks"
+            >
+              <i class="fas fa-bookmark me-2" aria-hidden="true"></i>
+              <strong>My bookmarks</strong>
+              <span class="d-block text-muted small"
+                >Browse, sort, import, and export your bookmarks.</span
+              >
+            </a>
+            <a
+              class="dashboard-section-link list-group-item list-group-item-action"
+              routerLink="/dashboard/notes"
+            >
+              <i class="fas fa-sticky-note me-2" aria-hidden="true"></i>
+              <strong>My notes</strong>
+              <span class="d-block text-muted small"
+                >Browse and export your personal notes.</span
+              >
+            </a>
+            <a
+              class="dashboard-section-link list-group-item list-group-item-action"
+              routerLink="/dashboard/tags"
+            >
+              <i class="fas fa-tags me-2" aria-hidden="true"></i>
+              <strong>My tags</strong>
+              <span class="d-block text-muted small"
+                >Review tags you watch, ignore, or use.</span
+              >
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="card h-100" aria-labelledby="dashboard-search-title">
+        <div class="card-body">
+          <h2 id="dashboard-search-title" class="h4">Search</h2>
+          <div class="list-group list-group-flush">
+            <a
+              class="dashboard-section-link list-group-item list-group-item-action"
+              routerLink="/dashboard/searches"
+            >
+              <i class="fas fa-search me-2" aria-hidden="true"></i>
+              <strong>Saved searches</strong>
+              <span class="d-block text-muted small"
+                >Manage and revisit your saved bookmark searches.</span
+              >
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="card h-100" aria-labelledby="dashboard-community-title">
+        <div class="card-body">
+          <h2 id="dashboard-community-title" class="h4">Community</h2>
+          <div class="list-group list-group-flush">
+            <a
+              class="dashboard-section-link list-group-item list-group-item-action"
+              routerLink="/dashboard/following"
+            >
+              <i class="fas fa-eye me-2" aria-hidden="true"></i>
+              <strong>Following</strong>
+              <span class="d-block text-muted small"
+                >See the people and profiles you follow.</span
+              >
+            </a>
+            <a
+              class="dashboard-section-link list-group-item list-group-item-action"
+              routerLink="/dashboard/followers"
+            >
+              <i class="fas fa-user-friends me-2" aria-hidden="true"></i>
+              <strong>Followers</strong>
+              <span class="d-block text-muted small"
+                >See who follows your public activity.</span
+              >
+            </a>
+            <a
+              class="dashboard-section-link list-group-item list-group-item-action"
+              routerLink="/dashboard/shared"
+            >
+              <i class="fas fa-share-alt me-2" aria-hidden="true"></i>
+              <strong>Shared by me</strong>
+              <span class="d-block text-muted small"
+                >Manage links you've shared for bookmarks and notes.</span
+              >
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>

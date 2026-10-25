@@ -22,16 +22,54 @@ import { PersonalNotesService } from '../../core/personal-notes.service';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 
 import { StopSharingDialogComponent } from '../../shared/dialog/stop-sharing-dialog/stop-sharing-dialog.component';
+import { DashboardSectionPageComponent } from './dashboard-section-page.component';
 
-const userDashboardRoutes: Routes = [
-  {
-    path: 'tags',
-    redirectTo: '/dashboard?tab=tags',
-    pathMatch: 'full',
-  },
+export const userDashboardRoutes: Routes = [
   {
     path: '',
     component: UserDashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'bookmarks',
+    component: DashboardSectionPageComponent,
+    data: { section: 'bookmarks' },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'notes',
+    component: DashboardSectionPageComponent,
+    data: { section: 'notes' },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'tags',
+    component: DashboardSectionPageComponent,
+    data: { section: 'tags' },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'searches',
+    component: DashboardSectionPageComponent,
+    data: { section: 'searches' },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'following',
+    component: DashboardSectionPageComponent,
+    data: { section: 'following' },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'followers',
+    component: DashboardSectionPageComponent,
+    data: { section: 'followers' },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'shared',
+    component: DashboardSectionPageComponent,
+    data: { section: 'shared' },
     canActivate: [AuthGuard],
   },
 ];
@@ -46,6 +84,7 @@ const userDashboardRoutes: Routes = [
     CommonModule,
     UserTagsComponent,
     UserDashboardComponent,
+    DashboardSectionPageComponent,
     UserBookmarksComponent,
     DeleteBookmarksByTagDialogComponent,
     DeleteSavedSearchDialogComponent,

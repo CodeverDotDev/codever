@@ -97,11 +97,13 @@ Cypress.Commands.add('kcLogin', (username: string, password: string) => {
 Cypress.Commands.add('kcLogout', () => {
   const kcRoot = 'http://localhost:8480';
   const kcRealm = 'bookmarks';
+  const kcClient = 'bookmarks';
   const kcRedirectUri = 'http://localhost:4200/';
   return cy.request({
     url: `${kcRoot}/auth/realms/${kcRealm}/protocol/openid-connect/logout`,
     qs: {
-      redirect_uri: kcRedirectUri,
+      post_logout_redirect_uri: kcRedirectUri,
+      client_id: kcClient,
     },
   });
 });

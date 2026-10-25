@@ -30,4 +30,12 @@ describe('UserPublicProfileEditComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('links watched tags to the dashboard tags page', () => {
+    const tagsLink = fixture.nativeElement.querySelector(
+      'a[title="Go to My Tags in dashboard"]'
+    );
+
+    expect(tagsLink.getAttribute('href')).toBe('/dashboard/tags');
+  });
 });

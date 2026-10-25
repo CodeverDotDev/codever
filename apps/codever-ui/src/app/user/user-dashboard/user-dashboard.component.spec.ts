@@ -1,58 +1,47 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { describe, expect, it, vi } from 'vitest';
-import { AuthenticationService } from '../../core/auth/authentication.service';
-import { UserInfoStore } from '../../core/user/user-info.store';
-import { UserDataStore } from '../../core/user/userdata.store';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { describe, expect, it } from 'vitest';
 import { UserDashboardComponent } from './user-dashboard.component';
 
-describe('Dashboard tab query mapping', () => {
-  it('activates the shared tab from a direct query parameter', () => {
-    const dashboard = createDashboardForTab('shared');
+describe('UserDashboardComponent', () => {
+  let fixture: ComponentFixture<UserDashboardComponent>;
 
-    expect(dashboard.selectedTabIndex).toBe(6);
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [UserDashboardComponent],
+      providers: [provideRouter([])],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(UserDashboardComponent);
+    fixture.detectChanges();
   });
 
-  it('preserves existing tab names, legacy snippets, and indexes', () => {
-    expect(createDashboardForTab('bookmarks').selectedTabIndex).toBe(0);
-    expect(createDashboardForTab('notes').selectedTabIndex).toBe(1);
-    expect(createDashboardForTab('snippets').selectedTabIndex).toBe(1);
-    expect(createDashboardForTab('followers').selectedTabIndex).toBe(5);
+  it('groups the destinations into content, search, and community', () => {
+    const headings = Array.from(
+      fixture.nativeElement.querySelectorAll('h2')
+    ).map((heading: HTMLElement) => (heading.textContent ?? '').trim());
 
-    const dashboard = createDashboardForTab('notes');
-    dashboard.tabChanged(5);
-
-    expect(dashboard.selectedTabIndex).toBe(5);
+    expect(headings).toEqual(['Your content', 'Search', 'Community']);
   });
 
-  it('writes the shared tab name to the query parameter', () => {
-    const router = { navigate: vi.fn() };
-    const dashboard = createDashboardForTab('bookmarks', router);
-
-    dashboard.tabChanged(6);
-
-    expect(router.navigate).toHaveBeenCalledWith(
-      [],
-      expect.objectContaining({
-        queryParams: { tab: 'shared', page: null },
-      })
+  it('links to all seven dashboard sections with descriptions', () => {
+    const links: HTMLAnchorElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('.dashboard-section-link')
     );
+
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      '/dashboard/bookmarks',
+      '/dashboard/notes',
+      '/dashboard/tags',
+      '/dashboard/searches',
+      '/dashboard/following',
+      '/dashboard/followers',
+      '/dashboard/shared',
+    ]);
+    expect(
+      links.every((link) =>
+        (link.querySelector('.text-muted')?.textContent ?? '').trim()
+      )
+    ).toBe(true);
   });
 });
-
-function createDashboardForTab(
-  tab: string,
-  router = { navigate: vi.fn() }
-): UserDashboardComponent {
-  const dashboard = new UserDashboardComponent(
-    { isLoggedIn: () => true } as unknown as AuthenticationService,
-    { getUserInfoOidc$: () => of({ sub: 'owner' }) } as unknown as UserInfoStore,
-    { getUserData$: () => of({}) } as unknown as UserDataStore,
-    {
-      snapshot: { queryParamMap: { get: () => tab } },
-    } as unknown as ActivatedRoute,
-    router as unknown as Router
-  );
-  dashboard.ngOnInit();
-  return dashboard;
-}

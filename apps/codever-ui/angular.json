@@ -99,7 +99,8 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "buildTarget": "codever-ui:build"
+            "buildTarget": "codever-ui:build",
+            "host": "0.0.0.0"
           },
           "configurations": {
             "production": {

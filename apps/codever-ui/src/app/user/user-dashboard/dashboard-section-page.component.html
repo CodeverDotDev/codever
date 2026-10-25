@@ -1,0 +1,37 @@
+<div class="d-flex align-items-center mt-3 mb-2">
+  <a
+    class="btn btn-light btn-sm me-2"
+    routerLink="/dashboard"
+    title="Back to Dashboard"
+    aria-label="Back to Dashboard"
+  >
+    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+  </a>
+  <h1 class="h2 mb-0">{{ sectionTitle }}</h1>
+</div>
+
+@if (userId && userData$) {
+  @switch (section) {
+    @case ('bookmarks') {
+      <app-my-bookmarks [userId]="userId" [userData$]="userData$" />
+    }
+    @case ('notes') {
+      <app-my-notes [userId]="userId" />
+    }
+    @case ('tags') {
+      <app-user-tags [userId]="userId" [userData$]="userData$" />
+    }
+    @case ('searches') {
+      <app-saved-searches [userId]="userId" />
+    }
+    @case ('following') {
+      <app-following [userId]="userId" />
+    }
+    @case ('followers') {
+      <app-followers [userId]="userId" />
+    }
+    @case ('shared') {
+      <app-shared-by-me [userId]="userId" />
+    }
+  }
+}

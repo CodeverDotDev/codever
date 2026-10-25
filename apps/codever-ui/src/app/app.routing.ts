@@ -22,7 +22,7 @@ export const routes: Routes = [
   },
   {
     path: 'my-bookmarks',
-    redirectTo: '/dashboard?tab=bookmarks',
+    redirectTo: '/dashboard/bookmarks',
     pathMatch: 'full',
   },
   {
@@ -65,7 +65,7 @@ export const routes: Routes = [
   },
   {
     path: 'my-notes',
-    redirectTo: '/dashboard?tab=notes',
+    redirectTo: '/dashboard/notes',
     pathMatch: 'full',
   },
   {

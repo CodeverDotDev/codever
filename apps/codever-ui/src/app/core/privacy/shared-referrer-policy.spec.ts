@@ -32,7 +32,7 @@ describe('updateSharedReferrerPolicy', () => {
     const testDocument = globalThis.document.implementation.createHTMLDocument();
     updateSharedReferrerPolicy('/bookmarks/shared/token', testDocument);
 
-    updateSharedReferrerPolicy('/dashboard?tab=shared', testDocument);
+    updateSharedReferrerPolicy('/dashboard/shared', testDocument);
 
     expect(testDocument.querySelector('meta[name="referrer"]')).toBeNull();
   });
