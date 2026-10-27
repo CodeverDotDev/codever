@@ -35,6 +35,38 @@
   @media (min-width: 992px) {
     display: block;
   }
+
+  @media (min-width: 1900px) {
+    flex-basis: 260px;
+    width: 260px;
+    padding-left: 0.75rem;
+  }
+
+  @media (min-width: 2200px) {
+    flex-basis: 320px;
+    width: 320px;
+  }
+}
+
+// On wide screens let the TOC extend into the right gutter (beside the
+// 16.5rem left sidebar and the 1080px container), so the note body keeps the
+// bookmark width. Offsets stay below the free gutter to avoid h-scroll.
+@media (min-width: 1600px) {
+  .note-details-wrapper.has-toc {
+    margin-right: -120px;
+  }
+}
+
+@media (min-width: 1900px) {
+  .note-details-wrapper.has-toc {
+    margin-right: -260px;
+  }
+}
+
+@media (min-width: 2200px) {
+  .note-details-wrapper.has-toc {
+    margin-right: -320px;
+  }
 }
 
 .note-action-btn {

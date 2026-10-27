@@ -1,5 +1,6 @@
 @if (note$ | async; as note) {
-  <div class="note-details-wrapper">
+  <div class="note-details-wrapper"
+       [class.has-toc]="!partOfList && tocHeadings.length">
     <div class="note-details-main">
       <div class="card" #noteEntry>
         <div class="card-body show-hide note-container"
@@ -234,7 +235,7 @@
         }
       </div>
     </div>
-    @if (!partOfList) {
+    @if (!partOfList && tocHeadings.length) {
       <aside class="note-details-toc">
         <app-note-toc [headings]="tocHeadings" />
       </aside>
