@@ -42,12 +42,12 @@ personalNotesRouter.post('/', keycloak.protect(), async (request, response) => {
  */
 personalNotesRouter.post('/ai-refine', keycloak.protect(), async (request, response) => {
   UserIdValidator.validateUserId(request);
-  const { title, content, tags, reference } = request.body;
+  const { title, content, tags, reference, customPrompt } = request.body;
 
   try {
     const result = await AiRefineService.refineNoteContent(
       request.params.userId,
-      { title, content, tags, reference }
+      { title, content, tags, reference, customPrompt }
     );
     response.status(HttpStatus.OK).json(result);
   } catch (err) {
