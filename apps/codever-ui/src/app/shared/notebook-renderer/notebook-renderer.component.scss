@@ -46,7 +46,7 @@
 
 .notebook-prompt {
   font-family: Consolas, Menlo, Monaco, monospace;
-  font-size: 12px;
+  font-size: 0.75em;
   min-width: 70px;
   padding: 8px 8px 0 4px;
   text-align: right;
@@ -89,7 +89,7 @@
   border-radius: 3px;
   padding: 8px;
   margin: 0;
-  font-size: 13px;
+  font-size: 0.8125em;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -100,7 +100,7 @@
   border-radius: 3px;
   padding: 8px;
   margin: 0;
-  font-size: 13px;
+  font-size: 0.8125em;
   color: #cc0000;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -142,7 +142,7 @@
   background-color: #f5f5f5;
   padding: 8px;
   border-radius: 3px;
-  font-size: 13px;
+  font-size: 0.8125em;
 }
 
 /* --- KaTeX math rendering --- */

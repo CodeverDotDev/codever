@@ -169,6 +169,11 @@ pre {
   border-radius: 3px;
 }
 
+// Relative size (13px at 100%) so code blocks follow the note zoom level
+.note-zoomable-content pre {
+  font-size: 0.8125em;
+}
+
 // Remove the light grey background/border when the code block uses highlight.js dark theme
 pre:has(code.hljs) {
   background-color: transparent;
