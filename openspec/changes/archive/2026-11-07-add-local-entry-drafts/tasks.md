@@ -66,7 +66,7 @@
   draft-protected creates leave silently, Stay cancels, Leave proceeds
   without touching stored drafts, and a synchronous flush runs first;
   confirm manually (7.3) that a cancelled Back keeps URL/history consistent.
-- [ ] 4.3 Register `beforeunload` whenever a form has changes; on the event,
+- [x] 4.3 Register `beforeunload` whenever a form has changes; on the event,
   flush pending create drafts first and call `preventDefault`/`returnValue`
   only when unprotected changes remain. Verify Vitest tests for arming,
   disarming, flushed creates closing silently, and failed writes prompting;
@@ -124,12 +124,12 @@
   `shared/tags/tag-editors.spec.ts` and copyable-field tests. Run the draft,
   guard, editor, logout, tagging, and copyable-field suites with `ng test`;
   verify both editors and all excluded flows pass.
-- [ ] 7.2 In a browser, exercise bookmark and note drafts, several drafts of
+- [x] 7.2 In a browser, exercise bookmark and note drafts, several drafts of
   one type, a changed and an untouched edit, clone, copy-to-mine, and an
   extension capture. Verify drafts are listed only in matching blank create
   editors, warnings appear only for unprotected changes, and a capture never
   removes a create draft.
-- [ ] 7.3 Exercise navigation inside the debounce window, a cancelled Back,
+- [x] 7.3 Exercise navigation inside the debounce window, a cancelled Back,
   reload, tab and browser close, two tabs creating the same type, more than
   10 drafts, a Keycloak re-login redirect, and logout. Verify the observable
   scenarios in both delta specs, that drafts are removed on logout, and that
