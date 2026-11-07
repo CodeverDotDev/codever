@@ -2,6 +2,19 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Logger } from '../../core/logger.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SaveBookmarkFormComponent } from '../save-bookmark-form/save-bookmark-form.component';
+import { isBlankStartCreate } from '../../core/editor-protection/draft-eligibility';
+
+/**
+ * Query parameters that prefill the form (extensions, bookmarklets).
+ * `initiator=browser` from the in-app "+" menu is exempt.
+ */
+export const BOOKMARK_PREFILL_PARAMS = [
+  'url',
+  'desc',
+  'title',
+  'popup',
+  'initiator',
+];
 
 @Component({
   selector: 'app-new-personal-bookmark-form',
@@ -16,6 +29,8 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   desc; // value of "desc" query parameter if present
   title; // value of "title" query parameter if present
   initiator; // value of "initiator" query parameter if present
+  /** Only a blank-start create (no prefill parameters) uses drafts. */
+  draftEligible = false;
 
   constructor(
     private logger: Logger,
@@ -24,6 +39,10 @@ export class CreatePersonalBookmarkComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.draftEligible = isBlankStartCreate(
+      this.route.snapshot.queryParamMap,
+      BOOKMARK_PREFILL_PARAMS
+    );
     this.url = this.route.snapshot.queryParamMap.get('url');
     this.desc = this.route.snapshot.queryParamMap.get('desc');
     this.title = this.route.snapshot.queryParamMap.get('title');

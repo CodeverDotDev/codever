@@ -14,6 +14,8 @@ import { FeatureToggleService } from '../../core/feature-toggle.service';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { RouterLinkActive, RouterLink } from '@angular/router';
 import { SearchbarComponent } from '../search/searchbar.component';
+import { EditorProtectionRegistry } from '../../core/editor-protection/editor-protection.registry';
+import { reportDraftCleanupFailure } from '../../core/editor-protection/draft-cleanup-notification';
 
 @Component({
   selector: 'app-navigation',
@@ -43,7 +45,8 @@ export class NavigationComponent implements OnInit {
     private userDataStore: UserDataStore,
     private localStorageService: LocalStorageService,
     private keycloakServiceWrapper: KeycloakServiceWrapper,
-    private featureToggleService: FeatureToggleService
+    private featureToggleService: FeatureToggleService,
+    private editorProtection: EditorProtectionRegistry
   ) {}
 
   ngOnInit() {
@@ -61,6 +64,13 @@ export class NavigationComponent implements OnInit {
   }
 
   async doLogout() {
+    // Disarm unsaved-changes protection and clear tab drafts before redirecting
+    const draftCleanup = this.editorProtection.handleLogout(
+      this.keycloakService.getKeycloakInstance().subject
+    );
+    if (!draftCleanup.ok) {
+      reportDraftCleanupFailure();
+    }
     this.localStorageService.cleanUserRelatedData();
     // keycloak-js 24 performs an OIDC-compliant RP-initiated logout: it sends
     // post_logout_redirect_uri (from `redirectUri`) and id_token_hint automatically,

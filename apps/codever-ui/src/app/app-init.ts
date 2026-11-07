@@ -3,6 +3,8 @@ import Keycloak from 'keycloak-js';
 import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
 import { UserDataStore } from './core/user/userdata.store';
 import { SystemService } from './core/cache/system.service';
+import { EditorProtectionRegistry } from './core/editor-protection/editor-protection.registry';
+import { reportDraftCleanupFailure } from './core/editor-protection/draft-cleanup-notification';
 
 /**
  * Wires up Keycloak lifecycle event handling using the keycloak-angular v19
@@ -24,6 +26,7 @@ export function initializeKeycloakEvents(): void {
   const keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
   const userDataStore = inject(UserDataStore);
   const systemService = inject(SystemService);
+  const editorProtection = inject(EditorProtectionRegistry);
 
   systemService.checkVersion();
 
@@ -32,6 +35,12 @@ export function initializeKeycloakEvents(): void {
 
     switch (event.type) {
       case KeycloakEventType.AuthLogout:
+        // Stop draft writers and clear the user's drafts from this browser
+        // (also when another tab initiated the logout) before resetting
+        // user state.
+        if (!editorProtection.handleLogout(keycloak.subject).ok) {
+          reportDraftCleanupFailure();
+        }
         userDataStore.resetUserDataStore();
         break;
       case KeycloakEventType.TokenExpired:

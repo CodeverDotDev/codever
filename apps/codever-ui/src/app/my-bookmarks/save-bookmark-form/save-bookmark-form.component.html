@@ -8,6 +8,12 @@
       novalidate
       (ngSubmit)="saveBookmark(bookmarkForm.value)"
       >
+      @if (protection) {
+        <app-draft-recovery-banner
+          [protection]="protection"
+          resourceLabel="bookmark"
+        />
+      }
       <div class="mb-3">
         <label for="location" class="space-btw-wrapper"
           ><span>Location*</span>

@@ -1,0 +1,118 @@
+@if (visible()) {
+  <section class="draft-recovery mb-3" aria-label="Drafts">
+    @if (state() === 'active' && offers().length > 0) {
+      <div class="alert alert-info mb-2" role="region">
+        <p class="mb-2">
+          <i class="fas fa-history me-1" aria-hidden="true"></i>
+          Unsaved new {{ resourceLabel() }} drafts ({{ offers().length }}):
+        </p>
+        <ul class="list-unstyled mb-0">
+          @for (offer of offers(); track offer.id) {
+            <li class="draft-offer d-flex flex-wrap align-items-center gap-2 mb-1">
+              @if (offer.readable) {
+                <span class="me-auto">
+                  @if (offer.label; as label) {
+                    “<strong class="draft-recovery-label">{{ label }}</strong>”
+                  } @else {
+                    <em>(untitled)</em>
+                  }
+                  <span class="small text-body-secondary">
+                    {{ offer.savedAt | date: 'medium' }}
+                  </span>
+                </span>
+                @if (confirmingId() === offer.id) {
+                  <span class="small">
+                    Replace your current input with this draft?
+                    @if (protection().writeStatus() !== 'failed') {
+                      Your current input stays in the draft list.
+                    }
+                  </span>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    (click)="confirmRestore(offer)"
+                  >
+                    Replace with draft
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    (click)="cancelReplace()"
+                  >
+                    Keep current input
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    (click)="restore(offer)"
+                  >
+                    Restore
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    (click)="delete(offer)"
+                  >
+                    Delete
+                  </button>
+                }
+              } @else {
+                <span class="me-auto"><em>Unreadable draft</em></span>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="delete(offer)"
+                >
+                  Delete
+                </button>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    }
+    @if (protection().offerMissing()) {
+      <div class="alert alert-warning mb-2" role="alert">
+        That draft is no longer available; it may have been saved or deleted
+        in another tab.
+      </div>
+    }
+    @switch (state()) {
+      @case ('unavailable') {
+        <div class="alert alert-warning mb-2" role="alert">
+          Drafts are unavailable in this browser. You will be asked before
+          leaving with unsaved changes.
+        </div>
+      }
+      @case ('suspended') {
+        <div class="alert alert-secondary mb-2" role="status">
+          Notebook changes are not saved as drafts. You will be asked before
+          leaving with unsaved changes.
+        </div>
+      }
+    }
+    @if (protection().cleanupFailed()) {
+      <div class="alert alert-warning mb-2" role="alert">
+        The draft could not be removed from this browser. Please try again.
+      </div>
+    }
+    @if (state() === 'active' && protection().writeStatus() === 'failed') {
+      <div class="alert alert-warning mb-2" role="alert">
+        Your latest changes are not saved as a draft. You will be asked before
+        leaving with unsaved changes.
+      </div>
+    }
+    <p class="draft-recovery-note small text-body-secondary mb-0" role="status">
+      @if (state() === 'active' && protection().writeStatus() === 'saved') {
+        <span>
+          <i class="fas fa-check me-1" aria-hidden="true"></i>Draft saved
+          {{ protection().lastSavedAt() | date: 'shortTime' }}.
+        </span>
+      }
+      Drafts of new entries are kept in this browser for
+      {{ retentionDays }} days and removed when you log out; they are not
+      published or synced.
+    </p>
+  </section>
+}

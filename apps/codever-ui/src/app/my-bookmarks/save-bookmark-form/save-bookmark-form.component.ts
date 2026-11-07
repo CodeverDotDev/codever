@@ -4,12 +4,16 @@ import {
   distinctUntilChanged,
   map,
   startWith,
+  takeUntil,
+  tap,
 } from 'rxjs/operators';
 import {
   Component,
   ElementRef,
   HostListener,
+  inject,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
   ChangeDetectionStrategy,
@@ -28,7 +32,7 @@ import { MarkdownService } from '../../core/markdown/markdown.service';
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Observable, throwError as observableThrowError } from 'rxjs';
+import { Observable, Subject, throwError as observableThrowError } from 'rxjs';
 import { languages } from '../../shared/constants/language-options';
 import { tagsValidator } from '../../shared/directive/tags-validation.directive';
 import {
@@ -104,6 +108,14 @@ import {
   copyableFieldsForm,
   copyableFieldsValue,
 } from '../../shared/copyable-fields/copyable-fields.form';
+import { EditorProtectionRegistry } from '../../core/editor-protection/editor-protection.registry';
+import { AuthoringProtection } from '../../core/editor-protection/authoring-protection';
+import { confirmCancel } from '../../core/editor-protection/confirm-cancel';
+import {
+  BookmarkDraftSnapshot,
+  rawCopyableFields,
+} from '../../core/model/entry-draft';
+import { DraftRecoveryBannerComponent } from '../../shared/draft-recovery/draft-recovery-banner.component';
 
 @Component({
   selector: 'app-save-bookmark-form',
@@ -112,6 +124,7 @@ import {
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CopyableFieldsEditorComponent,
+    DraftRecoveryBannerComponent,
     NgTemplateOutlet,
     NgClass,
     FormsModule,
@@ -131,7 +144,7 @@ import {
     AsyncPipe,
   ],
 })
-export class SaveBookmarkFormComponent implements OnInit {
+export class SaveBookmarkFormComponent implements OnInit, OnDestroy {
   readonly maxTags = MAX_TAGS;
   bookmarkForm: UntypedFormGroup;
   userId = null;
@@ -186,6 +199,19 @@ export class SaveBookmarkFormComponent implements OnInit {
   @Input()
   cloneBookmark = false;
 
+  /** Set by the create wrapper for blank-start creates only. */
+  @Input()
+  draftEligible = false;
+
+  /** Change tracking and create-draft session for this editor visit. */
+  protection: AuthoringProtection<BookmarkDraftSnapshot> | undefined;
+  private readonly editorProtection = inject(EditorProtectionRegistry, {
+    optional: true,
+  });
+  /** Incremented on draft restore so stale metadata responses are ignored. */
+  private scrapeGeneration = 0;
+  private readonly destroy$ = new Subject<void>();
+
   bookmark: Bookmark;
 
   hidePublicCheckbox = false;
@@ -227,6 +253,7 @@ export class SaveBookmarkFormComponent implements OnInit {
   ) {
     this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
       this.userId = userInfo.sub;
+      this.protection?.setIdentity(userInfo.sub);
       this.userDataStore.getUserData$().subscribe((userData) => {
         this.userData = userData;
       });
@@ -278,11 +305,157 @@ export class SaveBookmarkFormComponent implements OnInit {
 
         this.tagsControl.setValue(null);
         this.tags.markAsDirty();
+        if (!this.protection?.hasInitialSnapshot) {
+          this.startProtection();
+        }
       });
+    } else {
+      this.startProtection();
     }
 
     this.hidePublicCheckbox =
       this.route.snapshot.queryParams.hidePublicCheckbox;
+  }
+
+  ngOnDestroy(): void {
+    this.protection?.destroy();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Records the initial (blank, prefilled or loaded) form as the
+   * change-tracking baseline; eligible blank creates also start drafting.
+   *
+   * Runs right after `buildForm()` for creates, and after the `bookmark$`
+   * patch for edit, clone and copy-to-mine. Prefill metadata that arrives
+   * later re-baselines via `afterMetadataPatch`.
+   */
+  private startProtection(): void {
+    // Missing in prototype-based unit tests that bypass dependency injection.
+    if (!this.editorProtection) {
+      return;
+    }
+    if (!this.protection) {
+      this.protection = this.editorProtection.create<BookmarkDraftSnapshot>({
+        type: 'bookmark',
+        // The wrapper decides eligibility (no prefill params); the mode flags
+        // are rechecked so edits, clones and copies never write drafts.
+        draftEligible:
+          this.draftEligible &&
+          !this.isUpdate &&
+          !this.copyToMine &&
+          !this.cloneBookmark,
+        capture: () => this.captureDraftSnapshot(),
+        apply: (snapshot) => this.applyDraftSnapshot(snapshot),
+        // Bookmarks are often saved untitled; the URL still identifies them.
+        describe: (snapshot) =>
+          snapshot.form.name?.trim() || snapshot.form.location,
+      });
+      this.bookmarkForm.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => this.protection?.notifyChange());
+    }
+    this.protection.markInitial();
+    // The user ID may still be unknown here; the constructor subscription
+    // sets the identity later, and drafting starts once both are ready.
+    this.protection.setIdentity(this.userId);
+  }
+
+  /**
+   * Captures the raw editable state used for drafts and change tracking.
+   *
+   * Uses `getRawValue()` so incomplete input is kept as typed. Read-later,
+   * pinned and selected collections are not part of the saved bookmark
+   * itself, so they are stored as options.
+   */
+  private captureDraftSnapshot(): BookmarkDraftSnapshot {
+    const raw = this.bookmarkForm.getRawValue();
+    return {
+      form: {
+        name: raw.name ?? '',
+        location: raw.location ?? '',
+        tags: [...(raw.tags ?? [])],
+        publishedOn: raw.publishedOn ?? null,
+        sourceCodeURL: raw.sourceCodeURL ?? '',
+        description: raw.description ?? '',
+        public: !!raw.public,
+        language: raw.language ?? null,
+        youtubeVideoId: raw.youtubeVideoId ?? null,
+        stackoverflowQuestionId: raw.stackoverflowQuestionId ?? null,
+        copyableFields: rawCopyableFields(raw.copyableFields),
+      },
+      options: {
+        readLater: !!raw.readLater,
+        pinned: !!raw.pinned,
+        collectionIds: [...this.selectedCollectionIds],
+      },
+    };
+  }
+
+  /**
+   * Applies a restored draft to the form.
+   *
+   * Bumping `scrapeGeneration` first drops in-flight metadata responses, so
+   * they cannot overwrite restored values. Updates suppress events, so no
+   * draft write or URL lookup is triggered; arrays are rebuilt because
+   * `patchValue` cannot add or remove rows.
+   */
+  private applyDraftSnapshot(snapshot: BookmarkDraftSnapshot): void {
+    const { form, options } = snapshot;
+    this.scrapeGeneration++;
+    this.bookmarkForm.patchValue(
+      {
+        name: form.name,
+        location: form.location,
+        publishedOn: form.publishedOn,
+        sourceCodeURL: form.sourceCodeURL,
+        description: form.description,
+        public: form.public,
+        language: form.language,
+        youtubeVideoId: form.youtubeVideoId,
+        stackoverflowQuestionId: form.stackoverflowQuestionId,
+        readLater: options.readLater,
+        pinned: options.pinned,
+      },
+      { emitEvent: false }
+    );
+    this.tags.clear({ emitEvent: false });
+    form.tags.forEach((tag) =>
+      this.tags.push(new UntypedFormControl(tag), { emitEvent: false })
+    );
+    this.tags.updateValueAndValidity({ emitEvent: false });
+    this.bookmarkForm.setControl(
+      'copyableFields',
+      copyableFieldsForm(form.copyableFields),
+      { emitEvent: false }
+    );
+    this.bookmarkForm.markAsDirty();
+    // The public checkbox is bound to makePublic, not only to the control.
+    this.makePublic = form.public;
+    // Collection IDs are restored as stored; they are not revalidated here.
+    this.selectedCollectionIds = [...options.collectionIds];
+  }
+
+  /**
+   * Metadata patches use `emitEvent: false`, so the protection is notified
+   * explicitly. Metadata fetched for a prefilled URL (extension, bookmarklet)
+   * is part of the initial state while the user hasn't edited anything yet;
+   * metadata fetched for a URL the user typed is a normal change.
+   *
+   * @param wasUnchanged whether the form was unchanged before this patch
+   */
+  private afterMetadataPatch(initiatedByPrefill: boolean, wasUnchanged: boolean) {
+    if (initiatedByPrefill) {
+      this.protection?.acceptInitialUpdate(wasUnchanged);
+    } else {
+      this.protection?.notifyChange();
+    }
+  }
+
+  /** Must be read before a metadata patch, to pass to `afterMetadataPatch`. */
+  private isUnchanged(): boolean {
+    return !this.protection?.isChanged();
   }
 
   buildForm(): void {
@@ -303,7 +476,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     });
 
     if (this.url) {
-      this.verifyExistenceInPersonalBookmarks(this.url);
+      this.verifyExistenceInPersonalBookmarks(this.url, true);
     }
 
     this.onChanges();
@@ -322,29 +495,45 @@ export class SaveBookmarkFormComponent implements OnInit {
     }
   }
 
-  private verifyExistenceInPersonalBookmarks(location) {
+  private verifyExistenceInPersonalBookmarks(
+    location,
+    initiatedByPrefill = false
+  ) {
+    const generation = this.scrapeGeneration;
     this.personalBookmarksService
       .getPersonalBookmarkByLocation(this.userId, location)
       .subscribe((bookmarks: Bookmark[]) => {
+        if (generation !== this.scrapeGeneration) {
+          return;
+        }
         if (bookmarks.length === 1) {
           this.personalBookmarkPresent = true;
           this.existingPersonalBookmark = bookmarks[0];
         } else if (!this.copyToMine) {
-          this.getWebPageInfo(location);
+          this.getWebPageInfo(location, initiatedByPrefill);
         }
       });
   }
 
-  private getWebPageInfo(location) {
+  private getWebPageInfo(location, initiatedByPrefill = false) {
+    const generation = this.scrapeGeneration;
+    const isCurrent = () => generation === this.scrapeGeneration;
     this.personalBookmarkPresent = false;
     const youtubeVideoId = this.getYoutubeVideoId(location);
     if (youtubeVideoId) {
+      const wasUnchanged = this.isUnchanged();
       this.bookmarkForm
         .get('youtubeVideoId')
         .patchValue(youtubeVideoId, { emitEvent: false });
+      this.afterMetadataPatch(initiatedByPrefill, wasUnchanged);
       this.webpageInfoService.getYoutubeVideoData(youtubeVideoId).subscribe(
         (webpageData: WebpageInfo) => {
-          this.patchFormAttributesWithWebPageData(webpageData);
+          if (isCurrent()) {
+            this.patchFormAttributesWithWebPageData(
+              webpageData,
+              initiatedByPrefill
+            );
+          }
         },
         (error) => {
           console.error(
@@ -352,21 +541,33 @@ export class SaveBookmarkFormComponent implements OnInit {
             error
           );
           // fallback to scrape from location
-          this.updateFormWithScrapingDataFromLocation(location);
+          if (isCurrent()) {
+            this.updateFormWithScrapingDataFromLocation(
+              location,
+              initiatedByPrefill
+            );
+          }
         }
       );
     } else {
       const stackoverflowQuestionId =
         this.stackoverflowHelper.getStackoverflowQuestionIdFromUrl(location);
       if (stackoverflowQuestionId) {
+        const wasUnchanged = this.isUnchanged();
         this.bookmarkForm
           .get('stackoverflowQuestionId')
           .patchValue(stackoverflowQuestionId, { emitEvent: false });
+        this.afterMetadataPatch(initiatedByPrefill, wasUnchanged);
         this.webpageInfoService
           .getStackoverflowQuestionData(stackoverflowQuestionId)
           .subscribe(
             (webpageData: WebpageInfo) => {
-              this.patchFormAttributesWithWebPageData(webpageData);
+              if (isCurrent()) {
+                this.patchFormAttributesWithWebPageData(
+                  webpageData,
+                  initiatedByPrefill
+                );
+              }
             },
             (error) => {
               console.error(
@@ -374,17 +575,29 @@ export class SaveBookmarkFormComponent implements OnInit {
                 error
               );
               // fallback to scrape from location
-              this.updateFormWithScrapingDataFromLocation(location);
+              if (isCurrent()) {
+                this.updateFormWithScrapingDataFromLocation(
+                  location,
+                  initiatedByPrefill
+                );
+              }
             }
           );
       } else {
         // for everything else try to scrape the web page for the location
-        this.updateFormWithScrapingDataFromLocation(location);
+        this.updateFormWithScrapingDataFromLocation(
+          location,
+          initiatedByPrefill
+        );
       }
     }
   }
 
-  private patchFormAttributesWithWebPageData(webpageData) {
+  private patchFormAttributesWithWebPageData(
+    webpageData,
+    initiatedByPrefill = false
+  ) {
+    const wasUnchanged = this.isUnchanged();
     if (webpageData.title) {
       this.bookmarkForm
         .get('name')
@@ -411,20 +624,30 @@ export class SaveBookmarkFormComponent implements OnInit {
       this.tagsControl.setValue(null);
       this.tags.markAsDirty();
     }
+    this.afterMetadataPatch(initiatedByPrefill, wasUnchanged);
   }
 
-  private updateFormWithScrapingDataFromLocation(location) {
+  private updateFormWithScrapingDataFromLocation(
+    location,
+    initiatedByPrefill = false
+  ) {
     if (this.desc) {
       const webpageData: WebpageInfo = {
         title: this.title,
         metaDescription: this.desc,
       };
-      this.patchFormAttributesWithWebPageData(webpageData);
+      this.patchFormAttributesWithWebPageData(webpageData, initiatedByPrefill);
     } else {
       // go try to scrape for description and title if user did not select any text
+      const generation = this.scrapeGeneration;
       this.webpageInfoService.getScrapingData(location).subscribe(
         (webpageData: WebpageInfo) => {
-          this.patchFormAttributesWithWebPageData(webpageData);
+          if (generation === this.scrapeGeneration) {
+            this.patchFormAttributesWithWebPageData(
+              webpageData,
+              initiatedByPrefill
+            );
+          }
         },
         (error) => {
           console.error(
@@ -536,6 +759,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     if (updateAsAdmin) {
       this.adminService.updateBookmark(bookmark).subscribe(
         () => {
+          this.protection?.markSaved();
           this.navigateToHomePageHistoryTab();
         },
         () => this.navigateToHomePageHistoryTab() // TODO add error handling - popover
@@ -544,6 +768,7 @@ export class SaveBookmarkFormComponent implements OnInit {
       this.personalBookmarksService
         .updateBookmark(bookmark)
         .pipe(
+          tap(() => this.protection?.markSaved()),
           concatMap((updatedBookmark) =>
             this.userDataStore.updateUserDataHistory$(updatedBookmark)
           )
@@ -581,6 +806,7 @@ export class SaveBookmarkFormComponent implements OnInit {
     dialogRef.afterClosed().subscribe((selectedIds: string[] | undefined) => {
       if (selectedIds) {
         this.selectedCollectionIds = selectedIds;
+        this.protection?.notifyChange();
       }
     });
   }
@@ -649,6 +875,7 @@ export class SaveBookmarkFormComponent implements OnInit {
             .get('location')
             .substring(lastSlashIndex + 1);
           newBookmark._id = newBookmarkId;
+          this.protection?.markSaved();
 
           this.myBookmarksStore.addToLastCreated(bookmark);
 
@@ -827,6 +1054,7 @@ Given a bookmark's URL, name, tags, and description:
             if (accepted.tags && accepted.tags.length > 0) {
               mergeFormTags(this.tags, accepted.tags);
             }
+            this.protection?.notifyChange();
           });
       });
   }
@@ -922,6 +1150,7 @@ Given a bookmark's URL, name, tags, and description:
             .get('location')
             .substring(lastSlashIndex + 1);
           bookmark._id = newBookmarkId;
+          this.protection?.markSaved();
 
           this.myBookmarksStore.addToLastCreated(bookmark);
 
@@ -949,12 +1178,24 @@ Given a bookmark's URL, name, tags, and description:
     });
   }
 
+  /**
+   * Cancel: a changed new bookmark asks to discard it (and its draft) first;
+   * other cases leave and rely on the unsaved-changes guard or popup prompt.
+   */
   cancelUpdate() {
-    if (this.popup) {
-      window.close();
-    } else {
-      this._location.back();
-      console.log('goBAck()...');
-    }
+    confirmCancel(
+      this.protection,
+      this.publicBookmarkPresentDialog,
+      'bookmark'
+    ).subscribe((leave) => {
+      if (!leave) {
+        return;
+      }
+      if (this.popup) {
+        window.close();
+      } else {
+        this._location.back();
+      }
+    });
   }
 }

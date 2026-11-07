@@ -1,6 +1,9 @@
 <div class="navigation-space-buffer rounded shadow-sm"
   [ngClass]="noteForm?.get('public')?.value ? 'note-public-bg' : 'note-bg'">
   <form [formGroup]="noteForm" novalidate (ngSubmit)="saveNote(noteForm.value)">
+    @if (protection) {
+      <app-draft-recovery-banner [protection]="protection" resourceLabel="note" />
+    }
     <div class="mb-3 pb-1">
       <label for="title" class="space-btw-wrapper"
         ><span>Title*</span> <span><i class="fa fa-sticky-note fa-lg"></i></span

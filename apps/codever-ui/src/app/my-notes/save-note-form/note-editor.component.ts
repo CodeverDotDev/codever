@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -86,6 +87,11 @@ import { MatFormField, MatHint, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { CopyableFieldsEditorComponent } from '../../shared/copyable-fields/copyable-fields-editor.component';
 import { copyableFieldsForm, copyableFieldsValue } from '../../shared/copyable-fields/copyable-fields.form';
+import { EditorProtectionRegistry } from '../../core/editor-protection/editor-protection.registry';
+import { AuthoringProtection } from '../../core/editor-protection/authoring-protection';
+import { confirmCancel } from '../../core/editor-protection/confirm-cancel';
+import { NoteDraftSnapshot, rawCopyableFields } from '../../core/model/entry-draft';
+import { DraftRecoveryBannerComponent } from '../../shared/draft-recovery/draft-recovery-banner.component';
 
 @Component({
   selector: 'app-note-editor',
@@ -93,6 +99,7 @@ import { copyableFieldsForm, copyableFieldsValue } from '../../shared/copyable-f
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CopyableFieldsEditorComponent,
+    DraftRecoveryBannerComponent,
     NgTemplateOutlet,
     NgClass,
     FormsModule,
@@ -198,6 +205,17 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   originWorkspace: string;
 
+  /** Set by the create wrapper for blank-start creates only. */
+  @Input()
+  draftEligible = false;
+
+  /** Change tracking and create-draft session for this editor visit. */
+  protection: AuthoringProtection<NoteDraftSnapshot> | undefined;
+  private protectedForm: UntypedFormGroup | null = null;
+  private readonly editorProtection = inject(EditorProtectionRegistry, {
+    optional: true,
+  });
+
   scrollStrategy: ScrollStrategy;
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -239,6 +257,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
         switchMap(([userId, userData]) => {
           this.userId = userId;
           this.userData = userData;
+          this.protection?.setIdentity(userId);
           return this.personalNotesService.getSuggestedNoteTags(this.userId);
         })
       )
@@ -261,6 +280,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     if (!this.isEditMode && !this.cloneNote && !this.copyToMine) {
       this.buildForm();
+      this.startProtection();
     }
   }
 
@@ -307,12 +327,138 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
       this.tagsControl.setValue(null);
       this.tags.markAsDirty();
+      if (changes['note'] && !this.protection?.hasInitialSnapshot) {
+        this.startProtection();
+      }
     }
   }
 
   ngOnDestroy(): void {
+    this.protection?.destroy();
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Records the loaded or blank initial form as the change-tracking baseline
+   * and starts the draft session for eligible blank-start creates.
+   *
+   * Called once the initial content has settled: from `ngOnInit` for creates,
+   * and from `ngOnChanges` after the loaded note was patched for edit, clone
+   * and copy-to-mine. Calling it again only re-baselines the existing
+   * protection, so it is never registered twice.
+   */
+  private startProtection(): void {
+    // Missing in prototype-based unit tests that bypass dependency injection.
+    if (!this.editorProtection) {
+      return;
+    }
+    if (!this.protection) {
+      this.protection = this.editorProtection.create<NoteDraftSnapshot>({
+        type: 'note',
+        // The wrapper decides eligibility (no prefill params); the mode flags
+        // are rechecked so edits, clones and copies never write drafts.
+        draftEligible:
+          this.draftEligible &&
+          !this.isEditMode &&
+          !this.cloneNote &&
+          !this.copyToMine,
+        capture: () => this.captureDraftSnapshot(),
+        apply: (snapshot) => this.applyDraftSnapshot(snapshot),
+        describe: (snapshot) => snapshot.form.title,
+        // Notebook content is not part of drafts, but uploading or removing
+        // a notebook must still count as an unsaved change for the guard.
+        trackExtra: () => ({
+          notebook: this.isNotebookMode ? this.notebookRawJson : null,
+        }),
+      });
+    }
+    this.bindProtectionToForm();
+    this.protection.markInitial();
+    // The user ID may still be unknown here; the constructor subscription
+    // sets the identity later, and drafting starts once both are ready.
+    this.protection.setIdentity(this.userId);
+  }
+
+  /**
+   * Forwards value changes of the current form instance to the protection.
+   *
+   * `buildForm()` can run more than once (in `ngOnChanges` and `ngOnInit`),
+   * replacing `noteForm`. Each new instance is subscribed once, and changes
+   * of a replaced instance are ignored so they cannot trigger draft writes.
+   */
+  private bindProtectionToForm(): void {
+    if (!this.protection || this.protectedForm === this.noteForm) {
+      return;
+    }
+    this.protectedForm = this.noteForm;
+    const form = this.noteForm;
+    form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.noteForm === form) {
+        this.protection?.notifyChange();
+      }
+    });
+  }
+
+  /**
+   * Captures the raw editable state used for drafts and change tracking.
+   *
+   * Uses `getRawValue()` so disabled controls and invalid input are kept as
+   * typed; normalization only happens on save. Missing values fall back to
+   * empty defaults so equal forms always produce equal snapshots. Selected
+   * collections live outside the form and are stored as options.
+   */
+  private captureDraftSnapshot(): NoteDraftSnapshot {
+    const raw = this.noteForm.getRawValue();
+    return {
+      form: {
+        title: raw.title ?? '',
+        reference: raw.reference ?? '',
+        tags: [...(raw.tags ?? [])],
+        content: raw.content ?? '',
+        public: !!raw.public,
+        copyableFields: rawCopyableFields(raw.copyableFields),
+      },
+      options: { collectionIds: [...this.selectedCollectionIds] },
+    };
+  }
+
+  /**
+   * Applies a restored draft to the form.
+   *
+   * All updates suppress events, so restoring does not schedule a draft
+   * write; the protection records the restored state as already written.
+   * Form arrays are rebuilt rather than patched, because `patchValue` cannot
+   * add or remove tag and copyable-field rows.
+   */
+  private applyDraftSnapshot(snapshot: NoteDraftSnapshot): void {
+    const { form, options } = snapshot;
+    this.noteForm.patchValue(
+      {
+        title: form.title,
+        reference: form.reference,
+        content: form.content,
+        public: form.public,
+      },
+      { emitEvent: false }
+    );
+    this.tags.clear({ emitEvent: false });
+    form.tags.forEach((tag) =>
+      this.tags.push(new UntypedFormControl(tag), { emitEvent: false })
+    );
+    // Recompute tag validity for the final, rebuilt array.
+    this.tags.updateValueAndValidity({ emitEvent: false });
+    this.noteForm.setControl(
+      'copyableFields',
+      copyableFieldsForm(form.copyableFields),
+      { emitEvent: false }
+    );
+    // Show validation messages for restored input, as for typed input.
+    this.noteForm.markAsDirty();
+    // Collection IDs are restored as stored; they are not revalidated here.
+    this.selectedCollectionIds = [...options.collectionIds];
+    // Suppressed events don't trigger change detection on their own.
+    this.cd.markForCheck();
   }
 
   addTag(event: MatChipInputEvent): void {
@@ -411,6 +557,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     dialogRef.afterClosed().subscribe((selectedIds: string[] | undefined) => {
       if (selectedIds) {
         this.selectedCollectionIds = selectedIds;
+        this.protection?.notifyChange();
         this.cd.markForCheck();
       }
     });
@@ -608,6 +755,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
           mergeFormTags(this.tags, accepted.tags);
         }
 
+        this.protection?.notifyChange();
         this.cd.markForCheck();
       });
   }
@@ -663,6 +811,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
         note.type = 'note';
+        this.protection?.markSaved();
         this.addToSelectedCollections(newNoteId);
         this.userDataStore.updateUserDataHistory$(note).subscribe();
         this.navigateToNoteDetails(note, {});
@@ -687,6 +836,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
       .updateNote(note)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.protection?.markSaved();
         this.userDataStore.updateUserDataHistory$(note).subscribe();
         this.navigateToNoteDetails(note, {});
       });
@@ -707,6 +857,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
         const lastSlashIndex = headers.get('location').lastIndexOf('/');
         const newNoteId = headers.get('location').substring(lastSlashIndex + 1);
         note._id = newNoteId;
+        this.protection?.markSaved();
         this.addToSelectedCollections(newNoteId);
         this.navigateToNoteDetails(note, {});
       });
@@ -766,6 +917,8 @@ Given a note's title, content, tags, and optional reference URL, you should:
         this.notebookRawJson = json;
         this.notebookFileName = file.name;
         this.isNotebookMode = true;
+        // Notebooks are never stored as drafts; keep the warning only
+        this.protection?.suspendDrafting();
         this.cd.markForCheck();
 
         // Extract readable text from markdown + code cells for full-text search
@@ -822,9 +975,18 @@ Given a note's title, content, tags, and optional reference URL, you should:
     return parts.join('\n\n');
   }
 
+  /**
+   * Cancel: a changed new note asks to discard it (and its draft) first;
+   * other cases go back and rely on the unsaved-changes guard.
+   */
   cancelUpdate() {
-    this._location.back();
-    console.log('goBack()...');
+    confirmCancel(this.protection, this.deleteDialog, 'note').subscribe(
+      (leave) => {
+        if (leave) {
+          this._location.back();
+        }
+      }
+    );
   }
 
   get formArrayTags() {
@@ -858,6 +1020,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         () => {
+          this.protection?.end();
           this.router.navigate(['']);
           this.deleteNotificationService.showSuccessNotification(
             `Note - "${note.title}" was deleted`

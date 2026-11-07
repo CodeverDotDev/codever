@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { localStorageKeys } from '../model/localstorage.cache-keys';
+import { DRAFT_KEY_PREFIX } from '../model/entry-draft';
 
 @Injectable()
 export class LocalStorageService {
@@ -45,8 +46,16 @@ export class LocalStorageService {
     localStorage.removeItem(key);
   }
 
+  /** Clears cached data; new-entry drafts are kept (see `DraftService`). */
   cleanLocalStorage() {
-    localStorage.clear();
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key !== null && !key.startsWith(DRAFT_KEY_PREFIX)) {
+        keys.push(key);
+      }
+    }
+    keys.forEach((key) => localStorage.removeItem(key));
   }
 
   cleanUserRelatedData() {

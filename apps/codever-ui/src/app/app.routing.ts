@@ -128,7 +128,11 @@ export const routes: Routes = [
  * See App routing @https://angular.io/docs/ts/latest/guide/ngmodule.html
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+      // Keep the URL in sync when the unsaved-changes guard cancels a
+      // back/forward navigation.
+      canceledNavigationResolution: 'computed',
+    }),],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

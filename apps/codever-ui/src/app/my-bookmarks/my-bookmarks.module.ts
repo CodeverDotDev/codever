@@ -1,3 +1,4 @@
+import { unsavedChangesGuard } from '../core/editor-protection/unsaved-changes.guard';
 import { NgModule } from '@angular/core';
 import { MyBookmarksEntryPointComponent } from './my-bookmarks-entry-point.component';
 
@@ -27,11 +28,27 @@ const myBookmarksRoutes: Routes = [
     component: MyBookmarksEntryPointComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'new', component: CreatePersonalBookmarkComponent },
-      { path: ':id/copy-to-mine', component: CopyToMineBookmarkComponent },
-      { path: ':id/clone', component: CloneBookmarkComponent },
+      {
+        path: 'new',
+        component: CreatePersonalBookmarkComponent,
+        canDeactivate: [unsavedChangesGuard],
+      },
+      {
+        path: ':id/copy-to-mine',
+        component: CopyToMineBookmarkComponent,
+        canDeactivate: [unsavedChangesGuard],
+      },
+      {
+        path: ':id/clone',
+        component: CloneBookmarkComponent,
+        canDeactivate: [unsavedChangesGuard],
+      },
       { path: ':id/details', component: BookmarkDetailsComponent },
-      { path: ':id/edit', component: UpdatePersonalBookmarkComponent },
+      {
+        path: ':id/edit',
+        component: UpdatePersonalBookmarkComponent,
+        canDeactivate: [unsavedChangesGuard],
+      },
     ],
   },
 ];

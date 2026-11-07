@@ -1,3 +1,4 @@
+import { unsavedChangesGuard } from '../core/editor-protection/unsaved-changes.guard';
 import { NgModule } from '@angular/core';
 
 import { RouterModule, Routes } from '@angular/router';
@@ -31,21 +32,25 @@ const notesRoutes: Routes = [
     path: 'new',
     canActivate: [AuthGuard],
     component: CreatePersonalNoteComponent,
+    canDeactivate: [unsavedChangesGuard],
   },
   {
     path: ':id/edit',
     canActivate: [AuthGuard],
     component: UpdatePersonalNoteComponent,
+    canDeactivate: [unsavedChangesGuard],
   },
   {
     path: ':id/clone',
     canActivate: [AuthGuard],
     component: CloneNoteComponent,
+    canDeactivate: [unsavedChangesGuard],
   },
   {
     path: ':id/copy-to-mine',
     canActivate: [AuthGuard],
     component: CopyToMineNoteComponent,
+    canDeactivate: [unsavedChangesGuard],
   },
   {
     path: ':id/details',

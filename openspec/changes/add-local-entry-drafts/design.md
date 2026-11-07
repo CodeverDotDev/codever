@@ -1,248 +1,313 @@
 ## Context
 
-See `proposal.md` for motivation and agreed scope. The original plan predates
-several relevant implementation details:
+See `proposal.md` for motivation and agreed scope. Drafts cover only
+blank-start creates and live in `localStorage`, several per type; every other
+changed authoring form is protected by an unsaved-changes warning. The
+original plan predates several relevant implementation details:
 
 - Both editors now contain ordered `copyableFields` arrays and collection
   selections outside their form groups. Bookmark metadata and accepted AI
   changes can patch controls with `emitEvent: false`.
-- Note forms can be built in both `ngOnChanges` and `ngOnInit`; drafts must bind
-  to the final form and authenticated identity, not an obsolete form instance.
+- Note forms can be built in both `ngOnChanges` and `ngOnInit`; drafts and the
+  change baseline must bind to the final form and authenticated identity, not
+  an obsolete form instance.
+- Editors are hosted by route wrappers: `create-personal-*`, update wrappers,
+  `clone-*`, and `new-entry`. Clone and copy-to-mine are flags on the shared
+  editors; extension captures arrive with `initiator`/`popup` query params, and
+  the bookmark editor calls `window.close()` after saving in popup mode.
 - Both update wrappers fetch fresh details from personal APIs rather than
   trusting router state. Preserve this behavior.
 - The note editor has `destroy$`; the bookmark editor lacks equivalent cleanup.
-- `LocalStorageService` wraps data in a JSON envelope, throws on storage/parse
-  failures, and uses `localStorage.clear()` for cache invalidation.
-- Personal-data storage is opt-in. Its current settings description promises
-  24-hour caching, which does not describe draft retention.
-- Logout handling is in `app-init.ts` using Keycloak signals, not the old
-  `app.module.ts` event subscription mentioned by the source plan. Navigation
-  also calls `cleanUserRelatedData()` before logout redirects.
-- Existing update APIs match ID and owner but do not enforce a version
-  precondition. Some update paths do not explicitly supply `updatedAt`.
+- `LocalStorageService` wraps `localStorage` and clears it for cache-version
+  invalidation; that clear must now keep draft keys.
+- Personal-data `localStorage` caching is opt-in. Drafts are a separate,
+  always-on feature: they hold only the user's own unpublished input, are
+  bounded in count and age, and are removed on logout.
+- Logout handling is in `app-init.ts` using Keycloak signals. Navigation also
+  calls `cleanUserRelatedData()` before logout redirects.
+- No `CanDeactivate` guard or `beforeunload` handling exists in the UI yet.
 
-This cross-cutting editor, privacy, and cache lifecycle change warrants a design
-artifact. Existing tagging and copyable-field resource validation remains
+This cross-cutting editor, routing, and authentication lifecycle change
+warrants a design artifact. Decisions 1-4, 6, and 7 implement the
+`new-entry-drafts` capability; Decision 5 implements
+`unsaved-changes-warning`, and Decision 3's shared change tracking serves
+both. Existing tagging and copyable-field resource validation remains
 unchanged.
 
 ## Goals / Non-Goals
 
-**Goals:** separate draft storage from resource persistence, reuse form helpers,
-and make recovery status truthful across lifecycle transitions.
+**Goals:** separate draft storage from resource persistence, reuse form
+helpers, keep forgotten new-entry drafts across tab and browser close, make
+recovery status truthful across lifecycle transitions, and warn before
+discarding changes that no draft protects.
 
-**Non-Goals:** transactional server concurrency, collaboration, automatic
-merges, or replacement of resource-save and authentication behavior.
+**Non-Goals:** edit drafts, cross-device sync, server concurrency,
+collaboration, live cross-tab list updates, saving from the leave dialog, or
+replacement of resource-save and authentication behavior.
 
 ## Decisions
 
-### 1. Typed local storage records with independent slots
+### 1. Typed local storage records, one per create visit
 
-Add a shared `DraftService` under `core/cache` using `LocalStorageService`.
-Use an explicit draft namespace and versioned records, not HTTP cache entries.
-Represent create/edit identity as a discriminated union:
+Add a shared `DraftService` under `core/cache` over `localStorage`, with its
+own JSON envelope, versioned records, and failure handling modelled on
+`LocalStorageService`. Use an explicit draft namespace, not HTTP cache entries:
 
 ```text
-codever-draft:v1:{userId}:{type}:create
-codever-draft:v1:{userId}:{type}:edit:{entryId}
+codever-draft:v2:{userId}:{type}:{draftId}
 
 record:
-  schemaVersion, identity, savedAt, revision, writerId
+  schemaVersion, identity (userId, type, id), savedAt
   form: resource-specific raw editable values
   options: relevant selected save options
-  base: edit-only canonical server values and updatedAt when available
 ```
 
-Encode identity segments consistently and validate the envelope and record
-before use. Use typed resource-specific snapshots, not arbitrary server objects.
-Never persist tokens, profile data, or derived HTML. Do not use the helpers that
-trim fields for final submission when capturing a draft: unfinished text,
-over-limit tags, and incomplete copyable-field rows must survive.
+Each create visit creates its draft id lazily on its first write, so visits
+and tabs write separate keys and never overwrite each other. Encode identity
+segments consistently and validate the envelope and record before use. Use
+typed resource-specific snapshots. Never persist tokens, profile data, or
+derived HTML. Do not use the helpers that trim fields for final submission
+when capturing a draft: unfinished text, over-limit tags, and incomplete
+copyable-field rows must survive.
 
 Use structural validation for draft records, not final resource validators.
-Absent optional values must normalize consistently during baseline comparison.
-No automatic expiration or app-imposed count cap is proposed; browser quota is
-the effective limit. A failed write must not evict a different draft.
+`list(user, type)` returns readable drafts newest first, followed by
+unreadable ones. Retention is bounded:
+
+- at most 10 readable drafts per user and type; saving or listing trims the
+  oldest beyond that;
+- drafts not updated for 7 days expire; they are removed when loaded or
+  listed, and `pruneExpired` removes them for all users at app start;
+- unreadable or unsupported records are never trimmed or expired
+  automatically; they are listed with Delete and removed on logout.
+
+This keeps quota use small. Cache-version invalidation keeps keys with the
+`codever-draft:v2:` prefix.
+
+Cross-tab: each draft has its own key, so concurrent tabs only share the
+list. Restoring re-reads the draft, so one removed meanwhile is reported as no
+longer available. If two tabs restore the same draft, the last write wins. No
+`storage` event listener refreshes open lists (possible follow-up).
+
+Alternative: `sessionStorage` with one slot per type (an earlier revision).
+Replaced: a draft forgotten after in-app navigation was lost on tab close,
+and protecting it needed an app-wide close prompt on every page.
+
+Alternative: `localStorage` behind the personal-data opt-in. Rejected: drafts
+are the user's own unpublished input with bounded retention and logout
+removal, and an opt-in would hide recovery from most users.
 
 Alternative: Mongo or IndexedDB. Mongo violates the agreed frontend-only phase;
-IndexedDB adds asynchronous lifecycle complexity not needed for these bounded
-text forms. Notebook payloads remain excluded.
+IndexedDB adds asynchronous lifecycle complexity not needed here.
 
-### 2. Explicit eligibility and session identity
+Alternative: per-entry edit drafts with a stored server baseline and conflict
+review. Rejected: the baseline comparison, conflict UI, and storage growth
+outweigh the benefit once edits get a leave warning.
 
-Compute eligibility once from the entry route/input context, before authoring.
-Create wrappers identify supplied content and capture context, including note
-code/comment/tags/origin/reference and bookmark URL/title/description. Explicit
-extension initiator/popup context also excludes the create session, even when
-payload fields happen to be empty. Do not treat ordinary display-only query
-parameters as content. Typing a URL into a blank-start bookmark remains
-eligible.
+### 2. Explicit draft eligibility
 
-For edits, wait for authenticated identity and the loaded resource; require
-matching owner, ID, and supported type. Clone/copy flags take precedence over
-edit/create classification. Excluded flows never acquire a draft session, so
-their success handlers cannot clear a draft.
+Compute draft eligibility once from the entry route/input context, before
+authoring. Only blank-start creates acquire a draft session. Create wrappers
+identify supplied content and capture context, including note
+code/comment/tags/origin/reference and bookmark URL/title/description.
+Explicit extension initiator/popup context also excludes the create session,
+even when payload fields happen to be empty. The in-app "+" menu adds
+`initiator=browser`; that value supplies no content and keeps the create
+eligible. Do not treat ordinary display-only query parameters as content.
+Typing a URL into a blank-start bookmark remains eligible.
+
+Edits, clone, and copy-to-mine never acquire a draft session; clone/copy flags
+take precedence over create classification. Excluded flows therefore cannot
+list, restore, overwrite, or remove create drafts, including from their
+success handlers. They remain covered by the unsaved-changes warning
+(Decision 5).
 
 Uploading a notebook suspends draft handling before any extracted text patches
 occur, leaving the stored Markdown draft untouched. Keep that editor visit
-excluded even if the notebook is subsequently removed; show the limitation.
-This avoids silently storing notebook text as a Markdown replacement.
+excluded from drafting even if the notebook is subsequently removed, and switch
+it to warning-based protection.
 
 Alternative: infer eligibility from current form emptiness. Rejected because
 typing, clearing input, and asynchronous metadata would change identity.
 
-### 3. Shared lifecycle with resource-specific snapshots
+### 3. Shared change tracking and draft lifecycle
 
-Keep persistence and session lifecycle in the shared service; keep form mapping
-and UI integration in each editor. Model explicit states rather than relying
-only on `dirty`:
+Keep change tracking, persistence, and session lifecycle in shared services;
+keep form mapping and UI integration in each editor. The same
+resource-specific snapshot mapper serves both drafts and the leave warning.
+
+Each editor records an initial snapshot once its initial content settles: the
+empty form for blank creates, fresh server data for edits, source data for
+clone/copy, and prefilled values plus metadata lookups started by the prefill
+for captures. Compare normalized raw snapshots, not `dirty`, so event-
+suppressed patches are handled and untouched clones/captures stay clean. User-
+accepted AI or metadata changes and user-initiated metadata lookups count as
+changes.
+
+Model explicit draft states rather than relying only on `dirty`:
 
 ```text
-ineligible / consent-disabled
+ineligible  (warning-protected)
           |
           v
 waiting-for-identity-and-form
           |
-          +--> restore-pending --> active
-          |          |
-          |          +--> conflict / unsupported
           v
-        active --> saved / discarded / privacy-stopped
+        active --> saved / logged-out
+          |  ^
+          |  +-- restore(id): current draft becomes the restored one
           |
-          +--> storage-error / tab-conflict
+          +--> storage-error / unavailable  (warning-protected)
 ```
 
-Compare snapshots against initial form state. A new untouched form creates no
-record; returning a handled create form to its initial empty state removes its
-draft. Edit snapshots compare to the server baseline, so clearing a title or
-content is a real unsaved edit, not an empty draft to drop.
+A new untouched create form creates no record; returning it to its initial
+empty state removes the visit's current draft. Subscribe with a one-second
+debounce and teardown. Explicitly notify the session after metadata/AI
+updates that suppress events and collection selection changes outside the
+form. Capture values at flush time. Rebuild tags and copyable-field arrays
+using existing validators and helpers; restore with events suppressed, then
+start ordinary monitoring. On bookmark restoration, invalidate pending
+metadata responses and do not trigger a scrape that replaces restored
+content. Resume normal URL lookups only after a subsequent user URL change.
 
-Subscribe with a one-second debounce and teardown. Explicitly notify the draft
-session after metadata/AI updates that suppress events and collection selection
-changes outside the form. Capture values at flush time, not only at the last
-form event. Rebuild tags and copyable-field arrays using existing validators and
-helpers; restore with events suppressed, then start ordinary monitoring.
-On bookmark restoration, invalidate pending metadata responses and do not
-trigger a scrape that replaces restored content. Resume normal URL lookups only
-after a subsequent user URL change, with responses scoped to that URL/session.
+The note snapshot includes its editable form and selected collection IDs. The
+bookmark snapshot includes all editable form controls, read-later/pinned flags,
+and selected collection IDs. Restore auxiliary state such as `makePublic`
+consistently. Revalidate collection availability through the existing
+selection flow and report unavailable selections rather than dropping them.
 
-The note snapshot includes its editable form and selected collection IDs.
-The bookmark snapshot includes all editable form controls, read-later/pinned
-flags, and selected collection IDs. Restore auxiliary state such as
-`makePublic` consistently. Revalidate collection availability through the
-existing selection flow and report unavailable selections rather than silently
-dropping them. Retain server identity, origin, and other non-editable fields
-from fresh data, never from an old form snapshot.
-
-Flush synchronously on editor destruction and `pagehide`, and when the page
-becomes hidden. Stop pending timers before a terminal transition. Every write
-checks identity, consent, eligibility, and session state again. A successful
-resource response ends the handled session before history/collection requests.
-Only clear a draft this session restored or wrote; an unresolved or conflicting
-offer remains untouched if different current-form content is saved.
-Resource failures retain the latest eligible draft, including bookmark error
-paths that navigate away.
+Flush synchronously on editor destruction, `pagehide`, `beforeunload`, and
+when the page becomes hidden. Stop pending timers before a terminal
+transition. Every write checks identity, eligibility, and session state
+again. A successful resource response ends the handled session before
+history/collection requests and removes only the draft this visit wrote or
+restored; listed drafts the user did not restore are untouched. Resource
+failures retain the latest eligible draft.
 
 Alternative: only subscribe to `valueChanges`. Rejected because it misses
 suppressed patches and loses input on exits inside the debounce interval.
 
-### 4. Explicit recovery and conservative edit conflicts
+### 4. Draft list with explicit restore and delete
 
-Use a persistent editor recovery banner rather than an expiring toast. While a
-decision is pending, pause autosave and explain that newly typed content is not
-yet protected. Restore replaces the form only after confirmation if the user
-has already changed it. Discard removes the offered snapshot, not current input;
-subsequent changed input can start a fresh draft.
+A blank-start create editor shows a persistent list of the user's stored
+drafts of its type (excluding the visit's own), newest first. Each row shows
+the title (the bookmark URL as fallback, otherwise "untitled"; labels capped
+at 80 characters), the save time, and Restore and Delete actions. Unreadable
+rows show only Delete. Autosave keeps running while the list is shown.
 
-For edits, store a canonical baseline of the editable server fields alongside
-the draft and retain `updatedAt` where available. On reopening, use a fresh
-personal detail GET and compare both the canonical fields and timestamp.
-Compare raw server values consistently rather than transformed date-input
-values. A missing or unsupported baseline is unverifiable, not an automatic
-match. Do not rely solely on timestamps or `__v`, because not all update paths
-are known to maintain them as concurrency tokens.
+Restore replaces the form only after a per-row confirmation if the user has
+already changed it. Pending input is flushed first and stays listed as its own
+draft; the restored draft then becomes the visit's current draft. Delete
+removes only that stored draft, never current input. The editor shows a short
+note that drafts are kept in this browser for 7 days, are removed on logout,
+and are not published or synced.
 
-If the baseline differs, keep the editor on current server content. Offer a
-read-only draft review with copyable plain-text/JSON content and explicit
-discard. Do not offer direct stale restore. The user can manually reconcile
-copied text into current fields, then explicitly replace the old draft with
-that working state. This rebases the new draft on the fresh entry.
+Cancel is the explicit discard path. On an active draft create with changes,
+a shared `confirmCancel` helper opens a Material dialog ("Discard this new
+note/bookmark?", "Keep editing" focused, "Discard"). Discard removes only the
+visit's own draft, cancels pending writes, and disarms protection, so the
+following navigation is silent. Unchanged forms, and restored drafts not
+changed since restoring, leave without a dialog and keep stored drafts. Edits
+and suspended or unavailable sessions keep the normal guard on Cancel.
 
-On missing/failed detail GETs, retain the draft and surface the normal error;
-do not apply it or create a replacement resource. No draft dashboard or orphan
-recovery browser is added in this phase.
+### 5. Unsaved-changes warning
 
-Alternative: silently restore or offer force-overwrite. Rejected because both
-encourage losing edits saved elsewhere.
+Add an editor-protection registry in `core` and a functional `CanDeactivate`
+guard on personal authoring routes: bookmark/note create, edit, clone, and
+copy-to-mine. The `new-entry` route only redirects to a type-specific create
+route and renders no editor, so the guard is registered on the redirect
+targets instead. The active editor registers a protection state; the guard
+queries the registry, so route wrappers do not need `ViewChild` plumbing.
 
-### 5. Consent, logout, and cache invalidation are different operations
+The guard first asks an active draft session to flush synchronously. It allows
+navigation without a prompt when the form is unchanged, or when the current
+snapshot equals the last successfully written create draft. Otherwise it opens
+an Angular Material confirmation dialog (external template/styles) with "Stay"
+(default focus) and "Leave without saving". Leaving discards in-memory changes
+only; the guard never removes a stored draft. Use
+`canceledNavigationResolution: 'computed'` or equivalent so a cancelled browser
+Back keeps history and the URL consistent.
 
-Use the existing current user's `enableLocalStorage` preference and consent
-state; wait for authoritative user data after startup. Expand settings wording
-to separate 24-hour caches from drafts retained until save/discard/logout.
-Show the storage-disabled state on eligible editors.
+Register a `beforeunload` listener whenever a form has changes. On the event,
+the registry first flushes pending create drafts, then calls
+`preventDefault()` and sets `returnValue` only if unprotected changes remain.
+A stored draft survives reload and close, so drafted creates close silently;
+edits, captures, clones, copies, notebooks, and failed writes still prompt.
+Browsers show their generic prompt with no custom buttons; this also covers
+extension popup windows. Remove the listener when the form is clean to avoid
+unnecessary prompts and back/forward-cache penalties. No app-wide close prompt
+is needed because drafts outlive the tab.
 
-On consent withdrawal or logout, stop writers before removing all draft slots
-for the departing user. Wire both explicit navigation logout and Keycloak
-`AuthLogout`; retain the session user ID before resetting user stores. Ensure
-other tabs process consent/logout invalidation, clear their writer state, and
-cannot re-enable from stale cached user data.
-
-Change cache-version invalidation to selectively remove non-draft keys rather
-than clearing storage and rewriting draft copies. Preserve the whole recognized
-draft namespace, including unsupported versions for explicit user handling.
-Do not preserve unrelated personal caches. Do not infer consent from preserved
-draft existence; re-establish it from the current authenticated user.
+Disarm protection after a successful resource response, before navigation or
+`window.close()`. Explicit logout disarms protection before
+`cleanUserRelatedData()` and the Keycloak redirect. A failed save keeps
+protection armed, so error-driven bookmark navigation passes through the
+guard and the user can stay. Other full-page authentication redirects rely on
+the native prompt where the browser shows it; a re-login keeps stored drafts.
 
 No changes to `keycloak.protect()`, `UserIdValidator`, public access, or server
-authorization are required. Drafts do not use `HttpClientLocalStorageService`;
-existing GET cache invalidation after resource saves remains in place.
+authorization are required. Guards rely only on client-side state.
 
-Alternative: exempt drafts from all cleanup. Rejected because it contradicts
-logout privacy and the existing opt-out semantics.
+Alternative: offer "Save" in the dialog. Rejected for this phase because
+invalid forms cannot be saved from a guard and would need a separate error
+path.
 
-### 6. Storage errors and multiple tabs
+### 6. Logout cleanup and cache independence
+
+On explicit navigation logout and Keycloak `AuthLogout`, stop writers before
+removing all of the departing user's drafts from `localStorage`; retain the
+session user ID before resetting user stores, falling back to the remembered
+user. Other open tabs stop writing that user's drafts when they process the
+logout; drafts are keyed by user ID and never listed to a different user.
+
+If the authenticated identity changes while an editor stays mounted, the
+draft session is suspended for the rest of that visit: the previous user's
+input is never written to, or listed for, the new user. The input stays
+protected by the leave warning.
+
+Drafts are independent of HTTP caching: the personal-data opt-in and
+`HttpClientLocalStorageService` are unchanged, cache-version invalidation
+keeps draft keys, and edit wrappers keep loading fresh personal details.
+
+### 7. Storage errors
 
 Catch storage access, quota, and parse failures at the draft boundary with
 explicit result states and visible editor messaging. Keep the last successfully
-stored record when a write fails. Log operation/error metadata only, never
-draft text. A cleanup failure must be reported without preventing logout.
-
-Use opaque revision and writer IDs, observe `storage` events, and re-read the
-slot before writes/removals. If its revision differs from the session's expected
-revision, pause autosave and ask for an explicit restore/replace decision.
-Never remove a newer detected revision merely because this tab saved an entry.
-After another tab deletes the slot, stale sessions must not recreate it
-automatically. Different slots remain independent.
-
-This is detection, not an atomic compare-and-swap: localStorage has no
-transaction primitive. Truly simultaneous same-slot writers can still race.
-The UI must not promise multi-tab collaboration or perfect conflict prevention.
-Atomic browser locking or a transactional store can be a separate enhancement.
+stored record when a write fails, and treat the editor as warning-protected.
+Unavailable storage shows that drafts are unavailable. Malformed or
+unsupported records are listed with Delete and are never silently overwritten.
+Log operation/error metadata only, never draft text. A cleanup failure must be
+reported without preventing logout.
 
 ## Risks / Trade-offs
 
-- Abrupt crashes can lose the last debounce interval; lifecycle events are
-  best-effort. Communicate local recovery rather than guaranteed backup.
-- Drafts contain private text in readable browser storage. Require opt-in,
-  enforce cleanup, and avoid content in telemetry.
-- Many edit drafts can fill storage, especially with server baselines. Surface
-  failures without silent eviction; raw notebooks remain excluded.
-- `updatedAt` plus content comparison is conservative and can warn after an
-  otherwise harmless server change. Prefer review over a missed conflict.
-- A server update can race after the fresh GET. Backend conditional writes are
-  outside scope, so this change does not guarantee lost-update prevention.
+- Drafts persist in the browser for up to 7 days, readable by anyone using
+  the same browser profile while the user stays signed in, and by a
+  successful XSS attack. Mitigate with bounded count and age, logout removal,
+  start-up pruning, and no content in telemetry.
+- Closing the browser without logging out leaves drafts until they expire or
+  the user logs out.
+- Open draft lists do not update live when another tab saves or deletes a
+  draft; restore reports a missing draft instead.
+- Restoring the same draft in two tabs can lose the earlier tab's changes
+  (last write wins).
+- Unsaved edits, captures, clones, and notebook changes are lost on a crash or
+  forced process termination; the warning only covers deliberate exits.
+- The native leave prompt is generic and cannot explain drafts or offer save.
+- Snapshot normalization mistakes can cause false warnings or missed ones;
+  cover each editor flow with tests and prefer warning over silent loss.
 - A failed storage removal can leave a recoverable stale draft. Report the
-  failure and suspend writes rather than claim cleanup succeeded.
-- A full rollback to an older build can run its old all-storage cache cleanup.
-  Preservation is guaranteed only by builds with the new cleanup behavior.
+  failure rather than claim cleanup succeeded.
 
 ## Migration Plan
 
 No server migration or data backfill is required. Introduce the versioned
-namespace and service, then privacy/cache handling, then eligible editor flows.
-Use existing real-template Karma/Jasmine fixtures for regression coverage.
-Keep all implementation tasks unchecked until their stated checks pass.
+namespace and draft service, then logout handling, then shared change tracking
+and the leave guard, then editor flows. Use existing real-template Vitest
+fixtures for regression coverage. Keep all implementation tasks unchecked
+until their stated checks pass. Earlier `v1` session drafts are not migrated;
+they disappear with their tab.
 
-Deploy frontend assets normally. Rollback does not change server entries, but
-older clients will not understand drafts and may clear them on cache changes.
-Document this limitation rather than adding a backend rollout dependency.
+Deploy frontend assets normally. Rollback removes the warning and the draft
+list; leftover `codever-draft:v2:` keys are unused and can be removed by a
+later cleanup or by logging out on a version that still knows them.

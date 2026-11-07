@@ -1,6 +1,7 @@
 import {
   Component,
   HostListener,
+  inject,
   OnDestroy,
   OnInit,
   ChangeDetectionStrategy,
@@ -38,6 +39,8 @@ import { LoaderComponent } from './shared/loader/loader.component';
 import { ErrorComponent } from './core/error/error.component';
 import { AsyncPipe } from '@angular/common';
 import { updateSharedReferrerPolicy } from './core/privacy/shared-referrer-policy';
+import { EditorProtectionRegistry } from './core/editor-protection/editor-protection.registry';
+import { DraftService } from './core/cache/draft.service';
 
 @Component({
   selector: 'app-root',
@@ -91,6 +94,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private silentReloadInProgress = false;
   /** Emits on component teardown to unsubscribe long-lived streams. */
   private readonly destroy$ = new Subject<void>();
+  private readonly editorProtection = inject(EditorProtectionRegistry);
+  private readonly draftService = inject(DraftService);
 
   constructor(
     private keycloak: Keycloak,
@@ -120,6 +125,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.listenForServiceWorkerUpdates();
+    // Expired drafts disappear even for users who don't return.
+    this.draftService.pruneExpired();
 
     if (environment.production === false) {
       this.favIcon.href = 'assets/logo/logo-green.svg';
@@ -131,6 +138,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userId = userInfo.sub;
+          // Logout removes this user's drafts even if no editor was opened.
+          this.editorProtection.rememberUser(userInfo.sub);
           // Load the user's data document on every authenticated page load.
           // (With keycloak-angular v19, KEYCLOAK_EVENT_SIGNAL only holds the
           // latest event, so relying on the transient AuthSuccess event is

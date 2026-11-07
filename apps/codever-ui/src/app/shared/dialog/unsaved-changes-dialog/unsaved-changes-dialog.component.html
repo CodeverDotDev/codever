@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Unsaved changes</h2>
+
+<mat-dialog-content>
+  <p class="mb-0">
+    You have changes that are not saved. If you leave now, they will be lost.
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="app-dialog-actions unsaved-changes-actions">
+  <button
+    type="button"
+    class="btn btn-primary btn-sm me-2"
+    cdkFocusInitial
+    (click)="stay()"
+  >
+    Stay
+  </button>
+  <button type="button" class="btn btn-outline-danger btn-sm" (click)="leave()">
+    Leave without saving
+  </button>
+</mat-dialog-actions>

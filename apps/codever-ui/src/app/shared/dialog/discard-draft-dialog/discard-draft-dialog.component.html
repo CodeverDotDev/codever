@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Discard this new {{ data.resourceName }}?</h2>
+
+<mat-dialog-content>
+  <p class="mb-0">
+    Your changes and their draft will be deleted. This cannot be undone.
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="app-dialog-actions discard-draft-actions">
+  <button
+    type="button"
+    class="btn btn-primary btn-sm me-2"
+    cdkFocusInitial
+    (click)="keep()"
+  >
+    Keep editing
+  </button>
+  <button type="button" class="btn btn-outline-danger btn-sm" (click)="discard()">
+    Discard
+  </button>
+</mat-dialog-actions>

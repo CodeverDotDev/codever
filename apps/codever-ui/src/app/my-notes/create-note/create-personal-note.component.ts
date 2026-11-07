@@ -1,6 +1,27 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NoteEditorComponent } from '../save-note-form/note-editor.component';
+import { isBlankStartCreate } from '../../core/editor-protection/draft-eligibility';
+
+/**
+ * Query parameters that prefill the form (extensions, bookmarklets).
+ * `initiator=browser` from the in-app "+" menu is exempt.
+ */
+export const NOTE_PREFILL_PARAMS = [
+  'title',
+  'initiator',
+  'reference',
+  'code',
+  'tags',
+  'comment',
+  'location',
+  'sourceUrl',
+  'file',
+  'project',
+  'workspace',
+  'content',
+  'popup',
+];
 
 @Component({
   selector: 'app-personal-note-create',
@@ -19,10 +40,17 @@ export class CreatePersonalNoteComponent implements OnInit {
   originFile: string;
   originProject: string;
   originWorkspace: string;
+  /** Only a blank-start create (no prefill parameters) uses drafts. */
+  draftEligible = false;
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    this.draftEligible = isBlankStartCreate(
+      this.route.snapshot.queryParamMap,
+      NOTE_PREFILL_PARAMS
+    );
+
     this.title = this.route.snapshot.queryParamMap.get('title');
     this.initiator = this.route.snapshot.queryParamMap.get('initiator');
     this.reference = this.route.snapshot.queryParamMap.get('reference');
