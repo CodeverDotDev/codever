@@ -21,7 +21,7 @@
       </div>
     }
     <div class="clear"></div>
-    @for (searchResult of searchResults | resourceFilter : filterText; track searchResult; let filteredCount = $count) {
+    @for (searchResult of visibleSearchResults(searchResults); track searchResult; let filteredCount = $count) {
       <div
         class="mt-3"
         >
@@ -36,6 +36,7 @@
         }
         @if (isNote(searchResult)) {
           <app-note-details [note$]="of(searchResult)"
+            (noteDeleted)="onNoteDeleted($event)"
             [showMoreText]="filteredCount === 1"
             [queryText]="queryText"
             [inSearchResults]="true"

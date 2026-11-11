@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Note } from '../../core/model/note';
@@ -14,6 +19,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [NoteDetailsComponent, PageNavigationBarComponent, AsyncPipe],
 })
 export class AsyncNoteListComponent {
+  readonly deletedNoteIds = signal(new Set<string>());
+
   @Input()
   notes$: Observable<Note[]>;
 
@@ -33,5 +40,16 @@ export class AsyncNoteListComponent {
 
   of(searchResult: Note) {
     return of(searchResult);
+  }
+
+  onNoteDeleted(note: Note): void {
+    if (note._id) {
+      this.deletedNoteIds.update((ids) => new Set(ids).add(note._id));
+    }
+  }
+
+  visibleNotes(notes: Note[]): Note[] {
+    const deletedIds = this.deletedNoteIds();
+    return notes.filter((note) => !note._id || !deletedIds.has(note._id));
   }
 }

@@ -5,13 +5,19 @@ import { UserDataService } from '../user-data.service';
 import { NotifyStoresService } from './notify-stores.service';
 import { UserDataStore } from './userdata.store';
 import { UserDataPinnedStore } from './userdata.pinned.store';
+import { Bookmark } from '../model/bookmark';
+import { Note } from '../model/note';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('UserDataPinnedStore pagination caches', () => {
   let store: UserDataPinnedStore;
   let getPinnedResources: ReturnType<typeof vi.fn>;
+  let bookmarkDeleted$: Subject<Bookmark>;
+  let noteDeleted$: Subject<Note>;
 
   beforeEach(() => {
+    bookmarkDeleted$ = new Subject();
+    noteDeleted$ = new Subject();
     getPinnedResources = vi.fn((userId: string, page: number, limit: number) =>
       of(
         Array.from({ length: limit }, (_, index) => ({
@@ -29,7 +35,7 @@ describe('UserDataPinnedStore pagination caches', () => {
         { provide: AuthenticationService, useValue: {} },
         {
           provide: NotifyStoresService,
-          useValue: { bookmarkDeleted$: new Subject() },
+          useValue: { bookmarkDeleted$, noteDeleted$ },
         },
       ],
     });
@@ -54,5 +60,23 @@ describe('UserDataPinnedStore pagination caches', () => {
     expect(quickAccessIds[0]).toBe('1-0');
     expect(homePageIds).toHaveLength(10);
     expect(homePageIds[0]).toBe('2-0');
+  });
+
+  it('removes a deleted note from loaded pinned pages', () => {
+    let quickAccessIds: string[];
+    store
+      .getPinnedResources$('owner', 1, 20)
+      .subscribe((resources) => (quickAccessIds = resources?.map((r) => r._id)));
+
+    noteDeleted$.next({
+      _id: '1-0',
+      type: 'note',
+      title: 'Deleted note',
+      content: '',
+      tags: [],
+    });
+
+    expect(quickAccessIds).toHaveLength(19);
+    expect(quickAccessIds).not.toContain('1-0');
   });
 });

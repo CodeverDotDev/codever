@@ -28,6 +28,9 @@ export class UserDataPinnedStore {
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.publishedPinnedAfterDeletion(bookmark);
     });
+    this.notifyStoresService.noteDeleted$.subscribe((note) => {
+      this.publishedPinnedAfterDeletion(note);
+    });
   }
 
   getPinnedResources$(

@@ -28,6 +28,9 @@ export class UserDataHistoryStore {
     this.notifyStoresService.bookmarkDeleted$.subscribe((bookmark) => {
       this.deleteFromHistoryStore(bookmark);
     });
+    this.notifyStoresService.noteDeleted$.subscribe((note) => {
+      this.deleteFromHistoryStore(note);
+    });
   }
 
   getHistory$(

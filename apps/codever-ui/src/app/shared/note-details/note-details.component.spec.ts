@@ -1,7 +1,8 @@
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
@@ -16,9 +17,25 @@ import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 describe('NoteDetailsComponent favorites', () => {
   let authService: Mocked<Pick<AuthenticationService, 'isLoggedIn'>>;
+  let userInfoStore: Mocked<Pick<UserInfoStore, 'getUserId$'>>;
   let dialog: { open: ReturnType<typeof vi.fn> };
   let userDataStore: Mocked<
-    Pick<UserDataStore, 'toggleFavorite$' | 'updateUserDataHistory$'>
+    Pick<
+      UserDataStore,
+      | 'toggleFavorite$'
+      | 'updateUserDataHistory$'
+      | 'getUserData$'
+      | 'removeNoteLocally'
+    >
+  >;
+  let personalNotesService: Mocked<
+    Pick<PersonalNotesService, 'deleteNoteById'>
+  >;
+  let deleteNotificationService: Mocked<
+    Pick<
+      DeleteNotificationService,
+      'showSuccessNotification' | 'showErrorNotification'
+    >
   >;
   let note: Note;
   let userData: UserData;
@@ -28,12 +45,19 @@ describe('NoteDetailsComponent favorites', () => {
       isLoggedIn: vi.fn<AuthenticationService['isLoggedIn']>(),
     };
     authService.isLoggedIn.mockReturnValue(true);
+    userInfoStore = {
+      getUserId$: vi.fn<UserInfoStore['getUserId$']>().mockReturnValue(of('owner')),
+    };
     dialog = {
       open: vi.fn().mockReturnValue({ afterClosed: () => of(null) }),
     };
     userDataStore = {
       toggleFavorite$: vi.fn<UserDataStore['toggleFavorite$']>(),
       updateUserDataHistory$: vi.fn<UserDataStore['updateUserDataHistory$']>(),
+      getUserData$: vi
+        .fn<UserDataStore['getUserData$']>()
+        .mockReturnValue(of(userData)),
+      removeNoteLocally: vi.fn<UserDataStore['removeNoteLocally']>(),
     };
     userDataStore.toggleFavorite$.mockReturnValue(
       of({
@@ -42,18 +66,31 @@ describe('NoteDetailsComponent favorites', () => {
         favorite: true,
       })
     );
+    personalNotesService = {
+      deleteNoteById: vi
+        .fn<PersonalNotesService['deleteNoteById']>()
+        .mockReturnValue(of({})),
+    };
+    deleteNotificationService = {
+      showSuccessNotification: vi.fn(),
+      showErrorNotification: vi.fn(),
+    };
 
     TestBed.configureTestingModule({
       imports: [NoteDetailsComponent],
       providers: [
         provideRouter([]),
         { provide: MatDialog, useValue: dialog },
+        { provide: ScrollStrategyOptions, useValue: { noop: () => ({}) } },
         { provide: AuthenticationService, useValue: authService },
         { provide: UserDataStore, useValue: userDataStore },
-        { provide: PersonalNotesService, useValue: {} },
-        { provide: UserInfoStore, useValue: {} },
+        { provide: PersonalNotesService, useValue: personalNotesService },
+        { provide: UserInfoStore, useValue: userInfoStore },
         { provide: UserDataPinnedStore, useValue: {} },
-        { provide: DeleteNotificationService, useValue: {} },
+        {
+          provide: DeleteNotificationService,
+          useValue: deleteNotificationService,
+        },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: { get: () => null } } },
@@ -236,5 +273,124 @@ describe('NoteDetailsComponent favorites', () => {
     } else {
       Reflect.deleteProperty(window.URL, 'revokeObjectURL');
     }
+  });
+
+  it('shows Delete only for the owner outside shared views', () => {
+    const fixture = TestBed.createComponent(NoteDetailsComponent);
+    const component = fixture.componentInstance;
+    component.note$ = of(note);
+    component.inSearchResults = true;
+    component.partOfList = true;
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector('[title="Delete note"]')
+    ).not.toBeNull();
+
+    component.partOfList = false;
+    fixture.detectChanges();
+    expect(
+      fixture.nativeElement.querySelector('[title="Delete note"]')
+    ).not.toBeNull();
+
+    component.note$ = of({ ...note, userId: 'other', public: true });
+    fixture.detectChanges();
+    expect(
+      fixture.nativeElement.querySelector('[title="Delete note"]')
+    ).toBeNull();
+
+    component.isSharedView = true;
+    component.note$ = of(note);
+    fixture.detectChanges();
+    expect(
+      fixture.nativeElement.querySelector('[title="Delete note"]')
+    ).toBeNull();
+
+    component.isSharedView = false;
+    authService.isLoggedIn.mockReturnValue(false);
+    const anonymousFixture = TestBed.createComponent(NoteDetailsComponent);
+    anonymousFixture.componentInstance.note$ = of(note);
+    anonymousFixture.componentInstance.inSearchResults = true;
+    anonymousFixture.detectChanges();
+    expect(
+      anonymousFixture.nativeElement.querySelector('[title="Delete note"]')
+    ).toBeNull();
+  });
+
+  it('requires confirmation before deleting a note', () => {
+    const fixture = TestBed.createComponent(NoteDetailsComponent);
+    const component = fixture.componentInstance;
+    component.userId$ = of('owner');
+    dialog.open.mockReturnValue({
+      afterClosed: () => of('DELETE_CANCELED'),
+    });
+
+    component.openDeleteDialog(note);
+
+    expect(dialog.open).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({
+        disableClose: true,
+        data: {
+          resourceName: note.title,
+          type: 'note',
+          isPublic: note.public,
+        },
+      })
+    );
+    expect(personalNotesService.deleteNoteById).not.toHaveBeenCalled();
+  });
+
+  it('deletes a confirmed list note and emits it after local cleanup', () => {
+    const fixture = TestBed.createComponent(NoteDetailsComponent);
+    const component = fixture.componentInstance;
+    component.userId$ = of('owner');
+    component.partOfList = true;
+    const deleted = vi.fn();
+    component.noteDeleted.subscribe(deleted);
+
+    component.deleteNote(note);
+
+    expect(personalNotesService.deleteNoteById).toHaveBeenCalledWith(
+      'owner',
+      'note-1'
+    );
+    expect(userDataStore.removeNoteLocally).toHaveBeenCalledWith(note);
+    expect(deleted).toHaveBeenCalledWith(note);
+    expect(
+      deleteNotificationService.showSuccessNotification
+    ).toHaveBeenCalledWith('Note - "Note" was deleted');
+  });
+
+  it('navigates home after deleting a details-page note', () => {
+    const fixture = TestBed.createComponent(NoteDetailsComponent);
+    const component = fixture.componentInstance;
+    component.userId$ = of('owner');
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+
+    component.deleteNote(note);
+
+    expect(navigate).toHaveBeenCalledWith(['']);
+  });
+
+  it('keeps a note in place and shows an error when deletion fails', () => {
+    personalNotesService.deleteNoteById.mockReturnValue(
+      throwError(() => new Error('failed'))
+    );
+    const fixture = TestBed.createComponent(NoteDetailsComponent);
+    const component = fixture.componentInstance;
+    component.userId$ = of('owner');
+    component.partOfList = true;
+    const deleted = vi.fn();
+    component.noteDeleted.subscribe(deleted);
+
+    component.deleteNote(note);
+
+    expect(userDataStore.removeNoteLocally).not.toHaveBeenCalled();
+    expect(deleted).not.toHaveBeenCalled();
+    expect(
+      deleteNotificationService.showErrorNotification
+    ).toHaveBeenCalledWith('Note could not be deleted. Please try again later!');
   });
 });

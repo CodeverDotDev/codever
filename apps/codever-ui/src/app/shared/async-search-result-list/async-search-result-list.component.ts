@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
   ChangeDetectionStrategy,
+  signal,
 } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
@@ -84,6 +85,7 @@ export class AsyncSearchResultListComponent
   @Input()
   showFilterBox = true;
   filterText = '';
+  readonly deletedNoteIds = signal(new Set<string>());
 
   /**
    * Search results activate bookmarks only. A matching note already renders its
@@ -143,6 +145,24 @@ export class AsyncSearchResultListComponent
 
   of<T>(searchResult: T): Observable<T> {
     return of(searchResult);
+  }
+
+  onNoteDeleted(note: Note): void {
+    if (note._id) {
+      this.deletedNoteIds.update((ids) => new Set(ids).add(note._id));
+    }
+  }
+
+  visibleSearchResults(results: UserDataResource[]): UserDataResource[] {
+    const deletedIds = this.deletedNoteIds();
+    return this.resourceFilter
+      .transform(results, this.filterText)
+      .filter(
+        (result) =>
+          result.type !== 'note' ||
+          !result._id ||
+          !deletedIds.has(result._id)
+      );
   }
 
   /**

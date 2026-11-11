@@ -89,7 +89,12 @@ export class PersonalNotesService {
       .delete(`${this.personalNotesApiBaseUrl}/${userId}/notes/${noteId}`, {
         headers: this.headers,
       })
-      .pipe(shareReplay(1));
+      .pipe(
+        tap(() =>
+          this.httpClientLocalStorageService.invalidateEntryCaches('note')
+        ),
+        shareReplay(1)
+      );
   }
 
   getFilteredPersonalNotes(

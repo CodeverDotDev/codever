@@ -1,12 +1,13 @@
 @if (notes$ | async; as notes) {
   <div class="mt-2">
-    @for (note of notes; track note) {
+    @for (note of visibleNotes(notes); track note) {
       <div>
         <app-note-details [note$]="of(note)"
+          (noteDeleted)="onNoteDeleted($event)"
           [queryText]="queryText"
           [inSearchResults]="true"
           [partOfList]="true"
-          [showMoreText]="notes.length === 1"
+          [showMoreText]="visibleNotes(notes).length === 1"
          />
       </div>
     }

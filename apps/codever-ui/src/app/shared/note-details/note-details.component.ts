@@ -2,12 +2,14 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   ElementRef,
   HostListener,
   inject,
   Input,
   OnInit,
   ChangeDetectionStrategy,
+  Output,
 } from '@angular/core';
 import { Note } from '../../core/model/note';
 import { SharedNote } from '../../core/model/share-link';
@@ -17,7 +19,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { shareReplay, startWith, switchMap, take } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { NoteSocialShareDialogComponent } from '../dialog/note-social-share-dialog/note-social-share-dialog.component';
+import { DeleteResourceDialogComponent } from '../dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { AuthenticationService } from '../../core/auth/authentication.service';
 import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-to-collection-dialog.component';
 import { LoginRequiredDialogComponent } from '../dialog/login-required-dialog/login-required-dialog.component';
@@ -70,6 +74,9 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   @Input()
   isSharedView = false;
 
+  @Output()
+  noteDeleted = new EventEmitter<Note>();
+
   userId$: Observable<string> = of(null);
   userData$: Observable<UserData>;
   noteId: string;
@@ -85,6 +92,7 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   contentFontSize = this.ZOOM_DEFAULT;
 
   tocHeadings: TocHeading[] = [];
+  scrollStrategy: ScrollStrategy;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
@@ -98,8 +106,11 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
     private elementRef: ElementRef,
     private userDataStore: UserDataStore,
     private userDataPinnedStore: UserDataPinnedStore,
-    private deleteNotificationService: DeleteNotificationService
-  ) {}
+    private deleteNotificationService: DeleteNotificationService,
+    private readonly scrollStrategyOptions: ScrollStrategyOptions
+  ) {
+    this.scrollStrategy = this.scrollStrategyOptions.noop();
+  }
 
   ngOnInit(): void {
     const isLoggedIn =
@@ -188,6 +199,55 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   editNote(note: Note) {
     const link = [`/my-notes/${note._id}/edit`];
     this.router.navigate(link, { state: { note: note } });
+  }
+
+  openDeleteDialog(note: Note): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.scrollStrategy = this.scrollStrategy;
+    dialogConfig.data = {
+      resourceName: note.title,
+      type: 'note',
+      isPublic: note.public,
+    };
+
+    this.noteShareDialog
+      .open(DeleteResourceDialogComponent, dialogConfig)
+      .afterClosed()
+      .subscribe((result) => {
+        if (result === 'DELETE_CONFIRMED') {
+          this.deleteNote(note);
+        }
+      });
+  }
+
+  deleteNote(note: Note): void {
+    this.userId$.pipe(take(1)).subscribe((userId) => {
+      if (!userId || userId !== note.userId || !note._id) {
+        return;
+      }
+
+      this.personalNotesService
+        .deleteNoteById(userId, note._id)
+        .subscribe({
+          next: () => {
+            this.userDataStore.removeNoteLocally(note);
+            this.deleteNotificationService.showSuccessNotification(
+              `Note - "${note.title}" was deleted`
+            );
+            if (this.partOfList) {
+              this.noteDeleted.emit(note);
+            } else {
+              this.router.navigate(['']);
+            }
+          },
+          error: () =>
+            this.deleteNotificationService.showErrorNotification(
+              'Note could not be deleted. Please try again later!'
+            ),
+        });
+    });
   }
 
   cloneNote(note: Note) {

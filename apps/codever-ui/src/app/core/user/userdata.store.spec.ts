@@ -11,8 +11,9 @@ import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 describe('UserDataStore favorites', () => {
   let store: UserDataStore;
+  let notifyStoresService: Pick<NotifyStoresService, 'deleteNote'>;
   let userService: Mocked<
-    Pick<UserDataService, 'getUserData' | 'updateUserFavorite'>
+    Pick<UserDataService, 'getUserData' | 'updateUserFavorite' | 'updateUserData'>
   >;
   let userData: UserData;
 
@@ -20,6 +21,7 @@ describe('UserDataStore favorites', () => {
     userService = {
       getUserData: vi.fn<UserDataService['getUserData']>(),
       updateUserFavorite: vi.fn<UserDataService['updateUserFavorite']>(),
+      updateUserData: vi.fn<UserDataService['updateUserData']>(),
     };
     userData = {
       userId: 'owner',
@@ -28,13 +30,14 @@ describe('UserDataStore favorites', () => {
       favoriteNotes: ['note-existing'],
       likes: ['bookmark-liked'],
     };
+    notifyStoresService = { deleteNote: vi.fn() };
     userService.getUserData.mockReturnValue(of(userData));
 
     TestBed.configureTestingModule({
       providers: [
         UserDataStore,
         { provide: UserDataService, useValue: userService },
-        { provide: NotifyStoresService, useValue: {} },
+        { provide: NotifyStoresService, useValue: notifyStoresService },
         { provide: UserDataHistoryStore, useValue: {} },
         { provide: PersonalBookmarksService, useValue: {} },
         { provide: LocalStorageService, useValue: {} },
@@ -83,5 +86,35 @@ describe('UserDataStore favorites', () => {
     expect(userData.favoriteNotes).toEqual([]);
     expect(userData.favorites).toEqual(['bookmark-existing']);
     expect(userData.likes).toEqual(['bookmark-liked']);
+  });
+
+  it('removes note references locally without persisting user data', () => {
+    userData.history = ['note-existing', 'bookmark-existing'];
+    userData.pinned = [
+      { type: 'note', id: 'note-existing' },
+      { type: 'bookmark', id: 'bookmark-existing' },
+    ];
+
+    let publishedUserData: UserData;
+    store.getUserData$().subscribe((data) => (publishedUserData = data));
+    store.removeNoteLocally({
+      _id: 'note-existing',
+      type: 'note',
+      title: 'Existing note',
+      content: '',
+      tags: [],
+    });
+
+    expect(userData.history).toEqual(['bookmark-existing']);
+    expect(userData.pinned).toEqual([
+      { type: 'bookmark', id: 'bookmark-existing' },
+    ]);
+    expect(userData.favoriteNotes).toEqual([]);
+    expect(publishedUserData).toBe(userData);
+    expect(userService.updateUserFavorite).not.toHaveBeenCalled();
+    expect(userService.updateUserData).not.toHaveBeenCalled();
+    expect(notifyStoresService.deleteNote).toHaveBeenCalledWith(
+      expect.objectContaining({ _id: 'note-existing' })
+    );
   });
 });

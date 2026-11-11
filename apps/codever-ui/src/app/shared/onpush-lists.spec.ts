@@ -493,6 +493,57 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     expect(fixture.nativeElement.querySelector('app-note-details')).toBeNull();
   }));
 
+  it('removes a deleted note from the My Notes list in place', fakeAsync(() => {
+    host.notes$.next([
+      note('remove-from-my-notes', 'Remove from My Notes'),
+      note('keep-in-my-notes', 'Keep in My Notes'),
+    ]);
+    render();
+
+    const list = fixture.debugElement.query(
+      By.directive(AsyncNoteListComponent)
+    ).componentInstance as AsyncNoteListComponent;
+    list.onNoteDeleted(note('remove-from-my-notes'));
+    fixture.detectChanges();
+
+    const noteListText = fixture.nativeElement
+      .querySelector('app-async-note-list')
+      .textContent;
+    expect(noteListText).not.toContain('Remove from My Notes');
+    expect(noteListText).toContain('Keep in My Notes');
+  }));
+
+  it('removes a deleted search note without changing the filter', fakeAsync(() => {
+    const removed = note('remove-from-search', 'Remove note');
+    host.showMixed = true;
+    host.mixed$.next([removed, note('keep-in-search', 'Keep note')]);
+    render();
+
+    const list = fixture.debugElement.query(
+      By.directive(AsyncSearchResultListComponent)
+    ).componentInstance as AsyncSearchResultListComponent;
+    const filterInput = fixture.nativeElement.querySelector(
+      'app-async-search-result-list input[type="search"]'
+    ) as HTMLInputElement;
+    filterInput.value = 'note';
+    filterInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(list.filterText).toBe('note');
+    list.onNoteDeleted(removed);
+    fixture.detectChanges();
+
+    const searchText = fixture.nativeElement
+      .querySelector('app-async-search-result-list')
+      .textContent;
+    expect(searchText).not.toContain('Remove note');
+    expect(searchText).toContain('Keep note');
+    expect(
+      fixture.nativeElement.querySelector(
+        'app-async-search-result-list input[type="search"]'
+      ).value
+    ).toBe('note');
+  }));
+
   it('renders note clipboard promise and timer updates and zoom events', fakeAsync(() => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,

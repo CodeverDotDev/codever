@@ -1021,6 +1021,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
       .subscribe(
         () => {
           this.protection?.end();
+          this.userDataStore.removeNoteLocally(note);
           this.router.navigate(['']);
           this.deleteNotificationService.showSuccessNotification(
             `Note - "${note.title}" was deleted`

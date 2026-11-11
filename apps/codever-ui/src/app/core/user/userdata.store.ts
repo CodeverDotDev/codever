@@ -19,6 +19,7 @@ import {
 import { UserDataService } from '../user-data.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Bookmark } from '../model/bookmark';
+import { Note } from '../model/note';
 import { UserDataResource } from '../model/user-data-resource.type';
 import {
   RateBookmarkRequest,
@@ -469,6 +470,22 @@ export class UserDataStore {
     this.updateUserData$(this.userData).subscribe(() => {
       this.notifyStoresService.deleteBookmark(bookmark);
     });
+  }
+
+  removeNoteLocally(note: Note): void {
+    if (this.userData) {
+      this.userData.history = (this.userData.history || []).filter(
+        (id) => id !== note._id
+      );
+      this.userData.pinned = (this.userData.pinned || []).filter(
+        (entry) => !(entry.type === 'note' && entry.id === note._id)
+      );
+      this.userData.favoriteNotes = (
+        this.userData.favoriteNotes || []
+      ).filter((id) => id !== note._id);
+      this._userData.next(this.userData);
+    }
+    this.notifyStoresService.deleteNote(note);
   }
 
   likeBookmark(bookmark: Bookmark) {

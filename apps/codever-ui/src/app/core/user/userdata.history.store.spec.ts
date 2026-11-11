@@ -5,13 +5,19 @@ import { UserInfoStore } from './user-info.store';
 import { NotifyStoresService } from './notify-stores.service';
 import { LocalStorageService } from '../cache/local-storage.service';
 import { UserDataHistoryStore } from './userdata.history.store';
+import { Bookmark } from '../model/bookmark';
+import { Note } from '../model/note';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('UserDataHistoryStore pagination caches', () => {
   let store: UserDataHistoryStore;
   let getHistory: ReturnType<typeof vi.fn>;
+  let bookmarkDeleted$: Subject<Bookmark>;
+  let noteDeleted$: Subject<Note>;
 
   beforeEach(() => {
+    bookmarkDeleted$ = new Subject();
+    noteDeleted$ = new Subject();
     getHistory = vi.fn((userId: string, page: number, limit: number) =>
       of(
         Array.from({ length: limit }, (_, index) => ({
@@ -28,9 +34,9 @@ describe('UserDataHistoryStore pagination caches', () => {
         { provide: UserInfoStore, useValue: {} },
         {
           provide: NotifyStoresService,
-          useValue: { bookmarkDeleted$: new Subject() },
+          useValue: { bookmarkDeleted$, noteDeleted$ },
         },
-        { provide: LocalStorageService, useValue: {} },
+        { provide: LocalStorageService, useValue: { load: () => null } },
       ],
     });
     store = TestBed.inject(UserDataHistoryStore);
@@ -52,5 +58,23 @@ describe('UserDataHistoryStore pagination caches', () => {
     expect(getHistory).toHaveBeenNthCalledWith(2, 'owner', 1, 5);
     expect(quickAccessIds).toHaveLength(10);
     expect(homePageIds).toHaveLength(5);
+  });
+
+  it('removes a deleted note from loaded history pages', () => {
+    let quickAccessIds: string[];
+    store
+      .getHistory$('owner', 1, 10)
+      .subscribe((resources) => (quickAccessIds = resources?.map((r) => r._id)));
+
+    noteDeleted$.next({
+      _id: '1-0',
+      type: 'note',
+      title: 'Deleted note',
+      content: '',
+      tags: [],
+    });
+
+    expect(quickAccessIds).toHaveLength(9);
+    expect(quickAccessIds).not.toContain('1-0');
   });
 });

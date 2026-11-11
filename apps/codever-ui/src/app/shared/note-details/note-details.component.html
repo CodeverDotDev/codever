@@ -200,6 +200,16 @@
                     <i class="far fa-clone"></i> Clone
                   </button>
                 }
+                @if (!isSharedView && observables.userId && note.userId === observables.userId) {
+                  <button
+                    type="button"
+                    class="btn btn-light btn-sm"
+                    (click)="openDeleteDialog(note)"
+                    title="Delete note"
+                  >
+                    <i class="far fa-trash-alt"></i> Delete
+                  </button>
+                }
                 @if (!isSharedView && note.public && note.userId !== observables.userId) {
                   <button
                     type="button"
