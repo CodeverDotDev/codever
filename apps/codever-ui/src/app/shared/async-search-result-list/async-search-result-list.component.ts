@@ -1,11 +1,9 @@
 import {
   Component,
-  EventEmitter,
   Injector,
   Input,
   OnDestroy,
   OnInit,
-  Output,
   ChangeDetectionStrategy,
   signal,
 } from '@angular/core';
@@ -74,9 +72,6 @@ export class AsyncSearchResultListComponent
   @Input()
   isSearchResultsPage = false;
 
-  @Output()
-  bookmarkDeleted = new EventEmitter<boolean>();
-
   readonly route: ActivatedRoute;
 
   @Input()
@@ -86,6 +81,7 @@ export class AsyncSearchResultListComponent
   showFilterBox = true;
   filterText = '';
   readonly deletedNoteIds = signal(new Set<string>());
+  readonly deletedBookmarkIds = signal(new Set<string>());
 
   /**
    * Search results activate bookmarks only. A matching note already renders its
@@ -153,15 +149,25 @@ export class AsyncSearchResultListComponent
     }
   }
 
+  onBookmarkDeleted(bookmark: Bookmark): void {
+    if (bookmark._id) {
+      this.deletedBookmarkIds.update(
+        (ids) => new Set(ids).add(bookmark._id)
+      );
+    }
+  }
+
   visibleSearchResults(results: UserDataResource[]): UserDataResource[] {
-    const deletedIds = this.deletedNoteIds();
+    const deletedNoteIds = this.deletedNoteIds();
+    const deletedBookmarkIds = this.deletedBookmarkIds();
     return this.resourceFilter
       .transform(results, this.filterText)
       .filter(
         (result) =>
-          result.type !== 'note' ||
           !result._id ||
-          !deletedIds.has(result._id)
+          (result.type !== 'note' || !deletedNoteIds.has(result._id)) &&
+          (result.type !== 'bookmark' ||
+            !deletedBookmarkIds.has(result._id))
       );
   }
 

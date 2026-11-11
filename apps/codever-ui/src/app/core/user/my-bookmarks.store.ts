@@ -49,8 +49,10 @@ export class MyBookmarksStore {
       const index = bookmarks.findIndex(
         (bookmark) => bookmark._id === deleted._id
       );
-      bookmarks.splice(index, 1);
-      this._lastCreated.next(bookmarks);
+      if (index !== -1) {
+        bookmarks.splice(index, 1);
+        this._lastCreated.next(bookmarks);
+      }
     }
   }
 
@@ -72,8 +74,10 @@ export class MyBookmarksStore {
       const index = bookmarks.findIndex(
         (bookmark) => bookmark._id === deleted._id
       );
-      bookmarks.splice(index, 1);
-      this._mostLiked.next(bookmarks);
+      if (index !== -1) {
+        bookmarks.splice(index, 1);
+        this._mostLiked.next(bookmarks);
+      }
     }
   }
 
@@ -95,8 +99,10 @@ export class MyBookmarksStore {
       const index = bookmarks.findIndex(
         (bookmark) => bookmark._id === deleted._id
       );
-      bookmarks.splice(index, 1);
-      this._mostUsed.next(bookmarks);
+      if (index !== -1) {
+        bookmarks.splice(index, 1);
+        this._mostUsed.next(bookmarks);
+      }
     }
   }
 

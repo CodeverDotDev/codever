@@ -104,6 +104,8 @@ function note(id: string, title = id): Note {
     <app-async-search-result-list
       [searchResults$]="mixed$"
       [userData$]="userData$"
+      [queryText]="queryText"
+      [isSearchResultsPage]="searchResultsPage"
       [showPagination]="false"
     />
     }
@@ -125,6 +127,7 @@ class ListHostComponent {
   showDetail = false;
   detail$ = of(note('detail'));
   showMixed = false;
+  searchResultsPage = false;
   mixed$ = new BehaviorSubject<(Bookmark | Note)[]>([]);
 }
 
@@ -542,6 +545,86 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
         'app-async-search-result-list input[type="search"]'
       ).value
     ).toBe('note');
+  }));
+
+  it('removes deleted bookmarks from shared lists without changing filters', fakeAsync(() => {
+    const removed = bookmark('remove-from-list', 'Remove result');
+    const remaining = bookmark('keep-in-list', 'Keep result');
+    host.bookmarks$.next([removed, remaining]);
+    render();
+
+    const filterInput = fixture.nativeElement.querySelector(
+      'app-async-bookmark-list input[type="search"]'
+    ) as HTMLInputElement;
+    filterInput.value = 'result';
+    filterInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    fixture.debugElement
+      .query(By.directive(BookmarkListElementComponent))
+      .componentInstance.bookmarkDeleted.emit(removed);
+    fixture.detectChanges();
+
+    const listText = fixture.nativeElement
+      .querySelector('app-async-bookmark-list')
+      .textContent;
+    expect(listText).not.toContain('Remove result');
+    expect(listText).toContain('Keep result');
+    expect(filterInput.value).toBe('result');
+    expect(host.bookmarks$.value).toEqual([removed, remaining]);
+
+    host.bookmarks$.next([removed, remaining]);
+    fixture.detectChanges();
+    expect(
+      fixture.nativeElement
+        .querySelector('app-async-bookmark-list')
+        .textContent
+    ).not.toContain('Remove result');
+  }));
+
+  it('removes deleted search bookmarks without changing the filter', fakeAsync(() => {
+    const removed = bookmark('remove-from-search', 'Remove result');
+    const remaining = bookmark('keep-in-search', 'Keep result');
+    host.showMixed = true;
+    host.mixed$.next([removed, remaining]);
+    render();
+
+    const list = fixture.debugElement.query(
+      By.directive(AsyncSearchResultListComponent)
+    ).componentInstance as AsyncSearchResultListComponent;
+    list.filterText = 'result';
+    fixture.detectChanges();
+    fixture.debugElement
+      .query(By.directive(BookmarkListElementComponent))
+      .componentInstance.bookmarkDeleted.emit(removed);
+    fixture.detectChanges();
+
+    const searchText = fixture.nativeElement
+      .querySelector('app-async-search-result-list')
+      .textContent;
+    expect(searchText).not.toContain('Remove result');
+    expect(searchText).toContain('Keep result');
+    expect(list.filterText).toBe('result');
+  }));
+
+  it('shows an empty-results message after deleting the last search bookmark', fakeAsync(() => {
+    const removed = bookmark('last-search-result', 'Last result');
+    host.showMixed = true;
+    host.searchResultsPage = true;
+    host.queryText = 'last result';
+    host.mixed$.next([removed]);
+    render();
+
+    fixture.debugElement
+      .query(By.directive(BookmarkListElementComponent))
+      .componentInstance.bookmarkDeleted.emit(removed);
+    fixture.detectChanges();
+
+    const emptyState: HTMLElement = fixture.nativeElement.querySelector(
+      'app-async-search-result-list .no-search-results'
+    );
+    expect(emptyState).not.toBeNull();
+    expect(emptyState.textContent).toContain('last result');
   }));
 
   it('renders note clipboard promise and timer updates and zoom events', fakeAsync(() => {

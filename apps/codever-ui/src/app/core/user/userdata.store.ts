@@ -454,22 +454,26 @@ export class UserDataStore {
   }
 
   removeFromStoresAtDeletion(bookmark: Bookmark) {
-    this.userData.history = this.userData.history.filter(
-      (x) => x !== bookmark._id
-    );
-    this.userData.pinned = this.userData.pinned.filter(
-      (entry) => !(entry.type === 'bookmark' && entry.id === bookmark._id)
-    );
-    this.userData.favorites = this.userData.favorites.filter(
-      (x) => x !== bookmark._id
-    );
-    this.userData.readLater = this.userData.readLater.filter(
-      (x) => x !== bookmark._id
-    );
-    this.userData.likes = this.userData.likes.filter((x) => x !== bookmark._id);
-    this.updateUserData$(this.userData).subscribe(() => {
-      this.notifyStoresService.deleteBookmark(bookmark);
-    });
+    if (this.userData) {
+      this.userData.history = (this.userData.history || []).filter(
+        (id) => id !== bookmark._id
+      );
+      this.userData.pinned = (this.userData.pinned || []).filter(
+        (entry) => !(entry.type === 'bookmark' && entry.id === bookmark._id)
+      );
+      this.userData.favorites = (this.userData.favorites || []).filter(
+        (id) => id !== bookmark._id
+      );
+      this.userData.readLater = (this.userData.readLater || []).filter(
+        (id) => id !== bookmark._id
+      );
+      this.userData.likes = (this.userData.likes || []).filter(
+        (id) => id !== bookmark._id
+      );
+      this._userData.next(this.userData);
+      this.updateUserData$(this.userData);
+    }
+    this.notifyStoresService.deleteBookmark(bookmark);
   }
 
   removeNoteLocally(note: Note): void {

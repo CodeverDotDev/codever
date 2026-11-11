@@ -15,7 +15,7 @@
   }
   <div class="clear"></div>
   @for (
-    bookmark of bookmarks | resourceFilter : filterText;
+    bookmark of visibleBookmarks(bookmarks);
     track bookmark._id;
     let filteredCount = $count
   ) {
@@ -27,6 +27,7 @@
       [queryText]="queryText"
       [filterText]="filterText"
       [isSearchResultsPage]="isSearchResultsPage"
+      (bookmarkDeleted)="onBookmarkDeleted($event)"
     />
   </div>
   }

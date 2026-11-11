@@ -55,9 +55,10 @@ export class PublicBookmarksStore {
       const index = bookmarks.findIndex(
         (bookmark) => bookmark._id === deleted._id
       );
-      bookmarks.splice(index, 1);
-
-      this._publicBookmarks.next(bookmarks);
+      if (index !== -1) {
+        bookmarks.splice(index, 1);
+        this._publicBookmarks.next(bookmarks);
+      }
     }
   }
 

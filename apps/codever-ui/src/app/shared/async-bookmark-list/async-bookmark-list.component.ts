@@ -1,10 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Injector,
   Input,
-  Output,
+  signal,
 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
@@ -29,7 +28,6 @@ import { ResourceFilterPipe } from '../pipe/resource-filter.pipe';
     BookmarkListElementComponent,
     PageNavigationBarComponent,
     AsyncPipe,
-    ResourceFilterPipe,
   ],
 })
 export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
@@ -53,9 +51,6 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
   @Input()
   isSearchResultsPage = false;
 
-  @Output()
-  bookmarkDeleted = new EventEmitter<boolean>();
-
   readonly route: ActivatedRoute;
 
   @Input()
@@ -66,6 +61,8 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
   @Input()
   showFilterBox = true;
   filterText = '';
+  readonly deletedBookmarkIds = signal(new Set<string>());
+  private readonly resourceFilter = new ResourceFilterPipe();
 
   constructor(
     private injector: Injector,
@@ -74,5 +71,20 @@ export class AsyncBookmarkListComponent extends TagFollowingBaseComponent {
   ) {
     super(loginDialog, userDataWatchedTagsStore);
     this.route = <ActivatedRoute>this.injector.get(ActivatedRoute);
+  }
+
+  onBookmarkDeleted(bookmark: Bookmark): void {
+    if (bookmark._id) {
+      this.deletedBookmarkIds.update(
+        (ids) => new Set(ids).add(bookmark._id)
+      );
+    }
+  }
+
+  visibleBookmarks(bookmarks: Bookmark[]): Bookmark[] {
+    const deletedIds = this.deletedBookmarkIds();
+    return this.resourceFilter
+      .transform(bookmarks || [], this.filterText)
+      .filter((bookmark) => !deletedIds.has(bookmark._id));
   }
 }

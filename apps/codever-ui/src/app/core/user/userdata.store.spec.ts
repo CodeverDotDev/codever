@@ -11,7 +11,10 @@ import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 
 describe('UserDataStore favorites', () => {
   let store: UserDataStore;
-  let notifyStoresService: Pick<NotifyStoresService, 'deleteNote'>;
+  let notifyStoresService: Pick<
+    NotifyStoresService,
+    'deleteBookmark' | 'deleteNote'
+  >;
   let userService: Mocked<
     Pick<UserDataService, 'getUserData' | 'updateUserFavorite' | 'updateUserData'>
   >;
@@ -30,8 +33,12 @@ describe('UserDataStore favorites', () => {
       favoriteNotes: ['note-existing'],
       likes: ['bookmark-liked'],
     };
-    notifyStoresService = { deleteNote: vi.fn() };
+    notifyStoresService = {
+      deleteBookmark: vi.fn(),
+      deleteNote: vi.fn(),
+    };
     userService.getUserData.mockReturnValue(of(userData));
+    userService.updateUserData.mockReturnValue(of(userData));
 
     TestBed.configureTestingModule({
       providers: [
@@ -115,6 +122,35 @@ describe('UserDataStore favorites', () => {
     expect(userService.updateUserData).not.toHaveBeenCalled();
     expect(notifyStoresService.deleteNote).toHaveBeenCalledWith(
       expect.objectContaining({ _id: 'note-existing' })
+    );
+  });
+
+  it('removes bookmark references locally and persists the cleanup', () => {
+    userData.history = ['bookmark-existing', 'bookmark-other'];
+    userData.pinned = [
+      { type: 'bookmark', id: 'bookmark-existing' },
+      { type: 'bookmark', id: 'bookmark-other' },
+    ];
+    userData.readLater = ['bookmark-existing', 'bookmark-other'];
+
+    store.removeFromStoresAtDeletion({
+      _id: 'bookmark-existing',
+      type: 'bookmark',
+      name: 'Existing bookmark',
+      location: 'https://example.com',
+      tags: [],
+    });
+
+    expect(userData.history).toEqual(['bookmark-other']);
+    expect(userData.pinned).toEqual([
+      { type: 'bookmark', id: 'bookmark-other' },
+    ]);
+    expect(userData.favorites).toEqual([]);
+    expect(userData.readLater).toEqual(['bookmark-other']);
+    expect(userData.likes).toEqual(['bookmark-liked']);
+    expect(userService.updateUserData).toHaveBeenCalledWith(userData);
+    expect(notifyStoresService.deleteBookmark).toHaveBeenCalledWith(
+      expect.objectContaining({ _id: 'bookmark-existing' })
     );
   });
 });

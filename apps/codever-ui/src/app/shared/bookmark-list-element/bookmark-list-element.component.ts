@@ -71,7 +71,7 @@ export class BookmarkListElementComponent
   userData$: Observable<UserData>;
 
   @Output()
-  bookmarkDeleted = new EventEmitter<boolean>();
+  bookmarkDeleted = new EventEmitter<Bookmark>();
 
   public innerWidth: any;
 
@@ -289,11 +289,12 @@ export class BookmarkListElementComponent
     if (deleteAsAdmin) {
       this.adminService.deleteBookmark(bookmark).subscribe(
         () => {
-          this.bookmarkDeleted.emit(true);
+          this.bookmarkDeleted.emit(bookmark);
           this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+          this.userDataStore.removeFromStoresAtDeletion(bookmark);
           this.feedStore.removeFromFeedBookmarks(bookmark);
-          if (this.isSearchResultsPage) {
-            location.reload();
+          if (this.isDetailsPage) {
+            this.navigateToHomePage();
           }
           this.deleteNotificationService.showSuccessNotification(
             `Bookmark "${bookmark.name}" was deleted`
@@ -308,17 +309,13 @@ export class BookmarkListElementComponent
     } else {
       this.personalBookmarksService.deleteBookmark(bookmark).subscribe(
         () => {
-          if (this.isSearchResultsPage) {
-            location.reload();
-          } else {
-            this.bookmarkDeleted.emit(true);
-            this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
-            this.userDataStore.removeFromStoresAtDeletion(bookmark);
-            this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
-            this.feedStore.removeFromFeedBookmarks(bookmark);
-            if (this.isDetailsPage) {
-              this.navigateToHomePage();
-            }
+          this.bookmarkDeleted.emit(bookmark);
+          this.publicBookmarksStore.removeBookmarkFromPublicStore(bookmark);
+          this.userDataStore.removeFromStoresAtDeletion(bookmark);
+          this.myBookmarksStore.removeFromStoresAtDeletion(bookmark);
+          this.feedStore.removeFromFeedBookmarks(bookmark);
+          if (this.isDetailsPage) {
+            this.navigateToHomePage();
           }
           this.deleteNotificationService.showSuccessNotification(
             `Bookmark "${bookmark.name}" was deleted`

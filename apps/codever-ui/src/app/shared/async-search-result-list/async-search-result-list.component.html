@@ -21,6 +21,15 @@
       </div>
     }
     <div class="clear"></div>
+    @if (
+      isSearchResultsPage &&
+      searchResults.length > 0 &&
+      visibleSearchResults(searchResults).length === 0
+    ) {
+      <div class="alert alert-info no-search-results mt-2" role="status">
+        No results found for <code>{{ queryText }}</code>.
+      </div>
+    }
     @for (searchResult of visibleSearchResults(searchResults); track searchResult; let filteredCount = $count) {
       <div
         class="mt-3"
@@ -32,6 +41,7 @@
             [queryText]="queryText"
             [filterText]="filterText"
             [isSearchResultsPage]="isSearchResultsPage"
+            (bookmarkDeleted)="onBookmarkDeleted($event)"
              />
         }
         @if (isNote(searchResult)) {

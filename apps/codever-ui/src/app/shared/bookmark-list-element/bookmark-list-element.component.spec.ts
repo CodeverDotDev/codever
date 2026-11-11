@@ -1,9 +1,9 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Bookmark } from '../../core/model/bookmark';
 import { UserData } from '../../core/model/user-data';
 import { AuthenticationService } from '../../core/auth/authentication.service';
@@ -25,6 +25,7 @@ import { PublicBookmarksStore } from '../../public/bookmarks/store/public-bookma
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { BookmarkListElementComponent } from './bookmark-list-element.component';
 import { describe, expect, it, vi, type Mocked } from 'vitest';
+import { DeleteResourceDialogComponent } from '../dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 
 describe('BookmarkListElementComponent', () => {
   let fixture: ComponentFixture<BookmarkListElementComponent>;
@@ -32,7 +33,23 @@ describe('BookmarkListElementComponent', () => {
     Pick<AuthenticationService, 'isLoggedIn' | 'isUserInRole'>
   >;
   let dialog: { open: ReturnType<typeof vi.fn> };
-  let userDataStore: Mocked<Pick<UserDataStore, 'toggleFavorite$'>>;
+  let deleteDialogResult: string | null;
+  let personalBookmarksService: {
+    deleteBookmark: ReturnType<typeof vi.fn>;
+  };
+  let adminService: { deleteBookmark: ReturnType<typeof vi.fn> };
+  let deleteNotificationService: {
+    showSuccessNotification: ReturnType<typeof vi.fn>;
+    showErrorNotification: ReturnType<typeof vi.fn>;
+  };
+  let publicBookmarksStore: {
+    removeBookmarkFromPublicStore: ReturnType<typeof vi.fn>;
+  };
+  let feedStore: { removeFromFeedBookmarks: ReturnType<typeof vi.fn> };
+  let myBookmarksStore: { removeFromStoresAtDeletion: ReturnType<typeof vi.fn> };
+  let userDataStore: Mocked<
+    Pick<UserDataStore, 'toggleFavorite$' | 'removeFromStoresAtDeletion'>
+  >;
   let bookmark: Bookmark;
   let userData: UserData;
 
@@ -43,11 +60,32 @@ describe('BookmarkListElementComponent', () => {
     };
     authService.isLoggedIn.mockReturnValue(true);
     authService.isUserInRole.mockReturnValue(false);
+    deleteDialogResult = null;
     dialog = {
-      open: vi.fn().mockReturnValue({ afterClosed: () => of(null) }),
+      open: vi
+        .fn()
+        .mockImplementation(() => ({ afterClosed: () => of(deleteDialogResult) })),
     };
+    personalBookmarksService = {
+      deleteBookmark: vi.fn().mockReturnValue(of(undefined)),
+    };
+    adminService = {
+      deleteBookmark: vi.fn().mockReturnValue(of(undefined)),
+    };
+    deleteNotificationService = {
+      showSuccessNotification: vi.fn(),
+      showErrorNotification: vi.fn(),
+    };
+    publicBookmarksStore = {
+      removeBookmarkFromPublicStore: vi.fn(),
+    };
+    feedStore = { removeFromFeedBookmarks: vi.fn() };
+    myBookmarksStore = { removeFromStoresAtDeletion: vi.fn() };
     userDataStore = {
       toggleFavorite$: vi.fn<UserDataStore['toggleFavorite$']>(),
+      removeFromStoresAtDeletion: vi.fn<
+        UserDataStore['removeFromStoresAtDeletion']
+      >(),
     };
     userDataStore.toggleFavorite$.mockReturnValue(
       of({
@@ -70,14 +108,14 @@ describe('BookmarkListElementComponent', () => {
           useValue: { getUserInfoOidc$: () => of({ sub: 'owner' }) },
         },
         { provide: UserDataStore, useValue: userDataStore },
+        { provide: AdminService, useValue: adminService },
+        { provide: PersonalBookmarksService, useValue: personalBookmarksService },
+        { provide: DeleteNotificationService, useValue: deleteNotificationService },
+        { provide: FeedStore, useValue: feedStore },
+        { provide: MyBookmarksStore, useValue: myBookmarksStore },
+        { provide: PublicBookmarksStore, useValue: publicBookmarksStore },
         ...[
-          AdminService,
           AddToHistoryService,
-          DeleteNotificationService,
-          FeedStore,
-          MyBookmarksStore,
-          PersonalBookmarksService,
-          PublicBookmarksStore,
           UserDataHistoryStore,
           UserDataPinnedStore,
           UserDataReadLaterStore,
@@ -157,5 +195,84 @@ describe('BookmarkListElementComponent', () => {
 
     expect(dialog.open).toHaveBeenCalled();
     expect(userDataStore.toggleFavorite$).not.toHaveBeenCalled();
+  });
+
+  it('requires confirmation before deleting a bookmark', () => {
+    const deleteButton: HTMLButtonElement =
+      fixture.nativeElement.querySelector('[title="Delete bookmark"]');
+
+    deleteButton.click();
+
+    expect(dialog.open).toHaveBeenCalledWith(
+      DeleteResourceDialogComponent,
+      expect.any(Object)
+    );
+    expect(personalBookmarksService.deleteBookmark).not.toHaveBeenCalled();
+  });
+
+  it('deletes only after the confirmation dialog is confirmed', () => {
+    deleteDialogResult = 'DELETE_CONFIRMED';
+    const bookmarkDeleted = vi.fn();
+    fixture.componentInstance.bookmarkDeleted.subscribe(bookmarkDeleted);
+
+    const deleteButton: HTMLButtonElement =
+      fixture.nativeElement.querySelector('[title="Delete bookmark"]');
+    deleteButton.click();
+
+    expect(personalBookmarksService.deleteBookmark).toHaveBeenCalledWith(
+      bookmark
+    );
+    expect(bookmarkDeleted).toHaveBeenCalledWith(bookmark);
+    expect(deleteNotificationService.showSuccessNotification).toHaveBeenCalled();
+  });
+
+  it('reports a deletion failure without updating local stores', () => {
+    personalBookmarksService.deleteBookmark.mockReturnValue(
+      throwError(() => new Error('delete failed'))
+    );
+
+    fixture.componentInstance.deleteBookmark(bookmark);
+
+    expect(deleteNotificationService.showErrorNotification).toHaveBeenCalledWith(
+      'Bookmark "Bookmark" could not be deleted'
+    );
+    expect(userDataStore.removeFromStoresAtDeletion).not.toHaveBeenCalled();
+    expect(publicBookmarksStore.removeBookmarkFromPublicStore).not.toHaveBeenCalled();
+  });
+
+  it('navigates home after an owner deletes a bookmark from its details page', () => {
+    fixture.componentRef.setInput('isDetailsPage', true);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+
+    fixture.componentInstance.deleteBookmark(bookmark);
+
+    expect(navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  it('navigates home after an administrator deletes a bookmark detail', () => {
+    authService.isUserInRole.mockReturnValue(true);
+    fixture.componentRef.setInput('isDetailsPage', true);
+    const otherUsersBookmark = { ...bookmark, userId: 'another-owner' };
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+
+    fixture.componentInstance.deleteBookmark(otherUsersBookmark);
+
+    expect(adminService.deleteBookmark).toHaveBeenCalledWith(otherUsersBookmark);
+    expect(userDataStore.removeFromStoresAtDeletion).toHaveBeenCalledWith(
+      otherUsersBookmark
+    );
+    expect(navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  it('hides the delete action from users who are not owners or admins', () => {
+    fixture.componentRef.setInput(
+      'userData$',
+      of({ ...userData, userId: 'another-user' })
+    );
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector('[title="Delete bookmark"]')
+    ).toBeNull();
   });
 });
