@@ -1,0 +1,38 @@
+@if (!userIsLoggedIn) {
+  <div
+    class="tabs-headline-message mt-2 alert alert-info"
+    data-test="pinned-tab-alert"
+  >
+    <p>
+      Got some bookmarks you will use a lot today? Just pin them
+      <i class="fas fa-thumbtack"></i> and they will appear in the
+      <strong>Pinned</strong> list. Quick access with
+      <strong>Ctrl/Cmd+Shift+P</strong>
+    </p>
+    You need to
+    <button
+      type="button"
+      class="btn btn-primary btn-sm"
+      (click)="login()"
+    >
+      Login / Register
+    </button>
+    to access this functionality.
+  </div>
+} @else {
+  @if ((pinned$ | async)?.length === 0 && currentPage === 1) {
+    <div class="tabs-headline-message mt-2 alert alert-info">
+      Got some bookmarks you will use a lot today? Just pin it
+      <i class="fas fa-thumbtack"></i> and it will appear in the
+      <strong>Pinned</strong> list. Quick access with
+      <strong>Ctrl/Cmd+Shift+P</strong>
+    </div>
+  }
+  <app-async-search-result-list
+    [searchResults$]="pinned$"
+    [userData$]="userData$"
+    [callerPagination]="callerPagination"
+    [currentPage]="currentPage"
+    [showFilterBox]="false"
+  />
+}

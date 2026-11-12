@@ -117,6 +117,32 @@ let updateUserDataFeedToggle = async function (showAllPublicInFeed, userId) {
   return updatedUserData;
 };
 
+let updateHomeTabs = async function (homeTabs, userId) {
+  const isValidHomeTabs =
+    Array.isArray(homeTabs) &&
+    homeTabs.length === constants.ALLOWED_HOME_TABS.length &&
+    new Set(homeTabs).size === constants.ALLOWED_HOME_TABS.length &&
+    homeTabs.every((tab) => constants.ALLOWED_HOME_TABS.includes(tab));
+
+  if (!isValidHomeTabs) {
+    throw new ValidationError('Invalid home tabs order', [
+      `homeTabs must contain each of: ${constants.ALLOWED_HOME_TABS.join(', ')}`,
+    ]);
+  }
+
+  const updatedUserData = await User.findOneAndUpdate(
+    { userId },
+    { $set: { homeTabs } },
+    { new: true }
+  );
+
+  if (!updatedUserData) {
+    throw new NotFoundError(`User data NOT_FOUND for userId: ${userId}`);
+  }
+
+  return updatedUserData.homeTabs;
+};
+
 let updateUserDataWelcomeAck = async function (userId) {
   const updatedUserData = await User.findOneAndUpdate(
     { userId: userId },
@@ -793,6 +819,7 @@ module.exports = {
   updateUserDataReadLater: updateUserDataReadLater,
   updateUserDataHistoryReadLaterPinned: updateUserDataHistoryReadLaterPinned,
   updateUserDataFeedToggle: updateUserDataFeedToggle,
+  updateHomeTabs: updateHomeTabs,
   updateLocalStorageOption: updateLocalStorageOption,
   updateUserDataWelcomeAck: updateUserDataWelcomeAck,
   acknowledgeNotification: acknowledgeNotification,

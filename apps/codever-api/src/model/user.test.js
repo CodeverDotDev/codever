@@ -12,4 +12,10 @@ describe('User model favorite defaults', () => {
     expect(user.favorites).toEqual(['bookmark-1']);
     expect(user.favoriteNotes).toEqual([]);
   });
+
+  it('does not set a home tab order until one is saved', () => {
+    const user = new User({ userId: 'test-user-id' });
+
+    expect(user.homeTabs).toBeUndefined();
+  });
 });

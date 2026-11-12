@@ -61,6 +61,7 @@ const userSchema = new Schema(
     history: [String],
     following: followingSchema,
     followers: { type: [String], select: false },
+    homeTabs: { type: [String], default: undefined },
     showAllPublicInFeed: Boolean,
     enableLocalStorage: Boolean,
     welcomeAck: Boolean,

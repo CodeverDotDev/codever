@@ -1,0 +1,36 @@
+@if (!userIsLoggedIn) {
+  <div
+    class="tabs-headline-message mt-2 alert alert-info"
+    data-test="readlater-tab-alert"
+  >
+    <p>
+      Found an interesting link you'll like to read, but don't have time at the
+      moment? Click on the <i class="fas fa-clock"></i> on the bookmark's upper
+      right corner and it will be added to this <strong>Read Later</strong>
+      list.
+    </p>
+    You need to
+    <button
+      type="button"
+      class="btn btn-primary btn-sm"
+      (click)="login()"
+    >
+      Login / Register
+    </button>
+    to access this functionality.
+  </div>
+} @else {
+  @if ((readLater$ | async)?.length === 0 && currentPage === 1) {
+    <div class="tabs-headline-message mt-2 alert alert-info">
+      Found an interesting link you'll like to read, but don't have time at the
+      moment? Click on the <i class="fas fa-clock"></i> on the bookmark's upper
+      right corner and it will be added to this
+      <strong>Read Later</strong> list.
+    </div>
+  }
+  <app-async-bookmark-list
+    [bookmarks$]="readLater$"
+    [userData$]="userData$"
+    [callerPagination]="callerPagination"
+  />
+}

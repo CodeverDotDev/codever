@@ -1,20 +1,39 @@
 describe('visit home page', () => {
-  it('passes', () => {
-    const loginRegisterBtn = '[data-test*=login-register-btn]';
+  it('redirects the root and navigates between landing pages', () => {
     cy.visit('/');
-    cy.contains(loginRegisterBtn, 'Login / Register');
-    cy.contains('div.mat-tab-label-content', 'Feed');
+    cy.location('pathname').should('eq', '/feed');
+    cy.contains('[data-test*=login-register-btn]', 'Login / Register');
+    cy.contains('a[mat-tab-link]', 'Feed');
 
-    // select "History" tab
-    cy.contains('div.mat-tab-label-content', 'History').click();
+    cy.contains('a[mat-tab-link]', 'History').click();
+    cy.location('pathname').should('eq', '/history');
     cy.contains('[data-test*=history-tab-alert]', 'History');
 
-    // select "Pinned" tab
-    cy.contains('div.mat-tab-label-content', 'Pinned').click();
+    cy.contains('a[mat-tab-link]', 'Pinned').click();
+    cy.location('pathname').should('eq', '/pinned');
     cy.contains('[data-test*=pinned-tab-alert]', 'Pinned');
 
-    // select "Read Later" tab
-    cy.contains('div.mat-tab-label-content', 'Read Later').click();
+    cy.contains('a[mat-tab-link]', 'Read Later').click();
+    cy.location('pathname').should('eq', '/read-later');
     cy.contains('[data-test*=readlater-tab-alert]', 'Read Later');
+  });
+
+  it('redirects legacy landing URLs', () => {
+    cy.visit('/?tab=pinned');
+    cy.location('pathname').should('eq', '/pinned');
+
+    cy.visit('/readlater');
+    cy.location('pathname').should('eq', '/read-later');
+
+    cy.visit('/public/history');
+    cy.location('pathname').should('eq', '/history');
+  });
+
+  it('does not redirect stale favorites and watched-tags paths', () => {
+    cy.visit('/favorites');
+    cy.location('pathname').should('eq', '/favorites');
+
+    cy.visit('/watched-tags');
+    cy.location('pathname').should('eq', '/watched-tags');
   });
 });

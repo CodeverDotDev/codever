@@ -308,6 +308,49 @@ describe('UserDataService.updateUserDataHistoryReadLaterPinned', () => {
     });
   });
 
+  describe('UserDataService.updateHomeTabs', () => {
+    const userId = 'test-user-id';
+    const homeTabs = ['pinned', 'feed', 'history', 'read-later'];
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it('stores and returns an exact permutation of the allowed tabs', async () => {
+      User.findOneAndUpdate = jest.fn().mockResolvedValue({ homeTabs });
+
+      await expect(
+        UserDataService.updateHomeTabs(homeTabs, userId)
+      ).resolves.toEqual(homeTabs);
+      expect(User.findOneAndUpdate).toHaveBeenCalledWith(
+        { userId },
+        { $set: { homeTabs } },
+        { new: true }
+      );
+    });
+
+    it.each([
+      ['missing', undefined],
+      ['unknown', ['feed', 'history', 'pinned', 'unknown']],
+      ['duplicate', ['feed', 'history', 'pinned', 'pinned']],
+      ['incomplete', ['feed', 'history', 'pinned']],
+      ['not an array', 'feed,history,pinned,read-later'],
+    ])('rejects a %s tab order without writing', async (_label, invalidOrder) => {
+      User.findOneAndUpdate = jest.fn();
+
+      await expect(
+        UserDataService.updateHomeTabs(invalidOrder, userId)
+      ).rejects.toThrow(ValidationError);
+      expect(User.findOneAndUpdate).not.toHaveBeenCalled();
+    });
+
+    it('throws NotFoundError when user data does not exist', async () => {
+      User.findOneAndUpdate = jest.fn().mockResolvedValue(null);
+
+      await expect(
+        UserDataService.updateHomeTabs(homeTabs, userId)
+      ).rejects.toThrow(NotFoundError);
+    });
+  });
+
   it('leaves pinned untouched when no pinned entries are provided', async () => {
     User.findOneAndUpdate = jest.fn().mockResolvedValue({});
 

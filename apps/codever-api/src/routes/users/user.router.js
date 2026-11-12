@@ -470,6 +470,23 @@ usersRouter.patch(
 );
 
 /*
+ * Update the order of the landing page tabs
+ */
+usersRouter.patch(
+  '/:userId/home-tabs',
+  keycloak.protect(),
+  async (request, response) => {
+    userIdTokenValidator.validateUserId(request);
+    const homeTabs = await UserDataService.updateHomeTabs(
+      request.body.homeTabs,
+      request.params.userId
+    );
+
+    return response.status(HttpStatus.OK).send({ homeTabs });
+  }
+);
+
+/*
  * Update local storage setup
  */
 usersRouter.patch(

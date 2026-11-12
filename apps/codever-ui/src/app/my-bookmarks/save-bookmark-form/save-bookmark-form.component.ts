@@ -831,9 +831,7 @@ export class SaveBookmarkFormComponent implements OnInit, OnDestroy {
   }
 
   navigateToHomePageHistoryTab(): void {
-    this.router.navigate(['/'], {
-      queryParams: { tab: 'history' },
-    });
+    this.router.navigate(['/history']);
   }
 
   private createBookmark(bookmark: Bookmark) {

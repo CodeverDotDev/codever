@@ -32,7 +32,8 @@ import { PersonalBookmarksService } from '../personal-bookmarks.service';
 import { environment } from '../../../environments/environment';
 import { LocalStorageService } from '../cache/local-storage.service';
 import { localStorageKeys } from '../model/localstorage.cache-keys';
-import { take, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
+import { HomeTabId } from '../home-tabs/home-tabs';
 
 /** Converts a resolvable pinned resource into its stored typed entry. */
 function toPinnedEntry(resource: UserDataResource): PinnedEntry {
@@ -326,6 +327,16 @@ export class UserDataStore {
     });
 
     return obs;
+  }
+
+  updateHomeTabs$(homeTabs: HomeTabId[]): Observable<UserData> {
+    return this.userService.updateHomeTabs(this.userId, homeTabs).pipe(
+      tap((response) => {
+        this.userData.homeTabs = response.homeTabs;
+        this._userData.next(this.userData);
+      }),
+      map(() => this.userData)
+    );
   }
 
   updateLocalStorageOption$(enableLocalStorage: boolean): Observable<UserData> {

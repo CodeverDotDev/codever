@@ -49,4 +49,20 @@ describe('UserDataService favorites', () => {
     expect(request.request.body).toEqual(mutation);
     request.flush(mutation);
   });
+
+  it('saves the tab order to the personal endpoint', () => {
+    const homeTabs = ['pinned', 'feed', 'history', 'read-later'] as const;
+    const service = TestBed.inject(UserDataService);
+
+    service.updateHomeTabs('owner', [...homeTabs]).subscribe((response) => {
+      expect(response).toEqual({ homeTabs: [...homeTabs] });
+    });
+
+    const request = http.expectOne(
+      `${environment.API_URL}/personal/users/owner/home-tabs`
+    );
+    expect(request.request.method).toBe('PATCH');
+    expect(request.request.body).toEqual({ homeTabs: [...homeTabs] });
+    request.flush({ homeTabs: [...homeTabs] });
+  });
 });

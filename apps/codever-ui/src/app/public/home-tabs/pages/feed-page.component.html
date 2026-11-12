@@ -1,0 +1,103 @@
+<div id="public-search-box">
+  @if (!userIsLoggedIn && showLoginButton) {
+    <div class="alert alert-info mt-2">
+      <button
+        type="button"
+        class="btn btn-primary btn-sm me-2"
+        (click)="login()"
+        data-test="login-register-btn"
+      >
+        <i class="fas fa-unlock"></i> Login / Register
+      </button>
+      to <strong>Codever</strong> to see posts from your favorite topics in
+      your feed
+    </div>
+  } @else {
+    @if (userData$ | async; as userData) {
+      <div>
+        @if (userData.watchedTags.length > 0) {
+          <div class="mt-2 mb-3">
+            <a
+              [routerLink]="['/dashboard/tags']"
+              class="btn btn-outline-secondary btn-sm me-3 mt-2 tag-list-header shadow-sm"
+              title="Go to My Tags in dashboard"
+            >
+              Watching <i class="fas fa-eye"></i>
+            </a>
+            @for (tag of userData.watchedTags.sort(); track tag) {
+              <div class="btn-group me-3 mt-2 tag-list-header">
+                <a
+                  type="button"
+                  class="btn btn-secondary btn-sm text-white"
+                  (click)="searchPublicBookmarksByTag(tag)"
+                  title="Show public bookmarks tagged {{ tag }}"
+                >
+                  {{ tag }}
+                </a>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  (click)="onDropDownClick(tag)"
+                >
+                  <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                  @if (
+                    (verifyForWatchedTag | async) === tag &&
+                    userData.watchedTags.includes(tag)
+                  ) {
+                    <a class="dropdown-item" (click)="unwatchTag(tag)">
+                      <i class="fas fa-eye-slash"></i> Unwatch tag
+                    </a>
+                  } @else {
+                    <a
+                      class="dropdown-item"
+                      (click)="watchTag(tag, userIsLoggedIn)"
+                    >
+                      <i class="fas fa-eye"></i> Watch tag
+                    </a>
+                  }
+                  @if (
+                    (verifyForWatchedTag | async) === tag &&
+                    userData.ignoredTags.includes(tag)
+                  ) {
+                    <a class="dropdown-item" (click)="unignoreTag(tag)">
+                      <i class="fas fa-ban"></i> Unignore tag
+                    </a>
+                  } @else {
+                    <a
+                      class="dropdown-item"
+                      (click)="ignoreTag(tag, userIsLoggedIn)"
+                    >
+                      <i class="fas fa-ban"></i> Ignore tag
+                    </a>
+                  }
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" [routerLink]="['/tagged', tag]">
+                    <i class="fas fa-tag"></i> Public page
+                  </a>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="alert alert-info mt-3">
+            <strong>Watch tags <i class="fas fa-eye"></i></strong> to see more
+            posts with your favorite topics in your feed
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <app-async-bookmark-list
+    [bookmarks$]="feedBookmarks$"
+    [userData$]="userData$"
+    [callerPagination]="callerPagination"
+    [currentPage]="currentPage"
+    [showFilterBox]="false"
+  />
+</div>

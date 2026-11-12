@@ -692,6 +692,63 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenError'
 
+  /personal/users/{userId}/home-tabs:
+    patch:
+      summary: Save the user's landing tab order
+      operationId: update-user-home-tabs
+      tags:
+        - user-data
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - homeTabs
+              properties:
+                homeTabs:
+                  type: array
+                  minItems: 4
+                  maxItems: 4
+                  uniqueItems: true
+                  items:
+                    type: string
+                    enum:
+                      - feed
+                      - history
+                      - pinned
+                      - read-later
+      responses:
+        200:
+          description: The saved landing tab order
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - homeTabs
+                properties:
+                  homeTabs:
+                    type: array
+                    items:
+                      type: string
+                      enum:
+                        - feed
+                        - history
+                        - pinned
+                        - read-later
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
   /personal/users/{userId}/pinned:
     description: |
       Returns the user's pinned resources - bookmarks, notes, and collections mixed in the user's
@@ -1322,6 +1379,18 @@ components:
           type: array
           items:
             type: string
+        homeTabs:
+          type: array
+          minItems: 4
+          maxItems: 4
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - feed
+              - history
+              - pinned
+              - read-later
         followers:
           type: array
           items:

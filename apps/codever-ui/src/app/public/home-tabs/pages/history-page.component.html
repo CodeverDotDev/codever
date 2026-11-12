@@ -1,0 +1,38 @@
+@if (!userIsLoggedIn) {
+  <div
+    class="tabs-headline-message mt-2 alert alert-info"
+    data-test="history-tab-alert"
+  >
+    <p>
+      In <strong>History</strong> you have a list of your last visited, created
+      or updated bookmarks. Quick access with
+      <strong>Ctrl/Cmd+Shift+H</strong>
+    </p>
+    You need to
+    <button
+      type="button"
+      class="btn btn-primary btn-sm"
+      (click)="login()"
+    >
+      Login / Register
+    </button>
+    to access this functionality.
+  </div>
+} @else {
+  @if ((history$ | async)?.length === 0 && currentPage === 1) {
+    <div class="tabs-headline-message mt-2 alert alert-info">
+      <p>
+        In <strong>History</strong> you have a list of your last visited,
+        created or updated bookmarks. Quick access with
+        <strong>Ctrl/Cmd+Shift+H</strong>
+      </p>
+    </div>
+  }
+  <app-async-search-result-list
+    [searchResults$]="history$"
+    [userData$]="userData$"
+    [callerPagination]="callerPagination"
+    [currentPage]="currentPage"
+    [showFilterBox]="false"
+  />
+}

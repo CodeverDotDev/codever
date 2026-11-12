@@ -1,3 +1,5 @@
+import { HomeTabId } from '../home-tabs/home-tabs';
+
 export interface UserData {
   _id?: string;
   userId?: string;
@@ -12,6 +14,7 @@ export interface UserData {
   ignoredTags?: string[];
   pinned?: PinnedEntry[]; // typed pinned entries - see PinnedEntry
   history?: string[]; // ids of last visited bookmarks, order is important
+  homeTabs?: HomeTabId[];
   following?: Following;
   followers?: string[];
   showAllPublicInFeed?: boolean;

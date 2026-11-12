@@ -1,0 +1,52 @@
+<div id="public-search-box">
+  <nav
+    mat-tab-nav-bar
+    aria-label="Home pages"
+    [tabPanel]="tabPanel"
+    cdkDropList
+    [cdkDropListData]="tabs"
+    cdkDropListOrientation="horizontal"
+    [cdkDropListDisabled]="!userIsLoggedIn"
+    cdkDropListSortingDisabled
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (tab of tabs; track tab.id) {
+      <a
+        mat-tab-link
+        class="home-tab-link"
+        [class.home-tab-link--sortable]="userIsLoggedIn"
+        [attr.draggable]="userIsLoggedIn ? 'false' : null"
+        [routerLink]="tab.path"
+        routerLinkActive
+        #activeLink="routerLinkActive"
+        [active]="activeLink.isActive"
+        [title]="tab.title || tab.label"
+        cdkDrag
+        [cdkDragData]="tab"
+        [cdkDragDisabled]="!userIsLoggedIn"
+        [cdkDragConstrainPosition]="constrainDragPosition"
+        (cdkDragStarted)="dragStarted($event)"
+        (cdkDragMoved)="dragMoved($event)"
+        (cdkDragEnded)="dragEnded()"
+      >
+        <i [class]="tab.icon"></i>
+        <span class="home-tab-label">{{ tab.label }}</span>
+        @if (userIsLoggedIn) {
+          <span
+            class="home-tab-drag-handle"
+            cdkDragHandle
+            aria-hidden="true"
+            title="Drag to reorder"
+            (click)="$event.preventDefault(); $event.stopPropagation()"
+          >
+            <i class="fas fa-grip-vertical"></i>
+          </span>
+        }
+      </a>
+    }
+  </nav>
+
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet />
+  </mat-tab-nav-panel>
+</div>

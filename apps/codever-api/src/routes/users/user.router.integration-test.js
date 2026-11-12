@@ -110,6 +110,56 @@ describe('User Data tests', () => {
     expect(response.body.searches).toHaveLength(0);
   });
 
+  it('should save and return a valid landing tab order', async function () {
+    const homeTabs = ['pinned', 'feed', 'history', 'read-later'];
+    const response = await request(app)
+      .patch(`${baseApiUrlUnderTest}/${testUserId}/home-tabs`)
+      .set('Authorization', bearerToken)
+      .send({ homeTabs });
+
+    expect(response.statusCode).toEqual(HttpStatus.OK);
+    expect(response.body).toEqual({ homeTabs });
+
+    const userDataResponse = await request(app)
+      .get(`${baseApiUrlUnderTest}/${testUserId}`)
+      .set('Authorization', bearerToken);
+
+    expect(userDataResponse.statusCode).toEqual(HttpStatus.OK);
+    expect(userDataResponse.body.homeTabs).toEqual(homeTabs);
+  });
+
+  it('should reject an invalid landing tab order without changing it', async function () {
+    const invalidResponse = await request(app)
+      .patch(`${baseApiUrlUnderTest}/${testUserId}/home-tabs`)
+      .set('Authorization', bearerToken)
+      .send({ homeTabs: ['feed', 'history', 'pinned', 'pinned'] });
+
+    expect(invalidResponse.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+    expect(invalidResponse.body.validationErrors).toContain(
+      'homeTabs must contain each of: feed, history, pinned, read-later'
+    );
+
+    const userDataResponse = await request(app)
+      .get(`${baseApiUrlUnderTest}/${testUserId}`)
+      .set('Authorization', bearerToken);
+
+    expect(userDataResponse.body.homeTabs).toEqual([
+      'pinned',
+      'feed',
+      'history',
+      'read-later',
+    ]);
+  });
+
+  it('should reject saving another user’s landing tab order', async function () {
+    const response = await request(app)
+      .patch(`${baseApiUrlUnderTest}/another-user/home-tabs`)
+      .set('Authorization', bearerToken)
+      .send({ homeTabs: ['feed', 'history', 'pinned', 'read-later'] });
+
+    expect(response.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+  });
+
   it('should fail trying to UPDATE example user with invalid searches', async function () {
     let userWithInvalidSearches = JSON.parse(JSON.stringify(userExample));
     userWithInvalidSearches.searches.push({

@@ -1,0 +1,32 @@
+.home-tab-link {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.home-tab-label {
+  margin-left: 0.25rem;
+}
+
+// Stop the browser from dragging the link URL instead of reordering tabs.
+.home-tab-link--sortable {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.home-tab-drag-handle {
+  align-items: center;
+  cursor: grab;
+  display: inline-flex;
+  // Covers the tab's right padding and full height without shifting layout.
+  margin: -0.9rem -1.5rem -0.9rem 0;
+  padding: 0.9rem 1.5rem 0.9rem 0.6rem;
+  touch-action: none;
+}
+
+.home-tab-drag-handle:active {
+  cursor: grabbing;
+}
+
+.cdk-drag-preview {
+  opacity: 0.85;
+}

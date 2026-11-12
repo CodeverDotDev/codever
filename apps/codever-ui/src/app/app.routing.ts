@@ -52,8 +52,8 @@ export const routes: Routes = [
   },
   {
     path: 'public',
-    loadChildren: () =>
-      import('./public/public.module').then((m) => m.PublicResourcesModule),
+    redirectTo: '',
+    pathMatch: 'prefix',
   },
   {
     path: 'bookmarks/shared/:token',
@@ -113,11 +113,6 @@ export const routes: Routes = [
       import('./search-results/search-results.module').then(
         (m) => m.SearchResultsModule
       ),
-  },
-  {
-    path: '',
-    redirectTo: 'public',
-    pathMatch: 'full',
   },
   { path: '404-snippet', redirectTo: '404-note' },
   { path: '404-note', component: NoteNotFoundComponent },

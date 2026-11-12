@@ -12,6 +12,7 @@ import { shareReplay } from 'rxjs/operators';
 import { RateBookmarkRequest } from './model/rate-bookmark.request';
 import { UsedTags } from './model/used-tag';
 import { UserDataProfile } from './model/user-data-profile';
+import { HomeTabId } from './home-tabs/home-tabs';
 import {
   HttpClientLocalStorageService,
   HttpOptions,
@@ -114,6 +115,19 @@ export class UserDataService {
       .patch(
         `${this.usersApiBaseUrl}/${userId}/feed-toggle`,
         { showAllPublicInFeed: showAllPublicInFeed },
+        { headers: this.headers }
+      )
+      .pipe(shareReplay(1));
+  }
+
+  updateHomeTabs(
+    userId: string,
+    homeTabs: HomeTabId[]
+  ): Observable<{ homeTabs: HomeTabId[] }> {
+    return this.httpClient
+      .patch<{ homeTabs: HomeTabId[] }>(
+        `${this.usersApiBaseUrl}/${userId}/home-tabs`,
+        { homeTabs },
         { headers: this.headers }
       )
       .pipe(shareReplay(1));

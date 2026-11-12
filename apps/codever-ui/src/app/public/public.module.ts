@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BookmarksTaggedService } from './tag/bookmarks-tagged.service';
 import { BookmarksTaggedComponent } from './tag/bookmarks-tagged.component';
-import { HomepageComponent } from './bookmarks/homepage.component';
 import { PublicBookmarksStore } from './bookmarks/store/public-bookmarks-store.service';
 import { PublicBookmarksService } from './bookmarks/public-bookmarks.service';
 import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
@@ -19,13 +18,15 @@ import { AboutComponent } from './about/about.component';
 import { RegisterComponent } from './register/register.component';
 import { PublicBookmarkDetailsComponent } from './bookmarks/public-bookmark-details.component';
 import { ShareableBookmarkDetailsComponent } from './bookmarks/shareable-bookmark-details/shareable-bookmark-details.component';
+import { HomeTabsComponent } from './home-tabs/home-tabs.component';
+import { homeRedirectGuard } from './home-tabs/home-redirect.guard';
+import { FeedPageComponent } from './home-tabs/pages/feed-page.component';
+import { HistoryPageComponent } from './home-tabs/pages/history-page.component';
+import { PinnedPageComponent } from './home-tabs/pages/pinned-page.component';
+import { ReadLaterPageComponent } from './home-tabs/pages/read-later-page.component';
 
 const publicRoutes: Routes = [
-  { path: 'history', redirectTo: '/?tab=history', pathMatch: 'full' },
-  { path: 'pinned', redirectTo: '/?tab=pinned', pathMatch: 'full' },
-  { path: 'readlater', redirectTo: '/?tab=read-later', pathMatch: 'full' },
-  { path: 'favorites', redirectTo: '/?tab=favorites', pathMatch: 'full' },
-  { path: 'watched-tags', redirectTo: '/?tab=watched-tags', pathMatch: 'full' },
+  { path: 'readlater', redirectTo: '/read-later', pathMatch: 'full' },
   { path: 'tagged/:tag', redirectTo: 'bookmarks/t/:tag' },
   { path: 'tags/:tag', redirectTo: 'bookmarks/t/:tag' },
   { path: 't/:tag', redirectTo: 'bookmarks/t/:tag' },
@@ -81,7 +82,22 @@ const publicRoutes: Routes = [
     component: UserPublicProfileComponent,
     children: [{ path: '**', component: UserPublicProfileComponent }],
   },
-  { path: '', component: HomepageComponent },
+  {
+    path: '',
+    component: HomeTabsComponent,
+    children: [
+      { path: 'feed', component: FeedPageComponent },
+      { path: 'history', component: HistoryPageComponent },
+      { path: 'pinned', component: PinnedPageComponent },
+      { path: 'read-later', component: ReadLaterPageComponent },
+      {
+        path: '',
+        component: FeedPageComponent,
+        pathMatch: 'full',
+        canActivate: [homeRedirectGuard],
+      },
+    ],
+  },
 ];
 
 @NgModule({
@@ -95,7 +111,11 @@ const publicRoutes: Routes = [
     ExtensionsPageComponent,
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
-    HomepageComponent,
+    HomeTabsComponent,
+    FeedPageComponent,
+    HistoryPageComponent,
+    PinnedPageComponent,
+    ReadLaterPageComponent,
     UserPublicProfileComponent,
     BookmarksTaggedComponent,
     VersionComponent,

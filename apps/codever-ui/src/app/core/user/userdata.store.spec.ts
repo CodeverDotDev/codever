@@ -16,7 +16,13 @@ describe('UserDataStore favorites', () => {
     'deleteBookmark' | 'deleteNote'
   >;
   let userService: Mocked<
-    Pick<UserDataService, 'getUserData' | 'updateUserFavorite' | 'updateUserData'>
+    Pick<
+      UserDataService,
+      | 'getUserData'
+      | 'updateUserFavorite'
+      | 'updateUserData'
+      | 'updateHomeTabs'
+    >
   >;
   let userData: UserData;
 
@@ -25,6 +31,7 @@ describe('UserDataStore favorites', () => {
       getUserData: vi.fn<UserDataService['getUserData']>(),
       updateUserFavorite: vi.fn<UserDataService['updateUserFavorite']>(),
       updateUserData: vi.fn<UserDataService['updateUserData']>(),
+      updateHomeTabs: vi.fn<UserDataService['updateHomeTabs']>(),
     };
     userData = {
       userId: 'owner',
@@ -65,6 +72,7 @@ describe('UserDataStore favorites', () => {
       resourceId: 'bookmark-new',
       favorite: true,
     });
+
     expect(userData.favorites).toEqual(['bookmark-existing']);
     expect(userData.favoriteNotes).toEqual(['note-existing']);
 
@@ -77,6 +85,21 @@ describe('UserDataStore favorites', () => {
     expect(userData.favorites).toEqual(['bookmark-existing', 'bookmark-new']);
     expect(userData.favoriteNotes).toEqual(['note-existing']);
     expect(userData.likes).toEqual(['bookmark-liked']);
+  });
+
+  it('updates home tabs in the user data store after saving', () => {
+    const homeTabs = ['pinned', 'feed', 'history', 'read-later'] as const;
+    userService.updateHomeTabs.mockReturnValue(of({ homeTabs: [...homeTabs] }));
+    let publishedUserData: UserData;
+    store.getUserData$().subscribe((data) => (publishedUserData = data));
+
+    store.updateHomeTabs$([...homeTabs]).subscribe();
+
+    expect(userService.updateHomeTabs).toHaveBeenCalledWith('owner', [
+      ...homeTabs,
+    ]);
+    expect(userData.homeTabs).toEqual(homeTabs);
+    expect(publishedUserData).toBe(userData);
   });
 
   it('removes a note favorite without changing bookmark favorites', () => {
