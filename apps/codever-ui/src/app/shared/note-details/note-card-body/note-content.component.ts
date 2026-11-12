@@ -69,7 +69,7 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   @Input()
   public showMoreText = false;
 
-  @ViewChild('noteContentDiv', { static: false }) elementView: ElementRef;
+  @ViewChild('noteContent', { static: false }) elementView: ElementRef;
   public viewHeight: number;
 
   constructor(
@@ -193,7 +193,7 @@ export class NoteContentComponent implements AfterViewInit, AfterViewChecked {
   }
 
   ngAfterViewInit(): void {
-    this.viewHeight = this.elementView.nativeElement.offsetHeight;
+    this.viewHeight = this.elementView.nativeElement.scrollHeight;
   }
 
   readonly maxNoteHeightInList = 200;

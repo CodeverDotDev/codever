@@ -118,45 +118,47 @@
             ><i class="fas fa-history"></i> History</span
             >
           </ng-template>
-          @if (!userIsLoggedIn) {
-            <div
-              class="tabs-headline-message mt-2 alert alert-info"
-              data-test="history-tab-alert"
-              >
-              <p>
-                In <strong>History</strong> you have a list of your last visited,
-                created or updated bookmarks. Quick access with
-                <strong>Ctrl/Cmd+Shift+H</strong>
-              </p>
-              You need to
-              <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                (click)="login('history')"
-                >
-                Login / Register
-              </button>
-              to access this functionality.
-            </div>
-          } @else {
-            @if ((history$ | async)?.length === 0 && currentPageHistory === 1) {
+          <ng-template matTabContent>
+            @if (!userIsLoggedIn) {
               <div
                 class="tabs-headline-message mt-2 alert alert-info"
+                data-test="history-tab-alert"
                 >
                 <p>
                   In <strong>History</strong> you have a list of your last visited,
                   created or updated bookmarks. Quick access with
                   <strong>Ctrl/Cmd+Shift+H</strong>
                 </p>
+                You need to
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  (click)="login('history')"
+                  >
+                  Login / Register
+                </button>
+                to access this functionality.
               </div>
+            } @else {
+              @if ((history$ | async)?.length === 0 && currentPageHistory === 1) {
+                <div
+                  class="tabs-headline-message mt-2 alert alert-info"
+                  >
+                  <p>
+                    In <strong>History</strong> you have a list of your last visited,
+                    created or updated bookmarks. Quick access with
+                    <strong>Ctrl/Cmd+Shift+H</strong>
+                  </p>
+                </div>
+              }
+              <app-async-search-result-list [searchResults$]="history$"
+                [userData$]="userData$"
+                [callerPagination]="callerPaginationHistory"
+                [currentPage]="currentPageHistory"
+                [showFilterBox]="false"
+                 />
             }
-            <app-async-search-result-list [searchResults$]="history$"
-              [userData$]="userData$"
-              [callerPagination]="callerPaginationHistory"
-              [currentPage]="currentPageHistory"
-              [showFilterBox]="false"
-               />
-          }
+          </ng-template>
         </mat-tab>
 
         <mat-tab>

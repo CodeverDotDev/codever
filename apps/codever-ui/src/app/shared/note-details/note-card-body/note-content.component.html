@@ -3,7 +3,7 @@
 <div #noteContentDiv class="note-zoomable-content" appMarkedImageWidth appCopyCodeButton appFullscreenCodeButton
   [style.fontSize.%]="contentFontSize"
   [attr.data-content-font-size]="contentFontSize">
-  <div [ngClass]="{
+  <div #noteContent [ngClass]="{
     more_text: showMoreText || !partOfList || isFullScreen,
     less_text_note: partOfList && viewHeight > maxNoteHeightInList && !isFullScreen && !showMoreText
   }">

@@ -1,6 +1,12 @@
 <div #bookmarkText (click)="addToHistoryWhenClickOnLink($event)" (auxclick)="addToHistoryWhenMiddleClickOnLink($event)"
   appOpenInNewTab>
-  <div [ngClass]="{ more_text: showMoreText, less_text_bookmark: viewHeight > 120 && !showMoreText }">
+  <div
+    #bookmarkTextContent
+    [ngClass]="{
+      more_text: showMoreText,
+      less_text_bookmark: viewHeight > 120 && !showMoreText
+    }"
+  >
     @if (bookmark.descriptionHtml) {
       <div
         [innerHtml]="bookmark.descriptionHtml | highlightHtml : queryText"

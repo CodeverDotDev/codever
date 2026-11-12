@@ -41,7 +41,8 @@ export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   @Input()
   public showMoreText = false;
 
-  @ViewChild('bookmarkText', { static: false }) elementView: ElementRef;
+  @ViewChild('bookmarkTextContent', { static: false })
+  elementView: ElementRef;
   public viewHeight: number;
 
   constructor(
@@ -50,7 +51,7 @@ export class BookmarkTextComponent implements AfterViewInit, AfterViewChecked {
   ) {}
 
   ngAfterViewInit(): void {
-    this.viewHeight = this.elementView.nativeElement.offsetHeight;
+    this.viewHeight = this.elementView.nativeElement.scrollHeight;
   }
 
   ngAfterViewChecked(): void {

@@ -239,7 +239,7 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
   }));
 
   it('expands sole entries, preserves user collapse and resets multi-entry defaults', fakeAsync(() => {
-    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(
+    vi.spyOn(HTMLElement.prototype, 'scrollHeight', 'get').mockReturnValue(
       500
     );
     const first = note('one');
@@ -271,6 +271,16 @@ describe('OnPush lists (real templates beneath a parent view)', () => {
     host.notes$.next([first, note('two')]);
     host.bookmarks$.next([firstBookmark, bookmark('two')]);
     render();
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        'app-note-content [aria-label="Show more"]'
+      ).length
+    ).toBe(2);
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        'app-bookmark-text [aria-label="Show more"]'
+      ).length
+    ).toBe(1);
     for (const item of fixture.debugElement.queryAll(
       By.directive(NoteContentComponent)
     )) {
