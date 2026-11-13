@@ -17,7 +17,6 @@ import { CopyCodeButtonDirective } from '../../directive/copy-code-button.direct
 import { FullscreenCodeButtonDirective } from '../../directive/fullscreen-code-button.directive';
 import { NgClass } from '@angular/common';
 import { NotebookRendererComponent } from '../../notebook-renderer/notebook-renderer.component';
-import { AsyncBookmarkListComponent } from '../../async-bookmark-list/async-bookmark-list.component';
 import { Markdown2HtmlPipe } from '../../pipe/markdown2html.pipe';
 import { EntryCopyableInfoComponent } from '../../copyable-fields/entry-copyable-info.component';
 
@@ -31,7 +30,6 @@ import { EntryCopyableInfoComponent } from '../../copyable-fields/entry-copyable
     FullscreenCodeButtonDirective,
     NgClass,
     NotebookRendererComponent,
-    AsyncBookmarkListComponent,
     Markdown2HtmlPipe,
     EntryCopyableInfoComponent,
   ],

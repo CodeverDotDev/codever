@@ -1,4 +1,4 @@
-import { OnDestroy } from '@angular/core';
+import { Directive, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { KeycloakLoginOptions } from 'keycloak-js';
 import { Observable, Subscription } from 'rxjs';
@@ -10,6 +10,9 @@ import { HomeTabId } from '../../../core/home-tabs/home-tabs';
 import { PaginationNotificationService } from '../../../core/pagination-notification.service';
 import { UserDataStore } from '../../../core/user/userdata.store';
 
+// Selector-less directive: the Angular compiler requires an explicit
+// decorator on base classes that use Angular features (lifecycle hooks).
+@Directive()
 export abstract class HomeTabPageBase implements OnDestroy {
   readonly userIsLoggedIn: boolean;
   readonly userData$: Observable<UserData> | undefined;

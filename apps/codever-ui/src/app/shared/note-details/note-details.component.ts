@@ -32,7 +32,6 @@ import { UserData } from '../../core/model/user-data';
 import { DeleteNotificationService } from '../../core/notifications/delete-notification.service';
 import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
 import { NoteContentComponent } from './note-card-body/note-content.component';
-import { AsyncBookmarkListComponent } from '../async-bookmark-list/async-bookmark-list.component';
 import { HighLightPipe } from '../../common/pipes/highlight.pipe';
 
 type NoteDetailsResource =
@@ -49,7 +48,6 @@ type NoteDetailsResource =
     RouterLink,
     NoteContentComponent,
     NoteTocComponent,
-    AsyncBookmarkListComponent,
     AsyncPipe,
     DatePipe,
     HighLightPipe,

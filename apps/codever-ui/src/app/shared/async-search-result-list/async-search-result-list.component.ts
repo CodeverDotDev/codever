@@ -32,6 +32,7 @@ import { BookmarkListElementComponent } from '../bookmark-list-element/bookmark-
 import { NoteDetailsComponent } from '../note-details/note-details.component';
 import { PageNavigationBarComponent } from '../page-navigation-bar/page-navigation-bar.component';
 import { AsyncPipe } from '@angular/common';
+// Used imperatively in code (not in the template), so it stays out of `imports`.
 import { ResourceFilterPipe } from '../pipe/resource-filter.pipe';
 
 @Component({
@@ -45,7 +46,6 @@ import { ResourceFilterPipe } from '../pipe/resource-filter.pipe';
     NoteDetailsComponent,
     PageNavigationBarComponent,
     AsyncPipe,
-    ResourceFilterPipe,
   ],
 })
 export class AsyncSearchResultListComponent

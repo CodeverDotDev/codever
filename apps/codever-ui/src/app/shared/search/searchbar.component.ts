@@ -44,7 +44,6 @@ import { DialogMeasurementsHelper } from '../../core/helper/dialog-measurements.
 import iziToast, { IziToastSettings } from 'izitoast';
 import { LatestSearchClickNotificationService } from '../../core/latest-search-click.notification.service';
 import { NgStyle, AsyncPipe } from '@angular/common';
-import { AsyncBookmarkListComponent } from '../async-bookmark-list/async-bookmark-list.component';
 
 @Component({
   selector: 'app-searchbar',
@@ -58,7 +57,6 @@ import { AsyncBookmarkListComponent } from '../async-bookmark-list/async-bookmar
     MatAutocomplete,
     MatOption,
     NgStyle,
-    AsyncBookmarkListComponent,
     AsyncPipe,
   ],
 })
