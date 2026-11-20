@@ -62,6 +62,19 @@ describe('renderMarkdownWithLatex', () => {
     expect((result.match(/class="katex"/g) || []).length).toBe(1);
   });
 
+  it('should render a lone inline variable inside a Markdown list item', () => {
+    const result = renderMarkdownWithLatex(
+      '1. **Rename it.** `t` reads better: "$\\sum (x_i - t)^2$ — the ' +
+      'total squared error if you answer $t$".'
+    );
+    const container = document.createElement('div');
+    container.innerHTML = result;
+
+    expect(container.querySelectorAll('li .katex').length).toBe(2);
+    expect(container.querySelector('li code').textContent).toBe('t');
+    expect(container.textContent).not.toContain('$t$');
+  });
+
   it('should not replace user text that resembles a math placeholder', () => {
     const result = renderMarkdownWithLatex(
       'CODEVERMATH0END CODEVERMATHX0END \\(x^2\\)'
@@ -230,13 +243,31 @@ describe('renderLatex', () => {
     expect(result).toContain('katex');
   });
 
-  it('should NOT render bare single-variable math without a TeX signal', () => {
-    // Option A trade-off: `$x$` has no \ ^ _ { } signal, so it stays literal
-    // to avoid mis-rendering everyday dollar-sign prose.
-    const input = 'The value $x$ is small.';
+  it('should render bare single-variable math', () => {
+    const result = renderLatex('The value $x$ is small.');
+    expect(result).toContain(katex.renderToString('x'));
+    expect(result).not.toContain('$x$');
+  });
+
+  it('should render a primed single variable', () => {
+    const result = renderLatex("The derivative $f'$ exists.");
+    expect(result).toContain(katex.renderToString("f'"));
+  });
+
+  it('should render both a sum and a lone variable on the same line', () => {
+    // Regression: "$\sum (x_i - t)^2$ — ... if you answer $t$" left `$t$` raw
+    const input =
+      '"$\\sum (x_i - t)^2$ — the total squared error if you answer $t$".';
     const result = renderLatex(input);
-    expect(result).not.toContain('class="katex"');
-    expect(result).toBe(input);
+    expect(result).toContain(katex.renderToString('\\sum (x_i - t)^2'));
+    expect(result).toContain(katex.renderToString('t'));
+    expect(result).not.toContain('$t$');
+    expect((result.match(/class="katex"/g) || []).length).toBe(2);
+  });
+
+  it('should NOT render multi-word prose without a TeX signal', () => {
+    const input = 'Pay $ab$ or $abc$ later.';
+    expect(renderLatex(input)).toBe(input);
   });
 
   it('should not treat adjacent dollar signs in text as math (e.g. $$ with nothing)', () => {

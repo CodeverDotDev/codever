@@ -84,8 +84,9 @@ function replaceLatex(
     // Option A (conservative): only render when the content contains a TeX
     // "signal" character (\, ^, _, { or }). This prevents ordinary prose with
     // stray dollar signs — currency ($5/mo, $40), inline `$text`, etc. — from
-    // being greedily paired and mangled into garbage math. The trade-off is
-    // that bare single-variable math like `$x$` is left as plain text.
+    // being greedily paired and mangled into garbage math. Bare single-letter
+    // variables like `$x$` are also rendered, since currency never looks
+    // like that.
     segment = segment.replace(
       /(?<![\\$])\$(?!\$)(\S(?:[^$\\\n]|\\.)*?\S|\S)\$(?!\d)/g,
       (match, math) => {
@@ -108,9 +109,12 @@ function replaceLatex(
  *   ^  — superscript (x^2)
  *   _  — subscript (a_1)
  *   {} — grouping (\frac{a}{b})
+ *
+ * A lone letter, optionally primed (`$t$`, `$n$`, `$f'$`), is also accepted:
+ * it is a common math variable and cannot be confused with currency.
  */
 function hasTexSignal(math: string): boolean {
-  return /[\\^_{}]/.test(math);
+  return /[\\^_{}]/.test(math) || /^[A-Za-z]'*$/.test(math);
 }
 
 /**
