@@ -416,7 +416,48 @@
           >
             Export <i class="fas fa-file-download"></i>
           </button>
-          button under <b>My Bookmarks</b>
+          button under <b>My Bookmarks</b>. You can choose between two formats:
+
+          <h5 class="mt-4">Codever JSON</h5>
+          The complete backup of your bookmarks, with all Codever data
+          (descriptions, visibility, copyable fields...).
+
+          <h5 class="mt-4">Browser HTML</h5>
+          A bookmarks file you can import into Chrome, Brave, Chromium, Edge or
+          Firefox (look for <em>Import bookmarks from HTML file</em> in your
+          browser). It contains <b>all</b> your bookmarks, private and public,
+          with their names, URLs, dates and tags (no descriptions), organised in
+          a <code>Codever export &lt;date&gt;</code> folder:
+          <ul class="mt-2">
+            <li>
+              <b>Collections</b> - one folder per collection with its bookmarks
+            </li>
+            <li>
+              <b>Tags</b> - one folder per tag for your most used tags (50 by
+              default, you can change the number or create a folder for every
+              tag); a bookmark appears in each of its tag folders
+            </li>
+            <li><b>All</b> - every bookmark exactly once</li>
+          </ul>
+
+          <div class="alert alert-info mt-4">
+            <h5>Note:</h5>
+            <ul>
+              <li>
+                importing into a browser creates a one-off copy, not a sync
+              </li>
+              <li>
+                you can import the file back into Codever: keep the
+                <code>Codever export &lt;date&gt;</code> folder name so that tags
+                are restored and the folder names are not turned into tags
+              </li>
+              <li>
+                after a round trip through a browser only tags that had a folder
+                are restored; collections are not recreated and all imported
+                bookmarks are <b>private</b>
+              </li>
+            </ul>
+          </div>
         </div>
       </ng-template>
     </mat-tab>

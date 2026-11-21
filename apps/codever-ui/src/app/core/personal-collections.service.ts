@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { EMPTY, Observable } from 'rxjs';
+import { expand, map, reduce, shareReplay } from 'rxjs/operators';
 
 import { Collection } from './model/collection';
 import { environment } from '../../environments/environment';
@@ -34,6 +34,27 @@ export class PersonalCollectionsService {
     return this.httpClient
       .get<Collection[]>(this.collectionsUrl(userId), { params })
       .pipe(shareReplay(1));
+  }
+
+  /** Loads every collection of the user (with items), page by page. */
+  getAllUserCollections(
+    userId: string,
+    pageSize = 100
+  ): Observable<Collection[]> {
+    const loadPage = (page: number) =>
+      this.getUserCollections(userId, undefined, page, pageSize).pipe(
+        map((collections) => ({ page, collections }))
+      );
+
+    return loadPage(1).pipe(
+      expand(({ page, collections }) =>
+        collections.length < pageSize ? EMPTY : loadPage(page + 1)
+      ),
+      reduce(
+        (all, { collections }) => all.concat(collections),
+        [] as Collection[]
+      )
+    );
   }
 
   getCollectionById(

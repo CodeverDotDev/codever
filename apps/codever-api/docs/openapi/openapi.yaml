@@ -461,6 +461,71 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /personal/users/{userId}/bookmarks/upload:
+    post:
+      description: |
+        Imports a browser bookmarks HTML file (Netscape bookmark format, as
+        exported by Chrome, Brave, Chromium, Edge, Firefox or Safari) into the
+        user's **private** bookmarks. Every imported bookmark is tagged with
+        `imported-browser`.
+
+        * Generic browser files - each ancestor folder name becomes a tag
+          (lowercased, spaces replaced by `-`); browser root folders such as
+          `Bookmarks bar` are skipped.
+        * Codever browser export - links inside a folder whose name starts with
+          `Codever export` get their tags from the `TAGS` attribute, otherwise
+          from the folder directly below `Tags/`. Other folders (`Collections`,
+          `All`, ...) never become tags and collections are not recreated.
+
+        Links with the same URL (within the file or already saved) are merged
+        into one bookmark with the union of their tags; `imported-browser` is
+        not added to existing public bookmarks.
+      operationId: import-browser-bookmarks
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [bookmarks]
+              properties:
+                bookmarks:
+                  type: string
+                  format: binary
+                  description: bookmarks file with a `.html` or `.xhtml` extension
+                userDisplayName:
+                  type: string
+                  description: display name stored on the created bookmarks
+      responses:
+        200:
+          description: import summary, counted per distinct URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  created:
+                    type: array
+                    description: bookmarks newly created by the import
+                    items:
+                      $ref: '#/components/schemas/Bookmark'
+                  duplicatesSize:
+                    type: integer
+                    description: number of existing bookmarks the import merged tags into
+                  inErrorSize:
+                    type: integer
+                    description: number of bookmarks that could not be saved
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
   /personal/users/{userId}/bookmarks/suggested-tags:
     get:
       description: Returns suggested tags used in auto-completion when saving a bookmark

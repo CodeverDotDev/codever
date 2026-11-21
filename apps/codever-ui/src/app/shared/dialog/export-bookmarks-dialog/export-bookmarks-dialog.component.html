@@ -1,0 +1,116 @@
+<h2 mat-dialog-title>Export personal bookmarks</h2>
+
+<mat-dialog-content>
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="exportFormat"
+      id="exportFormatJson"
+      value="json"
+      [(ngModel)]="format"
+    />
+    <label class="form-check-label" for="exportFormatJson">
+      Codever JSON
+      <span class="small text-body-secondary d-block">
+        Complete backup with all Codever data (descriptions, visibility,
+        copyable fields...).
+      </span>
+    </label>
+  </div>
+  <div class="form-check mt-2">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="exportFormat"
+      id="exportFormatHtml"
+      value="html"
+      [(ngModel)]="format"
+    />
+    <label class="form-check-label" for="exportFormatHtml">
+      Browser HTML
+      <span class="small text-body-secondary d-block">
+        For importing into Chrome, Brave, Chromium, Edge or Firefox. Contains
+        names, URLs, dates and tags only, not the complete Codever data.
+      </span>
+    </label>
+  </div>
+
+  @if (format === 'html') {
+    <div class="html-options mt-3">
+      <p class="small mb-2">
+        All bookmarks are exported into a
+        <code>Codever export &lt;date&gt;</code> folder with
+        <code>Collections</code>, <code>Tags</code> and <code>All</code>
+        subfolders. The browser import is a one-off copy, not a sync.
+      </p>
+      <div class="d-flex align-items-center">
+        <label for="tagFolderLimit" class="me-2 mb-0 small">
+          Folders for the most used tags:
+        </label>
+        <input
+          type="number"
+          id="tagFolderLimit"
+          class="form-control form-control-sm tag-folder-limit"
+          min="1"
+          step="1"
+          [(ngModel)]="tagFolderLimit"
+          [disabled]="allTagFolders"
+        />
+      </div>
+      <div class="form-check mt-1">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="allTagFolders"
+          [(ngModel)]="allTagFolders"
+        />
+        <label class="form-check-label small" for="allTagFolders">
+          Create a folder for every tag
+        </label>
+      </div>
+      <p class="small text-body-secondary mt-1 mb-0">
+        Every tag is kept for a direct re-import into Codever. After a round
+        trip through a browser, only tags with a folder are restored.
+      </p>
+    </div>
+  }
+
+  @if (resultMessage) {
+    <div class="alert alert-info small mt-3 mb-0 export-result">
+      {{ resultMessage }}
+    </div>
+  }
+  @if (errorMessage) {
+    <div class="alert alert-danger small mt-3 mb-0 export-error">
+      {{ errorMessage }}
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions class="app-dialog-actions">
+  <button
+    type="button"
+    class="btn btn-primary btn-sm me-2 export-download"
+    [disabled]="!canExport"
+    (click)="download()"
+  >
+    @if (busy) {
+      <i class="fas fa-spinner fa-spin"></i>
+    } @else {
+      <i class="fas fa-download"></i>
+    }
+    Download
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary btn-sm me-2"
+    [disabled]="!canExport"
+    (click)="viewInBrowser()"
+  >
+    <i class="fas fa-eye"></i> View in browser
+  </button>
+  <button type="button" class="btn btn-secondary btn-sm" (click)="close()">
+    Close <i class="fas fa-window-close"></i>
+  </button>
+</mat-dialog-actions>

@@ -1,3 +1,12 @@
+/**
+ * The dialog does not use mat-dialog-title / mat-dialog-content, so it gets no
+ * Material padding; match their 24px spacing.
+ */
+:host {
+  display: block;
+  padding: 24px;
+}
+
 .app-dialog-actions {
   margin-bottom: 0.1rem;
 }

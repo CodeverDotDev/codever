@@ -29,6 +29,8 @@ Codever without polluting tags.
   folders never become tags; collections are not recreated. Imports
   remain private. Files without a Codever export root import exactly as
   today.
+- Give the import bookmarks dialog the standard 24px dialog padding (it
+  currently renders flush against the dialog edges).
 
 ## Capabilities
 
@@ -55,7 +57,7 @@ None.
   only its import logic changes.
 - **codever-ui**: export dialog gains a format choice and tag-folder cap;
   new pure HTML generator utility with Vitest tests; how-to bookmarks
-  page updated.
+  page updated; import bookmarks dialog padding fixed.
 - **codever-api**: `browser-bookmarks-import.service.js` gains Codever
   export detection and tag mapping, with Jest unit tests.
 - **Mongoose models**: no schema changes (`Bookmark`, `Collection`

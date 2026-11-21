@@ -9,7 +9,10 @@ import { Bookmark } from '../../../core/model/bookmark';
 import { UserData } from '../../../core/model/user-data';
 import { PersonalBookmarksService } from '../../../core/personal-bookmarks.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { BackupBookmarksDialogComponent } from '../../../shared/dialog/backup-bookmarks-dialog/backup-bookmarks-dialog.component';
+import {
+  ExportBookmarksDialogComponent,
+  ExportBookmarksDialogData,
+} from '../../../shared/dialog/export-bookmarks-dialog/export-bookmarks-dialog.component';
 import { ImportBookmarksDialogComponent } from '../../../shared/dialog/import-bookmarks-dialog/import-bookmarks-dialog.component';
 import { UserDataHistoryStore } from '../../../core/user/userdata.history.store';
 import { UserDataStore } from '../../../core/user/userdata.store';
@@ -92,25 +95,13 @@ export class UserBookmarksComponent implements OnChanges {
   }
 
   exportMyBookmarks() {
-    this.personalBookmarksService
-      .getAllMyBookmarks(this.userId)
-      .subscribe((data) => this.downloadFile(data));
-  }
-
-  private downloadFile(data: Bookmark[]) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',
-    });
-    const dialogConfig = new MatDialogConfig();
+    const dialogConfig = new MatDialogConfig<ExportBookmarksDialogData>();
 
     dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-      blobUrl: window.URL.createObjectURL(blob),
-      backupType: 'bookmarks',
-    };
+    dialogConfig.data = { userId: this.userId };
 
     this.backupBookmarksDialog.open(
-      BackupBookmarksDialogComponent,
+      ExportBookmarksDialogComponent,
       dialogConfig
     );
   }
