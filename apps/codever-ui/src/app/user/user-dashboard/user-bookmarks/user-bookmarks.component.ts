@@ -119,6 +119,10 @@ export class UserBookmarksComponent implements OnChanges {
       dialogConfig
     );
     dialogRef.afterClosed().subscribe((result) => {
+      if (!result?.created?.length) {
+        // closed without importing, or nothing new was created
+        return;
+      }
       const addToHistory = result.created.sort((a, b) =>
         a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0
       );

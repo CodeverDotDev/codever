@@ -1,45 +1,125 @@
 <h2 class="mb-3">Import bookmarks <i class="fas fa-file-upload"></i></h2>
 
+<div class="mb-3">
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="importFormat"
+      id="importFormatHtml"
+      value="html"
+      [(ngModel)]="format"
+      (ngModelChange)="onFormatChange(imageInput)"
+    />
+    <label class="form-check-label" for="importFormatHtml">
+      Browser HTML
+      <span class="small text-body-secondary d-block">
+        Bookmarks file exported from a browser, or a Codever browser export.
+      </span>
+    </label>
+  </div>
+  <div class="form-check mt-2">
+    <input
+      class="form-check-input"
+      type="radio"
+      name="importFormat"
+      id="importFormatJson"
+      value="json"
+      [(ngModel)]="format"
+      (ngModelChange)="onFormatChange(imageInput)"
+    />
+    <label class="form-check-label" for="importFormatJson">
+      Codever JSON
+      <span class="small text-body-secondary d-block">
+        Restore a Codever JSON export, also into another account.
+      </span>
+    </label>
+  </div>
+
+  @if (format === 'json') {
+    <div class="form-check mt-3 ms-4">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="keepPublic"
+        [(ngModel)]="keepPublic"
+      />
+      <label class="form-check-label small" for="keepPublic">
+        Keep public visibility from the file
+      </label>
+    </div>
+  }
+</div>
+
 <div>
   <input
     #imageInput
     type="file"
-    accept="text/html"
+    [accept]="fileAccept"
     class="form-control"
     id="bookmarksFile"
-    (change)="uploadBookmarks(imageInput)"
+    [disabled]="busy"
+    (change)="importFile(imageInput)"
   />
-  <label
-    class="form-label"
-    style="cursor: pointer"
-    for="bookmarksFile"
-    >{{ uploadImageLabel }}</label
-  >
+  <label class="form-label" style="cursor: pointer" for="bookmarksFile">
+    @if (busy) {
+      <i class="fas fa-spinner fa-spin"></i>
+    }
+    {{ uploadImageLabel }}
+  </label>
 </div>
-<div class="alert alert-info mt-5">
+
+@if (errorMessage) {
+  <div class="alert alert-danger small mt-2 mb-0 import-error">
+    {{ errorMessage }}
+  </div>
+}
+
+<div class="alert alert-info mt-4">
   <b><i class="fas fa-info-circle"></i> Note: </b>
-  <ul>
-    <li>
-      See our
-      <b
-        ><a
-          title="Get started, save & search bookmarks"
-          target="_blank"
-          [routerLink]="['/howto/bookmarks']"
-        >
-          HowTo > Bookmarks (Import tab)
-          <sup
-            ><i
-              class="fas fa-external-link-alt"
-              style="font-size: smaller"
-            ></i></sup></a
-      ></b>
-      on how to export the bookmarks from your favorite browser
-    </li>
-    <li>
-      Depending on the <b>size</b> of the bookmarks html file it might take
-      <b>several seconds</b> to process
-    </li>
-    <li>All imported bookmarks are tagged also with <b>imported-browser</b></li>
-  </ul>
+  @if (format === 'html') {
+    <ul class="import-notes-html">
+      <li>
+        See our
+        <b
+          ><a
+            title="Get started, save & search bookmarks"
+            target="_blank"
+            [routerLink]="['/howto/bookmarks']"
+          >
+            HowTo > Bookmarks (Import tab)
+            <sup
+              ><i
+                class="fas fa-external-link-alt"
+                style="font-size: smaller"
+              ></i></sup></a
+        ></b>
+        on how to export the bookmarks from your favorite browser
+      </li>
+      <li>
+        Depending on the <b>size</b> of the bookmarks html file it might take
+        <b>several seconds</b> to process
+      </li>
+      <li>
+        All imported bookmarks are tagged also with <b>imported-browser</b>
+      </li>
+    </ul>
+  } @else {
+    <ul class="import-notes-json">
+      <li>
+        Use the file from <b>Export &gt; Codever JSON</b> on the bookmarks
+        dashboard. The bookmarks are added to the account you are logged in
+        with.
+      </li>
+      <li>
+        If you already have a bookmark with the same URL, <b>yours is kept</b>
+        unchanged and the one from the file is skipped.
+      </li>
+      <li>
+        Original creation and update dates are restored. Restored bookmarks are
+        <b>private</b> unless you keep public visibility.
+      </li>
+      <li>Files up to <b>6 MB</b> can be restored.</li>
+    </ul>
+  }
 </div>

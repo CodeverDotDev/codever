@@ -526,6 +526,87 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenError'
 
+  /personal/users/{userId}/bookmarks/import:
+    post:
+      description: |
+        Restores bookmarks from a Codever JSON export (the file downloaded
+        with *Export > Codever JSON* on the bookmarks dashboard) into the
+        account of `userId`.
+
+        * Ownership always goes to `userId`; `userId`, `userDisplayName` and
+          `_id` in the file are ignored, so a file can be restored into
+          another account. Every restored bookmark gets a new id.
+        * Only `name`, `location`, `description`, `tags`, `copyableFields`,
+          `sourceCodeURL`, `publishedOn`, `language`, `youtubeVideoId`,
+          `stackoverflowQuestionId`, `public`, `createdAt` and `updatedAt` are
+          read. The like count starts at 0 and the rendered description is
+          generated from `description`.
+        * A bookmark whose `location` the user already has, or that repeats a
+          location earlier in the file, is skipped and the existing bookmark
+          is not changed.
+        * Bookmarks are private unless `keepPublic` is `true`. A public
+          bookmark whose location is already public in Codever is restored as
+          private.
+        * `createdAt` / `updatedAt` are kept; missing, invalid or future dates
+          are replaced by the time of the restore.
+        * Bookmarks that fail validation are skipped and counted; the rest is
+          still restored.
+      operationId: import-codever-json-bookmarks
+      tags:
+        - personal-bookmarks
+      parameters:
+        - $ref: '#/components/parameters/userIdPathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [bookmarks]
+              properties:
+                bookmarks:
+                  type: array
+                  description: the array of bookmarks from a Codever JSON export
+                  items:
+                    $ref: '#/components/schemas/Bookmark'
+                keepPublic:
+                  type: boolean
+                  default: false
+                  description: restore bookmarks marked public in the file as public
+                userDisplayName:
+                  type: string
+                  description: display name stored on the restored bookmarks
+      responses:
+        200:
+          description: restore summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  created:
+                    type: array
+                    description: bookmarks created by the restore
+                    items:
+                      $ref: '#/components/schemas/Bookmark'
+                  duplicatesSize:
+                    type: integer
+                    description: bookmarks skipped because the URL already exists
+                  inErrorSize:
+                    type: integer
+                    description: bookmarks skipped because they are not valid
+                  madePrivateSize:
+                    type: integer
+                    description: bookmarks restored as private because the URL is already public
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        413:
+          description: request body larger than the 6 MB JSON limit
+
   /personal/users/{userId}/bookmarks/suggested-tags:
     get:
       description: Returns suggested tags used in auto-completion when saving a bookmark

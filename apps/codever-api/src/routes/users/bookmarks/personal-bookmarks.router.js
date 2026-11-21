@@ -5,6 +5,7 @@ const Keycloak = require('keycloak-connect');
 const bookmarkRequestMapper = require('../../../common/mappers/bookmark-request.mapper');
 const personalBookmarksSearchService = require('../../../common/searching/bookmarks-search.service');
 const PersonalBookmarksService = require('./personal-bookmarks.service');
+const CodeverJsonBookmarksImportService = require('./codever-json-bookmarks-import.service');
 const UserIdValidator = require('../userid.validator');
 const PaginationQueryParamsHelper = require('../../../common/pagination-query-params-helper');
 const AiRefineBookmarkService = require('../../ai/ai-refine-bookmark.service');
@@ -247,6 +248,7 @@ personalBookmarksRouter.put(
   }
 );
 
+
 /**
  * full UPDATE via PUT - that is the whole document is required and will be updated
  * the descriptionHtml parameter is only set in backend, if only does not come front-end (might be an API call)
@@ -261,6 +263,31 @@ personalBookmarksRouter.post(
     await PersonalBookmarksService.increaseOwnerVisitCount(userId, bookmarkId);
 
     return response.status(HttpStatus.OK).send();
+  }
+);
+
+/**
+ * Restore bookmarks from a Codever JSON export into the user's account.
+ * Ownership always comes from the path userId, never from the file.
+ */
+personalBookmarksRouter.post(
+  '/import',
+  keycloak.protect(),
+  async (request, response) => {
+    UserIdValidator.validateUserId(request);
+
+    const { bookmarks, keepPublic, userDisplayName } = request.body || {};
+    const result = await CodeverJsonBookmarksImportService.importCodeverJsonBookmarks(
+      request.params.userId,
+      bookmarks,
+      {
+        keepPublic: keepPublic === true,
+        userDisplayName:
+          typeof userDisplayName === 'string' ? userDisplayName : undefined,
+      }
+    );
+
+    return response.status(HttpStatus.OK).send(result);
   }
 );
 

@@ -392,6 +392,32 @@
               </li>
             </ul>
           </div>
+
+          <h5 class="mt-4">Restore a Codever JSON export</h5>
+          In the same Import dialog choose <b>Codever JSON</b> and pick a file
+          from <b>Export &gt; Codever JSON</b>. This restores a backup, or moves
+          your bookmarks to another account:
+          <ul class="mt-2">
+            <li>
+              the bookmarks are added to the account you are
+              <b>logged in</b> with, whichever account the file came from
+            </li>
+            <li>
+              if you already have a bookmark with the same URL,
+              <b>yours is kept</b> unchanged and the one from the file is
+              skipped, so restoring the same file twice is safe
+            </li>
+            <li>
+              descriptions, tags, copyable fields and the original creation and
+              update dates are restored; likes are not
+            </li>
+            <li>
+              restored bookmarks are <b>private</b>, unless you tick
+              <em>Keep public visibility from the file</em>; a bookmark whose
+              URL is already public in Codever stays private
+            </li>
+            <li>files up to <b>6 MB</b> can be restored</li>
+          </ul>
         </div>
       </ng-template>
     </mat-tab>

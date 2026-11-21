@@ -19,6 +19,14 @@ import {
 } from './cache/http-client-local-storage.service';
 import { localStorageKeys } from './model/localstorage.cache-keys';
 
+/** Summary returned by the Codever JSON bookmarks restore. */
+export interface RestoreBookmarksResult {
+  created: Bookmark[];
+  duplicatesSize: number;
+  inErrorSize: number;
+  madePrivateSize: number;
+}
+
 @Injectable()
 export class UserDataService {
   readonly usersApiBaseUrl = environment.API_URL + '/personal/users';
@@ -196,6 +204,22 @@ export class UserDataService {
     return this.httpClient.post(
       `${this.usersApiBaseUrl}/${userId}/bookmarks/upload`,
       formData
+    );
+  }
+
+  /**
+   * Restores bookmarks from a Codever JSON export into the user's account.
+   * The API ignores owner, ids and likes in the file.
+   */
+  restoreBookmarks(
+    userId: string,
+    bookmarks: unknown[],
+    keepPublic: boolean,
+    userDisplayName: string
+  ): Observable<RestoreBookmarksResult> {
+    return this.httpClient.post<RestoreBookmarksResult>(
+      `${this.usersApiBaseUrl}/${userId}/bookmarks/import`,
+      { bookmarks, keepPublic, userDisplayName }
     );
   }
 

@@ -283,6 +283,72 @@ describe('Personal Bookmarks tests', () => {
 
   });
 
+  describe('restore Codever JSON export', function () {
+    const restoredLocation = 'http://www.codepedia.org/personal-bookmarks-restore-test';
+    const exportedBookmark = () => ({
+      _id: '64a000000000000000000001',
+      name: 'Restored bookmark',
+      location: restoredLocation,
+      tags: ['restore-test'],
+      userId: 'some-other-user',
+      public: true,
+      likeCount: 42,
+      createdAt: '2021-03-04T10:00:00.000Z',
+      updatedAt: '2022-01-01T00:00:00.000Z',
+    });
+
+    afterAll(async () => {
+      await request(app)
+        .delete(`${baseApiUrlUnderTest}${testUserId}/bookmarks`)
+        .query({location: restoredLocation})
+        .set('Authorization', bearerToken);
+    });
+
+    it('should fail to restore with invalid user id', async function () {
+      const response = await request(app)
+        .post(baseApiUrlUnderTest + 'invalid_user_id/bookmarks/import')
+        .set('Authorization', bearerToken)
+        .send({bookmarks: []});
+
+      expect(response.status).toEqual(HttpStatus.UNAUTHORIZED);
+    });
+
+    it('should reject a body that is not a Codever export', async function () {
+      const response = await request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks/import`)
+        .set('Authorization', bearerToken)
+        .send({bookmarks: {name: 'x'}});
+
+      expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should restore a bookmark for the logged-in user and skip it the second time', async function () {
+      const first = await request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks/import`)
+        .set('Authorization', bearerToken)
+        .send({bookmarks: [exportedBookmark()]});
+
+      expect(first.status).toEqual(HttpStatus.OK);
+      expect(first.body.created).toHaveLength(1);
+      const restored = first.body.created[0];
+      expect(restored.userId).toEqual(testUserId);
+      expect(restored._id).not.toEqual('64a000000000000000000001');
+      expect(restored.public).toEqual(false);
+      expect(restored.likeCount).toEqual(0);
+      expect(restored.createdAt).toEqual('2021-03-04T10:00:00.000Z');
+      expect(restored.updatedAt).toEqual('2022-01-01T00:00:00.000Z');
+
+      const second = await request(app)
+        .post(`${baseApiUrlUnderTest}${testUserId}/bookmarks/import`)
+        .set('Authorization', bearerToken)
+        .send({bookmarks: [exportedBookmark()]});
+
+      expect(second.status).toEqual(HttpStatus.OK);
+      expect(second.body.created).toHaveLength(0);
+      expect(second.body.duplicatesSize).toEqual(1);
+    });
+  });
+
   describe('Personal bookmarks - test search functionality', () => {
 
     let basePathApiPersonalUsersBookmarks;
