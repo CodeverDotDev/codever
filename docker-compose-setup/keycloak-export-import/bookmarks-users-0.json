@@ -76,6 +76,31 @@
     "notBefore" : 0,
     "groups" : [ ]
   }, {
+    "id" : "b8c99a62-1ce0-40d9-ad15-5616ed0f7d9b",
+    "createdTimestamp" : 1795305600000,
+    "username" : "mock_admin",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Mock",
+    "lastName" : "Admin",
+    "email" : "mock_admin@example.com",
+    "credentials" : [ {
+      "id" : "f678a4be-de56-4371-b934-bc6e2fec51fa",
+      "type" : "password",
+      "createdDate" : 1795305600000,
+      "secretData" : "{\"value\":\"JjvjMk6WqM+QfHLEXC8vSCcO+NPDvOPbJpiNFbhwcnOzIH/Wf99xzKeYtjazR2smSoteS7cMhP/ahPQ8wyj8dw==\",\"salt\":\"/z+R0fj+4aB1wAfWZCNm2w==\"}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ROLE_USER", "offline_access", "uma_authorization", "ROLE_ADMIN" ],
+    "clientRoles" : {
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
     "id" : "7226ee6d-16ab-452a-bff2-219c578ad255",
     "createdTimestamp" : 1622958066344,
     "username" : "service-account-admin-service-account",

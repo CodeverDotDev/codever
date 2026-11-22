@@ -14,7 +14,7 @@
 
 - Prerequisites are Node 16+ / npm 8+, Docker, and (for backend development) nodemon. Run `npm install` at the root to install both app dependencies.
 - Create the ignored API config before starting: `cp apps/codever-api/env.json.example apps/codever-api/env.json` (adapt the command if using PowerShell). Start infrastructure with `docker-compose up`.
-- On the first Compose startup only, enable the Keycloak migration/import command in `docker-compose.yml`; comment it back out on later startups. Local Keycloak is at `http://localhost:8480/auth` (`mock/mock`, admin `admin/Pa55w0rd`).
+- Keycloak runs `start-dev --import-realm` and imports the `bookmarks` realm and users from `docker-compose-setup/keycloak-export-import` only when the realm doesn't exist yet; changes to those files don't reach an existing realm (add them in the admin console, or reset with `docker-compose down -v`, which also deletes MongoDB data). Local Keycloak is at `http://localhost:8480/auth` (`mock/mock` regular user, `mock_admin/mock_admin` with `ROLE_ADMIN` for `/admin`, console admin `admin/Pa55w0rd`).
 - Run both apps with `npm start`, or separately with `npm run frontend` and `npm run backend`. UI is at `http://localhost:4200`; API is at `http://localhost:3000/api`.
 - Backend commands from `apps/codever-api`: `npm test` (Jest unit tests), `npm run test:integration` (requires Docker/Keycloak/Mongo), and `npm run debug` (nodemon with `--inspect`). Test files use `*.test.js` and `*.integration-test.js`.
 - Frontend commands from `apps/codever-ui`: `npm test` (Angular Vitest

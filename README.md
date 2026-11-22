@@ -61,16 +61,10 @@ What you need to run this app:
 
 #### Start MongoDB and Keycloak server
 
-:warning: &nbsp; When you run `docker compose` for the **first time** uncomment the following `-Dkeycloak.migration.action=import` line :
-
-```yaml
-    #command: -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/export-import -Dkeycloak.migration.strategy=IGNORE_EXISTING
-```
-
-in the [docker-compose](docker-compose.yml) file, **so that the initial Keycloak setup (realm and users) is loaded**.
-
-> :warning: &nbsp; For further startups of docker-compose you should **comment back this line**, as it starts faster
-
+Keycloak starts with `start-dev --import-realm` (see the [docker-compose](docker-compose.yml) file) and loads the
+initial setup (the `bookmarks` realm and its users) from
+[docker-compose-setup/keycloak-export-import](docker-compose-setup/keycloak-export-import). Nothing needs to be
+enabled for the first startup. See [Keycloak](#keycloak) for when the import is applied.
 
 ```bash
 docker-compose up
@@ -111,6 +105,8 @@ This starts
  and will watch for code changes in backend and automatically redeploy.
 * the frontend available at [http://localhost:4200](http://localhost:4200). Login the user/password **`mock/mock`** configured
   for you in the initial Keycloak setup. Some bookmarks are initially loaded with your account, so you can start playing with them.
+* the admin dashboard at [http://localhost:4200/admin](http://localhost:4200/admin). Login with **`mock_admin/mock_admin`**,
+  a user with the `ROLE_ADMIN` realm role from the initial Keycloak setup. `mock` is a regular user and can't open it.
 
 > You can create your own test user, or any other extra users by following the screenshots in
 > [Add a Keycloak user](documentation/keycloak/add-keycloak-user.md) to create it.
@@ -121,8 +117,22 @@ This starts
 
 ### Keycloak
 
-Keycloak Admin console reachable at [http://localhost:8080/auth](http://localhost:8080/auth) with the user/password **`admin/Pa55w0rd`** 
-(see docker compose file)
+Keycloak Admin console reachable at [http://localhost:8480/auth/admin](http://localhost:8480/auth/admin) with the
+user/password **`admin/Pa55w0rd`** (see the [docker-compose](docker-compose.yml) file).
+
+The initial setup creates these users in the `bookmarks` realm:
+
+| User/password | Realm roles | Use |
+|---|---|---|
+| `mock/mock` | `ROLE_USER` | regular user for local development |
+| `mock_admin/mock_admin` | `ROLE_USER`, `ROLE_ADMIN` | opens the admin dashboard at `/admin` |
+| `admin-integration-tests/admin-integration-tests` | `ROLE_USER`, `ROLE_ADMIN` | used by the API integration tests |
+
+> :warning: &nbsp; Keycloak imports the initial setup only when the `bookmarks` realm doesn't exist yet; an existing
+> realm is left unchanged. To get later changes of the setup, either add them in the admin console (for example create
+> the `mock_admin` user and assign it the `ROLE_ADMIN` realm role, see
+> [Add a Keycloak user](documentation/keycloak/add-keycloak-user.md)), or start from scratch with
+> `docker-compose down -v`, which also deletes the local MongoDB data.
 
 
 ## Testing
