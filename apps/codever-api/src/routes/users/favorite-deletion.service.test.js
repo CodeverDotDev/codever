@@ -73,13 +73,7 @@ test('cleans every deleted personal bookmark from a bulk tag deletion', async ()
   expect(removeBookmarkFavoriteReferences).toHaveBeenCalledWith(bookmarkIds);
 });
 
-test('cleans favorites after administrative bookmark deletion by ID', async () => {
-  await AdminService.deleteBookmarkById(bookmarkIds[0]);
-
-  expect(removeBookmarkFavoriteReferences).toHaveBeenCalledWith([
-    bookmarkIds[0],
-  ]);
-});
+// administrative deletion by ID: see admin/admin-moderation.service.test.js
 
 test.each([
   ['location', () => AdminService.deleteBookmarksByLocation('https://example.com')],

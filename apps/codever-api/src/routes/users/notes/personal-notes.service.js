@@ -1,17 +1,15 @@
 const Note = require('../../../model/note');
-const User = require('../../../model/user');
 
 const NotFoundError = require('../../../error/not-found.error');
 
 const NoteInputValidator = require('./note-input.validator');
-const {
-  removeNoteFavoriteReferences,
-} = require('../../../common/user-favorite-cleanup.service');
 const { normalizeTags } = require('../../../common/validation/tag-policy');
 const {
   validateNoShareLinkFields,
 } = require('../../../common/validation/share-link-input.validator');
-const ShareLinkService = require('../share-link.service');
+const {
+  cleanupDeletedNotes,
+} = require('../../../common/resource-cleanup.service');
 
 /**
  * CREATE note for user
@@ -135,18 +133,8 @@ let deleteNoteById = async (userId, noteId) => {
     throw new NotFoundError('Note NOT_FOUND with id: ' + noteId);
   }
 
-  await ShareLinkService.revokeResourceLinks(userId, 'note', [note._id]);
-  await removeNoteFavoriteReferences([note._id]);
-  // Remove the note from users' pinned and history lists, in case it was there
-  await User.updateMany(
-    {},
-    {
-      $pull: {
-        pinned: { id: noteId, type: 'note' },
-        history: noteId,
-      },
-    }
-  );
+  // share links, favorites, and users' pinned and history entries
+  await cleanupDeletedNotes([note._id], userId);
 };
 
 /* GET suggested tags used for user */

@@ -1,0 +1,221 @@
+<form class="row g-2 align-items-end mb-3" (ngSubmit)="search()">
+  <div class="col-md-5">
+    <label class="form-label small mb-1" for="adminSearch">Search</label>
+    <input
+      id="adminSearch"
+      name="q"
+      type="search"
+      class="form-control form-control-sm"
+      placeholder="Text and [tags] in public bookmarks and notes"
+      [(ngModel)]="q"
+    />
+  </div>
+  <div class="col-md-2">
+    <label class="form-label small mb-1" for="adminType">Type</label>
+    <select
+      id="adminType"
+      name="type"
+      class="form-select form-select-sm"
+      [(ngModel)]="type"
+    >
+      <option value="all">All</option>
+      <option value="bookmark">Bookmarks</option>
+      <option value="note">Notes</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label small mb-1" for="adminUserId">Owner id</label>
+    <input
+      id="adminUserId"
+      name="userId"
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Any owner"
+      [(ngModel)]="userId"
+    />
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary btn-sm w-100">
+      <i class="fas fa-search"></i> Search
+    </button>
+  </div>
+</form>
+
+@if (userId) {
+  <p class="small">
+    Showing public entries of owner <code>{{ userId }}</code>
+    <button
+      type="button"
+      class="btn btn-link btn-sm p-0 ms-2 align-baseline"
+      (click)="clearUserFilter()"
+    >
+      show all owners
+    </button>
+  </p>
+}
+
+<div class="d-flex align-items-center gap-2 mb-2 bulk-actions">
+  <span class="small text-body-secondary">{{ selected.size }} selected</span>
+  <button
+    type="button"
+    class="btn btn-outline-warning btn-sm bulk-unpublish"
+    [disabled]="selected.size === 0 || busy"
+    (click)="bulk('unpublish')"
+  >
+    <i class="fas fa-eye-slash"></i> Unpublish selected
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-danger btn-sm bulk-delete"
+    [disabled]="selected.size === 0 || busy"
+    (click)="bulk('delete')"
+  >
+    <i class="fas fa-trash"></i> Delete selected
+  </button>
+</div>
+
+@if (failedEntries.length) {
+  <div class="alert alert-warning small failed-entries">
+    These entries could not be changed:
+    <ul class="mb-0">
+      @for (failure of failedEntries; track failure.type + failure.id) {
+        <li>
+          {{ failure.title || failure.id }} ({{ failure.type }}):
+          {{ failure.reason }}
+        </li>
+      }
+    </ul>
+  </div>
+}
+
+@if (errorMessage) {
+  <div class="alert alert-danger small">{{ errorMessage }}</div>
+}
+
+<div class="table-responsive">
+  <table class="table table-sm table-hover align-middle public-entries">
+    <thead>
+      <tr>
+        <th scope="col">
+          <input
+            type="checkbox"
+            class="form-check-input select-all"
+            title="Select all on this page"
+            [checked]="allSelected"
+            (change)="toggleAll()"
+          />
+        </th>
+        <th scope="col">Type</th>
+        <th scope="col">Title</th>
+        <th scope="col">Owner</th>
+        <th scope="col">Created</th>
+        <th scope="col" class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (entry of entries; track entry.type + entry.id) {
+        <tr class="public-entry">
+          <td>
+            <input
+              type="checkbox"
+              class="form-check-input select-entry"
+              [checked]="isSelected(entry)"
+              (change)="toggle(entry)"
+            />
+          </td>
+          <td>
+            <i
+              [class]="entry.type === 'bookmark' ? 'fas fa-bookmark' : 'fas fa-sticky-note'"
+              [title]="entry.type"
+            ></i>
+          </td>
+          <td>
+            <div class="fw-semibold">{{ entry.title }}</div>
+            @if (entry.location) {
+              <div class="small text-truncate" style="max-width: 32rem">
+                <a [href]="entry.location" target="_blank" rel="noopener noreferrer nofollow">{{
+                  entry.location
+                }}</a>
+              </div>
+            }
+            @if (entry.tags.length) {
+              <div class="small text-body-secondary">
+                @for (tag of entry.tags; track tag) {
+                  <span class="me-1">#{{ tag }}</span>
+                }
+              </div>
+            }
+          </td>
+          <td class="small">
+            <a
+              [routerLink]="[]"
+              [queryParams]="{ userId: entry.ownerId }"
+              title="Show this owner's public entries"
+              >{{ entry.ownerDisplayName || entry.ownerId }}</a
+            >
+          </td>
+          <td class="small text-nowrap">
+            {{ entry.createdAt | date: 'short' }}
+          </td>
+          <td class="text-end text-nowrap">
+            <a
+              class="btn btn-outline-secondary btn-sm"
+              title="Open"
+              target="_blank"
+              [routerLink]="openLink(entry)"
+              ><i class="fas fa-external-link-alt"></i
+            ></a>
+            <button
+              type="button"
+              class="btn btn-outline-warning btn-sm ms-1 unpublish-entry"
+              title="Unpublish (make private)"
+              [disabled]="busy"
+              (click)="unpublish(entry)"
+            >
+              <i class="fas fa-eye-slash"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm ms-1 delete-entry"
+              title="Delete"
+              [disabled]="busy"
+              (click)="delete(entry)"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" class="text-body-secondary small">
+            @if (loading) {
+              <i class="fas fa-spinner fa-spin"></i>
+            } @else {
+              No public entries found.
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<nav class="d-flex gap-2" aria-label="Public entries pages">
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-sm"
+    [disabled]="page <= 1 || loading"
+    (click)="goToPage(page - 1)"
+  >
+    Previous
+  </button>
+  <span class="small align-self-center">Page {{ page }}</span>
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-sm"
+    [disabled]="!hasNextPage || loading"
+    (click)="goToPage(page + 1)"
+  >
+    Next
+  </button>
+</nav>

@@ -32,6 +32,7 @@ import { reportDraftCleanupFailure } from '../../core/editor-protection/draft-cl
 })
 export class NavigationComponent implements OnInit {
   isLoggedIn: boolean;
+  isAdmin = false;
   userInfoOidc$: Observable<UserInfoOidc>;
   environment = environment;
   userData$: Observable<UserData>;
@@ -54,6 +55,7 @@ export class NavigationComponent implements OnInit {
     if (isLoggedIn) {
       this.userInfoOidc$ = this.userInfoStore.getUserInfoOidc$();
       this.isLoggedIn = true;
+      this.isAdmin = this.keycloakService.isUserInRole('ROLE_ADMIN');
       this.userData$ = this.userDataStore.getUserData$();
       this.aiAssistantEnabled$ =
         this.featureToggleService.isAiAssistantEnabled();

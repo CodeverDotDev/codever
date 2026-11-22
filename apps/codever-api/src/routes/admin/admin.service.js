@@ -8,17 +8,14 @@ const BookmarkInputValidator = require('../../common/validation/bookmark-input.v
 const {
   validateNoShareLinkFields,
 } = require('../../common/validation/share-link-input.validator');
-const ShareLinkService = require('../users/share-link.service');
 const {
-  removeBookmarkFavoriteReferences,
-} = require('../../common/user-favorite-cleanup.service');
+  cleanupDeletedBookmarks,
+} = require('../../common/resource-cleanup.service');
 
-/* GET all bookmarks */
-let getBookmarksWithFilter = async (isPublic, location, userId) => {
-  let filter = {};
-  if (isPublic) {
-    filter.public = true;
-  }
+/* GET public bookmarks, optionally filtered by location and/or owner */
+let getBookmarksWithFilter = async (location, userId) => {
+  // admins only ever see public bookmarks
+  let filter = { public: true };
   if (location) {
     filter.location = location;
   }
@@ -87,10 +84,11 @@ let getLatestBookmarksWithDaysBack = async (daysBack) => {
   return bookmarks;
 };
 
-/* GET bookmark by id */
+/* GET public bookmark by id - private bookmarks are reported as not found */
 let getBookmarkById = async (bookmarkId) => {
   const bookmark = await Bookmark.findOne({
     _id: bookmarkId,
+    public: true,
   });
 
   if (!bookmark) {
@@ -128,9 +126,11 @@ let updateBookmark = async (bookmark) => {
     bookmark.userId
   );
 
+  // only public bookmarks can be changed by admins
   const updatedBookmark = await Bookmark.findOneAndUpdate(
     {
       _id: bookmark._id,
+      public: true,
     },
     bookmark,
     { new: true }
@@ -147,38 +147,14 @@ let updateBookmark = async (bookmark) => {
 };
 
 /*
- * DELETE bookmark for by bookmarkId
- */
-let deleteBookmarkById = async (bookmarkId) => {
-  const bookmark = await Bookmark.findOneAndDelete({
-    _id: bookmarkId,
-  });
-
-  if (!bookmark) {
-    throw new NotFoundError(`Bookmark NOT_FOUND with id: ${bookmarkId}`);
-  } else {
-    await ShareLinkService.revokeDeletedResourceLinks('bookmark', [
-      bookmark._id,
-    ]);
-    await removeBookmarkFavoriteReferences([bookmark._id]);
-    return true;
-  }
-};
-
-/*
- * DELETE bookmarks with location
+ * DELETE public bookmarks with location - private copies stay untouched
  */
 let deleteBookmarksByLocation = async (location) => {
-  const bookmarks = await Bookmark.find({ location: location }).select('_id');
-  await Bookmark.deleteMany({ location: location });
+  const filter = { location: location, public: true };
+  const bookmarks = await Bookmark.find(filter).select('_id');
+  await Bookmark.deleteMany(filter);
 
-  await ShareLinkService.revokeDeletedResourceLinks(
-    'bookmark',
-    bookmarks.map((bookmark) => bookmark._id)
-  );
-  await removeBookmarkFavoriteReferences(
-    bookmarks.map((bookmark) => bookmark._id)
-  );
+  await cleanupDeletedBookmarks(bookmarks.map((bookmark) => bookmark._id));
   return true;
 };
 
@@ -189,13 +165,7 @@ let deleteBookmarksByUserId = async (userId) => {
   const bookmarks = await Bookmark.find({ userId: userId }).select('_id');
   await Bookmark.deleteMany({ userId: userId });
 
-  await ShareLinkService.revokeDeletedResourceLinks(
-    'bookmark',
-    bookmarks.map((bookmark) => bookmark._id)
-  );
-  await removeBookmarkFavoriteReferences(
-    bookmarks.map((bookmark) => bookmark._id)
-  );
+  await cleanupDeletedBookmarks(bookmarks.map((bookmark) => bookmark._id));
   return true;
 };
 
@@ -291,7 +261,6 @@ module.exports = {
   getBookmarkById: getBookmarkById,
   createBookmark: createBookmark,
   updateBookmark: updateBookmark,
-  deleteBookmarkById: deleteBookmarkById,
   deleteUserByUserId: deleteUserByUserId,
   deleteBookmarksByLocation: deleteBookmarksByLocation,
   deleteBookmarksByUserId: deleteBookmarksByUserId,

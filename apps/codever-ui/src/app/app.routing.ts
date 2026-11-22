@@ -45,6 +45,12 @@ export const routes: Routes = [
       ),
   },
   {
+    // admin dashboard; the module's routes require the ROLE_ADMIN realm role
+    path: 'admin',
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule),
+  },
+  {
     path: 'settings',
     loadChildren: () =>
       import('./user/user-settings/user-settings.module').then(

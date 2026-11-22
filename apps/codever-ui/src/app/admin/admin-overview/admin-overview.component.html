@@ -1,0 +1,101 @@
+<div class="d-flex align-items-center mb-2">
+  <h5 class="mb-0">Recent activity</h5>
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-sm ms-auto"
+    title="Reload the overview"
+    [disabled]="loading"
+    (click)="load()"
+  >
+    <i class="fas fa-sync" [class.fa-spin]="loading"></i> Refresh
+  </button>
+</div>
+
+@if (errorMessage) {
+  <div class="alert alert-danger small">{{ errorMessage }}</div>
+}
+
+@if (overview) {
+  <p class="small text-body-secondary">
+    As of {{ overview.generatedAt | date: 'medium' }}. Private bookmarks and
+    notes are shown only as totals.
+  </p>
+
+  <div class="table-responsive">
+    <table class="table table-sm align-middle overview-counts">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">New users</th>
+          <th scope="col">Bookmarks public</th>
+          <th scope="col">Bookmarks private</th>
+          <th scope="col">Notes public</th>
+          <th scope="col">Notes private</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (window of windows; track window.key) {
+          <tr>
+            <th scope="row">{{ window.label }}</th>
+            <td>{{ counts(window.key).users }}</td>
+            <td>{{ counts(window.key).bookmarks.public }}</td>
+            <td class="text-body-secondary">
+              {{ counts(window.key).bookmarks.private }}
+            </td>
+            <td>{{ counts(window.key).notes.public }}</td>
+            <td class="text-body-secondary">
+              {{ counts(window.key).notes.private }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <h6>Top tags of public bookmarks (last 7 days)</h6>
+      @if (overview.topTags.length) {
+        <ul class="list-unstyled top-tags mb-0">
+          @for (tag of overview.topTags; track tag.tag) {
+            <li>
+              <a
+                [routerLink]="['../public-content']"
+                [queryParams]="{ q: '[' + tag.tag + ']' }"
+                >{{ tag.tag }}</a
+              >
+              <span class="badge text-bg-secondary ms-1">{{ tag.count }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="small text-body-secondary">No public bookmarks this week.</p>
+      }
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <h6>Users with the most new public entries (last 7 days)</h6>
+      @if (overview.mostActiveUsers.length) {
+        <ul class="list-unstyled most-active-users mb-0">
+          @for (user of overview.mostActiveUsers; track user.userId) {
+            <li>
+              <a
+                [routerLink]="['../public-content']"
+                [queryParams]="{ userId: user.userId }"
+                title="Show this user's public entries"
+                >{{ user.displayName || user.userId }}</a
+              >
+              <span class="badge text-bg-secondary ms-1">{{
+                user.publicEntries
+              }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="small text-body-secondary">No public entries this week.</p>
+      }
+    </div>
+  </div>
+} @else if (loading) {
+  <p class="text-body-secondary"><i class="fas fa-spinner fa-spin"></i></p>
+}

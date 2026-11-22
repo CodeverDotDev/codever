@@ -44,6 +44,9 @@ tags:
     description: Helper endpoints/operations
   - name: resource-sharing
     description: Owner-managed, revocable bookmark and note links
+  - name: admin
+    description: Moderation of public bookmarks and notes (requires the
+      ROLE_ADMIN realm role)
 
 
 paths:
@@ -1123,8 +1126,494 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenError'
 
+  /admin/overview:
+    get:
+      operationId: get-admin-overview
+      summary: Recent platform activity (admin only)
+      description: >-
+        New users and new bookmarks and notes, split into public and private
+        totals, over the last 24 hours, 7 days and 30 days; top tags of public
+        bookmarks and users with the most new public entries in the last
+        7 days. Private entries are only counted, never returned.
+      tags:
+        - admin
+      responses:
+        200:
+          description: Overview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminOverview'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+  /admin/public-entries:
+    get:
+      operationId: get-admin-public-entries
+      summary: Public bookmarks and notes of all users (admin only)
+      description: Newest first, or best matches first when `q` is given.
+        Private entries are never returned.
+      tags:
+        - admin
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, bookmark, note]
+            default: all
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+        - $ref: '#/components/parameters/pageQueryParam'
+        - $ref: '#/components/parameters/limitQueryParam'
+      responses:
+        200:
+          description: Public entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminPublicEntry'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+  /admin/bookmarks:
+    get:
+      operationId: get-admin-bookmarks
+      summary: Public bookmarks filtered by location and/or owner (admin only)
+      description: Always public bookmarks only; a `public` query parameter is
+        ignored.
+      tags:
+        - admin
+      parameters:
+        - name: location
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: '#/components/responses/BookmarkListResponse'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+    delete:
+      operationId: delete-admin-bookmarks
+      summary: Delete bookmarks by location or by owner (admin only)
+      description: By `location` only public bookmarks are deleted; by
+        `userId` all bookmarks of that user are deleted. One of them is
+        required.
+      tags:
+        - admin
+      parameters:
+        - name: location
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        204:
+          description: Deleted
+        400:
+          description: Neither location nor userId given
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+  /admin/bookmarks/{bookmarkId}:
+    parameters:
+      - name: bookmarkId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: get-admin-bookmark
+      summary: Public bookmark by id (admin only)
+      tags:
+        - admin
+      responses:
+        200:
+          description: The bookmark
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Unknown or private bookmark
+    put:
+      operationId: update-admin-bookmark
+      summary: Full update of a public bookmark (admin only)
+      tags:
+        - admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bookmark'
+      responses:
+        200:
+          description: The updated bookmark
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Unknown or private bookmark
+        409:
+          description: Another public bookmark has the same location
+    delete:
+      operationId: delete-admin-bookmark
+      summary: Delete a public bookmark (admin only)
+      description: Revokes its share links and removes it from all users'
+        favorites, likes, read-later, pinned and history lists. A copy is kept
+        for 90 days so the delete can be restored from the audit log.
+      tags:
+        - admin
+      responses:
+        204:
+          description: Deleted
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Unknown or private bookmark
+  /admin/bookmarks/{bookmarkId}/unpublish:
+    patch:
+      operationId: unpublish-admin-bookmark
+      summary: Make a public bookmark private (admin only)
+      tags:
+        - admin
+      parameters:
+        - name: bookmarkId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Unpublished
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminEntryRef'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Unknown or already private bookmark
+  /admin/notes/{noteId}:
+    delete:
+      operationId: delete-admin-note
+      summary: Delete a public note (admin only)
+      description: Revokes its share links and removes it from all users'
+        favorites, pinned and history lists. A copy is kept for 90 days so the
+        delete can be restored from the audit log.
+      tags:
+        - admin
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Deleted
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Unknown or private note
+  /admin/notes/{noteId}/unpublish:
+    patch:
+      operationId: unpublish-admin-note
+      summary: Make a public note private (admin only)
+      tags:
+        - admin
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Unpublished
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminEntryRef'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Unknown or already private note
+  /admin/moderation/bulk:
+    post:
+      operationId: bulk-admin-moderation
+      summary: Unpublish or delete up to 100 public entries (admin only)
+      tags:
+        - admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, entries]
+              properties:
+                action:
+                  type: string
+                  enum: [unpublish, delete]
+                entries:
+                  type: array
+                  minItems: 1
+                  maxItems: 100
+                  items:
+                    $ref: '#/components/schemas/AdminEntryRef'
+      responses:
+        200:
+          description: Per-entry outcome
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  succeeded:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AdminEntryRef'
+                  failed:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/AdminEntryRef'
+                        - type: object
+                          properties:
+                            reason:
+                              type: string
+                              example: not found
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+  /admin/audit-log:
+    get:
+      operationId: get-admin-audit-log
+      summary: Admin moderation actions, newest first (admin only)
+      tags:
+        - admin
+      parameters:
+        - name: action
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [unpublish, delete, restore]
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [bookmark, note]
+        - $ref: '#/components/parameters/pageQueryParam'
+        - $ref: '#/components/parameters/limitQueryParam'
+      responses:
+        200:
+          description: Audit entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminAuditEntry'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+  /admin/audit-log/{entryId}/restore:
+    post:
+      operationId: restore-admin-delete
+      summary: Restore an entry deleted by an admin (admin only)
+      description: >-
+        Re-creates the entry with its original id, owner, content, visibility
+        and dates. Share links, favorites, likes, pins, read-later and history
+        references are not restored. A bookmark whose URL is now public for
+        another user is restored as private.
+      tags:
+        - admin
+      parameters:
+        - name: entryId
+          in: path
+          required: true
+          description: id of the delete audit entry
+          schema:
+            type: string
+      responses:
+        201:
+          description: Restored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [bookmark, note]
+                  restoredAsPrivate:
+                    type: boolean
+                  entry:
+                    type: object
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          description: Unknown audit entry, not a delete, or copy expired
+            (older than 90 days)
+        409:
+          description: Already restored, owner gone, same id exists, or the
+            owner saved the same URL again
+
 components:
   schemas:
+    AdminEntryRef:
+      type: object
+      required: [type, id]
+      properties:
+        type:
+          type: string
+          enum: [bookmark, note]
+        id:
+          type: string
+    AdminPublicEntry:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [bookmark, note]
+        id:
+          type: string
+        title:
+          type: string
+        location:
+          type: string
+          description: bookmarks only
+        tags:
+          type: array
+          items:
+            type: string
+        ownerId:
+          type: string
+        ownerDisplayName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    AdminWindowCounts:
+      type: object
+      properties:
+        users:
+          type: integer
+        bookmarks:
+          $ref: '#/components/schemas/AdminPublicPrivateCount'
+        notes:
+          $ref: '#/components/schemas/AdminPublicPrivateCount'
+    AdminPublicPrivateCount:
+      type: object
+      properties:
+        public:
+          type: integer
+        private:
+          type: integer
+    AdminOverview:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        counts:
+          type: object
+          properties:
+            last24h:
+              $ref: '#/components/schemas/AdminWindowCounts'
+            last7d:
+              $ref: '#/components/schemas/AdminWindowCounts'
+            last30d:
+              $ref: '#/components/schemas/AdminWindowCounts'
+        topTags:
+          type: array
+          items:
+            type: object
+            properties:
+              tag:
+                type: string
+              count:
+                type: integer
+        mostActiveUsers:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+              displayName:
+                type: string
+              publicEntries:
+                type: integer
+    AdminAuditEntry:
+      type: object
+      properties:
+        _id:
+          type: string
+        action:
+          type: string
+          enum: [unpublish, delete, restore]
+        targetType:
+          type: string
+          enum: [bookmark, note]
+        targetId:
+          type: string
+        ownerId:
+          type: string
+        adminId:
+          type: string
+        adminName:
+          type: string
+        summary:
+          type: object
+          properties:
+            title:
+              type: string
+            location:
+              type: string
+        restoredAt:
+          type: string
+          format: date-time
+        restoredAsPrivate:
+          type: boolean
+        restorable:
+          type: boolean
+          description: delete that was not restored yet and whose copy still
+            exists (90 days)
+        createdAt:
+          type: string
+          format: date-time
     ActiveShareLink:
       type: object
       required:

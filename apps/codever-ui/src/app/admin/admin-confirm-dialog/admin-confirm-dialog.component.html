@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+
+<hr />
+
+<mat-dialog-content>
+  <p>{{ data.message }}</p>
+  @if (data.items?.length) {
+    <ul class="small mb-0">
+      @for (item of data.items.slice(0, maxListedItems); track $index) {
+        <li>{{ item }}</li>
+      }
+      @if (data.items.length > maxListedItems) {
+        <li>... and {{ data.items.length - maxListedItems }} more</li>
+      }
+    </ul>
+  }
+</mat-dialog-content>
+
+<hr />
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    class="btn btn-danger btn-sm me-2 confirm-button"
+    (click)="confirm()"
+  >
+    {{ data.confirmLabel }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-secondary btn-sm cancel-button"
+    (click)="close()"
+  >
+    Cancel
+  </button>
+</mat-dialog-actions>

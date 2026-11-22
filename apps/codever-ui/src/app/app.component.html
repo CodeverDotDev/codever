@@ -33,6 +33,15 @@
             <i class="fas fa-tachometer-alt me-1"></i> Dashboard
           </a>
         }
+        @if (userIsLoggedIn && isAdmin) {
+          <a
+            class="list-group-item list-group-item-action bg-light sidebar-admin-link"
+            title="Moderate public bookmarks and notes"
+            [routerLink]="['/admin']"
+            >
+            <i class="fas fa-user-shield me-1"></i> Admin
+          </a>
+        }
         @if (userIsLoggedIn) {
           <a
             class="list-group-item list-group-item-action bg-light"

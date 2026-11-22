@@ -1,0 +1,135 @@
+<form class="row g-2 align-items-end mb-3" (ngSubmit)="applyFilters()">
+  <div class="col-md-3">
+    <label class="form-label small mb-1" for="auditAction">Action</label>
+    <select
+      id="auditAction"
+      name="action"
+      class="form-select form-select-sm"
+      [(ngModel)]="action"
+      (ngModelChange)="applyFilters()"
+    >
+      <option value="">All actions</option>
+      <option value="unpublish">Unpublish</option>
+      <option value="delete">Delete</option>
+      <option value="restore">Restore</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label small mb-1" for="auditType">Type</label>
+    <select
+      id="auditType"
+      name="type"
+      class="form-select form-select-sm"
+      [(ngModel)]="type"
+      (ngModelChange)="applyFilters()"
+    >
+      <option value="">All types</option>
+      <option value="bookmark">Bookmarks</option>
+      <option value="note">Notes</option>
+    </select>
+  </div>
+</form>
+
+@if (notice) {
+  <div class="alert small restore-notice" [class]="'alert-' + notice.kind">
+    {{ notice.text }}
+  </div>
+}
+
+@if (errorMessage) {
+  <div class="alert alert-danger small">{{ errorMessage }}</div>
+}
+
+<div class="table-responsive">
+  <table class="table table-sm align-middle audit-entries">
+    <thead>
+      <tr>
+        <th scope="col">When</th>
+        <th scope="col">Admin</th>
+        <th scope="col">Action</th>
+        <th scope="col">Entry</th>
+        <th scope="col">Owner</th>
+        <th scope="col" class="text-end"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (entry of entries; track entry._id) {
+        <tr class="audit-entry">
+          <td class="small text-nowrap">
+            {{ entry.createdAt | date: 'short' }}
+          </td>
+          <td class="small">{{ entry.adminName || entry.adminId }}</td>
+          <td>
+            <span class="badge text-bg-secondary">{{ entry.action }}</span>
+            @if (entry.restoredAt) {
+              <span class="badge text-bg-success ms-1">restored</span>
+            }
+            @if (entry.restoredAsPrivate) {
+              <span class="badge text-bg-warning ms-1">as private</span>
+            }
+          </td>
+          <td>
+            <i
+              [class]="entry.targetType === 'bookmark' ? 'fas fa-bookmark' : 'fas fa-sticky-note'"
+              [title]="entry.targetType"
+            ></i>
+            {{ entry.summary?.title }}
+            @if (entry.summary?.location) {
+              <div class="small text-body-secondary text-truncate" style="max-width: 28rem">
+                {{ entry.summary.location }}
+              </div>
+            }
+          </td>
+          <td class="small"><code>{{ entry.ownerId }}</code></td>
+          <td class="text-end">
+            @if (entry.restorable) {
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm restore-entry"
+                [disabled]="restoringId"
+                (click)="restore(entry)"
+              >
+                @if (restoringId === entry._id) {
+                  <i class="fas fa-spinner fa-spin"></i>
+                } @else {
+                  <i class="fas fa-undo"></i>
+                }
+                Restore
+              </button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" class="text-body-secondary small">
+            @if (loading) {
+              <i class="fas fa-spinner fa-spin"></i>
+            } @else {
+              No admin actions recorded.
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<nav class="d-flex gap-2" aria-label="Audit log pages">
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-sm"
+    [disabled]="page <= 1 || loading"
+    (click)="goToPage(page - 1)"
+  >
+    Previous
+  </button>
+  <span class="small align-self-center">Page {{ page }}</span>
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-sm"
+    [disabled]="!hasNextPage || loading"
+    (click)="goToPage(page + 1)"
+  >
+    Next
+  </button>
+</nav>

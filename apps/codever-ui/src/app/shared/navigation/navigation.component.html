@@ -348,6 +348,16 @@
                 Dashboard
                 <i class="fas fa-tachometer-alt"></i>
               </a>
+              @if (isAdmin) {
+                <a
+                  class="dropdown-item admin-link"
+                  title="Moderate public bookmarks and notes"
+                  routerLink="/admin"
+                  >
+                  Admin
+                  <i class="fas fa-user-shield"></i>
+                </a>
+              }
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" routerLink="/settings">
                 Settings

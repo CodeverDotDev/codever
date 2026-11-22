@@ -8,6 +8,11 @@ const bookmarkRequestMapper = require('../../common/mappers/bookmark-request.map
 const common = require('../../common/config');
 const config = common.config();
 const AdminService = require('./admin.service');
+const AdminModerationService = require('./admin-moderation.service');
+const AdminAuditService = require('./admin-audit.service');
+const AdminOverviewService = require('./admin-overview.service');
+const AdminPublicEntriesService = require('./admin-public-entries.service');
+const PaginationQueryParamsHelper = require('../../common/pagination-query-params-helper');
 
 const HttpStatus = require('http-status-codes/index');
 
@@ -17,16 +22,154 @@ adminRouter.use(keycloak.middleware());
 
 const superagent = require('superagent');
 
+const MAX_ADMIN_PAGE_SIZE = 100;
+
+/**
+ * The administrator doing the request, as recorded in the audit log.
+ */
+const getAdmin = (request) => {
+  const token = request.kauth.grant.access_token.content;
+  return {
+    id: token.sub,
+    name: token.name || token.preferred_username || token.sub,
+  };
+};
+
+const getPageAndLimit = (request) => {
+  const { page, limit } = PaginationQueryParamsHelper.getPageAndLimit(request);
+  return {
+    page: Number.isInteger(page) && page > 0 ? page : 1,
+    limit:
+      Number.isInteger(limit) && limit > 0
+        ? Math.min(limit, MAX_ADMIN_PAGE_SIZE)
+        : MAX_ADMIN_PAGE_SIZE,
+  };
+};
+
+/* GET overview of recent platform activity */
+adminRouter.get(
+  '/overview',
+  keycloak.protect('realm:ROLE_ADMIN'),
+  async (request, response) => {
+    const overview = await AdminOverviewService.getOverview();
+    return response.status(HttpStatus.OK).send(overview);
+  }
+);
+
+/* GET public bookmarks and notes of all users (latest or search) */
+adminRouter.get(
+  '/public-entries',
+  keycloak.protect('realm:ROLE_ADMIN'),
+  async (request, response) => {
+    const { q, type, userId } = request.query;
+    const { page, limit } = getPageAndLimit(request);
+    const entries = await AdminPublicEntriesService.getPublicEntries({
+      q,
+      type,
+      userId,
+      page,
+      limit,
+    });
+    return response.status(HttpStatus.OK).send(entries);
+  }
+);
+
+/* PATCH unpublish a public bookmark */
+adminRouter.patch(
+  '/bookmarks/:bookmarkId/unpublish',
+  keycloak.protect('realm:ROLE_ADMIN'),
+  async (request, response) => {
+    const result = await AdminModerationService.unpublishEntry(
+      'bookmark',
+      request.params.bookmarkId,
+      getAdmin(request)
+    );
+    return response.status(HttpStatus.OK).send(result);
+  }
+);
+
+/* PATCH unpublish a public note */
+adminRouter.patch(
+  '/notes/:noteId/unpublish',
+  keycloak.protect('realm:ROLE_ADMIN'),
+  async (request, response) => {
+    const result = await AdminModerationService.unpublishEntry(
+      'note',
+      request.params.noteId,
+      getAdmin(request)
+    );
+    return response.status(HttpStatus.OK).send(result);
+  }
+);
+
+/* DELETE a public note */
+adminRouter.delete(
+  '/notes/:noteId',
+  keycloak.protect('realm:ROLE_ADMIN'),
+  async (request, response) => {
+    await AdminModerationService.deleteEntry(
+      'note',
+      request.params.noteId,
+      getAdmin(request)
+    );
+    return response.status(HttpStatus.NO_CONTENT).send();
+  }
+);
+
+/* POST unpublish or delete several public entries */
+adminRouter.post(
+  '/moderation/bulk',
+  keycloak.protect('realm:ROLE_ADMIN'),
+  async (request, response) => {
+    const { action, entries } = request.body || {};
+    const result = await AdminModerationService.bulkModerate(
+      action,
+      entries,
+      getAdmin(request)
+    );
+    return response.status(HttpStatus.OK).send(result);
+  }
+);
+
+/* GET audit log of admin actions, newest first */
+adminRouter.get(
+  '/audit-log',
+  keycloak.protect('realm:ROLE_ADMIN'),
+  async (request, response) => {
+    const { action, type } = request.query;
+    const { page, limit } = getPageAndLimit(request);
+    const entries = await AdminAuditService.listAuditEntries({
+      action,
+      type,
+      page,
+      limit,
+    });
+    return response.status(HttpStatus.OK).send(entries);
+  }
+);
+
+/* POST restore an entry deleted by an admin, from its audit entry */
+adminRouter.post(
+  '/audit-log/:entryId/restore',
+  keycloak.protect('realm:ROLE_ADMIN'),
+  async (request, response) => {
+    const result = await AdminModerationService.restoreEntry(
+      request.params.entryId,
+      getAdmin(request)
+    );
+    return response.status(HttpStatus.CREATED).send(result);
+  }
+);
+
 /* GET all bookmarks */
 adminRouter.get(
   '/bookmarks',
   keycloak.protect('realm:ROLE_ADMIN'),
   async (request, response) => {
-    const isPublic = request.query.public === 'true';
+    // always public only; a `public` query parameter is ignored
     const { location, userId } = request.query;
 
     const bookmarks = await AdminService.getBookmarksWithFilter(
-      isPublic,
       location,
       userId
     );
@@ -89,7 +232,7 @@ adminRouter.get(
 /* GET bookmark by id */
 adminRouter.get(
   '/bookmarks/:bookmarkId',
-  keycloak.protect(),
+  keycloak.protect('realm:ROLE_ADMIN'),
   async (request, response) => {
     const bookmark = await AdminService.getBookmarkById(
       request.params.bookmarkId
@@ -142,10 +285,13 @@ adminRouter.delete(
   '/bookmarks/:bookmarkId',
   keycloak.protect('realm:ROLE_ADMIN'),
   async (request, response) => {
-    await AdminService.deleteBookmarkById(request.params.bookmarkId);
-    response
-      .status(HttpStatus.NO_CONTENT)
-      .send('Bookmark successfully deleted');
+    // public bookmarks only; audited and restorable for 90 days
+    await AdminModerationService.deleteEntry(
+      'bookmark',
+      request.params.bookmarkId,
+      getAdmin(request)
+    );
+    response.status(HttpStatus.NO_CONTENT).send();
   }
 );
 

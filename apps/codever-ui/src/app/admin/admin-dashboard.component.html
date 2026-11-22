@@ -1,0 +1,25 @@
+<div class="container-fluid mt-3 mb-4">
+  <h3>
+    <i class="fas fa-user-shield"></i> Admin
+    <small class="text-body-secondary fs-6 ms-2"
+      >Moderation of public bookmarks and notes</small
+    >
+  </h3>
+
+  <ul class="nav nav-tabs mt-3 mb-3">
+    @for (tab of tabs; track tab.path) {
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [routerLink]="tab.path"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+        >
+          <i [class]="tab.icon"></i> {{ tab.label }}
+        </a>
+      </li>
+    }
+  </ul>
+
+  <router-outlet></router-outlet>
+</div>

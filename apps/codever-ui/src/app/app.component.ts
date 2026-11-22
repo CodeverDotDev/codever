@@ -64,6 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
   innerWidth: any;
 
   userIsLoggedIn = false;
+  isAdmin = false;
   userId: string;
 
   userData$: Observable<UserData>;
@@ -136,6 +137,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (isLoggedIn) {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
+        this.isAdmin = this.keycloak.hasRealmRole('ROLE_ADMIN');
         this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {
           this.userId = userInfo.sub;
           // Logout removes this user's drafts even if no editor was opened.

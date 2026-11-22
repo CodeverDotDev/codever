@@ -22,6 +22,7 @@ const ValidationError = require('./error/validation.error');
 const NotFoundError = require('./error/not-found.error');
 const ShareLinkConflictError = require('./error/share-link-conflict.error');
 const PublicBookmarkExistingError = require('./error/public-bookmark-existent.error');
+const AdminRestoreConflictError = require('./error/admin-restore-conflict.error');
 const UseridValidationError = require('./routes/users/userid-validation.error');
 
 const fs = require('fs-extra');
@@ -158,6 +159,16 @@ app.use(function handlePublicBookmarkExistingError(error, req, res, next) {
       httpStatus: HttpStatus.CONFLICT,
       message: error.message,
       stack: app.get('env') === 'development' ? error.stack : {},
+    });
+  }
+  next(error);
+});
+
+app.use(function handleAdminRestoreConflictError(error, req, res, next) {
+  if (error instanceof AdminRestoreConflictError) {
+    return res.status(HttpStatus.CONFLICT).json({
+      httpStatus: HttpStatus.CONFLICT,
+      message: error.message,
     });
   }
   next(error);

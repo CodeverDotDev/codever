@@ -12,6 +12,9 @@ const {
   validateNoShareLinkFields,
 } = require('../../../common/validation/share-link-input.validator');
 const ShareLinkService = require('../share-link.service');
+const {
+  cleanupDeletedBookmarks,
+} = require('../../../common/resource-cleanup.service');
 
 /**
  * CREATE bookmark for user
@@ -224,22 +227,7 @@ let deleteBookmarkById = async (userId, bookmarkId) => {
   if (response.deletedCount !== 1) {
     throw new NotFoundError('Bookmark NOT_FOUND with id: ' + bookmarkId);
   } else {
-    await ShareLinkService.revokeResourceLinks(userId, 'bookmark', [
-      bookmarkId,
-    ]);
-    await removeBookmarkFavoriteReferences([bookmarkId]);
-    await User.updateMany(
-      {},
-      {
-        $pull: {
-          readLater: bookmarkId,
-          likes: bookmarkId,
-          pinned: { id: bookmarkId, type: 'bookmark' },
-          history: bookmarkId,
-        },
-      },
-      { multi: true }
-    );
+    await cleanupDeletedBookmarks([bookmarkId], userId);
 
     return true;
   }
