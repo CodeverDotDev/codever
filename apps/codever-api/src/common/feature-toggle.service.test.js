@@ -188,8 +188,12 @@ describe('feature-toggle.service', () => {
       expect(service.isMcpCreateNotesEnabled('owner')).toBe(false);
     });
 
-    test('committed creation allowlist is empty', () => {
-      expect(require('../../feature-toggles.json').mcpCreateNotes.enabledUserIds).toEqual([]);
+    test('committed creation allowlist holds the enabled users', () => {
+      expect(require('../../feature-toggles.json').mcpCreateNotes.enabledUserIds).toEqual([
+        '03e59ab3-4001-4d8f-a88b-a1542aa70483',
+        '33d22b0e-9474-46b3-9da4-b1fb5d273abc',
+        'a7908cb5-3b37-4cc1-a751-42f674d870e1',
+      ]);
     });
   });
 
