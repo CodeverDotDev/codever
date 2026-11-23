@@ -79,7 +79,7 @@
 
 ## 5. End-to-end check
 
-- [ ] 5.1 With Docker infrastructure and both apps running, log in as an
+- [x] 5.1 With Docker infrastructure and both apps running, log in as an
   administrator and as `mock`: confirm `/admin` access rules, unpublish and
   delete a public test bookmark and note, restore the deletion from the audit
   log, and run one bulk action; verify by observing the dashboard and the
