@@ -207,6 +207,60 @@ describe('NoteDetailsComponent favorites', () => {
     ).toBeNull();
   });
 
+  it('offers only Copy to mine on shared notes and emits the note', () => {
+    const fixture = TestBed.createComponent(NoteDetailsComponent);
+    const component = fixture.componentInstance;
+    const sharedNote: SharedNote = {
+      _id: 'note-1',
+      type: 'note',
+      title: 'Shared note',
+      content: 'Shared content',
+      contentType: 'markdown',
+      tags: [],
+    };
+    const emitted: unknown[] = [];
+    component.sharedCopyRequested.subscribe((value) => emitted.push(value));
+    component.isSharedView = true;
+    component.note$ = of(sharedNote);
+
+    fixture.detectChanges();
+
+    const element: HTMLElement = fixture.nativeElement;
+    const copyButton = element.querySelector<HTMLButtonElement>(
+      'button.shared-copy-to-mine'
+    );
+    expect(copyButton?.textContent).toContain('Copy to mine');
+    for (const title of [
+      'Edit note',
+      'Delete note',
+      'Clone note',
+      'Share via email or on social media',
+      'Save a copy to my notes',
+    ]) {
+      const matches = element.querySelectorAll(`[title="${title}"]`);
+      expect(matches.length).toBe(
+        title === 'Save a copy to my notes' ? 1 : 0
+      );
+    }
+    expect(element.querySelector('.favorite-star-toggle')).toBeNull();
+    expect(element.querySelectorAll('.card-footer button').length).toBe(1);
+
+    copyButton.click();
+    expect(emitted).toEqual([sharedNote]);
+  });
+
+  it('shows no shared Copy to mine outside shared views', () => {
+    const fixture = TestBed.createComponent(NoteDetailsComponent);
+    fixture.componentInstance.note$ = of(note);
+    fixture.componentInstance.inSearchResults = true;
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector('button.shared-copy-to-mine')
+    ).toBeNull();
+  });
+
   it('preserves shared notebook source for copy and original download', async () => {
     const fixture = TestBed.createComponent(NoteDetailsComponent);
     const component = fixture.componentInstance;

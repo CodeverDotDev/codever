@@ -6,6 +6,7 @@ import { catchError, startWith, switchMap, tap } from 'rxjs/operators';
 import { SharedNote } from '../../../core/model/share-link';
 import { PublicNotesService } from '../public-notes.service';
 import { NoteDetailsComponent } from '../../../shared/note-details/note-details.component';
+import { SharedCopyFlow } from '../../../shared/shared-copy/shared-copy-flow.service';
 
 @Component({
   selector: 'app-shareable-note-details',
@@ -18,13 +19,17 @@ export class ShareableNoteDetailsComponent implements OnInit {
   note$: Observable<SharedNote>;
   loadState: 'loading' | 'loaded' | 'unavailable' | 'error' = 'loading';
   private readonly retry$ = new Subject<void>();
+  private copyAfterLoad = false;
 
   constructor(
     private route: ActivatedRoute,
-    private publicNotesService: PublicNotesService
+    private publicNotesService: PublicNotesService,
+    private sharedCopyFlow: SharedCopyFlow
   ) {}
 
   ngOnInit() {
+    // back from a login started with "Copy to mine"
+    this.copyAfterLoad = this.sharedCopyFlow.takeCopyRequest();
     this.note$ = combineLatest([
       this.route.paramMap,
       this.retry$.pipe(startWith(undefined)),
@@ -37,7 +42,13 @@ export class ShareableNoteDetailsComponent implements OnInit {
           return EMPTY;
         }
         return this.publicNotesService.getSharedNoteByToken(token).pipe(
-          tap(() => (this.loadState = 'loaded')),
+          tap((note) => {
+            this.loadState = 'loaded';
+            if (this.copyAfterLoad) {
+              this.copyAfterLoad = false;
+              this.copyToMine(note);
+            }
+          }),
           catchError((error: unknown) => {
             this.loadState =
               error instanceof HttpErrorResponse && error.status === 404
@@ -48,6 +59,10 @@ export class ShareableNoteDetailsComponent implements OnInit {
         );
       })
     );
+  }
+
+  copyToMine(note: SharedNote): void {
+    this.sharedCopyFlow.start('note', note);
   }
 
   retry(): void {

@@ -20,6 +20,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 })
 export class LoginRequiredDialogComponent {
   message: string;
+  private readonly copyAfterLogin: boolean;
 
   constructor(
     private keycloakService: AuthenticationService,
@@ -30,11 +31,12 @@ export class LoginRequiredDialogComponent {
   ) {
     this.message =
       data.message || 'You need to be logged in to be able execute this action';
+    this.copyAfterLogin = !!data.copyAfterLogin;
   }
 
   login() {
     this.dialogRef.close('LOGIN_CONFIRMED');
-    this.keycloakServiceWrapper.login();
+    this.keycloakServiceWrapper.login({ copyAfterLogin: this.copyAfterLogin });
   }
 
   cancel() {

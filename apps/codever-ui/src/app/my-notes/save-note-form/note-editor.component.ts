@@ -309,7 +309,11 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     }
     if (this.note && (this.isEditMode || this.cloneNote || this.copyToMine)) {
       this.noteForm.patchValue({
-        title: this.cloneNote ? `CLONE - ${this.note.title}` : this.note.title,
+        // copy-to-mine keeps the original title; only clones get a prefix
+        title:
+          this.cloneNote && !this.copyToMine
+            ? `CLONE - ${this.note.title}`
+            : this.note.title,
         content: this.note.content,
         reference: this.note.reference,
         // cloned and copy-to-mine notes are always private

@@ -1,4 +1,8 @@
-<app-note-details [note$]="note$" [isSharedView]="true" />
+<app-note-details
+  [note$]="note$"
+  [isSharedView]="true"
+  (sharedCopyRequested)="copyToMine($event)"
+/>
 @if (loadState === 'unavailable') {
   <p class="alert alert-warning" role="status">This link is unavailable.</p>
 } @else if (loadState === 'error') {

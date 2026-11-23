@@ -6,6 +6,7 @@ import { NewEntryComponent } from './new-entry/new-entry.component';
 import { AuthGuard } from './core/auth/auth-guard.service';
 import { SearchRedirectGuard } from './core/search-redirect.guard';
 import { PublicBookmarksService } from './public/bookmarks/public-bookmarks.service';
+import { sharedLoginReturnGuard } from './core/sharing/shared-login-return.guard';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,12 @@ export const routes: Routes = [
     path: 'public',
     redirectTo: '',
     pathMatch: 'prefix',
+  },
+  {
+    // token-free return address of a login started on a shared page
+    path: 'shared/continue',
+    canActivate: [sharedLoginReturnGuard],
+    children: [],
   },
   {
     path: 'bookmarks/shared/:token',

@@ -49,6 +49,16 @@
           </a>
         </p>
       }
+      <div class="mt-3">
+        <button
+          type="button"
+          class="btn btn-light btn-sm shared-copy-to-mine"
+          (click)="copyToMine(bookmark)"
+          title="Save a copy to my bookmarks"
+        >
+          <i class="far fa-copy"></i> Copy to mine
+        </button>
+      </div>
     </div>
   </article>
 } @else if (loadState === 'unavailable') {

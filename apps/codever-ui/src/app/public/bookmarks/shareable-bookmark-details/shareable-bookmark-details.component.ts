@@ -7,6 +7,7 @@ import { catchError, startWith, switchMap, tap } from 'rxjs/operators';
 import { PublicBookmarksService } from '../public-bookmarks.service';
 import { BookmarkTextComponent } from '../../../shared/bookmark-text/bookmark-text.component';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import { SharedCopyFlow } from '../../../shared/shared-copy/shared-copy-flow.service';
 
 @Component({
   selector: 'app-bookmark-details',
@@ -19,13 +20,17 @@ export class ShareableBookmarkDetailsComponent implements OnInit {
   bookmark$: Observable<SharedBookmark>;
   loadState: 'loading' | 'loaded' | 'unavailable' | 'error' = 'loading';
   private readonly retry$ = new Subject<void>();
+  private copyAfterLoad = false;
 
   constructor(
     private route: ActivatedRoute,
-    private publicBookmarksService: PublicBookmarksService
+    private publicBookmarksService: PublicBookmarksService,
+    private sharedCopyFlow: SharedCopyFlow
   ) {}
 
   ngOnInit() {
+    // back from a login started with "Copy to mine"
+    this.copyAfterLoad = this.sharedCopyFlow.takeCopyRequest();
     this.bookmark$ = combineLatest([
       this.route.paramMap,
       this.retry$.pipe(startWith(undefined)),
@@ -40,7 +45,13 @@ export class ShareableBookmarkDetailsComponent implements OnInit {
         return this.publicBookmarksService
           .getSharedBookmarkByToken(token)
           .pipe(
-            tap(() => (this.loadState = 'loaded')),
+            tap((bookmark) => {
+              this.loadState = 'loaded';
+              if (this.copyAfterLoad) {
+                this.copyAfterLoad = false;
+                this.copyToMine(bookmark);
+              }
+            }),
             catchError((error: unknown) => {
               this.loadState =
                 error instanceof HttpErrorResponse && error.status === 404
@@ -51,6 +62,10 @@ export class ShareableBookmarkDetailsComponent implements OnInit {
           );
       })
     );
+  }
+
+  copyToMine(bookmark: SharedBookmark): void {
+    this.sharedCopyFlow.start('bookmark', bookmark);
   }
 
   retry(): void {

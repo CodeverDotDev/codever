@@ -1,4 +1,17 @@
-<app-save-bookmark-form [bookmark$]="bookmark$"
-  [isUpdate]="false"
-  [copyToMine]="true"
- />
+@if (bookmark$) {
+  <app-save-bookmark-form [bookmark$]="bookmark$"
+    [isUpdate]="false"
+    [copyToMine]="true"
+   />
+} @else if (loadFailed) {
+  <div class="alert alert-warning copy-unavailable" role="status">
+    <p class="mb-1">This bookmark is not available to copy here.</p>
+    <p class="mb-0">
+      If it was shared with you, open the sharing link again and choose
+      "Copy to mine". Go to
+      <a routerLink="/dashboard/bookmarks">my bookmarks</a>.
+    </p>
+  </div>
+} @else {
+  <p role="status">Loading bookmark…</p>
+}

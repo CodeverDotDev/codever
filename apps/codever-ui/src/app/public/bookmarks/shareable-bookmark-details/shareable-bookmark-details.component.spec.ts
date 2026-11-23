@@ -1,9 +1,13 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { PublicBookmarksService } from '../public-bookmarks.service';
 import { ShareableBookmarkDetailsComponent } from './shareable-bookmark-details.component';
+import { SharedCopyFlow } from '../../../shared/shared-copy/shared-copy-flow.service';
 
 describe('ShareableBookmarkDetailsComponent', () => {
   const sharedBookmark = {
@@ -14,12 +18,21 @@ describe('ShareableBookmarkDetailsComponent', () => {
     tags: [],
   };
 
-  const makeComponent = (service: Partial<PublicBookmarksService>) =>
+  const route = {
+    paramMap: of(convertToParamMap({ token: 'share-token' })),
+  } as unknown as ActivatedRoute;
+
+  const makeComponent = (
+    service: Partial<PublicBookmarksService>,
+    flow: Partial<SharedCopyFlow> = {
+      takeCopyRequest: () => false,
+      start: vi.fn(),
+    }
+  ) =>
     new ShareableBookmarkDetailsComponent(
-      {
-        paramMap: of(convertToParamMap({ token: 'share-token' })),
-      } as unknown as ActivatedRoute,
-      service as PublicBookmarksService
+      route,
+      service as PublicBookmarksService,
+      flow as SharedCopyFlow
     );
 
   it('shows unavailable for a revoked token', () => {
@@ -49,5 +62,55 @@ describe('ShareableBookmarkDetailsComponent', () => {
 
     expect(getSharedBookmarkByToken).toHaveBeenCalledTimes(2);
     expect(component.loadState).toBe('loaded');
+  });
+
+  it('opens the copy flow once after returning from a login', () => {
+    const start = vi.fn();
+    const component = makeComponent(
+      {
+        getSharedBookmarkByToken: vi.fn().mockReturnValue(of(sharedBookmark)),
+      },
+      { takeCopyRequest: () => true, start }
+    );
+    component.ngOnInit();
+    component.bookmark$.subscribe();
+    component.retry();
+
+    expect(start).toHaveBeenCalledTimes(1);
+    expect(start).toHaveBeenCalledWith('bookmark', sharedBookmark);
+  });
+
+  it('shows Copy to mine and starts the copy flow on click', () => {
+    const start = vi.fn();
+    TestBed.configureTestingModule({
+      imports: [ShareableBookmarkDetailsComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: route },
+        {
+          provide: PublicBookmarksService,
+          useValue: {
+            getSharedBookmarkByToken: () => of(sharedBookmark),
+          },
+        },
+        {
+          provide: SharedCopyFlow,
+          useValue: { takeCopyRequest: () => false, start },
+        },
+      ],
+    });
+    TestBed.overrideComponent(ShareableBookmarkDetailsComponent, {
+      set: { imports: [AsyncPipe, DatePipe], schemas: [NO_ERRORS_SCHEMA] },
+    });
+    const fixture = TestBed.createComponent(ShareableBookmarkDetailsComponent);
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector(
+      'button.shared-copy-to-mine'
+    );
+    expect(button.textContent).toContain('Copy to mine');
+    expect(fixture.nativeElement.querySelectorAll('button').length).toBe(1);
+
+    button.click();
+    expect(start).toHaveBeenCalledWith('bookmark', sharedBookmark);
   });
 });

@@ -75,6 +75,10 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   @Output()
   noteDeleted = new EventEmitter<Note>();
 
+  /** "Copy to mine" on a shared page; the shared page handles it. */
+  @Output()
+  sharedCopyRequested = new EventEmitter<Note | SharedNote>();
+
   userId$: Observable<string> = of(null);
   userData$: Observable<UserData>;
   noteId: string;
