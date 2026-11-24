@@ -13,6 +13,19 @@
             {{ copyLinkButtonText }}
           </a>
         </div>
+        @if (note.public) {
+          <div class="col">
+            <button
+              type="button"
+              class="btn btn-light btn-sm"
+              title="Copy title, tags and link"
+              (click)="copyWithDetails()"
+            >
+              <i class="far fa-copy" style="font-size: smaller"></i>
+              {{ copyDetailsButtonText }}
+            </button>
+          </div>
+        }
         <div class="col">
           <a
             type="button"
@@ -31,5 +44,10 @@
       }
     </div>
     <div class="clear"></div>
+    @if (copyDetailsError) {
+      <div class="alert alert-danger mt-2" role="alert">
+        {{ copyDetailsError }}
+      </div>
+    }
   </div>
 </mat-dialog-content>

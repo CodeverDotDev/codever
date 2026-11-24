@@ -82,6 +82,14 @@
               {{ copyButtonText }}
             </button>
             <button
+              class="btn btn-outline-secondary"
+              type="button"
+              [disabled]="sharingActionInProgress"
+              (click)="copyShareLinkWithDetails()"
+            >
+              {{ copyDetailsButtonText }}
+            </button>
+            <button
               class="btn btn-outline-danger"
               type="button"
               [disabled]="sharingActionInProgress"

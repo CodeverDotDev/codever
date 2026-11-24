@@ -1,4 +1,10 @@
-<h2 mat-dialog-title>Bookmark's main URL</h2>
+<h2 mat-dialog-title>
+  @if (bookmark.public) {
+    <i class="fas fa-globe"></i> Bookmark's main URL (<b>public</b>)
+  } @else {
+    <i class="fas fa-eye-slash"></i> Bookmark's main URL (<b>private</b>)
+  }
+</h2>
 <mat-dialog-content class="social-share-dialog-content">
   <div class="share-buttons-wrapper">
     <div class="row">
@@ -12,6 +18,17 @@
           <i class="far fa-copy" style="font-size: smaller"></i>
           {{ copyLinkButtonText }}
         </a>
+      </div>
+      <div class="col">
+        <button
+          type="button"
+          class="btn btn-light btn-sm"
+          title="Copy title, tags and link"
+          (click)="copyWithDetails()"
+          >
+          <i class="far fa-copy" style="font-size: smaller"></i>
+          {{ copyDetailsButtonText }}
+        </button>
       </div>
       <div class="col">
         <a
@@ -36,6 +53,11 @@
       }
     </div>
     <div class="clear"></div>
+    @if (copyDetailsError) {
+      <div class="alert alert-danger mt-2" role="alert">
+        {{ copyDetailsError }}
+      </div>
+    }
 
     @if (canManageSharing && (!bookmark.public || shareStatus === 'active')) {
       <hr />

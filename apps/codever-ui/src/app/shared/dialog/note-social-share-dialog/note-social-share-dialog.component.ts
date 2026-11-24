@@ -18,6 +18,10 @@ import {
   ShareLinkResourceStatus,
 } from '../../../core/model/share-link';
 import { StopSharingDialogComponent } from '../stop-sharing-dialog/stop-sharing-dialog.component';
+import {
+  buildShareDetails,
+  copyTextToClipboard,
+} from '../../share-details/share-details';
 
 @Component({
   selector: 'app-note-social-share-dialog',
@@ -41,6 +45,7 @@ export class NoteSocialShareDialogComponent {
   shareError = '';
   sharingActionInProgress = false;
   copyButtonText = 'Copy link';
+  copyDetailsButtonText = 'Copy with details';
   readonly environment = environment;
 
   constructor(
@@ -127,6 +132,28 @@ export class NoteSocialShareDialogComponent {
     } catch {
       this.shareError = 'The link could not be copied.';
     }
+  }
+
+  copyShareLinkWithDetails(): void {
+    if (!this.shareUrl) return;
+    this.shareError = '';
+    const text = buildShareDetails(
+      this.note.title,
+      this.note.tags,
+      this.shareUrl
+    );
+    copyTextToClipboard(text).then(
+      () => {
+        this.copyDetailsButtonText = 'Copied';
+        setTimeout(
+          () => (this.copyDetailsButtonText = 'Copy with details'),
+          1300
+        );
+      },
+      () => {
+        this.shareError = 'The details could not be copied.';
+      }
+    );
   }
 
   stopSharing(): void {

@@ -9,6 +9,10 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatDialogContent } from '@angular/material/dialog';
 import { TweetComponent } from '../../../../social-buttons/tweet.component';
+import {
+  buildShareDetails,
+  copyTextToClipboard,
+} from '../../../share-details/share-details';
 
 @Component({
   selector: 'app-note-social-share-dialog-content',
@@ -26,6 +30,8 @@ export class NoteSocialShareDialogContentComponent implements OnChanges {
   tweetText: string;
   tagsStr: string;
   copyLinkButtonText = 'Copy shareable link';
+  copyDetailsButtonText = 'Copy with details';
+  copyDetailsError = '';
 
   constructor(private clipboard: Clipboard) {}
 
@@ -54,5 +60,27 @@ export class NoteSocialShareDialogContentComponent implements OnChanges {
       this.copyLinkButtonText = 'Copied';
       setTimeout(() => (this.copyLinkButtonText = 'Link'), 1300);
     }
+  }
+
+  copyWithDetails() {
+    if (!this.shareableUrl) return;
+    this.copyDetailsError = '';
+    const text = buildShareDetails(
+      this.note.title,
+      this.note.tags,
+      this.shareableUrl
+    );
+    copyTextToClipboard(text).then(
+      () => {
+        this.copyDetailsButtonText = 'Copied';
+        setTimeout(
+          () => (this.copyDetailsButtonText = 'Copy with details'),
+          1300
+        );
+      },
+      () => {
+        this.copyDetailsError = 'The details could not be copied.';
+      }
+    );
   }
 }

@@ -20,6 +20,10 @@ import {
   ShareLinkResourceStatus,
 } from '../../../core/model/share-link';
 import { StopSharingDialogComponent } from '../stop-sharing-dialog/stop-sharing-dialog.component';
+import {
+  buildShareDetails,
+  copyTextToClipboard,
+} from '../../share-details/share-details';
 
 @Component({
   selector: 'app-social-share-dialog',
@@ -43,6 +47,8 @@ export class SocialShareDialogComponent {
   tweetText: string;
   copyLinkButtonText = 'Link';
   copyLinkButtonShareableText = 'Copy';
+  copyDetailsButtonText = 'Copy with details';
+  copyDetailsError = '';
   shareStatus: 'loading' | 'inactive' | 'active' | 'error' = 'inactive';
   shareLink: ActiveShareLinkStatus | null = null;
   shareError = '';
@@ -150,6 +156,27 @@ export class SocialShareDialogComponent {
     } catch {
       this.shareError = 'The link could not be copied.';
     }
+  }
+
+  copyWithDetails(): void {
+    this.copyDetailsError = '';
+    const text = buildShareDetails(
+      this.bookmark.name,
+      this.bookmark.tags,
+      this.bookmark.location
+    );
+    copyTextToClipboard(text).then(
+      () => {
+        this.copyDetailsButtonText = 'Copied';
+        setTimeout(
+          () => (this.copyDetailsButtonText = 'Copy with details'),
+          1300
+        );
+      },
+      () => {
+        this.copyDetailsError = 'The details could not be copied.';
+      }
+    );
   }
 
   stopSharing(): void {
