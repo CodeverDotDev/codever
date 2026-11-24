@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { Bookmark } from '../../core/model/bookmark';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { startWith, tap } from 'rxjs/operators';
 import { UserData } from '../../core/model/user-data';
 import { UserInfoStore } from '../../core/user/user-info.store';
@@ -20,6 +20,7 @@ import {
 } from '../../core/shortcut/main-link-shortcut.service';
 import { BookmarkListElementComponent } from '../../shared/bookmark-list-element/bookmark-list-element.component';
 import { AsyncPipe } from '@angular/common';
+import { takeUndoLastSave } from '../../shared/undo-last-save/undo-last-save';
 
 @Component({
   selector: 'app-bookmark-details',
@@ -32,6 +33,8 @@ export class BookmarkDetailsComponent implements OnInit, OnDestroy {
   bookmark$: Observable<Bookmark>;
   userData$: Observable<UserData>;
   popup: string;
+  /** The bookmark from before the save that opened this page, if any. */
+  undoLastSave: Bookmark | null = null;
 
   /** Latest loaded bookmark, exposed to the `k+k` shortcut context. */
   private currentBookmark: Bookmark | null = null;
@@ -50,8 +53,17 @@ export class BookmarkDetailsComponent implements OnInit, OnDestroy {
     private mainLinkShortcutService: MainLinkShortcutService
   ) {}
 
+  onLastSaveUndone(bookmark: Bookmark): void {
+    this.undoLastSave = null;
+    this.currentBookmark = bookmark;
+    this.bookmark$ = of(bookmark);
+  }
+
   ngOnInit() {
     this.popup = this.route.snapshot.queryParamMap.get('popup');
+    this.undoLastSave = takeUndoLastSave<Bookmark>(
+      this.route.snapshot.paramMap.get('id')
+    );
     this.mainLinkShortcutService.register(this.shortcutContext);
 
     this.userInfoStore.getUserInfoOidc$().subscribe((userInfo) => {

@@ -26,6 +26,7 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { BookmarkListElementComponent } from './bookmark-list-element.component';
 import { describe, expect, it, vi, type Mocked } from 'vitest';
 import { DeleteResourceDialogComponent } from '../dialog/delete-bookmark-dialog/delete-resource-dialog.component';
+import { PersonalNotesService } from '../../core/personal-notes.service';
 
 describe('BookmarkListElementComponent', () => {
   let fixture: ComponentFixture<BookmarkListElementComponent>;
@@ -110,6 +111,7 @@ describe('BookmarkListElementComponent', () => {
         { provide: UserDataStore, useValue: userDataStore },
         { provide: AdminService, useValue: adminService },
         { provide: PersonalBookmarksService, useValue: personalBookmarksService },
+        { provide: PersonalNotesService, useValue: {} },
         { provide: DeleteNotificationService, useValue: deleteNotificationService },
         { provide: FeedStore, useValue: feedStore },
         { provide: MyBookmarksStore, useValue: myBookmarksStore },
@@ -274,5 +276,27 @@ describe('BookmarkListElementComponent', () => {
     expect(
       fixture.nativeElement.querySelector('[title="Delete bookmark"]')
     ).toBeNull();
+  });
+
+  const undoAction = () =>
+    fixture.nativeElement.querySelector(
+      '.card-footer .undo-last-save-action'
+    ) as HTMLButtonElement | null;
+
+  it('offers "Undo last save" in the card footer of the details page', () => {
+    fixture.componentRef.setInput('isDetailsPage', true);
+    fixture.componentRef.setInput('undoLastSave', { ...bookmark, name: 'Before' });
+    fixture.detectChanges();
+
+    expect(undoAction()?.textContent).toContain('Undo last save');
+  });
+
+  it('offers no undo without a handed-over bookmark or in lists', () => {
+    expect(undoAction()).toBeNull();
+
+    fixture.componentRef.setInput('undoLastSave', { ...bookmark, name: 'Before' });
+    fixture.detectChanges();
+
+    expect(undoAction()).toBeNull();
   });
 });

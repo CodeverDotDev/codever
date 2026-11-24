@@ -1,3 +1,4 @@
+import { UNDO_LAST_SAVE_STATE_KEY } from '../../shared/undo-last-save/undo-last-save';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import {
   ChangeDetectionStrategy,
@@ -175,6 +176,8 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input()
   note: Note;
+  /** The note as loaded, for "Undo last save" after an update. */
+  private noteBeforeEdit: Note | undefined;
 
   @Input()
   cloneNote = false;
@@ -306,6 +309,9 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.noteForm) {
       this.buildForm();
+    }
+    if (this.note && this.isEditMode && changes['note']) {
+      this.noteBeforeEdit = structuredClone(this.note);
     }
     if (this.note && (this.isEditMode || this.cloneNote || this.copyToMine)) {
       this.noteForm.patchValue({
@@ -822,11 +828,19 @@ Given a note's title, content, tags, and optional reference URL, you should:
       });
   }
 
-  navigateToNoteDetails(note: Note, queryParams: Params): void {
+  navigateToNoteDetails(
+    note: Note,
+    queryParams: Params,
+    {
+      replaceUrl = false,
+      undoLastSave,
+    }: { replaceUrl?: boolean; undoLastSave?: Note } = {}
+  ): void {
     const link = [`./my-notes/${note._id}/details`];
     this.router.navigate(link, {
-      state: { snippet: note },
+      state: { snippet: note, [UNDO_LAST_SAVE_STATE_KEY]: undoLastSave },
       queryParams: queryParams,
+      replaceUrl,
     });
   }
 
@@ -842,7 +856,12 @@ Given a note's title, content, tags, and optional reference URL, you should:
       .subscribe(() => {
         this.protection?.markSaved();
         this.userDataStore.updateUserDataHistory$(note).subscribe();
-        this.navigateToNoteDetails(note, {});
+        // Back from the details page returns to where the edit started
+        this.navigateToNoteDetails(
+          note,
+          {},
+          { replaceUrl: true, undoLastSave: this.noteBeforeEdit }
+        );
       });
   }
 

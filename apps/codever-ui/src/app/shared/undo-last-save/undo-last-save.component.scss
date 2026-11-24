@@ -1,0 +1,13 @@
+// shown at the top of an entry card's footer: a line separates it from the tags
+.undo-last-save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+  font-size: 0.85rem;
+  color: #6c757d;
+}

@@ -1,0 +1,13 @@
+<div class="undo-last-save">
+  <i class="fas fa-check me-1" aria-hidden="true"></i>
+  <span class="me-2">Changes saved</span>
+  <button
+    type="button"
+    class="btn btn-outline-secondary btn-sm undo-last-save-action"
+    [disabled]="undoing"
+    (click)="undo()"
+    title="Discard the changes of your last save"
+  >
+    <i class="fas fa-undo me-1" aria-hidden="true"></i>Undo last save
+  </button>
+</div>

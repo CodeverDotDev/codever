@@ -41,6 +41,7 @@ import { AddToCollectionDialogComponent } from '../add-to-collection-dialog/add-
 import { NgClass, AsyncPipe, SlicePipe, DatePipe } from '@angular/common';
 import { BookmarkTextComponent } from '../bookmark-text/bookmark-text.component';
 import { HighLightPipe } from '../../common/pipes/highlight.pipe';
+import { UndoLastSaveComponent } from '../undo-last-save/undo-last-save.component';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -55,6 +56,7 @@ import { HighLightPipe } from '../../common/pipes/highlight.pipe';
     SlicePipe,
     DatePipe,
     HighLightPipe,
+    UndoLastSaveComponent,
   ],
 })
 export class BookmarkListElementComponent
@@ -72,6 +74,14 @@ export class BookmarkListElementComponent
 
   @Output()
   bookmarkDeleted = new EventEmitter<Bookmark>();
+
+  /** On the details page after a save: the bookmark from before it. */
+  @Input()
+  undoLastSave: Bookmark | null = null;
+
+  /** Emits the bookmark after the last save was undone. */
+  @Output()
+  lastSaveUndone = new EventEmitter<Bookmark>();
 
   public innerWidth: any;
 

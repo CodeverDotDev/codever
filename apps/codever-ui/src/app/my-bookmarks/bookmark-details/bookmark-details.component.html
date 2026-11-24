@@ -4,6 +4,8 @@
       [userData$]="userData$"
       [isDetailsPage]="true"
       [showMoreText]="popup ? false : true"
+      [undoLastSave]="undoLastSave"
+      (lastSaveUndone)="onLastSaveUndone($event)"
     />
     <div class="container">
       <div class="row">

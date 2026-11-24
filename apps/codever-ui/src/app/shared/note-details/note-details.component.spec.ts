@@ -13,7 +13,8 @@ import { UserInfoStore } from '../../core/user/user-info.store';
 import { UserDataPinnedStore } from '../../core/user/userdata.pinned.store';
 import { UserDataStore } from '../../core/user/userdata.store';
 import { NoteDetailsComponent } from './note-details.component';
-import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
+import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 
 describe('NoteDetailsComponent favorites', () => {
   let authService: Mocked<Pick<AuthenticationService, 'isLoggedIn'>>;
@@ -446,5 +447,50 @@ describe('NoteDetailsComponent favorites', () => {
     expect(
       deleteNotificationService.showErrorNotification
     ).toHaveBeenCalledWith('Note could not be deleted. Please try again later!');
+  });
+
+  describe('undo last save', () => {
+    const beforeSave = { _id: 'note-1', title: 'Note', content: 'Important paragraph' };
+    const undoAction = (fixture: { nativeElement: HTMLElement }) =>
+      fixture.nativeElement.querySelector(
+        '.undo-last-save-action'
+      ) as HTMLButtonElement | null;
+
+    beforeEach(() => {
+      Object.assign(personalNotesService, {
+        getPersonalNoteById: vi.fn().mockReturnValue(of(note)),
+        updateNote: vi.fn((entry: Note) => of(entry)),
+      });
+      Object.assign(userDataStore, {
+        getUserData$: vi.fn().mockReturnValue(of(userData)),
+        updateUserDataHistory$: vi.fn().mockReturnValue(of(userData)),
+      });
+      TestBed.overrideProvider(ActivatedRoute, {
+        useValue: { snapshot: { paramMap: { get: () => 'note-1' } } },
+      });
+      TestBed.overrideProvider(PersonalBookmarksService, { useValue: {} });
+      window.history.replaceState({ undoLastSave: beforeSave }, '');
+    });
+    afterEach(() => window.history.replaceState({}, ''));
+
+    it('offers the undo handed over by the editor and shows the result', () => {
+      dialog.open.mockReturnValue({ afterClosed: () => of('CONFIRM') });
+      const fixture = TestBed.createComponent(NoteDetailsComponent);
+      fixture.detectChanges();
+
+      undoAction(fixture)?.click();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('Important paragraph');
+      expect(undoAction(fixture)).toBeNull();
+    });
+
+    it('offers no undo in a list', () => {
+      const fixture = TestBed.createComponent(NoteDetailsComponent);
+      fixture.componentInstance.partOfList = true;
+      fixture.detectChanges();
+
+      expect(undoAction(fixture)).toBeNull();
+    });
   });
 });

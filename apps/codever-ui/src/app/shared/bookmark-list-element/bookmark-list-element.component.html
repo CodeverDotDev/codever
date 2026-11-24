@@ -176,6 +176,13 @@
         }
       </div>
       <div class="card-footer" style="padding-right: 0.3rem">
+        @if (isDetailsPage && undoLastSave) {
+          <app-undo-last-save
+            entryType="bookmark"
+            [before]="undoLastSave"
+            (undone)="lastSaveUndone.emit($event)"
+          />
+        }
         <div class="tags-group">
           <div class="input-group-sm mb-2 mb-sm-0 star-group">
             @if (!bookmark.public) {

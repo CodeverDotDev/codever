@@ -153,6 +153,13 @@
         </div>
         @if ({ userId: userId$ | async }; as observables) {
           <div class="card-footer" style="padding-right: 0.3rem">
+            @if (undoLastSave) {
+              <app-undo-last-save
+                entryType="note"
+                [before]="undoLastSave"
+                (undone)="onLastSaveUndone($event)"
+              />
+            }
             <div class="tags-group">
               <div class="input-group-sm mb-2 mb-sm-0 star-group">
               </div>

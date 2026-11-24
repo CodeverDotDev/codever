@@ -33,6 +33,8 @@ import { DeleteNotificationService } from '../../core/notifications/delete-notif
 import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
 import { NoteContentComponent } from './note-card-body/note-content.component';
 import { HighLightPipe } from '../../common/pipes/highlight.pipe';
+import { UndoLastSaveComponent } from '../undo-last-save/undo-last-save.component';
+import { takeUndoLastSave } from '../undo-last-save/undo-last-save';
 
 type NoteDetailsResource =
   | Note
@@ -51,6 +53,7 @@ type NoteDetailsResource =
     AsyncPipe,
     DatePipe,
     HighLightPipe,
+    UndoLastSaveComponent,
   ],
 })
 export class NoteDetailsComponent implements OnInit, AfterViewInit {
@@ -78,6 +81,9 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   /** "Copy to mine" on a shared page; the shared page handles it. */
   @Output()
   sharedCopyRequested = new EventEmitter<Note | SharedNote>();
+
+  /** The note from before the save that opened this page, if any. */
+  undoLastSave: Note | null = null;
 
   userId$: Observable<string> = of(null);
   userData$: Observable<UserData>;
@@ -122,6 +128,9 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
 
     if (!this.inSearchResults && !this.note$) {
       this.noteId = this.route.snapshot.paramMap.get('id');
+      if (!this.partOfList && !this.isSharedView) {
+        this.undoLastSave = takeUndoLastSave<Note>(this.noteId);
+      }
 
       // Always fetch the latest version from the API so edits made elsewhere
       // (e.g. on another device) are reflected. A note passed through router
@@ -152,6 +161,13 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
       // then replace it with the freshly fetched copy.
       this.note$ = stateNote ? note$.pipe(startWith(stateNote)) : note$;
     }
+  }
+
+  onLastSaveUndone(note: Note): void {
+    this.undoLastSave = null;
+    this.note$ = of(note);
+    this.changeDetectorRef.markForCheck();
+    setTimeout(() => this.extractHeadings(), 150);
   }
 
   ngAfterViewInit(): void {
