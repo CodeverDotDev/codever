@@ -108,4 +108,36 @@ describe('validateNoteInput', () => {
       tags: ['python'],
     });
   });
+
+  test('accepts notebook searchable text longer than the markdown content limit', () => {
+    const note = {
+      userId: 'u1',
+      title: 'Notebook',
+      contentType: 'notebook',
+      notebookContent: '{"cells":[]}',
+      content: 'x'.repeat(NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_CONTENT + 1),
+      tags: ['python'],
+    };
+
+    expect(() => noteInputValidator.validateNoteInput('u1', note)).not.toThrow();
+  });
+
+  test('still rejects a notebook over the notebook content limit', () => {
+    const note = {
+      userId: 'u1',
+      title: 'Notebook',
+      contentType: 'notebook',
+      notebookContent: 'x'.repeat(
+        NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_NOTEBOOK_CONTENT + 1
+      ),
+      content: 'searchable text',
+      tags: ['python'],
+    };
+
+    expect(() => noteInputValidator.validateNoteInput('u1', note)).toThrow(
+      expect.objectContaining({
+        validationErrors: [NoteValidationErrorMessages.NOTEBOOK_CONTENT_TOO_LONG],
+      })
+    );
+  });
 });

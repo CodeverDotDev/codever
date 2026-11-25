@@ -51,7 +51,9 @@ let validateNoteInput = function (userId, note) {
     }
   }
 
-  if (note.content) {
+  // Notebook searchable text is extracted from notebookContent, which has its
+  // own size cap, so the markdown content limit does not apply to it
+  if (note.content && note.contentType !== 'notebook') {
     const descriptionIsTooLong =
       note.content.length > NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_CONTENT;
     if (descriptionIsTooLong) {
