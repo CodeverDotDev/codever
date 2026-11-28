@@ -232,6 +232,43 @@ In production, prefer pre-registering `codever-mcp` (predictable and safer than
 opening anonymous DCR) and enter it the same way, or enable tightly restricted
 DCR if you specifically need zero-config onboarding.
 
+### Claude Desktop (custom connector)
+
+Claude Desktop (and claude.ai) adds Codever as a **custom connector**:
+Settings → Connectors → Add custom connector, with the MCP URL
+`https://www.codever.dev/api/mcp`. In the connector's authentication options
+choose:
+
+| Option | Choice | Why |
+|---|---|---|
+| Sign-in | **Sign in now** | Every tool needs a user token; nothing is available without an account |
+| OAuth client | **Use your own OAuth client** | Client ID `codever-mcp`, secret left blank (public PKCE client) |
+
+Do **not** pick *Register automatically* (DCR), even though Claude marks it
+as detected: Keycloak advertises a registration endpoint, but anonymous DCR is
+blocked by the *Trusted Hosts* policy, and a registered client would lack the
+`codever-mcp` audience and `mcp:read` scope (see §5.1). *Use Claude's
+published identity* (CIMD) is not supported by Keycloak either.
+
+Two differences from VS Code and Cursor:
+
+- **Redirect URI.** The OAuth flow completes through Claude's servers, not a
+  loopback port. The `codever-mcp` client needs Claude's callback in
+  *Valid redirect URIs*:
+
+  ```text
+  https://claude.ai/api/mcp/auth_callback
+  https://claude.com/api/mcp/auth_callback
+  ```
+
+  Without it, Keycloak rejects the login with
+  `Invalid parameter: redirect_uri`. Verify the current callback URLs in
+  Anthropic's custom connector documentation.
+- **Publicly reachable server.** Custom connectors connect from Anthropic's
+  infrastructure, so `http://localhost:3000/api/mcp` does not work. Use the
+  production URL; testing against local development would need a public
+  tunnel for both the API and Keycloak's issuer URLs.
+
 ---
 
 ## 4. Production deployment checklist
@@ -243,7 +280,9 @@ the following in the production `bookmarks` realm before enabling MCP for users:
 2. Enable Standard Flow and require PKCE with `S256`.
 3. Add the redirect URIs required by the MCP hosts you support. Do not use a
    broad wildcard in production; verify the exact loopback callback patterns
-   supported by the client version.
+   supported by the client version. For Claude Desktop / claude.ai custom
+   connectors add `https://claude.ai/api/mcp/auth_callback` and
+   `https://claude.com/api/mcp/auth_callback` (see §3, Claude Desktop).
 4. Create the `mcp:read` client scope. Set its realm-level **Type to Optional**
    (so it is not auto-added to every client such as `bookmarks-api`), enable
    **Include in token scope**, then on the `codever-mcp` client add it with
@@ -343,6 +382,7 @@ Consequences per client:
 |---|---|---|
 | **VS Code** | Tries DCR, then falls back to a *"provide client ID manually"* prompt — enter `codever-mcp` | ✅ Yes |
 | **Cursor** | Same manual client-ID fallback as VS Code | ✅ Yes |
+| **Claude Desktop / claude.ai** | Custom connector: *Sign in now* + *Use your own OAuth client* with `codever-mcp`; needs Claude's callback redirect URIs (see §3) | ✅ Yes |
 | **GitHub Copilot CLI** | **DCR only** — no manual client-ID prompt; DCR is blocked by Keycloak's *Trusted Hosts* policy → `403 … Host not trusted` | ❌ Not currently |
 
 The Copilot CLI failure is a **CLI-side gap** (no static-client-ID support for
