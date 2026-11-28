@@ -54,11 +54,14 @@ Quick-access shortcuts SHALL NOT reuse the combinations browsers bind to native 
 ### Requirement: Shortcut labels match the bindings
 
 The UI SHALL label each shortcut with the combination it actually responds
-to in the help, about, tab, quick-access, collection, filter, dialog, and
-bookmark-details surfaces. The shortcut documentation SHALL describe `k+k`
-as opening the only visible bookmark's main link in supported non-editable
-contexts and `Enter` as activating the only visible result of any supported
-type from a focused supported filter.
+to in the help, about, tab, quick-access, collection, filter, dialog,
+bookmark-details, note-details and entry-form surfaces. The shortcut
+documentation SHALL describe `k+k` as opening the only visible bookmark's
+main link in supported non-editable contexts, `Enter` as activating the only
+visible result of any supported type from a focused supported filter, `e` as
+opening the edit form from a note or bookmark details page,
+`Ctrl/Cmd+Enter` as saving the note or bookmark form, and `Escape` as
+leaving the edit form.
 
 #### Scenario: Hot Keys help page lists current shortcuts
 
@@ -67,7 +70,9 @@ type from a focused supported filter.
   `Ctrl/Cmd+Shift+H`, the search box as `Ctrl/Cmd+K`, `k+k` is described as
   opening the only visible bookmark in supported contexts, and `Enter` is
   described as activating the only visible result of any supported type
-  from a focused supported filter
+  from a focused supported filter, `e` is described as editing the entry
+  of a details page, `Ctrl/Cmd+Enter` as saving the note or bookmark form,
+  and `Escape` as leaving the edit form
 
 #### Scenario: Contextual filter hint explains Enter
 
@@ -100,6 +105,12 @@ type from a focused supported filter.
 - **WHEN** shortcut hints appear in the about page, the Home bookmark tabs,
   or the quick-access panel
 - **THEN** they show the same combinations the app responds to
+
+#### Scenario: Entry edit shortcuts are labelled
+- **WHEN** a user can see the Edit action on a note or bookmark details
+  page, or the Save or Cancel action in the note or bookmark edit form
+- **THEN** the action indicates its shortcut: `e` for Edit,
+  `Ctrl/Cmd+Enter` for Save, and `Esc` for Cancel in edit mode
 
 ### Requirement: Open the only visible bookmark with a key sequence
 
