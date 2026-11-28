@@ -16,6 +16,9 @@ jest.mock('../common/config', () => ({
 const toggles = require('../common/feature-toggle.service');
 const ValidationError = require('../error/validation.error');
 const { TOO_MANY_TAGS } = require('../common/validation/tag-policy');
+const { NoteValidationRules } = require('../routes/users/notes/note-input.validator');
+
+const MAX_CONTENT = NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_CONTENT;
 
 // Avoid requiring keycloak/env config when we only test the MCP server object.
 const mcpTools = require('./mcp-tools.service');
@@ -265,7 +268,7 @@ describe('mcp.server opt-in creation', () => {
 
   test.each([
     {}, { title: '', content: 'C' }, { title: ' ', content: 'C' }, { title: 1, content: 'C' },
-    { title: 'T', content: ' ' }, { title: 'T', content: 1 }, { title: 'T', content: 'x'.repeat(30001) },
+    { title: 'T', content: ' ' }, { title: 'T', content: 1 }, { title: 'T', content: 'x'.repeat(MAX_CONTENT + 1) },
     ...['userId', '_id', 'id', 'shareableId', 'initiator', 'createdAt', 'updatedAt', 'type',
       'contentType', 'notebookContent', 'collection', 'collectionIds', 'confirmed'].map((field) => ({ title: 'T', content: 'C', [field]: 'forbidden' })),
     { title: 'T', content: 'C', tags: 'tag' }, { title: 'T', content: 'C', tags: [' '] },
@@ -279,9 +282,9 @@ describe('mcp.server opt-in creation', () => {
     expect(mcpTools.createNote).not.toHaveBeenCalled();
   });
 
-  test('accepts exactly 30000 characters and explicit metadata/public visibility', async () => {
+  test('accepts exactly the maximum content length and explicit metadata/public visibility', async () => {
     client = await connectClient(buildMcpServer(USER_ID, scopes));
-    const args = { title: 'T', content: 'x'.repeat(30000), public: true, tags: ['js'],
+    const args = { title: 'T', content: 'x'.repeat(MAX_CONTENT), public: true, tags: ['js'],
       reference: 'https://example.com', origin: { project: 'P', file: 'a.js' } };
     expect((await client.callTool({ name: 'create_note', arguments: args })).isError).not.toBe(true);
     expect(mcpTools.createNote).toHaveBeenCalledWith(USER_ID, args, scopes);

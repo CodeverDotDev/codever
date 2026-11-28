@@ -198,17 +198,11 @@
                       Content is required
                     </div>
                   }
-                  @if (content.errors.tooManyLines) {
-                    <div>
-                      Your description has {{ content.errors.tooManyLines.value }} lines.
-                      Maximum 300 lines are allowed.
-                    </div>
-                  }
                   @if (content.errors.tooManyCharacters) {
                     <div>
-                      Your description has
+                      The content has
                       {{ content.errors.tooManyCharacters.value }} characters. Maximum
-                      30000 characters are allowed.
+                      {{ maxNumberOfCharacters }} characters are allowed.
                     </div>
                   }
                 </div>

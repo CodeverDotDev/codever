@@ -200,7 +200,7 @@ describe('Editor save and copy state', () => {
       passedTags: ['test'],
       title: 'Title',
       reference: '',
-      maxNumberOfCharacters: 30000,
+      maxNumberOfCharacters: 100000,
       tagsControl: new UntypedFormBuilder().control(''),
       note,
       isEditMode: !!note && !copy,

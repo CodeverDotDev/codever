@@ -8,7 +8,7 @@ Enable authenticated agents to save Markdown notes with optional source and proj
 
 ### Requirement: Markdown note creation
 
-The system SHALL expose `create_note` to authorized write-enabled MCP connections. It SHALL accept nonblank string `title` and `content`, optional string-array `tags`, optional string `reference`, optional `origin` with string `location`, `file`, `project`, and `workspace` fields, and optional boolean `public`. The note SHALL be saved for the authenticated user with type `note` and content type `markdown`. Markdown content SHALL be preserved, including code fences and language labels, and SHALL NOT exceed 30,000 characters. Tags SHALL follow the `entry-tagging-policy` capability.
+The system SHALL expose `create_note` to authorized write-enabled MCP connections. It SHALL accept nonblank string `title` and `content`, optional string-array `tags`, optional string `reference`, optional `origin` with string `location`, `file`, `project`, and `workspace` fields, and optional boolean `public`. The note SHALL be saved for the authenticated user with type `note` and content type `markdown`. Markdown content SHALL be preserved, including code fences and language labels, and SHALL NOT exceed 100,000 characters. Tags SHALL follow the `entry-tagging-policy` capability.
 
 #### Scenario: Save prose and snippets as one note
 - **WHEN** an authorized user supplies a valid title and Markdown containing prose and multiple language-labelled code blocks
@@ -20,7 +20,7 @@ The system SHALL expose `create_note` to authorized write-enabled MCP connection
 - **THEN** the saved note is private with no tags and no inferred reference or origin metadata
 
 #### Scenario: Invalid required content
-- **WHEN** title or content is missing, has the wrong type, is blank, or content exceeds 30,000 characters
+- **WHEN** title or content is missing, has the wrong type, is blank, or content exceeds 100,000 characters
 - **THEN** the call returns an MCP validation error and creates no note
 
 #### Scenario: Unsupported creation inputs
@@ -29,7 +29,7 @@ The system SHALL expose `create_note` to authorized write-enabled MCP connection
 
 ### Requirement: Partial note update
 
-The system SHALL expose `update_note` to authorized write-enabled MCP connections. It SHALL require a valid note `id` and SHALL modify only the fields explicitly supplied among `title`, `content`, `tags`, `reference`, and `public`; omitted fields SHALL remain unchanged. `tags`, when present, SHALL be the complete desired list following the `entry-tagging-policy` capability, and `content` SHALL obey the existing 30,000-character limit. The update SHALL be scoped to the authenticated user's own note; a missing id or a note owned by another user SHALL return not-found without disclosing content. Updates SHALL be idempotent and retry-safe.
+The system SHALL expose `update_note` to authorized write-enabled MCP connections. It SHALL require a valid note `id` and SHALL modify only the fields explicitly supplied among `title`, `content`, `tags`, `reference`, and `public`; omitted fields SHALL remain unchanged. `tags`, when present, SHALL be the complete desired list following the `entry-tagging-policy` capability, and `content` SHALL obey the existing 100,000-character limit. The update SHALL be scoped to the authenticated user's own note; a missing id or a note owned by another user SHALL return not-found without disclosing content. Updates SHALL be idempotent and retry-safe.
 
 #### Scenario: Change a single field
 - **WHEN** an authorized user calls `update_note` with a valid `id` and only `title`
@@ -53,7 +53,7 @@ The system SHALL expose `update_note` to authorized write-enabled MCP connection
 - **THEN** the call returns not-found and performs no write, and the note's content and metadata are not disclosed
 
 #### Scenario: Invalid content or tags
-- **WHEN** `update_note` supplies blank content, content over 30,000 characters, or fourteen normalized unique tags
+- **WHEN** `update_note` supplies blank content, content over 100,000 characters, or fourteen normalized unique tags
 - **THEN** the call returns an actionable MCP validation error and the stored note is unchanged
 
 #### Scenario: Successful update result

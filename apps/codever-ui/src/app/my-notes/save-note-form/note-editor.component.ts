@@ -142,7 +142,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   filteredTags: Observable<any[]>;
 
-  readonly maxNumberOfCharacters = 30000;
+  readonly maxNumberOfCharacters = 100000;
 
   // --- Notebook upload state ---
   /** Whether a notebook file has been loaded (switches UI from textarea to notebook indicator) */
@@ -294,7 +294,7 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       content: [
         this.passedContent,
-        textSizeValidator(this.maxNumberOfCharacters, 30000),
+        textSizeValidator(this.maxNumberOfCharacters),
       ],
       public: false,
       copyableFields: copyableFieldsForm(),
@@ -976,7 +976,7 @@ Given a note's title, content, tags, and optional reference URL, you should:
     // Restore the default content size validator for markdown notes
     this.noteForm
       .get('content')
-      .setValidators(textSizeValidator(this.maxNumberOfCharacters, 30000));
+      .setValidators(textSizeValidator(this.maxNumberOfCharacters));
     this.noteForm.get('content').updateValueAndValidity();
   }
 

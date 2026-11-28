@@ -25,7 +25,7 @@ const noteCopyEditor = (note: SharedNote) => {
   ) as NoteEditorComponent;
   Object.assign(editor, {
     formBuilder: new UntypedFormBuilder(),
-    maxNumberOfCharacters: 30000,
+    maxNumberOfCharacters: 100000,
     tagsControl: new UntypedFormBuilder().control(''),
     note,
     isEditMode: false,
@@ -66,7 +66,7 @@ describe('Copy to mine from a sharing link', () => {
     ) as NoteEditorComponent;
     Object.assign(editor, {
       formBuilder: new UntypedFormBuilder(),
-      maxNumberOfCharacters: 30000,
+      maxNumberOfCharacters: 100000,
       tagsControl: new UntypedFormBuilder().control(''),
       note,
       cloneNote: true,

@@ -73,7 +73,7 @@ let validateNoteInput = function (userId, note) {
 };
 
 const NoteValidationRules = {
-  MAX_NUMBER_OF_CHARS_FOR_CONTENT: 30_000,
+  MAX_NUMBER_OF_CHARS_FOR_CONTENT: 100_000,
   // Notebook raw JSON can be up to 5 MB (well within MongoDB's 16 MB BSON limit)
   MAX_NUMBER_OF_CHARS_FOR_NOTEBOOK_CONTENT: 5_000_000,
   MAX_NUMBER_OF_TAGS: MAX_TAGS,

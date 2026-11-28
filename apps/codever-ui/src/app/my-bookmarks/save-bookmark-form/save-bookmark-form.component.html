@@ -267,7 +267,8 @@
             >
           </textarea>
           <div class="description-chars-counter">
-            {{ description.value ? description.value.length : 0 }} / 10000
+            {{ description.value ? description.value.length : 0 }} /
+            {{ maxDescriptionCharacters }}
           </div>
           <div class="clear"></div>
           @if (
@@ -279,15 +280,15 @@
               @if (description.errors.tooManyLines) {
                 <div>
                   Your description has
-                  {{ description.errors.tooManyLines.value }} lines. Maximum 300 lines
-                  are allowed.
+                  {{ description.errors.tooManyLines.value }} lines. Maximum
+                  {{ maxDescriptionLines }} lines are allowed.
                 </div>
               }
               @if (description.errors.tooManyCharacters) {
                 <div>
                   Your description has
                   {{ description.errors.tooManyCharacters.value }} characters. Maximum
-                  10000 characters are allowed.
+                  {{ maxDescriptionCharacters }} characters are allowed.
                 </div>
               }
             </div>

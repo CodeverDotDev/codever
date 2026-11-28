@@ -21,6 +21,7 @@ jest.mock('../common/feature-toggle.service', () => ({
 const common = require('../common/config');
 const toggles = require('../common/feature-toggle.service');
 const { creationErrorMessage } = require('./mcp-note-creation');
+const { NoteValidationRules } = require('../routes/users/notes/note-input.validator');
 const NotFoundError = require('../error/not-found.error');
 
 const bookmarksSearchService = require('../common/searching/bookmarks-search.service');
@@ -111,7 +112,7 @@ describe('MCP Markdown creation service', () => {
     { userId: 'other' }, { contentType: 'notebook' }, { notebookContent: '{}' }, { collectionIds: [] },
     { _id: 'id' }, { shareableId: 'shared' }, { tags: [''] }, { tags: [' '] }, { tags: [2] },
     { tags: null }, { tags: 'tag' }, { origin: { secret: 'hidden' } }, { public: 'true' },
-    { title: ' ' }, { content: ' ' }, { content: 'x'.repeat(30001) },
+    { title: ' ' }, { content: ' ' }, { content: 'x'.repeat(NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_CONTENT + 1) },
   ])('direct service callers cannot bypass validation %#', async (extra) => {
     await expect(mcpTools.createNote(USER_ID, { ...draft, ...extra }, scopes)).rejects.toThrow();
     expect(personalNotesService.createNote).not.toHaveBeenCalled();

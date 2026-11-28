@@ -47,7 +47,7 @@ function creationErrorMessage(error) {
     return ['The note is not valid.', ...details].join(' ');
   }
   if (error instanceof z.ZodError) {
-    return 'Invalid create_note input. Use only title, content (1–30000 characters), tags, reference, origin and public; text must not be blank.';
+    return `Invalid create_note input. Use only title, content (1–${NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_CONTENT} characters), tags, reference, origin and public; text must not be blank.`;
   }
   return 'Could not create the note. Do not retry blindly: use search_entries/get_entry to check whether it was saved before trying again.';
 }
@@ -59,7 +59,7 @@ function updateErrorMessage(error) {
     return ['The note update is not valid.', ...details].join(' ');
   }
   if (error instanceof z.ZodError) {
-    return 'Invalid update_note input. Use a nonblank id and at least one of title, content (1–30000 characters), tags, reference or public; text must not be blank.';
+    return `Invalid update_note input. Use a nonblank id and at least one of title, content (1–${NoteValidationRules.MAX_NUMBER_OF_CHARS_FOR_CONTENT} characters), tags, reference or public; text must not be blank.`;
   }
   return 'Could not update the note. Check that the note exists and belongs to the authenticated user, then retry.';
 }

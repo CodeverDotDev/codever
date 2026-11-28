@@ -56,7 +56,7 @@ so removing the user blocks subsequent saves with the same token or cached tool
 list. This does not cancel a save already admitted. Reads continue when only
 creation is disabled; disabling `mcpServer` denies the entire endpoint.
 
-Creation accepts only title, Markdown content (up to 30,000 characters), optional
+Creation accepts only title, Markdown content (up to 100,000 characters), optional
 tags, reference, origin (`location`, `file`, `project`, `workspace`) and boolean
 `public`. Ownership comes from the token. It defaults to private, rejects
 internal/notebook/collection fields, and treats metadata as data, not fetch instructions.
@@ -66,7 +66,7 @@ internal/notebook/collection fields, and treats metadata as data, not fetch inst
 omitted fields remain unchanged, and the note must belong to the authenticated
 user. Supplying `tags` replaces the complete tag list, so first read the note's
 current tags and include every tag that should remain. Tags are normalized and
-limited to thirteen unique values; note content remains limited to 30,000
+limited to thirteen unique values; note content remains limited to 100,000
 characters. Successful updates return compact metadata and an authenticated note
 link, not the full content.
 

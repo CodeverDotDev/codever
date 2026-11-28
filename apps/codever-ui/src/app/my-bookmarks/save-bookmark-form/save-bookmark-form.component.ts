@@ -148,6 +148,8 @@ import { DraftRecoveryBannerComponent } from '../../shared/draft-recovery/draft-
 })
 export class SaveBookmarkFormComponent implements OnInit, OnDestroy {
   readonly maxTags = MAX_TAGS;
+  readonly maxDescriptionCharacters = 30000;
+  readonly maxDescriptionLines = 1000;
   bookmarkForm: UntypedFormGroup;
   userId = null;
   private userData: UserData;
@@ -472,7 +474,13 @@ export class SaveBookmarkFormComponent implements OnInit, OnDestroy {
       tags: this.formBuilder.array([], [tagsValidator, Validators.required]),
       publishedOn: null,
       sourceCodeURL: '',
-      description: [this.desc ? this.desc : '', textSizeValidator(10000, 500)],
+      description: [
+        this.desc ? this.desc : '',
+        textSizeValidator(
+          this.maxDescriptionCharacters,
+          this.maxDescriptionLines
+        ),
+      ],
       public: false,
       readLater: false,
       pinned: false,
