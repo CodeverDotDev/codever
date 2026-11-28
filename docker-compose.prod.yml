@@ -73,6 +73,9 @@ services:
       # baked into the image) → must be mounted. Target MUST match the Dockerfile WORKDIR
       # (/opt/node_app/app), which is where config.js resolves require('../../env.json').
       - ./apps/codever-api/env.json:/opt/node_app/app/env.json:ro
+      # Same Angular build nginx serves: the API writes link-preview tags into
+      # its index.html (env.json linkPreviews.indexHtmlPath = /opt/codever-ui/index.html)
+      - /data/codever/ui-dist/browser:/opt/codever-ui:ro
     logging:
       driver: json-file
       options: { max-size: "50m", max-file: "5" }

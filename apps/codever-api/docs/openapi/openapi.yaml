@@ -47,6 +47,9 @@ tags:
   - name: admin
     description: Moderation of public bookmarks and notes (requires the
       ROLE_ADMIN realm role)
+  - name: link-previews
+    description: App page with link-preview tags for public notes and
+      bookmarks (nginx routes the public page URLs here)
 
 
 paths:
@@ -149,6 +152,84 @@ paths:
                 $ref: '#/components/schemas/SharedNote'
         404:
           $ref: '#/components/responses/NotFoundError'
+
+  /public/link-previews/notes/{id}:
+    get:
+      summary: App page with link-preview tags for a public note
+      description: >-
+        Returns the app's index.html with the title, a plain-text summary
+        followed by the tags as `#tag`, `og:url` (`/notes/{id}/details`), `og:type` and
+        `twitter:card` set for the public note. Private, missing and
+        invalid ids get the unchanged generic page with 200, so they cannot
+        be told apart. When the page cannot be built the response is 503 and
+        nginx serves the static index.html.
+      tags:
+        - link-previews
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the note
+          schema:
+            type: string
+      responses:
+        200:
+          description: App page, with preview tags for a public note
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-cache
+          content:
+            text/html:
+              schema:
+                type: string
+        503:
+          description: The page could not be built
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /public/link-previews/bookmarks/{id}:
+    get:
+      summary: App page with link-preview tags for a public bookmark
+      description: >-
+        Returns the app's index.html with the title, a plain-text summary
+        followed by the tags as `#tag`, `og:url` (`/bookmarks/{id}`), `og:type` and
+        `twitter:card` set for the public bookmark. Private, missing and
+        invalid ids get the unchanged generic page with 200, so they cannot
+        be told apart. When the page cannot be built the response is 503 and
+        nginx serves the static index.html.
+      tags:
+        - link-previews
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the bookmark
+          schema:
+            type: string
+      responses:
+        200:
+          description: App page, with preview tags for a public bookmark
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-cache
+          content:
+            text/html:
+              schema:
+                type: string
+        503:
+          description: The page could not be built
+          content:
+            text/plain:
+              schema:
+                type: string
 
   /public/users/{userId}/profile:
     get:

@@ -121,7 +121,8 @@ No UI change: the browser loads the same app, and nothing is cached in
 - [Extra API work per public page view] → one indexed `findOne` by id and an
   in-memory template; small next to the API calls the app makes anyway.
 - [API down or slow] → nginx serves the static page on 5xx and connection
-  errors; `proxy_read_timeout` can be lowered for these locations if needed.
+  errors; these locations use `proxy_connect_timeout 2s` and
+  `proxy_read_timeout 3s`, so a hung API falls back after at most 3 seconds.
 - [Platforms cache previews] → after an edit a platform may show the old
   preview until it fetches again; X, LinkedIn and Facebook offer tools to
   refresh. Documented, not solved.
