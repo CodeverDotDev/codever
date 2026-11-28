@@ -11,6 +11,7 @@ import {
   collectionDetailsRoute,
   noteDetailsRoute,
 } from './resource-activation.util';
+import { hasCommandModifier, isEditableTarget } from './keyboard-guard.util';
 
 /**
  * Priorities for `k+k` context providers. Only the highest-priority registered
@@ -92,11 +93,7 @@ export class MainLinkShortcutService {
       return false;
     }
 
-    const isPlainK =
-      (key === 'k' || key === 'K') &&
-      !event.ctrlKey &&
-      !event.metaKey &&
-      !event.altKey;
+    const isPlainK = (key === 'k' || key === 'K') && !hasCommandModifier(event);
 
     if (!isPlainK) {
       this.resetSequence();
@@ -104,7 +101,7 @@ export class MainLinkShortcutService {
     }
 
     // Never hijack typing; focused filters use Enter instead.
-    if (this.isEditableTarget(event.target)) {
+    if (isEditableTarget(event.target)) {
       this.resetSequence();
       return false;
     }
@@ -225,16 +222,5 @@ export class MainLinkShortcutService {
 
   private now(): number {
     return Date.now();
-  }
-
-  private isEditableTarget(target: EventTarget | null): boolean {
-    if (!(target instanceof HTMLElement)) {
-      return false;
-    }
-    const tag = target.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
-      return true;
-    }
-    return target.isContentEditable;
   }
 }

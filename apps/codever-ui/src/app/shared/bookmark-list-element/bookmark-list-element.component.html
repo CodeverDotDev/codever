@@ -310,7 +310,7 @@
                 type="button"
                 class="btn btn-light btn-sm"
                 (click)="editBookmark(bookmark)"
-                title="Edit bookmark"
+                [title]="isDetailsPage ? 'Edit bookmark (e)' : 'Edit bookmark'"
                 >
                 <i class="far fa-edit"></i> Edit
               </button>

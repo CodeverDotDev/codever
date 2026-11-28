@@ -25,6 +25,7 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormGroupDirective,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
@@ -112,6 +113,10 @@ import {
 import { EditorProtectionRegistry } from '../../core/editor-protection/editor-protection.registry';
 import { AuthoringProtection } from '../../core/editor-protection/authoring-protection';
 import { confirmCancel } from '../../core/editor-protection/confirm-cancel';
+import {
+  shouldLeaveFormOnEscape,
+  submitFormOnShortcut,
+} from '../../core/shortcut/form-shortcuts.util';
 import {
   BookmarkDraftSnapshot,
   rawCopyableFields,
@@ -739,6 +744,26 @@ export class SaveBookmarkFormComponent implements OnInit, OnDestroy {
     return this.bookmarkForm.get('copyableFields') as ReturnType<
       typeof copyableFieldsForm
     >;
+  }
+
+  /** Ctrl/Cmd+Enter: the same as Save, only when Save is enabled. */
+  saveWithShortcut(event: Event, form: FormGroupDirective): void {
+    submitFormOnShortcut(
+      event,
+      form,
+      this.bookmarkForm.valid && !this.personalBookmarkPresent
+    );
+  }
+
+  /** Escape while editing an existing bookmark: the same as Cancel. */
+  @HostListener('window:keydown.escape', ['$event'])
+  leaveWithEscape(event: KeyboardEvent): void {
+    if (
+      this.isUpdate &&
+      shouldLeaveFormOnEscape(event, this.publicBookmarkPresentDialog)
+    ) {
+      this.cancelUpdate();
+    }
   }
 
   saveBookmark(bookmark: Bookmark) {

@@ -22,4 +22,16 @@ describe('HowtoHotkeysComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('lists the shortcuts for editing notes and bookmarks', () => {
+    const items = Array.from(
+      fixture.nativeElement.querySelectorAll('li strong') as NodeListOf<
+        HTMLElement
+      >
+    ).map((element) => element.textContent?.trim());
+
+    expect(items).toEqual(
+      expect.arrayContaining(['e', 'Ctrl/Cmd+Enter', 'Esc'])
+    );
+  });
 });

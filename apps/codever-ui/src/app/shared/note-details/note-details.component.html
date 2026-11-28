@@ -202,7 +202,7 @@
                     type="button"
                     class="btn btn-light btn-sm"
                     (click)="editNote(note)"
-                    title="Edit note"
+                    [title]="isDetailsPage() ? 'Edit note (e)' : 'Edit note'"
                   >
                     <i class="far fa-edit"></i> Edit
                   </button>

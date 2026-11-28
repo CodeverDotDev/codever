@@ -6,7 +6,10 @@
     <form
       [formGroup]="bookmarkForm"
       novalidate
+      #bookmarkFormDirective="ngForm"
       (ngSubmit)="saveBookmark(bookmarkForm.value)"
+      (keydown.control.enter)="saveWithShortcut($event, bookmarkFormDirective)"
+      (keydown.meta.enter)="saveWithShortcut($event, bookmarkFormDirective)"
       >
       @if (protection) {
         <app-draft-recovery-banner
@@ -345,6 +348,7 @@
           <button
             type="submit"
             class="btn btn-primary"
+            title="Save (Ctrl/Cmd+Enter)"
             [disabled]="!bookmarkForm.valid || personalBookmarkPresent"
             >
             Save bookmark
@@ -352,6 +356,7 @@
           <button
             type="button"
             class="btn btn-secondary ms-2"
+            [title]="isUpdate ? 'Cancel (Esc)' : 'Cancel'"
             (click)="cancelUpdate()"
             >
             Cancel <i class="far fa-times-circle"></i>

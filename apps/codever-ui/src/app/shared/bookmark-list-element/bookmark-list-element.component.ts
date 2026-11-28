@@ -42,6 +42,10 @@ import { NgClass, AsyncPipe, SlicePipe, DatePipe } from '@angular/common';
 import { BookmarkTextComponent } from '../bookmark-text/bookmark-text.component';
 import { HighLightPipe } from '../../common/pipes/highlight.pipe';
 import { UndoLastSaveComponent } from '../undo-last-save/undo-last-save.component';
+import {
+  EditShortcutContext,
+  EditShortcutService,
+} from '../../core/shortcut/edit-shortcut.service';
 
 @Component({
   selector: 'app-bookmark-list-element',
@@ -104,6 +108,16 @@ export class BookmarkListElementComponent
   private userInfoSubscription: Subscription;
   private copyFeedbackTimer: ReturnType<typeof setTimeout>;
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly editShortcutService = inject(EditShortcutService);
+
+  /** User id from `userData$`, for the details page's `e` shortcut. */
+  private userDataUserId: string | undefined;
+  private userDataSubscription: Subscription;
+  /** On a details page, `e` runs the Edit action when it is offered. */
+  private readonly editShortcutContext: EditShortcutContext = {
+    canEdit: () => this.canEditBookmark(),
+    edit: () => this.editBookmark(this.bookmark),
+  };
 
   copyLinkButtonText = '';
 
@@ -156,6 +170,12 @@ export class BookmarkListElementComponent
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
+    if (this.isDetailsPage) {
+      this.userDataSubscription = this.userData$?.subscribe(
+        (userData) => (this.userDataUserId = userData?.userId)
+      );
+      this.editShortcutService.register(this.editShortcutContext);
+    }
     const isLoggedIn = this.keycloakService.isLoggedIn();
     if (isLoggedIn) {
       this.userIsLoggedIn = true;
@@ -361,6 +381,16 @@ export class BookmarkListElementComponent
     this.shareDialog.open(SocialShareDialogComponent, dialogConfig);
   }
 
+  /** Same condition as the Edit button: the owner, or an admin. */
+  canEditBookmark(): boolean {
+    return (
+      !!this.bookmark &&
+      ((!!this.userDataUserId &&
+        this.bookmark.userId === this.userDataUserId) ||
+        this.keycloakService.isUserInRole('ROLE_ADMIN'))
+    );
+  }
+
   editBookmark(bookmark: Bookmark): void {
     const link = [`./my-bookmarks/${bookmark._id}/edit`];
     this.router.navigate(link, { state: { bookmark: bookmark } });
@@ -393,6 +423,8 @@ export class BookmarkListElementComponent
 
   ngOnDestroy(): void {
     this.userInfoSubscription?.unsubscribe();
+    this.userDataSubscription?.unsubscribe();
+    this.editShortcutService.unregister(this.editShortcutContext);
     clearTimeout(this.copyFeedbackTimer);
     if (this.navigationSubscription) {
       this.navigationSubscription.unsubscribe();

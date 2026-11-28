@@ -30,6 +30,7 @@ import { environment } from '../environments/environment';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { LoginDialogHelperService } from './core/login-dialog-helper.service';
 import { MainLinkShortcutService } from './core/shortcut/main-link-shortcut.service';
+import { EditShortcutService } from './core/shortcut/edit-shortcut.service';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter, takeUntil } from 'rxjs/operators';
 import { NavigationComponent } from './shared/navigation/navigation.component';
@@ -110,7 +111,8 @@ export class AppComponent implements OnInit, OnDestroy {
     protected router: Router,
     private readonly scrollStrategyOptions: ScrollStrategyOptions,
     private readonly swUpdate: SwUpdate,
-    private readonly mainLinkShortcutService: MainLinkShortcutService
+    private readonly mainLinkShortcutService: MainLinkShortcutService,
+    private readonly editShortcutService: EditShortcutService
   ) {
     this.innerWidth = 100;
     updateSharedReferrerPolicy(window.location.pathname, document);
@@ -377,14 +379,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Global `k+k` sequence handling for opening the only visible bookmark's main
-   * link. Delegated to the shortcut service, which ignores editable targets and
-   * modifier combinations so it never interferes with typing or other
-   * shortcuts (including the Ctrl/Cmd+Shift+P/H listeners below).
+   * Global single-key shortcuts: `k+k` opens the only visible bookmark's main
+   * link and `e` edits the entry of a details page. Both services ignore
+   * editable targets and modifier combinations so they never interfere with
+   * typing or other shortcuts (including the Ctrl/Cmd+Shift+P/H listeners
+   * below).
    */
   @HostListener('window:keydown', ['$event'])
   onGlobalKeydown(event: KeyboardEvent) {
     this.mainLinkShortcutService.handleKeydown(event);
+    this.editShortcutService.handleKeydown(event);
   }
 
   @HostListener('window:keydown.control.shift.p', ['$event'])

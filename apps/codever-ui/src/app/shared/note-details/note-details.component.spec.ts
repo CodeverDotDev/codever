@@ -15,11 +15,12 @@ import { UserDataStore } from '../../core/user/userdata.store';
 import { NoteDetailsComponent } from './note-details.component';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
+import { EditShortcutService } from '../../core/shortcut/edit-shortcut.service';
 
 describe('NoteDetailsComponent favorites', () => {
   let authService: Mocked<Pick<AuthenticationService, 'isLoggedIn'>>;
   let userInfoStore: Mocked<Pick<UserInfoStore, 'getUserId$'>>;
-  let dialog: { open: ReturnType<typeof vi.fn> };
+  let dialog: { open: ReturnType<typeof vi.fn>; openDialogs: unknown[] };
   let userDataStore: Mocked<
     Pick<
       UserDataStore,
@@ -50,6 +51,7 @@ describe('NoteDetailsComponent favorites', () => {
       getUserId$: vi.fn<UserInfoStore['getUserId$']>().mockReturnValue(of('owner')),
     };
     dialog = {
+      openDialogs: [],
       open: vi.fn().mockReturnValue({ afterClosed: () => of(null) }),
     };
     userDataStore = {
@@ -491,6 +493,86 @@ describe('NoteDetailsComponent favorites', () => {
       fixture.detectChanges();
 
       expect(undoAction(fixture)).toBeNull();
+    });
+  });
+
+  describe('e shortcut', () => {
+    const pressE = () =>
+      TestBed.inject(EditShortcutService).handleKeydown(
+        new KeyboardEvent('keydown', { key: 'e', cancelable: true })
+      );
+
+    const render = (inputs: Record<string, unknown> = {}) => {
+      const fixture = TestBed.createComponent(NoteDetailsComponent);
+      fixture.componentRef.setInput('note$', of(note));
+      Object.entries(inputs).forEach(([name, value]) =>
+        fixture.componentRef.setInput(name, value)
+      );
+      fixture.detectChanges();
+      const navigate = vi
+        .spyOn(TestBed.inject(Router), 'navigate')
+        .mockResolvedValue(true);
+      return { fixture, navigate };
+    };
+
+    it('opens the edit form of the owner\'s note on its details page', () => {
+      const { navigate } = render();
+
+      expect(pressE()).toBe(true);
+      expect(navigate).toHaveBeenCalledWith(['/my-notes/note-1/edit'], {
+        state: { note },
+      });
+    });
+
+    it('does nothing on another user\'s note or when signed out', () => {
+      userInfoStore.getUserId$.mockReturnValue(of('someone-else'));
+      const first = render();
+      expect(pressE()).toBe(false);
+      first.fixture.destroy();
+
+      authService.isLoggedIn.mockReturnValue(false);
+      const second = render();
+      expect(pressE()).toBe(false);
+      expect(second.navigate).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      ['a list', { partOfList: true }],
+      ['search results', { inSearchResults: true }],
+      ['a shared-link view', { isSharedView: true }],
+    ])('does nothing in %s', (_label, inputs) => {
+      const { navigate } = render(inputs);
+
+      expect(pressE()).toBe(false);
+      expect(navigate).not.toHaveBeenCalled();
+    });
+
+    it('stops responding once the details page is left', () => {
+      const { fixture, navigate } = render();
+      fixture.destroy();
+
+      expect(pressE()).toBe(false);
+      expect(navigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Edit tooltip', () => {
+    const editTitle = (inputs: Record<string, unknown> = {}) => {
+      const fixture = TestBed.createComponent(NoteDetailsComponent);
+      fixture.componentRef.setInput('note$', of(note));
+      Object.entries(inputs).forEach(([name, value]) =>
+        fixture.componentRef.setInput(name, value)
+      );
+      fixture.detectChanges();
+      const button: HTMLButtonElement | null = fixture.nativeElement.querySelector(
+        'button[title^="Edit note"]'
+      );
+      return button?.title;
+    };
+
+    it('names the e shortcut on the details page only', () => {
+      expect(editTitle()).toBe('Edit note (e)');
+      expect(editTitle({ partOfList: true })).toBe('Edit note');
     });
   });
 });

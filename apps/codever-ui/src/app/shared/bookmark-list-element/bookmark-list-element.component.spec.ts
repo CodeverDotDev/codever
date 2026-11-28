@@ -27,13 +27,14 @@ import { BookmarkListElementComponent } from './bookmark-list-element.component'
 import { describe, expect, it, vi, type Mocked } from 'vitest';
 import { DeleteResourceDialogComponent } from '../dialog/delete-bookmark-dialog/delete-resource-dialog.component';
 import { PersonalNotesService } from '../../core/personal-notes.service';
+import { EditShortcutService } from '../../core/shortcut/edit-shortcut.service';
 
 describe('BookmarkListElementComponent', () => {
   let fixture: ComponentFixture<BookmarkListElementComponent>;
   let authService: Mocked<
     Pick<AuthenticationService, 'isLoggedIn' | 'isUserInRole'>
   >;
-  let dialog: { open: ReturnType<typeof vi.fn> };
+  let dialog: { open: ReturnType<typeof vi.fn>; openDialogs: unknown[] };
   let deleteDialogResult: string | null;
   let personalBookmarksService: {
     deleteBookmark: ReturnType<typeof vi.fn>;
@@ -63,6 +64,7 @@ describe('BookmarkListElementComponent', () => {
     authService.isUserInRole.mockReturnValue(false);
     deleteDialogResult = null;
     dialog = {
+      openDialogs: [],
       open: vi
         .fn()
         .mockImplementation(() => ({ afterClosed: () => of(deleteDialogResult) })),
@@ -298,5 +300,83 @@ describe('BookmarkListElementComponent', () => {
     fixture.detectChanges();
 
     expect(undoAction()).toBeNull();
+  });
+
+  describe('e shortcut', () => {
+    const pressE = () =>
+      TestBed.inject(EditShortcutService).handleKeydown(
+        new KeyboardEvent('keydown', { key: 'e', cancelable: true })
+      );
+
+    const render = (isDetailsPage: boolean, userId: string | null) => {
+      fixture.destroy();
+      fixture = TestBed.createComponent(BookmarkListElementComponent);
+      fixture.componentRef.setInput('bookmark', bookmark);
+      fixture.componentRef.setInput(
+        'userData$',
+        of(userId ? { ...userData, userId } : null)
+      );
+      fixture.componentRef.setInput('isDetailsPage', isDetailsPage);
+      fixture.detectChanges();
+      return vi
+        .spyOn(TestBed.inject(Router), 'navigate')
+        .mockResolvedValue(true);
+    };
+
+    it('opens the edit form for the owner on the details page', () => {
+      const navigate = render(true, 'owner');
+
+      expect(pressE()).toBe(true);
+      expect(navigate).toHaveBeenCalledWith(
+        ['./my-bookmarks/bookmark-1/edit'],
+        { state: { bookmark } }
+      );
+    });
+
+    it('opens the edit form for an administrator', () => {
+      authService.isUserInRole.mockReturnValue(true);
+      const navigate = render(true, 'someone-else');
+
+      expect(pressE()).toBe(true);
+      expect(navigate).toHaveBeenCalled();
+    });
+
+    it('does nothing for other users or signed-out visitors', () => {
+      const navigate = render(true, 'someone-else');
+      expect(pressE()).toBe(false);
+
+      render(true, null);
+      expect(pressE()).toBe(false);
+      expect(navigate).not.toHaveBeenCalled();
+    });
+
+    it('does nothing in lists and after leaving the details page', () => {
+      const navigate = render(false, 'owner');
+      expect(pressE()).toBe(false);
+
+      render(true, 'owner');
+      fixture.destroy();
+      expect(pressE()).toBe(false);
+      expect(navigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Edit tooltip', () => {
+    const editTitle = (isDetailsPage: boolean) => {
+      fixture.destroy();
+      fixture = TestBed.createComponent(BookmarkListElementComponent);
+      fixture.componentRef.setInput('bookmark', bookmark);
+      fixture.componentRef.setInput('userData$', of(userData));
+      fixture.componentRef.setInput('isDetailsPage', isDetailsPage);
+      fixture.detectChanges();
+      const button: HTMLButtonElement | null =
+        fixture.nativeElement.querySelector('button[title^="Edit bookmark"]');
+      return button?.title;
+    };
+
+    it('names the e shortcut on the details page only', () => {
+      expect(editTitle(true)).toBe('Edit bookmark (e)');
+      expect(editTitle(false)).toBe('Edit bookmark');
+    });
   });
 });

@@ -7,16 +7,17 @@ import {
   HostListener,
   inject,
   Input,
+  OnDestroy,
   OnInit,
   ChangeDetectionStrategy,
   Output,
 } from '@angular/core';
 import { Note } from '../../core/model/note';
 import { SharedNote } from '../../core/model/share-link';
-import { combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { shareReplay, startWith, switchMap, take } from 'rxjs/operators';
+import { shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { PersonalNotesService } from '../../core/personal-notes.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
@@ -35,6 +36,10 @@ import { NoteContentComponent } from './note-card-body/note-content.component';
 import { HighLightPipe } from '../../common/pipes/highlight.pipe';
 import { UndoLastSaveComponent } from '../undo-last-save/undo-last-save.component';
 import { takeUndoLastSave } from '../undo-last-save/undo-last-save';
+import {
+  EditShortcutContext,
+  EditShortcutService,
+} from '../../core/shortcut/edit-shortcut.service';
 
 type NoteDetailsResource =
   | Note
@@ -56,7 +61,9 @@ type NoteDetailsResource =
     UndoLastSaveComponent,
   ],
 })
-export class NoteDetailsComponent implements OnInit, AfterViewInit {
+export class NoteDetailsComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input()
   note$: Observable<NoteDetailsResource>;
 
@@ -103,6 +110,16 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
   scrollStrategy: ScrollStrategy;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly editShortcutService = inject(EditShortcutService);
+
+  /** Latest displayed note and user id, for the details page's `e` shortcut. */
+  private currentNote: NoteDetailsResource | null = null;
+  private currentUserId: string | null = null;
+  private userIdSubscription: Subscription;
+  private readonly editShortcutContext: EditShortcutContext = {
+    canEdit: () => this.canEditNote(),
+    edit: () => this.editNote(this.currentNote as Note),
+  };
 
   constructor(
     private personalNotesService: PersonalNotesService,
@@ -161,10 +178,39 @@ export class NoteDetailsComponent implements OnInit, AfterViewInit {
       // then replace it with the freshly fetched copy.
       this.note$ = stateNote ? note$.pipe(startWith(stateNote)) : note$;
     }
+
+    if (this.isDetailsPage()) {
+      this.note$ = this.note$.pipe(tap((note) => (this.currentNote = note)));
+      this.userIdSubscription = this.userId$.subscribe(
+        (userId) => (this.currentUserId = userId)
+      );
+      this.editShortcutService.register(this.editShortcutContext);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.userIdSubscription?.unsubscribe();
+    this.editShortcutService.unregister(this.editShortcutContext);
+  }
+
+  /** A single note's own page, not a list, search result or shared link. */
+  protected isDetailsPage(): boolean {
+    return !this.partOfList && !this.inSearchResults && !this.isSharedView;
+  }
+
+  /** Same condition as the Edit button: the signed-in owner. */
+  private canEditNote(): boolean {
+    return (
+      !this.isSharedView &&
+      !!this.currentUserId &&
+      !!this.currentNote &&
+      this.currentNote.userId === this.currentUserId
+    );
   }
 
   onLastSaveUndone(note: Note): void {
     this.undoLastSave = null;
+    this.currentNote = note;
     this.note$ = of(note);
     this.changeDetectorRef.markForCheck();
     setTimeout(() => this.extractHeadings(), 150);

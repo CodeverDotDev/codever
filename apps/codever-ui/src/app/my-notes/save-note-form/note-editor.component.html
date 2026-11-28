@@ -1,6 +1,9 @@
 <div class="navigation-space-buffer rounded shadow-sm"
   [ngClass]="noteForm?.get('public')?.value ? 'note-public-bg' : 'note-bg'">
-  <form [formGroup]="noteForm" novalidate (ngSubmit)="saveNote(noteForm.value)">
+  <form [formGroup]="noteForm" novalidate #noteFormDirective="ngForm"
+    (ngSubmit)="saveNote(noteForm.value)"
+    (keydown.control.enter)="saveWithShortcut($event, noteFormDirective)"
+    (keydown.meta.enter)="saveWithShortcut($event, noteFormDirective)">
     @if (protection) {
       <app-draft-recovery-banner [protection]="protection" resourceLabel="note" />
     }
@@ -296,6 +299,7 @@
               <button
                 type="submit"
                 class="btn btn-primary me-2"
+                title="Save (Ctrl/Cmd+Enter)"
                 [disabled]="!noteForm.valid"
                 >
                 @if (noteForm.get('public').value) {
@@ -311,7 +315,7 @@
               <button
                 type="button"
                 class="btn btn-secondary"
-                title="Cancel update"
+                [title]="isEditMode ? 'Cancel update (Esc)' : 'Cancel update'"
                 (click)="cancelUpdate()"
                 >
                 Cancel <i class="far fa-times-circle"></i>

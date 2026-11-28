@@ -64,9 +64,12 @@ Then it calls `preventDefault()` and `edit()`.
 
 Registration happens only on details pages:
 
-- `my-bookmarks/bookmark-details` and `public/bookmarks/public-bookmark-details`
-  register next to their existing `k+k` context. `canEdit()` mirrors the Edit
-  button condition (owner or `ROLE_ADMIN`); `edit()` navigates exactly like
+- `shared/bookmark-list-element` registers only when `isDetailsPage` is set,
+  which the two bookmark details pages (`my-bookmarks/bookmark-details`,
+  `public/bookmarks/public-bookmark-details`) do. The Edit button's condition
+  lives there (owner via the `userData$` input, or `ROLE_ADMIN`), so
+  `canEdit()` mirrors it exactly; on the public page no `userData$` is passed,
+  so, like the button, `e` works there for admins only. `edit()` calls
   `editBookmark`.
 - `shared/note-details` registers only when it is a details page, i.e. not
   `partOfList`, not `inSearchResults` and not `isSharedView`. `canEdit()`
@@ -102,10 +105,12 @@ the combination does not add a chip.
 ### `Escape` reuses `cancelUpdate()`
 
 In edit mode only (`isEditMode` for notes, `isUpdate` for bookmarks), a
-`(keydown.escape)` listener on the form calls `cancelUpdate()`. It returns
-early when `event.defaultPrevented` is set or an overlay is open (an open
-autocomplete panel or menu, or `MatDialog.openDialogs.length > 0`), so
-Material closes its panel first and the form stays.
+`window:keydown.escape` listener on the form component calls
+`cancelUpdate()`, so it also works when focus is not in a field. It returns
+early when `event.defaultPrevented` is set, on auto-repeat, or while a dialog
+is open (`MatDialog.openDialogs.length > 0`), so Material closes its panel or
+dialog first and the form stays. The checks live in
+`core/shortcut/form-shortcuts.util.ts`, shared by both forms.
 
 Because `cancelUpdate()` already runs `confirmCancel` and the unsaved-changes
 guard, `Escape` never discards changes silently, and the bookmark popup
@@ -115,8 +120,9 @@ closes its window as Cancel does.
 
 - Edit buttons: tooltip "Edit note (e)" / "Edit bookmark (e)" where the
   shortcut is active (details pages only; list rows keep their tooltip).
-- Save buttons: "Save (Ctrl+Enter)" or "Save (⌘+Enter)", using the platform
-  detection already used for the `Ctrl/Cmd+Shift+P/H` hints.
+- Save buttons: "(Ctrl/Cmd+Enter)", like the existing "Ctrl/Cmd+Shift+P"
+  and "Search (Ctrl/Cmd+K)" hints; both combinations work on every
+  platform, so no platform detection is needed.
 - Cancel in edit mode: "Cancel (Esc)".
 - `public/howto/howto-hotkeys`: a section for the three shortcuts.
 
@@ -127,9 +133,12 @@ closes its window as Cancel does.
 - [`Escape` while typing in the content field leaves the form] → only in edit
   mode and always through the unsaved-changes protection; documented on the
   Cancel tooltip.
-- [Detecting an open autocomplete panel] → rely on `defaultPrevented` set by
-  Material's panels and check the CDK overlay for open panes in a unit test,
-  so a future Material change is caught.
+- [Detecting an open autocomplete panel] → Material's autocomplete stops
+  propagation and calls `preventDefault()` on Escape while its panel is open,
+  so the window-level listener skips it. Its trigger also calls
+  `preventDefault()` on every Escape typed in the tags input, so Escape does
+  not leave the form while focus is there; acceptable, since Escape works
+  from every other field and from the page.
 - [macOS `Cmd+Enter` or `Ctrl+Enter` bound by browser extensions] → no
   browser default exists for these in a textarea; extensions may still take
   them, which cannot be prevented.

@@ -59,5 +59,4 @@ leaving the edit form.
 - **WHEN** a user can see the Edit action on a note or bookmark details
   page, or the Save or Cancel action in the note or bookmark edit form
 - **THEN** the action indicates its shortcut: `e` for Edit,
-  `Ctrl+Enter` or `Cmd+Enter` (matching the user's platform) for Save, and
-  `Escape` for Cancel in edit mode
+  `Ctrl/Cmd+Enter` for Save, and `Esc` for Cancel in edit mode

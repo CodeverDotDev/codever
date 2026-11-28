@@ -20,6 +20,7 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormGroupDirective,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
@@ -91,6 +92,10 @@ import { copyableFieldsForm, copyableFieldsValue } from '../../shared/copyable-f
 import { EditorProtectionRegistry } from '../../core/editor-protection/editor-protection.registry';
 import { AuthoringProtection } from '../../core/editor-protection/authoring-protection';
 import { confirmCancel } from '../../core/editor-protection/confirm-cancel';
+import {
+  shouldLeaveFormOnEscape,
+  submitFormOnShortcut,
+} from '../../core/shortcut/form-shortcuts.util';
 import { NoteDraftSnapshot, rawCopyableFields } from '../../core/model/entry-draft';
 import { DraftRecoveryBannerComponent } from '../../shared/draft-recovery/draft-recovery-banner.component';
 
@@ -515,6 +520,19 @@ export class NoteEditorComponent implements OnInit, OnDestroy, OnChanges {
     return this.autocompleteTags.filter(
       (tag) => tag.toLowerCase().indexOf(name.toLowerCase()) === 0
     );
+  }
+
+  /** Ctrl/Cmd+Enter: the same as Save, only when Save is enabled. */
+  saveWithShortcut(event: Event, form: FormGroupDirective): void {
+    submitFormOnShortcut(event, form, this.noteForm.valid);
+  }
+
+  /** Escape while editing an existing note: the same as Cancel. */
+  @HostListener('window:keydown.escape', ['$event'])
+  leaveWithEscape(event: KeyboardEvent): void {
+    if (this.isEditMode && shouldLeaveFormOnEscape(event, this.deleteDialog)) {
+      this.cancelUpdate();
+    }
   }
 
   saveNote(note: Note) {
