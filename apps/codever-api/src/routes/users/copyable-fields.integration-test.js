@@ -1,5 +1,5 @@
 // Real MongoDB, isolated database; only the external identity provider is stubbed.
-// Set COPYABLE_TEST_MONGO_URI for an authenticated local MongoDB instance.
+// Uses the docker-compose MongoDB by default; set COPYABLE_TEST_MONGO_URI to use another instance.
 jest.mock('keycloak-connect', () => class {
   middleware() { return (req, res, next) => next(); }
   protect() {
@@ -48,7 +48,7 @@ const normalized = [{ label: 'Command', value: 'npm  test' }, { label: 'Command'
 const origin = { file: 'src/example.ts', project: 'example', workspace: 'workspace' };
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.COPYABLE_TEST_MONGO_URI || 'mongodb://127.0.0.1:27017', {
+  await mongoose.connect(process.env.COPYABLE_TEST_MONGO_URI || 'mongodb://mongoadmin:secret@127.0.0.1:27017/?authSource=admin', {
     dbName: databaseName, serverSelectionTimeoutMS: 5000,
   });
   await Promise.all([Bookmark.createCollection(), Note.createCollection()]);
